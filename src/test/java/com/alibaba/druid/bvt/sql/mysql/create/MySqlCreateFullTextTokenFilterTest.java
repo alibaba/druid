@@ -25,13 +25,12 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateFullTextTokenFilterTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create fulltext tokenfilter test1 ("
-                     + "'type' = 'typename',"
-                     + "'key'='name'"
-                     + ")";
+                + "'type' = 'typename',"
+                + "'key'='name'"
+                + ")";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -39,9 +38,9 @@ public class MySqlCreateFullTextTokenFilterTest extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE FULLTEXT TOKENFILTER test1(\n"
-                            + "\"type\" = 'typename',\n"
-                            + "'key' = 'name'\n"
-                            + ")", output);
+                + "\"type\" = 'typename',\n"
+                + "'key' = 'name'\n"
+                + ")", output);
     }
 
     @Test

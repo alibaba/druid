@@ -25,14 +25,13 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlShowTest_6 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW INDEX FROM tblname";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SHOW INDEX FROM tblname", result);
 //        print(stmtList);

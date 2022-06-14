@@ -28,10 +28,9 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleDropSequenceTest extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "DROP SEQUENCE oe.customers_seq";
+                "DROP SEQUENCE oe.customers_seq";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

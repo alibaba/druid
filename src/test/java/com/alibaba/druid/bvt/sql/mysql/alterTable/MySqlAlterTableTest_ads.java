@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterDatabaseSetOp
 import junit.framework.TestCase;
 
 public class MySqlAlterTableTest_ads extends TestCase {
-
     public void test_alter_1() throws Exception {
         String sql = "ALTER TABLE grant_db.grant_table ADD INDEX user_id_index HashMap (grant_c1)\n";
 
@@ -94,7 +93,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("ALTER TABLE grant_db.grant_table\n"
-                     + "\tADD COLUMN col2 varchar NOT NULL PRIMARY KEY DEFAULT '10'", output);
+                + "\tADD COLUMN col2 varchar NOT NULL PRIMARY KEY DEFAULT '10'", output);
     }
 
     public void test_alter_9() throws Exception {

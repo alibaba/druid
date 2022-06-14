@@ -20,14 +20,13 @@ import java.sql.Types;
 import java.util.Calendar;
 
 public final class JdbcParameterDecimal implements JdbcParameter {
-
-    private final BigDecimal           value;
+    private final BigDecimal value;
 
     public static JdbcParameterDecimal NULL = new JdbcParameterDecimal(null);
     public static JdbcParameterDecimal ZERO = new JdbcParameterDecimal(BigDecimal.ZERO);
     public static JdbcParameterDecimal TEN = new JdbcParameterDecimal(BigDecimal.TEN);
-    
-    private JdbcParameterDecimal(BigDecimal value){
+
+    private JdbcParameterDecimal(BigDecimal value) {
         this.value = value;
     }
 
@@ -35,15 +34,15 @@ public final class JdbcParameterDecimal implements JdbcParameter {
         if (x == null) {
             return NULL;
         }
-        
+
         if (0 == (x.compareTo(BigDecimal.ZERO))) {
             return ZERO;
         }
-        
+
         if (0 == (x.compareTo(BigDecimal.TEN))) {
             return TEN;
         }
-        
+
         return new JdbcParameterDecimal(x);
     }
 

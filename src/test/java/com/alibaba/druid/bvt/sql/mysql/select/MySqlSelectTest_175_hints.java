@@ -12,12 +12,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_175_hints extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT/!TDDL:t1.id=1 and t2.id=1*/ * FROM t1 INNER JOIN SELECT val FROM t2 WHERE id=1";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartitionByHash extends SQLPartitionBy {
-
     // for aliyun ads
     protected boolean key;
     protected boolean unique;

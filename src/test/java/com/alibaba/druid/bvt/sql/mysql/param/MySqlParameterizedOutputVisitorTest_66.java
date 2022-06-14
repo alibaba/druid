@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
@@ -11,10 +11,9 @@ import java.util.List;
 
 public class MySqlParameterizedOutputVisitorTest_66 extends TestCase {
     public void test_for_parameterize() throws Exception {
-
         String sql = "select * from abc where 1=1 and id = trim(' abc ')";
 
-        List<Object> params =  new ArrayList<Object>();
+        List<Object> params = new ArrayList<Object>();
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedUnMergeShardingTable);
         assertEquals("SELECT *\n" +
                 "FROM abc\n" +

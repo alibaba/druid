@@ -26,14 +26,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLShowStatisticStmt extends SQLStatementImpl implements SQLShowStatement {
-
     private SQLExprTableSource tableSource;
-    private boolean            full;
+    private boolean full;
     private final List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>(4);
     private final List<SQLName> columns = new ArrayList<>();
-    
+
     public SQLShowStatisticStmt() {
-        super (DbType.odps);
+        super(DbType.odps);
     }
 
     public SQLExprTableSource getTableSource() {

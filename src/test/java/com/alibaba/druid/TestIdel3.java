@@ -28,7 +28,6 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class TestIdel3 extends TestCase {
-
     public void test_idle2() throws Exception {
         MockDriver driver = new MockDriver();
 
@@ -47,7 +46,7 @@ public class TestIdel3 extends TestCase {
         dataSource.setFilters("stat");
 
         ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
-                                                                 new ObjectName("com.alibaba:type=DataSource"));
+                new ObjectName("com.alibaba:type=DataSource"));
 
         // 第一次创建连接
         {
@@ -118,14 +117,12 @@ public class TestIdel3 extends TestCase {
     }
 
     private void concurrent(final DruidDataSource dataSource, int threadCount, final int loopCount)
-                                                                                                   throws InterruptedException {
-
+            throws InterruptedException {
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
         Thread[] threads = new Thread[threadCount];
         for (int i = 0; i < threadCount; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     try {
                         startLatch.await();

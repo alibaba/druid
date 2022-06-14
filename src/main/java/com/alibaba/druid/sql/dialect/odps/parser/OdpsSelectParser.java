@@ -15,21 +15,22 @@
  */
 package com.alibaba.druid.sql.dialect.odps.parser;
 
-import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 public class OdpsSelectParser extends SQLSelectParser {
-    public OdpsSelectParser(SQLExprParser exprParser){
+    public OdpsSelectParser(SQLExprParser exprParser) {
         super(exprParser.getLexer());
         this.exprParser = exprParser;
     }
 
-    public OdpsSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+    public OdpsSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
         super(exprParser.getLexer());
         this.exprParser = exprParser;
         this.selectListCache = selectListCache;
@@ -47,7 +48,7 @@ public class OdpsSelectParser extends SQLSelectParser {
         }
 
         OdpsSelectQueryBlock queryBlock = new OdpsSelectQueryBlock();
-        
+
         if (lexer.hasComment() && lexer.isKeepComments()) {
             queryBlock.addBeforeComment(lexer.readAndResetComments());
         }
@@ -82,9 +83,6 @@ public class OdpsSelectParser extends SQLSelectParser {
                 } else if (lexer.token() == Token.ALL) {
                     String str = lexer.stringVal();
                     lexer.nextToken();
-                    if (lexer.token() == Token.DOT) {
-
-                    }
                     queryBlock.setDistionOption(SQLSetQuantifier.ALL);
                 }
 
@@ -176,7 +174,7 @@ public class OdpsSelectParser extends SQLSelectParser {
             lexer.nextToken();
             accept(Token.BY);
 
-            for (;;) {
+            for (; ; ) {
                 SQLSelectOrderByItem distributeByItem = this.exprParser.parseSelectOrderByItem();
                 queryBlock.addDistributeBy(distributeByItem);
 
@@ -196,7 +194,7 @@ public class OdpsSelectParser extends SQLSelectParser {
             lexer.nextToken();
             accept(Token.BY);
 
-            for (;;) {
+            for (; ; ) {
                 SQLSelectOrderByItem sortByItem = this.exprParser.parseSelectOrderByItem();
                 queryBlock.addSortBy(sortByItem);
 
@@ -212,7 +210,7 @@ public class OdpsSelectParser extends SQLSelectParser {
             lexer.nextToken();
             accept(Token.BY);
 
-            for (;;) {
+            for (; ; ) {
                 SQLSelectOrderByItem clusterByItem = this.exprParser.parseSelectOrderByItem();
                 queryBlock.addClusterBy(clusterByItem);
 

@@ -26,7 +26,6 @@ import java.util.Properties;
 import junit.framework.TestCase;
 
 public class DragoonMetaInfTest extends TestCase {
-
     public void test_0() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Enumeration<URL> e = classLoader.getResources("META-INF/dragoon-filter.properties");

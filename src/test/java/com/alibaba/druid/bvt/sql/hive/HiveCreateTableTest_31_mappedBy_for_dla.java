@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_31_mappedBy_for_dla extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "create table aaaa (\n" +
@@ -66,6 +65,5 @@ public class HiveCreateTableTest_31_mappedBy_for_dla extends OracleTest {
         assertTrue(visitor.containsTable("aaaa"));
 
     }
-
 
 }

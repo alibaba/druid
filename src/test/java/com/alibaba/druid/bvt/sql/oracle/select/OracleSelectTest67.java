@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest67 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT NVL(B.KYSLRQ, A.HZDJRQ) HZDJRQ FROM DJ_NSRXX A" +

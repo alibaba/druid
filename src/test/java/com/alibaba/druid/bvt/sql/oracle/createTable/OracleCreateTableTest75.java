@@ -23,32 +23,31 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest75 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE \"CMIS\".\"DR$IDX_FULL_BIZ_TABLE_NAME$R\" \n" +
-                "   (\t\"ROW_NO\" NUMBER(3,0), \n" +
-                "\t\"DATA\" BLOB, \n" +
-                "\t CONSTRAINT \"DRC$IDX_FULL_BIZ_TABLE_NAME$R\" PRIMARY KEY (\"ROW_NO\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"CMISTBS\"  ENABLE\n" +
-                "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                " NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"CMISTBS\" \n" +
-                " LOB (\"DATA\") STORE AS BASICFILE (\n" +
-                "  TABLESPACE \"CMISTBS\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
-                "  CACHE \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)) \n" +
-                "  MONITORING ";
+                "CREATE TABLE \"CMIS\".\"DR$IDX_FULL_BIZ_TABLE_NAME$R\" \n" +
+                        "   (\t\"ROW_NO\" NUMBER(3,0), \n" +
+                        "\t\"DATA\" BLOB, \n" +
+                        "\t CONSTRAINT \"DRC$IDX_FULL_BIZ_TABLE_NAME$R\" PRIMARY KEY (\"ROW_NO\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"CMISTBS\"  ENABLE\n" +
+                        "   ) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        " NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"CMISTBS\" \n" +
+                        " LOB (\"DATA\") STORE AS BASICFILE (\n" +
+                        "  TABLESPACE \"CMISTBS\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
+                        "  CACHE \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)) \n" +
+                        "  MONITORING ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -118,7 +117,7 @@ public class OracleCreateTableTest75 extends OracleTest {
                         "\tRETENTION\n" +
                         ")\n" +
                         "MONITORING",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

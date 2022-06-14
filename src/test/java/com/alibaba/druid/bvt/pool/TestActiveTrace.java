@@ -25,7 +25,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestActiveTrace extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

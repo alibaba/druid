@@ -19,17 +19,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.util.FnvHash;
 
@@ -151,11 +142,9 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
                 return true;
             }
 
-
             SQLSelectQueryBlock queryBlock = source;
             if (queryBlock.getFrom() instanceof SQLSubqueryTableSource
                     && ((SQLSubqueryTableSource) queryBlock.getFrom()).getSelect().getQuery() instanceof SQLSelectQueryBlock) {
-
                 SQLSelectQueryBlock subQueryBlock = ((SQLSubqueryTableSource) queryBlock.getFrom()).getSelect().getQueryBlock();
                 SQLSelectItem selectItem = subQueryBlock.findSelectItem(nameHashCode64);
 
@@ -165,11 +154,9 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
 
             }
 
-
         }
         return false;
     }
-
 
     /**
      * 是否是 select item 字段的别名
@@ -191,7 +178,6 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
 
             if (queryBlock.getFrom() instanceof SQLSubqueryTableSource
                     && ((SQLSubqueryTableSource) queryBlock.getFrom()).getSelect().getQuery() instanceof SQLSelectQueryBlock) {
-
                 SQLSelectQueryBlock subQueryBlock = ((SQLSubqueryTableSource) queryBlock.getFrom()).getSelect().getQueryBlock();
 
                 if (isAliasColumn(x, subQueryBlock)) {
@@ -200,10 +186,8 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
 
             }
 
-
         }
         return false;
     }
-
 
 }

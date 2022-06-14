@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE TABLE wl_ship_forecast ( id NUMBER NOT NULL, gmt_modified DATE DEFAULT sysdate NOT NULL, gmt_create DATE DEFAULT sysdate NOT NULL, status NUMBER NOT NULL, gmt_forecast DATE, gmt_accept DATE, gmt_accept_notify DATE ) tablespace escrow_data";
+                "CREATE TABLE wl_ship_forecast ( id NUMBER NOT NULL, gmt_modified DATE DEFAULT sysdate NOT NULL, gmt_create DATE DEFAULT sysdate NOT NULL, status NUMBER NOT NULL, gmt_forecast DATE, gmt_accept DATE, gmt_accept_notify DATE ) tablespace escrow_data";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

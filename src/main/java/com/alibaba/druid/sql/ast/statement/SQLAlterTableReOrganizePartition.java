@@ -24,10 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableReOrganizePartition extends SQLObjectImpl implements SQLAlterTableItem {
+    private final List<SQLName> names = new ArrayList<SQLName>();
 
-    private final List<SQLName>   names       = new ArrayList<SQLName>();
-
-    private final List<SQLObject> partitions  = new ArrayList<SQLObject>(4);
+    private final List<SQLObject> partitions = new ArrayList<SQLObject>(4);
 
     public List<SQLObject> getPartitions() {
         return partitions;

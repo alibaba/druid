@@ -24,20 +24,19 @@ import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class SQLServerWallTest_3 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 
         provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
         Assert.assertFalse(provider.checkValid(//
-        "select * from t where LEN(HOST_NAME()) > 0"));
+                "select * from t where LEN(HOST_NAME()) > 0"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
         Assert.assertTrue(provider.getTableStats().containsKey("t"));

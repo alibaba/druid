@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PrestoLexer extends Lexer {
-    public final static Keywords DEFAULT_PHOENIX_KEYWORDS;
+    public static final Keywords DEFAULT_PHOENIX_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -38,7 +38,7 @@ public class PrestoLexer extends Lexer {
         dbType = DbType.presto;
     }
 
-    public PrestoLexer(String input, SQLParserFeature... features){
+    public PrestoLexer(String input, SQLParserFeature... features) {
         super(input);
         super.keywords = DEFAULT_PHOENIX_KEYWORDS;
         for (SQLParserFeature feature : features) {
@@ -46,4 +46,3 @@ public class PrestoLexer extends Lexer {
         }
     }
 }
-

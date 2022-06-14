@@ -11,11 +11,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * 这个场景测试maxActive < 0
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_notEmptyWait extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -51,7 +50,6 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
         Thread[] threads = new Thread[THREAD_COUNT];
         for (int i = 0; i < THREAD_COUNT; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     startLatch.countDown();
                     try {
@@ -76,14 +74,14 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
             }
             Thread.sleep(10);
         }
-        
+
         Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadCount());
         Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
 
         conn.close();
 
         endLatch.await(100, TimeUnit.MILLISECONDS);
-        
+
         Thread.sleep(10);
 //        Assert.assertEquals(0, dataSource.getNotEmptyWaitThreadCount());
         Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());

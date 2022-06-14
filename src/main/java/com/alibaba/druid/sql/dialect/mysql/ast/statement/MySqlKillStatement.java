@@ -17,9 +17,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -27,12 +25,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class MySqlKillStatement extends SQLStatementImpl {
-
-    private Type          type;
+    private Type type;
     private List<SQLExpr> threadIds = new ArrayList<SQLExpr>();
 
     public static enum Type {
-                             CONNECTION, QUERY
+        CONNECTION, QUERY
     }
 
     public Type getType() {
@@ -54,7 +51,7 @@ public class MySqlKillStatement extends SQLStatementImpl {
         }
         this.threadIds.set(0, threadId);
     }
-    
+
     public List<SQLExpr> getThreadIds() {
         return threadIds;
     }

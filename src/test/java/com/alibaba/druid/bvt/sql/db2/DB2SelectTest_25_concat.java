@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2SelectTest_25_concat extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "select ID, AUTHORITY_TYPE from t_authority a where authority_type like CONCAT('%', ?)";
 
@@ -60,11 +59,11 @@ public class DB2SelectTest_25_concat extends DB2Test {
         Assert.assertEquals("SELECT ID, AUTHORITY_TYPE\n" +
                         "FROM t_authority a\n" +
                         "WHERE authority_type LIKE CONCAT('%', ?)", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         Assert.assertEquals("select ID, AUTHORITY_TYPE\n" +
                         "from t_authority a\n" +
                         "where authority_type like CONCAT('%', ?)", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlAlterTableTest41 extends TestCase {
-
     public void test_alter_1() throws Exception {
         String sql = "alter table test COLLATE utf8mb4_unicode_ci";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

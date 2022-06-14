@@ -22,11 +22,10 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class HiveCreateTableTest_46_dla extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE EXTERNAL TABLE parquet_tbl LIKE MAPPING('oss://user/etl/destination/datafile1.dat')" +
-                " TBLPROPERTIES('target.table.location'='oss://user/etl/destination/')" ;
-        SQLStatement stmt =  SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
+                " TBLPROPERTIES('target.table.location'='oss://user/etl/destination/')";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
 
         assertEquals("CREATE EXTERNAL TABLE parquet_tbl\n" +
                 "LIKE MAPPING('oss://user/etl/destination/datafile1.dat')\n" +

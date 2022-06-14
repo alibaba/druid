@@ -17,7 +17,6 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author Jonas Yang
  */
 public class ConfigFileGenerator {
-
     protected String filePath;
 
     @Before
@@ -47,7 +46,7 @@ public class ConfigFileGenerator {
         }
 
         File file = new File(this.filePath);
-        if(file.exists()) {
+        if (file.exists()) {
             file.delete();
         }
     }

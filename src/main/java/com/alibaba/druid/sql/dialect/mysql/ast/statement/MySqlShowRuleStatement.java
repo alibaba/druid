@@ -22,16 +22,14 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowRuleStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
-    private SQLName    name;
+    private SQLName name;
     private SQLOrderBy orderBy;
-    private SQLExpr    where;
-    private SQLLimit   limit;
-    private boolean    full    = false;
-    private boolean    version = false;
+    private SQLExpr where;
+    private SQLLimit limit;
+    private boolean full;
+    private boolean version;
 
     public MySqlShowRuleStatement() {
-
     }
 
     public SQLLimit getLimit() {

@@ -16,16 +16,13 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
 
 public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTableItem, SQLIndex {
-
     private SQLIndexDefinition indexDefinition = new SQLIndexDefinition();
 
     public SQLAlterTableAddIndex() {

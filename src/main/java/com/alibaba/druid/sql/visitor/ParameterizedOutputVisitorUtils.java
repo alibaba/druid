@@ -47,27 +47,27 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class ParameterizedOutputVisitorUtils {
-    private final static SQLParserFeature[] defaultFeatures = {
+    private static final SQLParserFeature[] defaultFeatures = {
             SQLParserFeature.EnableSQLBinaryOpExprGroup,
             SQLParserFeature.UseInsertColumnsCache,
             SQLParserFeature.OptimizedForParameterized,
     };
 
-    private final static SQLParserFeature[] defaultFeatures2 = {
+    private static final SQLParserFeature[] defaultFeatures2 = {
             SQLParserFeature.EnableSQLBinaryOpExprGroup,
             SQLParserFeature.UseInsertColumnsCache,
             SQLParserFeature.OptimizedForParameterized,
             SQLParserFeature.OptimizedForForParameterizedSkipValue,
     };
 
-    private final static SQLParserFeature[] defaultFeatures_tddl = {
+    private static final SQLParserFeature[] defaultFeatures_tddl = {
             SQLParserFeature.EnableSQLBinaryOpExprGroup,
             SQLParserFeature.UseInsertColumnsCache,
             SQLParserFeature.OptimizedForParameterized,
             SQLParserFeature.TDDLHint,
     };
 
-    private final static SQLParserFeature[] defaultFeatures2_tddl = {
+    private static final SQLParserFeature[] defaultFeatures2_tddl = {
             SQLParserFeature.EnableSQLBinaryOpExprGroup,
             SQLParserFeature.UseInsertColumnsCache,
             SQLParserFeature.OptimizedForParameterized,
@@ -79,47 +79,54 @@ public class ParameterizedOutputVisitorUtils {
         return parameterize(sql, dbType, null, null);
     }
 
-    public static String parameterize(String sql, DbType dbType, VisitorFeature...features) {
+    public static String parameterize(String sql, DbType dbType, VisitorFeature... features) {
         return parameterize(sql, dbType, null, features);
     }
 
-    public static String parameterize(String sql
-            , DbType dbType
-            , SQLSelectListCache selectListCache) {
+    public static String parameterize(
+            String sql,
+            DbType dbType,
+            SQLSelectListCache selectListCache) {
         return parameterize(sql, dbType, selectListCache, null);
     }
 
-    public static String parameterize(String sql
-            , DbType dbType
-            , List<Object> outParameters) {
+    public static String parameterize(
+            String sql,
+            DbType dbType,
+            List<Object> outParameters) {
         return parameterize(sql, dbType, null, outParameters);
     }
 
-    public static String parameterize(String sql
-            , DbType dbType
-            , List<Object> outParameters, VisitorFeature ...features) {
+    public static String parameterize(
+            String sql,
+            DbType dbType,
+            List<Object> outParameters,
+            VisitorFeature... features) {
         return parameterize(sql, dbType, null, outParameters, features);
     }
 
-    public static String parameterizeForTDDL(String sql
-            , DbType dbType
-            , List<Object> outParameters, VisitorFeature ...features) {
+    public static String parameterizeForTDDL(
+            String sql,
+            DbType dbType,
+            List<Object> outParameters,
+            VisitorFeature... features) {
         return parameterizeForTDDL(sql, dbType, null, outParameters, features);
     }
 
-    private static void configVisitorFeatures(ParameterizedVisitor visitor, VisitorFeature ...features) {
-        if(features != null) {
+    private static void configVisitorFeatures(ParameterizedVisitor visitor, VisitorFeature... features) {
+        if (features != null) {
             for (int i = 0; i < features.length; i++) {
                 visitor.config(features[i], true);
             }
         }
     }
 
-    public static String parameterize(String sql
-            , DbType dbType
-            , SQLSelectListCache selectListCache
-            , List<Object> outParameters
-            , VisitorFeature ...visitorFeatures) {
+    public static String parameterize(
+            String sql,
+            DbType dbType,
+            SQLSelectListCache selectListCache,
+            List<Object> outParameters,
+            VisitorFeature... visitorFeatures) {
         final SQLParserFeature[] features = outParameters == null
                 ? defaultFeatures2
                 : defaultFeatures;
@@ -127,11 +134,12 @@ public class ParameterizedOutputVisitorUtils {
         return parameterize(sql, dbType, selectListCache, outParameters, features, visitorFeatures);
     }
 
-    public static String parameterizeForTDDL(String sql
-            , DbType dbType
-            , SQLSelectListCache selectListCache
-            , List<Object> outParameters
-            , VisitorFeature ...visitorFeatures) {
+    public static String parameterizeForTDDL(
+            String sql,
+            DbType dbType,
+            SQLSelectListCache selectListCache,
+            List<Object> outParameters,
+            VisitorFeature... visitorFeatures) {
         final SQLParserFeature[] features = outParameters == null
                 ? defaultFeatures2_tddl
                 : defaultFeatures_tddl;
@@ -139,12 +147,13 @@ public class ParameterizedOutputVisitorUtils {
         return parameterize(sql, dbType, selectListCache, outParameters, features, visitorFeatures);
     }
 
-    public static String parameterize(String sql
-            , DbType dbType
-            , SQLSelectListCache selectListCache
-            , List<Object> outParameters
-            , SQLParserFeature[] features
-            , VisitorFeature ...visitorFeatures) {
+    public static String parameterize(
+            String sql,
+            DbType dbType,
+            SQLSelectListCache selectListCache,
+            List<Object> outParameters,
+            SQLParserFeature[] features,
+            VisitorFeature... visitorFeatures) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, features);
 
         if (selectListCache != null) {
@@ -203,7 +212,6 @@ public class ParameterizedOutputVisitorUtils {
         if (visitor.getReplaceCount() == 0
                 && parser.getLexer().getCommentCount() == 0
                 && sql.charAt(0) != '/') {
-
             boolean notUseOriginalSql = false;
             if (visitorFeatures != null) {
                 for (VisitorFeature visitorFeature : visitorFeatures) {
@@ -232,24 +240,27 @@ public class ParameterizedOutputVisitorUtils {
         return out.toString();
     }
 
-    public static long parameterizeHash(String sql
-            , DbType dbType
-            , List<Object> outParameters) {
+    public static long parameterizeHash(
+            String sql,
+            DbType dbType,
+            List<Object> outParameters) {
         return parameterizeHash(sql, dbType, null, outParameters, null);
     }
 
-    public static long parameterizeHash(String sql
-            , DbType dbType
-            , SQLSelectListCache selectListCache
-            , List<Object> outParameters) {
+    public static long parameterizeHash(
+            String sql,
+            DbType dbType,
+            SQLSelectListCache selectListCache,
+            List<Object> outParameters) {
         return parameterizeHash(sql, dbType, selectListCache, outParameters, null);
     }
 
-    public static long parameterizeHash(String sql
-            , DbType dbType
-            , SQLSelectListCache selectListCache
-            , List<Object> outParameters, VisitorFeature ...visitorFeatures) {
-
+    public static long parameterizeHash(
+            String sql,
+            DbType dbType,
+            SQLSelectListCache selectListCache,
+            List<Object> outParameters,
+            VisitorFeature... visitorFeatures) {
         final SQLParserFeature[] features = outParameters == null
                 ? defaultFeatures2
                 : defaultFeatures;

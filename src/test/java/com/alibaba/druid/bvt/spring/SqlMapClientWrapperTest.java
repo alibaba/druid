@@ -17,7 +17,6 @@ import com.ibatis.sqlmap.client.event.RowHandler;
 import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
 
 public class SqlMapClientWrapperTest extends TestCase {
-
     private ClassPathXmlApplicationContext context = null;
 
     protected void setUp() throws Exception {
@@ -94,17 +93,13 @@ public class SqlMapClientWrapperTest extends TestCase {
         Assert.assertEquals(1, wrapper.queryForList("User.select", Collections.emptyMap(), 0, 2).size());
 
         wrapper.queryWithRowHandler("User.select", new RowHandler() {
-
             @Override
             public void handleRow(Object valueObject) {
-
             }
         });
         wrapper.queryWithRowHandler("User.select", Collections.emptyMap(), new RowHandler() {
-
             @Override
             public void handleRow(Object valueObject) {
-
             }
         });
 
@@ -113,7 +108,7 @@ public class SqlMapClientWrapperTest extends TestCase {
 
         Assert.assertNotNull(wrapper.queryForMap("User.select", Collections.emptyMap(), "id"));
         Assert.assertNotNull(wrapper.queryForMap("User.select", Collections.emptyMap(), "id", "name"));
-        
+
         wrapper.delete("User.delete", 12345678L);
         {
             Exception error = null;
@@ -124,7 +119,7 @@ public class SqlMapClientWrapperTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         wrapper.startBatch();
         wrapper.executeBatch();
         wrapper.executeBatchDetailed();

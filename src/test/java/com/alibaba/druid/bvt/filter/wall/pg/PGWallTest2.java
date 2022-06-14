@@ -21,7 +21,7 @@ import org.junit.Assert;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
@@ -29,12 +29,12 @@ import org.junit.Assert;
 public class PGWallTest2 extends TestCase {
     public void test_wall() throws Exception {
         assertTrue(WallUtils.isValidatePostgres(//
-        "select u.id, (\n" +
-                "\tWITH RECURSIVE users AS (\n" +
-                "\t\tselect id from t_user limit 1\n" +
-                "\t) select id from users\n" +
-                ") from t_user u \n" +
-                "limit 1;"));
+                "select u.id, (\n" +
+                        "\tWITH RECURSIVE users AS (\n" +
+                        "\t\tselect id from t_user limit 1\n" +
+                        "\t) select id from users\n" +
+                        ") from t_user u \n" +
+                        "limit 1;"));
     }
 
     public void test_wall_2() throws Exception {

@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlAlterTableTest37 extends TestCase {
-
     public void test_alter_modify_clustered_by() throws Exception {
         String sql = "alter table new_ddl.ddl_test_1 clustered by (col1, col2)";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
@@ -31,6 +30,6 @@ public class MySqlAlterTableTest37 extends TestCase {
         SQLStatement stmt = stmtList.get(0);
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("ALTER TABLE new_ddl.ddl_test_1\n"
-                     + "\tCLUSTERED BY col1, col2", output);
+                + "\tCLUSTERED BY col1, col2", output);
     }
 }

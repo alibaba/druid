@@ -28,23 +28,22 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleBlockTest5 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "declare   l_cnt number; "
-                     + //
-                     "begin   l_cnt := 0;"
-                     + //
-                     "   for c1 in (select id || '' id" +//
-                     "                from escrow_trade" + //
-                     "               where out_order_id in" + //
-                     "                  (select out_order_id from tab_ipay_out_order_ids)" + //
-                     "          ) " + //
-                     "  loop" + //
-                     "      update ipay_contract" + //
-                     "          set is_chargeback = 'N'" + //
-                     "          where out_ref = c1.id        and is_chargeback <> 'N';      l_cnt := l_cnt + 1;     if (mod(l_cnt, 200) = 0) then       commit;     end if;     dbms_application_info.set_client_info(l_cnt || ' rows updated!');   end loop;    commit; exception   when others then     raise;"
-                     + "     rollback; " + //
-                     "end;;";
+                + //
+                "begin   l_cnt := 0;"
+                + //
+                "   for c1 in (select id || '' id" +//
+                "                from escrow_trade" + //
+                "               where out_order_id in" + //
+                "                  (select out_order_id from tab_ipay_out_order_ids)" + //
+                "          ) " + //
+                "  loop" + //
+                "      update ipay_contract" + //
+                "          set is_chargeback = 'N'" + //
+                "          where out_ref = c1.id        and is_chargeback <> 'N';      l_cnt := l_cnt + 1;     if (mod(l_cnt, 200) = 0) then       commit;     end if;     dbms_application_info.set_client_info(l_cnt || ' rows updated!');   end loop;    commit; exception   when others then     raise;"
+                + "     rollback; " + //
+                "end;;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -65,17 +64,17 @@ public class OracleBlockTest5 extends OracleTest {
 
         Assert.assertEquals(3, visitor.getTables().size());
 
-         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("escrow_trade")));
-         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab_ipay_out_order_ids")));
-         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ipay_contract")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("escrow_trade")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab_ipay_out_order_ids")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ipay_contract")));
 
         Assert.assertEquals(5, visitor.getColumns().size());
         Assert.assertEquals(3, visitor.getConditions().size());
 
-         Assert.assertTrue(visitor.containsColumn("escrow_trade", "id"));
-         Assert.assertTrue(visitor.containsColumn("escrow_trade", "out_order_id"));
-         Assert.assertTrue(visitor.containsColumn("tab_ipay_out_order_ids", "out_order_id"));
-         Assert.assertTrue(visitor.containsColumn("ipay_contract", "is_chargeback"));
-         Assert.assertTrue(visitor.containsColumn("ipay_contract", "out_ref"));
+        Assert.assertTrue(visitor.containsColumn("escrow_trade", "id"));
+        Assert.assertTrue(visitor.containsColumn("escrow_trade", "out_order_id"));
+        Assert.assertTrue(visitor.containsColumn("tab_ipay_out_order_ids", "out_order_id"));
+        Assert.assertTrue(visitor.containsColumn("ipay_contract", "is_chargeback"));
+        Assert.assertTrue(visitor.containsColumn("ipay_contract", "out_ref"));
     }
 }

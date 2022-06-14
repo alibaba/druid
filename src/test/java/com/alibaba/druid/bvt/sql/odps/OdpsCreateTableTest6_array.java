@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OdpsCreateTableTest6_array extends TestCase {
-
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "CREATE TABLE src_thrift\n" +
@@ -40,8 +39,6 @@ public class OdpsCreateTableTest6_array extends TestCase {
                 "    --unionField2 PropValueUnion,\n" +
                 "    -- unionField3 PropValueUnion\n" +
                 ");";//
-
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
@@ -83,6 +80,5 @@ public class OdpsCreateTableTest6_array extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 
 }

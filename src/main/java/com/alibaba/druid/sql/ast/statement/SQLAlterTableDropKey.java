@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableDropKey extends SQLObjectImpl implements SQLAlterTableItem {
-
     private SQLName keyName;
 
     public SQLName getKeyName() {
@@ -33,7 +32,7 @@ public class SQLAlterTableDropKey extends SQLObjectImpl implements SQLAlterTable
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if(visitor.visit(this)) {
+        if (visitor.visit(this)) {
             acceptChild(visitor, keyName);
         }
         visitor.endVisit(this);

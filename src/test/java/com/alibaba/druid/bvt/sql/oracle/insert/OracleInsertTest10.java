@@ -28,10 +28,9 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleInsertTest10 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO departments" //
-                     + "   VALUES (280, 'Recreation', 121, 1700);";
+                + "   VALUES (280, 'Recreation', 121, 1700);";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -42,7 +41,7 @@ public class OracleInsertTest10 extends OracleTest {
 
         Assert.assertEquals("INSERT INTO departments\n" +
                         "VALUES (280, 'Recreation', 121, 1700);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

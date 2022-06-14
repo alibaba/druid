@@ -25,11 +25,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest49 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "select * from tab1 t " //
-                + " order by replace(to_char(t.SORTNUM), '0', '9') "; //
+                "select * from tab1 t " //
+                        + " order by replace(to_char(t.SORTNUM), '0', '9') "; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -54,8 +53,8 @@ public class OracleSelectTest49 extends OracleTest {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT *" //
-                            + "\nFROM tab1 t" //
-                            + "\nORDER BY replace(to_char(t.SORTNUM), '0', '9')", text);
+                + "\nFROM tab1 t" //
+                + "\nORDER BY replace(to_char(t.SORTNUM), '0', '9')", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

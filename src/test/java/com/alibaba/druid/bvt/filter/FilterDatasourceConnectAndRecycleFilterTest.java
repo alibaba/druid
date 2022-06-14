@@ -31,9 +31,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 
 public class FilterDatasourceConnectAndRecycleFilterTest extends TestCase {
-
-    TestFilter      filter     = new TestFilter();
-    List<Filter>    filterList = new ArrayList<Filter>();
+    TestFilter filter = new TestFilter();
+    List<Filter> filterList = new ArrayList<Filter>();
     private DruidDataSource dataSource = new DruidDataSource();
 
     protected void setUp() throws Exception {
@@ -41,13 +40,12 @@ public class FilterDatasourceConnectAndRecycleFilterTest extends TestCase {
         dataSource.setProxyFilters(filterList);
         dataSource.setUrl("jdbc:mock:");
     }
-    
+
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
     public void test() throws Exception {
-
         Assert.assertEquals(0, filter.getDataSourceConnectCount());
         Assert.assertEquals(0, filter.getDataSourceRecycleCount());
         Connection conn = dataSource.getConnection();
@@ -59,7 +57,6 @@ public class FilterDatasourceConnectAndRecycleFilterTest extends TestCase {
     }
 
     public static class TestFilter extends FilterAdapter {
-
         private AtomicLong dataSourceConnectCount = new AtomicLong();
         private AtomicLong dataSourceRecycleCount = new AtomicLong();
 
@@ -71,7 +68,7 @@ public class FilterDatasourceConnectAndRecycleFilterTest extends TestCase {
 
         @Override
         public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource,
-                                                        long maxWaitMillis) throws SQLException {
+                                                              long maxWaitMillis) throws SQLException {
             dataSourceConnectCount.incrementAndGet();
             return chain.dataSource_connect(dataSource, maxWaitMillis);
         }

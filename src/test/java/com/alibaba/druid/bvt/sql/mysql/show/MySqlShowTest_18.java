@@ -25,25 +25,25 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlShowTest_18 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW HMSMETA s1.table1";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
-        MySqlShowHMSMetaStatement stmt = (MySqlShowHMSMetaStatement)stmtList.get(0);
-        
+        MySqlShowHMSMetaStatement stmt = (MySqlShowHMSMetaStatement) stmtList.get(0);
+
         String result = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SHOW HMSMETA s1.table1", result);
         assertEquals("s1", stmt.getSchema());
         assertEquals("table1", stmt.getTableName());
     }
+
     public void test_1() throws Exception {
         String sql = "SHOW HMSMETA table1";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
-        MySqlShowHMSMetaStatement stmt = (MySqlShowHMSMetaStatement)stmtList.get(0);
+        MySqlShowHMSMetaStatement stmt = (MySqlShowHMSMetaStatement) stmtList.get(0);
 
         String result = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SHOW HMSMETA table1", result);

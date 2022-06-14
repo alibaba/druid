@@ -16,9 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -29,13 +27,11 @@ public class SQLExplainAnalyzeStatement extends SQLStatementImpl {
     protected SQLSelect select;
 
     public SQLExplainAnalyzeStatement() {
-
     }
 
     public SQLExplainAnalyzeStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
-
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

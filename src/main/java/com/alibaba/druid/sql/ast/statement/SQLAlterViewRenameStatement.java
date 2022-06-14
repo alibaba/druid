@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterViewRenameStatement extends SQLStatementImpl implements SQLAlterStatement {
-
     private SQLName name;
     private SQLName to;
 

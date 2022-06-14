@@ -23,16 +23,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class CountTest extends TestCase {
-
     public void test_isTrue() throws Exception {
-
         Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) > 0")));
         Assert.assertEquals(Boolean.TRUE,
-                            WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) >= 0")));
+                WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) >= 0")));
         Assert.assertEquals(Boolean.FALSE,
-                            WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) < 0")));
+                WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) < 0")));
         Assert.assertEquals(Boolean.TRUE,
-                            WallVisitorUtils.getValue(SQLUtils.toSQLExpr("NOT (select count(*) from t) < 0")));
+                WallVisitorUtils.getValue(SQLUtils.toSQLExpr("NOT (select count(*) from t) < 0")));
 
         //
     }

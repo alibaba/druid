@@ -15,41 +15,26 @@
  */
 package com.alibaba.druid.util.jdbc;
 
+import com.alibaba.druid.mock.MockParameterMetaData;
+import com.alibaba.druid.mock.MockResultSetMetaData;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.ParameterMetaData;
-import java.sql.PreparedStatement;
-import java.sql.Ref;
-import java.sql.ResultSetMetaData;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLXML;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import com.alibaba.druid.mock.MockParameterMetaData;
-import com.alibaba.druid.mock.MockResultSetMetaData;
-
 public abstract class PreparedStatementBase extends StatementBase implements PreparedStatement {
+    private List<Object> parameters = new ArrayList<Object>();
 
-    private List<Object>          parameters        = new ArrayList<Object>();
-
-    private MockParameterMetaData metadata          = new MockParameterMetaData();
+    private MockParameterMetaData metadata = new MockParameterMetaData();
 
     private MockResultSetMetaData resultSetMetaData = new MockResultSetMetaData();
 
-    public PreparedStatementBase(Connection connection){
+    public PreparedStatementBase(Connection connection) {
         super(connection);
     }
 

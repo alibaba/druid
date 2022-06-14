@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class OracleSchemaStatVisitorTest1 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select a.name, b.name FROM users a, usergroups b on a.groupId = b.id";
 

@@ -36,7 +36,7 @@ public class PGSelectTest62_json extends TestCase {
         assertEquals("SELECT array_to_string(array(\n" +
                 "\t\tSELECT jsonb_array_elements('[{\"aa\":\"123\",\"bb\":\"123\"},{\"aa\":\"12356\",\"bb\":\"12356\"}]') ->> 'aa'\n" +
                 "\t), ',') AS aa", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select array_to_string(array(\n" +
                 "\t\tselect jsonb_array_elements('[{\"aa\":\"123\",\"bb\":\"123\"},{\"aa\":\"12356\",\"bb\":\"12356\"}]') ->> 'aa'\n" +
                 "\t), ',') as aa", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

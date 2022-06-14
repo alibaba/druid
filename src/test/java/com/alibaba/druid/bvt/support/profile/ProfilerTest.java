@@ -8,7 +8,6 @@ import com.alibaba.druid.support.profile.ProfileEntryReqStat;
 import com.alibaba.druid.support.profile.Profiler;
 
 public class ProfilerTest extends TestCase {
-
     public void test_profile() throws Exception {
         for (int i = 0; i < 10; ++i) {
             req();
@@ -28,15 +27,15 @@ public class ProfilerTest extends TestCase {
 
         {
             ProfileEntryReqStat stat = Profiler.getStatsMap().get(new ProfileEntryKey("/", "com.xxx.a(int)",
-                                                                                      Profiler.PROFILE_TYPE_SPRING));
+                    Profiler.PROFILE_TYPE_SPRING));
             Assert.assertEquals(100, stat.getExecuteCount());
             Assert.assertEquals(100, stat.getExecuteTimeNanos());
         }
 
         {
             ProfileEntryReqStat stat = Profiler.getStatsMap().get(new ProfileEntryKey("com.xxx.a(int)",
-                                                                                      "com.xxx.b(int)",
-                                                                                      Profiler.PROFILE_TYPE_SPRING));
+                    "com.xxx.b(int)",
+                    Profiler.PROFILE_TYPE_SPRING));
             Assert.assertEquals(1000 * 100, stat.getExecuteCount());
             Assert.assertEquals(1000 * 100, stat.getExecuteTimeNanos());
         }

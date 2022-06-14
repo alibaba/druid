@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest21 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT DISTINCT(type) FROM dbmis2_databases";
 
@@ -48,20 +47,20 @@ public class PGSelectTest21 extends PGTest {
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getTables().size());
     }
-    
+
     public void test_1() throws Exception {
-    	String sql = "with a(a1,b1) as (select * from b) select * from a";
+        String sql = "with a(a1,b1) as (select * from b) select * from a";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 //        print(statementList);
-        
+
         assertTrue(statemen instanceof PGSelectStatement);
-        assertEquals(1, ((PGSelectStatement)statemen).getSelect().getWithSubQuery().getEntries().size());
+        assertEquals(1, ((PGSelectStatement) statemen).getSelect().getWithSubQuery().getEntries().size());
         StringBuffer sb = new StringBuffer();
-        String alias = ((PGSelectStatement)statemen).getSelect().getWithSubQuery().getEntries().get(0).getAlias();
+        String alias = ((PGSelectStatement) statemen).getSelect().getWithSubQuery().getEntries().get(0).getAlias();
         assertEquals("a", alias);
-        assertEquals(2, ((PGSelectStatement)statemen).getSelect().getWithSubQuery().getEntries().get(0).getColumns().size());
+        assertEquals(2, ((PGSelectStatement) statemen).getSelect().getWithSubQuery().getEntries().get(0).getColumns().size());
     }
 }

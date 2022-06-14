@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SQLServerSelectTest25 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = //
                 "SELECT A.value FROM A oost LEFT JOIN B oo WITH (NOLOCK) ON oost.order_id = oo.id"; //

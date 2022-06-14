@@ -15,25 +15,6 @@
  */
 package com.alibaba.druid.proxy;
 
-import java.lang.management.ManagementFactory;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.DriverPropertyInfo;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterManager;
@@ -47,35 +28,48 @@ import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+import java.lang.management.ManagementFactory;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.sql.*;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
+
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDriver implements Driver, DruidDriverMBean {
+    private static Log LOG; // lazy init
 
-    private static Log                                              LOG; // lazy init
+    private static final DruidDriver instance = new DruidDriver();
 
-    private final static DruidDriver                                instance                 = new DruidDriver();
+    private static final ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources = new ConcurrentHashMap<String, DataSourceProxyImpl>(16, 0.75f, 1);
+    private static final AtomicInteger dataSourceIdSeed = new AtomicInteger(0);
+    private static final AtomicInteger sqlStatIdSeed = new AtomicInteger(0);
 
-    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>(16, 0.75f, 1);
-    private final static AtomicInteger                              dataSourceIdSeed         = new AtomicInteger(0);
-    private final static AtomicInteger                              sqlStatIdSeed            = new AtomicInteger(0);
+    public static final String DEFAULT_PREFIX = "jdbc:wrap-jdbc:";
+    public static final String DRIVER_PREFIX = "driver=";
+    public static final String PASSWORD_CALLBACK_PREFIX = "passwordCallback=";
+    public static final String NAME_PREFIX = "name=";
+    public static final String JMX_PREFIX = "jmx=";
+    public static final String FILTERS_PREFIX = "filters=";
 
-    public final static String                                      DEFAULT_PREFIX           = "jdbc:wrap-jdbc:";
-    public final static String                                      DRIVER_PREFIX            = "driver=";
-    public final static String                                      PASSWORD_CALLBACK_PREFIX = "passwordCallback=";
-    public final static String                                      NAME_PREFIX              = "name=";
-    public final static String                                      JMX_PREFIX               = "jmx=";
-    public final static String                                      FILTERS_PREFIX           = "filters=";
+    private final AtomicLong connectCount = new AtomicLong(0);
 
-    private final AtomicLong                                        connectCount             = new AtomicLong(0);
+    private String acceptPrefix = DEFAULT_PREFIX;
 
-    private String                                                  acceptPrefix             = DEFAULT_PREFIX;
+    private int majorVersion = 4;
 
-    private int                                                     majorVersion             = 4;
+    private int minorVersion;
 
-    private int                                                     minorVersion             = 0;
-
-    private final static String                                     MBEAN_NAME               = "com.alibaba.druid:type=DruidDriver";
+    private static final String MBEAN_NAME = "com.alibaba.druid:type=DruidDriver";
 
     static {
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -110,15 +104,14 @@ public class DruidDriver implements Driver, DruidDriverMBean {
             if (LOG == null) {
                 LOG = LogFactory.getLog(DruidDriver.class);
             }
-            
+
             LOG.error("registerDriver error", e);
         }
 
         return false;
     }
 
-    public DruidDriver(){
-
+    public DruidDriver() {
     }
 
     public static DruidDriver getInstance() {
@@ -162,7 +155,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     /**
      * 参数定义： com.alibaba.druid.log.LogFilter=filter com.alibaba.druid.log.LogFilter.p1=prop-value
      * com.alibaba.druid.log.LogFilter.p2=prop-value
-     * 
+     *
      * @param url
      * @return
      * @throws SQLException

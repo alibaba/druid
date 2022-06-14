@@ -28,16 +28,15 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_POSITION extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select a.rule_id, " + //
-                     "b.object_id, " + //
-                     "a.user_nick, " + //
-                     "SUBSTRING(b.content, POSITION('bizOrderId' IN b.content), 30) as dingdanhao, " + //
-                     "SUBSTRING(b.content, POSITION('loginIn7Days' IN b.content), 88) as shengdajieguo, " + //
-                     "a.action_time " + //
-                     "from ctu_scheme_0025 a, " + //
-                     "ctu_scheme_detail_0025 b";
+                "b.object_id, " + //
+                "a.user_nick, " + //
+                "SUBSTRING(b.content, POSITION('bizOrderId' IN b.content), 30) as dingdanhao, " + //
+                "SUBSTRING(b.content, POSITION('loginIn7Days' IN b.content), 88) as shengdajieguo, " + //
+                "a.action_time " + //
+                "from ctu_scheme_0025 a, " + //
+                "ctu_scheme_detail_0025 b";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

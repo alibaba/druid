@@ -41,7 +41,6 @@ public class MySqlParameterizedOutputVisitorTest_50_orderby extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
                 "ORDER BY 1", psql);

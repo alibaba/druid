@@ -18,7 +18,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterExecErrorTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -28,16 +27,15 @@ public class StatFilterExecErrorTest extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql)
-                                                                                                                 throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
 
             @Override
             public ResultSetProxy preparedStatement_executeQuery(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                                     throws SQLException {
+                    throws SQLException {
                 throw new SQLException();
             }
         });
@@ -62,7 +60,6 @@ public class StatFilterExecErrorTest extends TestCase {
         try {
             stmt.executeQuery();
         } catch (SQLException eror) {
-
         } finally {
             JdbcUtils.close(stmt);
             JdbcUtils.close(conn);

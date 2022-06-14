@@ -31,7 +31,6 @@ import java.io.Reader;
 import java.util.List;
 
 public class HiveResourceTest extends TestCase {
-
     public void test_0() throws Exception {
         exec_test("bvt/parser/hive-0.txt");
     }
@@ -87,7 +86,7 @@ public class HiveResourceTest extends TestCase {
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
         String expect = null;
-        
+
         if (items.length > 1) {
             expect = items[1].trim();
             if (expect != null) {
@@ -117,7 +116,5 @@ public class HiveResourceTest extends TestCase {
 //        System.out.println("---------------------------");
         System.out.println(SQLUtils.toHiveString(stmt));
     }
-
-
 
 }

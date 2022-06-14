@@ -22,12 +22,11 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 public class MySqlShowTest_13_help extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW HELP";
 
         SQLStatement stmt = SQLUtils.parseStatements(sql, DbType.mysql).get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
         assertEquals("SHOW HELP", result);
 

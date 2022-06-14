@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_comma_src extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from t1, t2, t3";
 
@@ -39,8 +38,8 @@ public class MySqlSelectTest_comma_src extends MysqlTest {
 
         SQLStatement stmt = statementList.get(0);
 
-        SQLSelect select = ((SQLSelectStatement)stmt).getSelect();
-        SQLTableSource tableSource = ((SQLSelectQueryBlock)select.getQuery()).getFrom();
+        SQLSelect select = ((SQLSelectStatement) stmt).getSelect();
+        SQLTableSource tableSource = ((SQLSelectQueryBlock) select.getQuery()).getFrom();
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
@@ -49,17 +48,17 @@ public class MySqlSelectTest_comma_src extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        Assert.assertEquals(1, visitor.getTables().size());
 //        Assert.assertEquals(1, visitor.getColumns().size());
 //        Assert.assertEquals(0, visitor.getConditions().size());
 //        Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT *\n" +
                             "FROM t1, t2, t3", //
-                                output);
+                    output);
         }
 
     }

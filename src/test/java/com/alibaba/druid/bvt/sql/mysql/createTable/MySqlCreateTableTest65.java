@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest65 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create table t (c char(10) ,unique key a using btree (c(1))) charset = utf8mb4 engine=heap;";

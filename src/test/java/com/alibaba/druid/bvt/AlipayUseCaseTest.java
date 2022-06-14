@@ -27,7 +27,6 @@ import org.junit.Test;
  * @see
  */
 public class AlipayUseCaseTest {
-
     /**
      * @throws java.lang.Exception
      */

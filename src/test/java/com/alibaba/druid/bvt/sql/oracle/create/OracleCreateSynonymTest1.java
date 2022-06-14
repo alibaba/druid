@@ -24,10 +24,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateSynonymTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE PUBLIC SYNONYM customers FOR oe.customers;";
+                "CREATE PUBLIC SYNONYM customers FOR oe.customers;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

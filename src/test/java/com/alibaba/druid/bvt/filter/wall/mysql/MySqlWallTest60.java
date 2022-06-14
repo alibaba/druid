@@ -24,19 +24,18 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest60 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
         Assert.assertTrue(provider.checkValid(//
-        "show create table `mysql`.`help_relation`"));
+                "show create table `mysql`.`help_relation`"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

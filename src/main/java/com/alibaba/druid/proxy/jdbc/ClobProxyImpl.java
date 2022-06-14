@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
+import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.filter.FilterChainImpl;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -22,24 +25,20 @@ import java.io.Writer;
 import java.sql.Clob;
 import java.sql.SQLException;
 
-import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.filter.FilterChainImpl;
-
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class ClobProxyImpl implements ClobProxy {
-
-    protected final Clob            clob;
+    protected final Clob clob;
     protected final ConnectionProxy connection;
 
     protected final DataSourceProxy dataSource;
 
-    public ClobProxyImpl(DataSourceProxy dataSource, ConnectionProxy connection, Clob clob){
+    public ClobProxyImpl(DataSourceProxy dataSource, ConnectionProxy connection, Clob clob) {
         if (clob == null) {
             throw new IllegalArgumentException("clob is null");
         }
-        
+
         this.dataSource = dataSource;
         this.connection = connection;
         this.clob = clob;

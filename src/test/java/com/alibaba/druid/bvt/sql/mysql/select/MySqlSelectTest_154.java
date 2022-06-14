@@ -12,7 +12,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_154 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT 1 is NULL,(~(NULLIF(1,1 ))) \n" +
                 "FROM corona_select_one_db_one_tb AS layer_0_left_tb \n" +
@@ -22,7 +21,7 @@ public class MySqlSelectTest_154 extends MysqlTest {
                 "  NOT IN (layer_0_left_tb.decimal_test,layer_0_right_tb.tinyint_test,layer_0_left_tb.integer_test, RPAD(NULL,0,layer_0_left_tb.year_test))";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

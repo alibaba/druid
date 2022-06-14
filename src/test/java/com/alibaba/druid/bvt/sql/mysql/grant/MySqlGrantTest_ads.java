@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlGrantTest_ads extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT SELECT ON TABLE * TO 'ALIYUN$ads_user1@aliyun.com'";
 
@@ -38,10 +37,10 @@ public class MySqlGrantTest_ads extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("GRANT SELECT ON TABLE * TO 'ALIYUN$ads_user1@aliyun.com'", //
-                            output);
+                output);
 
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
@@ -175,8 +174,6 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
-
-
     public void test_7() throws Exception {
         String sql = "GRANT ALL ON sysdb.* TO '%'@'192.168.1.2'";
 
@@ -197,7 +194,6 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
     }
-
 
     public void test_8() throws Exception {
         String sql = "GRANT ALL ON sysdb.* TO '%'@'192.168.1.2'";
@@ -250,9 +246,8 @@ public class MySqlGrantTest_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         SQLExpr user0 = stmt.getUsers().get(0);
-        assertEquals(user0.toString().split("'@'")[0].replaceAll("'",""), "%");
+        assertEquals(user0.toString().split("'@'")[0].replaceAll("'", ""), "%");
         assertEquals(user0.toString().split("'@'")[1].replaceAll("'", ""), "192.168.1/20");
 
         assertEquals("ALIYUN$ads_user1@aliyun.com", stmt.getUsers().get(1).toString().split("'@'")[0].replaceAll("'", ""));
@@ -279,7 +274,6 @@ public class MySqlGrantTest_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("ALIYUN$ads_user1@aliyun.com", stmt.getUsers().get(0).toString().split("'@'")[0].replaceAll("'", ""));
         assertEquals(1, stmt.getUsers().get(0).toString().split("'@'").length);
 
@@ -295,7 +289,6 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
 
     }
-
 
     public void test_doc_0() throws Exception {
         String sql = "GRANT describe, select ON db_name.table_group_name TO 'ALIYUN$account_name'@'%';";
@@ -348,6 +341,5 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals("GRANT DESCRIBE, SELECT(col1, col2) ON db_name.table_name TO 'ALIYUN$account_name';", //
                 stmt.toString());
     }
-
 
 }

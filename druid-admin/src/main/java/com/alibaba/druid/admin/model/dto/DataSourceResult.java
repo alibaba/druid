@@ -1,6 +1,6 @@
 package com.alibaba.druid.admin.model.dto;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class DataSourceResult {
-
     @JSONField(name = "ResultCode")
     private int ResultCode;
     @JSONField(name = "Content")
@@ -22,7 +21,6 @@ public class DataSourceResult {
     @NoArgsConstructor
     @Data
     public static class ContentBean {
-
         private String serviceId;
 
         @JSONField(name = "Identity")

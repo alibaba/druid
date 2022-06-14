@@ -1,6 +1,6 @@
 package com.alibaba.druid.admin.model.dto;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class WallResult {
-
     @JSONField(name = "ResultCode")
     private int ResultCode;
     @JSONField(name = "Content")
@@ -54,7 +53,6 @@ public class WallResult {
         @NoArgsConstructor
         @Data
         public static class TablesBean {
-
             @JSONField(name = "name")
             private String name;
 

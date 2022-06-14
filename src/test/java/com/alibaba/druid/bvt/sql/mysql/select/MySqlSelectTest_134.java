@@ -10,7 +10,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_134 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "/*TDDL:RETRY_ERROR_SQL_ON_OLD_SERVER=FALSE*/\n" +
                 "select   (('b')not between('a')AND ('x-3')    )\n" +
@@ -18,7 +17,7 @@ public class MySqlSelectTest_134 extends MysqlTest {
                 "from select_base_two_one_db_one_tb";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -34,7 +33,7 @@ public class MySqlSelectTest_134 extends MysqlTest {
         String sql = "SELECT HEX(WEIGHT_STRING(0x007fff LEVEL 1));";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -47,7 +46,7 @@ public class MySqlSelectTest_134 extends MysqlTest {
         String sql = "SELECT HEX(WEIGHT_STRING(0x007fff LEVEL 1 DESC));";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -60,7 +59,7 @@ public class MySqlSelectTest_134 extends MysqlTest {
         String sql = "SELECT HEX(WEIGHT_STRING(0x007fff LEVEL 2, 3, 5));";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -73,7 +72,7 @@ public class MySqlSelectTest_134 extends MysqlTest {
         String sql = "SELECT HEX(WEIGHT_STRING(0x007fff LEVEL 1 DESC REVERSE));";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

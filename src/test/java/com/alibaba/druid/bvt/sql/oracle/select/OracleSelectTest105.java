@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest105 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT gz, UTL_RAW.CAST_TO_RAW(gzname) AS gzname, dept\n" +
@@ -73,5 +72,5 @@ public class OracleSelectTest105 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
     }
 
-   
+
 }

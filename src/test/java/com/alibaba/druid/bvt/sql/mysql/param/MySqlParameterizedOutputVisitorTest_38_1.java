@@ -1,8 +1,7 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -10,6 +9,7 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson2.JSONWriter;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -45,10 +45,10 @@ public class MySqlParameterizedOutputVisitorTest_38_1 extends TestCase {
 
         String psql = out.toString();
         System.out.println(psql);
-        String params_json = JSONArray.toJSONString(parameters, SerializerFeature.WriteClassName);
+        String params_json = JSON.toJSONString(parameters, JSONWriter.Feature.WriteClassName);
         System.out.println(params_json);
         JSONArray jsonArray = JSON.parseArray(params_json);
-        System.out.println(JSONArray.toJSONString(jsonArray, SerializerFeature.WriteClassName));
+        System.out.println(JSON.toJSONString(jsonArray, JSONWriter.Feature.WriteClassName));
 
         String rsql = SQLUtils.toSQLString(SQLUtils.parseStatements(psql, dbType), dbType, jsonArray);
         System.out.println(rsql);

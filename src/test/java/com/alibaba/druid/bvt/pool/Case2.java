@@ -29,13 +29,11 @@ import com.alibaba.druid.util.JMXUtils;
 
 /**
  * 类Case2.java的实现描述：TODO 类实现描述
- * 
+ *
  * @author admin 2011-5-4 下午02:45:21
  */
 public class Case2 extends PoolTestCase {
-
     public void test_singleThread() throws Exception {
-
         Class.forName("com.alibaba.druid.mock.MockDriver");
 
         Properties properties = new Properties();

@@ -24,14 +24,13 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerSelectTest20 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = "SELECT First_Name + ' ' + Last Name FROM Employees ORDER BY First_Name OFFSET 10 ROWS;"; //
 
         String expect = "SELECT First_Name + ' ' + Last AS Name" //
-                        + "\nFROM Employees" //
-                        + "\nORDER BY First_Name" //
-                        + "\nOFFSET 10 ROWS;";
+                + "\nFROM Employees" //
+                + "\nORDER BY First_Name" //
+                + "\nOFFSET 10 ROWS;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

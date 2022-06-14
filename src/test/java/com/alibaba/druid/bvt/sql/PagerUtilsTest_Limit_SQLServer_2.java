@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class PagerUtilsTest_Limit_SQLServer_2 extends TestCase {
-
     public void test_db2_union() throws Exception {
         String sql = "select * from t1 union select * from t2";
         String result = PagerUtils.limit(sql, JdbcConstants.SQL_SERVER, 0, 10);

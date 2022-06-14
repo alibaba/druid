@@ -23,14 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleFileSpecification extends OracleSQLObjectImpl {
+    private List<SQLExpr> fileNames = new ArrayList<SQLExpr>();
 
-    private List<SQLExpr> fileNames     = new ArrayList<SQLExpr>();
+    private SQLExpr size;
 
-    private SQLExpr       size;
+    private boolean autoExtendOff;
 
-    private boolean       autoExtendOff = false;
-
-    private SQLExpr       autoExtendOn;
+    private SQLExpr autoExtendOn;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

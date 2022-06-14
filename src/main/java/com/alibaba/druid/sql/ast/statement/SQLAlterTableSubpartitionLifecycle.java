@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -24,12 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableSubpartitionLifecycle extends SQLObjectImpl implements SQLAlterTableItem {
-
     private List<SQLIntegerExpr> partitionIds = new ArrayList<SQLIntegerExpr>();
     private List<SQLIntegerExpr> subpartitionLifeCycle = new ArrayList<SQLIntegerExpr>();
 
-    public SQLAlterTableSubpartitionLifecycle(){
-
+    public SQLAlterTableSubpartitionLifecycle() {
     }
 
     @Override

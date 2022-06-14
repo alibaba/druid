@@ -24,8 +24,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.mock.MockDriver;
 
 public class TestIdle3_Concurrent_MaxActive extends TestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -47,7 +46,6 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
     }
 
     public void test_idle2() throws Exception {
-
         // ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
         // new ObjectName("com.alibaba:type=DataSource"));
 
@@ -95,7 +93,6 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
 
         for (int i = 0; i < threadCount; ++i) {
             threads[i] = new Thread("thread-" + i) {
-
                 public void run() {
                     try {
                         startLatch.await();

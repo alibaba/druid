@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest11 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select \"xxx\"::varchar as xx from xxx;";
 

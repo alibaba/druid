@@ -1,7 +1,6 @@
 package com.alibaba.druid.bvt.sql.postgresql.expr;
 
 
-
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;

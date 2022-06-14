@@ -29,7 +29,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.OracleUtils;
 
 public class TestOraclePreparedStatement extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;
@@ -40,7 +39,7 @@ public class TestOraclePreparedStatement extends TestCase {
         // jdbcUrl = "jdbc:oracle:thin:@b.c.d.e:1521:ocnauto"; // error url
         user = "alibaba";
         password = "ccbuauto";
-        
+
         jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ointest3";
         user = "alibaba";
         password = "deYcR7facWSJtCuDpm2r";
@@ -63,7 +62,6 @@ public class TestOraclePreparedStatement extends TestCase {
     }
 
     public void test_0() throws Exception {
-
         Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
 
         OracleConnection oracleConn = (OracleConnection) conn;
@@ -89,32 +87,29 @@ public class TestOraclePreparedStatement extends TestCase {
         PreparedStatement stmt = conn.prepareStatement(SQL);
         oracleStmt = (OraclePreparedStatement) stmt;
         oracleStmt.setRowPrefetch(10);
- 
-        {
 
+        {
             stmt.setInt(1, 327);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
 
             rs.close();
 
             //oracleStmt.clearDefines();
         }
-        for (int i = 0; i < 10; ++i){
+        for (int i = 0; i < 10; ++i) {
             OracleUtils.enterImplicitCache(oracleStmt);
             OracleUtils.exitImplicitCacheToActive(oracleStmt);
             stmt.setInt(1, 327);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                
             }
-            
+
             rs.close();
-            
+
         }
-        
+
         oracleStmt.setRowPrefetch(1000);
         {
             stmt.setInt(1, 11);

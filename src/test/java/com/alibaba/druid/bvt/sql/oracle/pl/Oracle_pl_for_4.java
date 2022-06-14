@@ -24,30 +24,29 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_for_4 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
-				"  v_employees employees%ROWTYPE;\n" +
-				"  CURSOR c1 is SELECT * FROM employees;\n" +
-				"BEGIN\n" +
-				"  OPEN c1;\n" +
-				"  \n" +
-				"  -- Fetch entire row into v_employees record:\n" +
-				"  <<outer_loop>>\n" +
-				"  FOR i IN 1..10 LOOP\n" +
-				"    -- Process data here\n" +
-				"    FOR j IN 1..10 LOOP\n" +
-				"      FETCH c1 INTO v_employees;\n" +
-				"      CONTINUE outer_loop WHEN c1%NOTFOUND;\n" +
-				"      -- Process data here\n" +
-				"    END LOOP;\n" +
-				"  END LOOP outer_loop;\n" +
-				" \n" +
-				"  CLOSE c1;\n" +
-				"END;"; //
+                "  v_employees employees%ROWTYPE;\n" +
+                "  CURSOR c1 is SELECT * FROM employees;\n" +
+                "BEGIN\n" +
+                "  OPEN c1;\n" +
+                "  \n" +
+                "  -- Fetch entire row into v_employees record:\n" +
+                "  <<outer_loop>>\n" +
+                "  FOR i IN 1..10 LOOP\n" +
+                "    -- Process data here\n" +
+                "    FOR j IN 1..10 LOOP\n" +
+                "      FETCH c1 INTO v_employees;\n" +
+                "      CONTINUE outer_loop WHEN c1%NOTFOUND;\n" +
+                "      -- Process data here\n" +
+                "    END LOOP;\n" +
+                "  END LOOP outer_loop;\n" +
+                " \n" +
+                "  CLOSE c1;\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -71,50 +70,50 @@ public class Oracle_pl_for_4 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
-			System.out.println(output);
-			assertEquals("DECLARE\n" +
-							"\tv_employees employees%ROWTYPE;\n" +
-							"\tCURSOR c1 IS\n" +
-							"\t\tSELECT *\n" +
-							"\t\tFROM employees;\n" +
-							"BEGIN\n" +
-							"\tOPEN c1;\n" +
-							"\t<<outer_loop>>\n" +
-							"\tFOR i IN 1..10\n" +
-							"\tLOOP\n" +
-							"\t\tFOR j IN 1..10\n" +
-							"\t\tLOOP\n" +
-							"\t\t\tFETCH c1 INTO v_employees;\n" +
-							"\t\t\tCONTINUE outer_loop WHEN c1%NOTFOUND;\n" +
-							"\t\tEND LOOP;\n" +
-							"\tEND LOOP outer_loop;\n" +
-							"\tCLOSE c1;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("declare\n" +
-							"\tv_employees employees%ROWTYPE;\n" +
-							"\tcursor c1 is\n" +
-							"\t\tselect *\n" +
-							"\t\tfrom employees;\n" +
-							"begin\n" +
-							"\topen c1;\n" +
-							"\t<<outer_loop>>\n" +
-							"\tfor i in 1..10\n" +
-							"\tloop\n" +
-							"\t\tfor j in 1..10\n" +
-							"\t\tloop\n" +
-							"\t\t\tfetch c1 into v_employees;\n" +
-							"\t\t\tcontinue outer_loop when c1%NOTFOUND;\n" +
-							"\t\tend loop;\n" +
-							"\tend loop outer_loop;\n" +
-							"\tclose c1;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+            System.out.println(output);
+            assertEquals("DECLARE\n" +
+                            "\tv_employees employees%ROWTYPE;\n" +
+                            "\tCURSOR c1 IS\n" +
+                            "\t\tSELECT *\n" +
+                            "\t\tFROM employees;\n" +
+                            "BEGIN\n" +
+                            "\tOPEN c1;\n" +
+                            "\t<<outer_loop>>\n" +
+                            "\tFOR i IN 1..10\n" +
+                            "\tLOOP\n" +
+                            "\t\tFOR j IN 1..10\n" +
+                            "\t\tLOOP\n" +
+                            "\t\t\tFETCH c1 INTO v_employees;\n" +
+                            "\t\t\tCONTINUE outer_loop WHEN c1%NOTFOUND;\n" +
+                            "\t\tEND LOOP;\n" +
+                            "\tEND LOOP outer_loop;\n" +
+                            "\tCLOSE c1;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("declare\n" +
+                            "\tv_employees employees%ROWTYPE;\n" +
+                            "\tcursor c1 is\n" +
+                            "\t\tselect *\n" +
+                            "\t\tfrom employees;\n" +
+                            "begin\n" +
+                            "\topen c1;\n" +
+                            "\t<<outer_loop>>\n" +
+                            "\tfor i in 1..10\n" +
+                            "\tloop\n" +
+                            "\t\tfor j in 1..10\n" +
+                            "\t\tloop\n" +
+                            "\t\t\tfetch c1 into v_employees;\n" +
+                            "\t\t\tcontinue outer_loop when c1%NOTFOUND;\n" +
+                            "\t\tend loop;\n" +
+                            "\tend loop outer_loop;\n" +
+                            "\tclose c1;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

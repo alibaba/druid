@@ -20,10 +20,10 @@ import com.alibaba.druid.sql.ast.SQLName;
 import java.util.List;
 
 public interface SQLForeignKeyConstraint extends SQLConstraint, SQLTableElement, SQLTableConstraint {
-
     List<SQLName> getReferencingColumns();
 
     SQLExprTableSource getReferencedTable();
+
     SQLName getReferencedTableName();
 
     void setReferencedTableName(SQLName value);

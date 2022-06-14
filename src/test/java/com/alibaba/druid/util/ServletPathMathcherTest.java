@@ -22,7 +22,6 @@ import org.junit.Test;
 
 
 public class ServletPathMathcherTest {
-
     /**
      * PatternMatcher used in determining which paths to react to for a given request.
      */
@@ -30,8 +29,8 @@ public class ServletPathMathcherTest {
 
     @Test
     public void testStartsWithPattern() {
-        String[] bogusPatterns = { "/druid*", "/druid*/what*", "*/druid*" };
-        String[] bogusSources = { "/druid", "/druid/index.html", "/druid*/what/xyu" };
+        String[] bogusPatterns = {"/druid*", "/druid*/what*", "*/druid*"};
+        String[] bogusSources = {"/druid", "/druid/index.html", "/druid*/what/xyu"};
         boolean result = false;
         for (int i = 0; i < bogusSources.length; i++) {
             for (int j = 0; j < bogusPatterns.length; j++) {
@@ -48,11 +47,11 @@ public class ServletPathMathcherTest {
             result = false;
         }
     }
-    
+
     @Test
     public void testEndsWithPattern() {
-        String[] bogusPatterns = { "*.html", "*.ico", "*.css" };
-        String[] bogusSources = { "/index.html", "/favicon.ico", "/druid.css" };
+        String[] bogusPatterns = {"*.html", "*.ico", "*.css"};
+        String[] bogusSources = {"/index.html", "/favicon.ico", "/druid.css"};
         boolean result = false;
         for (int i = 0; i < bogusSources.length; i++) {
             for (int j = 0; j < bogusPatterns.length; j++) {
@@ -69,11 +68,11 @@ public class ServletPathMathcherTest {
             result = false;
         }
     }
-    
+
     @Test
     public void testEqualsPattern() {
-        String[] bogusPatterns = { "/index.html", "/favicon.ico", "/xyz" };
-        String[] bogusSources = { "/index.html", "/favicon.ico", "/xyz" };
+        String[] bogusPatterns = {"/index.html", "/favicon.ico", "/xyz"};
+        String[] bogusSources = {"/index.html", "/favicon.ico", "/xyz"};
         boolean result = false;
         for (int i = 0; i < bogusSources.length; i++) {
             for (int j = 0; j < bogusPatterns.length; j++) {
@@ -90,11 +89,11 @@ public class ServletPathMathcherTest {
             result = false;
         }
     }
-    
+
     @Test
     public void testPatternPriority() {
-        String[] bogusPatterns = { "*html*", "/favicon.ico*", "*html" };
-        String[] bogusSources = { "*html/ok?", "/favicon.ico/ok?", "/index.html" };
+        String[] bogusPatterns = {"*html*", "/favicon.ico*", "*html"};
+        String[] bogusSources = {"*html/ok?", "/favicon.ico/ok?", "/index.html"};
         boolean result = false;
         for (int i = 0; i < bogusSources.length; i++) {
             for (int j = 0; j < bogusPatterns.length; j++) {

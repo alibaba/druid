@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 
 public class MySqlSelectTest_250 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select concat(@@version, ' ', @@version_comment)";
 
@@ -31,7 +30,6 @@ public class MySqlSelectTest_250 extends MysqlTest {
 
         assertEquals("SELECT concat(@@version, ' ', @@version_comment)", stmt.toString());
     }
-
 
 
 }

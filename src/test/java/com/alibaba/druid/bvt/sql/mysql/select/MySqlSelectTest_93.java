@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import java.util.List;
 
 public class MySqlSelectTest_93 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select a as `a`, b `b`, c 'c', d \"d\" from t1";
 
@@ -77,21 +76,21 @@ public class MySqlSelectTest_93 extends MysqlTest {
 
     public void test_5() throws Exception {
         String sql = "INSERT INTO brand_crm_ship.imp_order_lock \n" + "            (tid, \n" + "             pid, \n"
-                     + "             __aid, \n" + "             pv) SELECT 121, \n" + "       48868196, \n"
-                     + "       t2.__aid, \n" + "       t3.pv \n" + "FROM   (SELECT DISTINCT __aid \n"
-                     + "        FROM   (SELECT DISTINCT \n"
-                     + "       brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.__aid \n"
-                     + "       AS __aid \n"
-                     + "       FROM   brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump \n"
-                     + "       WHERE \n" + "( \n" + "( \n"
-                     + "brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.label_list_interest IN ( '1142' )\n"
-                     + "AND brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.user_age IN \n" + "( \n"
-                     + "'4', '3', '2', '1' ) \n" + "AND \n"
-                     + "brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.label_list_basic IN ( '1605', '1603', '1604', '1563' ) )\n"
-                     + "AND NOT (brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.label_list_industry IN ( '1140' )) )) t1) t2\n"
-                     + "JOIN (SELECT __aid, \n" + "             pv \n"
-                     + "      FROM   brand_crm_ship.palgo_o2o_imp_px_log_sample_adzone_aid_merge \n"
-                     + "      WHERE  adzone_id = 48868196) t3 \n" + "  ON t3.__aid = t2.__aid ";
+                + "             __aid, \n" + "             pv) SELECT 121, \n" + "       48868196, \n"
+                + "       t2.__aid, \n" + "       t3.pv \n" + "FROM   (SELECT DISTINCT __aid \n"
+                + "        FROM   (SELECT DISTINCT \n"
+                + "       brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.__aid \n"
+                + "       AS __aid \n"
+                + "       FROM   brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump \n"
+                + "       WHERE \n" + "( \n" + "( \n"
+                + "brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.label_list_interest IN ( '1142' )\n"
+                + "AND brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.user_age IN \n" + "( \n"
+                + "'4', '3', '2', '1' ) \n" + "AND \n"
+                + "brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.label_list_basic IN ( '1605', '1603', '1604', '1563' ) )\n"
+                + "AND NOT (brand_crm_ship.alimama_ecpm_algo_brand_display_ad_label_out_dump.label_list_industry IN ( '1140' )) )) t1) t2\n"
+                + "JOIN (SELECT __aid, \n" + "             pv \n"
+                + "      FROM   brand_crm_ship.palgo_o2o_imp_px_log_sample_adzone_aid_merge \n"
+                + "      WHERE  adzone_id = 48868196) t3 \n" + "  ON t3.__aid = t2.__aid ";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql, SQLParserFeature.IgnoreNameQuotes);
         List<SQLStatement> statementList = parser.parseStatementList();

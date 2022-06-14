@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.pool.vendor;
 
+import com.alibaba.druid.pool.ExceptionSorter;
+
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-
 public class DB2ExceptionSorter implements ExceptionSorter {
-
     @Override
     public boolean isExceptionFatal(SQLException e) {
         if (e instanceof SQLRecoverableException) {
@@ -41,7 +40,7 @@ public class DB2ExceptionSorter implements ExceptionSorter {
             case -516: // THE DESCRIBE STATEMENT DOES NOT SPECIFY A PREPARED STATEMENT
             case -518: // THE EXECUTE STATEMENT DOES NOT IDENTIFY A VALID PREPARED STATEMENT
             case -525: // THE SQL STATEMENT CANNOT BE EXECUTED BECAUSE IT WAS IN ERROR AT BIND TIME FOR SECTION = sectno
-                       // PACKAGE = pkgname CONSISTENCY TOKEN = contoken
+                // PACKAGE = pkgname CONSISTENCY TOKEN = contoken
             case -909: // THE OBJECT HAS BEEN DELETED OR ALTERED
             case -918: // THE SQL STATEMENT CANNOT BE EXECUTED BECAUSE A CONNECTION HAS BEEN LOST
             case -924: // DB2 CONNECTION INTERNAL ERROR, function-code,return-code,reason-code
@@ -54,7 +53,6 @@ public class DB2ExceptionSorter implements ExceptionSorter {
 
     @Override
     public void configFromProperties(Properties properties) {
-
     }
 
 }

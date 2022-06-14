@@ -24,18 +24,17 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerSelectTest6 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "WITH DirReps(ManagerID, DirectReports) AS " + //
-                     "(" + //
-                     "    SELECT ManagerID, COUNT(*) " + //
-                     "    FROM HumanResources.Employee AS e" + //
-                     "    WHERE ManagerID IS NOT NULL" + //
-                     "    GROUP BY ManagerID" + //
-                     ")" + //
-                     "SELECT ManagerID, DirectReports " + //
-                     "FROM DirReps " + //
-                     "ORDER BY ManagerID;";
+                "(" + //
+                "    SELECT ManagerID, COUNT(*) " + //
+                "    FROM HumanResources.Employee AS e" + //
+                "    WHERE ManagerID IS NOT NULL" + //
+                "    GROUP BY ManagerID" + //
+                ")" + //
+                "SELECT ManagerID, DirectReports " + //
+                "FROM DirReps " + //
+                "ORDER BY ManagerID;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
@@ -43,14 +42,14 @@ public class SQLServerSelectTest6 extends TestCase {
         String text = TestUtils.outputSqlServer(stmt);
 
         assertEquals("WITH DirReps (ManagerID, DirectReports) AS (\n" +
-				"\t\tSELECT ManagerID, COUNT(*)\n" +
-				"\t\tFROM HumanResources.Employee e\n" +
-				"\t\tWHERE ManagerID IS NOT NULL\n" +
-				"\t\tGROUP BY ManagerID\n" +
-				"\t)\n" +
-				"SELECT ManagerID, DirectReports\n" +
-				"FROM DirReps\n" +
-				"ORDER BY ManagerID;", text);
+                "\t\tSELECT ManagerID, COUNT(*)\n" +
+                "\t\tFROM HumanResources.Employee e\n" +
+                "\t\tWHERE ManagerID IS NOT NULL\n" +
+                "\t\tGROUP BY ManagerID\n" +
+                "\t)\n" +
+                "SELECT ManagerID, DirectReports\n" +
+                "FROM DirReps\n" +
+                "ORDER BY ManagerID;", text);
 
 //        System.out.println(text);
     }

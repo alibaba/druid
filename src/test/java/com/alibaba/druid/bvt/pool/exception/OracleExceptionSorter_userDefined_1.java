@@ -14,7 +14,6 @@ import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleExceptionSorter_userDefined_1 extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -39,9 +38,9 @@ public class OracleExceptionSorter_userDefined_1 extends PoolTestCase {
 
     public void test_userDefinedErrorCodes() throws Exception {
         dataSource.init();
-        
+
         dataSource.setConnectionProperties("druid.oracle.fatalErrorCodes=1,2,3,a,");
-        
+
         OracleExceptionSorter sorter = (OracleExceptionSorter) dataSource.getExceptionSorter();
         Assert.assertEquals(3, sorter.getFatalErrorCodes().size());
         Assert.assertTrue(sorter.getFatalErrorCodes().contains(1));

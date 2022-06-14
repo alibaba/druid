@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class DateAndTimeValuesTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT '2008-12-31 23:59:59' + INTERVAL 1 SECOND;";
 

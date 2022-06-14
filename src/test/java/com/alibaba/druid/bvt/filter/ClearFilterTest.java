@@ -23,16 +23,16 @@ public class ClearFilterTest extends PoolTestCase {
         dataSource.setFilters("!encoding");
         Assert.assertEquals(StatFilter.class.getName(), dataSource.getFilterClassNames().get(0));
         Assert.assertEquals(EncodingConvertFilter.class.getName(), dataSource.getFilterClassNames().get(1));
-        
+
         dataSource.setConnectionProperties("druid.clearFiltersEnable=false");
         Assert.assertFalse(dataSource.isClearFiltersEnable());
-        
+
         dataSource.setConnectionProperties("druid.clearFiltersEnable=true");
         Assert.assertTrue(dataSource.isClearFiltersEnable());
-        
+
         dataSource.setConnectionProperties("druid.clearFiltersEnable=xx"); // no change
         Assert.assertTrue(dataSource.isClearFiltersEnable());
-        
+
         dataSource.close();
     }
 }

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateProcedureTest3 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "PROCEDURE PRC_DEALSMS IS\n" +
                 "  LV_HOUR NUMBER; --??\n" +
@@ -65,7 +64,7 @@ public class OracleCreateProcedureTest3 extends OracleTest {
         Assert.assertEquals(2, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getRelationships().size());
 
-         Assert.assertTrue(visitor.containsColumn("CRMSMS_MT_SEND", "SENDFLAG"));
-         Assert.assertTrue(visitor.containsColumn("CRMSMS_MT_SEND", "FLAGID"));
+        Assert.assertTrue(visitor.containsColumn("CRMSMS_MT_SEND", "SENDFLAG"));
+        Assert.assertTrue(visitor.containsColumn("CRMSMS_MT_SEND", "FLAGID"));
     }
 }

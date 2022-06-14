@@ -17,7 +17,6 @@ import java.util.List;
  * @Date 2019-05-22 11:11
  */
 public class MySqlGrantTest_37 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON `db\\_seszadjx\\_guej\\_0005`.* TO 'woaga4ym'@'%'";
 

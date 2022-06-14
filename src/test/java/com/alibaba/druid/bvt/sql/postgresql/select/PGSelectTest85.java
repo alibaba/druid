@@ -10,7 +10,7 @@ import java.util.List;
 public class PGSelectTest85
         extends TestCase {
     public void test_0() throws Exception {
-        String sql =  "select 1 from t_user u\n" +
+        String sql = "select 1 from t_user u\n" +
                 "join (\n" +
                 "\tWITH RECURSIVE users AS (\n" +
                 "\t\tselect id from t_user limit 1\n" +

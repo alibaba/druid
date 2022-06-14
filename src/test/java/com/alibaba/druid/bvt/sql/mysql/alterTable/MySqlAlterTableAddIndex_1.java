@@ -26,16 +26,15 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableAddIndex_1 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD UNIQUE INDEX `ix2` (`fid` ASC) ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        
+
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tADD UNIQUE INDEX `ix2` (`fid` ASC);", SQLUtils.toMySqlString(stmt));
-        
+                "\n\tADD UNIQUE INDEX `ix2` (`fid` ASC);", SQLUtils.toMySqlString(stmt));
+
         Assert.assertEquals("alter table `test`.`tb1`" + //
                 "\n\tadd unique index `ix2` (`fid` asc);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

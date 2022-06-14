@@ -24,7 +24,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_51_open extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select id as id,    gmt_create as gmtCreate,    gmt_modified as gmtModified,    name as name,    owner as owner,    type as type,    statement as statement,    datasource as datasource,    meta as meta,    param_file as paramFile,    sharable as sharable,    data_type as dataType,    status as status,    config as config,    project_id as projectId,    plugins as plugins,    field_compare as fieldCompare,    field_ext as fieldExt,    open as open   from tb_001     where id = 12569434";
 
@@ -41,12 +40,12 @@ public class MySqlSelectTest_51_open extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT id AS id, gmt_create AS gmtCreate, gmt_modified AS gmtModified, name AS name, owner AS owner\n" +
@@ -55,7 +54,7 @@ public class MySqlSelectTest_51_open extends MysqlTest {
                             "\t, plugins AS plugins, field_compare AS fieldCompare, field_ext AS fieldExt, open AS open\n" +
                             "FROM tb_001\n" +
                             "WHERE id = 12569434", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -65,7 +64,7 @@ public class MySqlSelectTest_51_open extends MysqlTest {
                             "\t, plugins as plugins, field_compare as fieldCompare, field_ext as fieldExt, open as open\n" +
                             "from tb_001\n" +
                             "where id = 12569434", //
-                                output);
+                    output);
         }
 
         {

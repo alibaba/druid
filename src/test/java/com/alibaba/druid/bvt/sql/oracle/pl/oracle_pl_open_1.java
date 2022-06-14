@@ -24,12 +24,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class oracle_pl_open_1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "OPEN cur_user(lv_batchid);"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -55,15 +54,15 @@ public class oracle_pl_open_1 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("OPEN cur_user(lv_batchid);", //
-					output);
-		}
-		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("open cur_user(lv_batchid);", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toOracleString(stmt);
+            assertEquals("OPEN cur_user(lv_batchid);", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("open cur_user(lv_batchid);", //
+                    output);
+        }
+    }
 }

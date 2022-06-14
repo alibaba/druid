@@ -18,22 +18,18 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;
 import java.util.List;
 
 public final class SQLAllExpr extends SQLExprImpl {
-
     public SQLSelect subQuery;
 
-    public SQLAllExpr(){
-
+    public SQLAllExpr() {
     }
 
-    public SQLAllExpr(SQLSelect select){
+    public SQLAllExpr(SQLSelect select) {
         setSubQuery(select);
     }
 

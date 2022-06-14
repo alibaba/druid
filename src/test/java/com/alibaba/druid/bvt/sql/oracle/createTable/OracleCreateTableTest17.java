@@ -27,25 +27,24 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest17 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "create table ACT_HI_PROCINST ( "//
-                + "ID_ NVARCHAR2(64) not null, "//
-                + "PROC_INST_ID_ NVARCHAR2(64) not null, "//
-                + "BUSINESS_KEY_ NVARCHAR2(255), "//
-                + "PROC_DEF_ID_ NVARCHAR2(64) not null, "//
-                + "START_TIME_ TIMESTAMP(6) not null, "//
-                + "END_TIME_ TIMESTAMP(6), "//
-                + "DURATION_ NUMBER(19,0), "//
-                + "START_USER_ID_ NVARCHAR2(255), "//
-                + "START_ACT_ID_ NVARCHAR2(255), "//
-                + "END_ACT_ID_ NVARCHAR2(255), "//
-                + "SUPER_PROCESS_INSTANCE_ID_ NVARCHAR2(64), "//
-                + "DELETE_REASON_ NVARCHAR2(2000), "//
-                + "primary key (ID_), "//
-                + "unique (PROC_INST_ID_) "//
-                + ")";
+                "create table ACT_HI_PROCINST ( "//
+                        + "ID_ NVARCHAR2(64) not null, "//
+                        + "PROC_INST_ID_ NVARCHAR2(64) not null, "//
+                        + "BUSINESS_KEY_ NVARCHAR2(255), "//
+                        + "PROC_DEF_ID_ NVARCHAR2(64) not null, "//
+                        + "START_TIME_ TIMESTAMP(6) not null, "//
+                        + "END_TIME_ TIMESTAMP(6), "//
+                        + "DURATION_ NUMBER(19,0), "//
+                        + "START_USER_ID_ NVARCHAR2(255), "//
+                        + "START_ACT_ID_ NVARCHAR2(255), "//
+                        + "END_ACT_ID_ NVARCHAR2(255), "//
+                        + "SUPER_PROCESS_INSTANCE_ID_ NVARCHAR2(64), "//
+                        + "DELETE_REASON_ NVARCHAR2(2000), "//
+                        + "primary key (ID_), "//
+                        + "unique (PROC_INST_ID_) "//
+                        + ")";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

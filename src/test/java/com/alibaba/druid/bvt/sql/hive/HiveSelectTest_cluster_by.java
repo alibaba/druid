@@ -25,9 +25,7 @@ import java.util.List;
 
 public class HiveSelectTest_cluster_by
         extends TestCase {
-
-    public void test_0() throws Exception
-    {
+    public void test_0() throws Exception {
         String sql = "SELECT a from x cluster by a;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);

@@ -33,40 +33,32 @@ public class DruidDriverTest extends TestCase {
         DruidDriver.getProxyDataSources().clear();
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
-    
+
     public static class PublicJdbcFilterAdapter extends FilterAdapter {
-
-        public PublicJdbcFilterAdapter(){
-
+        public PublicJdbcFilterAdapter() {
         }
 
     }
 
     static class PrivateJdbcFilterAdapter extends FilterAdapter {
-
-        private PrivateJdbcFilterAdapter(){
-
+        private PrivateJdbcFilterAdapter() {
         }
     }
 
     public static class InitErrorJdbcFilterAdapter extends FilterAdapter {
-
-        public InitErrorJdbcFilterAdapter() throws InstantiationException{
+        public InitErrorJdbcFilterAdapter() throws InstantiationException {
             throw new InstantiationException("init error");
         }
 
     }
 
     static class PrivateDriver extends MockDriver {
-
-        private PrivateDriver(){
-
+        private PrivateDriver() {
         }
     }
 
     public static class InitErrorDriver extends MockDriver {
-
-        public InitErrorDriver() throws InstantiationException{
+        public InitErrorDriver() throws InstantiationException {
             throw new InstantiationException("init error");
         }
     }
@@ -85,7 +77,7 @@ public class DruidDriverTest extends TestCase {
 
         Assert.assertEquals("oracle.jdbc.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
         Assert.assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver",
-                            JdbcUtils.getDriverClassName("jdbc:microsoft:"));
+                JdbcUtils.getDriverClassName("jdbc:microsoft:"));
         Assert.assertEquals("org.postgresql.Driver", JdbcUtils.getDriverClassName("jdbc:postgresql:xx"));
         Assert.assertEquals("net.sourceforge.jtds.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:jtds:"));
         {
@@ -139,45 +131,45 @@ public class DruidDriverTest extends TestCase {
 
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:filters=:name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                                                                            new Properties());
+                    new Properties());
             Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:filters=,:name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                                                                            new Properties());
+                    new Properties());
             Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:filters=,:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                                                                            new Properties());
+                    new Properties());
             Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:filters=,:name=:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                                                                            new Properties());
+                    new Properties());
             Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:driver=:filters=,:name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                                                                            new Properties());
+                    new Properties());
             Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                                                                            new Properties());
+                    new Properties());
             Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:filters="
-                                                                                    + PublicJdbcFilterAdapter.class.getName()
-                                                                                    + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                                                                            new Properties());
+                            + PublicJdbcFilterAdapter.class.getName()
+                            + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
+                    new Properties());
             Assert.assertEquals(1, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
@@ -185,8 +177,8 @@ public class DruidDriverTest extends TestCase {
             Exception error = null;
             try {
                 driver.connect("jdbc:wrap-jdbc:filters=" + PrivateJdbcFilterAdapter.class.getName()
-                                       + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                               new Properties()).close();
+                                + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
+                        new Properties()).close();
             } catch (Exception ex) {
                 error = ex;
             }
@@ -196,8 +188,8 @@ public class DruidDriverTest extends TestCase {
             Exception error = null;
             try {
                 driver.connect("jdbc:wrap-jdbc:filters=" + InitErrorJdbcFilterAdapter.class.getName()
-                                       + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                               new Properties()).close();
+                                + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
+                        new Properties()).close();
             } catch (Exception ex) {
                 error = ex;
             }

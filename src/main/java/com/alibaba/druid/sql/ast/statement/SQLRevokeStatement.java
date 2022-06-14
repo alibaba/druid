@@ -22,13 +22,11 @@ public class SQLRevokeStatement extends SQLPrivilegeStatement {
     private boolean grantOption;
 
     public SQLRevokeStatement() {
-
     }
 
-    public SQLRevokeStatement(DbType dbType){
+    public SQLRevokeStatement(DbType dbType) {
         super(dbType);
     }
-
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

@@ -23,7 +23,6 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 public class Issue_728 extends TestCase {
-
     public void test1() throws Exception {
         String sql = "select * from city_list where city_id = 3-1";
 

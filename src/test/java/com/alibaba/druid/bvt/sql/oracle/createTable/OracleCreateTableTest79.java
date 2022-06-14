@@ -23,7 +23,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest79 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
                 "CREATE TABLE rules (id NUMBER(38) NOT NULL PRIMARY KEY, name varchar(200), plugin_rule_key varchar(200) NOT NULL, plugin_config_key varchar(200), plugin_name varchar(255) NOT NULL, description source, priority NUMBER(38), cardinality varchar(10), parent_id NUMBER(38), status varchar(40), language varchar(20), created_at TIMESTAMP, updated_at TIMESTAMP) ";
@@ -49,7 +48,7 @@ public class OracleCreateTableTest79 extends OracleTest {
                         "\tcreated_at TIMESTAMP,\n" +
                         "\tupdated_at TIMESTAMP\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

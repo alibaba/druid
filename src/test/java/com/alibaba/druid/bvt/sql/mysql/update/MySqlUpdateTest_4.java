@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlUpdateTest_4 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "insert into darenai_stat_url SET user='nologin',ip='58.101.223.183',reffer='http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689',url='/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538',shopnick='零利润3232',time=NOW()";
 
@@ -60,18 +59,18 @@ public class MySqlUpdateTest_4 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("INSERT INTO darenai_stat_url (user, ip, reffer, url, shopnick"
-                    + "\n\t, time)"
-                    + "\nVALUES ('nologin', '58.101.223.183', 'http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689', '/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538', '零利润3232'"
-                    + "\n\t, NOW())", //
-                                output);
+                            + "\n\t, time)"
+                            + "\nVALUES ('nologin', '58.101.223.183', 'http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689', '/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538', '零利润3232'"
+                            + "\n\t, NOW())", //
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("insert into darenai_stat_url (user, ip, reffer, url, shopnick"
-                    + "\n\t, time)"
-                    + "\nvalues ('nologin', '58.101.223.183', 'http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689', '/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538', '零利润3232'"
-                    + "\n\t, NOW())", //
-                                output);
+                            + "\n\t, time)"
+                            + "\nvalues ('nologin', '58.101.223.183', 'http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689', '/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538', '零利润3232'"
+                            + "\n\t, NOW())", //
+                    output);
         }
     }
 }

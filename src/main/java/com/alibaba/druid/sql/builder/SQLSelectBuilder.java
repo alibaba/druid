@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.builder;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 public interface SQLSelectBuilder {
-
     SQLSelectStatement getSQLSelectStatement();
 
     SQLSelectBuilder select(String... column);

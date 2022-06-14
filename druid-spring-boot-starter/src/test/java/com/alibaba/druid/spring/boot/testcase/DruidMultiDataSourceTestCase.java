@@ -37,7 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = DemoApplication.class)
 @ActiveProfiles("multi-datasource")
 public class DruidMultiDataSourceTestCase {
-
     @Resource
     private DruidDataSource dataSourceOne;
     @Resource
@@ -45,7 +44,6 @@ public class DruidMultiDataSourceTestCase {
 
     @Test
     public void testDataSourceOne() throws SQLException {
-
         assertThat(dataSourceOne.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
         assertThat(dataSourceOne.getUsername()).isEqualTo("sa");
         assertThat(dataSourceOne.getPassword()).isEqualTo("sa");
@@ -58,7 +56,6 @@ public class DruidMultiDataSourceTestCase {
     }
     @Test
     public void testDataSourceTwo() throws SQLException {
-
         assertThat(dataSourceTwo.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
         assertThat(dataSourceTwo.getUsername()).isEqualTo("sa");
         assertThat(dataSourceTwo.getPassword()).isEqualTo("sa");

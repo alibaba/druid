@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 
 public class MySqlCreateDatabaseTest9_issue_3975
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create database user default charset=utf8 collate=utf8_general_ci;";
 

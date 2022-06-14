@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlSelectTest_202 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT CURRENT_DATE, CURRENT_TIMESTAMP, CURRENT_TIME, CURDATE, LOCALTIME, LOCALTIMESTAMP;";
 

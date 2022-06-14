@@ -25,7 +25,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateDatabaseTest8_drds extends MysqlTest {
-
     @Test
     public void test_0() throws Exception {
         String sql = "CREATE DATABASE IF NOT EXISTS d1 DEFAULT CHARACTER SET = utf8mb4 \n" +
@@ -44,6 +43,5 @@ public class MySqlCreateDatabaseTest8_drds extends MysqlTest {
                 "STORED BY (IP = '127.0.0.1', PORT = 3306, USER = 'root', PASSWORD = '123456'),\n" +
                 "\t(IP = '127.0.0.1', PORT = 3307, USER = 'root', PASSWORD = '123456');", output);
     }
-
 
 }

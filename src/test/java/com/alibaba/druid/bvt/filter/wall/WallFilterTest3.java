@@ -18,9 +18,8 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
 
 public class WallFilterTest3 extends TestCase {
-
     private DruidDataSource dataSource;
-    private WallFilter      wallFilter;
+    private WallFilter wallFilter;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -128,7 +127,6 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -141,11 +139,10 @@ public class WallFilterTest3 extends TestCase {
 
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
-                                                           ResultSet.CONCUR_READ_ONLY,
-                                                           ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.CONCUR_READ_ONLY,
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -160,7 +157,6 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql, new int[0]);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -175,7 +171,6 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql, new String[0]);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -190,7 +185,6 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareCall(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -205,7 +199,6 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareCall(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -218,10 +211,9 @@ public class WallFilterTest3 extends TestCase {
 
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareCall(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                                      ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -237,7 +229,6 @@ public class WallFilterTest3 extends TestCase {
             stmt.execute(sql, Statement.NO_GENERATED_KEYS);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -250,11 +241,10 @@ public class WallFilterTest3 extends TestCase {
 
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                                  ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             stmt.execute(sql, new int[0]);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -267,11 +257,10 @@ public class WallFilterTest3 extends TestCase {
 
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
-                                                  ResultSet.HOLD_CURSORS_OVER_COMMIT);
+                    ResultSet.HOLD_CURSORS_OVER_COMMIT);
             stmt.execute(sql, new String[0]);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();

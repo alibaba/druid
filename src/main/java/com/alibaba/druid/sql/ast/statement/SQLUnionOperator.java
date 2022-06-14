@@ -30,11 +30,11 @@ public enum SQLUnionOperator {
     DISTINCT("UNION DISTINCT");
 
     public final String name;
-    public final String name_lcase;
+    public final String nameLCase;
 
-    private SQLUnionOperator(String name){
+    private SQLUnionOperator(String name) {
         this.name = name;
-        this.name_lcase = name.toLowerCase();
+        this.nameLCase = name.toLowerCase();
     }
 
     public String toString() {

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import junit.framework.TestCase;
 
 public class OracleASTVisitorAdapterTest extends TestCase {
-
     public void test_adapter() throws Exception {
         OracleASTVisitorAdapter adapter = new OracleASTVisitorAdapter();
 

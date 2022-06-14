@@ -16,7 +16,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterReadBytesLengthTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -26,16 +25,15 @@ public class StatFilterReadBytesLengthTest extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                       throws SQLException {
+                    throws SQLException {
                 return new byte[6];
             }
 
             @Override
             public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, String columnIndex)
-                                                                                                          throws SQLException {
+                    throws SQLException {
                 return new byte[7];
             }
         });

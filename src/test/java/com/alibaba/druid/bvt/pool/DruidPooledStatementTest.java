@@ -18,7 +18,6 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 
 public class DruidPooledStatementTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -578,16 +577,16 @@ public class DruidPooledStatementTest extends TestCase {
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getDataSourceStat().getResultSetStat().getOpenCount());
     }
-    
+
     public void test_getUpdateCount_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getUpdateCount();
@@ -595,25 +594,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_getMoreResults_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getMoreResults();
@@ -621,25 +620,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_setFetchDirection_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.setFetchDirection(0);
@@ -647,25 +646,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_getFetchDirection_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getFetchDirection();
@@ -673,25 +672,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_setFetchSize_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.setFetchSize(0);
@@ -699,25 +698,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_getFetchSize_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getFetchSize();
@@ -725,25 +724,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_getResultSetConcurrency_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getResultSetConcurrency();
@@ -751,25 +750,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_getResultSetType_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getResultSetType();
@@ -777,25 +776,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_addBatch_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.addBatch("select 1");
@@ -803,25 +802,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_clearBatch_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.clearBatch();
@@ -829,25 +828,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_executeBatch_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.executeBatch();
@@ -855,25 +854,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_getMoreResults_error_1() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getMoreResults(0);
@@ -881,25 +880,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_getGeneratedKeys_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getGeneratedKeys();
@@ -907,25 +906,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_getResultSetHoldability_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.getResultSetHoldability();
@@ -933,25 +932,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(1, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_closeOnCompletion_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         DruidPooledStatement stmt = (DruidPooledStatement) conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.closeOnCompletion();
@@ -959,25 +958,25 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
-    
+
     public void test_isCloseOnCompletion_error() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         DruidPooledStatement stmt = (DruidPooledStatement) conn.createStatement();
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         Exception error = null;
         try {
             stmt.isCloseOnCompletion();
@@ -985,21 +984,20 @@ public class DruidPooledStatementTest extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
-        
+
         Assert.assertEquals(0, dataSource.getErrorCount());
-        
+
         stmt.close();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
 
     private final class ErrorFilter extends FilterAdapter {
-
         @Override
         public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql)
-                                                                                                             throws SQLException {
+                throws SQLException {
             throw new SQLException();
         }
 
@@ -1015,14 +1013,14 @@ public class DruidPooledStatementTest extends TestCase {
         }
 
         @Override
-        public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[])
-                                                                                                                        throws SQLException {
+        public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int[] columnIndexes)
+                throws SQLException {
             throw new SQLException();
         }
 
         @Override
         public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql,
-                                           String columnNames[]) throws SQLException {
+                                           String[] columnNames) throws SQLException {
             throw new SQLException();
         }
 
@@ -1033,19 +1031,19 @@ public class DruidPooledStatementTest extends TestCase {
 
         @Override
         public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys)
-                                                                                                                        throws SQLException {
+                throws SQLException {
             throw new SQLException();
         }
 
         @Override
-        public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[])
-                                                                                                                      throws SQLException {
+        public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int[] columnIndexes)
+                throws SQLException {
             throw new SQLException();
         }
 
         @Override
-        public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, String columnNames[])
-                                                                                                                       throws SQLException {
+        public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, String[] columnNames)
+                throws SQLException {
             throw new SQLException();
         }
 
@@ -1071,7 +1069,7 @@ public class DruidPooledStatementTest extends TestCase {
 
         @Override
         public void statement_setEscapeProcessing(FilterChain chain, StatementProxy statement, boolean enable)
-                                                                                                              throws SQLException {
+                throws SQLException {
             throw new SQLException();
         }
 
@@ -1082,7 +1080,7 @@ public class DruidPooledStatementTest extends TestCase {
 
         @Override
         public void statement_setQueryTimeout(FilterChain chain, StatementProxy statement, int seconds)
-                                                                                                       throws SQLException {
+                throws SQLException {
             throw new SQLException();
         }
 
@@ -1103,7 +1101,7 @@ public class DruidPooledStatementTest extends TestCase {
 
         @Override
         public void statement_setCursorName(FilterChain chain, StatementProxy statement, String name)
-                                                                                                     throws SQLException {
+                throws SQLException {
             throw new SQLException();
         }
 
@@ -1124,7 +1122,7 @@ public class DruidPooledStatementTest extends TestCase {
 
         @Override
         public void statement_setFetchDirection(FilterChain chain, StatementProxy statement, int value)
-                                                                                                       throws SQLException {
+                throws SQLException {
             throw new SQLException();
         }
 
@@ -1167,18 +1165,18 @@ public class DruidPooledStatementTest extends TestCase {
         public int[] statement_executeBatch(FilterChain chain, StatementProxy statement) throws SQLException {
             throw new SQLException();
         }
-        
+
         @Override
         public boolean statement_getMoreResults(FilterChain chain, StatementProxy statement, int current)
                 throws SQLException {
             throw new SQLException();
         }
-        
+
         @Override
         public ResultSetProxy statement_getGeneratedKeys(FilterChain chain, StatementProxy statement) throws SQLException {
             throw new SQLException();
         }
-        
+
         @Override
         public int statement_getResultSetHoldability(FilterChain chain, StatementProxy statement) throws SQLException {
             throw new SQLException();

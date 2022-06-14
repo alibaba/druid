@@ -16,7 +16,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import junit.framework.TestCase;
 
 public class MySqlASTVisitorAdapterTest extends TestCase {
-
     public void test_adapter() throws Exception {
         MySqlASTVisitorAdapter adapter = new MySqlASTVisitorAdapter();
         new SQLBooleanExpr().accept(adapter);

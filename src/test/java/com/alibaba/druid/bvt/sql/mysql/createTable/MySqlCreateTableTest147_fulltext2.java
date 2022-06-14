@@ -8,7 +8,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlCreateTableTest147_fulltext2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE aliyun_poc_db.tbl_custom_analyzer2 (\n" +
                 "  `id` int COMMENT '',\n" +
@@ -19,7 +18,7 @@ public class MySqlCreateTableTest147_fulltext2 extends TestCase {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

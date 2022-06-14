@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest21 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE UNIQUE INDEX \"FINANCE\".\"PK_POS_SEND_UNIQUE\" ON \"FINANCE\".\"POS_SEND_UNIQUE\" (\"SETTLE_ID\", \"PHASE\") REVERSE \n" +
                 "  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +

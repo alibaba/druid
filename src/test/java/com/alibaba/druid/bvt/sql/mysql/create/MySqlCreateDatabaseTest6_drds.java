@@ -25,7 +25,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateDatabaseTest6_drds extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE DATABASE d2 DEFAULT CHARACTER SET = gbk PASSWORD = 'd2_pwd' \n" +

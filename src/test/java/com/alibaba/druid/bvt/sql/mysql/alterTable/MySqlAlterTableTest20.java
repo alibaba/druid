@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest20 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE score1 ADD ( test3 int(11),test4 int(11))";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -31,7 +30,7 @@ public class MySqlAlterTableTest20 extends TestCase {
         parser.match(Token.EOF);
         Assert.assertEquals("ALTER TABLE score1"
                 + "\n\tADD COLUMN (test3 int(11), test4 int(11))", SQLUtils.toMySqlString(stmt));
-        
+
         Assert.assertEquals("alter table score1"
                 + "\n\tadd column (test3 int(11), test4 int(11))", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

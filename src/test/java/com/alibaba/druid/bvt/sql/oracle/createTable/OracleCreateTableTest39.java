@@ -27,17 +27,16 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest39 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE customers_demo ("
-        + "  customer_id number(6),"
-        + "  cust_first_name varchar2(20),"
-        + "  cust_last_name varchar2(20),"
-        + "  credit_limit number(9,2))"
-        + "PARTITION BY RANGE (credit_limit)"
-        + "INTERVAL (1000)"
-        + "(PARTITION p1 VALUES LESS THAN (5001));";
+                "CREATE TABLE customers_demo ("
+                        + "  customer_id number(6),"
+                        + "  cust_first_name varchar2(20),"
+                        + "  cust_last_name varchar2(20),"
+                        + "  credit_limit number(9,2))"
+                        + "PARTITION BY RANGE (credit_limit)"
+                        + "INTERVAL (1000)"
+                        + "(PARTITION p1 VALUES LESS THAN (5001));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -55,7 +54,7 @@ public class OracleCreateTableTest39 extends OracleTest {
                         "PARTITION BY RANGE (credit_limit) INTERVAL (1000) (\n" +
                         "\tPARTITION p1 VALUES LESS THAN (5001)\n" +
                         ");",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

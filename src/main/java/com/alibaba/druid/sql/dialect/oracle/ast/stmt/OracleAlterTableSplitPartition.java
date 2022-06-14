@@ -25,13 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleAlterTableSplitPartition extends OracleAlterTableItem {
+    private SQLName name;
+    private List<SQLExpr> at = new ArrayList<SQLExpr>();
+    private List<SQLExpr> values = new ArrayList<SQLExpr>();
+    private List<NestedTablePartitionSpec> into = new ArrayList<NestedTablePartitionSpec>();
 
-    private SQLName                        name;
-    private List<SQLExpr>                  at            = new ArrayList<SQLExpr>();
-    private List<SQLExpr>                  values        = new ArrayList<SQLExpr>();
-    private List<NestedTablePartitionSpec> into          = new ArrayList<NestedTablePartitionSpec>();
-
-    private UpdateIndexesClause            updateIndexes = null;
+    private UpdateIndexesClause updateIndexes;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -85,8 +84,7 @@ public class OracleAlterTableSplitPartition extends OracleAlterTableItem {
     }
 
     public static class NestedTablePartitionSpec extends OracleSQLObjectImpl {
-
-        private SQLName         partition;
+        private SQLName partition;
 
         private List<SQLObject> segmentAttributeItems = new ArrayList<SQLObject>();
 
@@ -118,14 +116,12 @@ public class OracleAlterTableSplitPartition extends OracleAlterTableItem {
     }
 
     public static class TableSpaceItem extends OracleSQLObjectImpl {
-
         private SQLName tablespace;
 
-        public TableSpaceItem(){
-
+        public TableSpaceItem() {
         }
 
-        public TableSpaceItem(SQLName tablespace){
+        public TableSpaceItem(SQLName tablespace) {
             this.tablespace = tablespace;
         }
 
@@ -147,7 +143,6 @@ public class OracleAlterTableSplitPartition extends OracleAlterTableItem {
     }
 
     public static class UpdateIndexesClause extends OracleSQLObjectImpl {
-
         private List<SQLObject> items = new ArrayList<SQLObject>();
 
         @Override

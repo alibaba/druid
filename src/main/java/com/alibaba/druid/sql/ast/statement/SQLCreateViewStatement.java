@@ -25,16 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreateStatement {
-
-    private boolean     orReplace   = false;
-    private boolean     force       = false;
+    private boolean orReplace;
+    private boolean force;
     // protected SQLName   name;
     protected SQLSelect subQuery;
-    protected boolean   ifNotExists = false;
+    protected boolean ifNotExists;
 
-    protected String    algorithm;
-    protected SQLName   definer;
-    protected String    sqlSecurity;
+    protected String algorithm;
+    protected SQLName definer;
+    protected String sqlSecurity;
 
     protected SQLExprTableSource tableSource;
 
@@ -56,11 +55,10 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
 
     private SQLBlockStatement script;
 
-    public SQLCreateViewStatement(){
-
+    public SQLCreateViewStatement() {
     }
 
-    public SQLCreateViewStatement(DbType dbType){
+    public SQLCreateViewStatement(DbType dbType) {
         super(dbType);
     }
 
@@ -172,7 +170,7 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
     public List<SQLTableElement> getColumns() {
         return columns;
     }
-    
+
     public void addColumn(SQLTableElement column) {
         if (column != null) {
             column.setParent(this);
@@ -275,12 +273,11 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
     }
 
     public static enum Level {
-                              CASCADED, LOCAL
+        CASCADED, LOCAL
     }
 
     public static class Column extends SQLObjectImpl {
-
-        private SQLExpr     expr;
+        private SQLExpr expr;
         private SQLCharExpr comment;
 
         public SQLExpr getExpr() {

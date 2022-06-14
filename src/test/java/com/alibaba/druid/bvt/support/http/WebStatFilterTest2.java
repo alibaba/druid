@@ -29,7 +29,6 @@ import com.alibaba.druid.support.http.WebStatFilter;
 import com.alibaba.druid.support.http.stat.WebAppStat;
 
 public class WebStatFilterTest2 extends TestCase {
-
     public void test_lru() throws Exception {
         MockServletContext servletContext = new MockServletContext();
 
@@ -54,49 +53,52 @@ public class WebStatFilterTest2 extends TestCase {
         // 第一个session请求2次
         {
             Assert.assertNull(appStat.getSessionStat(session_0.getId()));
-            
+
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpServletResponse response = new MockHttpServletResponse();
             MockFilterChain chain = new MockFilterChain() {
-
                 public void doFilter(javax.servlet.ServletRequest request, javax.servlet.ServletResponse response) {
                     ((MockHttpServletRequest) request).setSession(session_0);
-                };
+                }
+
+                ;
             };
 
             filter.doFilter(request, response, chain);
 
             Assert.assertEquals(1, appStat.getSessionStatDataList().size());
             Assert.assertEquals(1, appStat.getSessionStat(session_0.getId()).getRequestCount());
-            
+
             Assert.assertTrue(appStat.getSessionStat(session_0.getId()).getLastAccessTimeMillis() > 0);
         }
         {
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpServletResponse response = new MockHttpServletResponse();
             MockFilterChain chain = new MockFilterChain() {
-                
                 public void doFilter(javax.servlet.ServletRequest request, javax.servlet.ServletResponse response) {
                     ((MockHttpServletRequest) request).setSession(session_0);
-                };
+                }
+
+                ;
             };
-            
+
             filter.doFilter(request, response, chain);
-            
+
             Assert.assertEquals(1, appStat.getSessionStatDataList().size());
             Assert.assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
         }
-        
-        
+
+
         // 第2个sesion请求1次
         {
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpServletResponse response = new MockHttpServletResponse();
             MockFilterChain chain = new MockFilterChain() {
-
                 public void doFilter(javax.servlet.ServletRequest request, javax.servlet.ServletResponse response) {
                     ((MockHttpServletRequest) request).setSession(session_1);
-                };
+                }
+
+                ;
             };
 
             filter.doFilter(request, response, chain);
@@ -105,59 +107,62 @@ public class WebStatFilterTest2 extends TestCase {
             Assert.assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
             Assert.assertEquals(1, appStat.getSessionStat(session_1.getId()).getRequestCount());
         }
-        
+
         // 第3个sesion请求1次
         {
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpServletResponse response = new MockHttpServletResponse();
             MockFilterChain chain = new MockFilterChain() {
-                
                 public void doFilter(javax.servlet.ServletRequest request, javax.servlet.ServletResponse response) {
                     ((MockHttpServletRequest) request).setSession(session_2);
-                };
+                }
+
+                ;
             };
-            
+
             filter.doFilter(request, response, chain);
-            
+
             Assert.assertEquals(3, appStat.getSessionStatDataList().size());
             Assert.assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
             Assert.assertEquals(1, appStat.getSessionStat(session_1.getId()).getRequestCount());
             Assert.assertEquals(1, appStat.getSessionStat(session_2.getId()).getRequestCount());
         }
-        
+
         // 第4个sesion请求1次
         {
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpServletResponse response = new MockHttpServletResponse();
             MockFilterChain chain = new MockFilterChain() {
-                
                 public void doFilter(javax.servlet.ServletRequest request, javax.servlet.ServletResponse response) {
                     ((MockHttpServletRequest) request).setSession(session_3);
-                };
+                }
+
+                ;
             };
-            
+
             filter.doFilter(request, response, chain);
-            
+
             Assert.assertEquals(3, appStat.getSessionStatDataList().size());
             Assert.assertNull(appStat.getSessionStat(session_0.getId()));
             Assert.assertEquals(1, appStat.getSessionStat(session_1.getId()).getRequestCount());
             Assert.assertEquals(1, appStat.getSessionStat(session_2.getId()).getRequestCount());
             Assert.assertEquals(1, appStat.getSessionStat(session_3.getId()).getRequestCount());
         }
-        
+
         // 第5个sesion请求1次
         {
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpServletResponse response = new MockHttpServletResponse();
             MockFilterChain chain = new MockFilterChain() {
-                
                 public void doFilter(javax.servlet.ServletRequest request, javax.servlet.ServletResponse response) {
                     ((MockHttpServletRequest) request).setSession(session_4);
-                };
+                }
+
+                ;
             };
-            
+
             filter.doFilter(request, response, chain);
-            
+
             Assert.assertEquals(3, appStat.getSessionStatDataList().size());
             Assert.assertNull(appStat.getSessionStat(session_0.getId()));
             Assert.assertNull(appStat.getSessionStat(session_1.getId()));

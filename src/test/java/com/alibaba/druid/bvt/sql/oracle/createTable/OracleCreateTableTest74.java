@@ -23,38 +23,37 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateTableTest74 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE \"WEB_FPXX\".\"XX_MX_0901\" \n" +
-                "   (\t\"NSRSBH\" VARCHAR2(20) NOT NULL ENABLE, \n" +
-                "\t\"SBRQ\" DATE NOT NULL ENABLE, \n" +
-                "\t\"TBRQ\" DATE, \n" +
-                "\t\"SSSQQ\" DATE NOT NULL ENABLE, \n" +
-                "\t\"FPDM\" CHAR(10) NOT NULL ENABLE, \n" +
-                "\t\"FPHM\" CHAR(8) NOT NULL ENABLE, \n" +
-                "\t\"KPRQ\" DATE, \n" +
-                "\t\"JE\" NUMBER(14,2) NOT NULL ENABLE, \n" +
-                "\t\"SE\" NUMBER(14,2) NOT NULL ENABLE, \n" +
-                "\t\"GHF_NSRSBH\" VARCHAR2(20) NOT NULL ENABLE, \n" +
-                "\t\"ZF_BZ\" CHAR(1) NOT NULL ENABLE, \n" +
-                "\t\"SWJG_DM\" CHAR(11) NOT NULL ENABLE, \n" +
-                "\t\"BZ\" CHAR(1), \n" +
-                "\t\"FP_LB\" VARCHAR2(4), \n" +
-                "\t CONSTRAINT \"PK_XX_MX_0901\" PRIMARY KEY (\"FPDM\", \"FPHM\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"FPXX_IDX\"  ENABLE\n" +
-                "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 2 MAXTRANS 255 \n" +
-                " NOCOMPRESS NOLOGGING\n" +
-                "  STORAGE(INITIAL 24576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"FPXX_DAT\" \n" +
-                "   CACHE PARALLEL ";
+                "CREATE TABLE \"WEB_FPXX\".\"XX_MX_0901\" \n" +
+                        "   (\t\"NSRSBH\" VARCHAR2(20) NOT NULL ENABLE, \n" +
+                        "\t\"SBRQ\" DATE NOT NULL ENABLE, \n" +
+                        "\t\"TBRQ\" DATE, \n" +
+                        "\t\"SSSQQ\" DATE NOT NULL ENABLE, \n" +
+                        "\t\"FPDM\" CHAR(10) NOT NULL ENABLE, \n" +
+                        "\t\"FPHM\" CHAR(8) NOT NULL ENABLE, \n" +
+                        "\t\"KPRQ\" DATE, \n" +
+                        "\t\"JE\" NUMBER(14,2) NOT NULL ENABLE, \n" +
+                        "\t\"SE\" NUMBER(14,2) NOT NULL ENABLE, \n" +
+                        "\t\"GHF_NSRSBH\" VARCHAR2(20) NOT NULL ENABLE, \n" +
+                        "\t\"ZF_BZ\" CHAR(1) NOT NULL ENABLE, \n" +
+                        "\t\"SWJG_DM\" CHAR(11) NOT NULL ENABLE, \n" +
+                        "\t\"BZ\" CHAR(1), \n" +
+                        "\t\"FP_LB\" VARCHAR2(4), \n" +
+                        "\t CONSTRAINT \"PK_XX_MX_0901\" PRIMARY KEY (\"FPDM\", \"FPHM\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"FPXX_IDX\"  ENABLE\n" +
+                        "   ) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 2 MAXTRANS 255 \n" +
+                        " NOCOMPRESS NOLOGGING\n" +
+                        "  STORAGE(INITIAL 24576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"FPXX_DAT\" \n" +
+                        "   CACHE PARALLEL ";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -119,7 +118,7 @@ public class OracleCreateTableTest74 extends OracleTest {
                         ")\n" +
                         "PARALLEL\n" +
                         "CACHE",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

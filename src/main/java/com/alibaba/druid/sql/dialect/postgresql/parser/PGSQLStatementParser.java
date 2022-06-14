@@ -35,16 +35,16 @@ public class PGSQLStatementParser extends SQLStatementParser {
     public PGSQLStatementParser(PGExprParser parser) {
         super(parser);
     }
-    
-    public PGSQLStatementParser(String sql){
+
+    public PGSQLStatementParser(String sql) {
         super(new PGExprParser(sql));
     }
 
-    public PGSQLStatementParser(String sql, SQLParserFeature... features){
+    public PGSQLStatementParser(String sql, SQLParserFeature... features) {
         super(new PGExprParser(sql, features));
     }
 
-    public PGSQLStatementParser(Lexer lexer){
+    public PGSQLStatementParser(Lexer lexer) {
         super(new PGExprParser(lexer));
     }
 
@@ -77,7 +77,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.RETURNING) {
             lexer.nextToken();
 
-            for (;;) {
+            for (; ; ) {
                 udpateStatement.getReturning().add(this.exprParser.expr());
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
@@ -110,11 +110,11 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
 
         }
-        
+
         if (lexer.token() == Token.DEFAULT) {
-        	lexer.nextToken();
-        	accept(Token.VALUES);
-        	stmt.setDefaultValues(true);
+            lexer.nextToken();
+            accept(Token.VALUES);
+            stmt.setDefaultValues(true);
         }
 
         if (lexer.token() == (Token.LPAREN)) {
@@ -126,7 +126,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         if (lexer.token() == (Token.VALUES)) {
             lexer.nextToken();
 
-            for (;;) {
+            for (; ; ) {
                 accept(Token.LPAREN);
                 SQLInsertStatement.ValuesClause valuesCaluse = new SQLInsertStatement.ValuesClause();
                 this.exprParser.exprList(valuesCaluse.getValues(), valuesCaluse);
@@ -180,7 +180,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
                         accept(Token.UPDATE);
                         accept(Token.SET);
 
-                        for (;;) {
+                        for (; ; ) {
                             SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
                             stmt.addConflicUpdateItem(item);
 
@@ -324,14 +324,14 @@ public class PGSQLStatementParser extends SQLStatementParser {
         SQLName tableName = exprParser.name();
 
         deleteStatement.setTableName(tableName);
-        
+
         if (lexer.token() == Token.AS) {
-			accept(Token.AS);
-		}
-		if (lexer.token() == Token.IDENTIFIER) {
-			deleteStatement.setAlias(lexer.stringVal());
-			lexer.nextToken();
-		}
+            accept(Token.AS);
+        }
+        if (lexer.token() == Token.IDENTIFIER) {
+            deleteStatement.setAlias(lexer.stringVal());
+            lexer.nextToken();
+        }
 
         if (lexer.token() == Token.USING) {
             lexer.nextToken();
@@ -384,8 +384,6 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
                 break;
         }
-
-
 
         return false;
     }
@@ -485,22 +483,22 @@ public class PGSQLStatementParser extends SQLStatementParser {
         }
         return alterColumn;
     }
-    
+
     public SQLStatement parseShow() {
         accept(Token.SHOW);
         PGShowStatement stmt = new PGShowStatement();
         switch (lexer.token()) {
-        case ALL:
-            stmt.setExpr(new SQLIdentifierExpr(Token.ALL.name()));
-            lexer.nextToken();
-            break;
-        default:
-            stmt.setExpr(this.exprParser.expr());
-            break;
+            case ALL:
+                stmt.setExpr(new SQLIdentifierExpr(Token.ALL.name()));
+                lexer.nextToken();
+                break;
+            default:
+                stmt.setExpr(this.exprParser.expr());
+                break;
         }
         return stmt;
     }
-    
+
     @Override
     public SQLStatement parseCommit() {
         SQLCommitStatement stmt = new SQLCommitStatement();
@@ -526,7 +524,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             lexer.nextToken();
         }
 
-        long hash = lexer.hash_lower();
+        long hash = lexer.hashLCase();
         String parameter = lexer.stringVal();
         SQLExpr paramExpr;
         List<SQLExpr> values = new ArrayList<SQLExpr>();
@@ -570,8 +568,6 @@ public class PGSQLStatementParser extends SQLStatementParser {
         }
 
         // value | 'value' | DEFAULT
-
-
 
         SQLExpr valueExpr;
         if (values.size() == 1) {
@@ -641,7 +637,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         accept(Token.LPAREN);
 
-        for (;;) {
+        for (; ; ) {
             SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
             item.setParent(stmt);
             stmt.addItem(item);
@@ -657,7 +653,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             lexer.nextToken();
             accept(Token.LPAREN);
 
-            for (;;) {
+            for (; ; ) {
                 String optionName = lexer.stringVal();
                 accept(Token.IDENTIFIER);
                 accept(Token.EQ);

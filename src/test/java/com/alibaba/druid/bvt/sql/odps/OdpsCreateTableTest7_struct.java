@@ -24,12 +24,9 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OdpsCreateTableTest7_struct extends TestCase {
-
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "CREATE TABLE DEST3(k STRUCT<col1:STRING, col2:STRING>, v BIGINT) STORED AS TEXTFILE;";//
-
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
@@ -64,6 +61,5 @@ public class OdpsCreateTableTest7_struct extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 
 }

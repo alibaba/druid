@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlExecuteStatement extends MySqlStatementImpl {
-
-    private SQLName             statementName;
+    private SQLName statementName;
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
     public SQLName getStatementName() {

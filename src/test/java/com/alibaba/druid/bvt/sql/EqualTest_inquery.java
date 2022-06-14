@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 
 public class EqualTest_inquery extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "fstate in (select state from t_status)";
         String sql_c = "fstate_c in (select state from t_status)";

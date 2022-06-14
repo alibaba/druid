@@ -26,24 +26,23 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest45 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"ID\" NUMBER, \n" +
-                "  \"COL_CHAR1\" CHAR(128), \n" +
-                "  \"COL_VARCHAR1\" VARCHAR2(128), \n" +
-                "  \"COL_DATE\" DATE, \n" +
-                "  \"COL_TIMESTAMP\" TIMESTAMP (6), \n" +
-                "  \"COL_CHAR2\" CHAR(128), \n" +
-                "  \"COL_VARCHAR2\" VARCHAR2(128), \n" +
-                "  \"COL_CHAR3\" CHAR(128), \n" +
-                "  \"COL_NUMBER\" NUMBER\n" +
-                "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 COMPRESS FOR OLTP LOGGING\n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"USERS\" ";
+                "CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"ID\" NUMBER, \n" +
+                        "  \"COL_CHAR1\" CHAR(128), \n" +
+                        "  \"COL_VARCHAR1\" VARCHAR2(128), \n" +
+                        "  \"COL_DATE\" DATE, \n" +
+                        "  \"COL_TIMESTAMP\" TIMESTAMP (6), \n" +
+                        "  \"COL_CHAR2\" CHAR(128), \n" +
+                        "  \"COL_VARCHAR2\" VARCHAR2(128), \n" +
+                        "  \"COL_CHAR3\" CHAR(128), \n" +
+                        "  \"COL_NUMBER\" NUMBER\n" +
+                        "   ) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 COMPRESS FOR OLTP LOGGING\n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"USERS\" ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -82,7 +81,7 @@ public class OracleCreateTableTest45 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

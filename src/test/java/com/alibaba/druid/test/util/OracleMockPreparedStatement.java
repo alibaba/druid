@@ -63,11 +63,10 @@ import com.alibaba.druid.mock.MockPreparedStatement;
 
 public class OracleMockPreparedStatement
         extends MockPreparedStatement implements oracle.jdbc.internal.OraclePreparedStatement {
-
     private int executeBatch = 50;
     private int rowPrefetch;
 
-    public OracleMockPreparedStatement(OracleMockConnection conn, String sql){
+    public OracleMockPreparedStatement(OracleMockConnection conn, String sql) {
         super(conn, sql);
         this.rowPrefetch = conn.getDefaultRowPrefetch();
     }
@@ -778,7 +777,6 @@ public class OracleMockPreparedStatement
 
     @Override
     public void registerBindChecksumListener(BindChecksumListener bindChecksumListener) throws SQLException {
-
     }
 
     @Override
@@ -872,127 +870,127 @@ public class OracleMockPreparedStatement
     @Override
     public void setAsciiStreamAtName(String arg0, InputStream arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setAsciiStreamAtName(String arg0, InputStream arg1, long arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setBinaryStreamAtName(String arg0, InputStream arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setBinaryStreamAtName(String arg0, InputStream arg1, long arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setBlobAtName(String arg0, InputStream arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setBlobAtName(String arg0, InputStream arg1, long arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setCharacterStreamAtName(String arg0, Reader arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setCharacterStreamAtName(String arg0, Reader arg1, long arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setClobAtName(String arg0, Reader arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setClobAtName(String arg0, Reader arg1, long arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setDateAtName(String arg0, Date arg1, Calendar arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setNCharacterStreamAtName(String arg0, Reader arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setNCharacterStreamAtName(String arg0, Reader arg1, long arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setNClobAtName(String arg0, NClob arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setNClobAtName(String arg0, Reader arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setNClobAtName(String arg0, Reader arg1, long arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setNStringAtName(String arg0, String arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setRowIdAtName(String arg0, RowId arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setSQLXMLAtName(String arg0, SQLXML arg1) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setTimeAtName(String arg0, Time arg1, Calendar arg2) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void setDatabaseChangeRegistration(DatabaseChangeRegistration arg0) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -1004,7 +1002,7 @@ public class OracleMockPreparedStatement
     @Override
     public void setSnapshotSCN(long arg0) throws SQLException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -1019,7 +1017,6 @@ public class OracleMockPreparedStatement
 
     @Override
     public void setACProxy(Object o) {
-
     }
 
     @Override

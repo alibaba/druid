@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleExceptionStatement extends OracleStatementImpl implements OracleStatement {
-
     private List<Item> items = new ArrayList<Item>();
 
     public List<Item> getItems() {
@@ -35,13 +34,12 @@ public class OracleExceptionStatement extends OracleStatementImpl implements Ora
         if (item != null) {
             item.setParent(this);
         }
-        
+
         this.items.add(item);
     }
 
     public static class Item extends OracleSQLObjectImpl {
-
-        private SQLExpr            when;
+        private SQLExpr when;
         private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
         public SQLExpr getWhen() {

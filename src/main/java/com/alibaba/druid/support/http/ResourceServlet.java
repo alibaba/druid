@@ -15,16 +15,6 @@
  */
 package com.alibaba.druid.support.http;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import com.alibaba.druid.support.http.util.IPAddress;
 import com.alibaba.druid.support.http.util.IPRange;
 import com.alibaba.druid.support.logging.Log;
@@ -32,21 +22,30 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("serial")
 public abstract class ResourceServlet extends HttpServlet {
+    private static final Log LOG = LogFactory.getLog(ResourceServlet.class);
 
-    private final static Log   LOG                 = LogFactory.getLog(ResourceServlet.class);
-
-    public static final String SESSION_USER_KEY    = "druid-user";
+    public static final String SESSION_USER_KEY = "druid-user";
     public static final String PARAM_NAME_USERNAME = "loginUsername";
     public static final String PARAM_NAME_PASSWORD = "loginPassword";
-    public static final String PARAM_NAME_ALLOW    = "allow";
-    public static final String PARAM_NAME_DENY     = "deny";
-    public static final String PARAM_REMOTE_ADDR   = "remoteAddress";
+    public static final String PARAM_NAME_ALLOW = "allow";
+    public static final String PARAM_NAME_DENY = "deny";
+    public static final String PARAM_REMOTE_ADDR = "remoteAddress";
 
     protected final ResourceHandler handler;
 
-    public ResourceServlet(String resourcePath){
+    public ResourceServlet(String resourcePath) {
         handler = new ResourceHandler(resourcePath);
     }
 
@@ -128,7 +127,6 @@ public abstract class ResourceServlet extends HttpServlet {
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String servletPath = request.getServletPath();
         handler.service(request, response, servletPath, new ProcessCallback() {
-
             @Override
             public String process(String url) {
                 return ResourceServlet.this.process(url);
@@ -163,15 +161,15 @@ public abstract class ResourceServlet extends HttpServlet {
     }
 
     public static class ResourceHandler {
-        protected String username = null;
-        protected String password = null;
+        protected String username;
+        protected String password;
 
         protected List<IPRange> allowList = new ArrayList<IPRange>();
         protected List<IPRange> denyList = new ArrayList<IPRange>();
 
         protected String resourcePath;
 
-        protected String remoteAddressHeader = null;
+        protected String remoteAddressHeader;
 
         public ResourceHandler(String resourcePath) {
             this.resourcePath = resourcePath;
@@ -180,7 +178,6 @@ public abstract class ResourceServlet extends HttpServlet {
         protected void returnResourceFile(String fileName, String uri, HttpServletResponse response)
                 throws ServletException,
                 IOException {
-
             String filePath = getFilePath(fileName);
 
             if (filePath.endsWith(".html")) {
@@ -215,7 +212,7 @@ public abstract class ResourceServlet extends HttpServlet {
         public boolean checkLoginParam(HttpServletRequest request) {
             String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
             String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
-            if(null == username || null == password){
+            if (null == username || null == password) {
                 return false;
             } else if (username.equals(usernameParam) && password.equals(passwordParam)) {
                 return true;
@@ -279,10 +276,11 @@ public abstract class ResourceServlet extends HttpServlet {
             return true;
         }
 
-        public void service(HttpServletRequest request
-                , HttpServletResponse response
-                , String servletPath
-                , ProcessCallback processCallback
+        public void service(
+                HttpServletRequest request,
+                HttpServletResponse response,
+                String servletPath,
+                ProcessCallback processCallback
         ) throws ServletException, IOException {
             String contextPath = request.getContextPath();
             String requestURI = request.getRequestURI();
@@ -350,7 +348,6 @@ public abstract class ResourceServlet extends HttpServlet {
 
             returnResourceFile(path, uri, response);
         }
-
 
     }
 }

@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -64,14 +65,15 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.StringUtils;
 
-public class SQLParserUtils {
+import java.util.*;
 
+public class SQLParserUtils {
     public static SQLStatementParser createSQLStatementParser(String sql, DbType dbType) {
         SQLParserFeature[] features;
         if (DbType.odps == dbType || DbType.mysql == dbType) {
-            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
+            features = new SQLParserFeature[]{SQLParserFeature.KeepComments};
         } else {
-            features = new SQLParserFeature[] {};
+            features = new SQLParserFeature[]{};
         }
         return createSQLStatementParser(sql, dbType, features);
     }
@@ -79,9 +81,9 @@ public class SQLParserUtils {
     public static SQLStatementParser createSQLStatementParser(String sql, DbType dbType, boolean keepComments) {
         SQLParserFeature[] features;
         if (keepComments) {
-            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
+            features = new SQLParserFeature[]{SQLParserFeature.KeepComments};
         } else {
-            features = new SQLParserFeature[] {};
+            features = new SQLParserFeature[]{};
         }
 
         return createSQLStatementParser(sql, dbType, features);
@@ -245,45 +247,45 @@ public class SQLParserUtils {
             default:
                 return new SQLSelectQueryBlock(dbType);
         }
-     }
+    }
 
-     public static SQLType getSQLType(String sql, DbType dbType) {
+    public static SQLType getSQLType(String sql, DbType dbType) {
         Lexer lexer = createLexer(sql, dbType);
         return lexer.scanSQLType();
-     }
+    }
 
-     public static SQLType getSQLTypeV2(String sql, DbType dbType) {
+    public static SQLType getSQLTypeV2(String sql, DbType dbType) {
         Lexer lexer = createLexer(sql, dbType);
         return lexer.scanSQLTypeV2();
-     }
+    }
 
-     public static boolean startsWithHint(String sql, DbType dbType) {
+    public static boolean startsWithHint(String sql, DbType dbType) {
         Lexer lexer = createLexer(sql, dbType);
         lexer.nextToken();
         return lexer.token() == Token.HINT;
-     }
+    }
 
-     public static boolean containsAny(String sql, DbType dbType, Token token) {
-         Lexer lexer = createLexer(sql, dbType);
-         for (;;) {
-             lexer.nextToken();
-             final Token tok = lexer.token;
-             switch (tok) {
-                 case EOF:
-                 case ERROR:
-                     return false;
-                 default:
-                     if (tok == token) {
-                         return true;
-                     }
-                     break;
-             }
-         }
-     }
+    public static boolean containsAny(String sql, DbType dbType, Token token) {
+        Lexer lexer = createLexer(sql, dbType);
+        for (; ; ) {
+            lexer.nextToken();
+            final Token tok = lexer.token;
+            switch (tok) {
+                case EOF:
+                case ERROR:
+                    return false;
+                default:
+                    if (tok == token) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+    }
 
     public static boolean containsAny(String sql, DbType dbType, Token token1, Token token2) {
         Lexer lexer = createLexer(sql, dbType);
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
             final Token tok = lexer.token;
             switch (tok) {
@@ -301,7 +303,7 @@ public class SQLParserUtils {
 
     public static boolean containsAny(String sql, DbType dbType, Token token1, Token token2, Token token3) {
         Lexer lexer = createLexer(sql, dbType);
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
             final Token tok = lexer.token;
             switch (tok) {
@@ -323,7 +325,7 @@ public class SQLParserUtils {
         }
 
         Lexer lexer = createLexer(sql, dbType);
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
             final Token tok = lexer.token;
             switch (tok) {
@@ -345,64 +347,64 @@ public class SQLParserUtils {
         return getSimpleSelectValue(sql, dbType, null);
     }
 
-     public static Object getSimpleSelectValue(String sql, DbType dbType, SimpleValueEvalHandler handler) {
-         Lexer lexer = createLexer(sql, dbType);
-         lexer.nextToken();
+    public static Object getSimpleSelectValue(String sql, DbType dbType, SimpleValueEvalHandler handler) {
+        Lexer lexer = createLexer(sql, dbType);
+        lexer.nextToken();
 
-         if (lexer.token != Token.SELECT && lexer.token != Token.VALUES) {
-             return null;
-         }
+        if (lexer.token != Token.SELECT && lexer.token != Token.VALUES) {
+            return null;
+        }
 
-         lexer.nextTokenValue();
+        lexer.nextTokenValue();
 
-         SQLExpr expr = null;
-         Object value;
-         switch (lexer.token) {
-             case LITERAL_INT:
-                 value = lexer.integerValue();
-                 break;
-             case LITERAL_CHARS:
-             case LITERAL_NCHARS:
-                 value = lexer.stringVal();
-                 break;
-             case LITERAL_FLOAT:
-                 value = lexer.decimalValue();
-                 break;
-             default:
-                 if (handler == null) {
-                     return null;
-                 }
+        SQLExpr expr = null;
+        Object value;
+        switch (lexer.token) {
+            case LITERAL_INT:
+                value = lexer.integerValue();
+                break;
+            case LITERAL_CHARS:
+            case LITERAL_NCHARS:
+                value = lexer.stringVal();
+                break;
+            case LITERAL_FLOAT:
+                value = lexer.decimalValue();
+                break;
+            default:
+                if (handler == null) {
+                    return null;
+                }
 
-                 expr = new SQLExprParser(lexer).expr();
-                 try {
-                     value = handler.eval(expr);
-                 } catch (Exception error) {
-                     // skip
-                     value = null;
-                 }
-                 break;
-         }
+                expr = new SQLExprParser(lexer).expr();
+                try {
+                    value = handler.eval(expr);
+                } catch (Exception error) {
+                    // skip
+                    value = null;
+                }
+                break;
+        }
 
-         lexer.nextToken();
+        lexer.nextToken();
 
-         if (lexer.token == Token.FROM) {
-             lexer.nextToken();
-             if (lexer.token == Token.DUAL) {
-                 lexer.nextToken();
-             } else {
-                 return null;
-             }
-         }
-         if (lexer.token != Token.EOF) {
-             return null;
-         }
+        if (lexer.token == Token.FROM) {
+            lexer.nextToken();
+            if (lexer.token == Token.DUAL) {
+                lexer.nextToken();
+            } else {
+                return null;
+            }
+        }
+        if (lexer.token != Token.EOF) {
+            return null;
+        }
 
-         return value;
-     }
+        return value;
+    }
 
-     public static interface SimpleValueEvalHandler {
+    public static interface SimpleValueEvalHandler {
         Object eval(SQLExpr expr);
-     }
+    }
 
     public static String replaceBackQuote(String sql, DbType dbType) {
         int i = sql.indexOf('`');
@@ -418,7 +420,7 @@ public class SQLParserUtils {
         int off = 0;
 
         for_:
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
 
             int p0, p1;
@@ -464,7 +466,6 @@ public class SQLParserUtils {
 
         SQLType sqlType = getSQLType(sql, dbType);
         if (sqlType == SQLType.INSERT) {
-
             parser.config(SQLParserFeature.InsertReader, true);
 
             SQLInsertStatement stmt = (SQLInsertStatement) parser.parseStatement();
@@ -482,5 +483,325 @@ public class SQLParserUtils {
         }
 
         return buf.toString();
+    }
+
+    public static List<String> splitAndRemoveComment(String sql, DbType dbType) {
+        if (dbType == null) {
+            dbType = DbType.other;
+        }
+
+        boolean containsCommentAndSemi = false;
+        {
+            Lexer lexer = createLexer(sql, dbType);
+            lexer.config(SQLParserFeature.SkipComments, false);
+            lexer.config(SQLParserFeature.KeepComments, true);
+
+            while (lexer.token != Token.EOF) {
+                if (lexer.token == Token.LINE_COMMENT
+                        || lexer.token == Token.MULTI_LINE_COMMENT
+                        || lexer.token == Token.SEMI) {
+                    containsCommentAndSemi = true;
+                    break;
+                }
+                lexer.nextToken();
+            }
+
+            if (!containsCommentAndSemi) {
+                return Collections.singletonList(sql);
+            }
+        }
+
+        {
+            Lexer lexer = createLexer(sql, dbType);
+            lexer.nextToken();
+            if (lexer.identifierEquals("pai") || lexer.identifierEquals("jar")) {
+                return Collections.singletonList(sql);
+            }
+        }
+
+        List list = new ArrayList();
+
+        Lexer lexer = createLexer(sql, dbType);
+        lexer.config(SQLParserFeature.SkipComments, false);
+        lexer.config(SQLParserFeature.KeepComments, true);
+
+        boolean set = false, paiOrJar = false;
+        int start = 0;
+        Token token = lexer.token;
+        for (; lexer.token != Token.EOF; ) {
+            if (token == Token.SEMI) {
+                int len = lexer.startPos - start;
+                if (len > 0) {
+                    String lineSql = sql.substring(start, lexer.startPos);
+                    String splitSql = set
+                            ? removeLeftComment(lineSql, dbType)
+                            : removeComment(lineSql, dbType
+                    ).trim();
+                    if (!splitSql.isEmpty()) {
+                        list.add(splitSql);
+                    }
+                }
+                start = lexer.startPos + 1;
+                set = false;
+            } else if (token == Token.MULTI_LINE_COMMENT) {
+                int len = lexer.startPos - start;
+                if (len > 0) {
+                    String splitSql = removeComment(
+                            sql.substring(start, lexer.startPos),
+                            dbType
+                    ).trim();
+                    if (!splitSql.isEmpty()) {
+                        list.add(splitSql);
+                    }
+                }
+                start = lexer.startPos + 1;
+            } else if (token == Token.CREATE) {
+                lexer.nextToken();
+
+                if (lexer.token == Token.FUNCTION || lexer.identifierEquals("FUNCTION")) {
+                    lexer.startPos = sql.length();
+                    break;
+                }
+
+                token = lexer.token;
+                continue;
+            } else if (set && token == Token.EQ && dbType == DbType.odps) {
+                lexer.nextTokenForSet();
+                token = lexer.token;
+                continue;
+            } else if (lexer.identifierEquals("pai") || lexer.identifierEquals("jar")) {
+                if (lexer.startPos - start > 0) {
+                    String str = sql.substring(start, lexer.startPos).trim();
+                    if (str.isEmpty()) {
+                        lexer.startPos = sql.length();
+                        paiOrJar = true;
+                        break;
+                    }
+                }
+            }
+
+            if (lexer.token == Token.SET) {
+                set = true;
+            }
+
+            lexer.nextToken();
+            token = lexer.token;
+        }
+
+        if (start != sql.length() && token != Token.SEMI) {
+            String splitSql = sql.substring(start, lexer.startPos).trim();
+            if (!paiOrJar) {
+                splitSql = removeComment(splitSql, dbType).trim();
+            } else {
+                if (splitSql.endsWith(";")) {
+                    splitSql = splitSql.substring(0, splitSql.length() - 1).trim();
+                }
+            }
+            if (!splitSql.isEmpty()) {
+                list.add(splitSql);
+            }
+        }
+
+        return list;
+    }
+
+    public static String removeLeftComment(String sql, DbType dbType) {
+        if (dbType == null) {
+            dbType = DbType.other;
+        }
+
+        sql = sql.trim();
+        if (sql.startsWith("jar")) {
+            return sql;
+        }
+
+        boolean containsComment = false;
+        {
+            Lexer lexer = createLexer(sql, dbType);
+            lexer.config(SQLParserFeature.SkipComments, false);
+            lexer.config(SQLParserFeature.KeepComments, true);
+
+            while (lexer.token != Token.EOF) {
+                if (lexer.token == Token.LINE_COMMENT || lexer.token == Token.MULTI_LINE_COMMENT) {
+                    containsComment = true;
+                    break;
+                }
+                lexer.nextToken();
+            }
+
+            if (!containsComment) {
+                return sql;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        Lexer lexer = createLexer(sql, dbType);
+        lexer.config(SQLParserFeature.SkipComments, false);
+        lexer.config(SQLParserFeature.KeepComments, true);
+        lexer.nextToken();
+
+        int start = 0;
+        for (; lexer.token != Token.EOF; lexer.nextToken()) {
+            if (lexer.token == Token.LINE_COMMENT || lexer.token == Token.MULTI_LINE_COMMENT) {
+                continue;
+            }
+            start = lexer.startPos;
+            break;
+        }
+
+        if (start != sql.length()) {
+            sb.append(sql.substring(start, sql.length()));
+        }
+
+        return sb.toString();
+    }
+
+    public static String removeComment(String sql, DbType dbType) {
+        if (dbType == null) {
+            dbType = DbType.other;
+        }
+
+        sql = sql.trim();
+        if (sql.startsWith("jar")) {
+            return sql;
+        }
+
+        boolean containsComment = false;
+        {
+            Lexer lexer = createLexer(sql, dbType);
+            lexer.config(SQLParserFeature.SkipComments, false);
+            lexer.config(SQLParserFeature.KeepComments, true);
+
+            while (lexer.token != Token.EOF) {
+                if (lexer.token == Token.LINE_COMMENT || lexer.token == Token.MULTI_LINE_COMMENT) {
+                    containsComment = true;
+                    break;
+                }
+                lexer.nextToken();
+            }
+
+            if (!containsComment) {
+                return sql;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        Lexer lexer = createLexer(sql, dbType);
+        lexer.config(SQLParserFeature.SkipComments, false);
+        lexer.config(SQLParserFeature.KeepComments, true);
+
+        int start = 0;
+        Token token = lexer.token;
+        for (; lexer.token != Token.EOF; ) {
+            if (token == Token.LINE_COMMENT) {
+                int len = lexer.startPos - start;
+                if (len > 0) {
+                    sb.append(sql.substring(start, lexer.startPos));
+                }
+                start = lexer.startPos + lexer.stringVal().length();
+            } else if (token == Token.MULTI_LINE_COMMENT) {
+                int len = lexer.startPos - start;
+                if (len > 0) {
+                    sb.append(sql.substring(start, lexer.startPos));
+                }
+                start = lexer.startPos + lexer.stringVal().length();
+            }
+
+            lexer.nextToken();
+            token = lexer.token;
+        }
+
+        if (start != sql.length() && token != Token.LINE_COMMENT && token != Token.MULTI_LINE_COMMENT) {
+            sb.append(sql.substring(start, sql.length()));
+        }
+
+        return sb.toString();
+    }
+
+    public static List<String> getTables(String sql, DbType dbType) {
+        Set<String> tables = new LinkedHashSet<>();
+
+        boolean set = false;
+        Lexer lexer = createLexer(sql, dbType);
+        lexer.nextToken();
+
+        SQLExprParser exprParser;
+        switch (dbType) {
+            case odps:
+                exprParser = new OdpsExprParser(lexer);
+                break;
+            case mysql:
+                exprParser = new MySqlExprParser(lexer);
+                break;
+            default:
+                exprParser = new SQLExprParser(lexer);
+                break;
+        }
+
+        for_:
+        for (; lexer.token != Token.EOF; ) {
+            switch (lexer.token) {
+                case CREATE:
+                case DROP:
+                case ALTER:
+                    set = false;
+                    lexer.nextToken();
+
+                    if (lexer.token == Token.TABLE) {
+                        lexer.nextToken();
+
+                        if (lexer.token == Token.IF) {
+                            lexer.nextToken();
+
+                            if (lexer.token == Token.NOT) {
+                                lexer.nextToken();
+                            }
+
+                            if (lexer.token == Token.EXISTS) {
+                                lexer.nextToken();
+                            }
+                        }
+
+                        SQLName name = exprParser.name();
+                        tables.add(name.toString());
+
+                        if (lexer.token == Token.AS) {
+                            lexer.nextToken();
+                        }
+                    }
+                    continue for_;
+                case FROM:
+                case JOIN:
+                    lexer.nextToken();
+                    if (lexer.token != Token.LPAREN
+                            && lexer.token != Token.VALUES
+                    ) {
+                        SQLName name = exprParser.name();
+                        tables.add(name.toString());
+                    }
+                    continue for_;
+                case SEMI:
+                    set = false;
+                    break;
+                case SET:
+                    set = true;
+                    break;
+                case EQ:
+                    if (set && dbType == DbType.odps) {
+                        lexer.nextTokenForSet();
+                        continue for_;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            lexer.nextToken();
+
+        }
+
+        return new ArrayList<>(tables);
     }
 }

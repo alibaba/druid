@@ -22,7 +22,6 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterChainImplTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -51,26 +50,26 @@ public class FilterChainImplTest extends TestCase {
 
     public void test_unwrap_5() throws Exception {
         Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
-                                                               (Clob) null));
+                (Clob) null));
     }
 
     public void test_unwrap_6() throws Exception {
         Connection conn = dataSource.getConnection();
         Assert.assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
-                                                               new MockNClob()) instanceof NClob);
+                new MockNClob()) instanceof NClob);
         conn.close();
     }
 
     public void test_unwrap_8() throws Exception {
         Connection conn = dataSource.getConnection();
         Assert.assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
-                                                               (Clob) new MockNClob()) instanceof NClob);
+                (Clob) new MockNClob()) instanceof NClob);
         conn.close();
     }
 
     public void test_unwrap_7() throws Exception {
         Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
-                                                               (NClob) null));
+                (NClob) null));
     }
 
     public void test_unwrap_9() throws Exception {

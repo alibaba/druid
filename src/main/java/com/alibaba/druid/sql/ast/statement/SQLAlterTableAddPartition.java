@@ -24,11 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableAddPartition extends SQLObjectImpl implements SQLAlterTableItem {
-
-    private boolean               ifNotExists = false;
-    private final List<SQLObject> partitions  = new ArrayList<SQLObject>(4);
-    private SQLExpr               partitionCount;
-    private SQLExpr               location; // hive
+    private boolean ifNotExists;
+    private final List<SQLObject> partitions = new ArrayList<SQLObject>(4);
+    private SQLExpr partitionCount;
+    private SQLExpr location; // hive
 
     public List<SQLObject> getPartitions() {
         return partitions;

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlLockTableStatement extends MySqlStatementImpl implements SQLLockTableStatement {
-
     private List<Item> items = new ArrayList<Item>();
 
     @Override
@@ -51,7 +50,7 @@ public class MySqlLockTableStatement extends MySqlStatementImpl implements SQLLo
 
         public final String name;
 
-        LockType(String name){
+        LockType(String name) {
             this.name = name;
         }
     }
@@ -65,10 +64,9 @@ public class MySqlLockTableStatement extends MySqlStatementImpl implements SQLLo
     }
 
     public static class Item extends MySqlObjectImpl {
-
         private SQLExprTableSource tableSource = new SQLExprTableSource();
 
-        private LockType           lockType;
+        private LockType lockType;
 
         private List<SQLCommentHint> hints;
 

@@ -26,11 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelClause extends OracleSQLObjectImpl {
-
-    private final List<CellReferenceOption>  cellReferenceOptions  = new ArrayList<CellReferenceOption>();
-    private ReturnRowsClause                 returnRowsClause;
+    private final List<CellReferenceOption> cellReferenceOptions = new ArrayList<CellReferenceOption>();
+    private ReturnRowsClause returnRowsClause;
     private final List<ReferenceModelClause> referenceModelClauses = new ArrayList<ReferenceModelClause>();
-    private MainModelClause                  mainModel;
+    private MainModelClause mainModel;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -68,17 +67,15 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static enum CellReferenceOption {
         IgnoreNav("IGNORE NAV"), KeepNav("KEEP NAV"), UniqueDimension("UNIQUE DIMENSION"),
-        UniqueSingleReference("UNIQUE SINGLE REFERENCE")
-
-        ;
+        UniqueSingleReference("UNIQUE SINGLE REFERENCE");
 
         public final String name;
 
-        CellReferenceOption(){
+        CellReferenceOption() {
             this(null);
         }
 
-        CellReferenceOption(String name){
+        CellReferenceOption(String name) {
             this.name = name;
         }
 
@@ -89,8 +86,7 @@ public class ModelClause extends OracleSQLObjectImpl {
     }
 
     public static class ReturnRowsClause extends OracleSQLObjectImpl {
-
-        private boolean all = false;
+        private boolean all;
 
         public boolean isAll() {
             return all;
@@ -108,9 +104,8 @@ public class ModelClause extends OracleSQLObjectImpl {
     }
 
     public static class ReferenceModelClause extends OracleSQLObjectImpl {
-
-        private SQLExpr                         name;
-        private SQLSelect                       subQuery;
+        private SQLExpr name;
+        private SQLSelect subQuery;
         private final List<CellReferenceOption> cellReferenceOptions = new ArrayList<CellReferenceOption>();
 
         public List<CellReferenceOption> getCellReferenceOptions() {
@@ -135,16 +130,14 @@ public class ModelClause extends OracleSQLObjectImpl {
 
         @Override
         public void accept0(OracleASTVisitor visitor) {
-
         }
     }
 
     public static class ModelColumnClause extends OracleSQLObjectImpl {
-
-        private QueryPartitionClause    queryPartitionClause;
-        private String                  alias;
+        private QueryPartitionClause queryPartitionClause;
+        private String alias;
         private final List<ModelColumn> dimensionByColumns = new ArrayList<ModelColumn>();
-        private final List<ModelColumn> measuresColumns    = new ArrayList<ModelColumn>();
+        private final List<ModelColumn> measuresColumns = new ArrayList<ModelColumn>();
 
         public List<ModelColumn> getDimensionByColumns() {
             return dimensionByColumns;
@@ -183,9 +176,8 @@ public class ModelClause extends OracleSQLObjectImpl {
     }
 
     public static class ModelColumn extends OracleSQLObjectImpl {
-
         private SQLExpr expr;
-        private String  alias;
+        private String alias;
 
         public SQLExpr getExpr() {
             return expr;
@@ -214,7 +206,6 @@ public class ModelClause extends OracleSQLObjectImpl {
     }
 
     public static class QueryPartitionClause extends OracleSQLObjectImpl {
-
         private List<SQLExpr> exprList = new ArrayList<SQLExpr>();
 
         public List<SQLExpr> getExprList() {
@@ -235,12 +226,11 @@ public class ModelClause extends OracleSQLObjectImpl {
     }
 
     public static class MainModelClause extends OracleSQLObjectImpl {
-
-        private SQLExpr                         mainModelName;
-        private ModelColumnClause               modelColumnClause;
+        private SQLExpr mainModelName;
+        private ModelColumnClause modelColumnClause;
 
         private final List<CellReferenceOption> cellReferenceOptions = new ArrayList<CellReferenceOption>();
-        private ModelRulesClause                modelRulesClause;
+        private ModelRulesClause modelRulesClause;
 
         public ModelRulesClause getModelRulesClause() {
             return modelRulesClause;
@@ -283,10 +273,9 @@ public class ModelClause extends OracleSQLObjectImpl {
     }
 
     public static class ModelRulesClause extends OracleSQLObjectImpl {
-
-        private final List<ModelRuleOption>    options             = new ArrayList<ModelRuleOption>();
-        private SQLExpr                        iterate;
-        private SQLExpr                        until;
+        private final List<ModelRuleOption> options = new ArrayList<ModelRuleOption>();
+        private SQLExpr iterate;
+        private SQLExpr until;
         private final List<CellAssignmentItem> cellAssignmentItems = new ArrayList<CellAssignmentItem>();
 
         public SQLExpr getUntil() {
@@ -326,13 +315,11 @@ public class ModelClause extends OracleSQLObjectImpl {
     }
 
     public static enum ModelRuleOption {
-        UPSERT("UPSERT"), UPDATE("UPDATE"), AUTOMATIC_ORDER("AUTOMATIC ORDER"), SEQUENTIAL_ORDER("SEQUENTIAL ORDER"),
-
-        ;
+        UPSERT("UPSERT"), UPDATE("UPDATE"), AUTOMATIC_ORDER("AUTOMATIC ORDER"), SEQUENTIAL_ORDER("SEQUENTIAL ORDER");
 
         public final String name;
 
-        ModelRuleOption(String name){
+        ModelRuleOption(String name) {
             this.name = name;
         }
 
@@ -342,11 +329,10 @@ public class ModelClause extends OracleSQLObjectImpl {
     }
 
     public static class CellAssignmentItem extends OracleSQLObjectImpl {
-
         private ModelRuleOption option;
-        private CellAssignment  cellAssignment;
-        private SQLOrderBy      orderBy;
-        private SQLExpr         expr;
+        private CellAssignment cellAssignment;
+        private SQLOrderBy orderBy;
+        private SQLExpr expr;
 
         public ModelRuleOption getOption() {
             return option;
@@ -393,8 +379,7 @@ public class ModelClause extends OracleSQLObjectImpl {
     }
 
     public static class CellAssignment extends SQLExprImpl implements OracleExpr, SQLReplaceable {
-
-        private SQLExpr             measureColumn;
+        private SQLExpr measureColumn;
         private final List<SQLExpr> conditions = new ArrayList<SQLExpr>();
 
         public List<SQLExpr> getConditions() {
@@ -441,13 +426,18 @@ public class ModelClause extends OracleSQLObjectImpl {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             CellAssignment that = (CellAssignment) o;
 
-            if (measureColumn != null ? !measureColumn.equals(that.measureColumn) : that.measureColumn != null)
+            if (measureColumn != null ? !measureColumn.equals(that.measureColumn) : that.measureColumn != null) {
                 return false;
+            }
             return conditions.equals(that.conditions);
         }
 

@@ -16,7 +16,6 @@ import java.util.List;
  * Created by wenshao on 16/8/22.
  */
 public class MySqlParameterizedOutputVisitorTest_8 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
-
     public void test_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
@@ -28,7 +27,6 @@ public class MySqlParameterizedOutputVisitorTest_8 extends com.alibaba.druid.bvt
         Assert.assertEquals(expected, psql);
 
         paramaterizeAST(sql, expected);
-
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();

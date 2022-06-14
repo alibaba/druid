@@ -21,14 +21,12 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class SQLTextLiteralExpr extends SQLExprImpl implements SQLLiteralExpr {
-
     protected String text;
 
-    public SQLTextLiteralExpr(){
-
+    public SQLTextLiteralExpr() {
     }
 
-    public SQLTextLiteralExpr(String text){
+    public SQLTextLiteralExpr(String text) {
         this.text = text;
     }
 

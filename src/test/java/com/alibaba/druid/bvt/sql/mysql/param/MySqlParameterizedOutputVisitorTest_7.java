@@ -22,7 +22,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 
 public class MySqlParameterizedOutputVisitorTest_7 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
-
     public void test_hints() throws Exception {
         String sql = "select id from t where id = 3 /*!30000union all select 2*/";
 

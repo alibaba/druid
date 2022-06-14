@@ -16,10 +16,6 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleStatementImpl;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -36,7 +32,7 @@ public class SQLAlterIndexStatement extends SQLStatementImpl implements SQLAlter
     private Rebuild rebuild;
     private SQLExpr parallel;
     private List<SQLAssignItem> partitions = new ArrayList<SQLAssignItem>();
-    protected SQLPartitionBy    dbPartitionBy;
+    protected SQLPartitionBy dbPartitionBy;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -116,7 +112,6 @@ public class SQLAlterIndexStatement extends SQLStatementImpl implements SQLAlter
     }
 
     public static class Rebuild extends SQLObjectImpl {
-
         private SQLObject option;
 
         public SQLObject getOption() {

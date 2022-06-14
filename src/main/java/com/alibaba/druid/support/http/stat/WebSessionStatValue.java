@@ -20,35 +20,34 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class WebSessionStatValue {
-
     String sessionId;
 
-    int    runningCount;
-    int    concurrentMax;
-    long   requestCount;
-    long   requestErrorCount;
-    long   requestTimeNano;
-    long   jdbcFetchRowCount;
-    long   jdbcUpdateCount;
-    long   jdbcExecuteCount;
-    long   jdbcExecuteTimeNano;
-    long   jdbcCommitCount;
-    long   jdbcRollbackCount;
-    long   createTimeMillis;
-    long   lastAccessTimeMillis;
+    int runningCount;
+    int concurrentMax;
+    long requestCount;
+    long requestErrorCount;
+    long requestTimeNano;
+    long jdbcFetchRowCount;
+    long jdbcUpdateCount;
+    long jdbcExecuteCount;
+    long jdbcExecuteTimeNano;
+    long jdbcCommitCount;
+    long jdbcRollbackCount;
+    long createTimeMillis;
+    long lastAccessTimeMillis;
     String remoteAddress;
     String principal;
     String userAgent;
 
-    int    requestIntervalHistogram_0_1;
-    int    requestIntervalHistogram_1_10;
-    int    requestIntervalHistogram_10_100;
-    int    requestIntervalHistogram_100_1000;
-    int    requestIntervalHistogram_1000_10000;
-    int    requestIntervalHistogram_10000_100000;
-    int    requestIntervalHistogram_100000_1000000;
-    int    requestIntervalHistogram_1000000_10000000;
-    int    requestIntervalHistogram_10000000_more;
+    int requestIntervalHistogram_0_1;
+    int requestIntervalHistogram_1_10;
+    int requestIntervalHistogram_10_100;
+    int requestIntervalHistogram_100_1000;
+    int requestIntervalHistogram_1000_10000;
+    int requestIntervalHistogram_10000_100000;
+    int requestIntervalHistogram_100000_1000000;
+    int requestIntervalHistogram_1000000_10000000;
+    int requestIntervalHistogram_10000000_more;
 
     public String getSessionId() {
         return sessionId;
@@ -209,9 +208,9 @@ public class WebSessionStatValue {
     public long getJdbcExecuteTimeMillis() {
         return getJdbcExecuteTimeNano() / (1000 * 1000);
     }
-    
+
     public long[] getRequestInterval() {
-        return new long[] {
+        return new long[]{
                 //
                 requestIntervalHistogram_0_1, //
                 requestIntervalHistogram_1_10, //

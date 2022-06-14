@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -28,7 +27,6 @@ public class SQLAlterTableSetOption extends SQLObjectImpl implements SQLAlterTab
     private SQLName on;
 
     public SQLAlterTableSetOption() {
-
     }
 
     public List<SQLAssignItem> getOptions() {

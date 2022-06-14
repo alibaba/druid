@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
@@ -14,10 +14,9 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_63 extends TestCase {
     public void test_for_parameterize() throws Exception {
-
         String sql = "select * from abc where id in (null)";
 
-        List<Object> params =  new ArrayList<Object>();
+        List<Object> params = new ArrayList<Object>();
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedUnMergeShardingTable);
         assertEquals("SELECT *\n" +
                 "FROM abc\n" +
@@ -32,10 +31,9 @@ public class MySqlParameterizedOutputVisitorTest_63 extends TestCase {
     }
 
     public void test_for_parameterize_1() throws Exception {
-
         String sql = "select * from abc where id in (1)";
 
-        List<Object> params =  new ArrayList<Object>();
+        List<Object> params = new ArrayList<Object>();
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedUnMergeShardingTable);
         assertEquals("SELECT *\n" +
                 "FROM abc\n" +
@@ -50,10 +48,9 @@ public class MySqlParameterizedOutputVisitorTest_63 extends TestCase {
     }
 
     public void test_for_parameterize_2() throws Exception {
-
         String sql = "select * from abc where id in (null, null)";
 
-        List<Object> params =  new ArrayList<Object>();
+        List<Object> params = new ArrayList<Object>();
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedUnMergeShardingTable);
         assertEquals("SELECT *\n" +
                 "FROM abc\n" +

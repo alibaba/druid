@@ -27,23 +27,21 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 /**
- * 
- * @Description: create procedure parameter type support
  * @author zz email:455910092@qq.com
- * @date 2015-9-14
  * @version V1.0
+ * @Description: create procedure parameter type support
+ * @date 2015-9-14
  */
 public class MySqlCreateProcedureTest6 extends MysqlTest {
-
     public void test_0() throws Exception {
-    	String sql="create or replace procedure sp_name(level int,age int)"+
-				" begin"+
-    			" insert into test values(id,age);"+
-				" end";
-	
-    	MySqlStatementParser parser=new MySqlStatementParser(sql);
-    	List<SQLStatement> statementList = parser.parseStatementList();
-    	SQLStatement statemen = statementList.get(0);
+        String sql = "create or replace procedure sp_name(level int,age int)" +
+                " begin" +
+                " insert into test values(id,age);" +
+                " end";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
 //    	print(statementList);
         Assert.assertEquals(1, statementList.size());
 
@@ -54,24 +52,25 @@ public class MySqlCreateProcedureTest6 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
-        
+
         Assert.assertTrue(visitor.containsColumn("test", "id"));
     }
+
     public void test_1() throws Exception {
-    	String sql="create or replace procedure sp_name(in level int,in age int)"+
-				" begin"+
-    			" insert into test values(id,age);"+
-				" end";
-	
-    	MySqlStatementParser parser=new MySqlStatementParser(sql);
-    	List<SQLStatement> statementList = parser.parseStatementList();
-    	SQLStatement statemen = statementList.get(0);
+        String sql = "create or replace procedure sp_name(in level int,in age int)" +
+                " begin" +
+                " insert into test values(id,age);" +
+                " end";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
 //    	print(statementList);
         Assert.assertEquals(1, statementList.size());
 
@@ -82,24 +81,25 @@ public class MySqlCreateProcedureTest6 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
-        
+
         Assert.assertTrue(visitor.containsColumn("test", "id"));
     }
+
     public void test_2() throws Exception {
-    	String sql="create or replace procedure sp_name(out level int,out age int)"+
-				" begin"+
-    			" insert into test values(id,age);"+
-				" end";
-	
-    	MySqlStatementParser parser=new MySqlStatementParser(sql);
-    	List<SQLStatement> statementList = parser.parseStatementList();
-    	SQLStatement statemen = statementList.get(0);
+        String sql = "create or replace procedure sp_name(out level int,out age int)" +
+                " begin" +
+                " insert into test values(id,age);" +
+                " end";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
 //    	print(statementList);
         Assert.assertEquals(1, statementList.size());
 
@@ -110,25 +110,25 @@ public class MySqlCreateProcedureTest6 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
-        
+
         Assert.assertTrue(visitor.containsColumn("test", "id"));
     }
 
     public void test_3() throws Exception {
-    	String sql="create or replace procedure sp_name(inout level int,inout age int)"+
-				" begin"+
-    			" insert into test values(id,age);"+
-				" end";
-	
-    	MySqlStatementParser parser=new MySqlStatementParser(sql);
-    	List<SQLStatement> statementList = parser.parseStatementList();
-    	SQLStatement statemen = statementList.get(0);
+        String sql = "create or replace procedure sp_name(inout level int,inout age int)" +
+                " begin" +
+                " insert into test values(id,age);" +
+                " end";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
 //    	print(statementList);
         Assert.assertEquals(1, statementList.size());
 
@@ -139,14 +139,14 @@ public class MySqlCreateProcedureTest6 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
-        
+
         Assert.assertTrue(visitor.containsColumn("test", "id"));
     }
-    
+
 }

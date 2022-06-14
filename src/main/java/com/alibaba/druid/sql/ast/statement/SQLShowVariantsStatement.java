@@ -20,9 +20,8 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowVariantsStatement extends SQLStatementImpl implements SQLShowStatement {
-
-    private boolean global  = false;
-    private boolean session = false;
+    private boolean global;
+    private boolean session;
 
     private SQLExpr like;
     private SQLExpr where;

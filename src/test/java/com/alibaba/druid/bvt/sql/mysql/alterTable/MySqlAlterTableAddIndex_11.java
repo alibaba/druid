@@ -18,7 +18,6 @@ import org.junit.Assert;
  * @Date 2019-05-06 15:45
  */
 public class MySqlAlterTableAddIndex_11 extends TestCase {
-
     public void test_alter_table_add_index_with_options() throws Exception {
         String sql = "ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2 ADD FULLTEXT INDEX title_fulltext_idx (title) WITH INDEX ANALYZER index_analyzer2 WITH QUERY ANALYZER query_analyzer2 WITH DICT user_dict;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

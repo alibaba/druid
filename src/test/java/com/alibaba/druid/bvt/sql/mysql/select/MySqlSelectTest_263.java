@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_263 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT 0<18446744073709551500";
 

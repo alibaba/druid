@@ -26,18 +26,17 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest42 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE rc (" + //
-                     "    a INT NOT NULL, " + //
-                     "    b INT NOT NULL" + //
-                     ")" + //
-                     "PARTITION BY RANGE COLUMNS(a,b) (" + //
-                     "    PARTITION p0 VALUES LESS THAN (10,5)," + //
-                     "    PARTITION p1 VALUES LESS THAN (20,10)," + //
-                     "    PARTITION p2 VALUES LESS THAN (MAXVALUE,15)," + //
-                     "    PARTITION p3 VALUES LESS THAN (MAXVALUE,MAXVALUE)" + //
-                     ");"; //
+                "    a INT NOT NULL, " + //
+                "    b INT NOT NULL" + //
+                ")" + //
+                "PARTITION BY RANGE COLUMNS(a,b) (" + //
+                "    PARTITION p0 VALUES LESS THAN (10,5)," + //
+                "    PARTITION p1 VALUES LESS THAN (20,10)," + //
+                "    PARTITION p2 VALUES LESS THAN (MAXVALUE,15)," + //
+                "    PARTITION p3 VALUES LESS THAN (MAXVALUE,MAXVALUE)" + //
+                ");"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

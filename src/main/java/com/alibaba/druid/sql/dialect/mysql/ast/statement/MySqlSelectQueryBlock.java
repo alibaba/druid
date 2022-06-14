@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLWindow;
@@ -32,19 +31,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlObject {
-    private boolean              hignPriority;
-    private boolean              straightJoin;
-    private boolean              smallResult;
-    private boolean              bigResult;
-    private boolean              bufferResult;
-    private Boolean              cache;
-    private boolean              calcFoundRows;
-    private SQLName              procedureName;
-    private List<SQLExpr>        procedureArgumentList;
-    private boolean              lockInShareMode;
-    private SQLName              forcePartition; // for petadata
+    private boolean hignPriority;
+    private boolean straightJoin;
+    private boolean smallResult;
+    private boolean bigResult;
+    private boolean bufferResult;
+    private Boolean cache;
+    private boolean calcFoundRows;
+    private SQLName procedureName;
+    private List<SQLExpr> procedureArgumentList;
+    private boolean lockInShareMode;
+    private SQLName forcePartition; // for petadata
 
-    public MySqlSelectQueryBlock(){
+    public MySqlSelectQueryBlock() {
         dbType = DbType.mysql;
     }
 
@@ -83,7 +82,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
         return hints.size();
     }
-
 
     public boolean isLockInShareMode() {
         return lockInShareMode;
@@ -164,33 +162,63 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
         this.calcFoundRows = calcFoundRows;
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         MySqlSelectQueryBlock that = (MySqlSelectQueryBlock) o;
 
-        if (hignPriority != that.hignPriority) return false;
-        if (straightJoin != that.straightJoin) return false;
-        if (smallResult != that.smallResult) return false;
-        if (bigResult != that.bigResult) return false;
-        if (bufferResult != that.bufferResult) return false;
-        if (calcFoundRows != that.calcFoundRows) return false;
-        if (lockInShareMode != that.lockInShareMode) return false;
-        if (cache != null ? !cache.equals(that.cache) : that.cache != null) return false;
-        if (procedureName != null ? !procedureName.equals(that.procedureName) : that.procedureName != null)
+        if (hignPriority != that.hignPriority) {
             return false;
+        }
+        if (straightJoin != that.straightJoin) {
+            return false;
+        }
+        if (smallResult != that.smallResult) {
+            return false;
+        }
+        if (bigResult != that.bigResult) {
+            return false;
+        }
+        if (bufferResult != that.bufferResult) {
+            return false;
+        }
+        if (calcFoundRows != that.calcFoundRows) {
+            return false;
+        }
+        if (lockInShareMode != that.lockInShareMode) {
+            return false;
+        }
+        if (cache != null ? !cache.equals(that.cache) : that.cache != null) {
+            return false;
+        }
+        if (procedureName != null ? !procedureName.equals(that.procedureName) : that.procedureName != null) {
+            return false;
+        }
         if (procedureArgumentList != null ? !procedureArgumentList.equals(that.procedureArgumentList) :
-                that.procedureArgumentList != null) return false;
-        if (hints != null ? !hints.equals(that.hints) : that.hints != null) return false;
-        if (forcePartition != null ? !forcePartition.equals(that.forcePartition) : that.forcePartition != null)
+                that.procedureArgumentList != null) {
             return false;
+        }
+        if (hints != null ? !hints.equals(that.hints) : that.hints != null) {
+            return false;
+        }
+        if (forcePartition != null ? !forcePartition.equals(that.forcePartition) : that.forcePartition != null) {
+            return false;
+        }
 
         return true;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (hignPriority ? 1 : 0);
         result = 31 * result + (straightJoin ? 1 : 0);

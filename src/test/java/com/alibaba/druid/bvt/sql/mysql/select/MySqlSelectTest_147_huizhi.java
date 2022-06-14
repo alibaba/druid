@@ -13,7 +13,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_147_huizhi extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO hz_dev_hb.tb_tmp_cda_opera_281c (target, appeartimes, source_id) SELECT\n" +
                 "           VARCHAR20,\n" +
@@ -26,7 +25,7 @@ public class MySqlSelectTest_147_huizhi extends MysqlTest {
                 "         GROUP BY VARCHAR20";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLInsertStatement stmt = (SQLInsertStatement)statementList.get(0);
+        SQLInsertStatement stmt = (SQLInsertStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

@@ -29,7 +29,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_12 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT COUNT(*) a FROM (select nickname,mobile,comment,createdate from ub_userdiscuss order by discuss_id desc) b  ";
 
@@ -65,6 +64,6 @@ public class MySqlSelectTest_12 extends MysqlTest {
                         "\tFROM ub_userdiscuss\n" +
                         "\tORDER BY discuss_id DESC\n" +
                         ") b", //
-                            output);
+                output);
     }
 }

@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest89_condition extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select * from v.e\n" +

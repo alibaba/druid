@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class MySqlSelectTest_comment
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select xxx comment, xxx as comment from t";
 

@@ -18,8 +18,8 @@ package com.alibaba.druid.sql.parser;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class CharTypes {
+    private static final boolean[] hexFlags = new boolean[256];
 
-    private final static boolean[] hexFlags = new boolean[256];
     static {
         for (char c = 0; c < hexFlags.length; ++c) {
             if (c >= 'A' && c <= 'F') {
@@ -40,7 +40,8 @@ public class CharTypes {
         return c >= '0' && c <= '9';
     }
 
-    private final static boolean[] firstIdentifierFlags = new boolean[256];
+    private static final boolean[] firstIdentifierFlags = new boolean[256];
+
     static {
         for (char c = 0; c < firstIdentifierFlags.length; ++c) {
             if (c >= 'A' && c <= 'Z') {
@@ -61,8 +62,9 @@ public class CharTypes {
         return c != '　' && c != '，';
     }
 
-    private final static String[] stringCache = new String[256];
-    private final static boolean[] identifierFlags = new boolean[256];
+    private static final String[] stringCache = new String[256];
+    private static final boolean[] identifierFlags = new boolean[256];
+
     static {
         for (char c = 0; c < identifierFlags.length; ++c) {
             if (c >= 'A' && c <= 'Z') {
@@ -100,17 +102,18 @@ public class CharTypes {
         return null;
     }
 
-    private final static boolean[] whitespaceFlags = new boolean[256];
+    private static final boolean[] whitespaceFlags = new boolean[256];
+
     static {
         for (int i = 0; i <= 32; ++i) {
             whitespaceFlags[i] = true;
         }
-        
+
         whitespaceFlags[EOI] = false;
         for (int i = 0x7F; i <= 0xA0; ++i) {
             whitespaceFlags[i] = true;
         }
-   
+
         whitespaceFlags[160] = true; // 特别处理
 //        whitespaceFlags[223] = true; // 特别处理, odps
 //        whitespaceFlags[229] = true; // 特别处理, odps
@@ -122,7 +125,7 @@ public class CharTypes {
      */
     public static boolean isWhitespace(char c) {
         return (c <= whitespaceFlags.length && whitespaceFlags[c]) //
-               || c == '　'; // Chinese space
+                || c == '　'; // Chinese space
     }
 
     public static String trim(String value) {

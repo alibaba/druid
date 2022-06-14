@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SQLServerRowNumberTest extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "SELECT c.FirstName, c.LastName" + //
                 "    ,ROW_NUMBER() OVER(ORDER BY SalesYTD DESC) AS 'Row Number'" + //

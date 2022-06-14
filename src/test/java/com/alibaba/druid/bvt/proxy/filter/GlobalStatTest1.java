@@ -15,13 +15,12 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class GlobalStatTest1 extends TestCase {
-
     private DruidDataSource dataSourceA;
     private DruidDataSource dataSourceB;
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-        
+
         dataSourceA = new DruidDataSource();
         dataSourceA.setUrl("jdbc:mock:xx_A");
         dataSourceA.setFilters("stat");
@@ -36,9 +35,9 @@ public class GlobalStatTest1 extends TestCase {
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSourceA);
         JdbcUtils.close(dataSourceB);
-        
+
         JdbcDataSourceStat.setGlobal(null);
-        
+
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
@@ -48,7 +47,6 @@ public class GlobalStatTest1 extends TestCase {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1");
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();
@@ -59,7 +57,6 @@ public class GlobalStatTest1 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
             }
             rs.close();
             stmt.close();

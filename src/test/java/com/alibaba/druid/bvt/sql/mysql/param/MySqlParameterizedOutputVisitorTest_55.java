@@ -41,7 +41,6 @@ public class MySqlParameterizedOutputVisitorTest_55 extends TestCase {
 
         System.out.println(psql);
 
-
         assertEquals("SELECT fck1.fck_order_id, fck1.out_order_id, fck1.seller_nick, fck1.buyer_nick, fck1.seller_id\n" +
                 "\t, fck1.buyer_id, fck1.auction_id, fck1.auction_title, fck1.auction_price, fck1.buy_amount\n" +
                 "\t, fck1.fck_type, fck1.sub_fck_type, fck1.fail_reason, fck1.pay_status, fck1.logistics_status\n" +

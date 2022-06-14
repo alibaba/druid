@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.dialect.mysql.ast.AnalyzerIndexType;
@@ -23,12 +22,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterTableAlterFullTextIndex extends MySqlObjectImpl implements SQLAlterTableItem {
-
     private SQLName indexName;
 
     private AnalyzerIndexType analyzerType;
-    private SQLName           analyzerName;
-
+    private SQLName analyzerName;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {

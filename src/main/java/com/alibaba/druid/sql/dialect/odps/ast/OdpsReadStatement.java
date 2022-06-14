@@ -25,11 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OdpsReadStatement extends OdpsStatementImpl {
-
-    private SQLExprTableSource  table;
+    private SQLExprTableSource table;
     private List<SQLAssignItem> partition = new ArrayList<SQLAssignItem>();
-    private List<SQLName>       columns   = new ArrayList<SQLName>();
-    private SQLExpr             rowCount;
+    private List<SQLName> columns = new ArrayList<SQLName>();
+    private SQLExpr rowCount;
 
     @Override
     protected void accept0(OdpsASTVisitor visitor) {

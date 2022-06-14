@@ -15,7 +15,7 @@ public class TPCDS {
             String path = "tpcds/query" + num + ".sql";
             InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
             String sql = Utils.read(is);
-            QUERIES[i-1] = sql;
+            QUERIES[i - 1] = sql;
             JdbcUtils.close(is);
         }
         {

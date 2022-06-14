@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateViewTest3 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "create algorithm = merge view my_view2(col1, col2) as select * from t2 with check option;\n";
 

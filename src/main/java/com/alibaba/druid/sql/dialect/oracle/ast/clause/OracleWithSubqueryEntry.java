@@ -21,9 +21,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * limitations under the License.
  */
 public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
-
     private SearchClause searchClause;
-    private CycleClause  cycleClause;
+    private CycleClause cycleClause;
 
     public CycleClause getCycleClause() {
         return cycleClause;

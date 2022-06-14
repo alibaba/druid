@@ -25,32 +25,31 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OdpsAlterTableAddColumnsTest extends TestCase {
-
     public void test_select() throws Exception {
         String sql = "alter table adl_smeta_column_indi_rule_relation_sdt add columns (rule_level string);";//
         Assert.assertEquals("ALTER TABLE adl_smeta_column_indi_rule_relation_sdt\n" +
                 "\tADD COLUMNS (rule_level STRING);", SQLUtils.formatOdps(sql));
         Assert.assertEquals("alter table adl_smeta_column_indi_rule_relation_sdt\n" +
                 "\tadd columns (rule_level string);", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
 //        System.out.println("Tables : " + visitor.getTables());
 //      System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
-        
+
 //        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-    
+
 }

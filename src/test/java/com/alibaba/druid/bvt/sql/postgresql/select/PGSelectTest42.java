@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest42 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "UPDATE sys_account AS a SET online = 2 FROM auto_handler_online o WHERE a.id = o.account_id AND a.online != 2";
 
@@ -38,7 +37,7 @@ public class PGSelectTest42 extends PGTest {
                 "FROM auto_handler_online o\n" +
                 "WHERE a.id = o.account_id\n" +
                 "\tAND a.online != 2", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("update sys_account a\n" +
                 "set online = 2\n" +
                 "from auto_handler_online o\n" +

@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SQLServerStartTransactionTest extends TestCase {
-
     public void test_stmt() throws Exception {
         String sql = "BEGIN TRAN T1;";
 

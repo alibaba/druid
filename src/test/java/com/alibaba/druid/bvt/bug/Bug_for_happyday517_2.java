@@ -31,30 +31,26 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Bug_for_happyday517_2 extends TestCase {
-
     private DruidDataSource dataSource;
-    private MockDriver      driver;
+    private MockDriver driver;
 
-    final DataTruncation    exception = new java.sql.DataTruncation(0, true, true, 0, 0);
-    
+    final DataTruncation exception = new java.sql.DataTruncation(0, true, true, 0, 0);
+
     private int originalDataSourceCount = 0;
 
     protected void setUp() throws Exception {
         originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
 
         final MockPreparedStatement mockStatement = new MockPreparedStatement(null, null) {
-
             public boolean execute() throws SQLException {
                 throw exception;
             }
         };
 
         driver = new MockDriver() {
-
             public Connection connect(String url, Properties info) throws SQLException {
                 super.connect(url, info);
                 return new MockConnection(driver, url, info) {
-
                     public PreparedStatement prepareStatement(String sql) throws SQLException {
                         return mockStatement;
                     }

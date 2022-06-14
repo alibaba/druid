@@ -20,9 +20,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.benckmark.proxy.sqlcase.SelectNow;
 
 public class DruidBenchmarkTest extends TestCase {
-
     public void test_druid_benchmark() throws Exception {
-
         BenchmarkExecutor executor = new BenchmarkExecutor();
         executor.getSqlExecutors().add(createExecutorDirect());
         executor.getSqlExecutors().add(createExecutorDruid());

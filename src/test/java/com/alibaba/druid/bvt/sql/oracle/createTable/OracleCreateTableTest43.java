@@ -26,23 +26,22 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest43 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (\t\"DNAME\" VARCHAR2(10), \n" +
-                "\t\"DATA\" VARCHAR2(20)\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                "  STORAGE(\n" +
-                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"USERS\" \n" +
-                "  PARTITION BY LIST (\"DNAME\") \n" +
-                " (PARTITION \"PART02\"  VALUES ('SMT', 'SALE') \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"USERS\" NOCOMPRESS ) \n" +
-                " ";
+                "CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (\t\"DNAME\" VARCHAR2(10), \n" +
+                        "\t\"DATA\" VARCHAR2(20)\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        "  STORAGE(\n" +
+                        "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"USERS\" \n" +
+                        "  PARTITION BY LIST (\"DNAME\") \n" +
+                        " (PARTITION \"PART02\"  VALUES ('SMT', 'SALE') \n" +
+                        "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                        "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"USERS\" NOCOMPRESS ) \n" +
+                        " ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -86,7 +85,7 @@ public class OracleCreateTableTest43 extends OracleTest {
                         "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t\t)\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

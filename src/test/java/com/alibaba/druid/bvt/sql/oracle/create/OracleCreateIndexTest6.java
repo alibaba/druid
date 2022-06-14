@@ -26,13 +26,12 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest6 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE INDEX ord_customer_ix_demo\n" +
-                "   ON orders (order_mode)\n" +
-                "   NOSORT\n" +
-                "   NOLOGGING;";
+                "CREATE INDEX ord_customer_ix_demo\n" +
+                        "   ON orders (order_mode)\n" +
+                        "   NOSORT\n" +
+                        "   NOLOGGING;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -59,7 +58,7 @@ public class OracleCreateIndexTest6 extends OracleTest {
 
         assertEquals(1, visitor.getColumns().size());
 
-         assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_mode")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_mode")));
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

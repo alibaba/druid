@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.stat.JdbcSqlStat;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
@@ -23,13 +27,8 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
-import com.alibaba.druid.stat.JdbcSqlStat;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
 public class JdbcSqlStatUtils {
-
-    private final static Log LOG = LogFactory.getLog(JdbcSqlStatUtils.class);
+    private static final Log LOG = LogFactory.getLog(JdbcSqlStatUtils.class);
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> getData(Object jdbcSqlStat) {
@@ -77,7 +76,7 @@ public class JdbcSqlStatUtils {
             return updater.get(stat);
         }
     }
-    
+
     public static long get(AtomicLong counter, boolean reset) {
         if (reset) {
             return counter.getAndSet(0);
@@ -85,7 +84,7 @@ public class JdbcSqlStatUtils {
             return counter.get();
         }
     }
-    
+
     public static int get(AtomicInteger counter, boolean reset) {
         if (reset) {
             return counter.getAndSet(0);

@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlFormatTest3 extends TestCase {
-
     public void test_0() throws Exception {
         String text = "select * from db_00.t_00_00 where id > 1;";
         Assert.assertEquals("SELECT *\n" +

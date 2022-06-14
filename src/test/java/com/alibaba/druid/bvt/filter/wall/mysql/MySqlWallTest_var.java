@@ -23,35 +23,34 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest_var extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT @@GLOBAL.sql_mode")); //
+                "SELECT @@GLOBAL.sql_mode")); //
     }
 
     public void test_true_1() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT @@SESSION.sql_mode;")); //
+                "SELECT @@SESSION.sql_mode;")); //
     }
 
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "SELECT * FROM T WHERE @@SESSION.sql_mode = 'ANSI'")); //
+                "SELECT * FROM T WHERE @@SESSION.sql_mode = 'ANSI'")); //
     }
 
     public void test_true2() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT * FROM T WHERE @@sql_mode = 'ANSI'")); //
+                "SELECT * FROM T WHERE @@sql_mode = 'ANSI'")); //
     }
 
     public void test_false_1() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "SELECT * FROM T WHERE @@basedir = 'ANSI'")); //
+                "SELECT * FROM T WHERE @@basedir = 'ANSI'")); //
     }
 }

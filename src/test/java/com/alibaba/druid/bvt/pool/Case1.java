@@ -29,7 +29,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Case1 extends PoolTestCase {
-
     public void test_f() throws Exception {
         final DruidDataSource dataSource = new DruidDataSource();
         dataSource.setTimeBetweenConnectErrorMillis(100);
@@ -38,7 +37,6 @@ public class Case1 extends PoolTestCase {
         final long okTime = startTime + 1000 * 1;
 
         dataSource.setDriver(new MockDriver() {
-
             @Override
             public Connection connect(String url, Properties info) throws SQLException {
                 if (System.currentTimeMillis() < okTime) {

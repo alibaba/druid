@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AdsLexer extends Lexer {
-    public final static Keywords DEFAULT_ADS_KEYWORDS;
+    public static final Keywords DEFAULT_ADS_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -37,7 +37,7 @@ public class AdsLexer extends Lexer {
         super.keywords = DEFAULT_ADS_KEYWORDS;
     }
 
-    public AdsLexer(String input, SQLParserFeature... features){
+    public AdsLexer(String input, SQLParserFeature... features) {
         super(input);
         super.keywords = DEFAULT_ADS_KEYWORDS;
         for (SQLParserFeature feature : features) {

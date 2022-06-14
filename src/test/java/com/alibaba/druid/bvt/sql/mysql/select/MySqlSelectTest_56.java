@@ -24,9 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_56 extends MysqlTest {
-
     public void test_0() throws Exception {
-        String sql =  "select * from (\n" +
+        String sql = "select * from (\n" +
                 "select seller_name from a where id < 100\n" +
                 "UNION\n" +
                 "select seller_name from a where id < 100\n" +
@@ -47,12 +46,12 @@ public class MySqlSelectTest_56 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT *\n" +
@@ -66,7 +65,7 @@ public class MySqlSelectTest_56 extends MysqlTest {
                             "\tWHERE id < 100\n" +
                             ") temp\n" +
                             "LIMIT 10", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -81,7 +80,7 @@ public class MySqlSelectTest_56 extends MysqlTest {
                             "\twhere id < 100\n" +
                             ") temp\n" +
                             "limit 10", //
-                                output);
+                    output);
         }
 
         {

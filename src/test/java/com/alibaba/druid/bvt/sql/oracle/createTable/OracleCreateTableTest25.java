@@ -27,17 +27,16 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest25 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE locations_demo" //
-                + "    ( location_id    NUMBER(4) "//
-                + "    , street_address VARCHAR2(40)"//
-                + "    , postal_code    VARCHAR2(12)"//
-                + "    , city           VARCHAR2(30)"//
-                + "    , state_province VARCHAR2(25)"//
-                + "    , country_id     CHAR(2)"//
-                + "    , CONSTRAINT loc_id_pk PRIMARY KEY (location_id));";
+                "CREATE TABLE locations_demo" //
+                        + "    ( location_id    NUMBER(4) "//
+                        + "    , street_address VARCHAR2(40)"//
+                        + "    , postal_code    VARCHAR2(12)"//
+                        + "    , city           VARCHAR2(30)"//
+                        + "    , state_province VARCHAR2(25)"//
+                        + "    , country_id     CHAR(2)"//
+                        + "    , CONSTRAINT loc_id_pk PRIMARY KEY (location_id));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -47,15 +46,15 @@ public class OracleCreateTableTest25 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE TABLE locations_demo (" //
-                            + "\n\tlocation_id NUMBER(4)," //
-                            + "\n\tstreet_address VARCHAR2(40)," //
-                            + "\n\tpostal_code VARCHAR2(12)," //
-                            + "\n\tcity VARCHAR2(30)," //
-                            + "\n\tstate_province VARCHAR2(25)," //
-                            + "\n\tcountry_id CHAR(2),"
-                            + "\n\tCONSTRAINT loc_id_pk PRIMARY KEY (location_id)" //
-                            + "\n);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\n\tlocation_id NUMBER(4)," //
+                        + "\n\tstreet_address VARCHAR2(40)," //
+                        + "\n\tpostal_code VARCHAR2(12)," //
+                        + "\n\tcity VARCHAR2(30)," //
+                        + "\n\tstate_province VARCHAR2(25)," //
+                        + "\n\tcountry_id CHAR(2),"
+                        + "\n\tCONSTRAINT loc_id_pk PRIMARY KEY (location_id)" //
+                        + "\n);",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

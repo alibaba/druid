@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import junit.framework.TestCase;
 
 public class FullTextSearchesWithQueryExpansionTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM articles WHERE MATCH (title,body) AGAINST ('database' IN NATURAL LANGUAGE MODE)";
 
@@ -37,19 +36,19 @@ public class FullTextSearchesWithQueryExpansionTest extends TestCase {
 
         {
             String text = SQLUtils.toMySqlString(stmt);
-    
+
             Assert.assertEquals("SELECT *" //
-                    + "\nFROM articles" //
-                    + "\nWHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE)",
-                                text);
+                            + "\nFROM articles" //
+                            + "\nWHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE)",
+                    text);
         }
         {
             String text = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-    
+
             Assert.assertEquals("select *" //
-                    + "\nfrom articles" //
-                    + "\nwhere match (title, body) against ('database' in natural language mode)",
-                                text);
+                            + "\nfrom articles" //
+                            + "\nwhere match (title, body) against ('database' in natural language mode)",
+                    text);
         }
     }
 

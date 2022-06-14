@@ -27,20 +27,18 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_23 extends MysqlTest {
-
     public void test_0() throws Exception {
-
         SchemaRepository repository = new SchemaRepository(DbType.ads);
         repository.acceptDDL("CREATE TABLE linxi_test.test_realtime1 (\n" + "  id bigint NOT NULL COMMENT '',\n"
-                             + "  int_test1 bigint NOT NULL COMMENT '',\n" + "  boolean_test boolean COMMENT '',\n"
-                             + "  byte_test tinyint COMMENT '',\n" + "  short_test smallint COMMENT '',\n"
-                             + "  int_test2 int COMMENT '',\n" + "  float_test float COMMENT '',\n"
-                             + "  string_test varchar COMMENT '',\n" + "  date_test date COMMENT '',\n"
-                             + "  time_test time COMMENT '',\n" + "  timestamp_test timestamp COMMENT '',\n"
-                             + "  double_test double COMMENT '',\n" + "  INDEX id_index HASH (string_test),\n"
-                             + "  PRIMARY KEY (id,int_test1,int_test2)\n" + ")\n"
-                             + "PARTITION BY HASH KEY (id) PARTITION NUM 10\n" + "TABLEGROUP group2\n"
-                             + "OPTIONS (UPDATETYPE='realtime')\n" + "COMMENT ''");
+                + "  int_test1 bigint NOT NULL COMMENT '',\n" + "  boolean_test boolean COMMENT '',\n"
+                + "  byte_test tinyint COMMENT '',\n" + "  short_test smallint COMMENT '',\n"
+                + "  int_test2 int COMMENT '',\n" + "  float_test float COMMENT '',\n"
+                + "  string_test varchar COMMENT '',\n" + "  date_test date COMMENT '',\n"
+                + "  time_test time COMMENT '',\n" + "  timestamp_test timestamp COMMENT '',\n"
+                + "  double_test double COMMENT '',\n" + "  INDEX id_index HASH (string_test),\n"
+                + "  PRIMARY KEY (id,int_test1,int_test2)\n" + ")\n"
+                + "PARTITION BY HASH KEY (id) PARTITION NUM 10\n" + "TABLEGROUP group2\n"
+                + "OPTIONS (UPDATETYPE='realtime')\n" + "COMMENT ''");
 
 
 //        String sql = "INSERT INTO test_realtime1(id, int_test1, int_test2, string_test, date_test, time_test, timestamp_test)\n"
@@ -59,18 +57,16 @@ public class MySqlSelectTest_23 extends MysqlTest {
         statemen.accept(visitor);
 
 
-
 //        System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
     }
-    
-    
-    
+
+
 }

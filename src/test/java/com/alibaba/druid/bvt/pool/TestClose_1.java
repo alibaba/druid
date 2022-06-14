@@ -28,7 +28,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestClose_1 extends PoolTestCase {
-
     public void test_close() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setPoolPreparedStatements(true);

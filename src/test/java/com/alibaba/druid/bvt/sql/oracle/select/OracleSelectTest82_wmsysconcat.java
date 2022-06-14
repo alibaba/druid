@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest82_wmsysconcat extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "SELECT supReg.regId,supReg.Title,supReg.Docnum,supReg.Itemtype,\n" +
@@ -46,7 +45,6 @@ public class OracleSelectTest82_wmsysconcat extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
-
 
 
         Assert.assertEquals(1, statementList.size());
@@ -88,8 +86,8 @@ public class OracleSelectTest82_wmsysconcat extends OracleTest {
         Assert.assertTrue(visitor.containsTable("sup_task"));
         Assert.assertTrue(visitor.containsTable("sys_org"));
 
-         Assert.assertTrue(visitor.containsColumn("sup_task", "orgid"));
-         Assert.assertTrue(visitor.containsColumn("sup_task", "orgid"));
+        Assert.assertTrue(visitor.containsColumn("sup_task", "orgid"));
+        Assert.assertTrue(visitor.containsColumn("sup_task", "orgid"));
 //
     }
 }

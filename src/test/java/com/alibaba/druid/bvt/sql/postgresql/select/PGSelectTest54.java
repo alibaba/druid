@@ -39,7 +39,7 @@ public class PGSelectTest54 extends TestCase {
                 "FROM public.v_poi\n" +
                 "ORDER BY public.v_poi.geom <-> st_point(?, ?)\n" +
                 "LIMIT 1", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select gid, kind, mapid, poi_id, telephone\n" +
                 "\t, admincode, x, y, zipcode, name\n" +
                 "\t, address, street, number, geom\n" +

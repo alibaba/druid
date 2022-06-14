@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class DB2SelectTest_9 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "select tsuserstb0_.USERID as USERID1_1_, tsuserstb0_.CREASTAF as CREASTAF2_1_"
                 + " , tsuserstb0_.CREATIME as CREATIME3_1_, tsuserstb0_.LOCORGNO as LOCORGNO4_1_"
@@ -64,16 +63,16 @@ public class DB2SelectTest_9 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("SELECT tsuserstb0_.USERID AS USERID1_1_, tsuserstb0_.CREASTAF AS CREASTAF2_1_, tsuserstb0_.CREATIME AS CREATIME3_1_, tsuserstb0_.LOCORGNO AS LOCORGNO4_1_, tsuserstb0_.PWDMODIFYTIME AS PWDMODIF5_1_"
-                + "\n\t, tsuserstb0_.REMARK01 AS REMARK6_1_, tsuserstb0_.REMARK02 AS REMARK7_1_, tsuserstb0_.STAORGNO AS STAORGNO8_1_, tsuserstb0_.UPDASTAF AS UPDASTAF9_1_, tsuserstb0_.UPDATIME AS UPDATIM10_1_"
-                + "\n\t, tsuserstb0_.USERNAME AS USERNAM11_1_, tsuserstb0_.USERPWD AS USERPWD12_1_, tsuserstb0_.USERSTATE AS USERSTA13_1_"
-                + "\nFROM TS_USERSTB tsuserstb0_"
-                + "\nFETCH FIRST 10 ROWS ONLY", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+                        + "\n\t, tsuserstb0_.REMARK01 AS REMARK6_1_, tsuserstb0_.REMARK02 AS REMARK7_1_, tsuserstb0_.STAORGNO AS STAORGNO8_1_, tsuserstb0_.UPDASTAF AS UPDASTAF9_1_, tsuserstb0_.UPDATIME AS UPDATIM10_1_"
+                        + "\n\t, tsuserstb0_.USERNAME AS USERNAM11_1_, tsuserstb0_.USERPWD AS USERPWD12_1_, tsuserstb0_.USERSTATE AS USERSTA13_1_"
+                        + "\nFROM TS_USERSTB tsuserstb0_"
+                        + "\nFETCH FIRST 10 ROWS ONLY", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         Assert.assertEquals("select tsuserstb0_.USERID as USERID1_1_, tsuserstb0_.CREASTAF as CREASTAF2_1_, tsuserstb0_.CREATIME as CREATIME3_1_, tsuserstb0_.LOCORGNO as LOCORGNO4_1_, tsuserstb0_.PWDMODIFYTIME as PWDMODIF5_1_"
-                + "\n\t, tsuserstb0_.REMARK01 as REMARK6_1_, tsuserstb0_.REMARK02 as REMARK7_1_, tsuserstb0_.STAORGNO as STAORGNO8_1_, tsuserstb0_.UPDASTAF as UPDASTAF9_1_, tsuserstb0_.UPDATIME as UPDATIM10_1_"
-                + "\n\t, tsuserstb0_.USERNAME as USERNAM11_1_, tsuserstb0_.USERPWD as USERPWD12_1_, tsuserstb0_.USERSTATE as USERSTA13_1_"
-                + "\nfrom TS_USERSTB tsuserstb0_"
-                + "\nfetch first 10 rows only", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                        + "\n\t, tsuserstb0_.REMARK01 as REMARK6_1_, tsuserstb0_.REMARK02 as REMARK7_1_, tsuserstb0_.STAORGNO as STAORGNO8_1_, tsuserstb0_.UPDASTAF as UPDASTAF9_1_, tsuserstb0_.UPDATIME as UPDATIM10_1_"
+                        + "\n\t, tsuserstb0_.USERNAME as USERNAM11_1_, tsuserstb0_.USERPWD as USERPWD12_1_, tsuserstb0_.USERSTATE as USERSTA13_1_"
+                        + "\nfrom TS_USERSTB tsuserstb0_"
+                        + "\nfetch first 10 rows only", //
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

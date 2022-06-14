@@ -24,5 +24,5 @@ public class OdpsFormatInTest extends TestCase {
                 + "\n\t'10'"
                 + "\n)"
                 + "", SQLUtils.formatOdps(sql));
-    }   
+    }
 }

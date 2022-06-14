@@ -35,7 +35,6 @@ public class TDDLHint extends SQLCommentHint {
             return;
         }
 
-
         lexer.nextToken();
 
         switch (lexer.token()) {
@@ -53,13 +52,13 @@ public class TDDLHint extends SQLCommentHint {
                 return;
         }
 
-        for(;;) {
+        for (; ; ) {
             if (lexer.token() == Token.AND) {
                 lexer.nextToken();
             }
 
             String name = lexer.stringVal();
-            long hash = lexer.hash_lower();
+            long hash = lexer.hashLCase();
 
             if (lexer.identifierEquals(FnvHash.Constants.NODE)) {
                 lexer.nextToken();
@@ -97,7 +96,7 @@ public class TDDLHint extends SQLCommentHint {
                     }
 
                     continue;
-                } else if (lexer.token() == Token.EOF){
+                } else if (lexer.token() == Token.EOF) {
                     Function function = new Function(name);
                     functions.add(function);
                     break;
@@ -173,7 +172,6 @@ public class TDDLHint extends SQLCommentHint {
                 continue;
             }
 
-
             Function function = new Function(name);
 
             functions.add(function);
@@ -209,7 +207,7 @@ public class TDDLHint extends SQLCommentHint {
                     SQLExpr value = null;
 
                     String keyVal = lexer.stringVal();
-                    long keyHash = lexer.hash_lower();
+                    long keyHash = lexer.hashLCase();
 
                     lexer.nextToken();
 
@@ -281,7 +279,7 @@ public class TDDLHint extends SQLCommentHint {
     }
 
     public static class Function {
-        private final String         name;
+        private final String name;
         private final List<Argument> arguments = new ArrayList<Argument>();
 
         public Function(String name) {
@@ -298,7 +296,7 @@ public class TDDLHint extends SQLCommentHint {
     }
 
     public static class Argument {
-        private final SQLExpr  name;
+        private final SQLExpr name;
         private final SQLExpr value;
 
         public Argument(SQLExpr name, SQLExpr value) {

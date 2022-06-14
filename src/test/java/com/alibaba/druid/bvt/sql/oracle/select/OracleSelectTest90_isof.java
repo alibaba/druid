@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest90_isof extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "select * from persons p\n" +

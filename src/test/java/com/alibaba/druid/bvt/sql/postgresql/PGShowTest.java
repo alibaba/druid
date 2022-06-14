@@ -27,7 +27,6 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
 
 public class PGShowTest extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "SHOW max_identifier_length";
 
@@ -43,18 +42,18 @@ public class PGShowTest extends PGTest {
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
-        
+
         {
             WallProvider provider = new PGWallProvider();
             Assert.assertTrue(provider.checkValid(sql));
         }
 
         // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("reviews")));
-        
+
         //Assert.assertTrue(visitor.getTables().get(new TableStat.Name("reviews")).getAlterCount() == 1);
 
         //Assert.assertTrue(visitor.getColumns().size() == 1);
     }
 
-   
+
 }

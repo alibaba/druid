@@ -18,28 +18,28 @@ public class WallStatTest_insert extends TestCase {
     public void testMySql() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         Assert.assertTrue(provider.checkValid(sql));
-        WallTableStat tableStat =  provider.getTableStat("t");
+        WallTableStat tableStat = provider.getTableStat("t");
         Assert.assertEquals(1, tableStat.getInsertCount());
     }
-    
+
     public void testOracle() throws Exception {
         WallProvider provider = new OracleWallProvider();
         Assert.assertTrue(provider.checkValid(sql));
-        WallTableStat tableStat =  provider.getTableStat("t");
+        WallTableStat tableStat = provider.getTableStat("t");
         Assert.assertEquals(1, tableStat.getInsertCount());
     }
-    
+
     public void testPG() throws Exception {
         WallProvider provider = new PGWallProvider();
         Assert.assertTrue(provider.checkValid(sql));
-        WallTableStat tableStat =  provider.getTableStat("t");
+        WallTableStat tableStat = provider.getTableStat("t");
         Assert.assertEquals(1, tableStat.getInsertCount());
     }
-    
+
     public void testSQLServer() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
         Assert.assertTrue(provider.checkValid(sql));
-        WallTableStat tableStat =  provider.getTableStat("t");
+        WallTableStat tableStat = provider.getTableStat("t");
         Assert.assertEquals(1, tableStat.getInsertCount());
     }
 

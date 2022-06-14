@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MySqlShowCharacterSetStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private SQLExpr where;
     private SQLExpr pattern;
 

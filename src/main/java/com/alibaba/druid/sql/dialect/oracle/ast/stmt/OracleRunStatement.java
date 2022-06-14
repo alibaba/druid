@@ -23,14 +23,14 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleRunStatement extends SQLStatementImpl implements OracleStatement {
-
-    private SQLExpr     expr;
+    private SQLExpr expr;
 
     public OracleRunStatement() {
-        super (DbType.oracle);
+        super(DbType.oracle);
     }
+
     public OracleRunStatement(SQLExpr expr) {
-        super (DbType.oracle);
+        super(DbType.oracle);
         this.setExpr(expr);
     }
 

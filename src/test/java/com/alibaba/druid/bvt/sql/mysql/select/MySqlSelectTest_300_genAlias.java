@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlSelectTest_300_genAlias
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT `current_date`(), `current_timestamp`(), `current_time`(), `localtime`(), `localtimestamp`()";
 

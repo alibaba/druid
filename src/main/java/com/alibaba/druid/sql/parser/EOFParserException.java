@@ -17,8 +17,7 @@ package com.alibaba.druid.sql.parser;
 
 @SuppressWarnings("serial")
 public class EOFParserException extends ParserException {
-
-    public EOFParserException(){
+    public EOFParserException() {
         super("EOF");
     }
 }

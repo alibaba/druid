@@ -8,12 +8,11 @@ import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class PagerUtilsTest_Count_Oracle_0 extends TestCase {
-
     public void test_oracle_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.count(sql, JdbcConstants.ORACLE);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
-                            "FROM t", result);
+                "FROM t", result);
         result = PagerUtils.count(sql, JdbcConstants.OCEANBASE_ORACLE);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
                 "FROM t", result);
@@ -23,7 +22,7 @@ public class PagerUtilsTest_Count_Oracle_0 extends TestCase {
         String sql = "select id, name from t";
         String result = PagerUtils.count(sql, JdbcConstants.ORACLE);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
-                            "FROM t", result);
+                "FROM t", result);
         result = PagerUtils.count(sql, JdbcConstants.OCEANBASE_ORACLE);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
                 "FROM t", result);
@@ -33,7 +32,7 @@ public class PagerUtilsTest_Count_Oracle_0 extends TestCase {
         String sql = "select id, name from t order by id";
         String result = PagerUtils.count(sql, JdbcConstants.ORACLE);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
-                            "FROM t", result);
+                "FROM t", result);
         result = PagerUtils.count(sql, JdbcConstants.OCEANBASE_ORACLE);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
                 "FROM t", result);

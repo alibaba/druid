@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlInsertTest_5 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO tbl_name (a,b,c) VALUES(1,2,3,4,5,6,7,8,9);";
 
@@ -47,7 +46,7 @@ public class MySqlInsertTest_5 extends MysqlTest {
         stmt.accept(visitor);
 
         Assert.assertEquals("INSERT INTO tbl_name (a, b, c)" + //
-                            "\nVALUES (1, 2, 3, 4, 5" + //
-                            "\n\t, 6, 7, 8, 9);", SQLUtils.toMySqlString(insertStmt));
+                "\nVALUES (1, 2, 3, 4, 5" + //
+                "\n\t, 6, 7, 8, 9);", SQLUtils.toMySqlString(insertStmt));
     }
 }

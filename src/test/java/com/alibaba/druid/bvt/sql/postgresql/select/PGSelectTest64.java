@@ -40,7 +40,7 @@ public class PGSelectTest64 extends TestCase {
                 "FROM public.newtable\n" +
                 "WHERE EXTRACT (EPOCH FROM timestamptz(column1)) >= EXTRACT (EPOCH FROM TIMESTAMP  WITH TIME ZONE '2017-09-10 00:00:00')\n" +
                 "LIMIT 10 OFFSET 0", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select *\n" +
                 "from public.newtable\n" +
                 "where extract (EPOCH from timestamptz(column1)) >= extract (EPOCH from timestamp  with time zone '2017-09-10 00:00:00')\n" +

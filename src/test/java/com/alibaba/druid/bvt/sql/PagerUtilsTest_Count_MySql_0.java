@@ -9,7 +9,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class PagerUtilsTest_Count_MySql_0 extends TestCase {
-
     public void test_mysql_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);

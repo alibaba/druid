@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlCreateTableTest84 extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `test` (\n" +
                 "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
@@ -88,7 +87,7 @@ public class MySqlCreateTableTest84 extends MysqlTest {
                     "\tKEY `k_c` (`c_mediumint`, `c_int`)\n" +
                     ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table `test` (\n" +
@@ -119,28 +118,28 @@ public class MySqlCreateTableTest84 extends MysqlTest {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         repository.console(sql);
         assertEquals("CREATE TABLE `test` (\n" +
-                "\t`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
-                "\t`c_tinyint` tinyint(4) DEFAULT '1' COMMENT 'tinyint',\n" +
-                "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
-                "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
-                "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
-                "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
-                "\t`c_decimal` decimal(10, 3) DEFAULT NULL COMMENT 'decimal',\n" +
-                "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
-                "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
-                "\t`c_timestamp` timestamp NULL DEFAULT NULL COMMENT 'timestamp',\n" +
-                "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
-                "\t`c_char` char(10) DEFAULT NULL COMMENT 'char',\n" +
-                "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
-                "\t`c_blob` blob COMMENT 'blob',\n" +
-                "\t`c_text` text COMMENT 'text',\n" +
-                "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
-                "\t`c_longblob` longblob COMMENT 'longblob',\n" +
-                "\tPRIMARY KEY (`id`),\n" +
-                "\tUNIQUE KEY `uk_a` (`c_tinyint`),\n" +
-                "\tKEY `k_b` (`c_smallint`),\n" +
-                "\tKEY `k_c` (`c_mediumint`, `c_int`)\n" +
-                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
+                        "\t`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\t`c_tinyint` tinyint(4) DEFAULT '1' COMMENT 'tinyint',\n" +
+                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\t`c_decimal` decimal(10, 3) DEFAULT NULL COMMENT 'decimal',\n" +
+                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\t`c_timestamp` timestamp NULL DEFAULT NULL COMMENT 'timestamp',\n" +
+                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
+                        "\t`c_char` char(10) DEFAULT NULL COMMENT 'char',\n" +
+                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\t`c_blob` blob COMMENT 'blob',\n" +
+                        "\t`c_text` text COMMENT 'text',\n" +
+                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
+                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
+                        "\tPRIMARY KEY (`id`),\n" +
+                        "\tUNIQUE KEY `uk_a` (`c_tinyint`),\n" +
+                        "\tKEY `k_b` (`c_smallint`),\n" +
+                        "\tKEY `k_c` (`c_mediumint`, `c_int`)\n" +
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
                 , repository.console("show create table test"));
     }
 }

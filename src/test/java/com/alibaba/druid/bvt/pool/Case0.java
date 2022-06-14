@@ -29,13 +29,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Case0 extends PoolTestCase {
-
     public void test_0() throws Exception {
-
         final DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setDriver(new MockDriver() {
-
         });
         dataSource.setUrl("jdbc:mock:");
 
@@ -50,7 +47,6 @@ public class Case0 extends PoolTestCase {
         final CountDownLatch completeLatch = new CountDownLatch(1);
         final AtomicInteger waitCount = new AtomicInteger();
         Thread t = new Thread() {
-
             public void run() {
                 try {
                     startLatch.countDown();

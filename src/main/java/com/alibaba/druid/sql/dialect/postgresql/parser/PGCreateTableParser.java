@@ -6,12 +6,11 @@ import com.alibaba.druid.sql.ast.SQLPartitionByList;
 import com.alibaba.druid.sql.parser.*;
 
 public class PGCreateTableParser extends SQLCreateTableParser {
-
-    public PGCreateTableParser(Lexer lexer){
+    public PGCreateTableParser(Lexer lexer) {
         super(new PGExprParser(lexer));
     }
 
-    public PGCreateTableParser(String sql){
+    public PGCreateTableParser(String sql) {
         super(new PGExprParser(sql));
     }
 

@@ -25,11 +25,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_31 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT name from tab1 for update wait 3";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -44,28 +43,27 @@ public class MySqlSelectTest_31 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT name"
-                    + "\nFROM tab1"
-                    + "\nFOR UPDATE WAIT 3", //
-                                output);
+                            + "\nFROM tab1"
+                            + "\nFOR UPDATE WAIT 3", //
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select name"
-                    + "\nfrom tab1"
-                    + "\nfor update wait 3", //
-                                output);
+                            + "\nfrom tab1"
+                            + "\nfor update wait 3", //
+                    output);
         }
     }
-    
-    
-    
+
+
 }

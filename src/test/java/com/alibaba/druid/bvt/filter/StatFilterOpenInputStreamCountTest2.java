@@ -17,7 +17,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterOpenInputStreamCountTest2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -27,7 +26,6 @@ public class StatFilterOpenInputStreamCountTest2 extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setTestOnBorrow(false);
         dataSource.getProxyFilters().add(new FilterAdapter() {
-
             @Override
             public java.io.InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy result,
                                                                 int columnIndex) throws SQLException {

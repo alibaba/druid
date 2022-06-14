@@ -17,12 +17,11 @@ import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleExceptionSorterTest_closeConn_1 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-        
+
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());
@@ -47,7 +46,7 @@ public class OracleExceptionSorterTest_closeConn_1 extends TestCase {
             pstmt.execute();
             pstmt.close();
             conn.close();
-            
+
             Assert.assertEquals(0, dataSource.getActiveCount());
             Assert.assertEquals(1, dataSource.getPoolingCount());
             Assert.assertEquals(1, dataSource.getCreateCount());
@@ -63,7 +62,7 @@ public class OracleExceptionSorterTest_closeConn_1 extends TestCase {
         mockConn.setError(exception);
 
         conn.close();
-        
+
         {
             Connection conn2 = dataSource.getConnection();
             conn2.close();

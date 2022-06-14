@@ -23,8 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLListExpr extends SQLExprImpl implements SQLReplaceable  {
-
+public class SQLListExpr extends SQLExprImpl implements SQLReplaceable {
     private final List<SQLExpr> items;
 
     public SQLListExpr() {
@@ -42,7 +41,7 @@ public class SQLListExpr extends SQLExprImpl implements SQLReplaceable  {
     public List<SQLExpr> getItems() {
         return items;
     }
-    
+
     public void addItem(SQLExpr item) {
         if (item != null) {
             item.setParent(this);

@@ -25,23 +25,22 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest34 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "select t.logistics_no, t.event_date, t.country, t.province" + //
-                "   , t.city,t.address, t.area_code,t.received_status  " + //
-                "from wl_tracking t  " + //
-                "where t.logistics_no in ( " + //
-                "   select el.logistics_no " + //
-                "   from escrow_logistics el" + //
-                "   where rownum <= 20" + //
-                "       and el.gmt_send between to_date ('2011-9-1', 'yyyy-mm-dd') " + //
-                "           and to_date ('2011-11-30 23:59:59','yyyy-mm-dd hh24:mi:ss')" + //
-                "       and el.received_status = 'received'" + //
-                "       and el.goods_direction = 'send_goods'" + //
-                "       and el.country = 'US'" + //
-                "       and el.logistics_company in ('Hongkong Post Air Mail','Hongkong Post Air Parcel','China Post Air Mail','China Post Air Parcel')" +
-                "       and el.recv_status_desc is null) and t.event_date is not null order by t.logistics_no, t.event_date"; //
+                "select t.logistics_no, t.event_date, t.country, t.province" + //
+                        "   , t.city,t.address, t.area_code,t.received_status  " + //
+                        "from wl_tracking t  " + //
+                        "where t.logistics_no in ( " + //
+                        "   select el.logistics_no " + //
+                        "   from escrow_logistics el" + //
+                        "   where rownum <= 20" + //
+                        "       and el.gmt_send between to_date ('2011-9-1', 'yyyy-mm-dd') " + //
+                        "           and to_date ('2011-11-30 23:59:59','yyyy-mm-dd hh24:mi:ss')" + //
+                        "       and el.received_status = 'received'" + //
+                        "       and el.goods_direction = 'send_goods'" + //
+                        "       and el.country = 'US'" + //
+                        "       and el.logistics_company in ('Hongkong Post Air Mail','Hongkong Post Air Parcel','China Post Air Mail','China Post Air Parcel')" +
+                        "       and el.recv_status_desc is null) and t.event_date is not null order by t.logistics_no, t.event_date"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,7 +51,7 @@ public class OracleSelectTest34 extends OracleTest {
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
-        
+
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

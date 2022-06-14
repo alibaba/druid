@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCommitStatement extends SQLStatementImpl {
-
     // oracle
     private boolean write;
     private Boolean wait;
     private Boolean immediate;
 
     // mysql
-    private boolean work = false;
+    private boolean work;
     private Boolean chain;
     private Boolean release;
 
@@ -36,7 +35,6 @@ public class SQLCommitStatement extends SQLStatementImpl {
     private SQLExpr delayedDurability;
 
     public SQLCommitStatement() {
-
     }
 
     public SQLCommitStatement clone() {
@@ -48,7 +46,7 @@ public class SQLCommitStatement extends SQLStatementImpl {
         x.chain = chain;
         x.release = release;
 
-        if(transactionName != null) {
+        if (transactionName != null) {
             x.setTransactionName(transactionName.clone());
         }
         if (delayedDurability != null) {

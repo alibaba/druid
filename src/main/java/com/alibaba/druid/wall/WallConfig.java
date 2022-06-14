@@ -15,128 +15,123 @@
  */
 package com.alibaba.druid.wall;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
+
 import static com.alibaba.druid.util.Utils.getBoolean;
 import static com.alibaba.druid.util.Utils.getInteger;
 import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
-
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.wall.spi.WallVisitorUtils;
-
 public class WallConfig implements WallConfigMBean {
+    private boolean noneBaseStatementAllow;
 
-    private boolean             noneBaseStatementAllow      = false;
+    private boolean callAllow = true;
+    private boolean selelctAllow = true;
+    private boolean selectIntoAllow = true;
+    private boolean selectIntoOutfileAllow;
+    private boolean selectWhereAlwayTrueCheck = true;
+    private boolean selectHavingAlwayTrueCheck = true;
+    private boolean selectUnionCheck = true;
+    private boolean selectMinusCheck = true;
+    private boolean selectExceptCheck = true;
+    private boolean selectIntersectCheck = true;
+    private boolean createTableAllow = true;
+    private boolean dropTableAllow = true;
+    private boolean alterTableAllow = true;
+    private boolean renameTableAllow = true;
+    private boolean hintAllow = true;
+    private boolean lockTableAllow = true;
+    private boolean startTransactionAllow = true;
+    private boolean blockAllow = true;
 
-    private boolean             callAllow                   = true;
-    private boolean             selelctAllow                = true;
-    private boolean             selectIntoAllow             = true;
-    private boolean             selectIntoOutfileAllow      = false;
-    private boolean             selectWhereAlwayTrueCheck   = true;
-    private boolean             selectHavingAlwayTrueCheck  = true;
-    private boolean             selectUnionCheck            = true;
-    private boolean             selectMinusCheck            = true;
-    private boolean             selectExceptCheck           = true;
-    private boolean             selectIntersectCheck        = true;
-    private boolean             createTableAllow            = true;
-    private boolean             dropTableAllow              = true;
-    private boolean             alterTableAllow             = true;
-    private boolean             renameTableAllow            = true;
-    private boolean             hintAllow                   = true;
-    private boolean             lockTableAllow              = true;
-    private boolean             startTransactionAllow       = true;
-    private boolean             blockAllow                  = true;
+    private boolean conditionAndAlwayTrueAllow;
+    private boolean conditionAndAlwayFalseAllow;
+    private boolean conditionDoubleConstAllow;
+    private boolean conditionLikeTrueAllow = true;
 
-    private boolean             conditionAndAlwayTrueAllow  = false;
-    private boolean             conditionAndAlwayFalseAllow = false;
-    private boolean             conditionDoubleConstAllow   = false;
-    private boolean             conditionLikeTrueAllow      = true;
+    private boolean selectAllColumnAllow = true;
 
-    private boolean             selectAllColumnAllow        = true;
+    private boolean deleteAllow = true;
+    private boolean deleteWhereAlwayTrueCheck = true;
+    private boolean deleteWhereNoneCheck;
 
-    private boolean             deleteAllow                 = true;
-    private boolean             deleteWhereAlwayTrueCheck   = true;
-    private boolean             deleteWhereNoneCheck        = false;
+    private boolean updateAllow = true;
+    private boolean updateWhereAlayTrueCheck = true;
+    private boolean updateWhereNoneCheck;
 
-    private boolean             updateAllow                 = true;
-    private boolean             updateWhereAlayTrueCheck    = true;
-    private boolean             updateWhereNoneCheck        = false;
+    private boolean insertAllow = true;
+    private boolean mergeAllow = true;
+    private boolean minusAllow = true;
+    private boolean intersectAllow = true;
+    private boolean replaceAllow = true;
+    private boolean setAllow = true;
+    private boolean commitAllow = true;
+    private boolean rollbackAllow = true;
+    private boolean useAllow = true;
 
-    private boolean             insertAllow                 = true;
-    private boolean             mergeAllow                  = true;
-    private boolean             minusAllow                  = true;
-    private boolean             intersectAllow              = true;
-    private boolean             replaceAllow                = true;
-    private boolean             setAllow                    = true;
-    private boolean             commitAllow                 = true;
-    private boolean             rollbackAllow               = true;
-    private boolean             useAllow                    = true;
+    private boolean multiStatementAllow;
 
-    private boolean             multiStatementAllow         = false;
+    private boolean truncateAllow = true;
 
-    private boolean             truncateAllow               = true;
+    private boolean commentAllow;
+    private boolean strictSyntaxCheck = true;
+    private boolean constArithmeticAllow = true;
+    private boolean limitZeroAllow;
 
-    private boolean             commentAllow                = false;
-    private boolean             strictSyntaxCheck           = true;
-    private boolean             constArithmeticAllow        = true;
-    private boolean             limitZeroAllow              = false;
+    private boolean describeAllow = true;
+    private boolean showAllow = true;
 
-    private boolean             describeAllow               = true;
-    private boolean             showAllow                   = true;
+    private boolean schemaCheck = true;
+    private boolean tableCheck = true;
+    private boolean functionCheck = true;
+    private boolean objectCheck = true;
+    private boolean variantCheck = true;
 
-    private boolean             schemaCheck                 = true;
-    private boolean             tableCheck                  = true;
-    private boolean             functionCheck               = true;
-    private boolean             objectCheck                 = true;
-    private boolean             variantCheck                = true;
+    private boolean mustParameterized;
 
-    private boolean             mustParameterized           = false;
+    private boolean doPrivilegedAllow;
 
-    private boolean             doPrivilegedAllow           = false;
+    protected final Set<String> denyFunctions = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denyTables = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denySchemas = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denyVariants = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denyObjects = new ConcurrentSkipListSet<String>();
 
-    protected final Set<String> denyFunctions               = new ConcurrentSkipListSet<String>();
-    protected final Set<String> denyTables                  = new ConcurrentSkipListSet<String>();
-    protected final Set<String> denySchemas                 = new ConcurrentSkipListSet<String>();
-    protected final Set<String> denyVariants                = new ConcurrentSkipListSet<String>();
-    protected final Set<String> denyObjects                 = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitFunctions = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitTables = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitSchemas = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitVariants = new ConcurrentSkipListSet<String>();
 
-    protected final Set<String> permitFunctions             = new ConcurrentSkipListSet<String>();
-    protected final Set<String> permitTables                = new ConcurrentSkipListSet<String>();
-    protected final Set<String> permitSchemas               = new ConcurrentSkipListSet<String>();
-    protected final Set<String> permitVariants              = new ConcurrentSkipListSet<String>();
+    protected final Set<String> readOnlyTables = new ConcurrentSkipListSet<String>();
 
-    protected final Set<String> readOnlyTables              = new ConcurrentSkipListSet<String>();
+    private String dir;
 
-    private String              dir;
+    private boolean inited;
 
-    private boolean             inited;
+    private String tenantTablePattern;
+    private String tenantColumn;
+    private TenantCallBack tenantCallBack;
 
-    private String              tenantTablePattern;
-    private String              tenantColumn;
-    private TenantCallBack      tenantCallBack;
+    private boolean wrapAllow = true;
+    private boolean metadataAllow = true;
 
-    private boolean             wrapAllow                   = true;
-    private boolean             metadataAllow               = true;
+    private boolean conditionOpXorAllow;
+    private boolean conditionOpBitwseAllow = true;
 
-    private boolean             conditionOpXorAllow         = false;
-    private boolean             conditionOpBitwseAllow      = true;
+    private boolean caseConditionConstAllow;
 
-    private boolean             caseConditionConstAllow     = false;
-    
-    private boolean             completeInsertValuesCheck   = false;
-    private int                 insertValuesCheckSize       = 3;
+    private boolean completeInsertValuesCheck;
+    private int insertValuesCheckSize = 3;
 
-    private int                 selectLimit                 = -1;
+    private int selectLimit = -1;
 
     protected Map<String, Set<String>> updateCheckColumns = new HashMap<String, Set<String>>();
-    protected WallUpdateCheckHandler   updateCheckHandler;
+    protected WallUpdateCheckHandler updateCheckHandler;
 
-    public WallConfig(){
+    public WallConfig() {
         this.configFromProperties(System.getProperties());
     }
 
@@ -280,7 +275,7 @@ public class WallConfig implements WallConfigMBean {
         return inited;
     }
 
-    public WallConfig(String dir){
+    public WallConfig(String dir) {
         this();
         this.dir = dir;
         this.init();
@@ -326,9 +321,9 @@ public class WallConfig implements WallConfigMBean {
 
     /**
      * allow mysql describe statement
-     * 
-     * @since 0.2.10
+     *
      * @return
+     * @since 0.2.10
      */
     public boolean isDescribeAllow() {
         return describeAllow;
@@ -336,7 +331,7 @@ public class WallConfig implements WallConfigMBean {
 
     /**
      * set allow mysql describe statement
-     * 
+     *
      * @since 0.2.10
      */
     public void setDescribeAllow(boolean describeAllow) {
@@ -676,8 +671,7 @@ public class WallConfig implements WallConfigMBean {
         this.hintAllow = hintAllow;
     }
 
-    public static abstract interface TenantCallBack {
-
+    public interface TenantCallBack {
         public static enum StatementType {
             SELECT, UPDATE, INSERT, DELETE
         }
@@ -688,14 +682,14 @@ public class WallConfig implements WallConfigMBean {
 
         /**
          * 返回resultset隐藏列名
-         * 
+         *
          * @param tableName
          */
         String getHiddenColumn(String tableName);
 
         /**
          * resultset返回值中如果包含tenantColumn的回调函数
-         * 
+         *
          * @param value tenantColumn对应的值
          */
         void filterResultsetTenantColumn(Object value);
@@ -704,7 +698,6 @@ public class WallConfig implements WallConfigMBean {
     public boolean isSelectAllow() {
         return selelctAllow;
     }
-
 
     public void setSelectAllow(boolean selelctAllow) {
         this.selelctAllow = selelctAllow;
@@ -723,7 +716,6 @@ public class WallConfig implements WallConfigMBean {
     public void setSelelctAllow(boolean selelctAllow) {
         this.setSelectAllow(selelctAllow);
     }
-
 
     public boolean isSelectWhereAlwayTrueCheck() {
         return selectWhereAlwayTrueCheck;

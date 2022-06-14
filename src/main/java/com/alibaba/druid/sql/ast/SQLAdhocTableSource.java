@@ -2,7 +2,6 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSourceImpl;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAdhocTableSource extends SQLTableSourceImpl {

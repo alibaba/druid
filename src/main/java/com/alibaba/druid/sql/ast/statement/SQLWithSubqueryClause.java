@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLWithSubqueryClause extends SQLObjectImpl {
-
-    private Boolean           recursive;
+    private Boolean recursive;
     private final List<Entry> entries = new ArrayList<Entry>();
 
     public SQLWithSubqueryClause clone() {
@@ -72,14 +71,12 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
     }
 
     public static class Entry extends SQLTableSourceImpl implements SQLReplaceable {
-
         protected final List<SQLName> columns = new ArrayList<SQLName>();
-        protected SQLSelect           subQuery;
-        protected SQLStatement        returningStatement;
-        protected SQLExpr       expr;
+        protected SQLSelect subQuery;
+        protected SQLStatement returningStatement;
+        protected SQLExpr expr;
 
         public Entry() {
-
         }
 
         public Entry(String alias, SQLSelect select) {
@@ -213,14 +210,24 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (!super.equals(o)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            if (!super.equals(o)) {
+                return false;
+            }
 
             Entry entry = (Entry) o;
 
-            if (!columns.equals(entry.columns)) return false;
-            if (subQuery != null ? !subQuery.equals(entry.subQuery) : entry.subQuery != null) return false;
+            if (!columns.equals(entry.columns)) {
+                return false;
+            }
+            if (subQuery != null ? !subQuery.equals(entry.subQuery) : entry.subQuery != null) {
+                return false;
+            }
             return returningStatement != null ? returningStatement.equals(entry.returningStatement) : entry.returningStatement == null;
         }
 
@@ -250,12 +257,18 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLWithSubqueryClause that = (SQLWithSubqueryClause) o;
 
-        if (recursive != null ? !recursive.equals(that.recursive) : that.recursive != null) return false;
+        if (recursive != null ? !recursive.equals(that.recursive) : that.recursive != null) {
+            return false;
+        }
         return entries.equals(that.entries);
     }
 

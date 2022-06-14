@@ -26,20 +26,19 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest60 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "    CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"MEMBER_ID\" VARCHAR2(32) NOT NULL ENABLE, \n" +
-                "  \"CATEGORY_LEVEL2_ID\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"CATEGORY_LEVEL2_DESC\" VARCHAR2(128), \n" +
-                "  \"AVG_INQUIRY_CNT\" NUMBER, \n" +
-                "  \"AVG_INQUIRY_CNT_TOP10\" NUMBER\n" +
-                "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 0 PCTUSED 40 INITRANS 1 MAXTRANS 255 COMPRESS BASIC LOGGING\n" +
-                "  STORAGE(INITIAL 50331648 NEXT 4194304 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"ZEUS_IND\"   ";
+                "    CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"MEMBER_ID\" VARCHAR2(32) NOT NULL ENABLE, \n" +
+                        "  \"CATEGORY_LEVEL2_ID\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"CATEGORY_LEVEL2_DESC\" VARCHAR2(128), \n" +
+                        "  \"AVG_INQUIRY_CNT\" NUMBER, \n" +
+                        "  \"AVG_INQUIRY_CNT_TOP10\" NUMBER\n" +
+                        "   ) SEGMENT CREATION IMMEDIATE \n" +
+                        "  PCTFREE 0 PCTUSED 40 INITRANS 1 MAXTRANS 255 COMPRESS BASIC LOGGING\n" +
+                        "  STORAGE(INITIAL 50331648 NEXT 4194304 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                        "  TABLESPACE \"ZEUS_IND\"   ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -74,7 +73,7 @@ public class OracleCreateTableTest60 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

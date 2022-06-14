@@ -4,7 +4,7 @@ import com.alibaba.druid.DbTestCase;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.MySqlUtils;
-import com.alibaba.fastjson.util.TypeUtils;
+import com.alibaba.fastjson2.util.TypeUtils;
 //import com.mysql.jdbc.ConnectionImpl;
 
 import java.sql.Connection;

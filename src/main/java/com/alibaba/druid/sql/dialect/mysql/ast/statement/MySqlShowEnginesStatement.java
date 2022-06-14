@@ -18,8 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowEnginesStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
-    private boolean storage = false;
+    private boolean storage;
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);

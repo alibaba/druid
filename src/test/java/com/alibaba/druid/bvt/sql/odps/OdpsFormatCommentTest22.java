@@ -18,11 +18,11 @@ public class OdpsFormatCommentTest22 extends TestCase {
         Assert.assertEquals("SELECT COALESCE(f1, f2)"
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
     }
+
     public void test_count() throws Exception {
         String sql = "select count(*) from dual";
         Assert.assertEquals("SELECT count(*)"
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
     }
 
-   
 }

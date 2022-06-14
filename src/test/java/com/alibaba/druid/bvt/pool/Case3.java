@@ -29,7 +29,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Case3 extends PoolTestCase {
-
     // public void test_0() throws Exception {
     // DruidDataSource dataSource = new DruidDataSource();
     // dataSource.setUrl("jdbc:mock:xxx");

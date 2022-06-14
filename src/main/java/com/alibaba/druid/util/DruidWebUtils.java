@@ -20,7 +20,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 public class DruidWebUtils {
-
     public static String getRemoteAddr(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip != null && !isValidAddress(ip)) {
@@ -59,8 +58,11 @@ public class DruidWebUtils {
         for (int i = 0; i < ip.length(); ++i) {
             char ch = ip.charAt(i);
             if (ch >= '0' && ch <= '9') {
+                // ignored
             } else if (ch >= 'A' && ch <= 'F') {
+                // ignored
             } else if (ch >= 'a' && ch <= 'f') {
+                // ignored
             } else if (ch == '.' || ch == ':') {
                 //
             } else {

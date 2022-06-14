@@ -15,5 +15,4 @@ public class OdpsFormatCommentTest20 extends TestCase {
                 + "\nON a.id = b.id", SQLUtils.formatOdps(sql));
     }
 
-   
 }

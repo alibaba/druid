@@ -54,7 +54,7 @@ public class PGSelectTest55 extends TestCase {
                 "\t\t\t\tAND p.cp_code IS NULL))\n" +
                 "WHERE b.cp_code = ?\n" +
                 "\tOR b.cp_code IS NULL", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select b.*, st_astext(p.pos) as pos, st_astext(p.polygon) as polygon\n" +
                 "from ts_biz b\n" +
                 "\tjoin (\n" +

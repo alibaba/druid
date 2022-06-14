@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SHOW_STATUS_Syntax_Test extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SHOW STATUS LIKE 'Key%'";
 
@@ -36,7 +35,7 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         Assert.assertEquals("SHOW STATUS LIKE 'Key%';", text);
     }
-    
+
     public void test_where() throws Exception {
         String sql = "SHOW STATUS WHERE X LIKE 'Key%'";
 
@@ -47,7 +46,7 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         Assert.assertEquals("SHOW STATUS WHERE X LIKE 'Key%';", text);
     }
-    
+
     public void test_corba() throws Exception {
         String sql = "SHOW COBAR_STATUS";
 

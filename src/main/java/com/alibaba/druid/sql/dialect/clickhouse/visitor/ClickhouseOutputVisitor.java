@@ -109,4 +109,31 @@ public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements Clic
         printAndAccept(x.getColumns(), ", ");
         return false;
     }
+
+    @Override
+    public boolean visit(SQLArrayDataType x) {
+        final List<SQLExpr> arguments = x.getArguments();
+        if (Boolean.TRUE.equals(x.getAttribute("ads.arrayDataType"))) {
+            x.getComponentType().accept(this);
+            print('[');
+            printAndAccept(arguments, ", ");
+            print(']');
+        } else {
+            SQLDataType componentType = x.getComponentType();
+            if (componentType != null) {
+                print0(ucase ? "Array<" : "array<");
+                componentType.accept(this);
+                print('>');
+            } else {
+                print0(ucase ? "Array" : "array");
+            }
+
+            if (arguments.size() > 0) {
+                print('(');
+                printAndAccept(arguments, ", ");
+                print(')');
+            }
+        }
+        return false;
+    }
 }

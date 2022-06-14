@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class DB2SetTest_2_schema extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "SET SCHEMA RICK";
 
@@ -56,8 +55,8 @@ public class DB2SetTest_2_schema extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("SET SCHEMA = RICK", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         Assert.assertEquals("set SCHEMA = RICK", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

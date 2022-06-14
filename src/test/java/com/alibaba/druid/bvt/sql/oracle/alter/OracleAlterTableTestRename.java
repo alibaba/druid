@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTestRename extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter table PRODUCT_NEW_CLUSTER_YZS_0210 rename to PRODUCT_NEW_CLUSTER_YZS_0210_1";
+                "alter table PRODUCT_NEW_CLUSTER_YZS_0210 rename to PRODUCT_NEW_CLUSTER_YZS_0210_1";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

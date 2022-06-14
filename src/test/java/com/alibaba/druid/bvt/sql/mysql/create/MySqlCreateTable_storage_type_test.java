@@ -9,7 +9,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlCreateTable_storage_type_test extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `test1` (\n" +
                 "  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +

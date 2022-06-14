@@ -1,5 +1,6 @@
 
 package com.alibaba.druid.bvt.sql.oracle.visitor;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;

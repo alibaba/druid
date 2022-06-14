@@ -23,13 +23,12 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class MySqlWallTest137 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         Assert.assertTrue(provider.checkValid("select bi.title from bbt_item_chd_3 bi " //
-                                               + "where bi.title = '具8\\'\\'/200mm迷OK-6295'"
-                                               + "  and bi.item_id <> null and bi.nick = '营店'"));
+                + "where bi.title = '具8\\'\\'/200mm迷OK-6295'"
+                + "  and bi.item_id <> null and bi.nick = '营店'"));
     }
 
 }

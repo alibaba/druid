@@ -28,10 +28,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 
 public class ConnectPropertiesChangeTest extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
-    private Log             dataSourceLog;
+    private Log dataSourceLog;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -91,11 +90,11 @@ public class ConnectPropertiesChangeTest extends PoolTestCase {
         Assert.assertEquals("true", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
         Assert.assertEquals("5", dataSource.getConnectProperties().getProperty("b"));
         Assert.assertEquals("6", dataSource.getConnectProperties().getProperty("c"));
-        
+
         dataSource.setConnectionProperties("b=5;c=6;druid.stat.mergeSql=false");
 
         Assert.assertFalse(filter.isMergeSql());
-        
+
         Assert.assertEquals("false", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
         Assert.assertEquals("5", dataSource.getConnectProperties().getProperty("b"));
         Assert.assertEquals("6", dataSource.getConnectProperties().getProperty("c"));

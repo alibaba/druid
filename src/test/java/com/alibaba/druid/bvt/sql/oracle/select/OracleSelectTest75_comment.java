@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleSelectTest75_comment extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "--CMS???'?o??\n" +

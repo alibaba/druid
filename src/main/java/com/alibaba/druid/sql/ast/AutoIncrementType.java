@@ -10,9 +10,8 @@ public enum AutoIncrementType {
         return this.keyword;
     }
 
-    private AutoIncrementType(String keyword){
+    private AutoIncrementType(String keyword) {
         this.keyword = keyword;
     }
-
 
 }

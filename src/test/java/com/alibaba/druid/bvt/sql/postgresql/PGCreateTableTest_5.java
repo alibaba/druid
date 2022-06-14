@@ -27,20 +27,19 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class PGCreateTableTest_5 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE products (" + //
-                     "  state           char(2)" + //
-                     ") INHERITS (cities);";
+                "  state           char(2)" + //
+                ") INHERITS (cities);";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        
+
         Assert.assertEquals("CREATE TABLE products ("
                 + "\n\tstate char(2)"
                 + "\n) INHERITS (cities);", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("create table products ("
                 + "\n\tstate char(2)"
                 + "\n) inherits (cities);", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

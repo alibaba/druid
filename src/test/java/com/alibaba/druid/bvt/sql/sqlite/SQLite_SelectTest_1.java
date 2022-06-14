@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLite_SelectTest_1 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT xiaojie,event_cnt,country_code,area_code,carrier,country,province,city,type,subtype,displayname,slogan,logo,source,state,priority,is_change FROM ktv_xiaojie_20170921 WHERE day_modify > 20170921 AND priority >= 4499000 ORDER BY priority DESC LIMIT 500000";
 
@@ -45,7 +44,7 @@ public class SQLite_SelectTest_1 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(18, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());

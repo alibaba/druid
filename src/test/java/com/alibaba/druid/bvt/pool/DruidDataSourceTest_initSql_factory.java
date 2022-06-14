@@ -12,7 +12,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 
 public class DruidDataSourceTest_initSql_factory extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

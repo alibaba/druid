@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlUseTest_0 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "use db;";
 

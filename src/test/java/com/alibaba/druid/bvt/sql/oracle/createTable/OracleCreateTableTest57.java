@@ -26,76 +26,75 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest57 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "       CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +
-                "  \"GMT_CREATE\" DATE, \n" +
-                "  \"GMT_MODIFIED\" DATE, \n" +
-                "  \"COMPANY_ID\" NUMBER, \n" +
-                "  \"IMAGE_REPOSITORY_IDS\" VARCHAR2(128), \n" +
-                "  \"HAVE_IMAGE\" CHAR(1), \n" +
-                "  \"IMAGE_COUNT\" NUMBER, \n" +
-                "  \"IMAGE_WATERMARK\" CHAR(1), \n" +
-                "  \"IMAGE_PROCESS\" VARCHAR2(16), \n" +
-                "  \"MEMBER_ID\" VARCHAR2(32), \n" +
-                "  \"MEMBER_SEQ\" NUMBER, \n" +
-                "  \"SUBJECT\" VARCHAR2(256), \n" +
-                "  \"KEYWORDS\" VARCHAR2(512), \n" +
-                "  \"REPOSITORY_TYPE\" VARCHAR2(16), \n" +
-                "  \"TYPE\" VARCHAR2(16), \n" +
-                "  \"CATEGORY_ID\" NUMBER, \n" +
-                "  \"GROUP_ID\" NUMBER, \n" +
-                "  \"STATUS\" VARCHAR2(16), \n" +
-                "  \"IS_DISPLAY\" CHAR(1), \n" +
-                "  \"HS_CODE\" VARCHAR2(16), \n" +
-                "  \"IND_BY_ALL\" NUMBER, \n" +
-                "  \"IND_BY_GROUP\" NUMBER, \n" +
-                "  \"OWNER_MEMBER_ID\" VARCHAR2(32), \n" +
-                "  \"OWNER_MEMBER_SEQ\" NUMBER, \n" +
-                "  \"CERTIFICATE_IDS\" VARCHAR2(256), \n" +
-                "  \"MONEY_TYPE\" NUMBER, \n" +
-                "  \"PRICE_RANGE\" VARCHAR2(256), \n" +
-                "  \"PORT\" VARCHAR2(256), \n" +
-                "  \"PAYMENT_METHOD\" VARCHAR2(128), \n" +
-                "  \"PAYMENT_METHOD_OTHER\" VARCHAR2(256), \n" +
-                "  \"MIN_ORDER_QUANTITY\" VARCHAR2(64), \n" +
-                "  \"MIN_ORDER_UNIT\" NUMBER, \n" +
-                "  \"MIN_ORDER_OTHER\" VARCHAR2(256), \n" +
-                "  \"SUPPLY_QUANTITY\" VARCHAR2(64), \n" +
-                "  \"SUPPLY_UNIT\" NUMBER, \n" +
-                "  \"SUPPLY_PERIOD\" VARCHAR2(16), \n" +
-                "  \"SUPPLY_OTHER\" VARCHAR2(256), \n" +
-                "  \"PACKAGING_DESC\" VARCHAR2(512), \n" +
-                "  \"CONSIGNMENT_TERM\" VARCHAR2(64), \n" +
-                "  \"IS_VALIDATE\" CHAR(1), \n" +
-                "  \"CREATE_TYPE\" VARCHAR2(16), \n" +
-                "  \"RED_MODEL\" VARCHAR2(128), \n" +
-                "  \"DRAFT_STATUS\" VARCHAR2(16) DEFAULT 'no_status', \n" +
-                "  \"EXPORT_TYPE\" VARCHAR2(16) DEFAULT 'normal', \n" +
-                "  \"IS_ESCROW\" CHAR(1), \n" +
-                "  \"SALE_TYPE\" VARCHAR2(64), \n" +
-                "  \"WS_DISPLAY\" VARCHAR2(16), \n" +
-                "  \"WS_OFFLINE_DATE\" DATE, \n" +
-                "  \"WS_VALID_NUM\" NUMBER, \n" +
-                "  \"WS_REPOST_NUM\" NUMBER, \n" +
-                "  \"WS_AUTO_REPOST\" CHAR(1), \n" +
-                "  \"PRICE_UNIT\" NUMBER, \n" +
-                "  \"IMAGE_VERSION\" NUMBER, \n" +
-                "  \"SCORE\" NUMBER, \n" +
-                "  \"GROUP_ID2\" NUMBER, \n" +
-                "  \"GROUP_ID3\" NUMBER, \n" +
-                "  \"IND_BY_GROUP2\" NUMBER, \n" +
-                "  \"IND_BY_GROUP3\" NUMBER, \n" +
-                "   CONSTRAINT \"PRODUCT_PK\" PRIMARY KEY (\"ID\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 83886080 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"APPINDX1M\"  ENABLE\n" +
-                "   ) CLUSTER \"SEARCHTEST\".\"CLUSTER_PRODUCT_COMPANY_ID\" (\"COMPANY_ID\")\n" +
-                "\n" +
-                "       ";
+                "       CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +
+                        "  \"GMT_CREATE\" DATE, \n" +
+                        "  \"GMT_MODIFIED\" DATE, \n" +
+                        "  \"COMPANY_ID\" NUMBER, \n" +
+                        "  \"IMAGE_REPOSITORY_IDS\" VARCHAR2(128), \n" +
+                        "  \"HAVE_IMAGE\" CHAR(1), \n" +
+                        "  \"IMAGE_COUNT\" NUMBER, \n" +
+                        "  \"IMAGE_WATERMARK\" CHAR(1), \n" +
+                        "  \"IMAGE_PROCESS\" VARCHAR2(16), \n" +
+                        "  \"MEMBER_ID\" VARCHAR2(32), \n" +
+                        "  \"MEMBER_SEQ\" NUMBER, \n" +
+                        "  \"SUBJECT\" VARCHAR2(256), \n" +
+                        "  \"KEYWORDS\" VARCHAR2(512), \n" +
+                        "  \"REPOSITORY_TYPE\" VARCHAR2(16), \n" +
+                        "  \"TYPE\" VARCHAR2(16), \n" +
+                        "  \"CATEGORY_ID\" NUMBER, \n" +
+                        "  \"GROUP_ID\" NUMBER, \n" +
+                        "  \"STATUS\" VARCHAR2(16), \n" +
+                        "  \"IS_DISPLAY\" CHAR(1), \n" +
+                        "  \"HS_CODE\" VARCHAR2(16), \n" +
+                        "  \"IND_BY_ALL\" NUMBER, \n" +
+                        "  \"IND_BY_GROUP\" NUMBER, \n" +
+                        "  \"OWNER_MEMBER_ID\" VARCHAR2(32), \n" +
+                        "  \"OWNER_MEMBER_SEQ\" NUMBER, \n" +
+                        "  \"CERTIFICATE_IDS\" VARCHAR2(256), \n" +
+                        "  \"MONEY_TYPE\" NUMBER, \n" +
+                        "  \"PRICE_RANGE\" VARCHAR2(256), \n" +
+                        "  \"PORT\" VARCHAR2(256), \n" +
+                        "  \"PAYMENT_METHOD\" VARCHAR2(128), \n" +
+                        "  \"PAYMENT_METHOD_OTHER\" VARCHAR2(256), \n" +
+                        "  \"MIN_ORDER_QUANTITY\" VARCHAR2(64), \n" +
+                        "  \"MIN_ORDER_UNIT\" NUMBER, \n" +
+                        "  \"MIN_ORDER_OTHER\" VARCHAR2(256), \n" +
+                        "  \"SUPPLY_QUANTITY\" VARCHAR2(64), \n" +
+                        "  \"SUPPLY_UNIT\" NUMBER, \n" +
+                        "  \"SUPPLY_PERIOD\" VARCHAR2(16), \n" +
+                        "  \"SUPPLY_OTHER\" VARCHAR2(256), \n" +
+                        "  \"PACKAGING_DESC\" VARCHAR2(512), \n" +
+                        "  \"CONSIGNMENT_TERM\" VARCHAR2(64), \n" +
+                        "  \"IS_VALIDATE\" CHAR(1), \n" +
+                        "  \"CREATE_TYPE\" VARCHAR2(16), \n" +
+                        "  \"RED_MODEL\" VARCHAR2(128), \n" +
+                        "  \"DRAFT_STATUS\" VARCHAR2(16) DEFAULT 'no_status', \n" +
+                        "  \"EXPORT_TYPE\" VARCHAR2(16) DEFAULT 'normal', \n" +
+                        "  \"IS_ESCROW\" CHAR(1), \n" +
+                        "  \"SALE_TYPE\" VARCHAR2(64), \n" +
+                        "  \"WS_DISPLAY\" VARCHAR2(16), \n" +
+                        "  \"WS_OFFLINE_DATE\" DATE, \n" +
+                        "  \"WS_VALID_NUM\" NUMBER, \n" +
+                        "  \"WS_REPOST_NUM\" NUMBER, \n" +
+                        "  \"WS_AUTO_REPOST\" CHAR(1), \n" +
+                        "  \"PRICE_UNIT\" NUMBER, \n" +
+                        "  \"IMAGE_VERSION\" NUMBER, \n" +
+                        "  \"SCORE\" NUMBER, \n" +
+                        "  \"GROUP_ID2\" NUMBER, \n" +
+                        "  \"GROUP_ID3\" NUMBER, \n" +
+                        "  \"IND_BY_GROUP2\" NUMBER, \n" +
+                        "  \"IND_BY_GROUP3\" NUMBER, \n" +
+                        "   CONSTRAINT \"PRODUCT_PK\" PRIMARY KEY (\"ID\")\n" +
+                        "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                        "  STORAGE(INITIAL 83886080 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"APPINDX1M\"  ENABLE\n" +
+                        "   ) CLUSTER \"SEARCHTEST\".\"CLUSTER_PRODUCT_COMPANY_ID\" (\"COMPANY_ID\")\n" +
+                        "\n" +
+                        "       ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -183,7 +182,7 @@ public class OracleCreateTableTest57 extends OracleTest {
                         "\t\tENABLE\n" +
                         ")\n" +
                         "CLUSTER \"SEARCHTEST\".\"CLUSTER_PRODUCT_COMPANY_ID\" (\"COMPANY_ID\")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

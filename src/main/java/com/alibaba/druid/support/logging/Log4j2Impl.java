@@ -20,23 +20,22 @@ import org.apache.logging.log4j.Logger;
  * limitations under the License.
  */
 public class Log4j2Impl implements Log {
-
     private Logger log;
 
-    private int    errorCount;
-    private int    warnCount;
-    private int    infoCount;
-    private int    debugCount;
+    private int errorCount;
+    private int warnCount;
+    private int infoCount;
+    private int debugCount;
 
     /**
-     * @since 0.2.21
      * @param log
+     * @since 0.2.21
      */
-    public Log4j2Impl(Logger log){
+    public Log4j2Impl(Logger log) {
         this.log = log;
     }
 
-    public Log4j2Impl(String loggerName){
+    public Log4j2Impl(String loggerName) {
         log = LogManager.getLogger(loggerName);
     }
 
@@ -109,7 +108,7 @@ public class Log4j2Impl implements Log {
     public boolean isWarnEnabled() {
         return log.isEnabled(Level.WARN);
     }
-    
+
     public boolean isErrorEnabled() {
         return log.isErrorEnabled();
     }

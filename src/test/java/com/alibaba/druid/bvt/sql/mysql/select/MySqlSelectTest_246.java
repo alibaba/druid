@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 
 public class MySqlSelectTest_246 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT -CAST(10 AS decimal(10, 2)), +CAST(10 AS decimal(10, 2))";
 
@@ -36,7 +35,6 @@ public class MySqlSelectTest_246 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
 
 
 }

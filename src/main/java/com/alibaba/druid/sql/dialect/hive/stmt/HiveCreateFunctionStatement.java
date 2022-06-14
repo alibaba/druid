@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement implements SQLCreateStatement {
-    protected boolean declare = false;
+    protected boolean declare;
     protected SQLExpr className;
     protected SQLExpr location;
     protected SQLExpr symbol;
@@ -15,7 +15,6 @@ public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement impl
     protected String code;
 
     public HiveCreateFunctionStatement() {
-
     }
 
     public void accept0(SQLASTVisitor visitor) {
@@ -69,13 +68,11 @@ public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement impl
         this.symbol = x;
     }
 
-    public ResourceType getResourceType()
-    {
+    public ResourceType getResourceType() {
         return resourceType;
     }
 
-    public void setResourceType(ResourceType resourceType)
-    {
+    public void setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
     }
 

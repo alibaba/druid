@@ -16,7 +16,6 @@ import java.util.List;
  * Date 2019-06-04 11:27
  */
 public class SQLIndexDefinition extends SQLObjectImpl implements SQLIndex {
-
     /**
      * [CONSTRAINT [symbol]] [GLOBAL|LOCAL] [FULLTEXT|SPATIAL|UNIQUE|PRIMARY] [INDEX|KEY]
      * [index_name] [index_type] (key_part,...) [COVERING (col_name,...)] [index_option] ...

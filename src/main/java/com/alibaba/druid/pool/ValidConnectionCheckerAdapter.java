@@ -15,25 +15,24 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.util.JdbcUtils;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
-
-import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  * @since 0.2.21
  */
 public class ValidConnectionCheckerAdapter implements ValidConnectionChecker {
-
     @Override
     public boolean isValidConnection(Connection conn, String query, int validationQueryTimeout) throws Exception {
         if (query == null || query.length() == 0) {
             return true;
         }
-        
+
         Statement stmt = null;
         ResultSet rs = null;
         try {
@@ -51,8 +50,6 @@ public class ValidConnectionCheckerAdapter implements ValidConnectionChecker {
 
     @Override
     public void configFromProperties(Properties properties) {
-        
     }
-
 
 }

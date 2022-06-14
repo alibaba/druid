@@ -66,7 +66,7 @@ public class PGSelectTest47 extends PGTest {
                 "\tLEFT JOIN user_black_article_number n ON u.userid = n.userid\n" +
                 "WHERE u.isactive = true\n" +
                 "ORDER BY n.total_amount DESC NULLS LAST", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select u.userid, u.phonenumber, u.cdate, u.udate, u.wechatid\n" +
                 "\t, u.wechatnickname, u.wechattime, b.ID, b.username as serviceStaffName, u.appid\n" +
                 "\t, s.ID as servicegroupid, n.total_amount as blackNumber\n" +

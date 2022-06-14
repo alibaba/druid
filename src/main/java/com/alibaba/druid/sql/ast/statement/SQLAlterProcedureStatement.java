@@ -20,11 +20,10 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterProcedureStatement extends SQLStatementImpl implements SQLAlterStatement {
-
     private SQLExpr name;
 
-    private boolean compile       = false;
-    private boolean reuseSettings = false;
+    private boolean compile;
+    private boolean reuseSettings;
 
     private SQLExpr comment;
     private boolean languageSql;

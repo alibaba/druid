@@ -31,9 +31,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class ClobTest extends TestCase {
-
     protected int dataSourceListSize;
-    
+
     protected void setUp() throws Exception {
         dataSourceListSize = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
     }

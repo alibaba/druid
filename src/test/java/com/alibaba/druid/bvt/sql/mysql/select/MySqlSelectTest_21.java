@@ -24,11 +24,10 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_21 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from order where a=1 order by b";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
@@ -43,18 +42,18 @@ public class MySqlSelectTest_21 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
         Assert.assertEquals(1, visitor.getOrderByColumns().size());
     }
-    
-    
+
+
     public void test_1() throws Exception {
         String sql = "select order from t where a=1 order by b";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
@@ -69,7 +68,7 @@ public class MySqlSelectTest_21 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());

@@ -10,7 +10,6 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 
 public class InformixExceptionSorterTest extends PoolTestCase {
-
     public void test_informix() throws Exception {
         InformixExceptionSorter sorter = new InformixExceptionSorter();
         Assert.assertEquals(false, sorter.isExceptionFatal(new SQLException()));

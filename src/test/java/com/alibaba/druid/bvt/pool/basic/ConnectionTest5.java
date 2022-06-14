@@ -33,8 +33,7 @@ import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ConnectionTest5 extends PoolTestCase {
-
-    private MockDriver      driver;
+    private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -154,15 +153,12 @@ public class ConnectionTest5 extends PoolTestCase {
     public void test_handleException_5() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         conn.addConnectionEventListener(new ConnectionEventListener() {
-
             @Override
             public void connectionClosed(ConnectionEvent event) {
-
             }
 
             @Override
             public void connectionErrorOccurred(ConnectionEvent event) {
-
             }
 
         });

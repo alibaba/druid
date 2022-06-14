@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLGroupingSetExpr extends SQLExprImpl implements SQLReplaceable {
-
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
     public SQLGroupingSetExpr clone() {
@@ -40,7 +39,7 @@ public class SQLGroupingSetExpr extends SQLExprImpl implements SQLReplaceable {
     public List<SQLExpr> getParameters() {
         return parameters;
     }
-    
+
     public void addParameter(SQLExpr parameter) {
         if (parameter != null) {
             parameter.setParent(this);

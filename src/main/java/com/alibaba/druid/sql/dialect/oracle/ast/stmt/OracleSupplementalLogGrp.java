@@ -29,7 +29,7 @@ import java.util.List;
 public class OracleSupplementalLogGrp extends OracleSQLObjectImpl implements SQLTableElement {
     private SQLName group;
     private List<SQLName> columns = new ArrayList<SQLName>();
-    private boolean always = false;
+    private boolean always;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

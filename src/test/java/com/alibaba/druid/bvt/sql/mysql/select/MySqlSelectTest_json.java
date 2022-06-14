@@ -21,13 +21,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlSelectTest_json extends MysqlTest {
-
     public void test_0() throws Exception {
         parseTrue("SELECT json_size('{\"x\": {\"a\": 1, \"b\": 2}}', '$.x')",
                 "SELECT json_size('{\"x\": {\"a\": 1, \"b\": 2}}', '$.x')");
 
         parseTrue("SELECT regexp_extract(fld11,'\"campaign_group_id\":\"?([-+]?[0-9]{1,19}+)',1)\n" +
-                "FROM rmlog_push_dla_poc WHERE day='20190301' and hour='00' LIMIT 10",
+                        "FROM rmlog_push_dla_poc WHERE day='20190301' and hour='00' LIMIT 10",
                 "SELECT regexp_extract(fld11, '\"campaign_group_id\":\"?([-+]?[0-9]{1,19}+)', 1)\n" +
                         "FROM rmlog_push_dla_poc\n" +
                         "WHERE day = '20190301'\n" +

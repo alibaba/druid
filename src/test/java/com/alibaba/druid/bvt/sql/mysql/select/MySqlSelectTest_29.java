@@ -25,13 +25,12 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_29 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select * from Function "
                 + "where Id in (select FunctionId from RoleFunction "
                 + "where RoleId = '001' and LogicalDel = 0) and LogicalDel = 0";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -48,12 +47,12 @@ public class MySqlSelectTest_29 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(6, visitor.getColumns().size());
         Assert.assertEquals(4, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT *\n" +
@@ -65,7 +64,7 @@ public class MySqlSelectTest_29 extends MysqlTest {
                             "\t\t\tAND LogicalDel = 0\n" +
                             "\t)\n" +
                             "\tAND LogicalDel = 0", //
-                                output);
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -78,10 +77,9 @@ public class MySqlSelectTest_29 extends MysqlTest {
                             "\t\t\tand LogicalDel = 0\n" +
                             "\t)\n" +
                             "\tand LogicalDel = 0", //
-                                output);
+                    output);
         }
     }
-    
-    
-    
+
+
 }

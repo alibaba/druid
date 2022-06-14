@@ -13,7 +13,6 @@ import java.util.List;
  * Date 2019/9/5 10:48
  */
 public class DrdsBaselineStatement extends MySqlStatementImpl implements SQLStatement {
-
     private String operation;
     private List<Long> baselineIds = new ArrayList<Long>();
 

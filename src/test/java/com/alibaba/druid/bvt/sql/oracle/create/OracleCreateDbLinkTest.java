@@ -26,10 +26,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateDbLinkTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE PUBLIC DATABASE LINK remote USING 'remote'; ";
+                "CREATE PUBLIC DATABASE LINK remote USING 'remote'; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -37,17 +36,17 @@ public class OracleCreateDbLinkTest extends OracleTest {
         print(statementList);
 
         Assert.assertEquals("CREATE PUBLIC DATABASE LINK remote USING 'remote';",
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
 
         Assert.assertEquals(0, visitor.getTables().size());
     }
-    
+
     public void test_1() throws Exception {
         String sql = //
-        "CREATE DATABASE LINK local CONNECT TO hr IDENTIFIED BY hr USING 'local';";
+                "CREATE DATABASE LINK local CONNECT TO hr IDENTIFIED BY hr USING 'local';";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -55,18 +54,18 @@ public class OracleCreateDbLinkTest extends OracleTest {
         print(statementList);
 
         Assert.assertEquals("CREATE DATABASE LINK local CONNECT TO hr IDENTIFIED BY hr USING 'local';",
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
 
         Assert.assertEquals(0, visitor.getTables().size());
     }
-    
-    
+
+
     public void test_2() throws Exception {
         String sql = //
-        "CREATE DATABASE LINK remote.us.oracle.com CONNECT TO CURRENT_USER USING 'remote';";
+                "CREATE DATABASE LINK remote.us.oracle.com CONNECT TO CURRENT_USER USING 'remote';";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -74,7 +73,7 @@ public class OracleCreateDbLinkTest extends OracleTest {
         print(statementList);
 
         Assert.assertEquals("CREATE DATABASE LINK remote.us.oracle.com CONNECT TO CURRENT_USER USING 'remote';",
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);

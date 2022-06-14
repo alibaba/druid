@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class OracleMergeTest8 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "merge into (select * from T09_RULE_CAL_COUNT where data_dt = '20160328' and rule_type = '2') t " //
                 + "using ("
@@ -59,7 +58,7 @@ public class OracleMergeTest8 extends OracleTest {
                         "\t)\n" +
                         ") t3 ON (t3.cust_no = t.cust_no) \n" +
                         "WHEN MATCHED THEN UPDATE SET t.organ_key = t3.organ_key",
-                            result);
+                result);
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));

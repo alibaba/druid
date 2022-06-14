@@ -30,7 +30,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Bug_for_dupCloseStmtError extends PoolTestCase {
-
     protected DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -66,9 +65,9 @@ public class Bug_for_dupCloseStmtError extends PoolTestCase {
             } catch (MockConnectionClosedException ex) {
                 error = ex;
             }
-            
+
             Assert.assertNotNull(error);
-            
+
             conn.close();
             stmt.close();
         }

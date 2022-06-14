@@ -17,22 +17,22 @@ public class WallStatTest_alter_table extends TestCase {
         String sql = "alter table t add column fname varchar(50)";
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setAlterTableAllow(true);
-        
+
         Assert.assertTrue(provider.checkValid(sql));
-        WallTableStat tableStat =  provider.getTableStat("t");
+        WallTableStat tableStat = provider.getTableStat("t");
         Assert.assertEquals(1, tableStat.getAlterCount());
     }
-    
+
     public void testOracle() throws Exception {
         String sql = "alter table t add (fname varchar(50))";
         WallProvider provider = new OracleWallProvider();
         provider.getConfig().setAlterTableAllow(true);
-        
+
         Assert.assertTrue(provider.checkValid(sql));
-        WallTableStat tableStat =  provider.getTableStat("t");
+        WallTableStat tableStat = provider.getTableStat("t");
         Assert.assertEquals(1, tableStat.getAlterCount());
     }
-    
+
 //    public void testPG() throws Exception {
 //        WallProvider provider = new PGWallProvider();
 //        provider.getConfig().setAlterTableAllow(true);

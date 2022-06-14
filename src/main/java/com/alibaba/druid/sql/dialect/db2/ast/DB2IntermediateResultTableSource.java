@@ -6,10 +6,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class DB2IntermediateResultTableSource extends SQLTableSourceImpl {
     @Override
     protected void accept0(SQLASTVisitor v) {
-
     }
 
-    public static enum  Type {
+    public static enum Type {
         OldTable,
         NewTable,
         FinalTable

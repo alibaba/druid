@@ -4,13 +4,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.util.FnvHash;
@@ -155,7 +149,6 @@ public class OracleRowNumToLimit extends OracleASTVisitorAdapter {
             x.getRight().accept(this);
         }
 
-
         if (x.getLeft() instanceof SQLSelectQueryBlock && x.getRight() instanceof SQLSelectQueryBlock) {
             if (x.getOperator() == SQLUnionOperator.MINUS) {
                 boolean eqNonLimit;
@@ -229,7 +222,7 @@ public class OracleRowNumToLimit extends OracleASTVisitorAdapter {
                         }
                     }
                 }
-            } else  if (x.getOperator() == SQLUnionOperator.INTERSECT) {
+            } else if (x.getOperator() == SQLUnionOperator.INTERSECT) {
                 boolean eqNonLimit;
                 {
                     SQLSelectQueryBlock left = (SQLSelectQueryBlock) x.getLeft().clone();
@@ -272,7 +265,6 @@ public class OracleRowNumToLimit extends OracleASTVisitorAdapter {
 
                             limit.setOffset(SQLIntegerExpr.greatst((SQLIntegerExpr) leftOffset, (SQLIntegerExpr) rightOffset));
                         }
-
 
                         SQLExpr rightRowCount = rightLimit.getRowCount();
                         SQLExpr leftRowCount = leftLimit.getRowCount();
@@ -372,7 +364,6 @@ public class OracleRowNumToLimit extends OracleASTVisitorAdapter {
                 }
                 return false;
             } else if (op == SQLBinaryOperator.GreaterThanOrEqual) {
-
                 if (SQLUtils.replaceInParent(x, null)) {
                     context.setOffset(decrement(right));
                     // 如果存在 offset, 重新计算 rowCount
@@ -551,6 +542,5 @@ public class OracleRowNumToLimit extends OracleASTVisitorAdapter {
 
         return new SQLBinaryOpExpr(x.clone(), SQLBinaryOperator.Add, new SQLIntegerExpr(1));
     }
-
 
 }

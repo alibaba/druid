@@ -26,7 +26,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLServerInsertTest9 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "insert into dashboard_role_res (res_id, role_id,res_type) values (?, ? ,?) ,  (?, ? ,?)";
 

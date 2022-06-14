@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterViewStatement extends OracleStatementImpl implements OracleAlterStatement {
-
     private SQLName name;
 
     private Boolean enable;

@@ -24,17 +24,16 @@ import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.stat.TableStat;
 
 public class MySQLCreateMaterializedViewTest0 extends MysqlTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE MATERIALIZED VIEW mymv (\n" +
-                "  default_col varchar,\n" +
-                "  PRIMARY KEY(id)\n" +
-                ")\n" +
-                "DISTRIBUTED BY HASH (id)\n" +
-                "REFRESH FAST ON DEMAND\n" +
-                "ENABLE QUERY REWRITE\n" +
-                "AS SELECT id FROM base;";
+                "CREATE MATERIALIZED VIEW mymv (\n" +
+                        "  default_col varchar,\n" +
+                        "  PRIMARY KEY(id)\n" +
+                        ")\n" +
+                        "DISTRIBUTED BY HASH (id)\n" +
+                        "REFRESH FAST ON DEMAND\n" +
+                        "ENABLE QUERY REWRITE\n" +
+                        "AS SELECT id FROM base;";
 
         SQLStatement stmt = SQLUtils.parseSingleMysqlStatement(sql);
 
@@ -48,7 +47,7 @@ public class MySQLCreateMaterializedViewTest0 extends MysqlTest {
                         "AS\n" +
                         "SELECT id\n" +
                         "FROM base;",//
-                            SQLUtils.toSQLString(stmt, DbType.mysql, null, VisitorFeature.OutputDistributedLiteralInCreateTableStmt));
+                SQLUtils.toSQLString(stmt, DbType.mysql, null, VisitorFeature.OutputDistributedLiteralInCreateTableStmt));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

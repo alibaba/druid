@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.test.TestUtils;
 import junit.framework.TestCase;
 
 public class SQLServerSelectTest14 extends TestCase {
-
     public void test_simple() throws Exception {
         String sql = "SELECT " + //
                 "    a.* " + //

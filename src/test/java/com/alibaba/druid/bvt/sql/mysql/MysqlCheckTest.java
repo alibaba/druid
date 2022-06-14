@@ -13,8 +13,7 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MysqlCheckTest extends MysqlTest {
-
-    public void test_create1()  {
+    public void test_create1() {
         String sql = "CREATE TABLE `t12` (\n" +
                 "  `c1` int DEFAULT NULL,\n" +
                 "  `c2` int DEFAULT NULL,\n" +

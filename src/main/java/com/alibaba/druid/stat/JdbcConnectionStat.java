@@ -15,6 +15,15 @@
  */
 package com.alibaba.druid.stat;
 
+import com.alibaba.druid.util.Histogram;
+import com.alibaba.druid.util.JMXUtils;
+
+import javax.management.JMException;
+import javax.management.openmbean.CompositeDataSupport;
+import javax.management.openmbean.CompositeType;
+import javax.management.openmbean.OpenType;
+import javax.management.openmbean.SimpleType;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
@@ -24,53 +33,42 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.management.JMException;
-import javax.management.openmbean.CompositeDataSupport;
-import javax.management.openmbean.CompositeType;
-import javax.management.openmbean.OpenType;
-import javax.management.openmbean.SimpleType;
-
-import com.alibaba.druid.util.Histogram;
-import com.alibaba.druid.util.JMXUtils;
-
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class JdbcConnectionStat implements JdbcConnectionStatMBean {
+    private final AtomicInteger activeCount = new AtomicInteger();
+    private final AtomicInteger activeCountMax = new AtomicInteger();
 
-    private final AtomicInteger activeCount           = new AtomicInteger();
-    private final AtomicInteger activeCountMax        = new AtomicInteger();
+    private final AtomicInteger connectingCount = new AtomicInteger();
+    private final AtomicInteger connectingMax = new AtomicInteger();
 
-    private final AtomicInteger connectingCount       = new AtomicInteger();
-    private final AtomicInteger connectingMax         = new AtomicInteger();
+    private final AtomicLong connectCount = new AtomicLong();
+    private final AtomicLong connectErrorCount = new AtomicLong();
+    private Throwable connectErrorLast;
+    private final AtomicLong connectNanoTotal = new AtomicLong(0);                       // 连接建立消耗时间总和（纳秒）
+    private final AtomicLong connectNanoMax = new AtomicLong(0);                       // 连接建立消耗最大时间（纳秒）
 
-    private final AtomicLong    connectCount          = new AtomicLong();
-    private final AtomicLong    connectErrorCount     = new AtomicLong();
-    private Throwable           connectErrorLast;
-    private final AtomicLong    connectNanoTotal      = new AtomicLong(0);                       // 连接建立消耗时间总和（纳秒）
-    private final AtomicLong    connectNanoMax        = new AtomicLong(0);                       // 连接建立消耗最大时间（纳秒）
+    private final AtomicLong errorCount = new AtomicLong();
 
-    private final AtomicLong    errorCount            = new AtomicLong();
+    private final AtomicLong aliveNanoTotal = new AtomicLong();
+    private Throwable lastError;
+    private long lastErrorTime;
 
-    private final AtomicLong    aliveNanoTotal        = new AtomicLong();
-    private Throwable           lastError;
-    private long                lastErrorTime;
+    private long connectLastTime;
 
-    private long                connectLastTime       = 0;
+    private final AtomicLong closeCount = new AtomicLong(0);                       // 执行Connection.close的计数
+    private final AtomicLong transactionStartCount = new AtomicLong(0);
+    private final AtomicLong commitCount = new AtomicLong(0);                       // 执行commit的计数
+    private final AtomicLong rollbackCount = new AtomicLong(0);                       // 执行rollback的计数
 
-    private final AtomicLong    closeCount            = new AtomicLong(0);                       // 执行Connection.close的计数
-    private final AtomicLong    transactionStartCount = new AtomicLong(0);
-    private final AtomicLong    commitCount           = new AtomicLong(0);                       // 执行commit的计数
-    private final AtomicLong    rollbackCount         = new AtomicLong(0);                       // 执行rollback的计数
+    private final AtomicLong aliveNanoMin = new AtomicLong();
+    private final AtomicLong aliveNanoMax = new AtomicLong();
 
-    private final AtomicLong    aliveNanoMin          = new AtomicLong();
-    private final AtomicLong    aliveNanoMax          = new AtomicLong();
+    private final Histogram histogram = new Histogram(TimeUnit.SECONDS, new long[]{ //
+            1, 5, 15, 60, 300, 1800});
 
-    private final Histogram     histogram             = new Histogram(TimeUnit.SECONDS, new long[] { //
-                                                                      1, 5, 15, 60, 300, 1800 });
-
-    public JdbcConnectionStat(){
-
+    public JdbcConnectionStat() {
     }
 
     public void reset() {
@@ -98,7 +96,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     public void beforeConnect() {
         int invoking = connectingCount.incrementAndGet();
 
-        for (;;) {
+        for (; ; ) {
             int max = connectingMax.get();
             if (invoking > max) {
                 if (connectingMax.compareAndSet(max, invoking)) {
@@ -118,7 +116,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     public void afterConnected(long delta) {
         connectingCount.decrementAndGet();
         connectNanoTotal.addAndGet(delta);
-        for (;;) {
+        for (; ; ) {
             // connectNanoMax
             long max = connectNanoMax.get();
             if (delta > max) {
@@ -146,7 +144,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     public void setActiveCount(int activeCount) {
         this.activeCount.set(activeCount);
 
-        for (;;) {
+        for (; ; ) {
             int max = activeCountMax.get();
             if (activeCount > max) {
                 if (activeCountMax.compareAndSet(max, activeCount)) {
@@ -204,7 +202,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         activeCount.decrementAndGet();
         aliveNanoTotal.addAndGet(aliveNano);
 
-        for (;;) {
+        for (; ; ) {
             long max = aliveNanoMax.get();
             if (aliveNano > max) {
                 if (aliveNanoMax.compareAndSet(max, aliveNano)) {
@@ -217,7 +215,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
             }
         }
 
-        for (;;) {
+        for (; ; ) {
             long min = aliveNanoMin.get();
             if (min == 0 || aliveNano < min) {
                 if (aliveNanoMin.compareAndSet(min, aliveNano)) {
@@ -330,21 +328,20 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     }
 
     public static class Entry implements EntryMBean {
+        private long id;
+        private long establishTime;
+        private long establishNano;
+        private Date connectTime;
+        private long connectTimespanNano;
+        private Exception connectStackTraceException;
 
-        private long         id;
-        private long         establishTime;
-        private long         establishNano;
-        private Date         connectTime;
-        private long         connectTimespanNano;
-        private Exception    connectStackTraceException;
-
-        private String       lastSql;
-        private Exception    lastStatementStatckTraceException;
-        protected Throwable  lastError;
-        protected long       lastErrorTime;
+        private String lastSql;
+        private Exception lastStatementStatckTraceException;
+        protected Throwable lastError;
+        protected long lastErrorTime;
         private final String dataSource;
 
-        public Entry(String dataSource, long connectionId){
+        public Entry(String dataSource, long connectionId) {
             this.id = connectionId;
             this.dataSource = dataSource;
         }
@@ -439,22 +436,22 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
             return new Date(lastErrorTime);
         }
 
-        private static String[] indexNames        = { "ID", "ConnectTime", "ConnectTimespan", "EstablishTime",
-                                                          "AliveTimespan", "LastSql", "LastError", "LastErrorTime",
-                                                          "ConnectStatckTrace", "LastStatementStackTrace", "DataSource" };
+        private static String[] indexNames = {"ID", "ConnectTime", "ConnectTimespan", "EstablishTime",
+                "AliveTimespan", "LastSql", "LastError", "LastErrorTime",
+                "ConnectStatckTrace", "LastStatementStackTrace", "DataSource"};
         private static String[] indexDescriptions = indexNames;
 
         public static CompositeType getCompositeType() throws JMException {
-            OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.DATE, SimpleType.LONG,
+            OpenType<?>[] indexTypes = new OpenType<?>[]{SimpleType.LONG, SimpleType.DATE, SimpleType.LONG,
                     SimpleType.DATE, SimpleType.LONG,
 
                     SimpleType.STRING, JMXUtils.getThrowableCompositeType(), SimpleType.DATE, SimpleType.STRING,
                     SimpleType.STRING,
 
-                    SimpleType.STRING };
+                    SimpleType.STRING};
 
             return new CompositeType("ConnectionStatistic", "Connection Statistic", indexNames, indexDescriptions,
-                                     indexTypes);
+                    indexTypes);
         }
 
         public String getDataSource() {
@@ -483,7 +480,6 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     }
 
     public interface EntryMBean {
-
         Date getEstablishTime();
 
         long getEstablishNano();

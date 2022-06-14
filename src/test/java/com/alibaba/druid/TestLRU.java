@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import junit.framework.TestCase;
 
 public class TestLRU extends TestCase {
-
     public void test_lru() throws Exception {
         LinkedHashMap<Integer, Object> cache = new LinkedHashMap<Integer, Object>(100, 0.75f, true);
 

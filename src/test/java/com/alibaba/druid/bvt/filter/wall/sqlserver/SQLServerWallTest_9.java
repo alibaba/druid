@@ -24,20 +24,19 @@ import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @see
  */
 public class SQLServerWallTest_9 extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 
         String sql = "SELECT s.id FROM snapshots s " //
-                     + "WHERE s.scope='PRJ'"//
-                     + " and s.qualifier IN ('TRK', 'BRC')"//
-                     + " AND status='P'" //
-                     + " AND islast=0" //
-                     + " AND NOT EXISTS (select m.id from project_measures m WHERE m.snapshot_id=s.id)";
+                + "WHERE s.scope='PRJ'"//
+                + " and s.qualifier IN ('TRK', 'BRC')"//
+                + " AND status='P'" //
+                + " AND islast=0" //
+                + " AND NOT EXISTS (select m.id from project_measures m WHERE m.snapshot_id=s.id)";
 
         Assert.assertTrue(provider.checkValid(sql));
 

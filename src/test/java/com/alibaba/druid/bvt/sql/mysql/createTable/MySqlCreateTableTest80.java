@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlCreateTableTest80 extends MysqlTest {
-
     public void test_one() throws Exception {
         String sql = "create table tb1(select * from tb2)";
 
@@ -43,7 +42,7 @@ public class MySqlCreateTableTest80 extends MysqlTest {
                     "SELECT *\n" +
                     "FROM tb2", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("create table tb1\n" +

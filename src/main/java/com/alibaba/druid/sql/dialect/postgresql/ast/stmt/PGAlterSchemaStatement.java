@@ -18,12 +18,10 @@ package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGAlterSchemaStatement extends SQLStatementImpl implements PGSQLStatement, SQLAlterStatement {
-
     private SQLIdentifierExpr schemaName;
     private SQLIdentifierExpr newName;
     private SQLIdentifierExpr newOwner;

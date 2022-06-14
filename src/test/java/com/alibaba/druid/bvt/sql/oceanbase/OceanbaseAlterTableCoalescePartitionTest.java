@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseAlterTableCoalescePartitionTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "ALTER TABLE clients COALESCE PARTITION 6"; //
 
@@ -37,14 +36,14 @@ public class OceanbaseAlterTableCoalescePartitionTest extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE clients"
-                    + "\n\tCOALESCE PARTITION 6",
-                                result);
+                            + "\n\tCOALESCE PARTITION 6",
+                    result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("alter table clients"
-                    + "\n\tcoalesce partition 6",
-                                result);
+                            + "\n\tcoalesce partition 6",
+                    result);
         }
 
         Assert.assertEquals(1, stmtList.size());

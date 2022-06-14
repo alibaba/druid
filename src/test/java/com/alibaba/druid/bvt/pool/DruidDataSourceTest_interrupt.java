@@ -9,12 +9,10 @@ import junit.framework.TestCase;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceTest_interrupt extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource() {
-
             protected void createAndStartCreatorThread() {
                 return;
             }
@@ -35,7 +33,6 @@ public class DruidDataSourceTest_interrupt extends TestCase {
         final CountDownLatch endLatch = new CountDownLatch(1);
         final AtomicInteger errorCount = new AtomicInteger();
         Thread thread = new Thread() {
-
             public void run() {
                 try {
                     startLatch.countDown();
@@ -49,15 +46,15 @@ public class DruidDataSourceTest_interrupt extends TestCase {
         };
         thread.setDaemon(true);
         thread.start();
-        
+
         startLatch.await();
-        
+
         Thread.sleep(10);
-        
+
         Assert.assertEquals(0, errorCount.get());
-        
+
         thread.interrupt();
-        
+
         endLatch.await();
         Assert.assertEquals(1, errorCount.get());
     }

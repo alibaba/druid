@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class MySqlAlterTableTest39_ann extends TestCase {
-
     public void test_alter_modify_clustered_by() throws Exception {
         String sql = "ALTER TABLE face_feature ADD ANN INDEX facefea_index2  (facefea) DistanceMeasure = DotProduct ALGORITHM = IVF;";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

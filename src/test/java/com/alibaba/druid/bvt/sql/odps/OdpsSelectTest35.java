@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OdpsSelectTest35 extends TestCase {
-
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "SELECT a.city, a.car_id, a.rrc_id, a.brand, a.car_series\n" +
@@ -46,28 +45,27 @@ public class OdpsSelectTest35 extends TestCase {
                 "where status = 'PUBLISHED'\n" +
                 "\tand model_id = 4419\n" +
                 "\tand abs(datediff(licensed_date, '2013-07-01 00:00:00', 'mm')) <= 5;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
-        
+
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
         assertEquals(1, statementList.size());
-        
+
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
-        
+
         System.out.println("Tables : " + visitor.getTables());
-      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
+
         assertEquals(1, visitor.getTables().size());
         assertEquals(9, visitor.getColumns().size());
         assertEquals(2, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));
-        
+
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 
 }

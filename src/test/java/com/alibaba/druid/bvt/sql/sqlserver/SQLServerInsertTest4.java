@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerInsertTest4 extends TestCase {
-
     public void test_isEmpty() throws Exception {
         String sql = "INSERT INTO dbo.AO_B9A0F0_APPLIED_TEMPLATE DEFAULT VALUES";
 

@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest12 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH regional_sales AS ("
                 + "        SELECT region, SUM(amount) AS total_sales"

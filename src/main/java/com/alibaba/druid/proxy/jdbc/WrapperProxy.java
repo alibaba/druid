@@ -22,7 +22,6 @@ import java.util.Map;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface WrapperProxy extends Wrapper {
-
     long getId();
 
     Object getRawObject();

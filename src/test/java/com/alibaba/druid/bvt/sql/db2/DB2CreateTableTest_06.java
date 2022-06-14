@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class DB2CreateTableTest_06 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE AUDIT.test ( ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1 ))";
 

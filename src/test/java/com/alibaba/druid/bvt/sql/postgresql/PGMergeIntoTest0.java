@@ -24,7 +24,6 @@ import com.alibaba.druid.stat.TableStat;
 import java.util.List;
 
 public class PGMergeIntoTest0 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "MERGE INTO CustomerAccount CA  \n" +
                 "USING (Select CustomerId, TransactionValue From RecentTransactions) AS T  \n" +
@@ -64,5 +63,5 @@ public class PGMergeIntoTest0 extends PGTest {
 //        assertTrue(visitor.containsColumn("student", "grade"));
     }
 
-    
+
 }

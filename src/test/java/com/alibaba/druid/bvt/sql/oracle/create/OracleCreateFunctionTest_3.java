@@ -25,53 +25,52 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateFunctionTest_3 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "FUNCTION        FN_LGN_CHK(USERINFO IN VARCHAR2)\n" +
-                "  RETURN VARCHAR2 IS\n" +
-                "  -- Author  : yuguoq\n" +
-                "  -- Created : 2013-10-14\n" +
-                "  -- Purpose : ??????\n" +
-                "  RESULT VARCHAR2(20);\n" +
-                "  TYPE TYPE_ARRAY IS VARRAY(3) OF VARCHAR2(50);\n" +
-                "  VAR_ARRAY TYPE_ARRAY := TYPE_ARRAY();\n" +
-                "  CURSOR VALUECURSOR IS\n" +
-                "    SELECT *\n" +
-                "      FROM TABLE(CAST(FN_SPLIT(USERINFO, ',') AS TY_STR_SPLIT))\n" +
-                "     WHERE ROWNUM < 4;\n" +
-                "  CURPOLICYINFO VALUECURSOR%ROWTYPE; ---??????\n" +
-                "  I             INTEGER := 1;\n" +
-                "BEGIN\n" +
-                "  OPEN VALUECURSOR; ---open cursor\n" +
-                "  LOOP\n" +
-                "    --deal with extraction data from DB\n" +
-                "    FETCH VALUECURSOR\n" +
-                "      INTO CURPOLICYINFO;\n" +
-                "    EXIT WHEN VALUECURSOR%NOTFOUND;\n" +
-                "    VAR_ARRAY.EXTEND;\n" +
-                "    VAR_ARRAY(I) := CURPOLICYINFO.COLUMN_VALUE;\n" +
-                "    I := I + 1;\n" +
-                "  END LOOP;\n" +
-                "  if VAR_ARRAY.count <> 3 then\n" +
-                "    RESULT := '1';\n" +
-                "  else\n" +
-                "    IF VAR_ARRAY(3) = md5(VAR_ARRAY(1) || VAR_ARRAY(2)) THEN\n" +
-                "      RESULT := VAR_ARRAY(1);\n" +
-                "    ELSE\n" +
-                "      RESULT := '1';\n" +
-                "    END IF;\n" +
-                "  end if;\n" +
-                "  RETURN(RESULT);\n" +
-                "EXCEPTION\n" +
-                "  WHEN OTHERS THEN\n" +
-                "    CLOSE VALUECURSOR;\n" +
-                "    DBMS_OUTPUT.PUT_LINE(SQLERRM);\n" +
-                "    IF VALUECURSOR%ISOPEN THEN\n" +
-                "      --close cursor\n" +
-                "      CLOSE VALUECURSOR;\n" +
-                "    END IF;\n" +
-                "END FN_LGN_CHK;";
+                "FUNCTION        FN_LGN_CHK(USERINFO IN VARCHAR2)\n" +
+                        "  RETURN VARCHAR2 IS\n" +
+                        "  -- Author  : yuguoq\n" +
+                        "  -- Created : 2013-10-14\n" +
+                        "  -- Purpose : ??????\n" +
+                        "  RESULT VARCHAR2(20);\n" +
+                        "  TYPE TYPE_ARRAY IS VARRAY(3) OF VARCHAR2(50);\n" +
+                        "  VAR_ARRAY TYPE_ARRAY := TYPE_ARRAY();\n" +
+                        "  CURSOR VALUECURSOR IS\n" +
+                        "    SELECT *\n" +
+                        "      FROM TABLE(CAST(FN_SPLIT(USERINFO, ',') AS TY_STR_SPLIT))\n" +
+                        "     WHERE ROWNUM < 4;\n" +
+                        "  CURPOLICYINFO VALUECURSOR%ROWTYPE; ---??????\n" +
+                        "  I             INTEGER := 1;\n" +
+                        "BEGIN\n" +
+                        "  OPEN VALUECURSOR; ---open cursor\n" +
+                        "  LOOP\n" +
+                        "    --deal with extraction data from DB\n" +
+                        "    FETCH VALUECURSOR\n" +
+                        "      INTO CURPOLICYINFO;\n" +
+                        "    EXIT WHEN VALUECURSOR%NOTFOUND;\n" +
+                        "    VAR_ARRAY.EXTEND;\n" +
+                        "    VAR_ARRAY(I) := CURPOLICYINFO.COLUMN_VALUE;\n" +
+                        "    I := I + 1;\n" +
+                        "  END LOOP;\n" +
+                        "  if VAR_ARRAY.count <> 3 then\n" +
+                        "    RESULT := '1';\n" +
+                        "  else\n" +
+                        "    IF VAR_ARRAY(3) = md5(VAR_ARRAY(1) || VAR_ARRAY(2)) THEN\n" +
+                        "      RESULT := VAR_ARRAY(1);\n" +
+                        "    ELSE\n" +
+                        "      RESULT := '1';\n" +
+                        "    END IF;\n" +
+                        "  end if;\n" +
+                        "  RETURN(RESULT);\n" +
+                        "EXCEPTION\n" +
+                        "  WHEN OTHERS THEN\n" +
+                        "    CLOSE VALUECURSOR;\n" +
+                        "    DBMS_OUTPUT.PUT_LINE(SQLERRM);\n" +
+                        "    IF VALUECURSOR%ISOPEN THEN\n" +
+                        "      --close cursor\n" +
+                        "      CLOSE VALUECURSOR;\n" +
+                        "    END IF;\n" +
+                        "END FN_LGN_CHK;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -121,7 +120,7 @@ public class OracleCreateFunctionTest_3 extends OracleTest {
                         "\t\t\tCLOSE VALUECURSOR;\n" +
                         "\t\tEND IF;\n" +
                         "END;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

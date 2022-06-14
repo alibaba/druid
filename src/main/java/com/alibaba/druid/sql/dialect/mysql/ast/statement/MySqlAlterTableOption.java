@@ -22,20 +22,19 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterTableOption extends MySqlObjectImpl implements SQLAlterTableItem {
-
     private String name;
     private SQLObject value;
 
-    public MySqlAlterTableOption(String name, String value){
+    public MySqlAlterTableOption(String name, String value) {
         this(name, new SQLIdentifierExpr(value));
     }
 
-    public MySqlAlterTableOption(String name, SQLObject value){
+    public MySqlAlterTableOption(String name, SQLObject value) {
         this.name = name;
         this.setValue(value);
     }
 
-    public MySqlAlterTableOption(){
+    public MySqlAlterTableOption() {
     }
 
     @Override

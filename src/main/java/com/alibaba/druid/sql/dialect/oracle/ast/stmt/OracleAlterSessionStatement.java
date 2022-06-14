@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleAlterSessionStatement extends OracleStatementImpl implements OracleAlterStatement {
-
     private List<SQLAssignItem> items = new ArrayList<SQLAssignItem>();
 
     @Override

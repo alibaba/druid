@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 
 public class MySqlSelectTest_298
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT 1 FROM ((SELECT 2) ORDER BY 1) AS res";
 

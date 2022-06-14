@@ -13,12 +13,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_149 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT length('aaa' collate utf8_general_ci) FROM corona_select_one_db_one_tb";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -35,11 +34,12 @@ public class MySqlSelectTest_149 extends MysqlTest {
                 , queryBlock.getSelectList().get(0).getExpr().toString()
         );
     }
+
     public void test_1() throws Exception {
         String sql = "SELECT count(1), length('aaa' collate utf8_general_ci) FROM corona_select_one_db_one_tb";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -54,12 +54,13 @@ public class MySqlSelectTest_149 extends MysqlTest {
                 , queryBlock.getSelectList().get(1).getExpr().toString()
         );
     }
+
     public void test_2() throws Exception {
         String sql = "select i `table` from ttt `table`";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint,
-                                                                    SQLParserFeature.IgnoreNameQuotes);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+                SQLParserFeature.IgnoreNameQuotes);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         System.out.println(stmt.toString());
     }

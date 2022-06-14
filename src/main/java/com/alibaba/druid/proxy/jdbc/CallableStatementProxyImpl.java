@@ -18,27 +18,16 @@ package com.alibaba.druid.proxy.jdbc;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.Ref;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLXML;
+import java.sql.*;
 import java.util.Calendar;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class CallableStatementProxyImpl extends PreparedStatementProxyImpl implements CallableStatementProxy {
-
     private final CallableStatement statement;
 
-    public CallableStatementProxyImpl(ConnectionProxy connection, CallableStatement statement, String sql, long id){
+    public CallableStatementProxyImpl(ConnectionProxy connection, CallableStatement statement, String sql, long id) {
         super(connection, statement, sql, id);
         this.statement = statement;
     }
@@ -615,7 +604,7 @@ public class CallableStatementProxyImpl extends PreparedStatementProxyImpl imple
         if (iface == PreparedStatement.class || iface == CallableStatement.class) {
             return (T) statement;
         }
-        
+
         return super.unwrap(iface);
     }
 }

@@ -19,38 +19,22 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.SQLXML;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Calendar;
 import java.util.Map;
 
 public abstract class ResultSetBase implements ResultSet {
+    protected boolean closed;
+    protected boolean wasNull;
+    private SQLWarning warning;
+    private String cursorName;
+    private int fetchSize;
+    private int fetchDirection;
 
-    protected boolean           closed         = false;
-    protected boolean           wasNull        = false;
-    private SQLWarning          warning;
-    private String              cursorName;
-    private int                 fetchSize      = 0;
-    private int                 fetchDirection = 0;
-
-    protected Statement         statement;
+    protected Statement statement;
     protected ResultSetMetaData metaData;
 
-    public ResultSetBase(Statement statement){
+    public ResultSetBase(Statement statement) {
         super();
         this.statement = statement;
     }

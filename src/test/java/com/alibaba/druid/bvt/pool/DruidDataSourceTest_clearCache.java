@@ -10,11 +10,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * 这个场景测试minIdle > maxActive
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_clearCache extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -42,9 +41,9 @@ public class DruidDataSourceTest_clearCache extends TestCase {
             conn.close();
         }
         Assert.assertEquals(2, dataSource.getCachedPreparedStatementCount());
-        
+
         dataSource.clearStatementCache();
-        
+
         Assert.assertEquals(0, dataSource.getCachedPreparedStatementCount());
     }
 }

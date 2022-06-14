@@ -3,7 +3,7 @@ package com.alibaba.druid.support.opds.udf;
 import com.aliyun.odps.udf.UDF;
 import org.apache.commons.lang.StringEscapeUtils;
 
-public class MetaSqlExtract  extends UDF {
+public class MetaSqlExtract extends UDF {
     public String evaluate(String xml) {
         if (xml == null || xml.length() == 0) {
             return null;

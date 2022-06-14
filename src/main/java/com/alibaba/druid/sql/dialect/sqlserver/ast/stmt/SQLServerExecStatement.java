@@ -26,9 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLServerExecStatement extends SQLServerStatementImpl implements SQLServerStatement {
-
-    private SQLName       returnStatus;
-    private SQLName       moduleName;
+    private SQLName returnStatus;
+    private SQLName moduleName;
     private List<SQLServerParameter> parameters = new ArrayList<SQLServerParameter>();
 
     public SQLName getModuleName() {
@@ -61,32 +60,36 @@ public class SQLServerExecStatement extends SQLServerStatementImpl implements SQ
     }
 
     /**
-     * 
      * @author zz [455910092@qq.com]
      */
-    public static class SQLServerParameter extends SQLServerObjectImpl
-    {
-    	private SQLExpr expr;
-    	private boolean type;//sql server 支持参数只有input 和 output 两种
-		public SQLExpr getExpr() {
-			return expr;
-		}
-		public void setExpr(SQLExpr expr) {
-			this.expr = expr;
-		}
-		public boolean getType() {
-			return type;
-		}
-		public void setType(boolean type) {
-			this.type = type;
-		}
-		@Override
-		public void accept0(SQLServerASTVisitor visitor) {
-			if (visitor.visit(this)) {
-	            acceptChild(visitor, expr);
-	        }
-	        visitor.endVisit(this);
-			
-		}
+    public static class SQLServerParameter extends SQLServerObjectImpl {
+        private SQLExpr expr;
+        //sql server 支持参数只有input 和 output 两种
+        private boolean type;
+
+        public SQLExpr getExpr() {
+            return expr;
+        }
+
+        public void setExpr(SQLExpr expr) {
+            this.expr = expr;
+        }
+
+        public boolean getType() {
+            return type;
+        }
+
+        public void setType(boolean type) {
+            this.type = type;
+        }
+
+        @Override
+        public void accept0(SQLServerASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, expr);
+            }
+            visitor.endVisit(this);
+
+        }
     }
 }

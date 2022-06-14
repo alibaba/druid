@@ -8,11 +8,10 @@ import java.sql.Connection;
 
 /**
  * 这个场景测试defaultAutoCommit
- * 
+ *
  * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_getConnection_2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

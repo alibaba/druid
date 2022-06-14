@@ -15,38 +15,32 @@
  */
 package com.alibaba.druid.util.jdbc;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockConnectionClosedException;
 
-public abstract class StatementBase implements Statement {
+import java.sql.*;
 
-    private Connection  connection;
-    private int         fetchDirection;
-    private int         fetchSize;
-    private int         resultSetType;
-    private int         resultSetConcurrency;
-    private int         resultSetHoldability;
-    private int         maxFieldSize;
-    private int         maxRows;
-    private int         queryTimeout;
-    private boolean     escapeProcessing;
-    private String      cursorName;
-    private SQLWarning  warnings;
-    private int         updateCount;
-    protected boolean   closed = false;
-    private boolean     poolable;
+public abstract class StatementBase implements Statement {
+    private Connection connection;
+    private int fetchDirection;
+    private int fetchSize;
+    private int resultSetType;
+    private int resultSetConcurrency;
+    private int resultSetHoldability;
+    private int maxFieldSize;
+    private int maxRows;
+    private int queryTimeout;
+    private boolean escapeProcessing;
+    private String cursorName;
+    private SQLWarning warnings;
+    private int updateCount;
+    protected boolean closed;
+    private boolean poolable;
 
     protected ResultSet generatedKeys;
     protected ResultSet resultSet;
 
-    public StatementBase(Connection connection){
+    public StatementBase(Connection connection) {
         super();
         this.connection = connection;
     }

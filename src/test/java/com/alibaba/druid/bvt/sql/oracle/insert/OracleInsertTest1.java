@@ -26,12 +26,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleInsertTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "INSERT INTO bonuses(employee_id)" +
-        		"   (SELECT e.employee_id FROM employees e, orders o" +
-        		"   WHERE e.employee_id = o.sales_rep_id" +
-        		"   GROUP BY e.employee_id); ";
+                "   (SELECT e.employee_id FROM employees e, orders o" +
+                "   WHERE e.employee_id = o.sales_rep_id" +
+                "   GROUP BY e.employee_id); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -54,11 +53,11 @@ public class OracleInsertTest1 extends OracleTest {
 
         Assert.assertEquals(3, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());
-        
+
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "sales_rep_id")));
     }
 
-    
+
 }

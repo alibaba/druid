@@ -33,12 +33,11 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.List;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
-
-    public SQLServerOutputVisitor(Appendable appender){
+    public SQLServerOutputVisitor(Appendable appender) {
         super(appender, DbType.sqlserver);
     }
 
-    public SQLServerOutputVisitor(Appendable appender, boolean parameterized){
+    public SQLServerOutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.sqlserver;
     }
@@ -143,13 +142,13 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             x.getTop().accept(this);
             print(' ');
         }
-        
+
         print0(ucase ? "INTO " : "into ");
-        
+
         x.getTableSource().accept(this);
 
         printInsertColumns(x.getColumns());
-        
+
         if (x.getOutput() != null) {
             println();
             x.getOutput().setParent(x);
@@ -284,13 +283,13 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public boolean visit(SQLServerExecStatement x) {
         print0(ucase ? "EXEC " : "exec ");
-        
+
         SQLName returnStatus = x.getReturnStatus();
         if (returnStatus != null) {
             returnStatus.accept(this);
             print0(" = ");
         }
-        
+
         SQLName moduleName = x.getModuleName();
         if (moduleName != null) {
             moduleName.accept(this);
@@ -335,7 +334,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             SQLExpr value = item.getValue();
             if (value instanceof SQLIdentifierExpr
                     && (((SQLIdentifierExpr) value).nameHashCode64() == FnvHash.Constants.ON
-                        || ((SQLIdentifierExpr) value).nameHashCode64() == FnvHash.Constants.OFF)) {
+                    || ((SQLIdentifierExpr) value).nameHashCode64() == FnvHash.Constants.OFF)) {
                 print(' ');
             } else {
                 print0(" = ");
@@ -412,14 +411,14 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             x.getResource().accept(this);
         }
     }
-    
+
     public boolean visit(SQLSelect x) {
         super.visit(x);
         if (x.isForBrowse()) {
             println();
             print0(ucase ? "FOR BROWSE" : "for browse");
         }
-        
+
         if (x.getForXmlOptionsSize() > 0) {
             println();
             print0(ucase ? "FOR XML " : "for xml ");
@@ -430,19 +429,19 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
                 }
             }
         }
-        
+
         if (x.getXmlPath() != null) {
             println();
             print0(ucase ? "FOR XML " : "for xml ");
             x.getXmlPath().accept(this);
         }
-        
+
         if (x.getOffset() != null) {
             println();
             print0(ucase ? "OFFSET " : "offset ");
             x.getOffset().accept(this);
             print0(ucase ? " ROWS" : " rows");
-            
+
             if (x.getRowCount() != null) {
                 print0(ucase ? " FETCH NEXT " : " fetch next ");
                 x.getRowCount().accept(this);
@@ -487,7 +486,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
                 x.getName().accept(this);
             }
         }
-        
+
         return false;
     }
 
@@ -501,29 +500,29 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         } else if (x.getTime() != null) {
             print0(ucase ? " TIME " : " time ");
             x.getTime().accept(this);
-        } if (x.getStatement() != null) {
+        }
+        if (x.getStatement() != null) {
             print0(ucase ? " DELAY " : " delay ");
             x.getStatement().accept(this);
         }
-        
-        if(x.getTimeout() != null) {
+
+        if (x.getTimeout() != null) {
             print0(ucase ? " ,TIMEOUT " : " ,timeout ");
             x.getTimeout().accept(this);
         }
-        
+
         return false;
     }
 
-	@Override
-	public boolean visit(SQLServerParameter x) {
-		// TODO Auto-generated method stub
-		x.getExpr().accept(this);
-		if(x.getType())
-		{
-			print0(ucase ? " OUT" : " out");
-		}
-		return false;
-	}
+    @Override
+    public boolean visit(SQLServerParameter x) {
+        // TODO Auto-generated method stub
+        x.getExpr().accept(this);
+        if (x.getType()) {
+            print0(ucase ? " OUT" : " out");
+        }
+        return false;
+    }
 
     @Override
     public boolean visit(SQLStartTransactionStatement x) {

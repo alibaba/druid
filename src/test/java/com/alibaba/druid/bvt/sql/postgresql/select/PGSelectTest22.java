@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest22 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT i.relname, d.indisunique, a.attname"
                 + "          FROM pg_class t, pg_class i, pg_index d, pg_attribute "

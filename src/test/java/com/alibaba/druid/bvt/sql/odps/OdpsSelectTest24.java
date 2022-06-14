@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class OdpsSelectTest24 extends TestCase {
-
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "SELECT ta.member_id AS member_id\n" +
@@ -216,6 +215,5 @@ public class OdpsSelectTest24 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 
 }

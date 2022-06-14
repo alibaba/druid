@@ -29,18 +29,17 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 public class OdpsCreateTableParser extends SQLCreateTableParser {
-
-    public OdpsCreateTableParser(String sql){
+    public OdpsCreateTableParser(String sql) {
         super(new OdpsExprParser(sql));
     }
 
-    public OdpsCreateTableParser(SQLExprParser exprParser){
+    public OdpsCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
     }
 
     public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
         OdpsCreateTableStatement stmt = new OdpsCreateTableStatement();
-        
+
         if (acceptCreate) {
             accept(Token.CREATE);
         }
@@ -49,7 +48,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
             stmt.setExternal(true);
         }
-        
+
         accept(Token.TABLE);
 
         if (lexer.token() == Token.IF || lexer.identifierEquals("IF")) {
@@ -71,7 +70,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             return stmt;
         }
 
-        for (;;) {
+        for (; ; ) {
             if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
                 parseTblProperties(stmt);
 
@@ -125,12 +124,12 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             // skip
         } else {
             accept(Token.LPAREN);
-            
+
             if (lexer.isKeepComments() && lexer.hasComment()) {
                 stmt.addBodyBeforeComment(lexer.readAndResetComments());
             }
-            
-            for (;;) {
+
+            for (; ; ) {
                 SQLColumnDefinition column;
                 switch (lexer.token()) {
                     case IDENTIFIER:
@@ -212,16 +211,16 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 }
 
                 stmt.getTableElementList().add(column);
-                
+
                 if (lexer.isKeepComments() && lexer.hasComment()) {
                     column.addAfterComment(lexer.readAndResetComments());
                 }
-                
+
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
                 } else {
                     lexer.nextToken();
-                    
+
                     if (lexer.isKeepComments() && lexer.hasComment()) {
                         column.addAfterComment(lexer.readAndResetComments());
                     }
@@ -230,8 +229,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-
-        for (;;) {
+        for (; ; ) {
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
                 stmt.setComment(this.exprParser.primary());
@@ -464,7 +462,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
             break;
         }
-        
+
         return stmt;
     }
 
@@ -472,7 +470,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         acceptIdentifier("TBLPROPERTIES");
         accept(Token.LPAREN);
 
-        for (;;) {
+        for (; ; ) {
             String name = lexer.stringVal();
             lexer.nextToken();
             accept(Token.EQ);

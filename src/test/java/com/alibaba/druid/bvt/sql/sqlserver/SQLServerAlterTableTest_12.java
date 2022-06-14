@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class SQLServerAlterTableTest_12 extends TestCase {
-
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE kpiTarget ADD deleted tinyint DEFAULT 0";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);

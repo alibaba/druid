@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest106 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `procs_priv` (\n" +
                 "  `Routine_type` enum('FUNCTION','PROCEDURE') COLLATE utf8_bin NOT NULL,\n" +
@@ -18,7 +17,7 @@ public class MySqlCreateTableTest106 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(3, stmt.getTableElementList().size());

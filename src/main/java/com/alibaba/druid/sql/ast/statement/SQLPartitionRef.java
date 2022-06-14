@@ -38,13 +38,11 @@ public class SQLPartitionRef extends SQLObjectImpl {
     }
 
     public static class Item extends SQLObjectImpl {
-
         private SQLIdentifierExpr columnName;
         private SQLExpr value;
         private SQLBinaryOperator operator;
 
         public Item() {
-
         }
 
         public Item(SQLIdentifierExpr columnName) {
@@ -53,7 +51,6 @@ public class SQLPartitionRef extends SQLObjectImpl {
 
         @Override
         protected void accept0(SQLASTVisitor v) {
-
         }
 
         public SQLIdentifierExpr getColumnName() {

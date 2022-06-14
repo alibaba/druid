@@ -24,8 +24,7 @@ import java.util.List;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Lpad implements Function {
-
-    public final static Lpad instance = new Lpad();
+    public static final Lpad instance = new Lpad();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         List<SQLExpr> params = x.getArguments();
@@ -52,12 +51,12 @@ public class Lpad implements Function {
         String strValue0 = param0Value.toString();
         int len = ((Number) param1Value).intValue();
         String strValue1 = param2Value.toString();
-        
+
         String result = strValue0;
         if (result.length() > len) {
             return result.substring(0, len);
         }
-        
+
         while (result.length() < len) {
             result = strValue1 + result;
         }

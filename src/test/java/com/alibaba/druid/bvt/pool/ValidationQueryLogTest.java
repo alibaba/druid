@@ -13,7 +13,6 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class ValidationQueryLogTest extends PoolTestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -41,11 +40,11 @@ public class ValidationQueryLogTest extends PoolTestCase {
         field.setAccessible(true);
         Log log = (Log) field.get(null);
         log.resetStat();
-        
+
         Connection conn = dataSource.getConnection();
-        
+
         conn.close();
-        
+
         Assert.assertEquals(1, log.getErrorCount());
     }
 }

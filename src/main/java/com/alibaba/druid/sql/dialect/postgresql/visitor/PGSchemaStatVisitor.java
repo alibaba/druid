@@ -17,13 +17,10 @@ package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -36,7 +33,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     public PGSchemaStatVisitor(SchemaRepository repository) {
-        super (repository);
+        super(repository);
     }
 
     @Override
@@ -85,7 +82,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         x.putAttribute("_original_use_mode", getMode());
         setMode(x, Mode.Insert);
 
-
         SQLName tableName = x.getTableName();
         {
             TableStat stat = getTableStat(tableName);
@@ -100,7 +96,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public void endVisit(PGSelectStatement x) {
-
     }
 
     @Override

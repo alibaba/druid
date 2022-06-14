@@ -43,13 +43,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.*;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public class SQLEvalVisitorUtils {
-
     private static Map<String, Function> functions = new HashMap<String, Function>();
 
     static {
@@ -546,7 +541,7 @@ public class SQLEvalVisitorUtils {
         String text = x.getText();
 
         long[] words = new long[text.length() / 64 + 1];
-        for (int i = text.length()-1; i >= 0 ; --i) {
+        for (int i = text.length() - 1; i >= 0; --i) {
             char ch = text.charAt(i);
             if (ch == '1') {
                 int wordIndex = i >> 6;
@@ -562,7 +557,7 @@ public class SQLEvalVisitorUtils {
             byte[] bytes = new byte[words.length * 8];
 
             for (int i = 0; i < words.length; ++i) {
-                Utils.putLong(bytes, (words.length-1-i) * 8, words[i]);
+                Utils.putLong(bytes, (words.length - 1 - i) * 8, words[i]);
             }
 
             val = new BigInteger(bytes);
@@ -665,7 +660,7 @@ public class SQLEvalVisitorUtils {
             Object conditionValue = item.getConditionExpr().getAttribute(EVAL_VALUE);
 
             if ((x.getValueExpr() != null && eq(value, conditionValue))
-                || (x.getValueExpr() == null && conditionValue instanceof Boolean && (Boolean) conditionValue == Boolean.TRUE)) {
+                    || (x.getValueExpr() == null && conditionValue instanceof Boolean && (Boolean) conditionValue == Boolean.TRUE)) {
                 item.getValueExpr().accept(visitor);
 
                 if (item.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {
@@ -768,7 +763,7 @@ public class SQLEvalVisitorUtils {
             x.putAttribute(EVAL_VALUE, EVAL_ERROR);
             return false;
         }
-        
+
         if (val == null) {
             x.putAttribute(EVAL_VALUE, EVAL_VALUE_NULL);
             return false;
@@ -830,9 +825,9 @@ public class SQLEvalVisitorUtils {
                 wallConditionContext.setXor(true);
             }
         } else if (x.getOperator() == SQLBinaryOperator.BitwiseAnd //
-                   || x.getOperator() == SQLBinaryOperator.BitwiseNot //
-                   || x.getOperator() == SQLBinaryOperator.BitwiseOr //
-                   || x.getOperator() == SQLBinaryOperator.BitwiseXor) {
+                || x.getOperator() == SQLBinaryOperator.BitwiseNot //
+                || x.getOperator() == SQLBinaryOperator.BitwiseOr //
+                || x.getOperator() == SQLBinaryOperator.BitwiseXor) {
             if (wallConditionContext != null) {
                 wallConditionContext.setBitwise(true);
             }
@@ -1012,19 +1007,17 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, result);
                 break;
             }
-            case BooleanAnd:
-            {
-            	boolean first = eq(leftValue, true);
-            	boolean second = eq(rightValue, true);
-            	x.putAttribute(EVAL_VALUE, first&&second);
-            	break;
+            case BooleanAnd: {
+                boolean first = eq(leftValue, true);
+                boolean second = eq(rightValue, true);
+                x.putAttribute(EVAL_VALUE, first && second);
+                break;
             }
-            case BooleanOr:
-            {
-            	boolean first = eq(leftValue, true);
-            	boolean second = eq(rightValue, true);
-            	x.putAttribute(EVAL_VALUE, first||second);
-            	break;
+            case BooleanOr: {
+                boolean first = eq(leftValue, true);
+                boolean second = eq(rightValue, true);
+                x.putAttribute(EVAL_VALUE, first || second);
+                break;
             }
             default:
                 break;
@@ -1079,8 +1072,7 @@ public class SQLEvalVisitorUtils {
         List<Object> parameters = visitor.getParameters();
         if (varIndex != -1
                 && parameters != null
-                && parameters.size() > varIndex)
-        {
+                && parameters.size() > varIndex) {
             boolean containsValue = attributes.containsKey(EVAL_VALUE);
             if (!containsValue) {
                 Object value = parameters.get(varIndex);
@@ -1098,7 +1090,7 @@ public class SQLEvalVisitorUtils {
         if (val == null) {
             return null;
         }
-        
+
         if (val == EVAL_VALUE_NULL) {
             return null;
         }
@@ -1106,7 +1098,7 @@ public class SQLEvalVisitorUtils {
         if (val instanceof Boolean) {
             return (Boolean) val;
         }
-        
+
         if (val instanceof Number) {
             return ((Number) val).intValue() > 0;
         }
@@ -1220,12 +1212,12 @@ public class SQLEvalVisitorUtils {
                 return castToLong(list.get(0));
             }
         }
-        
+
         if (val instanceof Boolean) {
             if (((Boolean) val).booleanValue()) {
-                return 1l;
+                return 1L;
             } else {
-                return 0l;
+                return 0L;
             }
         }
 
@@ -1271,7 +1263,7 @@ public class SQLEvalVisitorUtils {
 
         return BigInteger.valueOf(((Number) val).longValue());
     }
-    
+
     public static Number castToNumber(String val) {
         if (val == null) {
             return null;
@@ -1296,22 +1288,22 @@ public class SQLEvalVisitorUtils {
             return Long.parseLong(val);
         } catch (NumberFormatException e) {
         }
-        
+
         try {
             return Float.parseFloat(val);
         } catch (NumberFormatException e) {
         }
-        
+
         try {
             return Double.parseDouble(val);
         } catch (NumberFormatException e) {
         }
-        
+
         try {
             return new BigInteger(val);
         } catch (NumberFormatException e) {
         }
-        
+
         try {
             return new BigDecimal(val);
         } catch (NumberFormatException e) {
@@ -1399,11 +1391,11 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return null;
         }
-        
-        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+
+        if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return null;
         }
-        
+
         if (a instanceof String) {
             a = castToNumber((String) a);
         }
@@ -1423,11 +1415,11 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return null;
         }
-        
-        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+
+        if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return null;
         }
-        
+
         if (a instanceof String) {
             a = castToNumber((String) a);
         }
@@ -1447,11 +1439,11 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return null;
         }
-        
-        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+
+        if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return null;
         }
-        
+
         if (a instanceof String) {
             a = castToNumber((String) a);
         }
@@ -1680,7 +1672,7 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return false;
         }
-        
+
         if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return false;
         }
@@ -1756,7 +1748,7 @@ public class SQLEvalVisitorUtils {
         if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return EVAL_VALUE_NULL;
         }
-        
+
         if (a instanceof String && !(b instanceof String)) {
             a = castToNumber((String) a);
         }
@@ -1795,8 +1787,12 @@ public class SQLEvalVisitorUtils {
 
         if (a instanceof Boolean || b instanceof Boolean) {
             int aI = 0, bI = 0;
-            if (castToBoolean(a)) aI = 1;
-            if (castToBoolean(b)) bI = 1;
+            if (castToBoolean(a)) {
+                aI = 1;
+            }
+            if (castToBoolean(b)) {
+                bI = 1;
+            }
             return aI + bI;
         }
 
@@ -1827,7 +1823,7 @@ public class SQLEvalVisitorUtils {
         if (a instanceof Date || b instanceof Date) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
-        
+
         if (a instanceof String) {
             a = castToNumber((String) a);
         }
@@ -1866,8 +1862,12 @@ public class SQLEvalVisitorUtils {
 
         if (a instanceof Boolean || b instanceof Boolean) {
             int aI = 0, bI = 0;
-            if (castToBoolean(a)) aI = 1;
-            if (castToBoolean(b)) bI = 1;
+            if (castToBoolean(a)) {
+                aI = 1;
+            }
+            if (castToBoolean(b)) {
+                bI = 1;
+            }
             return aI - bI;
         }
 
@@ -1899,11 +1899,11 @@ public class SQLEvalVisitorUtils {
         if (a instanceof BigInteger || b instanceof BigInteger) {
             return castToBigInteger(a).multiply(castToBigInteger(b));
         }
-        
+
         if (a instanceof Double || b instanceof Double) {
             return castToDouble(a) * castToDouble(b);
         }
-        
+
         if (a instanceof Float || b instanceof Float) {
             return castToFloat(a) * castToFloat(b);
         }
@@ -1952,7 +1952,7 @@ public class SQLEvalVisitorUtils {
             char ch = pattern.charAt(i);
 
             if (stat == STAT_LITERAL //
-                && (ch == '%' || ch == '_' || ch == '[')) {
+                    && (ch == '%' || ch == '_' || ch == '[')) {
                 String block = pattern.substring(blockStart, i);
                 regexprBuilder.append("\\Q");
                 regexprBuilder.append(block);

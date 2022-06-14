@@ -18,13 +18,12 @@ package com.alibaba.druid.mock;
 import java.sql.RowId;
 
 public class MockRowId implements RowId {
-
     private byte[] bytes;
 
-    public MockRowId(){
+    public MockRowId() {
     }
 
-    public MockRowId(byte[] bytes){
+    public MockRowId(byte[] bytes) {
         this.bytes = bytes;
     }
 

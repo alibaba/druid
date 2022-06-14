@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateDatabaseTest5 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE SCHEMA IF NOT EXISTS schema_name with (property_name = 'expression')\n";
 
@@ -43,7 +42,6 @@ public class MySqlCreateDatabaseTest5 extends MysqlTest {
                 "\tproperty_name = 'expression'\n" +
                 ")", output);
     }
-
 
     public void test_1() throws Exception {
         String sql = "CREATE SCHEMA IF NOT EXISTS `schema_name` with (property_name = 'expression')\n";

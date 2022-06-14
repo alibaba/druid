@@ -39,25 +39,25 @@ public class LiteralHexadecimalTest extends TestCase {
         SQLHexExpr hex = (SQLHexExpr) new MySqlExprParser(sql).expr();
         Assert.assertEquals("\r\n", new String(hex.toBytes(), "utf-8"));
     }
-    
+
     public void test_2() throws Exception {
         String sql = "X'4D7953514C'";
         SQLHexExpr hex = (SQLHexExpr) new MySqlExprParser(sql).expr();
         Assert.assertEquals("MySQL", new String(hex.toBytes(), "utf-8"));
     }
-    
+
     public void test_3() throws Exception {
         String sql = "0x5061756c";
         SQLHexExpr hex = (SQLHexExpr) new MySqlExprParser(sql).expr();
         Assert.assertEquals("Paul", new String(hex.toBytes(), "utf-8"));
     }
-    
+
     public void test_4() throws Exception {
         String sql = "0x41";
         SQLHexExpr hex = (SQLHexExpr) new MySqlExprParser(sql).expr();
         Assert.assertEquals("A", new String(hex.toBytes(), "utf-8"));
     }
-    
+
     public void test_5() throws Exception {
         String sql = "0x636174";
         SQLHexExpr hex = (SQLHexExpr) new MySqlExprParser(sql).expr();

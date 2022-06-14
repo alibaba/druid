@@ -16,30 +16,30 @@
 package com.alibaba.druid.sql.ast.statement;
 
 public enum SQLObjectType {
-    TABLE("TABLE"), // 
-    FUNCTION("FUNCTION"), // 
-    PROCEDURE("PROCEDURE"), // 
-    USER("USER"), //
-    DATABASE("DATABASE"), //
-    SCHEMA("SCHEMA"), //
-    ROLE("ROLE"), //
-    PROJECT("PROJECT"), // 
-    PACKAGE("PACKAGE"), // 
-    RESOURCE("RESOURCE"), // 
-    INSTANCE("INSTANCE"), // 
-    JOB("JOB"), // 
-    VOLUME("VOLUME"), // 
-    OfflineModel("OFFLINEMODEL"), // 
-    SYSTEM("SYSTEM"), //
-    GLOBAL("GLOBAL"), //
-    XFLOW("XFLOW") // for odps
-    ;
-    
+    TABLE("TABLE"),
+    FUNCTION("FUNCTION"),
+    PROCEDURE("PROCEDURE"),
+    USER("USER"),
+    DATABASE("DATABASE"),
+    SCHEMA("SCHEMA"),
+    ROLE("ROLE"),
+    PROJECT("PROJECT"),
+    PACKAGE("PACKAGE"),
+    RESOURCE("RESOURCE"),
+    INSTANCE("INSTANCE"),
+    JOB("JOB"),
+    VOLUME("VOLUME"),
+    OfflineModel("OFFLINEMODEL"),
+    SYSTEM("SYSTEM"),
+    GLOBAL("GLOBAL"),
+    // for odps
+    XFLOW("XFLOW");
+
     public final String name;
-    public final String name_lcase;
-    
+    public final String nameLCase;
+
     SQLObjectType(String name) {
         this.name = name;
-        this.name_lcase = name.toLowerCase();
+        this.nameLCase = name.toLowerCase();
     }
 }

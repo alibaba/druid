@@ -26,14 +26,13 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OceanbaseHintTest_multiget extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t1 WHERE (c1, c2, c3) IN ((1,2,3), (4,5,6))";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT *"
                 + "\nFROM t1"

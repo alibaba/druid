@@ -27,7 +27,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateTableTest_30 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE EXTERNAL TABLE `nation`(\n" +
@@ -107,16 +106,17 @@ public class HiveCreateTableTest_30 extends OracleTest {
         assertTrue(visitor.containsTable("nation"));
 
     }
+
     public void test_1() throws Exception {
         String sql = //
                 "CREATE EXTERNAL TABLE nation_test "
-                + "(  n_nationkey INT NOT NULL COMMENT 'xxx', "
-                + "n_name STRING NULL COMMENT 'yyy', "
-                + "n_regionkey INT NULL COMMENT 'zzz', "
-                + "n_comment STRING NULL COMMENT 'hhh',  "
-                + "PRIMARY KEY (n_nationkey)) "
-                + "TBLPROPERTIES ( TABLE_MAPPING = 'nation', COLUMN_MAPPING = 'n_nationkey,N_NATIONKEY; n_name,N_NAME;n_regionkey,N_REGIONKEY; n_comment,N_COMMENT; ' ) "
-                + "COMMENT '萌豆'"; //
+                        + "(  n_nationkey INT NOT NULL COMMENT 'xxx', "
+                        + "n_name STRING NULL COMMENT 'yyy', "
+                        + "n_regionkey INT NULL COMMENT 'zzz', "
+                        + "n_comment STRING NULL COMMENT 'hhh',  "
+                        + "PRIMARY KEY (n_nationkey)) "
+                        + "TBLPROPERTIES ( TABLE_MAPPING = 'nation', COLUMN_MAPPING = 'n_nationkey,N_NATIONKEY; n_name,N_NAME;n_regionkey,N_REGIONKEY; n_comment,N_COMMENT; ' ) "
+                        + "COMMENT '萌豆'"; //
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -131,28 +131,29 @@ public class HiveCreateTableTest_30 extends OracleTest {
             String text = SQLUtils.toSQLString(stmt, JdbcConstants.HIVE);
 
             assertEquals("CREATE EXTERNAL TABLE nation_test (\n" + "\tn_nationkey INT NOT NULL COMMENT 'xxx',\n"
-                         + "\tn_name STRING NULL COMMENT 'yyy',\n" + "\tn_regionkey INT NULL COMMENT 'zzz',\n"
-                         + "\tn_comment STRING NULL COMMENT 'hhh',\n" + "\tPRIMARY KEY (n_nationkey)\n" + ")\n"
-                         + "COMMENT '萌豆'\n" + "TBLPROPERTIES (\n" + "\t'TABLE_MAPPING' = 'nation',\n"
-                         + "\t'COLUMN_MAPPING' = 'n_nationkey,N_NATIONKEY; n_name,N_NAME;n_regionkey,N_REGIONKEY; n_comment,N_COMMENT; '\n"
-                         + ")", text);
+                    + "\tn_name STRING NULL COMMENT 'yyy',\n" + "\tn_regionkey INT NULL COMMENT 'zzz',\n"
+                    + "\tn_comment STRING NULL COMMENT 'hhh',\n" + "\tPRIMARY KEY (n_nationkey)\n" + ")\n"
+                    + "COMMENT '萌豆'\n" + "TBLPROPERTIES (\n" + "\t'TABLE_MAPPING' = 'nation',\n"
+                    + "\t'COLUMN_MAPPING' = 'n_nationkey,N_NATIONKEY; n_name,N_NAME;n_regionkey,N_REGIONKEY; n_comment,N_COMMENT; '\n"
+                    + ")", text);
         }
 
     }
+
     public void test_2() throws Exception {
         String sql = //
                 "CREATE EXTERNAL TABLE `tpch_100m_text`.`nation_line_terminated` (\n"
-                + "  `n_nationkey` int,\n"
-                + "  `n_name` string,\n"
-                + "  `n_regionkey` int,\n"
-                + "  `n_comment` string\n"
-                + ")\n"
-                + "ROW FORMAT DELIMITED\n"
-                + "  FIELDS TERMINATED BY '|'  \n"
-                + "    ESCAPED BY '\\\\' \n"
-                + "    LINES TERMINATED BY ';' \n"
-                + "STORED AS `TEXTFILE`\n"
-                + "LOCATION 'oss://oss-cn-beijing-for-openanalytics/datasets/tpch/0_1x/text/nation_line_terminated/'"; //
+                        + "  `n_nationkey` int,\n"
+                        + "  `n_name` string,\n"
+                        + "  `n_regionkey` int,\n"
+                        + "  `n_comment` string\n"
+                        + ")\n"
+                        + "ROW FORMAT DELIMITED\n"
+                        + "  FIELDS TERMINATED BY '|'  \n"
+                        + "    ESCAPED BY '\\\\' \n"
+                        + "    LINES TERMINATED BY ';' \n"
+                        + "STORED AS `TEXTFILE`\n"
+                        + "LOCATION 'oss://oss-cn-beijing-for-openanalytics/datasets/tpch/0_1x/text/nation_line_terminated/'"; //
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -161,38 +162,40 @@ public class HiveCreateTableTest_30 extends OracleTest {
             String text = SQLUtils.toSQLString(stmt, JdbcConstants.HIVE);
 
             assertEquals("CREATE EXTERNAL TABLE `tpch_100m_text`.`nation_line_terminated` (\n"
-                         + "\t`n_nationkey` int,\n" + "\t`n_name` string,\n" + "\t`n_regionkey` int,\n"
-                         + "\t`n_comment` string\n" + ")\n" + "ROW FORMAT DELIMITED\n" + "\tFIELDS TERMINATED BY '|'\n"
-                         + "\tESCAPED BY '\\\\'\n" + "\tLINES TERMINATED BY ';'\n" + "STORED AS `TEXTFILE`\n"
-                         + "LOCATION 'oss://oss-cn-beijing-for-openanalytics/datasets/tpch/0_1x/text/nation_line_terminated/'", text);
+                    + "\t`n_nationkey` int,\n" + "\t`n_name` string,\n" + "\t`n_regionkey` int,\n"
+                    + "\t`n_comment` string\n" + ")\n" + "ROW FORMAT DELIMITED\n" + "\tFIELDS TERMINATED BY '|'\n"
+                    + "\tESCAPED BY '\\\\'\n" + "\tLINES TERMINATED BY ';'\n" + "STORED AS `TEXTFILE`\n"
+                    + "LOCATION 'oss://oss-cn-beijing-for-openanalytics/datasets/tpch/0_1x/text/nation_line_terminated/'", text);
         }
 
     }
+
     public void test_3() throws Exception {
         String sql = "-- 234234\ncreate table a(id varchar)";
 
         SQLStatement statement = SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
         assertEquals("-- 234234\n" + "CREATE TABLE a (\n" + "\tid varchar\n" + ")",
-                     SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
+                SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
 
     }
+
     public void test_4() throws Exception {
         String sql = "alter table partition_text_nation add partition (p=101,q) location 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';";
 
         SQLStatement statement = SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
         assertEquals("ALTER TABLE partition_text_nation\n"
-                     + "\tADD PARTITION (p = 101, q) LOCATION 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';",
-                     SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
+                        + "\tADD PARTITION (p = 101, q) LOCATION 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';",
+                SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
 
     }
+
     public void test_5() throws Exception {
         String sql = "alter table partition_text_nation add partition (p, q=101) location 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';";
 
         SQLStatement statement = SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
         assertEquals("ALTER TABLE partition_text_nation\n"
-                     + "\tADD PARTITION (p, q = 101) LOCATION 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';",
-                     SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
-
+                        + "\tADD PARTITION (p, q = 101) LOCATION 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';",
+                SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
 
     }
 

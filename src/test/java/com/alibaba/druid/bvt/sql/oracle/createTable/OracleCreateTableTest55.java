@@ -26,21 +26,20 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest55 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "       CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"I\" NUMBER, \n" +
-                "  \"C\" CLOB\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
-                "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"USERS\" \n" +
-                " LOB (\"C\") STORE AS (\n" +
-                "  TABLESPACE \"USERS\" DISABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
-                "  NOCACHE LOGGING \n" +
-                "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT))     ";
+                "       CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                        "   (  \"I\" NUMBER, \n" +
+                        "  \"C\" CLOB\n" +
+                        "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        "  TABLESPACE \"USERS\" \n" +
+                        " LOB (\"C\") STORE AS (\n" +
+                        "  TABLESPACE \"USERS\" DISABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
+                        "  NOCACHE LOGGING \n" +
+                        "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                        "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT))     ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -87,7 +86,7 @@ public class OracleCreateTableTest55 extends OracleTest {
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
                         ")",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

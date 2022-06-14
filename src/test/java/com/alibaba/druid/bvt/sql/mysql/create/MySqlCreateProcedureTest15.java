@@ -30,9 +30,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlCreateProcedureTest15 extends MysqlTest {
-
     public void test_0() throws Exception {
-    	String sql = "     create function `test1`.`proc1`(`a` enum('1','2') charset utf8)\n" +
+        String sql = "     create function `test1`.`proc1`(`a` enum('1','2') charset utf8)\n" +
                 "               returns int(10)\n" +
                 "               DETERMINISTIC \n" +
                 "     BEGIN\n" +
@@ -52,5 +51,4 @@ public class MySqlCreateProcedureTest15 extends MysqlTest {
                 "END", stmt.toString());
     }
 
-    
 }

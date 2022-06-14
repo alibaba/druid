@@ -18,10 +18,8 @@ package com.alibaba.druid.sql.dialect.odps.ast;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLObjectType;
-import com.alibaba.druid.sql.ast.statement.SQLPrivilegeItem;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -29,17 +27,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OdpsGrantStmt extends SQLGrantStatement {
-
     private SQLObjectType subjectType;
 
-    private boolean       isSuper = false;
+    private boolean isSuper;
 
-    private boolean       isLabel = false;
-    private SQLExpr       label;
-    private List<SQLName> columns = new ArrayList<SQLName>(); ;
-    private SQLExpr       expire;
+    private boolean isLabel;
+    private SQLExpr label;
+    private List<SQLName> columns = new ArrayList<SQLName>();
+    private SQLExpr expire;
 
-    public OdpsGrantStmt(){
+    public OdpsGrantStmt() {
         super(DbType.odps);
     }
 

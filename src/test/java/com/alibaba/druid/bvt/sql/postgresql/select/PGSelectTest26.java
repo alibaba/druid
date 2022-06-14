@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest26 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select '[{\"a\":\"foo\"},{\"b\":\"bar\"},{\"c\":\"baz\"}]'::json->2 from dual";
 
@@ -35,7 +34,7 @@ public class PGSelectTest26 extends PGTest {
 
         Assert.assertEquals("SELECT '[{\"a\":\"foo\"},{\"b\":\"bar\"},{\"c\":\"baz\"}]'::json -> 2"
                 + "\nFROM dual", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select '[{\"a\":\"foo\"},{\"b\":\"bar\"},{\"c\":\"baz\"}]'::json -> 2"
                 + "\nfrom dual", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

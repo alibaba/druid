@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class MySqlPerfMain_select {
-
     public static void main(String[] args) throws Exception {
         System.out.println(System.getProperty("java.vm.name") + " " + System.getProperty("java.runtime.version"));
         List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
@@ -62,7 +61,6 @@ public class MySqlPerfMain_select {
     }
 
     static void execMySql(String sql) {
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 

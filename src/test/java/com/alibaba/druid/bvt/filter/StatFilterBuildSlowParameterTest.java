@@ -43,7 +43,6 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterBuildSlowParameterTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -55,7 +54,6 @@ public class StatFilterBuildSlowParameterTest extends TestCase {
         dataSource.setConnectionProperties("druid.stat.slowSqlMillis=1");
 
         MockDriver driver = new MockDriver() {
-
             public ResultSet executeQuery(MockStatementBase stmt, String sql) throws SQLException {
                 try {
                     Thread.sleep(2);
@@ -203,35 +201,35 @@ public class StatFilterBuildSlowParameterTest extends TestCase {
             for (int i = 0; i < 10; ++i) {
                 buf.append("中国abcdefghijklmnABCDEFGHIJKLMN1234567890!@#$%^&*(");
             }
-            
+
             Connection conn = dataSource.getConnection();
-            
+
             PreparedStatement stmt = conn.prepareStatement(sql);
-            
+
             stmt.setBinaryStream(1, new ByteInputStream(new byte[0]));
             stmt.setString(2, buf.toString());
             stmt.setTime(3, new Time(currentMillis));
             stmt.setBigDecimal(4, new BigDecimal("56789.123"));
             stmt.setRowId(5, new MockRowId());
-            
+
             ResultSet rs = stmt.executeQuery();
             rs.close();
-            
+
             stmt.close();
-            
+
             conn.close();
-            
+
             // //////
-            
+
             JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
             Assert.assertNotNull(sqlStat);
-            
+
             String slowParameters = sqlStat.getLastSlowParameters();
             Assert.assertNotNull(slowParameters);
-            
+
             List<Object> parameters = (List<Object>) JSONUtils.parse(slowParameters);
             Assert.assertEquals(5, parameters.size());
-            
+
             Assert.assertEquals("<InputStream>", parameters.get(0));
             Assert.assertEquals(buf.substring(0, 97) + "...", parameters.get(1));
             Assert.assertEquals(dateText, parameters.get(2));

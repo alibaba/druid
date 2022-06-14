@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest4 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "create table tbd_qi_xiaq_100961 tablespace tbd_data as select * /*1*/from product where company_id=10239004 ";
+                "create table tbd_qi_xiaq_100961 tablespace tbd_data as select * /*1*/from product where company_id=10239004 ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

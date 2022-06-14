@@ -24,20 +24,19 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest_comment extends TestCase {
-
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         provider.getConfig().setCommentAllow(true);
 
         assertTrue(provider.checkValid(//
-        "SELECT * FROM T WHERE FID = ? #AND 1"));
+                "SELECT * FROM T WHERE FID = ? #AND 1"));
 
         assertEquals(1, provider.getTableStats().size());
     }
@@ -50,7 +49,7 @@ public class MySqlWallTest_comment extends TestCase {
         assertTrue(provider.checkValid("/* this is comment */ SELECT id FROM t "));
         assertTrue(provider.checkValid("-- this is comment \n SELECT * FROM t"));
         assertTrue(provider.checkValid("#this is comment \n SELECT * FROM t"));
-        
+
         assertTrue(provider.checkValid("/*!40101fff*/ select * from t"));
         assertFalse(provider.checkValid("select * from t/*!40101fff*/"));
 

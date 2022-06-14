@@ -22,8 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Ltrim implements Function {
-
-    public final static Ltrim instance = new Ltrim();
+    public static final Ltrim instance = new Ltrim();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().size() != 1) {
@@ -39,7 +38,7 @@ public class Ltrim implements Function {
         }
 
         String strValue = param0Value.toString();
-        
+
         int index = -1;
         for (int i = 0; i < strValue.length(); ++i) {
             if (!Character.isWhitespace(strValue.charAt(i))) {
@@ -47,7 +46,7 @@ public class Ltrim implements Function {
                 break;
             }
         }
-        
+
         if (index <= 0) {
             return strValue;
         } else {

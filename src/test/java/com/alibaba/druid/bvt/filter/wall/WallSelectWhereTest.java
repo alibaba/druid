@@ -23,8 +23,8 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，检测可疑的Having条件
- * @author wenshao
  *
+ * @author wenshao
  */
 public class WallSelectWhereTest extends TestCase {
     private String sql = "SELECT F1, F2  from t WHERE 1 = 1";
@@ -32,7 +32,7 @@ public class WallSelectWhereTest extends TestCase {
     public void testMySql() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(sql));
     }
-    
+
     public void testORACLE() throws Exception {
         Assert.assertTrue(WallUtils.isValidateOracle(sql));
     }

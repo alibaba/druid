@@ -30,7 +30,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleMergeTest11 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "MERGE INTO (\n" +
                 "SELECT *\n" +
@@ -67,9 +66,9 @@ public class OracleMergeTest11 extends OracleTest {
                         ") B ON (A.AREA_ID = B.AREA_ID\n" +
                         "AND A.AREA_LEVEL = B.AREA_LEVEL) \n" +
                         "WHEN MATCHED THEN UPDATE SET A.SUM_CHRG_YS = ROUND(B.TOTAL_CHARGE * 1.00 / 10000, 2), A.CHARGE = B.THIS_CHARGE;",
-                            result);
+                result);
 
-        SQLSelect select = ((SQLSubqueryTableSource)mergeStatement.getInto()).getSelect();
+        SQLSelect select = ((SQLSubqueryTableSource) mergeStatement.getInto()).getSelect();
         assertEquals("SELECT *\n" +
                 "FROM KPI_M_CW_INCOME_FACT_BAK\n" +
                 "WHERE THE_DATE = '{THISMONTH}'\n" +

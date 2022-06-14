@@ -36,7 +36,7 @@ public class PGSelectTest70_string_agg extends TestCase {
 
         assertEquals("SELECT string_agg(a, ',' ORDER BY a)\n" +
                 "FROM table;", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select string_agg(a, ',' order by a)\n" +
                 "from table;", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

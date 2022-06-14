@@ -27,7 +27,7 @@ public class FNVTest extends TestCase {
         return hash;
     }
 
-    public long fnv_64( String text) {
+    public long fnv_64(String text) {
         long hash = 0xcbf29ce484222325L;
         return fnv_64(hash, text);
     }

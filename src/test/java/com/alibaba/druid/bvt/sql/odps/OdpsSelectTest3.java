@@ -22,12 +22,10 @@ import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
 
 public class OdpsSelectTest3 extends TestCase {
-
     public void test_distribute_by() throws Exception {
         String sql = "select RANK() OVER (PARTITION BY ui ORDER BY duration DESC) rank from dual";//
         Assert.assertEquals("SELECT RANK() OVER (PARTITION BY ui ORDER BY duration DESC) AS rank"
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
     }
-    
 
 }

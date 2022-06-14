@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest55 extends MysqlTest {
-
     @Test
     public void test_union() throws Exception {
         String sql = "CREATE TABLE tableA (datasn varchar(100) NOT NULL,PRIMARY KEY(datasn)) ENGINE=MRG_MyISAM DEFAULT CHARSET=utf8 UNION=(tableB)";
@@ -45,9 +44,9 @@ public class MySqlCreateTableTest55 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE tableA (" //
-                            + "\n\tdatasn varchar(100) NOT NULL," //
-                            + "\n\tPRIMARY KEY (datasn)" //
-                            + "\n) ENGINE = MRG_MyISAM CHARSET = utf8 UNION = (tableB)", output);
+                + "\n\tdatasn varchar(100) NOT NULL," //
+                + "\n\tPRIMARY KEY (datasn)" //
+                + "\n) ENGINE = MRG_MyISAM CHARSET = utf8 UNION = (tableB)", output);
 
     }
 }

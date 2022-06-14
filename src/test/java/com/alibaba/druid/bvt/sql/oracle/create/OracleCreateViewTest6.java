@@ -27,49 +27,48 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateViewTest6 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE OR REPLACE FORCE VIEW \"SC_001\".\"TV_001\" (\"ID\", \"GMT_CREATE\", \"CREATOR\", \"GMT_MODIFIED\", \"MODIFIER\", \"IS_DELETED\", \"CONTRACT_PARTY\", \"COMPANY_NAME\", \"PRODUCT_TYPE\", \"PERIOD\", \"JOIN\", \"OVER\", \"CONTRACT_TERM\", \"CONTRACT_CASH\", \"EXEC_CASH\", \"CANCELED_CASH\", \"RECEIVERD_CASH\", \"O_S_CASH\", \"REMARK\", \"FENTAN_CHECK\", \"TOTAL_CASH\", \"NOT_CONFIRMED\", \"PRE_RECEIVED\", \"NOT_RECEIVED\", \"CONTRACT_DATE\", \"OWNER_1\", \"AREA_ID_1\", \"FIRST_OWNER\", \"FIRST_AREA_ID\", \"CONTRACT_ID\", \"IS_RENEW_UPGRADE\", \"CATEGORY_ID_1\", \"CATEGORY_ID_2\", \"FIRST_RECEIPT_DATE\", \"RECEIPT_REMARK\", \"CONTRACT_SERIAL\", \"IS_MERGED\") AS \n" +
-                "  SELECT\n" +
-                "ID,\n" +
-                "GMT_CREATE,\n" +
-                "utl_raw.cast_to_raw(CREATOR) AS CREATOR,\n" +
-                "GMT_MODIFIED,\n" +
-                "utl_raw.cast_to_raw(MODIFIER) AS MODIFIER,\n" +
-                "IS_DELETED,\n" +
-                "utl_raw.cast_to_raw(CONTRACT_PARTY) AS CONTRACT_PARTY,\n" +
-                "utl_raw.cast_to_raw(COMPANY_NAME) AS COMPANY_NAME,\n" +
-                "utl_raw.cast_to_raw(PRODUCT_TYPE) AS PRODUCT_TYPE,\n" +
-                "utl_raw.cast_to_raw(PERIOD) AS PERIOD,\n" +
-                "JOIN,\n" +
-                "OVER,\n" +
-                "CONTRACT_TERM,\n" +
-                "CONTRACT_CASH,\n" +
-                "EXEC_CASH,\n" +
-                "CANCELED_CASH,\n" +
-                "RECEIVERD_CASH,\n" +
-                "O_S_CASH,\n" +
-                "utl_raw.cast_to_raw(REMARK) AS REMARK,\n" +
-                "FENTAN_CHECK,\n" +
-                "TOTAL_CASH,\n" +
-                "NOT_CONFIRMED,\n" +
-                "PRE_RECEIVED,\n" +
-                "NOT_RECEIVED,\n" +
-                "CONTRACT_DATE,\n" +
-                "utl_raw.cast_to_raw(OWNER_1) AS OWNER_1,\n" +
-                "AREA_ID_1,\n" +
-                "utl_raw.cast_to_raw(FIRST_OWNER) AS FIRST_OWNER,\n" +
-                "FIRST_AREA_ID,\n" +
-                "utl_raw.cast_to_raw(CONTRACT_ID) AS CONTRACT_ID,\n" +
-                "utl_raw.cast_to_raw(IS_RENEW_UPGRADE) AS IS_RENEW_UPGRADE,\n" +
-                "CATEGORY_ID_1,\n" +
-                "CATEGORY_ID_2,\n" +
-                "FIRST_RECEIPT_DATE,\n" +
-                "utl_raw.cast_to_raw(RECEIPT_REMARK) AS RECEIPT_REMARK,\n" +
-                "utl_raw.cast_to_raw(CONTRACT_SERIAL) AS CONTRACT_SERIAL,\n" +
-                "IS_MERGED\n" +
-                "FROM TB_002  ";
+                "   CREATE OR REPLACE FORCE VIEW \"SC_001\".\"TV_001\" (\"ID\", \"GMT_CREATE\", \"CREATOR\", \"GMT_MODIFIED\", \"MODIFIER\", \"IS_DELETED\", \"CONTRACT_PARTY\", \"COMPANY_NAME\", \"PRODUCT_TYPE\", \"PERIOD\", \"JOIN\", \"OVER\", \"CONTRACT_TERM\", \"CONTRACT_CASH\", \"EXEC_CASH\", \"CANCELED_CASH\", \"RECEIVERD_CASH\", \"O_S_CASH\", \"REMARK\", \"FENTAN_CHECK\", \"TOTAL_CASH\", \"NOT_CONFIRMED\", \"PRE_RECEIVED\", \"NOT_RECEIVED\", \"CONTRACT_DATE\", \"OWNER_1\", \"AREA_ID_1\", \"FIRST_OWNER\", \"FIRST_AREA_ID\", \"CONTRACT_ID\", \"IS_RENEW_UPGRADE\", \"CATEGORY_ID_1\", \"CATEGORY_ID_2\", \"FIRST_RECEIPT_DATE\", \"RECEIPT_REMARK\", \"CONTRACT_SERIAL\", \"IS_MERGED\") AS \n" +
+                        "  SELECT\n" +
+                        "ID,\n" +
+                        "GMT_CREATE,\n" +
+                        "utl_raw.cast_to_raw(CREATOR) AS CREATOR,\n" +
+                        "GMT_MODIFIED,\n" +
+                        "utl_raw.cast_to_raw(MODIFIER) AS MODIFIER,\n" +
+                        "IS_DELETED,\n" +
+                        "utl_raw.cast_to_raw(CONTRACT_PARTY) AS CONTRACT_PARTY,\n" +
+                        "utl_raw.cast_to_raw(COMPANY_NAME) AS COMPANY_NAME,\n" +
+                        "utl_raw.cast_to_raw(PRODUCT_TYPE) AS PRODUCT_TYPE,\n" +
+                        "utl_raw.cast_to_raw(PERIOD) AS PERIOD,\n" +
+                        "JOIN,\n" +
+                        "OVER,\n" +
+                        "CONTRACT_TERM,\n" +
+                        "CONTRACT_CASH,\n" +
+                        "EXEC_CASH,\n" +
+                        "CANCELED_CASH,\n" +
+                        "RECEIVERD_CASH,\n" +
+                        "O_S_CASH,\n" +
+                        "utl_raw.cast_to_raw(REMARK) AS REMARK,\n" +
+                        "FENTAN_CHECK,\n" +
+                        "TOTAL_CASH,\n" +
+                        "NOT_CONFIRMED,\n" +
+                        "PRE_RECEIVED,\n" +
+                        "NOT_RECEIVED,\n" +
+                        "CONTRACT_DATE,\n" +
+                        "utl_raw.cast_to_raw(OWNER_1) AS OWNER_1,\n" +
+                        "AREA_ID_1,\n" +
+                        "utl_raw.cast_to_raw(FIRST_OWNER) AS FIRST_OWNER,\n" +
+                        "FIRST_AREA_ID,\n" +
+                        "utl_raw.cast_to_raw(CONTRACT_ID) AS CONTRACT_ID,\n" +
+                        "utl_raw.cast_to_raw(IS_RENEW_UPGRADE) AS IS_RENEW_UPGRADE,\n" +
+                        "CATEGORY_ID_1,\n" +
+                        "CATEGORY_ID_2,\n" +
+                        "FIRST_RECEIPT_DATE,\n" +
+                        "utl_raw.cast_to_raw(RECEIPT_REMARK) AS RECEIPT_REMARK,\n" +
+                        "utl_raw.cast_to_raw(CONTRACT_SERIAL) AS CONTRACT_SERIAL,\n" +
+                        "IS_MERGED\n" +
+                        "FROM TB_002  ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -131,7 +130,7 @@ public class OracleCreateViewTest6 extends OracleTest {
                         "\t, CATEGORY_ID_1, CATEGORY_ID_2, FIRST_RECEIPT_DATE, utl_raw.cast_to_raw(RECEIPT_REMARK) AS RECEIPT_REMARK\n" +
                         "\t, utl_raw.cast_to_raw(CONTRACT_SERIAL) AS CONTRACT_SERIAL, IS_MERGED\n" +
                         "FROM TB_002",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

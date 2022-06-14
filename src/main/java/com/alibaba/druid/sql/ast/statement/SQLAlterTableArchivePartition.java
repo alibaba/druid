@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -28,7 +27,7 @@ public class SQLAlterTableArchivePartition extends SQLObjectImpl implements SQLA
     public List<SQLAssignItem> getPartitions() {
         return partitions;
     }
-    
+
     public void addPartition(SQLAssignItem partition) {
         if (partition != null) {
             partition.setParent(this);

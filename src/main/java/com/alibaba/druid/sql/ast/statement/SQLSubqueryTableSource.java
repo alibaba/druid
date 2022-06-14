@@ -22,32 +22,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLSubqueryTableSource extends SQLTableSourceImpl {
-
     protected SQLSelect select;
     protected List<SQLName> columns = new ArrayList<SQLName>();
 
-    public SQLSubqueryTableSource(){
-
+    public SQLSubqueryTableSource() {
     }
 
-    public SQLSubqueryTableSource(String alias){
+    public SQLSubqueryTableSource(String alias) {
         super(alias);
     }
 
-    public SQLSubqueryTableSource(SQLSelect select, String alias){
+    public SQLSubqueryTableSource(SQLSelect select, String alias) {
         super(alias);
         this.setSelect(select);
     }
 
-    public SQLSubqueryTableSource(SQLSelect select){
+    public SQLSubqueryTableSource(SQLSelect select) {
         this.setSelect(select);
     }
 
-    public SQLSubqueryTableSource(SQLSelectQuery query){
+    public SQLSubqueryTableSource(SQLSelectQuery query) {
         this(new SQLSelect(query));
     }
 
-    public SQLSubqueryTableSource(SQLSelectQuery query, String alias){
+    public SQLSubqueryTableSource(SQLSelectQuery query, String alias) {
         this(new SQLSelect(query), alias);
     }
 
@@ -129,8 +127,12 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLSubqueryTableSource that = (SQLSubqueryTableSource) o;
 

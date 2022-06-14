@@ -19,33 +19,32 @@ import java.sql.Types;
 import java.util.Calendar;
 
 public final class JdbcParameterNull implements JdbcParameter {
+    private final int sqlType;
 
-    private final int                     sqlType;
+    public static final JdbcParameterNull CHAR = new JdbcParameterNull(Types.CHAR);
+    public static final JdbcParameterNull VARCHAR = new JdbcParameterNull(Types.VARCHAR);
+    public static final JdbcParameterNull NVARCHAR = new JdbcParameterNull(Types.NVARCHAR);
 
-    public final static JdbcParameterNull CHAR      = new JdbcParameterNull(Types.CHAR);
-    public final static JdbcParameterNull VARCHAR   = new JdbcParameterNull(Types.VARCHAR);
-    public final static JdbcParameterNull NVARCHAR  = new JdbcParameterNull(Types.NVARCHAR);
+    public static final JdbcParameterNull BINARY = new JdbcParameterNull(Types.BINARY);
+    public static final JdbcParameterNull VARBINARY = new JdbcParameterNull(Types.VARBINARY);
 
-    public final static JdbcParameterNull BINARY    = new JdbcParameterNull(Types.BINARY);
-    public final static JdbcParameterNull VARBINARY = new JdbcParameterNull(Types.VARBINARY);
+    public static final JdbcParameterNull TINYINT = new JdbcParameterNull(Types.TINYINT);
+    public static final JdbcParameterNull SMALLINT = new JdbcParameterNull(Types.SMALLINT);
+    public static final JdbcParameterNull INTEGER = new JdbcParameterNull(Types.INTEGER);
+    public static final JdbcParameterNull BIGINT = new JdbcParameterNull(Types.BIGINT);
 
-    public final static JdbcParameterNull TINYINT   = new JdbcParameterNull(Types.TINYINT);
-    public final static JdbcParameterNull SMALLINT  = new JdbcParameterNull(Types.SMALLINT);
-    public final static JdbcParameterNull INTEGER   = new JdbcParameterNull(Types.INTEGER);
-    public final static JdbcParameterNull BIGINT    = new JdbcParameterNull(Types.BIGINT);
+    public static final JdbcParameterNull DECIMAL = new JdbcParameterNull(Types.DECIMAL);
+    public static final JdbcParameterNull NUMERIC = new JdbcParameterNull(Types.NUMERIC);
+    public static final JdbcParameterNull FLOAT = new JdbcParameterNull(Types.FLOAT);
+    public static final JdbcParameterNull DOUBLE = new JdbcParameterNull(Types.DOUBLE);
 
-    public final static JdbcParameterNull DECIMAL   = new JdbcParameterNull(Types.DECIMAL);
-    public final static JdbcParameterNull NUMERIC   = new JdbcParameterNull(Types.NUMERIC);
-    public final static JdbcParameterNull FLOAT     = new JdbcParameterNull(Types.FLOAT);
-    public final static JdbcParameterNull DOUBLE    = new JdbcParameterNull(Types.DOUBLE);
+    public static final JdbcParameterNull NULL = new JdbcParameterNull(Types.NULL);
 
-    public final static JdbcParameterNull NULL      = new JdbcParameterNull(Types.NULL);
+    public static final JdbcParameterNull DATE = new JdbcParameterNull(Types.DATE);
+    public static final JdbcParameterNull TIME = new JdbcParameterNull(Types.TIME);
+    public static final JdbcParameterNull TIMESTAMP = new JdbcParameterNull(Types.TIMESTAMP);
 
-    public final static JdbcParameterNull DATE      = new JdbcParameterNull(Types.DATE);
-    public final static JdbcParameterNull TIME      = new JdbcParameterNull(Types.TIME);
-    public final static JdbcParameterNull TIMESTAMP = new JdbcParameterNull(Types.TIMESTAMP);
-
-    private JdbcParameterNull(int sqlType){
+    private JdbcParameterNull(int sqlType) {
         this.sqlType = sqlType;
     }
 

@@ -24,31 +24,30 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
 public class SQLServerUpdateTest3 extends TestCase {
-
     public void test_update() throws Exception {
         String sql = "UPDATE Sales.SalesPerson " + //
-                     "SET SalesYTD = SalesYTD + " + //
-                     "    (SELECT SUM(so.SubTotal) " + //
-                     "     FROM Sales.SalesOrderHeader AS so" + //
-                     "     WHERE so.OrderDate = (SELECT MAX(OrderDate)" + //
-                     "                           FROM Sales.SalesOrderHeader AS so2" + //
-                     "                           WHERE so2.SalesPersonID = " + //
-                     "                                 so.SalesPersonID)" + //
-                     "     AND Sales.SalesPerson.SalesPersonID = so.SalesPersonID" + //
-                     "     GROUP BY so.SalesPersonID);";
+                "SET SalesYTD = SalesYTD + " + //
+                "    (SELECT SUM(so.SubTotal) " + //
+                "     FROM Sales.SalesOrderHeader AS so" + //
+                "     WHERE so.OrderDate = (SELECT MAX(OrderDate)" + //
+                "                           FROM Sales.SalesOrderHeader AS so2" + //
+                "                           WHERE so2.SalesPersonID = " + //
+                "                                 so.SalesPersonID)" + //
+                "     AND Sales.SalesPerson.SalesPersonID = so.SalesPersonID" + //
+                "     GROUP BY so.SalesPersonID);";
 
         String expect = "UPDATE Sales.SalesPerson" +
-        		"\nSET SalesYTD = SalesYTD + (" +
-        		"\n\tSELECT SUM(so.SubTotal)" +
-        		"\n\tFROM Sales.SalesOrderHeader so" +
-        		"\n\tWHERE so.OrderDate = (" +
-        		"\n\t\t\tSELECT MAX(OrderDate)" +
-        		"\n\t\t\tFROM Sales.SalesOrderHeader so2" +
-        		"\n\t\t\tWHERE so2.SalesPersonID = so.SalesPersonID" +
-        		"\n\t\t)" +
-        		"\n\t\tAND Sales.SalesPerson.SalesPersonID = so.SalesPersonID" +
-        		"\n\tGROUP BY so.SalesPersonID" +
-        		"\n);";
+                "\nSET SalesYTD = SalesYTD + (" +
+                "\n\tSELECT SUM(so.SubTotal)" +
+                "\n\tFROM Sales.SalesOrderHeader so" +
+                "\n\tWHERE so.OrderDate = (" +
+                "\n\t\t\tSELECT MAX(OrderDate)" +
+                "\n\t\t\tFROM Sales.SalesOrderHeader so2" +
+                "\n\t\t\tWHERE so2.SalesPersonID = so.SalesPersonID" +
+                "\n\t\t)" +
+                "\n\t\tAND Sales.SalesPerson.SalesPersonID = so.SalesPersonID" +
+                "\n\tGROUP BY so.SalesPersonID" +
+                "\n);";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

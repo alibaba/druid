@@ -5,7 +5,6 @@ import com.alibaba.druid.support.opds.udf.ExportColumns;
 import junit.framework.TestCase;
 
 public class ExportColumnsTest0 extends TestCase {
-
     private ExportColumns udf = new ExportColumns();
 
     public void test_0() throws Exception {
@@ -14,7 +13,7 @@ public class ExportColumnsTest0 extends TestCase {
                 + "\n FROM fund_base_cv_ad_auction_ocr_pv_tfs a"
                 + "\n JOIN fund_base_cv_ad_auction_ocr_pv_tfs_ocr b ON a.tfs = b.tfs"
                 + "\n WHERE a.ds=20150819 and b.ds=20150819;";
-        
+
         udf.evaluate(sql, "odps");
     }
 }

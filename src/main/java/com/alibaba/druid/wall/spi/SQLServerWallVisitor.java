@@ -16,20 +16,22 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
-import com.alibaba.druid.wall.*;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class SQLServerWallVisitor extends WallVisitorBase implements WallVisitor, SQLServerASTVisitor {
-
-    public SQLServerWallVisitor(WallProvider provider){
-        super (provider);
+    public SQLServerWallVisitor(WallProvider provider) {
+        super(provider);
     }
 
     @Override
@@ -56,7 +58,6 @@ public class SQLServerWallVisitor extends WallVisitorBase implements WallVisitor
         return true;
     }
 
-
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
         if (x.getParent() instanceof SQLExprTableSource) {
@@ -80,10 +81,9 @@ public class SQLServerWallVisitor extends WallVisitorBase implements WallVisitor
         }
 
         if (config.isVariantCheck() && varName.startsWith("@@")) {
-
             final WallTopStatementContext topStatementContext = WallVisitorUtils.getWallTopStatementContext();
             if (topStatementContext != null
-                && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
+                    && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
                 return false;
             }
 
@@ -94,7 +94,7 @@ public class SQLServerWallVisitor extends WallVisitorBase implements WallVisitor
 
             if (!allow) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
-                                                                                     + x.getName(), toSQL(x)));
+                        + x.getName(), toSQL(x)));
             }
         }
 

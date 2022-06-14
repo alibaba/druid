@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import junit.framework.TestCase;
 
 public class AtomicMemoryTest extends TestCase {
-
     public void test_0() throws Exception {
         AtomicLong item = new AtomicLong();
         gc();

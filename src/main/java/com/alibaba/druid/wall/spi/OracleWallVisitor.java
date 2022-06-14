@@ -27,8 +27,8 @@ import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class OracleWallVisitor extends WallVisitorBase implements WallVisitor, OracleASTVisitor {
-    public OracleWallVisitor(WallProvider provider){
-        super (provider);
+    public OracleWallVisitor(WallProvider provider) {
+        super(provider);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class OracleWallVisitor extends WallVisitorBase implements WallVisitor, O
         name = WallVisitorUtils.form(name);
         if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
             getViolations().add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + name,
-                                                              toSQL(x)));
+                    toSQL(x)));
         }
         return true;
     }
@@ -72,7 +72,7 @@ public class OracleWallVisitor extends WallVisitorBase implements WallVisitor, O
     public boolean visit(OracleMultiInsertStatement x) {
         if (!config.isInsertAllow()) {
             this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.INSERT_NOT_ALLOW, "insert not allow",
-                                                                   this.toSQL(x)));
+                    this.toSQL(x)));
             return false;
         }
         WallVisitorUtils.initWallTopStatementContext();

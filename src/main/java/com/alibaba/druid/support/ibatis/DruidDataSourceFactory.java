@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.support.ibatis;
 
-import java.util.Map;
-
 import javax.sql.DataSource;
 
-public class DruidDataSourceFactory implements com.ibatis.sqlmap.engine.datasource.DataSourceFactory {
+import java.util.Map;
 
+public class DruidDataSourceFactory implements com.ibatis.sqlmap.engine.datasource.DataSourceFactory {
     private DataSource dataSource;
 
     @SuppressWarnings("rawtypes")

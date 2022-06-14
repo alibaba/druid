@@ -11,9 +11,11 @@ public interface SQLInsertValueHandler {
     void processString(Object row, int index, String value) throws SQLException;
 
     void processDate(Object row, int index, String value) throws SQLException;
+
     void processDate(Object row, int index, java.util.Date value) throws SQLException;
 
     void processTimestamp(Object row, int index, String value) throws SQLException;
+
     void processTimestamp(Object row, int index, java.util.Date value) throws SQLException;
 
     void processTime(Object row, int index, String value) throws SQLException;
@@ -24,7 +26,11 @@ public interface SQLInsertValueHandler {
 
     void processNull(Object row, int index) throws SQLException;
 
-    void processFunction(Object row, int index, String funcName, long funcNameHashCode64, Object... values) throws SQLException;
+    void processFunction(Object row,
+                         int index,
+                         String funcName,
+                         long funcNameHashCode64,
+                         Object... values) throws SQLException;
 
     void processRow(Object row) throws SQLException;
 

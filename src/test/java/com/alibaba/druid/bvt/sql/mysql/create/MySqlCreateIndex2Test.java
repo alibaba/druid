@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateIndex2Test extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create index index1 on t1(col1) comment 'test index' comment 'some test' using btree;";

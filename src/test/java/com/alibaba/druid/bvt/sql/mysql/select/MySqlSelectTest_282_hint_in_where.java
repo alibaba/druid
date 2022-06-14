@@ -14,7 +14,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
  * @Date 2019-05-23 15:28
  */
 public class MySqlSelectTest_282_hint_in_where extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select `api_menu_groups`.* from `api_menu_groups` where 1 = 1 /*TDDL:MASTER*/ and `api_menu_groups`.`project_id` = 3 order by `api_menu_groups`.`sort` asc limit 10000\n";
 

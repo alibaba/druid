@@ -15,24 +15,6 @@
  */
 package com.alibaba.druid.support.monitor.dao;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import javax.sql.DataSource;
-
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.pool.DruidDataSourceStatValue;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
@@ -56,45 +38,57 @@ import com.alibaba.druid.wall.WallProviderStatValue;
 import com.alibaba.druid.wall.WallSqlStatValue;
 import com.alibaba.druid.wall.WallTableStatValue;
 
+import javax.sql.DataSource;
+
+import java.lang.reflect.Field;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 public class MonitorDaoJdbcImpl implements MonitorDao {
+    private static final Log LOG = LogFactory.getLog(MonitorDaoJdbcImpl.class);
 
-    private final static Log                                   LOG                      = LogFactory.getLog(MonitorDaoJdbcImpl.class);
+    private DataSource dataSource;
 
-    private DataSource                                         dataSource;
+    private BeanInfo dataSourceStatBeanInfo = new BeanInfo(
+            DruidDataSourceStatValue.class);
+    private BeanInfo sqlStatBeanInfo = new BeanInfo(
+            JdbcSqlStatValue.class);
+    private BeanInfo springMethodStatBeanInfo = new BeanInfo(
+            SpringMethodStatValue.class);
+    private BeanInfo webURIStatBeanInfo = new BeanInfo(
+            WebURIStatValue.class);
+    private BeanInfo webAppStatBeanInfo = new BeanInfo(
+            WebAppStatValue.class);
 
-    private BeanInfo                                           dataSourceStatBeanInfo   = new BeanInfo(
-                                                                                                       DruidDataSourceStatValue.class);
-    private BeanInfo                                           sqlStatBeanInfo          = new BeanInfo(
-                                                                                                       JdbcSqlStatValue.class);
-    private BeanInfo                                           springMethodStatBeanInfo = new BeanInfo(
-                                                                                                       SpringMethodStatValue.class);
-    private BeanInfo                                           webURIStatBeanInfo       = new BeanInfo(
-                                                                                                       WebURIStatValue.class);
-    private BeanInfo                                           webAppStatBeanInfo       = new BeanInfo(
-                                                                                                       WebAppStatValue.class);
+    private BeanInfo wallProviderStatBeanInfo = new BeanInfo(
+            WallProviderStatValue.class);
+    private BeanInfo wallSqlStatBeanInfo = new BeanInfo(
+            WallSqlStatValue.class);
+    private BeanInfo wallTableStatBeanInfo = new BeanInfo(
+            WallTableStatValue.class);
+    private BeanInfo wallFunctionStatBeanInfo = new BeanInfo(
+            WallFunctionStatValue.class);
 
-    private BeanInfo                                           wallProviderStatBeanInfo = new BeanInfo(
-                                                                                                       WallProviderStatValue.class);
-    private BeanInfo                                           wallSqlStatBeanInfo      = new BeanInfo(
-                                                                                                       WallSqlStatValue.class);
-    private BeanInfo                                           wallTableStatBeanInfo    = new BeanInfo(
-                                                                                                       WallTableStatValue.class);
-    private BeanInfo                                           wallFunctionStatBeanInfo = new BeanInfo(
-                                                                                                       WallFunctionStatValue.class);
+    private ConcurrentMap<String, ConcurrentMap<Long, String>> cacheMap = new ConcurrentHashMap<String, ConcurrentMap<Long, String>>();
 
-    private ConcurrentMap<String, ConcurrentMap<Long, String>> cacheMap                 = new ConcurrentHashMap<String, ConcurrentMap<Long, String>>();
-
-    public MonitorDaoJdbcImpl(){
+    public MonitorDaoJdbcImpl() {
     }
 
     public void createTables(String dbType) {
-        String[] resources = new String[] { "basic.sql", //
+        String[] resources = new String[]{"basic.sql", //
                 "const.sql", //
                 "datasource.sql", //
                 "springmethod.sql", //
                 "sql.sql", //
                 "webapp.sql", //
-                "weburi.sql", "wall.sql" };
+                "weburi.sql", "wall.sql"};
 
         for (String item : resources) {
             String path = "/support/monitor/" + dbType + "/" + item;
@@ -177,7 +171,6 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         }
 
         if (value instanceof String) {
-
             String text = (String) value;
             if (StringUtils.isEmpty(text)) {
                 return null;
@@ -202,7 +195,6 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         }
 
         if (value instanceof String) {
-
             String text = (String) value;
             if (StringUtils.isEmpty(text)) {
                 return null;
@@ -591,7 +583,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         StringBuilder buf = new StringBuilder();
 
         buf.append("INSERT INTO ") //
-        .append(getTableName(beanInfo));
+                .append(getTableName(beanInfo));
 
         buf.append(" (domain, app, cluster, host, pid, collectTime");
         List<FieldInfo> fields = beanInfo.getFields();
@@ -658,16 +650,15 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     }
 
     public static class BeanInfo {
-
-        private final Class<?>        clazz;
-        private final List<FieldInfo> fields        = new ArrayList<FieldInfo>();
+        private final Class<?> clazz;
+        private final List<FieldInfo> fields = new ArrayList<FieldInfo>();
         private final List<FieldInfo> groupByFields = new ArrayList<FieldInfo>();
-        private final List<FieldInfo> hashFields    = new ArrayList<FieldInfo>();
-        private final String          tableName;
+        private final List<FieldInfo> hashFields = new ArrayList<FieldInfo>();
+        private final String tableName;
 
-        private String                insertSql;
+        private String insertSql;
 
-        public BeanInfo(Class<?> clazz){
+        public BeanInfo(Class<?> clazz) {
             this.clazz = clazz;
 
             {
@@ -770,13 +761,12 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     }
 
     public static class FieldInfo {
-
-        private final Field  field;
+        private final Field field;
         private final String columnName;
-        private final Field  hashFor;
+        private final Field hashFor;
         private final String hashForType;
 
-        public FieldInfo(Field field, String columnName, Field hashFor, String hashForType){
+        public FieldInfo(Field field, String columnName, Field hashFor, String hashForType) {
             this.field = field;
             this.columnName = columnName;
             this.hashFor = hashFor;
@@ -824,7 +814,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         List<MonitorApp> list = new ArrayList<MonitorApp>();
 
         String sql = "select id, domain, app from druid_app " //
-                     + " where domain = ?";
+                + " where domain = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -849,7 +839,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
     public MonitorApp findApp(String domain, String app) throws SQLException {
         String sql = "select id, domain, app from druid_app " //
-                     + " where domain = ? and app = ?";
+                + " where domain = ? and app = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -887,7 +877,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         List<MonitorCluster> list = new ArrayList<MonitorCluster>();
 
         String sql = "select id, domain, app, cluster from druid_cluster " //
-                     + " where domain = ?";
+                + " where domain = ?";
 
         if (app != null) {
             sql += " and app = ?";
@@ -930,7 +920,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
     public MonitorCluster findCluster(String domain, String app, String cluster) throws SQLException {
         String sql = "select id, domain, app, cluster from druid_cluster " //
-                     + " where domain = ? and app = ? and cluster = ?";
+                + " where domain = ? and app = ? and cluster = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -971,19 +961,19 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         MonitorInstance monitorInst = findInst(domain, app, cluster, host);
         if (monitorInst == null) {
             String sql = "insert into druid_inst (domain, app, cluster, host, ip, lastActiveTime, lastPID) " //
-                         + " values (?, ?, ?, ?, ?, ?, ?)";
+                    + " values (?, ?, ?, ?, ?, ?, ?)";
             JdbcUtils.execute(dataSource, sql, domain, app, cluster, host, ip, startTime, pid);
         } else {
             String sql = "update druid_inst set ip = ?, lastActiveTime = ?, lastPID = ? " //
-                         + " where domain = ? and app = ? and cluster = ? and host = ? ";
+                    + " where domain = ? and app = ? and cluster = ? and host = ? ";
             JdbcUtils.execute(dataSource, sql, ip, startTime, pid, domain, app, cluster, host);
         }
     }
 
     public MonitorInstance findInst(String domain, String app, String cluster, String host) throws SQLException {
         String sql = "select id, domain, app, cluster, host, ip, lastActiveTime, lastPID from druid_inst " //
-                     + " where domain = ? and app = ? and cluster = ? and host = ? " //
-                     + " limit 1";
+                + " where domain = ? and app = ? and cluster = ? and host = ? " //
+                + " limit 1";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -1013,7 +1003,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         List<MonitorInstance> list = new ArrayList<MonitorInstance>();
 
         String sql = "select id, domain, app, cluster, host, ip, lastActiveTime, lastPID from druid_inst " //
-                     + "where domain = ?";
+                + "where domain = ?";
 
         if (app != null) {
             sql += " and app = ?";

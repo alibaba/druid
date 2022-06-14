@@ -10,19 +10,17 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import java.util.List;
 
 public class OracleSelectTest_limit_join_with_order_by extends OracleTest {
-
     /**
      * 当sql有order by语句时， 分页结果sql中， join语句丢失on的条件
      */
-    public void testLimitJoinWithOrderBy(){
-
+    public void testLimitJoinWithOrderBy() {
         String sql = "select * from A a " +
                 " left join B b on a.id = b.id " +
                 " where a.id = 10 order by create_time desc";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.oracle);
 
-        SQLSelectStatement select = ((SQLSelectStatement)statementList.get(0));
+        SQLSelectStatement select = ((SQLSelectStatement) statementList.get(0));
 
         PagerUtils.limit(select.getSelect(), DbType.oracle, 0, 200, true);
 

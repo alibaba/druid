@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class OracleOutputVisitorTest_forupdate extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT salary from employee for update";
 

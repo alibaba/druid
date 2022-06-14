@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlAlterUserStatement extends MySqlStatementImpl implements SQLAlterStatement {
-
-    private boolean ifExists = false;
+    private boolean ifExists;
 
     private final List<AlterUser> alterUsers = new ArrayList<AlterUser>();
 

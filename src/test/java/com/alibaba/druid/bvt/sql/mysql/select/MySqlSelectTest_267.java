@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 
 public class MySqlSelectTest_267 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select TABLE_SCHEMA dbName,TABLE_NAME tableName,ENGINE engine,ROW_FORMAT rowFormat,TABLE_COLLATION `collate`,CREATE_OPTIONS createOption,TABLE_COMMENT `comment`\n" +
                 "from information_schema.tables\n" +

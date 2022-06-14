@@ -25,14 +25,13 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create fulltext charfilter test1 ("
-                     + "'type' = 'typename',"
-                     + "'key'='name',"
-                     + "'key2'='name2'"
-                     + ")";
+                + "'type' = 'typename',"
+                + "'key'='name',"
+                + "'key2'='name2'"
+                + ")";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -40,15 +39,15 @@ public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE FULLTEXT CHARFILTER test1(\n" + "\"type\" = 'typename',\n"
-                            + "'key' = 'name','key2' = 'name2'\n" + ")", output);
+                + "'key' = 'name','key2' = 'name2'\n" + ")", output);
     }
 
     @Test
     public void test_crate() throws Exception {
         String sql = "create fulltext charfilter test1 ("
-                     + "\"type\" = \"typename\","
-                     + "\"key\"=\"name\""
-                     + ")";
+                + "\"type\" = \"typename\","
+                + "\"key\"=\"name\""
+                + ")";
 
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.MYSQL);
 
@@ -56,9 +55,9 @@ public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE FULLTEXT CHARFILTER test1(\n"
-                            + "\"type\" = 'typename',\n"
-                            + "'key' = 'name'\n"
-                            + ")", output);
+                + "\"type\" = 'typename',\n"
+                + "'key' = 'name'\n"
+                + ")", output);
     }
 
     @Test

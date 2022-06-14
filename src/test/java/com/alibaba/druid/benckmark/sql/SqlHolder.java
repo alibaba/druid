@@ -18,8 +18,9 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONWriter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -37,6 +38,7 @@ public class SqlHolder {
     private boolean isParam;
 
     public static SQLSelectListCache selectListCache = new SQLSelectListCache(JdbcConstants.MYSQL);
+
     static {
         selectListCache.add("select id as id,    gmt_create as gmtCreate,    gmt_modified as gmtModified,    name as name,    owner as owner,    type as type,    statement as statement,    datasource as datasource,    meta as meta,    param_file as paramFile,    sharable as sharable,    data_type as dataType,    status as status,    config as config,    project_id as projectId,    plugins as plugins,    field_compare as fieldCompare,    field_ext as fieldExt,    openx as openx   from");
         selectListCache.add("SELECT id, dispute_id, buyer_id, seller_id, total_fee, refund_fee, max_apply_goods_fee, apply_goods_fee, apply_carriage_fee, refund_goods_fee, refund_carriage_fee, refund_point, refund_coupon, refund_return_point, refund_cash, real_deduct_refund_point, real_refund_return_point, refund_return_commission, gmt_create, gmt_modified, attributes, attributes_cc FROM");
@@ -187,7 +189,7 @@ public class SqlHolder {
         visitor.setParameterizedMergeInList(true);
         visitor.setParameters(parameters);
         ast.accept(visitor);
-        String params = JSONArray.toJSONString(parameters, SerializerFeature.WriteClassName);
+        String params = JSON.toJSONString(parameters, JSONWriter.Feature.WriteClassName);
         params = StringUtils.replace(params, "\"", "\\\"");
         return params;
     }

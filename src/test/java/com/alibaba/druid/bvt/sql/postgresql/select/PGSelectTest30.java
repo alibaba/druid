@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest30 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT 'a fat cat sat on a mat'::tsvector @@ 'cat & rat'::tsquery";
 
@@ -34,7 +33,7 @@ public class PGSelectTest30 extends PGTest {
         SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals("SELECT 'a fat cat sat on a mat'::tsvector @@ 'cat & rat'::tsquery", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select 'a fat cat sat on a mat'::tsvector @@ 'cat & rat'::tsquery", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());

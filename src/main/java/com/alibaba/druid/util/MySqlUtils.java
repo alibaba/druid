@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 
 import javax.sql.XAConnection;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,42 +32,40 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.*;
-import java.util.Date;
 
 public class MySqlUtils {
-    static Class<?>       utilClass;
-    static boolean        utilClassError = false;
-    static boolean        utilClass_isJdbc4 = false;
+    static Class<?> utilClass;
+    static boolean utilClassError;
+    static boolean utilClass_isJdbc4;
 
-    static Class<?>       class_5_connection= null;
-    static Method         method_5_getPinGlobalTxToPhysicalConnection = null;
-    static Class<?>       class_5_suspendableXAConnection = null;
-    static Constructor<?> constructor_5_suspendableXAConnection = null;
-    static Class<?>       class_5_JDBC4SuspendableXAConnection = null;
-    static Constructor<?> constructor_5_JDBC4SuspendableXAConnection = null;
-    static Class<?>       class_5_MysqlXAConnection = null;
-    static Constructor<?> constructor_5_MysqlXAConnection = null;
+    static Class<?> class_5_connection;
+    static Method method_5_getPinGlobalTxToPhysicalConnection;
+    static Class<?> class_5_suspendableXAConnection;
+    static Constructor<?> constructor_5_suspendableXAConnection;
+    static Class<?> class_5_JDBC4SuspendableXAConnection;
+    static Constructor<?> constructor_5_JDBC4SuspendableXAConnection;
+    static Class<?> class_5_MysqlXAConnection;
+    static Constructor<?> constructor_5_MysqlXAConnection;
 
-    static Class<?>       class_ConnectionImpl = null;
-    static Method         method_getId = null;
-    static boolean        method_getId_error = false;
+    static Class<?> class_ConnectionImpl;
+    static Method method_getId;
+    static boolean method_getId_error;
 
-    static Class<?>       class_6_ConnectionImpl = null;
-    static Method         method_6_getId         = null;
+    static Class<?> class_6_ConnectionImpl;
+    static Method method_6_getId;
 
-    volatile static Class<?>       class_6_connection= null;
-    volatile static Method         method_6_getPropertySet = null;
-    volatile static Method         method_6_getBooleanReadableProperty = null;
-    volatile static Method         method_6_getValue = null;
-    volatile static boolean        method_6_getValue_error = false;
+    static volatile Class<?> class_6_connection;
+    static volatile Method method_6_getPropertySet;
+    static volatile Method method_6_getBooleanReadableProperty;
+    static volatile Method method_6_getValue;
+    static volatile boolean method_6_getValue_error;
 
-    volatile static Class<?>       class_6_suspendableXAConnection = null;
-    volatile static Method         method_6_getInstance = null;
-    volatile static boolean        method_6_getInstance_error = false;
-    volatile static Method         method_6_getInstanceXA = null;
-    volatile static boolean        method_6_getInstanceXA_error = false;
-    volatile static Class<?>       class_6_JDBC4SuspendableXAConnection = null;
-
+    static volatile Class<?> class_6_suspendableXAConnection;
+    static volatile Method method_6_getInstance;
+    static volatile boolean method_6_getInstance_error;
+    static volatile Method method_6_getInstanceXA;
+    static volatile boolean method_6_getInstanceXA_error;
+    static volatile Class<?> class_6_JDBC4SuspendableXAConnection;
 
     public static XAConnection createXAConnection(Driver driver, Connection physicalConn) throws SQLException {
         final int major = driver.getMajorVersion();
@@ -116,7 +115,7 @@ public class MySqlUtils {
                     class_6_connection = Class.forName("com.mysql.cj.api.jdbc.JdbcConnection");
                 } catch (Throwable t) {
                 }
-                
+
                 try {
                     // maybe 8.0.11 or higher version, try again with com.mysql.cj.jdbc.JdbcConnection
                     if (class_6_connection == null) {
@@ -140,8 +139,7 @@ public class MySqlUtils {
                                     .getMethod("getValue");
                         }
 
-                    }
-                    else { 
+                    } else {
                         method_6_getPropertySet = class_6_connection.getMethod("getPropertySet");
                         method_6_getBooleanReadableProperty = Class.forName("com.mysql.cj.api.conf.PropertySet").getMethod("getBooleanReadableProperty", String.class);
                         method_6_getValue = Class.forName("com.mysql.cj.api.conf.ReadableProperty").getMethod("getValue");
@@ -156,8 +154,8 @@ public class MySqlUtils {
                 // pinGlobalTxToPhysicalConnection
                 Boolean pinGlobTx = (Boolean) method_6_getValue.invoke(
                         method_6_getBooleanReadableProperty.invoke(
-                                method_6_getPropertySet.invoke(physicalConn)
-                                , "pinGlobalTxToPhysicalConnection"
+                                method_6_getPropertySet.invoke(physicalConn),
+                                "pinGlobalTxToPhysicalConnection"
                         )
                 );
 
@@ -206,7 +204,7 @@ public class MySqlUtils {
             return null;
         }
 
-        return  "KILL QUERY " + threadId;
+        return "KILL QUERY " + threadId;
 
     }
 
@@ -299,7 +297,6 @@ public class MySqlUtils {
             JdbcUtils.close(stmt);
         }
 
-
         return ddlList;
     }
 
@@ -317,7 +314,7 @@ public class MySqlUtils {
         }
         String ddlScript = buf.toString();
 
-        if (! (sorted || simplify)) {
+        if (!(sorted || simplify)) {
             return ddlScript;
         }
 
@@ -337,19 +334,19 @@ public class MySqlUtils {
         return SQLUtils.toSQLString(stmtList, DbType.mysql);
     }
 
-    private static transient Class   class_connectionImpl                     = null;
-    private static transient boolean class_connectionImpl_Error               = false;
-    private static transient Method  method_getIO                             = null;
-    private static transient boolean method_getIO_error                       = false;
-    private static transient Class   class_MysqlIO                            = null;
-    private static transient boolean class_MysqlIO_Error                      = false;
-    private static transient Method  method_getLastPacketReceivedTimeMs       = null;
-    private static transient boolean method_getLastPacketReceivedTimeMs_error = false;
+    private static transient Class class_connectionImpl;
+    private static transient boolean class_connectionImpl_Error;
+    private static transient Method method_getIO;
+    private static transient boolean method_getIO_error;
+    private static transient Class class_MysqlIO;
+    private static transient boolean class_MysqlIO_Error;
+    private static transient Method method_getLastPacketReceivedTimeMs;
+    private static transient boolean method_getLastPacketReceivedTimeMs_error;
 
-    private volatile static  boolean mysqlJdbcVersion6                        = false;
-    private static transient Class   classJdbc                                = null;
-    private static transient Method  getIdleFor                               = null;
-    private static transient boolean getIdleForError                          = false;
+    private static volatile boolean mysqlJdbcVersion6;
+    private static transient Class classJdbc;
+    private static transient Method getIdleFor;
+    private static transient boolean getIdleForError;
 
     public static Long getId(Object conn) {
         if (conn == null) {
@@ -405,7 +402,7 @@ public class MySqlUtils {
             return -1;
         }
 
-        if(mysqlJdbcVersion6){
+        if (mysqlJdbcVersion6) {
             if (classJdbc == null) {
                 classJdbc = Utils.loadClass("com.mysql.cj.jdbc.JdbcConnection");
             }
@@ -435,7 +432,7 @@ public class MySqlUtils {
 
                 return System.currentTimeMillis()
                         - ((Long)
-                            getIdleFor.invoke(connImpl))
+                        getIdleFor.invoke(connImpl))
                         .longValue();
             } catch (Exception e) {
                 throw new SQLException("getIdleFor error", e);
@@ -493,8 +490,8 @@ public class MySqlUtils {
         }
     }
 
-    static Class<?> class_5_CommunicationsException = null;
-    static Class<?> class_6_CommunicationsException = null;
+    static Class<?> class_5_CommunicationsException;
+    static Class<?> class_6_CommunicationsException;
 
     public static Class getCommunicationsExceptionClass() {
         if (class_5_CommunicationsException != null) {
@@ -518,13 +515,12 @@ public class MySqlUtils {
         return null;
     }
 
-    public final static Charset GBK                 = Charset.forName("GBK");
-    public final static Charset BIG5                 = Charset.forName("BIG5");
-    public final static Charset UTF8                 = Charset.forName("UTF-8");
-    public final static Charset UTF16                = Charset.forName("UTF-16");
-    public final static Charset UTF32                = Charset.forName("UTF-32");
-    public final static Charset ASCII                = Charset.forName("ASCII");
-
+    public static final Charset GBK = Charset.forName("GBK");
+    public static final Charset BIG5 = Charset.forName("BIG5");
+    public static final Charset UTF8 = Charset.forName("UTF-8");
+    public static final Charset UTF16 = Charset.forName("UTF-16");
+    public static final Charset UTF32 = Charset.forName("UTF-32");
+    public static final Charset ASCII = Charset.forName("ASCII");
 
     public static void loadDataTypes(Set<String> dataTypes) {
         Utils.loadFromFile("META-INF/druid/parser/mysql/builtin_datatypes", dataTypes);
@@ -802,8 +798,8 @@ public class MySqlUtils {
             }
 
             return new BigDecimal(
-                    sign ? MAX_INT[precision - 1] : MIN_INT[precision - 1]
-                    , scale
+                    sign ? MAX_INT[precision - 1] : MIN_INT[precision - 1],
+                    scale
             );
         }
 
@@ -1128,8 +1124,7 @@ public class MySqlUtils {
                     // yyyy-MM-dd HH.mm.ss
                     if (c4 == '-' && c7 == '-'
                             && (c10 == ' ' || c10 == 'T')
-                            && ((c13 == ':' && c16 == ':') || (c13 == '.' && c16 == '.')))
-                    {
+                            && ((c13 == ':' && c16 == ':') || (c13 == '.' && c16 == '.'))) {
                         M0 = c5;
                         M1 = c6;
                         d0 = c8;
@@ -1164,7 +1159,6 @@ public class MySqlUtils {
                             final char c21 = str.charAt(21);
                             final char c22 = str.charAt(22);
 
-
                             if (c19 == '.') {
                                 S0 = c20;
                                 S1 = c21;
@@ -1189,7 +1183,7 @@ public class MySqlUtils {
                                 return null;
                             }
 
-                            nanos = (c23 - '0')   * 100000
+                            nanos = (c23 - '0') * 100000
                                     + (c24 - '0') * 10000
                                     + (c25 - '0') * 1000
                                     + (c26 - '0') * 100
@@ -1305,7 +1299,7 @@ public class MySqlUtils {
                     S2 = x0;
                     lastOff = length - 5;
                 } else if ((x2 == '+' || x2 == '-') && length == offset + 5) {
-                    String zoneIdStr = new String(new char[] {x2, x1, x0});
+                    String zoneIdStr = new String(new char[]{x2, x1, x0});
                     zoneId = ZoneId.of(zoneIdStr);
                     lastOff = length - 4;
                 } else {
@@ -1385,7 +1379,7 @@ public class MySqlUtils {
             return null;
         }
 
-        ZonedDateTime zdt = null;
+        ZonedDateTime zdt;
         if (h0 == 0) {
             zdt = LocalDate
                     .of(year, month, dayOfMonth)
@@ -1405,7 +1399,7 @@ public class MySqlUtils {
                     .atZone(zoneId);
         }
 
-        return Date.from(
+        return java.util.Date.from(
                 zdt.toInstant()
         );
     }
@@ -1414,7 +1408,6 @@ public class MySqlUtils {
         if (str == null) {
             throw new IllegalArgumentException(new String(str, UTF8));
         }
-
 
         return parseMillis(str, 0, str.length, timeZone);
     }
@@ -1586,8 +1579,7 @@ public class MySqlUtils {
                     // yyyy-MM-dd HH:mm:ss
                     if (c4 == '-' && c7 == '-'
                             && (c10 == ' ' || c10 == 'T')
-                            && c13 == ':' && c16 == ':')
-                    {
+                            && c13 == ':' && c16 == ':') {
                         M0 = c5;
                         M1 = c6;
                         d0 = c8;
@@ -1648,7 +1640,7 @@ public class MySqlUtils {
                                 throw new IllegalArgumentException(new String(str, UTF8));
                             }
 
-                            nanos = (c23 - '0')   * 100000
+                            nanos = (c23 - '0') * 100000
                                     + (c24 - '0') * 10000
                                     + (c25 - '0') * 1000
                                     + (c26 - '0') * 100
@@ -1669,7 +1661,7 @@ public class MySqlUtils {
                                 throw new IllegalArgumentException(new String(str, UTF8));
                             }
 
-                            nanos = (c23 - '0')   * 100000
+                            nanos = (c23 - '0') * 100000
                                     + (c24 - '0') * 10000
                                     + (c25 - '0') * 1000
                                     + (c26 - '0') * 100
@@ -1687,7 +1679,7 @@ public class MySqlUtils {
                                 throw new IllegalArgumentException(new String(str, UTF8));
                             }
 
-                            nanos = (c23 - '0')   * 100000
+                            nanos = (c23 - '0') * 100000
                                     + (c24 - '0') * 10000
                                     + (c25 - '0') * 1000
                                     + (c26 - '0') * 100;
@@ -1702,7 +1694,7 @@ public class MySqlUtils {
                                 throw new IllegalArgumentException(new String(str, UTF8));
                             }
 
-                            nanos = (c23 - '0')   * 100000
+                            nanos = (c23 - '0') * 100000
                                     + (c24 - '0') * 10000
                                     + (c25 - '0') * 1000;
                         }
@@ -1911,7 +1903,7 @@ public class MySqlUtils {
         return zdt;
     }
 
-    private final static String[] parseFormats = new String[] {
+    private static final String[] parseFormats = new String[]{
             "HH:mm:ss",
             "yyyyMMdd",
             "yyyyMMddHHmmss",
@@ -1926,8 +1918,9 @@ public class MySqlUtils {
             "yyyy-MM-dd'T'HH:mm:ss",
             "yyyy-MM-dd'T'HH:mm:ss.SSS",
     };
-    private final static long[] parseFormatCodes;
-    static  {
+    private static final long[] parseFormatCodes;
+
+    static {
         long[] codes = new long[parseFormats.length];
         for (int i = 0; i < parseFormats.length; i++) {
             codes[i] = FnvHash.fnv1a_64(parseFormats[i]);

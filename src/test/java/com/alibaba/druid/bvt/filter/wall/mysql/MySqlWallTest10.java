@@ -23,15 +23,14 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest10 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT t.*,a.param_id FROM lhwtag AS t RIGHT JOIN lhwtag_relation AS a USING(`tag_id`) WHERE a.`type_id`=1 AND a.`param_id` IN ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') ORDER BY t.`content_count`"));
+                "SELECT t.*,a.param_id FROM lhwtag AS t RIGHT JOIN lhwtag_relation AS a USING(`tag_id`) WHERE a.`type_id`=1 AND a.`param_id` IN ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') ORDER BY t.`content_count`"));
     }
 }

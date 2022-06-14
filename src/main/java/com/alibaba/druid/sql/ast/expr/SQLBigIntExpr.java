@@ -22,19 +22,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLBigIntExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
-
     private Long value;
 
-    public SQLBigIntExpr(){
-
+    public SQLBigIntExpr() {
     }
 
-    public SQLBigIntExpr(Long value){
+    public SQLBigIntExpr(Long value) {
         super();
         this.value = value;
     }
 
-    public SQLBigIntExpr(String value){
+    public SQLBigIntExpr(String value) {
         super();
         this.value = Long.valueOf(value);
     }
@@ -67,6 +65,7 @@ public class SQLBigIntExpr extends SQLNumericLiteralExpr implements SQLValuableE
 
         visitor.endVisit(this);
     }
+
     @Override
     public int hashCode() {
         final int prime = 31;

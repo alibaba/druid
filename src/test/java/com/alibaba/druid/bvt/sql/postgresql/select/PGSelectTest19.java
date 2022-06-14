@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest19 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "WITH t AS ("
                 + "    UPDATE products SET price = price * 1.05"

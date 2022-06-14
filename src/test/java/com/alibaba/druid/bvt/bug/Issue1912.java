@@ -24,7 +24,6 @@ public class Issue1912 extends TestCase {
 
         SQLASTVisitor visitor = new SQLASTVisitorAdapter() {
             public boolean visit(SQLIdentifierExpr x) {
-
                 String destColumn = columnMapping.get(x.getName());
                 if (destColumn != null) {
                     x.setName(destColumn);

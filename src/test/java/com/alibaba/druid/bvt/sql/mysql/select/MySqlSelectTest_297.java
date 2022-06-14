@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class MySqlSelectTest_297
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select sn,properties->'$.zoneId',properties->'$.regionId',ip,owner,gmt_create   \n" +
                 "from resource_instance where type=16  and  (properties->'$.idkp'='1647796581073291')";

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 
 public class MySqlSelectTest_254 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT 'a', (VALUES 1) GROUP BY 1";
 

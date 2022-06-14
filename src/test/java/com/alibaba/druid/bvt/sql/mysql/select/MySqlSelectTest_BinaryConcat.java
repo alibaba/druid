@@ -27,12 +27,11 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlSelectTest_BinaryConcat extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "select campaignId from Campaign" + //
-                     "   where   advertiserId =   ?" + //
-                     "   and   deleteStatus = false" + //
-                     "   and   campaignName like binary CONCAT('%',?,'%')";
+                "   where   advertiserId =   ?" + //
+                "   and   deleteStatus = false" + //
+                "   and   campaignName like binary CONCAT('%',?,'%')";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -22,10 +22,12 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLAlterResourceGroupStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLCreateResourceGroupStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLListResourceGroupStatement;
 
 public interface SQLASTVisitor {
-
     default void endVisit(SQLAllColumnExpr x) {
     }
 
@@ -219,7 +221,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLVariantRefExpr x) {
-
     }
 
     default boolean visit(SQLQueryExpr x) {
@@ -227,7 +228,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLQueryExpr x) {
-
     }
 
     default boolean visit(SQLUnaryExpr x) {
@@ -235,7 +235,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLUnaryExpr x) {
-
     }
 
     default boolean visit(SQLHexExpr x) {
@@ -243,7 +242,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLHexExpr x) {
-
     }
 
     default boolean visit(SQLSelect x) {
@@ -272,7 +270,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLOrderBy x) {
-
     }
 
     default boolean visit(SQLZOrderBy x) {
@@ -280,7 +277,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLZOrderBy x) {
-
     }
 
     default boolean visit(SQLSelectOrderByItem x) {
@@ -351,7 +347,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLInsertStatement x) {
-
     }
 
     default boolean visit(SQLInsertStatement.ValuesClause x) {
@@ -397,7 +392,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLMethodInvokeExpr x) {
-
     }
 
     default boolean visit(SQLMethodInvokeExpr x) {
@@ -405,7 +399,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLUnionQuery x) {
-
     }
 
     default boolean visit(SQLUnionQuery x) {
@@ -427,7 +420,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCallStatement x) {
-
     }
 
     default boolean visit(SQLCallStatement x) {
@@ -530,7 +522,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDeleteByCondition x) {
-
     }
 
     default boolean visit(SQLAlterTableModifyClusteredBy x) {
@@ -653,7 +644,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLWithSubqueryClause x) {
-
     }
 
     default boolean visit(SQLWithSubqueryClause x) {
@@ -700,7 +690,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDropPrimaryKey x) {
-
     }
 
     default boolean visit(SQLAlterTableDisableKeys x) {
@@ -708,7 +697,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDisableKeys x) {
-
     }
 
     default boolean visit(SQLAlterTableEnableKeys x) {
@@ -716,7 +704,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableEnableKeys x) {
-
     }
 
     default boolean visit(SQLAlterTableStatement x) {
@@ -731,7 +718,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDisableConstraint x) {
-
     }
 
     default boolean visit(SQLAlterTableEnableConstraint x) {
@@ -739,7 +725,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableEnableConstraint x) {
-
     }
 
     default boolean visit(SQLColumnCheck x) {
@@ -747,7 +732,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLColumnCheck x) {
-
     }
 
     default boolean visit(SQLExprHint x) {
@@ -755,7 +739,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExprHint x) {
-
     }
 
     default boolean visit(SQLAlterTableDropConstraint x) {
@@ -763,7 +746,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDropConstraint x) {
-
     }
 
     default boolean visit(SQLUnique x) {
@@ -771,7 +753,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLUnique x) {
-
     }
 
     default boolean visit(SQLPrimaryKeyImpl x) {
@@ -779,7 +760,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPrimaryKeyImpl x) {
-
     }
 
     default boolean visit(SQLCreateIndexStatement x) {
@@ -787,7 +767,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateIndexStatement x) {
-
     }
 
     default boolean visit(SQLAlterTableRenameColumn x) {
@@ -795,7 +774,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableRenameColumn x) {
-
     }
 
     default boolean visit(SQLColumnReference x) {
@@ -803,7 +781,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLColumnReference x) {
-
     }
 
     default boolean visit(SQLForeignKeyImpl x) {
@@ -811,7 +788,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLForeignKeyImpl x) {
-
     }
 
     default boolean visit(SQLDropSequenceStatement x) {
@@ -819,7 +795,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropSequenceStatement x) {
-
     }
 
     default boolean visit(SQLDropTriggerStatement x) {
@@ -827,11 +802,9 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropTriggerStatement x) {
-
     }
 
     default void endVisit(SQLDropUserStatement x) {
-
     }
 
     default boolean visit(SQLDropUserStatement x) {
@@ -839,7 +812,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExplainStatement x) {
-
     }
 
     default boolean visit(SQLExplainStatement x) {
@@ -847,7 +819,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLGrantStatement x) {
-
     }
 
     default boolean visit(SQLGrantStatement x) {
@@ -855,7 +826,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropDatabaseStatement x) {
-
     }
 
     default boolean visit(SQLDropDatabaseStatement x) {
@@ -863,7 +833,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLIndexOptions x) {
-
     }
 
     default boolean visit(SQLIndexOptions x) {
@@ -871,7 +840,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLIndexDefinition x) {
-
     }
 
     default boolean visit(SQLIndexDefinition x) {
@@ -879,7 +847,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableAddIndex x) {
-
     }
 
     default boolean visit(SQLAlterTableAddIndex x) {
@@ -887,7 +854,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableAlterIndex x) {
-
     }
 
     default boolean visit(SQLAlterTableAlterIndex x) {
@@ -895,7 +861,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableAddConstraint x) {
-
     }
 
     default boolean visit(SQLAlterTableAddConstraint x) {
@@ -903,7 +868,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateTriggerStatement x) {
-
     }
 
     default boolean visit(SQLCreateTriggerStatement x) {
@@ -911,7 +875,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropFunctionStatement x) {
-
     }
 
     default boolean visit(SQLDropFunctionStatement x) {
@@ -919,7 +882,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropTableSpaceStatement x) {
-
     }
 
     default boolean visit(SQLDropTableSpaceStatement x) {
@@ -927,7 +889,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropProcedureStatement x) {
-
     }
 
     default boolean visit(SQLDropProcedureStatement x) {
@@ -935,7 +896,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLBooleanExpr x) {
-
     }
 
     default boolean visit(SQLBooleanExpr x) {
@@ -943,7 +903,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLUnionQueryTableSource x) {
-
     }
 
     default boolean visit(SQLUnionQueryTableSource x) {
@@ -951,7 +910,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLTimestampExpr x) {
-
     }
 
     default boolean visit(SQLTimestampExpr x) {
@@ -959,7 +917,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDateTimeExpr x) {
-
     }
 
     default boolean visit(SQLDateTimeExpr x) {
@@ -967,7 +924,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDoubleExpr x) {
-
     }
 
     default boolean visit(SQLDoubleExpr x) {
@@ -975,7 +931,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLFloatExpr x) {
-
     }
 
     default boolean visit(SQLFloatExpr x) {
@@ -983,7 +938,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLRevokeStatement x) {
-
     }
 
     default boolean visit(SQLRevokeStatement x) {
@@ -991,7 +945,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLBinaryExpr x) {
-
     }
 
     default boolean visit(SQLBinaryExpr x) {
@@ -999,7 +952,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableRename x) {
-
     }
 
     default boolean visit(SQLAlterTableRename x) {
@@ -1007,7 +959,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterViewRenameStatement x) {
-
     }
 
     default boolean visit(SQLAlterViewRenameStatement x) {
@@ -1015,7 +966,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowTablesStatement x) {
-
     }
 
     default boolean visit(SQLShowTablesStatement x) {
@@ -1023,7 +973,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableAddPartition x) {
-
     }
 
     default boolean visit(SQLAlterTableAddPartition x) {
@@ -1031,7 +980,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableAddExtPartition x) {
-
     }
 
     default boolean visit(SQLAlterTableAddExtPartition x) {
@@ -1039,7 +987,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDropExtPartition x) {
-
     }
 
     default boolean visit(SQLAlterTableDropExtPartition x) {
@@ -1047,7 +994,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDropPartition x) {
-
     }
 
     default boolean visit(SQLAlterTableDropPartition x) {
@@ -1055,7 +1001,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableRenamePartition x) {
-
     }
 
     default boolean visit(SQLAlterTableRenamePartition x) {
@@ -1063,7 +1008,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableSetComment x) {
-
     }
 
     default boolean visit(SQLAlterTableSetComment x) {
@@ -1071,7 +1015,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableSetLifecycle x) {
-
     }
 
     default boolean visit(SQLPrivilegeItem x) {
@@ -1079,7 +1022,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPrivilegeItem x) {
-
     }
 
     default boolean visit(SQLAlterTableSetLifecycle x) {
@@ -1087,7 +1029,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableEnableLifecycle x) {
-
     }
 
     default boolean visit(SQLAlterTableSetLocation x) {
@@ -1095,7 +1036,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableSetLocation x) {
-
     }
 
     default boolean visit(SQLAlterTableEnableLifecycle x) {
@@ -1103,7 +1043,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTablePartition x) {
-
     }
 
     default boolean visit(SQLAlterTablePartition x) {
@@ -1111,7 +1050,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTablePartitionSetProperties x) {
-
     }
 
     default boolean visit(SQLAlterTablePartitionSetProperties x) {
@@ -1119,7 +1057,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDisableLifecycle x) {
-
     }
 
     default boolean visit(SQLAlterTableDisableLifecycle x) {
@@ -1127,7 +1064,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableTouch x) {
-
     }
 
     default boolean visit(SQLAlterTableTouch x) {
@@ -1135,7 +1071,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLArrayExpr x) {
-
     }
 
     default boolean visit(SQLArrayExpr x) {
@@ -1143,7 +1078,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLOpenStatement x) {
-
     }
 
     default boolean visit(SQLOpenStatement x) {
@@ -1151,7 +1085,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLFetchStatement x) {
-
     }
 
     default boolean visit(SQLFetchStatement x) {
@@ -1159,7 +1092,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCloseStatement x) {
-
     }
 
     default boolean visit(SQLCloseStatement x) {
@@ -1171,7 +1103,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLGroupingSetExpr x) {
-
     }
 
     default boolean visit(SQLIfStatement x) {
@@ -1179,7 +1110,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLIfStatement x) {
-
     }
 
     default boolean visit(SQLIfStatement.ElseIf x) {
@@ -1187,7 +1117,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLIfStatement.ElseIf x) {
-
     }
 
     default boolean visit(SQLIfStatement.Else x) {
@@ -1195,7 +1124,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLIfStatement.Else x) {
-
     }
 
     default boolean visit(SQLLoopStatement x) {
@@ -1203,7 +1131,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLLoopStatement x) {
-
     }
 
     default boolean visit(SQLParameter x) {
@@ -1211,7 +1138,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLParameter x) {
-
     }
 
     default boolean visit(SQLCreateProcedureStatement x) {
@@ -1219,7 +1145,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateProcedureStatement x) {
-
     }
 
     default boolean visit(SQLCreateFunctionStatement x) {
@@ -1227,7 +1152,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateFunctionStatement x) {
-
     }
 
     default boolean visit(SQLBlockStatement x) {
@@ -1235,7 +1159,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLBlockStatement x) {
-
     }
 
     default boolean visit(SQLAlterTableDropKey x) {
@@ -1243,7 +1166,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDropKey x) {
-
     }
 
     default boolean visit(SQLDeclareItem x) {
@@ -1251,7 +1173,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDeclareItem x) {
-
     }
 
     default boolean visit(SQLPartitionValue x) {
@@ -1259,7 +1180,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionValue x) {
-
     }
 
     default boolean visit(SQLPartition x) {
@@ -1267,7 +1187,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartition x) {
-
     }
 
     default boolean visit(SQLPartitionByRange x) {
@@ -1275,7 +1194,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionByRange x) {
-
     }
 
     default boolean visit(SQLPartitionByHash x) {
@@ -1283,7 +1201,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionByHash x) {
-
     }
 
     default boolean visit(SQLPartitionByList x) {
@@ -1291,7 +1208,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionByList x) {
-
     }
 
     default boolean visit(SQLSubPartition x) {
@@ -1299,7 +1215,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLSubPartition x) {
-
     }
 
     default boolean visit(SQLSubPartitionByHash x) {
@@ -1307,7 +1222,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLSubPartitionByHash x) {
-
     }
 
     default boolean visit(SQLSubPartitionByRange x) {
@@ -1315,7 +1229,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLSubPartitionByRange x) {
-
     }
 
     default boolean visit(SQLSubPartitionByList x) {
@@ -1323,7 +1236,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLSubPartitionByList x) {
-
     }
 
     default boolean visit(SQLAlterDatabaseStatement x) {
@@ -1331,7 +1243,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterDatabaseStatement x) {
-
     }
 
     default boolean visit(SQLAlterTableConvertCharSet x) {
@@ -1339,7 +1250,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableConvertCharSet x) {
-
     }
 
     default boolean visit(SQLAlterTableReOrganizePartition x) {
@@ -1347,7 +1257,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableReOrganizePartition x) {
-
     }
 
     default boolean visit(SQLAlterTableCoalescePartition x) {
@@ -1355,7 +1264,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableCoalescePartition x) {
-
     }
 
     default boolean visit(SQLAlterTableTruncatePartition x) {
@@ -1363,7 +1271,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableTruncatePartition x) {
-
     }
 
     default boolean visit(SQLAlterTableDiscardPartition x) {
@@ -1371,7 +1278,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDiscardPartition x) {
-
     }
 
     default boolean visit(SQLAlterTableImportPartition x) {
@@ -1379,7 +1285,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableImportPartition x) {
-
     }
 
     default boolean visit(SQLAlterTableAnalyzePartition x) {
@@ -1387,7 +1292,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableAnalyzePartition x) {
-
     }
 
     default boolean visit(SQLAlterTableCheckPartition x) {
@@ -1395,7 +1299,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableCheckPartition x) {
-
     }
 
     default boolean visit(SQLAlterTableOptimizePartition x) {
@@ -1403,7 +1306,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableOptimizePartition x) {
-
     }
 
     default boolean visit(SQLAlterTableRebuildPartition x) {
@@ -1411,7 +1313,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableRebuildPartition x) {
-
     }
 
     default boolean visit(SQLAlterTableRepairPartition x) {
@@ -1419,7 +1320,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableRepairPartition x) {
-
     }
 
     default boolean visit(SQLSequenceExpr x) {
@@ -1427,7 +1327,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLSequenceExpr x) {
-
     }
 
     default boolean visit(SQLMergeStatement x) {
@@ -1435,7 +1334,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLMergeStatement x) {
-
     }
 
     default boolean visit(SQLMergeStatement.MergeUpdateClause x) {
@@ -1443,7 +1341,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLMergeStatement.MergeUpdateClause x) {
-
     }
 
     default boolean visit(SQLMergeStatement.MergeInsertClause x) {
@@ -1451,7 +1348,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLMergeStatement.MergeInsertClause x) {
-
     }
 
     default boolean visit(SQLErrorLoggingClause x) {
@@ -1459,7 +1355,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLErrorLoggingClause x) {
-
     }
 
     default boolean visit(SQLNullConstraint x) {
@@ -1467,7 +1362,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLNullConstraint x) {
-
     }
 
     default boolean visit(SQLCreateSequenceStatement x) {
@@ -1475,7 +1369,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateSequenceStatement x) {
-
     }
 
     default boolean visit(SQLDateExpr x) {
@@ -1483,7 +1376,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDateExpr x) {
-
     }
 
     default boolean visit(SQLLimit x) {
@@ -1494,7 +1386,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLStartTransactionStatement x) {
-
     }
 
     default boolean visit(SQLStartTransactionStatement x) {
@@ -1502,7 +1393,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDescribeStatement x) {
-
     }
 
     default boolean visit(SQLDescribeStatement x) {
@@ -1517,7 +1407,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLWhileStatement x) {
-
     }
 
     default boolean visit(SQLDeclareStatement x) {
@@ -1525,7 +1414,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDeclareStatement x) {
-
     }
 
     default boolean visit(SQLReturnStatement x) {
@@ -1533,7 +1421,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLReturnStatement x) {
-
     }
 
     default boolean visit(SQLArgument x) {
@@ -1541,7 +1428,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLArgument x) {
-
     }
 
     default boolean visit(SQLCommitStatement x) {
@@ -1549,7 +1435,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCommitStatement x) {
-
     }
 
     default boolean visit(SQLFlashbackExpr x) {
@@ -1557,7 +1442,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLFlashbackExpr x) {
-
     }
 
     default boolean visit(SQLCreateMaterializedViewStatement x) {
@@ -1565,7 +1449,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateMaterializedViewStatement x) {
-
     }
 
     default boolean visit(SQLShowCreateMaterializedViewStatement x) {
@@ -1573,7 +1456,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowCreateMaterializedViewStatement x) {
-
     }
 
     default boolean visit(SQLBinaryOpExprGroup x) {
@@ -1581,7 +1463,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLBinaryOpExprGroup x) {
-
     }
 
     default boolean visit(SQLScriptCommitStatement x) {
@@ -1589,7 +1470,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLScriptCommitStatement x) {
-
     }
 
     default boolean visit(SQLReplaceStatement x) {
@@ -1597,7 +1477,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLReplaceStatement x) {
-
     }
 
     default boolean visit(SQLCreateUserStatement x) {
@@ -1605,7 +1484,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateUserStatement x) {
-
     }
 
     default boolean visit(SQLAlterFunctionStatement x) {
@@ -1613,7 +1491,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterFunctionStatement x) {
-
     }
 
     default boolean visit(SQLAlterTypeStatement x) {
@@ -1621,7 +1498,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTypeStatement x) {
-
     }
 
     default boolean visit(SQLIntervalExpr x) {
@@ -1629,7 +1505,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLIntervalExpr x) {
-
     }
 
     default boolean visit(SQLLateralViewTableSource x) {
@@ -1637,7 +1512,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLLateralViewTableSource x) {
-
     }
 
     default boolean visit(SQLShowErrorsStatement x) {
@@ -1645,7 +1519,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowErrorsStatement x) {
-
     }
 
     default boolean visit(SQLShowGrantsStatement x) {
@@ -1653,7 +1526,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowGrantsStatement x) {
-
     }
 
     default boolean visit(SQLShowPackagesStatement x) {
@@ -1661,7 +1533,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowPackagesStatement x) {
-
     }
 
     default boolean visit(SQLShowRecylebinStatement x) {
@@ -1669,7 +1540,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowRecylebinStatement x) {
-
     }
 
     default boolean visit(SQLAlterCharacter x) {
@@ -1677,7 +1547,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterCharacter x) {
-
     }
 
     default boolean visit(SQLExprStatement x) {
@@ -1685,7 +1554,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExprStatement x) {
-
     }
 
     default boolean visit(SQLAlterProcedureStatement x) {
@@ -1693,7 +1561,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterProcedureStatement x) {
-
     }
 
     default boolean visit(SQLAlterViewStatement x) {
@@ -1701,7 +1568,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterViewStatement x) {
-
     }
 
     default boolean visit(SQLDropEventStatement x) {
@@ -1709,7 +1575,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropEventStatement x) {
-
     }
 
     default boolean visit(SQLDropLogFileGroupStatement x) {
@@ -1717,7 +1582,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropLogFileGroupStatement x) {
-
     }
 
     default boolean visit(SQLDropServerStatement x) {
@@ -1725,7 +1589,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropServerStatement x) {
-
     }
 
     default boolean visit(SQLDropSynonymStatement x) {
@@ -1733,7 +1596,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropSynonymStatement x) {
-
     }
 
     default boolean visit(SQLRecordDataType x) {
@@ -1741,7 +1603,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLRecordDataType x) {
-
     }
 
     default boolean visit(SQLDropTypeStatement x) {
@@ -1749,7 +1610,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropTypeStatement x) {
-
     }
 
     default boolean visit(SQLExternalRecordFormat x) {
@@ -1757,7 +1617,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExternalRecordFormat x) {
-
     }
 
     default boolean visit(SQLArrayDataType x) {
@@ -1765,7 +1624,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLArrayDataType x) {
-
     }
 
     default boolean visit(SQLMapDataType x) {
@@ -1773,7 +1631,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLMapDataType x) {
-
     }
 
     default boolean visit(SQLStructDataType x) {
@@ -1781,7 +1638,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLStructDataType x) {
-
     }
 
     default boolean visit(SQLRowDataType x) {
@@ -1789,7 +1645,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLRowDataType x) {
-
     }
 
     default boolean visit(SQLStructDataType.Field x) {
@@ -1797,7 +1652,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLStructDataType.Field x) {
-
     }
 
     default boolean visit(SQLDropMaterializedViewStatement x) {
@@ -1805,7 +1659,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropMaterializedViewStatement x) {
-
     }
 
     default boolean visit(SQLShowMaterializedViewStatement x) {
@@ -1813,7 +1666,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowMaterializedViewStatement x) {
-
     }
 
     default boolean visit(SQLRefreshMaterializedViewStatement x) {
@@ -1821,7 +1673,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLRefreshMaterializedViewStatement x) {
-
     }
 
     default boolean visit(SQLAlterMaterializedViewStatement x) {
@@ -1829,7 +1680,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterMaterializedViewStatement x) {
-
     }
 
     default boolean visit(SQLCreateTableGroupStatement x) {
@@ -1837,7 +1687,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateTableGroupStatement x) {
-
     }
 
     default boolean visit(SQLDropTableGroupStatement x) {
@@ -1845,7 +1694,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropTableGroupStatement x) {
-
     }
 
     default boolean visit(SQLAlterTableSubpartitionAvailablePartitionNum x) {
@@ -1853,11 +1701,9 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableSubpartitionAvailablePartitionNum x) {
-
     }
 
     default void endVisit(SQLShowDatabasesStatement x) {
-
     }
 
     default boolean visit(SQLShowDatabasesStatement x) {
@@ -1865,7 +1711,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowTableGroupsStatement x) {
-
     }
 
     default boolean visit(SQLShowTableGroupsStatement x) {
@@ -1873,7 +1718,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowColumnsStatement x) {
-
     }
 
     default boolean visit(SQLShowColumnsStatement x) {
@@ -1881,7 +1725,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowCreateTableStatement x) {
-
     }
 
     default boolean visit(SQLShowCreateTableStatement x) {
@@ -1889,7 +1732,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowProcessListStatement x) {
-
     }
 
     default boolean visit(SQLShowProcessListStatement x) {
@@ -1897,7 +1739,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableSetOption x) {
-
     }
 
     default boolean visit(SQLAlterTableSetOption x) {
@@ -1909,7 +1750,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowCreateViewStatement x) {
-
     }
 
     default boolean visit(SQLShowViewsStatement x) {
@@ -1917,7 +1757,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowViewsStatement x) {
-
     }
 
     default boolean visit(SQLAlterTableRenameIndex x) {
@@ -1925,7 +1764,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableRenameIndex x) {
-
     }
 
     default boolean visit(SQLAlterSequenceStatement x) {
@@ -1933,7 +1771,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterSequenceStatement x) {
-
     }
 
     default boolean visit(SQLAlterTableExchangePartition x) {
@@ -1941,7 +1778,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableExchangePartition x) {
-
     }
 
     default boolean visit(SQLCreateRoleStatement x) {
@@ -1949,7 +1785,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateRoleStatement x) {
-
     }
 
     default boolean visit(SQLDropRoleStatement x) {
@@ -1957,7 +1792,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropRoleStatement x) {
-
     }
 
     default boolean visit(SQLAlterTableReplaceColumn x) {
@@ -1965,7 +1799,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableReplaceColumn x) {
-
     }
 
     default boolean visit(SQLMatchAgainstExpr x) {
@@ -1973,7 +1806,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLMatchAgainstExpr x) {
-
     }
 
     default boolean visit(SQLTimeExpr x) {
@@ -1981,7 +1813,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLTimeExpr x) {
-
     }
 
     default boolean visit(SQLDropCatalogStatement x) {
@@ -1989,11 +1820,9 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropCatalogStatement x) {
-
     }
 
     default void endVisit(SQLShowPartitionsStmt x) {
-
     }
 
     default boolean visit(SQLShowPartitionsStmt x) {
@@ -2001,7 +1830,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLValuesExpr x) {
-
     }
 
     default boolean visit(SQLValuesExpr x) {
@@ -2009,7 +1837,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLContainsExpr x) {
-
     }
 
     default boolean visit(SQLContainsExpr x) {
@@ -2017,7 +1844,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDumpStatement x) {
-
     }
 
     default boolean visit(SQLDumpStatement x) {
@@ -2025,7 +1851,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLValuesTableSource x) {
-
     }
 
     default boolean visit(SQLValuesTableSource x) {
@@ -2033,7 +1858,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExtractExpr x) {
-
     }
 
     default boolean visit(SQLExtractExpr x) {
@@ -2041,7 +1865,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLWindow x) {
-
     }
 
     default boolean visit(SQLWindow x) {
@@ -2049,7 +1872,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLJSONExpr x) {
-
     }
 
     default boolean visit(SQLJSONExpr x) {
@@ -2057,7 +1879,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDecimalExpr x) {
-
     }
 
     default boolean visit(SQLDecimalExpr x) {
@@ -2065,7 +1886,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAnnIndex x) {
-
     }
 
     default boolean visit(SQLAnnIndex x) {
@@ -2073,7 +1893,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLUnionDataType x) {
-
     }
 
     default boolean visit(SQLUnionDataType x) {
@@ -2081,7 +1900,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableRecoverPartitions x) {
-
     }
 
     default boolean visit(SQLAlterTableRecoverPartitions x) {
@@ -2089,20 +1907,17 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterIndexStatement x) {
-
     }
 
     default boolean visit(SQLAlterIndexStatement x) {
         return true;
     }
 
-
     default boolean visit(SQLAlterIndexStatement.Rebuild x) {
         return true;
     }
 
     default void endVisit(SQLAlterIndexStatement.Rebuild x) {
-
     }
 
     default boolean visit(SQLShowIndexesStatement x) {
@@ -2110,7 +1925,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowIndexesStatement x) {
-
     }
 
     default boolean visit(SQLAnalyzeTableStatement x) {
@@ -2118,7 +1932,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAnalyzeTableStatement x) {
-
     }
 
     default boolean visit(SQLExportTableStatement x) {
@@ -2126,7 +1939,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExportTableStatement x) {
-
     }
 
     default boolean visit(SQLImportTableStatement x) {
@@ -2134,7 +1946,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLImportTableStatement x) {
-
     }
 
     default boolean visit(SQLTableSampling x) {
@@ -2142,7 +1953,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLTableSampling x) {
-
     }
 
     default boolean visit(SQLSizeExpr x) {
@@ -2150,7 +1960,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLSizeExpr x) {
-
     }
 
     default boolean visit(SQLAlterTableArchivePartition x) {
@@ -2158,7 +1967,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableArchivePartition x) {
-
     }
 
     default boolean visit(SQLAlterTableUnarchivePartition x) {
@@ -2166,7 +1974,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableUnarchivePartition x) {
-
     }
 
     default boolean visit(SQLCreateOutlineStatement x) {
@@ -2174,7 +1981,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCreateOutlineStatement x) {
-
     }
 
     default boolean visit(SQLDropOutlineStatement x) {
@@ -2182,7 +1988,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropOutlineStatement x) {
-
     }
 
     default boolean visit(SQLAlterOutlineStatement x) {
@@ -2190,7 +1995,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterOutlineStatement x) {
-
     }
 
     default boolean visit(SQLShowOutlinesStatement x) {
@@ -2198,7 +2002,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowOutlinesStatement x) {
-
     }
 
     default boolean visit(SQLPurgeTableStatement x) {
@@ -2206,7 +2009,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPurgeTableStatement x) {
-
     }
 
     default boolean visit(SQLPurgeTemporaryOutputStatement x) {
@@ -2214,7 +2016,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPurgeTemporaryOutputStatement x) {
-
     }
 
     default boolean visit(SQLPurgeLogsStatement x) {
@@ -2222,7 +2023,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPurgeLogsStatement x) {
-
     }
 
     default boolean visit(SQLPurgeRecyclebinStatement x) {
@@ -2230,7 +2030,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPurgeRecyclebinStatement x) {
-
     }
 
     default boolean visit(SQLShowStatisticStmt x) {
@@ -2238,7 +2037,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowStatisticStmt x) {
-
     }
 
     default boolean visit(SQLShowStatisticListStmt x) {
@@ -2246,7 +2044,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowStatisticListStmt x) {
-
     }
 
     default boolean visit(SQLAlterTableAddSupplemental x) {
@@ -2254,7 +2051,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableAddSupplemental x) {
-
     }
 
     default boolean visit(SQLShowCatalogsStatement x) {
@@ -2262,7 +2058,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowCatalogsStatement x) {
-
     }
 
     default boolean visit(SQLShowFunctionsStatement x) {
@@ -2270,7 +2065,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowFunctionsStatement x) {
-
     }
 
     default boolean visit(SQLShowSessionStatement x) {
@@ -2278,7 +2072,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowSessionStatement x) {
-
     }
 
     default boolean visit(SQLDbLinkExpr x) {
@@ -2286,7 +2079,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDbLinkExpr x) {
-
     }
 
     default boolean visit(SQLCurrentTimeExpr x) {
@@ -2294,7 +2086,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCurrentTimeExpr x) {
-
     }
 
     default boolean visit(SQLCurrentUserExpr x) {
@@ -2302,7 +2093,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCurrentUserExpr x) {
-
     }
 
     default boolean visit(SQLShowQueryTaskStatement x) {
@@ -2310,7 +2100,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowQueryTaskStatement x) {
-
     }
 
     default boolean visit(SQLAdhocTableSource x) {
@@ -2318,7 +2107,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAdhocTableSource x) {
-
     }
 
     default boolean visit(HiveCreateTableStatement x) {
@@ -2326,7 +2114,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(HiveCreateTableStatement x) {
-
     }
 
     default boolean visit(HiveInputOutputFormat x) {
@@ -2334,7 +2121,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(HiveInputOutputFormat x) {
-
     }
 
     default boolean visit(SQLExplainAnalyzeStatement x) {
@@ -2342,7 +2128,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExplainAnalyzeStatement x) {
-
     }
 
     default boolean visit(SQLPartitionRef x) {
@@ -2350,7 +2135,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionRef x) {
-
     }
 
     default boolean visit(SQLPartitionRef.Item x) {
@@ -2358,7 +2142,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionRef.Item x) {
-
     }
 
     default boolean visit(SQLWhoamiStatement x) {
@@ -2366,7 +2149,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLWhoamiStatement x) {
-
     }
 
     default boolean visit(SQLDropResourceStatement x) {
@@ -2374,7 +2156,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropResourceStatement x) {
-
     }
 
     default boolean visit(SQLForStatement x) {
@@ -2382,7 +2163,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLForStatement x) {
-
     }
 
     default boolean visit(SQLUnnestTableSource x) {
@@ -2390,7 +2170,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLUnnestTableSource x) {
-
     }
 
     default boolean visit(SQLCopyFromStatement x) {
@@ -2398,7 +2177,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCopyFromStatement x) {
-
     }
 
     default boolean visit(SQLShowUsersStatement x) {
@@ -2406,7 +2184,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowUsersStatement x) {
-
     }
 
     default boolean visit(SQLSubmitJobStatement x) {
@@ -2414,7 +2191,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLSubmitJobStatement x) {
-
     }
 
     default boolean visit(SQLTableLike x) {
@@ -2422,7 +2198,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLTableLike x) {
-
     }
 
     default boolean visit(SQLSyncMetaStatement x) {
@@ -2430,7 +2205,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLSyncMetaStatement x) {
-
     }
 
     default void endVisit(SQLValuesQuery x) {
@@ -2441,7 +2215,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDataTypeRefExpr x) {
-
     }
 
     default boolean visit(SQLDataTypeRefExpr x) {
@@ -2449,7 +2222,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLArchiveTableStatement x) {
-
     }
 
     default boolean visit(SQLArchiveTableStatement x) {
@@ -2457,7 +2229,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLBackupStatement x) {
-
     }
 
     default boolean visit(SQLBackupStatement x) {
@@ -2465,7 +2236,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLRestoreStatement x) {
-
     }
 
     default boolean visit(SQLRestoreStatement x) {
@@ -2473,7 +2243,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLBuildTableStatement x) {
-
     }
 
     default boolean visit(SQLBuildTableStatement x) {
@@ -2481,7 +2250,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCancelJobStatement x) {
-
     }
 
     default boolean visit(SQLCancelJobStatement x) {
@@ -2489,7 +2257,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExportDatabaseStatement x) {
-
     }
 
     default boolean visit(SQLExportDatabaseStatement x) {
@@ -2497,7 +2264,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLImportDatabaseStatement x) {
-
     }
 
     default boolean visit(SQLImportDatabaseStatement x) {
@@ -2505,7 +2271,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLRenameUserStatement x) {
-
     }
 
     default boolean visit(SQLRenameUserStatement x) {
@@ -2513,7 +2278,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionByValue x) {
-
     }
 
     default boolean visit(SQLPartitionByValue x) {
@@ -2521,7 +2285,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTablePartitionCount x) {
-
     }
 
     default boolean visit(SQLAlterTablePartitionCount x) {
@@ -2529,7 +2292,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableBlockSize x) {
-
     }
 
     default boolean visit(SQLAlterTableBlockSize x) {
@@ -2537,7 +2299,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableCompression x) {
-
     }
 
     default boolean visit(SQLAlterTableCompression x) {
@@ -2545,7 +2306,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTablePartitionLifecycle x) {
-
     }
 
     default boolean visit(SQLAlterTablePartitionLifecycle x) {
@@ -2553,7 +2313,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableSubpartitionLifecycle x) {
-
     }
 
     default boolean visit(SQLAlterTableSubpartitionLifecycle x) {
@@ -2561,7 +2320,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDropSubpartition x) {
-
     }
 
     default boolean visit(SQLAlterTableDropSubpartition x) {
@@ -2569,7 +2327,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableDropClusteringKey x) {
-
     }
 
     default boolean visit(SQLAlterTableDropClusteringKey x) {
@@ -2577,7 +2334,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableAddClusteringKey x) {
-
     }
 
     default boolean visit(SQLAlterTableAddClusteringKey x) {
@@ -2585,20 +2341,17 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(MySqlKillStatement x) {
-
     }
 
     default boolean visit(MySqlKillStatement x) {
         return true;
     }
 
-
     default boolean visit(SQLCreateResourceGroupStatement x) {
         return true;
     }
 
     default void endVisit(SQLCreateResourceGroupStatement x) {
-
     }
 
     default boolean visit(SQLAlterResourceGroupStatement x) {
@@ -2606,11 +2359,9 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterResourceGroupStatement x) {
-
     }
 
     default void endVisit(SQLDropResourceGroupStatement x) {
-
     }
 
     default boolean visit(SQLDropResourceGroupStatement x) {
@@ -2618,7 +2369,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLListResourceGroupStatement x) {
-
     }
 
     default boolean visit(SQLListResourceGroupStatement x) {
@@ -2626,7 +2376,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableMergePartition x) {
-
     }
 
     default boolean visit(SQLAlterTableMergePartition x) {
@@ -2634,7 +2383,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionSpec x) {
-
     }
 
     default boolean visit(SQLPartitionSpec x) {
@@ -2642,7 +2390,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionSpec.Item x) {
-
     }
 
     default boolean visit(SQLPartitionSpec.Item x) {
@@ -2650,7 +2397,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableChangeOwner x) {
-
     }
 
     default boolean visit(SQLAlterTableChangeOwner x) {
@@ -2658,7 +2404,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLTableDataType x) {
-
     }
 
     default boolean visit(SQLTableDataType x) {
@@ -2666,7 +2411,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCloneTableStatement x) {
-
     }
 
     default boolean visit(SQLCloneTableStatement x) {
@@ -2674,7 +2418,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowHistoryStatement x) {
-
     }
 
     default boolean visit(SQLShowHistoryStatement x) {
@@ -2682,7 +2425,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowRoleStatement x) {
-
     }
 
     default boolean visit(SQLShowRoleStatement x) {
@@ -2690,7 +2432,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowRolesStatement x) {
-
     }
 
     default boolean visit(SQLShowRolesStatement x) {
@@ -2702,7 +2443,6 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowVariantsStatement x) {
-
     }
 
     default boolean visit(SQLShowACLStatement x) {
@@ -2710,7 +2450,13 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLShowACLStatement x) {
+    }
 
+    default boolean visit(SQLOptimizeStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLOptimizeStatement x) {
     }
 
 }

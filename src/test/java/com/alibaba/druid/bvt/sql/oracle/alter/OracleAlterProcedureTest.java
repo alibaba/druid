@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleAlterProcedureTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "alter PROCEDURE ALIBABA1949.SP_BUILD_WS_DEGRADE_EMAIL compile ";
+                "alter PROCEDURE ALIBABA1949.SP_BUILD_WS_DEGRADE_EMAIL compile ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

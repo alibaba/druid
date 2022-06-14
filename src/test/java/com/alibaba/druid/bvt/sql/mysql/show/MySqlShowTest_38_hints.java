@@ -12,10 +12,9 @@ import java.util.List;
  * @date 2018/8/24 上午10:53
  */
 public class MySqlShowTest_38_hints extends MysqlTest {
-
-    private final static SQLParserFeature[] defaultFeatures = { SQLParserFeature.EnableSQLBinaryOpExprGroup,
-        SQLParserFeature.UseInsertColumnsCache, SQLParserFeature.OptimizedForParameterized,
-        SQLParserFeature.TDDLHint,                     };
+    private static final SQLParserFeature[] defaultFeatures = {SQLParserFeature.EnableSQLBinaryOpExprGroup,
+            SQLParserFeature.UseInsertColumnsCache, SQLParserFeature.OptimizedForParameterized,
+            SQLParserFeature.TDDLHint,};
 
     public void test_0() throws Exception {
         String sql = "/* +TDDL:scan()*/show table status from corona_qatest_0;";

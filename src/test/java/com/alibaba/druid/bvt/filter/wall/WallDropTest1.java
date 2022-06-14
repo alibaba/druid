@@ -25,9 +25,9 @@ import com.alibaba.druid.wall.WallUtils;
 
 public class WallDropTest1 extends TestCase {
     private String sql = "DROP TABLE T1";
-    
+
     private WallConfig config = new WallConfig();
-    
+
     protected void setUp() throws Exception {
         config.setDropTableAllow(true);
     }
@@ -35,9 +35,8 @@ public class WallDropTest1 extends TestCase {
     public void testMySql() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
     }
-    
+
     public void testORACLE() throws Exception {
-        
         Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 }

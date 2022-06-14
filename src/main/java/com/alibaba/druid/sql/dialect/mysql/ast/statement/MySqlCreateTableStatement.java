@@ -17,18 +17,17 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExprImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlShowColumnOutpuVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.StringUtils;
@@ -40,25 +39,34 @@ import java.util.List;
 import java.util.Map;
 
 public class MySqlCreateTableStatement extends SQLCreateTableStatement implements MySqlStatement {
-    private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
-    private List<SQLCommentHint>   optionHints  = new ArrayList<SQLCommentHint>();
-    private SQLName                tableGroup;
-    protected SQLExpr              dbPartitionBy;//for drds
-    protected SQLExpr              dbPartitions;//for drds
-    protected SQLExpr              tablePartitionBy;//for drds
-    protected SQLExpr              tablePartitions;//for drds
-    protected MySqlExtPartition    exPartition; //for drds
-    protected SQLName              storedBy; // for ads
-    protected SQLName              distributeByType; // for ads
-    protected List<SQLName>        distributeBy = new ArrayList<SQLName>();
-    protected boolean              isBroadCast;
-    protected Map<String, SQLName> with = new HashMap<String, SQLName>(3); // for ads
+    private List<SQLCommentHint> hints = new ArrayList<SQLCommentHint>();
+    private List<SQLCommentHint> optionHints = new ArrayList<SQLCommentHint>();
+    private SQLName tableGroup;
+    //for drds
+    protected SQLExpr dbPartitionBy;
+    //for drds
+    protected SQLExpr dbPartitions;
+    //for drds
+    protected SQLExpr tablePartitionBy;
+    //for drds
+    protected SQLExpr tablePartitions;
+    //for drds
+    protected MySqlExtPartition exPartition;
+    // for ads
+    protected SQLName storedBy;
+    // for ads
+    protected SQLName distributeByType;
+    protected List<SQLName> distributeBy = new ArrayList<SQLName>();
+    protected boolean isBroadCast;
+    // for ads
+    protected Map<String, SQLName> with = new HashMap<String, SQLName>(3);
 
-    protected SQLName archiveBy; // adb
+    // adb
+    protected SQLName archiveBy;
     protected Boolean withData;
 
-    public MySqlCreateTableStatement(){
-        super (DbType.mysql);
+    public MySqlCreateTableStatement() {
+        super(DbType.mysql);
     }
 
     public List<SQLCommentHint> getHints() {
@@ -153,7 +161,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     }
 
     public static class TableSpaceOption extends MySqlExprImpl {
-
         private SQLName name;
         private SQLExpr storage;
 
@@ -217,7 +224,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         this.optionHints = optionHints;
     }
 
-    
     public SQLName getTableGroup() {
         return tableGroup;
     }
@@ -249,7 +255,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         List<MySqlKey> mySqlKeys = new ArrayList<MySqlKey>();
         for (SQLTableElement element : this.getTableElementList()) {
             if (element instanceof MySqlKey) {
-                mySqlKeys.add((MySqlKey)element);
+                mySqlKeys.add((MySqlKey) element);
             }
         }
         return mySqlKeys;
@@ -259,7 +265,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         List<MySqlTableIndex> indexList = new ArrayList<MySqlTableIndex>();
         for (SQLTableElement element : this.getTableElementList()) {
             if (element instanceof MySqlTableIndex) {
-                indexList.add((MySqlTableIndex)element);
+                indexList.add((MySqlTableIndex) element);
             }
         }
         return indexList;
@@ -412,7 +418,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
         for (int i = 0; i < tableElementList.size(); i++) {
             SQLTableElement e = tableElementList.get(i);
-            if(e instanceof MySqlTableIndex) {
+            if (e instanceof MySqlTableIndex) {
                 ((MySqlTableIndex) e).applyColumnRename(columnName, column);
             } else if (e instanceof SQLUnique) {
                 SQLUnique unique = (SQLUnique) e;
@@ -464,7 +470,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         // Just old name -> old name.
         for (int i = 0; i < tableElementList.size(); i++) {
             SQLTableElement e = tableElementList.get(i);
-            if(e instanceof MySqlTableIndex) {
+            if (e instanceof MySqlTableIndex) {
                 ((MySqlTableIndex) e).applyColumnRename(columnName, column);
             } else if (e instanceof SQLUnique) {
                 SQLUnique unique = (SQLUnique) e;
@@ -560,7 +566,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         }
         this.tablePartitionBy = x;
     }
-
 
     public SQLName getDistributeByType() {
         return distributeByType;
@@ -664,5 +669,19 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             x.setParent(this);
         }
         addOption("ENGINE", x);
+    }
+
+    public void setPageChecksum(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        addOption("PAGE_CHECKSUM", x);
+    }
+
+    public void setTransactional(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        addOption("TRANSACTIONAL", x);
     }
 }

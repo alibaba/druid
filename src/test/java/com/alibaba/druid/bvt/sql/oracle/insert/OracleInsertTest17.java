@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleInsertTest17 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "insert into sys_log(ID,EXCEPTION) values(?,?)";
 
@@ -40,8 +39,8 @@ public class OracleInsertTest17 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("INSERT INTO sys_log (ID, EXCEPTION)"
-                + "\nVALUES (?, ?)",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        + "\nVALUES (?, ?)",//
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -56,8 +55,8 @@ public class OracleInsertTest17 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys_log")));
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "EXCEPTION")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "ID")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "EXCEPTION")));
     }
 
 }

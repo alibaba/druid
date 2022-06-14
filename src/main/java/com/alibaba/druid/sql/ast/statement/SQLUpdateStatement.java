@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -31,19 +30,18 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     protected SQLWithSubqueryClause with; // for pg
 
     protected final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
-    protected SQLExpr                      where;
-    protected SQLTableSource               from;
+    protected SQLExpr where;
+    protected SQLTableSource from;
 
-    protected SQLTableSource               tableSource;
-    protected List<SQLExpr>                returning;
+    protected SQLTableSource tableSource;
+    protected List<SQLExpr> returning;
 
-    protected List<SQLAssignItem>          partitions;
+    protected List<SQLAssignItem> partitions;
 
     // for mysql
     protected SQLOrderBy orderBy;
 
-    public SQLUpdateStatement(){
-
+    public SQLUpdateStatement() {
     }
 
     public void cloneTo(SQLUpdateStatement x) {
@@ -89,9 +87,9 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         cloneTo(x);
         return x;
     }
-    
-    public SQLUpdateStatement(DbType dbType){
-        super (dbType);
+
+    public SQLUpdateStatement(DbType dbType) {
+        super(dbType);
     }
 
     public SQLTableSource getTableSource() {
@@ -145,7 +143,7 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     public List<SQLUpdateSetItem> getItems() {
         return items;
     }
-    
+
     public void addItem(SQLUpdateSetItem item) {
         this.items.add(item);
         item.setParent(this);
@@ -178,8 +176,7 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         visitor.endVisit(this);
     }
 
-    protected void acceptChild(SQLASTVisitor visitor)
-    {
+    protected void acceptChild(SQLASTVisitor visitor) {
         if (with != null) {
             with.accept(visitor);
         }
@@ -245,7 +242,6 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
         return false;
     }
-
 
     public SQLOrderBy getOrderBy() {
         return orderBy;
@@ -349,17 +345,33 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLUpdateStatement that = (SQLUpdateStatement) o;
 
-        if (with != null ? !with.equals(that.with) : that.with != null) return false;
-        if (!items.equals(that.items)) return false;
-        if (where != null ? !where.equals(that.where) : that.where != null) return false;
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) return false;
-        if (returning != null ? !returning.equals(that.returning) : that.returning != null) return false;
+        if (with != null ? !with.equals(that.with) : that.with != null) {
+            return false;
+        }
+        if (!items.equals(that.items)) {
+            return false;
+        }
+        if (where != null ? !where.equals(that.where) : that.where != null) {
+            return false;
+        }
+        if (from != null ? !from.equals(that.from) : that.from != null) {
+            return false;
+        }
+        if (tableSource != null ? !tableSource.equals(that.tableSource) : that.tableSource != null) {
+            return false;
+        }
+        if (returning != null ? !returning.equals(that.returning) : that.returning != null) {
+            return false;
+        }
         return orderBy != null ? orderBy.equals(that.orderBy) : that.orderBy == null;
     }
 

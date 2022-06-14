@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateIndexTest_1 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE SPATIAL INDEX g ON geom (g);";

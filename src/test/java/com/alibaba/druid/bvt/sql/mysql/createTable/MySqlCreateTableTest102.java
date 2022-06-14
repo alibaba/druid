@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest102 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `xktv_perf_6519` (\n" +
                 "  `kd` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
@@ -78,7 +77,7 @@ public class MySqlCreateTableTest102 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
         assertEquals(63, stmt.getTableElementList().size());

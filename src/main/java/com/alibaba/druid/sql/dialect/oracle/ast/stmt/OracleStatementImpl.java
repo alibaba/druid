@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class OracleStatementImpl extends SQLStatementImpl implements OracleStatement {
-    
     public OracleStatementImpl() {
         super(DbType.oracle);
     }

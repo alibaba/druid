@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class EqualTest_exists extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "exists (select 1)";
         String sql_c = "not exists (select 1)";
@@ -30,7 +29,7 @@ public class EqualTest_exists extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLExistsExpr(), new SQLExistsExpr());
         Assert.assertEquals(new SQLExistsExpr().hashCode(), new SQLExistsExpr().hashCode());
     }

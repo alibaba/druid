@@ -12,7 +12,6 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceTest_initSql extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {

@@ -11,7 +11,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 
 public class DruidPooledPreparedStatementTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -31,7 +30,7 @@ public class DruidPooledPreparedStatementTest extends TestCase {
         {
             Connection conn = dataSource.getConnection();
             DruidPooledPreparedStatement stmt = (DruidPooledPreparedStatement) conn.prepareStatement(sql);
-            
+
             Assert.assertEquals(0, stmt.getFetchSize());
             Assert.assertEquals(0, stmt.getFetchDirection());
             Assert.assertEquals(0, stmt.getMaxRows());
@@ -44,13 +43,13 @@ public class DruidPooledPreparedStatementTest extends TestCase {
             stmt.setMaxRows(3);
             stmt.setMaxFieldSize(4);
             stmt.setQueryTimeout(5);
-            
+
             Assert.assertEquals(1, stmt.getFetchSize());
             Assert.assertEquals(2, stmt.getFetchDirection());
             Assert.assertEquals(3, stmt.getMaxRows());
             Assert.assertEquals(4, stmt.getMaxFieldSize());
             Assert.assertEquals(5, stmt.getQueryTimeout());
-            
+
             stmt.setString(1, "xx");
             ResultSet rs = stmt.executeQuery();
             Assert.assertTrue(rs.next());
@@ -63,20 +62,20 @@ public class DruidPooledPreparedStatementTest extends TestCase {
         {
             Connection conn = dataSource.getConnection();
             DruidPooledPreparedStatement stmt = (DruidPooledPreparedStatement) conn.prepareStatement(sql);
-            
+
             Assert.assertEquals(0, stmt.getFetchSize());
             Assert.assertEquals(0, stmt.getFetchDirection());
             Assert.assertEquals(0, stmt.getMaxRows());
             Assert.assertEquals(0, stmt.getMaxFieldSize());
             Assert.assertEquals(0, stmt.getQueryTimeout());
-            
+
             stmt.setString(1, "xx");
             ResultSet rs = stmt.executeQuery();
             Assert.assertTrue(rs.next());
             Assert.assertFalse(rs.next());
             rs.close();
             conn.close();
-            
+
             Assert.assertEquals(1, stmt.getHitCount());
             Assert.assertNotNull(stmt.getKey());
         }

@@ -13,7 +13,6 @@ import junit.framework.TestCase;
 import java.util.Set;
 
 public class SchemaStatTest14 extends TestCase {
-
     public void test_schemaStat() throws Exception {
         String sql = "delete r from t_res r where id=1 ";
 

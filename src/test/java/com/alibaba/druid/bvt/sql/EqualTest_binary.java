@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 
 public class EqualTest_binary extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "b'01010'";
         String sql_c = "b'010101'";
@@ -31,7 +30,7 @@ public class EqualTest_binary extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLBinaryExpr(), new SQLBinaryExpr());
         Assert.assertEquals(new SQLBinaryExpr().hashCode(), new SQLBinaryExpr().hashCode());
     }

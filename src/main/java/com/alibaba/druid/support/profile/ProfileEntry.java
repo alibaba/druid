@@ -16,14 +16,13 @@
 package com.alibaba.druid.support.profile;
 
 public class ProfileEntry {
-
-    private final ProfileEntry    parent;
+    private final ProfileEntry parent;
     private final ProfileEntryKey key;
 
-    private int                   executeCount     = 0;
-    private long                  executeTimeNanos = 0;
+    private int executeCount;
+    private long executeTimeNanos;
 
-    public ProfileEntry(ProfileEntry parent, ProfileEntryKey key){
+    public ProfileEntry(ProfileEntry parent, ProfileEntryKey key) {
         this.parent = parent;
         this.key = key;
     }

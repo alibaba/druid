@@ -26,7 +26,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySqlCreateDatabaseTest4 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create database super default character set utf8 collate = utf8_bin character set utf8 collate utf8_bin;";

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OracleAlterTableModify extends OracleAlterTableItem {
-
     private List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
 
     @Override

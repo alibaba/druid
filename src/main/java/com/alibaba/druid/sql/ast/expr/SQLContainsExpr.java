@@ -23,14 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class SQLContainsExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
-
     private static final long serialVersionUID = 1L;
-    private boolean not = false;
+    private boolean not;
     private SQLExpr expr;
     private List<SQLExpr> targetList = new ArrayList<SQLExpr>();
 
     public SQLContainsExpr() {
-
     }
 
     public SQLContainsExpr(SQLExpr expr) {

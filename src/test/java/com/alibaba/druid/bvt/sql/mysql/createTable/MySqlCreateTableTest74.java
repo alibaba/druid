@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest74 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "create table test.simple_test (\n" +
@@ -42,8 +41,8 @@ public class MySqlCreateTableTest74 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
-        Column column = visitor.getColumn("test.simple_test","col_key");
+
+        Column column = visitor.getColumn("test.simple_test", "col_key");
         Assert.assertNotNull(column);
         Assert.assertEquals("bigint", column.getDataType());
 
@@ -59,7 +58,7 @@ public class MySqlCreateTableTest74 extends MysqlTest {
                     "\tUNIQUE INDEX v1_unique (col_key ASC)\n" +
                     ")", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table test.simple_test (\n" +

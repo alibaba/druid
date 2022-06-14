@@ -15,15 +15,6 @@
  */
 package com.alibaba.druid.filter.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.PublicKey;
-import java.sql.SQLException;
-import java.util.Properties;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
@@ -33,11 +24,20 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URL;
+import java.security.PublicKey;
+import java.sql.SQLException;
+import java.util.Properties;
+
 /**
  * <pre>
  * 这个类主要是负责两个事情, 解密, 和下载远程的配置文件
  * [解密]
- * 
+ *
  * DruidDataSource dataSource = new DruidDataSource();
  * //dataSource.setXXX 其他设置
  * //下面两步很重要
@@ -46,7 +46,7 @@ import com.alibaba.druid.util.StringUtils;
  * //使用RSA解密(使用默认密钥）
  * dataSource.setConnectionPropertise("config.decrypt=true");
  * dataSource.setPassword("加密的密文");
- * 
+ *
  * [远程配置文件]
  * DruidDataSource dataSource = new DruidDataSource();
  * //下面两步很重要
@@ -54,55 +54,54 @@ import com.alibaba.druid.util.StringUtils;
  * dataSource.setFilters("config");
  * //使用RSA解密(使用默认密钥）
  * dataSource.setConnectionPropertise("config.file=http://localhost:8080/remote.propreties;");
- * 
+ *
  * [Spring的配置解密]
- * 
+ *
  * &lt;bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"&gt;
  *     &lt;property name="password" value="加密的密文" /&gt;
  *     &lt;!-- 其他的属性设置 --&gt;
  *     &lt;property name="filters" value="config" /&gt;
  *     &lt;property name="connectionProperties" value="config.decrypt=true" /&gt;
  * &lt;/bean&gt;
- * 
+ *
  * [Spring的配置远程配置文件]
- * 
+ *
  * &lt;bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"&gt;
  *     &lt;property name="filters" value="config" /&gt;
  *     &lt;property name="connectionProperties" value="config.file=http://localhost:8080/remote.propreties; /&gt;
  * &lt;/bean&gt;
- * 
+ *
  * [使用系统属性配置远程文件]
  * java -Ddruid.config.file=file:///home/test/my.properties ...
- * 
+ *
  * 远程配置文件格式:
  * 1. 其他的属性KEY请查看 @see com.alibaba.druid.pool.DruidDataSourceFactory
  * 2. config filter 相关设置:
  * #远程文件路径
  * config.file=http://xxxxx(http://开头或者file:开头)
- * 
+ *
  * #RSA解密, Key不指定, 使用默认的
  * config.decrypt=true
  * config.decrypt.key=密钥字符串
  * config.decrypt.keyFile=密钥文件路径
  * config.decrypt.x509File=证书路径
- * 
+ *
  * </pre>
- * 
+ *
  * @author Jonas Yang
  */
 public class ConfigFilter extends FilterAdapter {
+    private static Log LOG = LogFactory.getLog(ConfigFilter.class);
 
-    private static Log         LOG                     = LogFactory.getLog(ConfigFilter.class);
+    public static final String CONFIG_FILE = "config.file";
+    public static final String CONFIG_DECRYPT = "config.decrypt";
+    public static final String CONFIG_KEY = "config.decrypt.key";
 
-    public static final String CONFIG_FILE             = "config.file";
-    public static final String CONFIG_DECRYPT          = "config.decrypt";
-    public static final String CONFIG_KEY              = "config.decrypt.key";
-
-    public static final String SYS_PROP_CONFIG_FILE    = "druid.config.file";
+    public static final String SYS_PROP_CONFIG_FILE = "druid.config.file";
     public static final String SYS_PROP_CONFIG_DECRYPT = "druid.config.decrypt";
-    public static final String SYS_PROP_CONFIG_KEY     = "druid.config.decrypt.key";
+    public static final String SYS_PROP_CONFIG_KEY = "druid.config.decrypt.key";
 
-    public ConfigFilter(){
+    public ConfigFilter() {
     }
 
     public void init(DataSourceProxy dataSourceProxy) {
@@ -167,7 +166,7 @@ public class ConfigFilter extends FilterAdapter {
 
             if (info == null) {
                 throw new IllegalArgumentException("Cannot load remote config file from the [config.file=" + configFile
-                                                   + "].");
+                        + "].");
             }
 
             return info;
@@ -177,7 +176,6 @@ public class ConfigFilter extends FilterAdapter {
     }
 
     public void decrypt(DruidDataSource dataSource, Properties info) {
-
         try {
             String encryptedPassword = null;
             if (info != null) {

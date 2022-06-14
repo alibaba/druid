@@ -39,7 +39,7 @@ public class PGSelectTest67_window extends TestCase {
         assertEquals("SELECT sum(salary) OVER w, avg(salary) OVER w\n" +
                 "FROM empsalary\n" +
                 "WINDOW w AS (PARTITION BY depname ORDER BY salary DESC);", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("select sum(salary) over w, avg(salary) over w\n" +
                 "from empsalary\n" +
                 "window w as (partition by depname order by salary desc);", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

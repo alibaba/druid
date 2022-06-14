@@ -25,10 +25,9 @@ import org.apache.commons.dbcp.BasicDataSource;
 import com.alibaba.druid.mock.MockDriver;
 
 public class DBCPTest extends TestCase {
-
     public void test_max() throws Exception {
         Class.forName("com.alibaba.druid.mock.MockDriver");
-        
+
         final BasicDataSource dataSource = new BasicDataSource();
 //        final DruidDataSource dataSource = new DruidDataSource();
         dataSource.setInitialSize(3);
@@ -43,7 +42,6 @@ public class DBCPTest extends TestCase {
         Thread[] threads = new Thread[THREAD_COUNT];
         for (int i = 0; i < THREAD_COUNT; ++i) {
             threads[i] = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();
@@ -60,11 +58,11 @@ public class DBCPTest extends TestCase {
             };
             threads[i].start();
         }
-        
+
         startLatch.countDown();
-        
+
         endLatch.await();
-        
+
 //        System.out.println(dataSource.getNumIdle());
         System.out.println(MockDriver.instance.getConnections().size());
         System.out.println(MockDriver.instance.getConnectionCloseCount());

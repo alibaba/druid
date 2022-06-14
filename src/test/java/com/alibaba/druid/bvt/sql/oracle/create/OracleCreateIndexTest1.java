@@ -25,10 +25,9 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateIndexTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "create index PFS_PACKAGE_SAMPLE_PID_IND on PFS_PACKAGE_SAMPLE(PACKAGE_ID)   tablespace appindx1m";
+                "create index PFS_PACKAGE_SAMPLE_PID_IND on PFS_PACKAGE_SAMPLE(PACKAGE_ID)   tablespace appindx1m";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

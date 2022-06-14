@@ -21,15 +21,13 @@ import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLColumnCheck extends SQLConstraintImpl implements SQLColumnConstraint, SQLReplaceable {
-
     private SQLExpr expr;
     protected Boolean enforced;
 
-    public SQLColumnCheck(){
-
+    public SQLColumnCheck() {
     }
 
-    public SQLColumnCheck(SQLExpr expr){
+    public SQLColumnCheck(SQLExpr expr) {
         this.setExpr(expr);
     }
 

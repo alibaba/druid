@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.builder;
 
 public interface SQLUpdateBuilder {
-
     SQLUpdateBuilder from(String table);
 
     SQLUpdateBuilder from(String table, String alias);

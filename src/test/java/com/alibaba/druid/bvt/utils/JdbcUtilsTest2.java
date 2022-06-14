@@ -32,7 +32,7 @@ public class JdbcUtilsTest2 extends TestCase {
     public void test_kdb() throws Exception {
         assertEquals(JdbcConstants.KDB_DRIVER, JdbcUtils.getDriverClassName("jdbc:inspur:"));
     }
-    
+
     public void test_tydb() throws Exception {
         assertEquals(JdbcConstants.TYDB_DRIVER, JdbcUtils.getDriverClassName("jdbc:dbcp:"));
     }

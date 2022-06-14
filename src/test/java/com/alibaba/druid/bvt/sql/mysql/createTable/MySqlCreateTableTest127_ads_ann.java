@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import java.util.List;
 
 public class MySqlCreateTableTest127_ads_ann extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE adl_new_retail.adl_sec_verify_face ( \n" +
                 "   id varchar NOT NULL COMMENT '', \n" +
@@ -22,7 +21,7 @@ public class MySqlCreateTableTest127_ads_ann extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement)statementList.get(0);
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -45,7 +44,6 @@ public class MySqlCreateTableTest127_ads_ann extends MysqlTest {
                 "TABLEGROUP deepvision;", stmt.toString());
 
     }
-
 
 
 }

@@ -7,7 +7,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class ReuseStatFilterTest extends TestCase {
-
     private DruidDataSource dataSourceA;
     private DruidDataSource dataSourceB;
 
@@ -17,18 +16,17 @@ public class ReuseStatFilterTest extends TestCase {
 
         dataSourceA.setUrl("jdbc:mock:xxx_A");
         dataSourceB.setUrl("jdbc:mock:xxx_B");
-        
+
         StatFilter filter = new StatFilter();
-        
+
         dataSourceA.getProxyFilters().add(filter);
         dataSourceB.getProxyFilters().add(filter);
 
         dataSourceA.init();
         dataSourceB.init();
     }
-    
+
     public void test_execute() throws Exception {
-        
     }
 
     protected void tearDown() throws Exception {

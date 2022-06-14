@@ -10,16 +10,15 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 public class OverTest extends TestCase {
-
     public void test_over() throws Exception {
         String sql = "SELECT SalesOrderID, ProductID, OrderQty" + //
-                     "    ,SUM(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Total'" + //
-                     "    ,AVG(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Avg'" + //
-                     "    ,COUNT(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Count'" + //
-                     "    ,MIN(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Min'" + //
-                     "    ,MAX(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Max' " + //
-                     "FROM Sales.SalesOrderDetail " + //
-                     "WHERE SalesOrderID IN(43659,43664);";
+                "    ,SUM(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Total'" + //
+                "    ,AVG(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Avg'" + //
+                "    ,COUNT(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Count'" + //
+                "    ,MIN(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Min'" + //
+                "    ,MAX(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Max' " + //
+                "FROM Sales.SalesOrderDetail " + //
+                "WHERE SalesOrderID IN(43659,43664);";
 
         SQLStatementParser parser = new SQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

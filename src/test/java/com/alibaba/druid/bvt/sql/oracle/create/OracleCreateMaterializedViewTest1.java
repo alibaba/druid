@@ -26,17 +26,16 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateMaterializedViewTest1 extends OracleTest {
-
     public void test_types() throws Exception {
         String sql = //
-        "CREATE MATERIALIZED VIEW sales_mv\n" +
-                "   BUILD IMMEDIATE\n" +
-                "   REFRESH FAST ON COMMIT\n" +
-                "   AS SELECT t.calendar_year, p.prod_id, \n" +
-                "      SUM(s.amount_sold) AS sum_sales\n" +
-                "      FROM times t, products p, sales s\n" +
-                "      WHERE t.time_id = s.time_id AND p.prod_id = s.prod_id\n" +
-                "      GROUP BY t.calendar_year, p.prod_id;";
+                "CREATE MATERIALIZED VIEW sales_mv\n" +
+                        "   BUILD IMMEDIATE\n" +
+                        "   REFRESH FAST ON COMMIT\n" +
+                        "   AS SELECT t.calendar_year, p.prod_id, \n" +
+                        "      SUM(s.amount_sold) AS sum_sales\n" +
+                        "      FROM times t, products p, sales s\n" +
+                        "      WHERE t.time_id = s.time_id AND p.prod_id = s.prod_id\n" +
+                        "      GROUP BY t.calendar_year, p.prod_id;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -54,7 +53,7 @@ public class OracleCreateMaterializedViewTest1 extends OracleTest {
                         "WHERE t.time_id = s.time_id\n" +
                         "\tAND p.prod_id = s.prod_id\n" +
                         "GROUP BY t.calendar_year, p.prod_id;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

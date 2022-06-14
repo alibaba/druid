@@ -11,12 +11,11 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlSelectTest_168_int extends MysqlTest {
-
     public void test_1() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT  ceil(SMALLINT'123')";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -27,7 +26,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         String sql = "/*+engine=MPP*/ SELECT floor(SMALLINT'123')";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql, SQLParserFeature.PipesAsConcat);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -38,7 +37,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         String sql = "/*+engine=MPP*/ SELECT  ceil(TINYINT'123')";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -49,7 +48,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         String sql = "/*+engine=MPP*/ SELECT floor(TINYINT'123')";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql, SQLParserFeature.PipesAsConcat);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -60,7 +59,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         String sql = "/*+engine=MPP*/ SELECT  ceil(BIGINT'123')";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
@@ -71,47 +70,51 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         String sql = "/*+engine=MPP*/ SELECT floor(BIGINT'123')";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql, SQLParserFeature.PipesAsConcat);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(BIGINT '123')", stmt.toString());
     }
+
     public void test_real_1() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT floor(REAL '-123.0')";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql, SQLParserFeature.PipesAsConcat);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(REAL '-123.0')", stmt.toString());
     }
+
     public void test_real_2() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT ceil(REAL '-123.0')";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql, SQLParserFeature.PipesAsConcat);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
         assertEquals("/*+engine=MPP*/\n" + "SELECT ceil(REAL '-123.0')", stmt.toString());
     }
+
     public void test_double_3() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT floor(CAST(NULL as DOUBLE))";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql, SQLParserFeature.PipesAsConcat);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(CAST(NULL AS DOUBLE))", stmt.toString());
     }
+
     public void test_double_4() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT floor(CAST(NULL as DECIMAL(25,5)))";
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql, SQLParserFeature.PipesAsConcat);
-        SQLSelectStatement stmt = (SQLSelectStatement)statementList.get(0);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
 

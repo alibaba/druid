@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLDbTypedObject;
 import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -30,10 +29,10 @@ import java.util.List;
 public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObject {
     private List<SQLSelectQuery> relations = new ArrayList<SQLSelectQuery>();
     private SQLUnionOperator operator = SQLUnionOperator.UNION;
-    private SQLOrderBy       orderBy;
+    private SQLOrderBy orderBy;
 
-    private SQLLimit         limit;
-    private DbType           dbType;
+    private SQLLimit limit;
+    private DbType dbType;
 
     public SQLUnionOperator getOperator() {
         return operator;
@@ -43,20 +42,18 @@ public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObjec
         this.operator = operator;
     }
 
-    public SQLUnionQuery(){
-
+    public SQLUnionQuery() {
     }
 
-    public SQLUnionQuery(DbType dbType){
+    public SQLUnionQuery(DbType dbType) {
         this.dbType = dbType;
     }
 
-    public SQLUnionQuery(SQLSelectQuery left, SQLUnionOperator operator, SQLSelectQuery right){
+    public SQLUnionQuery(SQLSelectQuery left, SQLUnionOperator operator, SQLSelectQuery right) {
         this.setLeft(left);
         this.operator = operator;
         this.setRight(right);
     }
-
 
     public List<SQLSelectQuery> getRelations() {
         return relations;
@@ -153,7 +150,6 @@ public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObjec
         visitor.endVisit(this);
     }
 
-
     public SQLLimit getLimit() {
         return limit;
     }
@@ -243,7 +239,6 @@ public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObjec
                 && ((SQLUnionQuery) left).getOperator() == operator
                 && !right.isParenthesized()
                 && orderBy == null) {
-
             SQLUnionQuery leftUnion = (SQLUnionQuery) left;
 
             ArrayList<SQLSelectQuery> rights = new ArrayList<SQLSelectQuery>();
@@ -278,16 +273,30 @@ public class SQLUnionQuery extends SQLSelectQueryBase implements SQLDbTypedObjec
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLUnionQuery that = (SQLUnionQuery) o;
 
-        if (parenthesized != that.parenthesized) return false;
-        if (relations != null ? !relations.equals(that.relations) : that.relations != null) return false;
-        if (operator != that.operator) return false;
-        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
-        if (limit != null ? !limit.equals(that.limit) : that.limit != null) return false;
+        if (parenthesized != that.parenthesized) {
+            return false;
+        }
+        if (relations != null ? !relations.equals(that.relations) : that.relations != null) {
+            return false;
+        }
+        if (operator != that.operator) {
+            return false;
+        }
+        if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) {
+            return false;
+        }
+        if (limit != null ? !limit.equals(that.limit) : that.limit != null) {
+            return false;
+        }
         return dbType == that.dbType;
     }
 

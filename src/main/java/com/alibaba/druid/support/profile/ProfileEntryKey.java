@@ -20,7 +20,7 @@ public class ProfileEntryKey {
     private final String name;
     private final String type;
 
-    public ProfileEntryKey(String parentName, String name, String type){
+    public ProfileEntryKey(String parentName, String name, String type) {
         this.parentName = parentName;
         this.name = name;
         this.type = type;
@@ -37,7 +37,7 @@ public class ProfileEntryKey {
     public String getType() {
         return type;
     }
-    
+
     public void fillValue(ProfileEntryStatValue value) {
         value.setParentName(parentName);
         value.setName(name);

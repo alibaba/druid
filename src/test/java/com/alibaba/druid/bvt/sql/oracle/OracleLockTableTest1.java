@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleLockTableTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "LOCK TABLE employees   IN EXCLUSIVE MODE    NOWAIT; ";
 

@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class DB2CreateTableTest_07 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE EMPLOYEE\n" +
                 "  (EMPNO      INTEGER GENERATED ALWAYS AS IDENTITY\n" +
@@ -65,14 +64,14 @@ public class DB2CreateTableTest_07 extends DB2Test {
                         "\tSALARY DECIMAL(7, 2) NOT NULL,\n" +
                         "\tWORKDEPT SMALLINT\n" +
                         ");", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
+
         assertEquals("create table EMPLOYEE (\n" +
                         "\tEMPNO INTEGER primary key not null generated always as identity,\n" +
                         "\tNAME CHAR(30) not null,\n" +
                         "\tSALARY DECIMAL(7, 2) not null,\n" +
                         "\tWORKDEPT SMALLINT\n" +
                         ");", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

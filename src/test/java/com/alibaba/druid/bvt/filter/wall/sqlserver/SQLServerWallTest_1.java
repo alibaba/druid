@@ -29,8 +29,7 @@ import com.alibaba.druid.wall.WallUtils;
  * @see
  */
 public class SQLServerWallTest_1 extends TestCase {
-
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateSqlServer("SELECT @ret"));
-    }    
+    }
 }

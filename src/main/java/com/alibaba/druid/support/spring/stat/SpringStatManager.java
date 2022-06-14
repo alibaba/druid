@@ -15,22 +15,17 @@
  */
 package com.alibaba.druid.support.spring.stat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 public class SpringStatManager {
+    public static final String SYS_PROP_INSTANCES = "druid.spring.springStat";
 
-    public final static String             SYS_PROP_INSTANCES = "druid.spring.springStat";
+    private static final SpringStatManager instance = new SpringStatManager();
 
-    private final static SpringStatManager instance           = new SpringStatManager();
-
-    private Set<Object>                    springStatSet      = null;
+    private Set<Object> springStatSet;
 
     public static SpringStatManager getInstance() {
         return instance;
@@ -41,7 +36,7 @@ public class SpringStatManager {
             if (DruidDataSourceStatManager.isRegisterToSystemProperty()) {
                 springStatSet = getSpringStatSetFromSysProperty();
             } else {
-                springStatSet = new CopyOnWriteArraySet<Object>();                
+                springStatSet = new CopyOnWriteArraySet<Object>();
             }
         }
 
@@ -83,20 +78,20 @@ public class SpringStatManager {
 
         return allMethodStatDataList;
     }
-    
+
     public Map<String, Object> getMethodStatData(String clazz, String method) {
         Set<Object> stats = getSpringStatSet();
-        
+
         for (Object stat : stats) {
             Map<String, Object> statData = SpringStatUtils.getMethodStatData(stat, clazz, method);
             if (statData != null) {
                 return statData;
             }
         }
-        
+
         return null;
     }
-    
+
     public void resetStat() {
         Set<Object> stats = getSpringStatSet();
 

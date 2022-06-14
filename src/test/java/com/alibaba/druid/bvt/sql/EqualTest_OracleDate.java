@@ -7,7 +7,6 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
 
 public class EqualTest_OracleDate extends TestCase {
-
     public void test_eq() throws Exception {
         SQLDateExpr exprA = new SQLDateExpr();
         SQLDateExpr exprB = new SQLDateExpr();

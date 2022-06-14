@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest34_renameIndex extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "alter table test.table rename index idx_status to idx_status_2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

@@ -20,7 +20,6 @@ public class MySqlParameterizedOutputVisitorTest_31 extends TestCase {
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
-
         String sql = "/* 0a67bca314863468702364451e/0.3// */select `udata`.`id` as `id`,`udata`.`gmt_create` as `gmtCreate`,`udata`.`gmt_modified` as `gmtModified`,`udata`.`uid` as `userId`,`udata`.`user_nick` as `userNick`,`udata`.`user_type` as `userType`,`udata`.`aps` as `acPeSe`,`udata`.`rn` as `rn`,`udata`.`start_period_time` as `startPeriodTime`,`udata`.`ept` as `adTm`,`udata`.`status` as `status`,`udata`.`charging_period` as `chargingPeriod`,`udata`.`sn` as `sn`,`udata`.`cpd` as `chargingPeriodDesc`,`udata`.`task_total_num` as `taskTotalNum`,`udata`.`tcn` as `taCoNu`,`udata`.`task_type` as `taskType`,`udata`.`ilbu` as `isLaBiUs`" +
                 " from `udata_0888` `udata` where ((`udata`.`id` IN ((select MAX(`udata`.`id`) from `udata_0888` `udata` where ((`udata`.`uid` = 1039100792) AND (`udata`.`user_type` = 2) AND (`udata`.`start_period_time` <= '2017-01-01 00:00:00') AND (`udata`.`status` = 10) AND (`udata`.`charging_period` = 1) AND (`udata`.`task_type` = 1) AND (`udata`.`task_total_num` <= `udata`.`tcn`)) group by `udata`.`charging_period`,`udata`.`start_period_time`,`udata`.`ept`))) AND ((`udata`.`uid` = '1039100792') AND (`udata`.`user_type` = 2))) order by `udata`.`start_period_time` desc  limit 0,6";
 

@@ -5,11 +5,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.FullTextType;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MysqlShowCreateFullTextStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private FullTextType type;
 
     private SQLName name;
-
 
     public SQLName getName() {
         return name;

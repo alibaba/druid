@@ -118,7 +118,6 @@ public class HiveSelectTest_47 extends TestCase {
             ";";
 
     public void test_select() throws Exception {
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
@@ -128,9 +127,9 @@ public class HiveSelectTest_47 extends TestCase {
         stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-          System.out.println("fields : " + visitor.getColumns());
-          System.out.println("coditions : " + visitor.getConditions());
-          System.out.println("orderBy : " + visitor.getOrderByColumns());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
 //
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(2, visitor.getColumns().size());

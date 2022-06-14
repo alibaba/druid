@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
  * Created by wenshao on 20/05/2017.
  */
 public class OracleSupplementalIdKey extends OracleSQLObjectImpl implements SQLTableElement {
-
     private boolean all;
     private boolean primaryKey;
     private boolean unique;

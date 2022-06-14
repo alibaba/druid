@@ -16,45 +16,45 @@
 package com.alibaba.druid.sql.ast.expr;
 
 /**
- * 
  * 二元操作符
+ *
  * @author wenshao 2011-5-20 下午12:32:02
  */
 public enum SQLBinaryOperator {
-    Union("UNION", 0), 
+    Union("UNION", 0),
     COLLATE("COLLATE", 20),
     BitwiseXor("^", 50),
     BitwiseXorEQ("^=", 110),
 
-    Multiply("*", 60), 
+    Multiply("*", 60),
     Divide("/", 60),
     DIV("DIV", 60), // mysql integer division
-    Modulus("%", 60), 
+    Modulus("%", 60),
     Mod("MOD", 60),
-    
-    Add("+", 70), 
-    Subtract("-", 70), 
-    
-    SubGt("->", 20), 
-    SubGtGt("->>", 20), 
-    PoundGt("#>", 20), 
+
+    Add("+", 70),
+    Subtract("-", 70),
+
+    SubGt("->", 20),
+    SubGtGt("->>", 20),
+    PoundGt("#>", 20),
     PoundGtGt("#>>", 20),
     QuesQues("??", 20),
     QuesBar("?|", 20),
     QuesAmp("?&", 20),
 
-    LeftShift("<<", 80), 
-    RightShift(">>", 80), 
+    LeftShift("<<", 80),
+    RightShift(">>", 80),
 
-    BitwiseAnd("&", 90), 
+    BitwiseAnd("&", 90),
     BitwiseOr("|", 100),
-    
-    GreaterThan(">", 110), 
-    GreaterThanOrEqual(">=", 110), 
-    Is("IS", 110), 
-    LessThan("<", 110), 
-    LessThanOrEqual("<=", 110), 
-    LessThanOrEqualOrGreaterThan("<=>",110),
+
+    GreaterThan(">", 110),
+    GreaterThanOrEqual(">=", 110),
+    Is("IS", 110),
+    LessThan("<", 110),
+    LessThanOrEqual("<=", 110),
+    LessThanOrEqualOrGreaterThan("<=>", 110),
     LessThanOrGreater("<>", 110),
 
     IsDistinctFrom("IS DISTINCT FROM", 110),
@@ -79,50 +79,49 @@ public enum SQLBinaryOperator {
 
     RLike("RLIKE", 110),
     NotRLike("NOT RLIKE", 110),
-    
-    NotEqual("!=", 110), 
+
+    NotEqual("!=", 110),
     NotLessThan("!<", 110),
-    NotGreaterThan("!>", 110), 
-    IsNot("IS NOT", 110), 
-    Escape("ESCAPE", 110), 
+    NotGreaterThan("!>", 110),
+    IsNot("IS NOT", 110),
+    Escape("ESCAPE", 110),
     RegExp("REGEXP", 110),
-    NotRegExp("NOT REGEXP", 110), 
+    NotRegExp("NOT REGEXP", 110),
     Equality("=", 110),
-    
-    BitwiseNot("!", 130), 
-    Concat("||", 140), 
-    
-    BooleanAnd("AND", 140), 
-    BooleanXor("XOR", 150), 
-    BooleanOr("OR", 160), 
+
+    BitwiseNot("!", 130),
+    Concat("||", 140),
+
+    BooleanAnd("AND", 140),
+    BooleanXor("XOR", 150),
+    BooleanOr("OR", 160),
     Assignment(":=", 169),
 
     PG_And("&&", 140),
-    PG_ST_DISTANCE("<->", 20),
-    ;
+    PG_ST_DISTANCE("<->", 20);
 
     public static int getPriority(SQLBinaryOperator operator) {
         return 0;
     }
 
     public final String name;
-    public final String name_lcase;
-    public final int    priority;
+    public final String nameLCase;
+    public final int priority;
 
-    SQLBinaryOperator(String name, int priority){
+    SQLBinaryOperator(String name, int priority) {
         this.name = name;
-        this.name_lcase = name.toLowerCase();
+        this.nameLCase = name.toLowerCase();
         this.priority = priority;
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public int getPriority() {
         return this.priority;
     }
-    
+
     public boolean isRelational() {
         switch (this) {
             case Equality:
@@ -148,7 +147,7 @@ public enum SQLBinaryOperator {
                 return false;
         }
     }
-    
+
     public boolean isLogical() {
         return this == BooleanAnd || this == BooleanOr || this == BooleanXor;
     }

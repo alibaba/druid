@@ -47,7 +47,7 @@ public class PGSelectTest49 extends TestCase {
                 "SET gd_number = gd_number - gdnumber\n" +
                 "FROM sel\n" +
                 "WHERE gd_id = gdid;", SQLUtils.toPGString(stmt));
-        
+
         assertEquals("with sel as (\n" +
                 "\t\tselect unnest(ARRAY[4275]) as gdid, unnest(ARRAY[1]) as gdnumber\n" +
                 "\t)\n" +

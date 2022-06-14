@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class MySqlSelectTest_301_dla
         extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "WITH `contextual_log` AS (\n" +
                 "        SELECT\n" +
@@ -222,7 +221,6 @@ public class MySqlSelectTest_301_dla
                 "WHERE `operation_wrong_longest` IS NOT NULL\n" +
                 "\tAND `operation_wrong_longest` > 0", stmt.toString());
     }
-
 
 
 }

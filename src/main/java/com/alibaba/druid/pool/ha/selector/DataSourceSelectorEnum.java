@@ -29,7 +29,7 @@ public enum DataSourceSelectorEnum {
     RANDOM("random", RandomDataSourceSelector.class),
     STICKY_RANDOM("stickyRandom", StickyRandomDataSourceSelector.class);
 
-    private final static Log LOG = LogFactory.getLog(DataSourceSelectorEnum.class);
+    private static final Log LOG = LogFactory.getLog(DataSourceSelectorEnum.class);
     private String name;
     private Class<? extends DataSourceSelector> clazz;
 

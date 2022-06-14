@@ -34,7 +34,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class Demo1 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select * from user where uid = ? and uname = ?";
         List<Object> parameters = new ArrayList<Object>();
@@ -50,10 +49,10 @@ public class Demo1 extends TestCase {
         first.accept(variantVisitor);
 
         SQLVariantRefExpr firstVar = variantVisitor.getVariantList().get(0);
-        
+
         int varIndex = (Integer) firstVar.getAttribute("varIndex");
         Integer param = (Integer) parameters.get(varIndex);
-        
+
         String tableName;
         if (param.intValue() == 1) {
             tableName = "user_1";
@@ -63,14 +62,13 @@ public class Demo1 extends TestCase {
 
         MyOracleVisitor visitor = new MyOracleVisitor(tableName);
         first.accept(visitor);
-        
+
         String realSql = SQLUtils.toOracleString(first);
         System.out.println(realSql);
     }
 
     private static class GetVariantVisitor extends OracleASTVisitorAdapter {
-
-        private int                     varIndex    = 0;
+        private int varIndex = 0;
         private List<SQLVariantRefExpr> variantList = new ArrayList<SQLVariantRefExpr>();
 
         public boolean visit(SQLVariantRefExpr x) {
@@ -109,26 +107,25 @@ public class Demo1 extends TestCase {
     }
 
     private static class MyOracleVisitor extends OracleASTVisitorAdapter {
-
         private String tableName;
 
-        public MyOracleVisitor(String tableName){
+        public MyOracleVisitor(String tableName) {
             this.tableName = tableName;
         }
-        
+
         public boolean visit(OracleSelectTableReference x) {
             SQLExpr expr = x.getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 String tableName = identExpr.getName();
-                
+
                 if (tableName.equals("user")) {
                     x.setExpr(this.tableName);
                 }
             } else if (expr instanceof SQLPropertyExpr) {
                 SQLPropertyExpr proExpr = (SQLPropertyExpr) expr;
                 String tableName = proExpr.getName();
-                
+
                 if (tableName.equals("user")) {
                     proExpr.setName(this.tableName);
                 }
@@ -142,14 +139,14 @@ public class Demo1 extends TestCase {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 String tableName = identExpr.getName();
-                
+
                 if (tableName.equals("user")) {
                     x.setExpr(this.tableName);
                 }
             } else if (expr instanceof SQLPropertyExpr) {
                 SQLPropertyExpr proExpr = (SQLPropertyExpr) expr;
                 String tableName = proExpr.getName();
-                
+
                 if (tableName.equals("user")) {
                     proExpr.setName(this.tableName);
                 }

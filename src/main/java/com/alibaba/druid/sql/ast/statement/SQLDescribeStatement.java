@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SQLDescribeStatement extends SQLStatementImpl implements SQLReplaceable {
-
     protected SQLName object;
     protected SQLName column;
     protected boolean extended;

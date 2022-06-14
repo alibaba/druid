@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -26,10 +25,9 @@ import java.util.List;
 
 public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     protected SQLWithSubqueryClause with;
-    protected boolean upsert = false; // for phoenix
+    protected boolean upsert; // for phoenix
 
-    public SQLInsertStatement(){
-
+    public SQLInsertStatement() {
     }
 
     public void cloneTo(SQLInsertStatement x) {
@@ -84,12 +82,11 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     }
 
     public static class ValuesClause extends SQLObjectImpl implements SQLReplaceable {
-
-        private final     List   values;
+        private final List values;
         private transient String originalString;
-        private transient int    replaceCount;
+        private transient int replaceCount;
 
-        public ValuesClause(){
+        public ValuesClause() {
             this(new ArrayList<SQLExpr>());
         }
 
@@ -113,15 +110,14 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
             return false;
         }
 
-        public ValuesClause(List<SQLExpr> values){
+        public ValuesClause(List<SQLExpr> values) {
             this.values = values;
             for (int i = 0; i < values.size(); ++i) {
                 values.get(i).setParent(this);
             }
         }
 
-
-        public ValuesClause(List values, SQLObject parent){
+        public ValuesClause(List values, SQLObject parent) {
             this.values = values;
             for (int i = 0; i < values.size(); ++i) {
                 Object val = values.get(i);
@@ -184,7 +180,7 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     public DbType getDbType() {
         return dbType;
     }
-    
+
     public void setDbType(DbType dbType) {
         this.dbType = dbType;
     }
@@ -198,7 +194,6 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     public void setAfterSemi(boolean afterSemi) {
         this.afterSemi = afterSemi;
     }
-
 
     public SQLWithSubqueryClause getWith() {
         return with;

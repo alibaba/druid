@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class OracleAnalyticTest extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SELECT last_name, salary, STDDEV(salary) OVER (ORDER BY hire_date) \"StdDev\" "
                 + "FROM employees " + "WHERE department_id = 30;";

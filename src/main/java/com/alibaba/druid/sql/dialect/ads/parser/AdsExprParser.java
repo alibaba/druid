@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.ads.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.dialect.h2.parser.H2Lexer;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -28,12 +27,12 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Arrays;
 
 public class AdsExprParser extends SQLExprParser {
-    private final static String[] AGGREGATE_FUNCTIONS;
-    private final static long[]   AGGREGATE_FUNCTIONS_CODES;
+    private static final String[] AGGREGATE_FUNCTIONS;
+    private static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                "ROWNUMBER" };
+        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
+                "ROWNUMBER"};
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
@@ -43,17 +42,17 @@ public class AdsExprParser extends SQLExprParser {
         }
     }
 
-    public AdsExprParser(String sql){
+    public AdsExprParser(String sql) {
         this(new AdsLexer(sql));
         this.lexer.nextToken();
     }
 
-    public AdsExprParser(String sql, SQLParserFeature... features){
+    public AdsExprParser(String sql, SQLParserFeature... features) {
         this(new AdsLexer(sql, features));
         this.lexer.nextToken();
     }
 
-    public AdsExprParser(Lexer lexer){
+    public AdsExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;

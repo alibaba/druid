@@ -23,7 +23,6 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 public class MustParameterizedTest3 extends TestCase {
-
     private WallConfig config = new WallConfig();
 
     protected void setUp() throws Exception {

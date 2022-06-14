@@ -21,10 +21,9 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
-
 public class Instr implements Function {
-    public final static Instr instance = new Instr();
-    
+    public static final Instr instance = new Instr();
+
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().size() != 2) {
             return SQLEvalVisitor.EVAL_ERROR;

@@ -17,8 +17,7 @@ package com.alibaba.druid.proxy.jdbc;
 
 // compatible for druid 0.1.19
 public class TransactionInfo extends com.alibaba.druid.util.TransactionInfo {
-
-    public TransactionInfo(long id){
+    public TransactionInfo(long id) {
         super(id);
     }
 

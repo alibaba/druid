@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixASTVisitor;
  * Created by wenshao on 16/9/14.
  */
 public class PhoenixUpsertStatement extends PhoenixStatementImpl {
-
     @Override
     public void accept0(PhoenixASTVisitor visitor) {
-
     }
 }

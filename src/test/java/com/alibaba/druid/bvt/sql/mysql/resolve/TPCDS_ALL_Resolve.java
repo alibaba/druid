@@ -28,7 +28,7 @@ public class TPCDS_ALL_Resolve extends TestCase {
             System.out.println("-----------------------------------------------------");
             String sql = TPCDS.getQuery(q);
 
-           final List<SQLStatement> statements = SQLUtils.parseStatements(sql, DbType.mysql);
+            final List<SQLStatement> statements = SQLUtils.parseStatements(sql, DbType.mysql);
 
             for (SQLStatement stmt : statements) {
                 repository.resolve(stmt);

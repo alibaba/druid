@@ -28,7 +28,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateViewTest1 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE ALGORITHM=UNDEFINED DEFINER=root@localhost SQL SECURITY DEFINER VIEW view_audit_enroll AS " +
                 "SELECT a.enroll_id AS 'enrollId', case when ((SELECT audit FROM actvty_audit WHERE enroll_id = a.enroll_id AND rankjurisdiction = 1) > 0) then \"县站已审核\" else NULL end AS 'countyAudit', case when ((SELECT audit FROM actvty_audit WHERE enroll_id = a.enroll_id AND rankjurisdiction = 2) > 0) then \"市馆已审核\" else NULL end AS 'cityAudit', case when ((SELECT audit FROM actvty_audit WHERE enroll_id = a.enroll_id AND rankjurisdiction = 3) > 0) then \"省馆已审核\" else NULL end AS 'provinceAudit' FROM actvty_audit a GROUP BY a.enroll_id";

@@ -22,7 +22,6 @@ import java.sql.ResultSetMetaData;
  * @author kiki
  */
 public interface ResultSetMetaDataProxy extends ResultSetMetaData, WrapperProxy {
-
     ResultSetMetaData getResultSetMetaDataRaw();
 
     ResultSetProxy getResultSetProxy();

@@ -26,17 +26,16 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTriggerTest2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE OR REPLACE TRIGGER projects_idt\n" +
-                "          BEFORE INSERT ON projects\n" +
-                "          FOR EACH ROW\n" +
-                "        BEGIN\n" +
-                "           IF :new.id IS null THEN\n" +
-                "             SELECT projects_seq.nextval INTO :new.id FROM dual;\n" +
-                "           END IF;\n" +
-                "        END;";
+                "CREATE OR REPLACE TRIGGER projects_idt\n" +
+                        "          BEFORE INSERT ON projects\n" +
+                        "          FOR EACH ROW\n" +
+                        "        BEGIN\n" +
+                        "           IF :new.id IS null THEN\n" +
+                        "             SELECT projects_seq.nextval INTO :new.id FROM dual;\n" +
+                        "           END IF;\n" +
+                        "        END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -56,7 +55,7 @@ public class OracleCreateTriggerTest2 extends OracleTest {
                         "\t\tFROM dual;\n" +
                         "\tEND IF;\n" +
                         "END;",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

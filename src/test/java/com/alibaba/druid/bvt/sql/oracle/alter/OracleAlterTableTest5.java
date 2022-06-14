@@ -26,10 +26,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class OracleAlterTableTest5 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE ht_task_flow_biz_product_2 modify ( ipr_biz_type_id DEFAULT 0 )";
+                "ALTER TABLE ht_task_flow_biz_product_2 modify ( ipr_biz_type_id DEFAULT 0 )";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -54,7 +53,7 @@ public class OracleAlterTableTest5 extends OracleTest {
         Assert.assertEquals(1, visitor.getColumns().size());
 
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ht_task_flow_biz_product_2",
-                                                                             "ipr_biz_type_id")));
+                "ipr_biz_type_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

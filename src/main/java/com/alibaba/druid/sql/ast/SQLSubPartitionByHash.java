@@ -18,11 +18,10 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSubPartitionByHash extends SQLSubPartitionBy {
-
     protected SQLExpr expr;
 
     // for aliyun ads
-    private boolean   key;
+    private boolean key;
 
     public SQLExpr getExpr() {
         return expr;

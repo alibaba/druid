@@ -10,7 +10,6 @@ import org.springframework.core.env.Environment;
 /*@Configuration
 @Profile("issue-1796")*/
 public class Issue1796Configurer {
-
     @Bean
     public DataSource dataSource(Environment environment) {
         return DruidDataSourceBuilder

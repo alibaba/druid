@@ -17,7 +17,6 @@ public class SQLMapDataType extends SQLObjectImpl implements SQLDataType {
     private SQLDataType valueType;
 
     public SQLMapDataType() {
-
     }
 
     public SQLMapDataType(SQLDataType keyType, SQLDataType valueType) {

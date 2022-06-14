@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class HiveCreateDatabase_0 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE DATABASE merge_data;"; //

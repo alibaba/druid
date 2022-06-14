@@ -31,7 +31,7 @@ public class OnFatalErrorMaxActiveTest_1 extends PoolTestCase {
         field.setAccessible(true);
 
         SQLException faltalError = null;
-        for ( int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             faltalError = new SQLException();
             Connection conn = dataSource.getConnection();
 

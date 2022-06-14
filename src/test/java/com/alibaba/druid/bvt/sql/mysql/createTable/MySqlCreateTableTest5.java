@@ -26,14 +26,13 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlCreateTableTest5 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `test` (" + //
-                     "  `id` bigint(20) NOT NULL AUTO_INCREMENT," + //
-                     "  `dspcode` char(200) DEFAULT NULL," + //
-                     "  PRIMARY KEY (`id`)," + //
-                     "  KEY `index_name` (`dspcode`)" + //
-                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+                "  `id` bigint(20) NOT NULL AUTO_INCREMENT," + //
+                "  `dspcode` char(200) DEFAULT NULL," + //
+                "  PRIMARY KEY (`id`)," + //
+                "  KEY `index_name` (`dspcode`)" + //
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -44,7 +43,7 @@ public class MySqlCreateTableTest5 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         Assert.assertEquals("utf8", stmt.getOption("CHARSET").toString());
 
 //        System.out.println("Tables : " + visitor.getTables());

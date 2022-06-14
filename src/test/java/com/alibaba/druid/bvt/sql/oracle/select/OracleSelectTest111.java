@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import java.util.List;
 
 public class OracleSelectTest111 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "select EFFECTIVE_START_DATE, EFFECTIVE_END_DATE, ASSIGNMENT_NUMBER, CONTRACT, substr(EMPLOYMENT_CATEGORY, 1, 200) EMPLOYMENT_CATEGORY, substr(GRADE, 1, 200) GRADE, INTERNAL_ADDRESS, substr(JOB, 1, 200) JOB, LAST_UPDATED_BY, LAST_UPDATE_DATE, LOCATION, MANAGER, NORMAL_END_TIME, NORMAL_HOURS, NORMAL_START_TIME, substr(ORGANIZATION, 1, 200) ORGANIZATION, PAYROLL, substr(PEOPLE_GROUP, 1, 200) PEOPLE_GROUP, substr(POSITION, 1, 200) POSITION, PRIMARY, PROBATION_END_DATE, PROBATION_PERIOD, substr(PROBATION_UNITS, 1, 200) PROBATION_UNITS, substr(REASON, 1, 200) REASON, substr(RECRUITER, 1, 200) RECRUITER, RECRUITMENT_ACTIVITY, SALARY_BASIS, SPECIAL_CEILING_POINT, substr(STATUS, 1, 200) STATUS, substr(STATUTORY_INFORMATION, 1, 200) STATUTORY_INFORMATION, substr(SUPERVISOR, 1, 200) SUPERVISOR, TITLE, VACANCY, substr(WORKING_HOURS_FREQUENCY, 1, 200) WORKING_HOURS_FREQUENCY from PER_ALL_ASSIGNMENTS_D where ASSIGNMENT_ID = 26587 order by effective_start_date desc";
 
@@ -44,23 +43,23 @@ public class OracleSelectTest111 extends OracleTest {
             String text = SQLUtils.toOracleString(stmt);
 
             assertEquals("SELECT EFFECTIVE_START_DATE, EFFECTIVE_END_DATE, ASSIGNMENT_NUMBER, CONTRACT\n"
-                         + "\t, substr(EMPLOYMENT_CATEGORY, 1, 200) AS EMPLOYMENT_CATEGORY\n"
-                         + "\t, substr(GRADE, 1, 200) AS GRADE\n" + "\t, INTERNAL_ADDRESS, substr(JOB, 1, 200) AS JOB\n"
-                         + "\t, LAST_UPDATED_BY, LAST_UPDATE_DATE, LOCATION, MANAGER, NORMAL_END_TIME\n"
-                         + "\t, NORMAL_HOURS, NORMAL_START_TIME\n"
-                         + "\t, substr(ORGANIZATION, 1, 200) AS ORGANIZATION\n"
-                         + "\t, PAYROLL, substr(PEOPLE_GROUP, 1, 200) AS PEOPLE_GROUP\n"
-                         + "\t, substr(POSITION, 1, 200) AS POSITION\n"
-                         + "\t, PRIMARY, PROBATION_END_DATE, PROBATION_PERIOD\n"
-                         + "\t, substr(PROBATION_UNITS, 1, 200) AS PROBATION_UNITS\n"
-                         + "\t, substr(REASON, 1, 200) AS REASON\n" + "\t, substr(RECRUITER, 1, 200) AS RECRUITER\n"
-                         + "\t, RECRUITMENT_ACTIVITY, SALARY_BASIS, SPECIAL_CEILING_POINT\n"
-                         + "\t, substr(STATUS, 1, 200) AS STATUS\n"
-                         + "\t, substr(STATUTORY_INFORMATION, 1, 200) AS STATUTORY_INFORMATION\n"
-                         + "\t, substr(SUPERVISOR, 1, 200) AS SUPERVISOR\n" + "\t, TITLE, VACANCY\n"
-                         + "\t, substr(WORKING_HOURS_FREQUENCY, 1, 200) AS WORKING_HOURS_FREQUENCY\n"
-                         + "FROM PER_ALL_ASSIGNMENTS_D\n" + "WHERE ASSIGNMENT_ID = 26587\n"
-                         + "ORDER BY effective_start_date DESC", text);
+                    + "\t, substr(EMPLOYMENT_CATEGORY, 1, 200) AS EMPLOYMENT_CATEGORY\n"
+                    + "\t, substr(GRADE, 1, 200) AS GRADE\n" + "\t, INTERNAL_ADDRESS, substr(JOB, 1, 200) AS JOB\n"
+                    + "\t, LAST_UPDATED_BY, LAST_UPDATE_DATE, LOCATION, MANAGER, NORMAL_END_TIME\n"
+                    + "\t, NORMAL_HOURS, NORMAL_START_TIME\n"
+                    + "\t, substr(ORGANIZATION, 1, 200) AS ORGANIZATION\n"
+                    + "\t, PAYROLL, substr(PEOPLE_GROUP, 1, 200) AS PEOPLE_GROUP\n"
+                    + "\t, substr(POSITION, 1, 200) AS POSITION\n"
+                    + "\t, PRIMARY, PROBATION_END_DATE, PROBATION_PERIOD\n"
+                    + "\t, substr(PROBATION_UNITS, 1, 200) AS PROBATION_UNITS\n"
+                    + "\t, substr(REASON, 1, 200) AS REASON\n" + "\t, substr(RECRUITER, 1, 200) AS RECRUITER\n"
+                    + "\t, RECRUITMENT_ACTIVITY, SALARY_BASIS, SPECIAL_CEILING_POINT\n"
+                    + "\t, substr(STATUS, 1, 200) AS STATUS\n"
+                    + "\t, substr(STATUTORY_INFORMATION, 1, 200) AS STATUTORY_INFORMATION\n"
+                    + "\t, substr(SUPERVISOR, 1, 200) AS SUPERVISOR\n" + "\t, TITLE, VACANCY\n"
+                    + "\t, substr(WORKING_HOURS_FREQUENCY, 1, 200) AS WORKING_HOURS_FREQUENCY\n"
+                    + "FROM PER_ALL_ASSIGNMENTS_D\n" + "WHERE ASSIGNMENT_ID = 26587\n"
+                    + "ORDER BY effective_start_date DESC", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());
@@ -76,10 +75,11 @@ public class OracleSelectTest111 extends OracleTest {
         assertEquals(1, visitor.getOrderByColumns().size());
 
     }
+
     public void test_1() throws Exception {
         String sql = "SELECT instance_id\n" + "FROM JTF_FM_SERVICE_MONITOR\n" + "WHERE server_id = 5000\n"
-                     + "      AND health = 'A'\n" + "      AND primary = 'Y'\n"
-                     + "      AND last_update_date >= (sysdate - (1 / 288))";
+                + "      AND health = 'A'\n" + "      AND primary = 'Y'\n"
+                + "      AND last_update_date >= (sysdate - (1 / 288))";
 
         OracleStatementParser parser = new OracleStatementParser(sql, SQLParserFeature.KeepComments);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -95,11 +95,11 @@ public class OracleSelectTest111 extends OracleTest {
             String text = SQLUtils.toOracleString(stmt);
 
             assertEquals("SELECT instance_id\n"
-                         + "FROM JTF_FM_SERVICE_MONITOR\n"
-                         + "WHERE server_id = 5000\n"
-                         + "\tAND health = 'A'\n"
-                         + "\tAND primary = 'Y'\n"
-                         + "\tAND last_update_date >= SYSDATE - 1 / 288", text);
+                    + "FROM JTF_FM_SERVICE_MONITOR\n"
+                    + "WHERE server_id = 5000\n"
+                    + "\tAND health = 'A'\n"
+                    + "\tAND primary = 'Y'\n"
+                    + "\tAND last_update_date >= SYSDATE - 1 / 288", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());

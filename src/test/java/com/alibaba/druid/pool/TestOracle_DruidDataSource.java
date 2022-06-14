@@ -27,7 +27,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestOracle_DruidDataSource extends TestCase {
-
     private String jdbcUrl;
     private String user;
     private String password;
@@ -56,7 +55,6 @@ public class TestOracle_DruidDataSource extends TestCase {
 
         for (int i = 0; i < THREAD_COUNT; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         startLatch.await();

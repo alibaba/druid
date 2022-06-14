@@ -70,12 +70,10 @@ public class MockBlob implements Blob {
 
     @Override
     public void truncate(long len) throws SQLException {
-
     }
 
     @Override
     public void free() throws SQLException {
-
     }
 
     @Override

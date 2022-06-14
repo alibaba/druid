@@ -25,13 +25,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.List;
 
 public class MySqlHintStatement extends MySqlStatementImpl {
-
     private List<SQLCommentHint> hints;
 
     private List<SQLStatement> hintStatements;
 
     public MySqlHintStatement() {
-
     }
 
     @Override
@@ -87,7 +85,7 @@ public class MySqlHintStatement extends MySqlStatementImpl {
                 && c4 >= '0' && c4 <= '9'
                 && c5 >= '0' && c5 <= '9'
                 && c6 == ' ') {
-            return    (c1 - '0') * 10000
+            return (c1 - '0') * 10000
                     + (c2 - '0') * 1000
                     + (c3 - '0') * 100
                     + (c4 - '0') * 10

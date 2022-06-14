@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlSchemaStatVisitorTest2 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select id, name FROM users";
 

@@ -51,9 +51,6 @@ public class MySqlParameterizedOutputVisitorTest_57 extends TestCase {
 
         System.out.println(psql);
 
-
-
-
         assertEquals("SELECT `ktv_resource`.`VERSION`\n" +
                 "FROM ktv_resource `ktv_resource`\n" +
                 "WHERE `ktv_resource`.`BUYER_ID` = ?\n" +

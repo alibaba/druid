@@ -16,13 +16,13 @@ public class PropertyTest_useGlobalDataSourceStat extends TestCase {
         dataSource = new DruidDataSource();
         Assert.assertTrue(dataSource.isUseGlobalDataSourceStat());
     }
-    
+
     public void test_false() {
         System.setProperty("druid.useGlobalDataSourceStat", "false");
         dataSource = new DruidDataSource();
         Assert.assertFalse(dataSource.isUseGlobalDataSourceStat());
     }
-    
+
     protected void tearDown() throws Exception {
         System.clearProperty("druid.useGlobalDataSourceStat");
         JdbcUtils.close(dataSource);

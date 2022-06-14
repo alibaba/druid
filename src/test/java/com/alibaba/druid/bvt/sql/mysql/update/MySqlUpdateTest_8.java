@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlUpdateTest_8 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "update haskell_function set `arity` = arity-'1' where id = 1;";
 
@@ -59,16 +58,16 @@ public class MySqlUpdateTest_8 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("UPDATE haskell_function"
-                    + "\nSET `arity` = arity - '1'"
-                    + "\nWHERE id = 1;", //
-                                output);
+                            + "\nSET `arity` = arity - '1'"
+                            + "\nWHERE id = 1;", //
+                    output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("update haskell_function"
-                    + "\nset `arity` = arity - '1'"
-                    + "\nwhere id = 1;", //
-                                output);
+                            + "\nset `arity` = arity - '1'"
+                            + "\nwhere id = 1;", //
+                    output);
         }
     }
 }

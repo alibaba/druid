@@ -15,38 +15,32 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
+import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.stat.JdbcSqlStat;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.filter.FilterChainImpl;
-import com.alibaba.druid.stat.JdbcSqlStat;
-
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public class StatementProxyImpl extends WrapperProxyImpl implements StatementProxy {
+    private final ConnectionProxy connection;
+    protected Statement statement;
+    protected String lastExecuteSql;
+    protected long lastExecuteStartNano;
+    protected long lastExecuteTimeNano;
+    protected JdbcSqlStat sqlStat;
+    protected boolean firstResultSet;
+    protected ArrayList<String> batchSqlList;
+    protected StatementExecuteType lastExecuteType;
+    protected Integer updateCount;
+    private FilterChainImpl filterChain;
 
-    private final ConnectionProxy      connection;
-    protected     Statement            statement;
-    protected     String               lastExecuteSql;
-    protected     long                 lastExecuteStartNano;
-    protected     long                 lastExecuteTimeNano;
-    protected     JdbcSqlStat          sqlStat;
-    protected     boolean              firstResultSet;
-    protected     ArrayList<String>    batchSqlList;
-    protected     StatementExecuteType lastExecuteType;
-    protected     Integer              updateCount;
-    private       FilterChainImpl      filterChain;
-
-    public StatementProxyImpl(ConnectionProxy connection, Statement statement, long id){
+    public StatementProxyImpl(ConnectionProxy connection, Statement statement, long id) {
         super(statement, id);
         this.connection = connection;
         this.statement = statement;

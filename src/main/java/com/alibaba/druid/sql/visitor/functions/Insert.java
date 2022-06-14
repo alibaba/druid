@@ -22,8 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Insert implements Function {
-
-    public final static Insert instance = new Insert();
+    public static final Insert instance = new Insert();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().size() != 4) {
@@ -61,23 +60,23 @@ public class Insert implements Function {
         int pos = ((Number) param1Value).intValue();
         int len = ((Number) param2Value).intValue();
         String newstr = (String) param3Value;
-        
+
         if (pos <= 0) {
             return str;
         }
-        
+
         if (pos == 1) {
             if (len > str.length()) {
                 return newstr;
             }
             return newstr + str.substring(len);
         }
-        
+
         String first = str.substring(0, pos - 1);
         if (pos + len - 1 > str.length()) {
             return first + newstr;
         }
-        
+
         return first + newstr + str.substring(pos + len - 1);
     }
 }

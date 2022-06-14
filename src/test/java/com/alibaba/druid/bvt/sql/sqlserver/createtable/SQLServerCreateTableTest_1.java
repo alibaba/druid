@@ -29,20 +29,19 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class SQLServerCreateTableTest_1 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE [projects] ("//
-                     + "[id] int NOT NULL IDENTITY(1, 1) PRIMARY KEY, "//
-                     + "[name] NVARCHAR(256), [description] NVARCHAR(2000), "//
-                     + "[enabled] bit DEFAULT 1 NOT NULL, "//
-                     + "[scope] NVARCHAR(3), "//
-                     + "[qualifier] NVARCHAR(3), "//
-                     + "[kee] NVARCHAR(400), "//
-                     + "[root_id] int, " //
-                     + "[profile_id] int, " //
-                     + "[language] NVARCHAR(5), "//
-                     + "[copy_resource_id] int, "//
-                     + "[long_name] NVARCHAR(256)) ";
+                + "[id] int NOT NULL IDENTITY(1, 1) PRIMARY KEY, "//
+                + "[name] NVARCHAR(256), [description] NVARCHAR(2000), "//
+                + "[enabled] bit DEFAULT 1 NOT NULL, "//
+                + "[scope] NVARCHAR(3), "//
+                + "[qualifier] NVARCHAR(3), "//
+                + "[kee] NVARCHAR(400), "//
+                + "[root_id] int, " //
+                + "[profile_id] int, " //
+                + "[language] NVARCHAR(5), "//
+                + "[copy_resource_id] int, "//
+                + "[long_name] NVARCHAR(256)) ";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -16,22 +16,18 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;
 import java.util.List;
 
 public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
-
     private float value;
 
-    public SQLRealExpr(){
-
+    public SQLRealExpr() {
     }
 
-    public SQLRealExpr(float value){
+    public SQLRealExpr(float value) {
         super();
         this.value = value;
     }
@@ -75,8 +71,12 @@ public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExp
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SQLRealExpr that = (SQLRealExpr) o;
 

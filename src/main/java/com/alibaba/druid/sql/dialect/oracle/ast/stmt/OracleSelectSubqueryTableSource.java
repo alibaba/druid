@@ -22,22 +22,20 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource implements OracleSelectTableSource {
-
     protected OracleSelectPivotBase pivot;
 
-
-    public OracleSelectSubqueryTableSource(){
+    public OracleSelectSubqueryTableSource() {
     }
 
-    public OracleSelectSubqueryTableSource(String alias){
+    public OracleSelectSubqueryTableSource(String alias) {
         super(alias);
     }
 
-    public OracleSelectSubqueryTableSource(SQLSelect select, String alias){
+    public OracleSelectSubqueryTableSource(SQLSelect select, String alias) {
         super(select, alias);
     }
 
-    public OracleSelectSubqueryTableSource(SQLSelect select){
+    public OracleSelectSubqueryTableSource(SQLSelect select) {
         super(select);
     }
 
@@ -64,7 +62,7 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
         visitor.endVisit(this);
     }
 
-    public String toString () {
+    public String toString() {
         return SQLUtils.toOracleString(this);
     }
 

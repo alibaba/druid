@@ -23,8 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Left implements Function {
-
-    public final static Left instance = new Left();
+    public static final Left instance = new Left();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().size() != 2) {
@@ -44,7 +43,7 @@ public class Left implements Function {
 
         String strValue = param0Value.toString();
         int intValue = SQLEvalVisitorUtils.castToInteger(param1Value);
-        
+
         if (intValue > strValue.length()) {
             return SQLEvalVisitor.EVAL_ERROR;
         }

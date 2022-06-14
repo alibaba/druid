@@ -27,7 +27,7 @@ import java.util.Map;
  * Created by wenshao on 16/9/13.
  */
 public class PhoenixLexer extends Lexer {
-    public final static Keywords DEFAULT_PHOENIX_KEYWORDS;
+    public static final Keywords DEFAULT_PHOENIX_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -50,7 +50,7 @@ public class PhoenixLexer extends Lexer {
         DEFAULT_PHOENIX_KEYWORDS = new Keywords(map);
     }
 
-    public PhoenixLexer(String input, SQLParserFeature... features){
+    public PhoenixLexer(String input, SQLParserFeature... features) {
         super(input);
         super.keywords = DEFAULT_PHOENIX_KEYWORDS;
         for (SQLParserFeature feature : features) {

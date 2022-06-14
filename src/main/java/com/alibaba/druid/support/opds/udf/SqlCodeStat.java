@@ -1,19 +1,19 @@
 package com.alibaba.druid.support.opds.udf;
 
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.aliyun.odps.udf.UDF;
 
 import java.util.List;
@@ -31,9 +31,12 @@ public class SqlCodeStat extends UDF {
         DbType dbType = dbTypeName == null ? null : DbType.valueOf(dbTypeName);
 
         try {
-            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.odps
-                    , SQLParserFeature.EnableMultiUnion
-                    , SQLParserFeature.EnableSQLBinaryOpExprGroup);
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(
+                    sql,
+                    DbType.odps,
+                    SQLParserFeature.EnableMultiUnion,
+                    SQLParserFeature.EnableSQLBinaryOpExprGroup
+            );
 
             CodeStatVisitor v = new CodeStatVisitor();
             for (SQLStatement stmt : stmtList) {
@@ -48,7 +51,6 @@ public class SqlCodeStat extends UDF {
 
             return null;
         }
-
     }
 
     public static class SqlStat {
@@ -190,14 +192,14 @@ public class SqlCodeStat extends UDF {
                             stat.insertInto++;
                         }
                     }
-                } else  if (x instanceof SQLDropStatement) {
+                } else if (x instanceof SQLDropStatement) {
                     stat.drop++;
                     if (x instanceof SQLDropTableStatement) {
                         stat.dropTable++;
-                    } else  if (x instanceof SQLDropViewStatement) {
+                    } else if (x instanceof SQLDropViewStatement) {
                         stat.dropView++;
                     }
-                } else  if (x instanceof SQLCreateStatement) {
+                } else if (x instanceof SQLCreateStatement) {
                     stat.create++;
                     if (x instanceof SQLCreateTableStatement) {
                         stat.createTable++;
@@ -343,9 +345,11 @@ public class SqlCodeStat extends UDF {
         }
 
         public String toString() {
-            return JSON.toJSONString(stat
-                    , SerializerFeature.PrettyFormat
-                    , SerializerFeature.NotWriteDefaultValue);
+            return JSON.toJSONString(
+                    stat,
+                    JSONWriter.Feature.PrettyFormat,
+                    JSONWriter.Feature.NotWriteDefaultValue
+            );
         }
 
         public java.util.Map toMap() {

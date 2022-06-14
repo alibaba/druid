@@ -24,15 +24,14 @@ import com.alibaba.druid.stat.TableStat;
 import org.junit.Assert;
 
 public class MySqlCreateTableTest47 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE issuestatus ("//
-                     + "ID VARCHAR(60) NOT NULL, " //
-                     + "SEQUENCE DECIMAL(18,0), " //
-                     + "pname VARCHAR(60), " //
-                     + "DESCRIPTION TEXT, " //
-                     + "ICONURL VARCHAR(255), " //
-                     + "CONSTRAINT PK_issuestatus PRIMARY KEY (ID))"; //
+                + "ID VARCHAR(60) NOT NULL, " //
+                + "SEQUENCE DECIMAL(18,0), " //
+                + "pname VARCHAR(60), " //
+                + "DESCRIPTION TEXT, " //
+                + "ICONURL VARCHAR(255), " //
+                + "CONSTRAINT PK_issuestatus PRIMARY KEY (ID))"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -53,13 +52,13 @@ public class MySqlCreateTableTest47 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE issuestatus ("//
-                            + "\n\tID VARCHAR(60) NOT NULL,"//
-                            + "\n\tSEQUENCE DECIMAL(18, 0),"//
-                            + "\n\tpname VARCHAR(60),"//
-                            + "\n\tDESCRIPTION TEXT,"//
-                            + "\n\tICONURL VARCHAR(255),"//
-                            + "\n\tPRIMARY KEY (ID)"//
-                            + "\n)", output);
+                + "\n\tID VARCHAR(60) NOT NULL,"//
+                + "\n\tSEQUENCE DECIMAL(18, 0),"//
+                + "\n\tpname VARCHAR(60),"//
+                + "\n\tDESCRIPTION TEXT,"//
+                + "\n\tICONURL VARCHAR(255),"//
+                + "\n\tPRIMARY KEY (ID)"//
+                + "\n)", output);
 
     }
 }

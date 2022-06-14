@@ -16,13 +16,11 @@ import java.util.logging.Logger;
 
 /**
  * 这个场景测试exceptionSorter_extend
- * 
+ *
  * @author xiaoying [caohongxi001@gmail.com]
  */
 public class DruidDataSourceTest_exceptionSorter_extend extends TestCase {
-
-    public static class SubDriver extends com.mysql.jdbc.Driver{
-
+    public static class SubDriver extends com.mysql.jdbc.Driver {
         /**
          * Construct a new driver and register it with DriverManager
          *
@@ -31,8 +29,8 @@ public class DruidDataSourceTest_exceptionSorter_extend extends TestCase {
         public SubDriver() throws SQLException {
         }
     }
-    public static class SubDriver1 implements java.sql.Driver{
 
+    public static class SubDriver1 implements java.sql.Driver {
         /**
          * Construct a new driver and register it with DriverManager
          *
@@ -79,6 +77,7 @@ public class DruidDataSourceTest_exceptionSorter_extend extends TestCase {
 
     /**
      * 测试继承自com.mysql.jdbc.Driver的子类可以设置sorter
+     *
      * @throws Exception
      */
     public void testExceptionSorter() throws Exception {
@@ -95,6 +94,7 @@ public class DruidDataSourceTest_exceptionSorter_extend extends TestCase {
 
     /**
      * 测试实现自java.sql.Driver的类未设置sorter
+     *
      * @throws Exception
      */
     public void testExceptionSorterNull() throws Exception {

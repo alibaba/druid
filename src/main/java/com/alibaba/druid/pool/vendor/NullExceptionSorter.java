@@ -15,16 +15,15 @@
  */
 package com.alibaba.druid.pool.vendor;
 
+import com.alibaba.druid.pool.ExceptionSorter;
+
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.alibaba.druid.pool.ExceptionSorter;
-
 public class NullExceptionSorter implements ExceptionSorter {
+    private static final NullExceptionSorter instance = new NullExceptionSorter();
 
-    private final static NullExceptionSorter instance = new NullExceptionSorter();
-
-    public final static NullExceptionSorter getInstance() {
+    public static final NullExceptionSorter getInstance() {
         return instance;
     }
 
@@ -34,6 +33,5 @@ public class NullExceptionSorter implements ExceptionSorter {
     }
 
     public void configFromProperties(Properties properties) {
-        
     }
 }

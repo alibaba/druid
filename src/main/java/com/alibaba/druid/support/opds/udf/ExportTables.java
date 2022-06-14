@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ExportTables extends UDF {
-
     public String evaluate(String sql) throws Throwable {
         return evaluate(sql, null, false);
     }

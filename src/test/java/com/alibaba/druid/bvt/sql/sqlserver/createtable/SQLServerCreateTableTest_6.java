@@ -31,24 +31,23 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerCreateTableTest_6 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE dbo.AO_E8B6CC_ISSUE_MAPPING_V2 (" //
-                     + "    AUTHOR VARCHAR(255),"//
-                     + "    BRANCH VARCHAR(255),"//
-                     + "    \"DATE\" DATETIME,"//
-                     + "    FILES_DATA NTEXT,"//
-                     + "    ID INTEGER IDENTITY(1,1) NOT NULL,"//
-                     + "    ISSUE_ID VARCHAR(255),"//
-                     + "    MESSAGE NTEXT,"//
-                     + "    NODE VARCHAR(255),"//
-                     + "    PARENTS_DATA VARCHAR(255),"//
-                     + "    RAW_AUTHOR VARCHAR(255),"//
-                     + "    RAW_NODE VARCHAR(255),"//
-                     + "    REPOSITORY_ID INTEGER CONSTRAINT df_AO_E8B6CC_ISSUE_MAPPING_V2_REPOSITORY_ID DEFAULT 0,"//
-                     + "    VERSION INTEGER,"//
-                     + "CONSTRAINT pk_AO_E8B6CC_ISSUE_MAPPING_V2_ID PRIMARY KEY(ID)"//
-                     + ")";
+                + "    AUTHOR VARCHAR(255),"//
+                + "    BRANCH VARCHAR(255),"//
+                + "    \"DATE\" DATETIME,"//
+                + "    FILES_DATA NTEXT,"//
+                + "    ID INTEGER IDENTITY(1,1) NOT NULL,"//
+                + "    ISSUE_ID VARCHAR(255),"//
+                + "    MESSAGE NTEXT,"//
+                + "    NODE VARCHAR(255),"//
+                + "    PARENTS_DATA VARCHAR(255),"//
+                + "    RAW_AUTHOR VARCHAR(255),"//
+                + "    RAW_NODE VARCHAR(255),"//
+                + "    REPOSITORY_ID INTEGER CONSTRAINT df_AO_E8B6CC_ISSUE_MAPPING_V2_REPOSITORY_ID DEFAULT 0,"//
+                + "    VERSION INTEGER,"//
+                + "CONSTRAINT pk_AO_E8B6CC_ISSUE_MAPPING_V2_ID PRIMARY KEY(ID)"//
+                + ")";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -58,21 +57,21 @@ public class SQLServerCreateTableTest_6 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("CREATE TABLE dbo.AO_E8B6CC_ISSUE_MAPPING_V2 (" //
-                            + "\n\tAUTHOR VARCHAR(255),"//
-                            + "\n\tBRANCH VARCHAR(255),"//
-                            + "\n\t\"DATE\" DATETIME,"//
-                            + "\n\tFILES_DATA NTEXT,"//
-                            + "\n\tID INTEGER DEFAULT NULL IDENTITY (1, 1),"//
-                            + "\n\tISSUE_ID VARCHAR(255),"//
-                            + "\n\tMESSAGE NTEXT,"//
-                            + "\n\tNODE VARCHAR(255),"//
-                            + "\n\tPARENTS_DATA VARCHAR(255),"//
-                            + "\n\tRAW_AUTHOR VARCHAR(255),"//
-                            + "\n\tRAW_NODE VARCHAR(255),"//
-                            + "\n\tREPOSITORY_ID INTEGER DEFAULT 0,"//
-                            + "\n\tVERSION INTEGER,"//
-                            + "\n\tCONSTRAINT pk_AO_E8B6CC_ISSUE_MAPPING_V2_ID PRIMARY KEY (ID)"//
-                            + "\n)", output);
+                + "\n\tAUTHOR VARCHAR(255),"//
+                + "\n\tBRANCH VARCHAR(255),"//
+                + "\n\t\"DATE\" DATETIME,"//
+                + "\n\tFILES_DATA NTEXT,"//
+                + "\n\tID INTEGER DEFAULT NULL IDENTITY (1, 1),"//
+                + "\n\tISSUE_ID VARCHAR(255),"//
+                + "\n\tMESSAGE NTEXT,"//
+                + "\n\tNODE VARCHAR(255),"//
+                + "\n\tPARENTS_DATA VARCHAR(255),"//
+                + "\n\tRAW_AUTHOR VARCHAR(255),"//
+                + "\n\tRAW_NODE VARCHAR(255),"//
+                + "\n\tREPOSITORY_ID INTEGER DEFAULT 0,"//
+                + "\n\tVERSION INTEGER,"//
+                + "\n\tCONSTRAINT pk_AO_E8B6CC_ISSUE_MAPPING_V2_ID PRIMARY KEY (ID)"//
+                + "\n)", output);
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

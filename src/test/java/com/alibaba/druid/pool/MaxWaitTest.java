@@ -22,7 +22,6 @@ import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
 
 public class MaxWaitTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -41,7 +40,6 @@ public class MaxWaitTest extends TestCase {
         final CountDownLatch latch = new CountDownLatch(10);
         for (int i = 0; i < 20; ++i) {
             Thread thread = new Thread() {
-
                 public void run() {
                     try {
                         for (int i = 0; i < 10; ++i) {

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest31 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "select * from dual where name ilike '%mi%'";
 
@@ -36,7 +35,7 @@ public class PGSelectTest31 extends PGTest {
         Assert.assertEquals("SELECT *\n" +
                 "FROM dual\n" +
                 "WHERE name ILIKE '%mi%'", SQLUtils.toPGString(stmt));
-        
+
         Assert.assertEquals("select *\n" +
                 "from dual\n" +
                 "where name ilike '%mi%'", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

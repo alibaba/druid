@@ -29,7 +29,6 @@ import java.util.List;
  * See https://dev.mysql.com/doc/refman/5.7/en/explain.html for test cases.
  */
 public class MySqlExplainTest extends MysqlTest {
-
     public void testExplainTable() throws Exception {
         String sql = " EXPLAIN City";
         SQLStatement statement = testParseFormat(sql);

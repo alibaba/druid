@@ -25,17 +25,16 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class OracleCreateIndexTest12 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "CREATE BITMAP INDEX product_bm_ix \n" +
-                "   ON hash_products(list_price)\n" +
-                "   TABLESPACE tbs_1\n" +
-                "   LOCAL(PARTITION ix_p1 TABLESPACE tbs_02,\n" +
-                "         PARTITION ix_p2,\n" +
-                "         PARTITION ix_p3 TABLESPACE tbs_03,\n" +
-                "         PARTITION ix_p4,\n" +
-                "         PARTITION ix_p5 TABLESPACE tbs_04 );\n";
+                "CREATE BITMAP INDEX product_bm_ix \n" +
+                        "   ON hash_products(list_price)\n" +
+                        "   TABLESPACE tbs_1\n" +
+                        "   LOCAL(PARTITION ix_p1 TABLESPACE tbs_02,\n" +
+                        "         PARTITION ix_p2,\n" +
+                        "         PARTITION ix_p3 TABLESPACE tbs_03,\n" +
+                        "         PARTITION ix_p4,\n" +
+                        "         PARTITION ix_p5 TABLESPACE tbs_04 );\n";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

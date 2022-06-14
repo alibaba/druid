@@ -28,7 +28,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterAfterResetTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -45,7 +44,6 @@ public class StatFilterAfterResetTest extends TestCase {
     }
 
     public void test_stat() throws Exception {
-
         final String sql = "SELECT 1";
         Assert.assertTrue(dataSource.isInited());
 

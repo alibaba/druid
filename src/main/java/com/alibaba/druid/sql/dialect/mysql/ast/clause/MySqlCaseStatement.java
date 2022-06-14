@@ -27,77 +27,73 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author zz [455910092@qq.com]
  */
-public class MySqlCaseStatement extends MySqlStatementImpl{
+public class MySqlCaseStatement extends MySqlStatementImpl {
+    //case expr
+    private SQLExpr condition;
+    //when statement list
+    private List<MySqlWhenStatement> whenList = new ArrayList<MySqlWhenStatement>();
+    //else statement
+    private SQLIfStatement.Else elseItem;
 
-	//case expr
-	private SQLExpr            		  condition;
-	//when statement list
-	private List<MySqlWhenStatement> whenList = new ArrayList<MySqlWhenStatement>();
-	//else statement
-	private SQLIfStatement.Else        elseItem;
-	
-	public SQLExpr getCondition() {
-		return condition;
-	}
+    public SQLExpr getCondition() {
+        return condition;
+    }
 
-	public void setCondition(SQLExpr condition) {
-		this.condition = condition;
-	}
+    public void setCondition(SQLExpr condition) {
+        this.condition = condition;
+    }
 
-	public List<MySqlWhenStatement> getWhenList() {
-		return whenList;
-	}
+    public List<MySqlWhenStatement> getWhenList() {
+        return whenList;
+    }
 
-	public void setWhenList(List<MySqlWhenStatement> whenList) {
-		this.whenList = whenList;
-	}
-	
-	public void addWhenStatement(MySqlWhenStatement stmt)
-	{
-		this.whenList.add(stmt);
-	}
+    public void setWhenList(List<MySqlWhenStatement> whenList) {
+        this.whenList = whenList;
+    }
 
-	public SQLIfStatement.Else getElseItem() {
-		return elseItem;
-	}
+    public void addWhenStatement(MySqlWhenStatement stmt) {
+        this.whenList.add(stmt);
+    }
 
-	public void setElseItem(SQLIfStatement.Else elseItem) {
-		this.elseItem = elseItem;
-	}
+    public SQLIfStatement.Else getElseItem() {
+        return elseItem;
+    }
 
-	@Override
-	public void accept0(MySqlASTVisitor visitor) {
-		if (visitor.visit(this)) {
+    public void setElseItem(SQLIfStatement.Else elseItem) {
+        this.elseItem = elseItem;
+    }
+
+    @Override
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
             acceptChild(visitor, condition);
             acceptChild(visitor, whenList);
             acceptChild(visitor, elseItem);
         }
         visitor.endVisit(this);
-	}
+    }
 
-	@Override
-	public List<SQLObject> getChildren() {
-		List<SQLObject> children = new ArrayList<SQLObject>();
-		children.addAll(children);
-		children.addAll(whenList);
-		children.addAll(whenList);
-		if (elseItem != null) {
-			children.add(elseItem);
-		}
-		return children;
-	}
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        children.addAll(children);
+        children.addAll(whenList);
+        children.addAll(whenList);
+        if (elseItem != null) {
+            children.add(elseItem);
+        }
+        return children;
+    }
 
-	/**
-	 * case when statement
-	 * @author zz
-	 *
-	 */
-	public static class MySqlWhenStatement extends MySqlObjectImpl {
-
-        private SQLExpr            condition;
+    /**
+     * case when statement
+     *
+     * @author zz
+     */
+    public static class MySqlWhenStatement extends MySqlObjectImpl {
+        private SQLExpr condition;
         private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
         @Override

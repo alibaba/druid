@@ -25,43 +25,42 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleCreateTableTest11 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "create table zfj_en_click(" + //
-                "P_M CHAR(6), KEYWORD VARCHAR2(256), " + //
-                "REGION_NAME VARCHAR2(100), " + //
-                "COUNTRY_ACCORD_NAME VARCHAR2(256), " + //
-                "P_NAME  VARCHAR2(256), " + //
-                "P_VALUE VARCHAR2(256), " + //
-                "CLICK_CNT NUMBER" + //
-                ") " + //
-                "partition by range (p_m) " + //
-                "(" + //
-                "partition part_201108 values less than('201109')," + //
-                "partition part_201109 values less than('201110')," + //
-                "partition part_201110 values less than('201111'), " + //
-                "partition part_201111 values less than('201112'), " + //
-                "partition part_201112 values less than('201201'), " + //
-                "partition part_201201 values less than('201202'), " + //
-                "partition part_201202 values less than('201203'), " + //
-                "partition part_201203 values less than('201204'), " + //
-                "partition part_201204 values less than('201205'), " + //
-                "partition part_201205 values less than('201206'), " + //
-                "partition part_201206 values less than('201207'), " + //
-                "partition part_201207 values less than('201208'), " + //
-                "partition part_201208 values less than('201209'), " + //
-                "partition part_201209 values less than('201210'), " + //
-                "partition part_201210 values less than('201211'), " + //
-                "partition part_201211 values less than('201212'), " + //
-                "partition part_201212 values less than('201301'), " + //
-                "partition part_201301 values less than('201302'), " + //
-                "partition part_201302 values less than('201303'), " + //
-                "partition part_201303 values less than('201304'), " + //
-                "partition part_201304 values less than('201305'), " + //
-                "partition part_201305 values less than('201306'), " + //
-                "partition part_201306 values less than('201307') " + //
-                ") ";
+                "create table zfj_en_click(" + //
+                        "P_M CHAR(6), KEYWORD VARCHAR2(256), " + //
+                        "REGION_NAME VARCHAR2(100), " + //
+                        "COUNTRY_ACCORD_NAME VARCHAR2(256), " + //
+                        "P_NAME  VARCHAR2(256), " + //
+                        "P_VALUE VARCHAR2(256), " + //
+                        "CLICK_CNT NUMBER" + //
+                        ") " + //
+                        "partition by range (p_m) " + //
+                        "(" + //
+                        "partition part_201108 values less than('201109')," + //
+                        "partition part_201109 values less than('201110')," + //
+                        "partition part_201110 values less than('201111'), " + //
+                        "partition part_201111 values less than('201112'), " + //
+                        "partition part_201112 values less than('201201'), " + //
+                        "partition part_201201 values less than('201202'), " + //
+                        "partition part_201202 values less than('201203'), " + //
+                        "partition part_201203 values less than('201204'), " + //
+                        "partition part_201204 values less than('201205'), " + //
+                        "partition part_201205 values less than('201206'), " + //
+                        "partition part_201206 values less than('201207'), " + //
+                        "partition part_201207 values less than('201208'), " + //
+                        "partition part_201208 values less than('201209'), " + //
+                        "partition part_201209 values less than('201210'), " + //
+                        "partition part_201210 values less than('201211'), " + //
+                        "partition part_201211 values less than('201212'), " + //
+                        "partition part_201212 values less than('201301'), " + //
+                        "partition part_201301 values less than('201302'), " + //
+                        "partition part_201302 values less than('201303'), " + //
+                        "partition part_201303 values less than('201304'), " + //
+                        "partition part_201304 values less than('201305'), " + //
+                        "partition part_201305 values less than('201306'), " + //
+                        "partition part_201306 values less than('201307') " + //
+                        ") ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

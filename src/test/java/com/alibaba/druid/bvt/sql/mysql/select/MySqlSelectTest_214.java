@@ -26,7 +26,6 @@ import java.util.List;
 
 
 public class MySqlSelectTest_214 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT numbers, animals, n, a\n" +
                 "FROM (\n" +

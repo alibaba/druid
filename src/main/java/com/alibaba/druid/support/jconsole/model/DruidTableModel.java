@@ -15,32 +15,35 @@
  */
 package com.alibaba.druid.support.jconsole.model;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 /**
  * 自定义duird监控数据表格模板类
- * 
+ *
  * @author yunnysunny[yunnysunny@gmail.com]
  */
 public class DruidTableModel implements TableModel {
-
-    /** 数据内容. */
+    /**
+     * 数据内容.
+     */
     private ArrayList<LinkedHashMap<String, Object>> list;
 
-    /** 自定义列名集合. */
-    private ArrayList<String>                        showKeys;
+    /**
+     * 自定义列名集合.
+     */
+    private ArrayList<String> showKeys;
 
-    public DruidTableModel(ArrayList<LinkedHashMap<String, Object>> list){
+    public DruidTableModel(ArrayList<LinkedHashMap<String, Object>> list) {
         super();
         this.list = list;
         showKeys = null;
     }
 
-    public DruidTableModel(ArrayList<LinkedHashMap<String, Object>> list, ArrayList<String> showKeys){
+    public DruidTableModel(ArrayList<LinkedHashMap<String, Object>> list, ArrayList<String> showKeys) {
         super();
         this.list = list;
         this.showKeys = showKeys;
@@ -102,7 +105,8 @@ public class DruidTableModel implements TableModel {
      */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        if (list != null && rowIndex < list.size()) {// 没有超出最大行数
+        if (list != null && rowIndex < list.size()) {
+            // 没有超出最大行数
             LinkedHashMap<String, Object> dataNow = list.get(rowIndex);
             if (showKeys != null) {
                 int titleLen = showKeys.size();
@@ -126,17 +130,14 @@ public class DruidTableModel implements TableModel {
 
     @Override
     public void addTableModelListener(TableModelListener l) {
-
     }
 
     @Override
     public void removeTableModelListener(TableModelListener l) {
-
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
     }
 
 }

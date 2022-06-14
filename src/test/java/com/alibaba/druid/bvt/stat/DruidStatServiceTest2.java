@@ -37,7 +37,6 @@ import static org.junit.Assert.assertThat;
  * Multiple data source test case.
  */
 public class DruidStatServiceTest2 extends TestCase {
-
     private DruidDataSource dataSource;
     private DruidDataSource dataSource2;
 
@@ -161,7 +160,7 @@ public class DruidStatServiceTest2 extends TestCase {
         //assertThat((Integer) dataSourceStat.get("PoolingCount"), equalTo(0));
         //assertThat((Integer) dataSourceStat.get("ActiveCount"), equalTo(0));
     }
-    
+
     public void test_getWallStatMap() throws Exception {
         DruidStatService.getInstance().getWallStatMap(Collections.<String, String>emptyMap());
     }

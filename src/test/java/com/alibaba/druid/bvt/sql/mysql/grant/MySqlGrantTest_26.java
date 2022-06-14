@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class MySqlGrantTest_26 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "GRANT RELOAD ON mydb.* TO 'someuser'@'somehost';";
 
@@ -38,11 +37,10 @@ public class MySqlGrantTest_26 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("GRANT RELOAD ON mydb.* TO 'someuser'@'somehost';", //
-                            output);
-
+                output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
@@ -60,8 +58,7 @@ public class MySqlGrantTest_26 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("GRANT ALL ON sysdb.* TO '%'@'192.168.1/20'", //
-                            output);
-
+                output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

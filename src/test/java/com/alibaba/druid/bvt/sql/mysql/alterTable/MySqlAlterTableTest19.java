@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class MySqlAlterTableTest19 extends TestCase {
-
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD KEY `idx_parent_id` (`parent_id`)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -32,7 +31,7 @@ public class MySqlAlterTableTest19 extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD KEY `idx_parent_id` (`parent_id`)", output);
     }
-    
+
     public void test_alter_add_index() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD INDEX `idx_parent_id` (`parent_id`)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

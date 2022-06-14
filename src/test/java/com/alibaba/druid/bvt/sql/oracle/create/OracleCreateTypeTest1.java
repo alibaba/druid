@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import java.util.List;
 
 public class OracleCreateTypeTest1 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
                 "CREATE OR REPLACE TYPE BODY \"STRCAT_TYPE\" is\n" +

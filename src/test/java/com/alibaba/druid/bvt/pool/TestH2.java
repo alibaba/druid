@@ -27,7 +27,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestH2 extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -35,7 +34,7 @@ public class TestH2 extends TestCase {
         dataSource.setUrl("jdbc:h2:mem:");
         dataSource.setPoolPreparedStatements(true);
         dataSource.setMaxOpenPreparedStatements(10);
-        
+
         dataSource.init();
     }
 
@@ -45,7 +44,7 @@ public class TestH2 extends TestCase {
 
     public void test_h2() throws Exception {
         Assert.assertSame(JdbcUtils.H2, DbType.of(dataSource.getDbType()));
-        
+
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement("SELECT ?");

@@ -8,26 +8,25 @@ import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class PagerUtilsTest_Count_SQLServer_0 extends TestCase {
-
     public void test_sqlserver_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
         assertEquals("SELECT COUNT(*)\n" + //
-                            "FROM t", result);
+                "FROM t", result);
     }
 
     public void test_sqlserver_1() throws Exception {
         String sql = "select id, name from t";
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
         assertEquals("SELECT COUNT(*)\n" + //
-                            "FROM t", result);
+                "FROM t", result);
     }
 
     public void test_sqlserver_2() throws Exception {
         String sql = "select id, name from t order by id";
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
         assertEquals("SELECT COUNT(*)\n" + //
-                            "FROM t", result);
+                "FROM t", result);
     }
 
     public void test_sqlserver_group_0() throws Exception {

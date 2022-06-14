@@ -25,7 +25,6 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestDruidDataSource extends TestCase {
-
     protected void tearDown() throws Exception {
         DruidDataSourceStatManager.clear();
     }

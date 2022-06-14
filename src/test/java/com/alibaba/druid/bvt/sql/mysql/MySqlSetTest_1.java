@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import junit.framework.TestCase;
 
 public class MySqlSetTest_1 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "SET @@session.autocommit = ON;";
 

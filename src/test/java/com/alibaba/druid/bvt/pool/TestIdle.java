@@ -30,7 +30,6 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestIdle extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void tearDown() throws Exception {

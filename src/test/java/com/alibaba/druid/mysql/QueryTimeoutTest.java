@@ -28,11 +28,11 @@ public class QueryTimeoutTest extends TestCase {
         dataSource.setValidationQuery("SELECT 1 FROM DUAL");
         dataSource.setFilters("stat");
     }
-    
+
     public void test_queryTimeout() throws Exception {
         {
             Connection conn = dataSource.getConnection();
-            
+
             String sql = "SELECT * FROM ws_product WHERE HAVE_IMAGE = 'N' AND ROWNUM < 1000";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setQueryTimeout(1);
@@ -43,7 +43,7 @@ public class QueryTimeoutTest extends TestCase {
             conn.close();
         }
         Connection conn = dataSource.getConnection();
-        
+
         String sql = "SELECT 'x' FROM DUAL";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setQueryTimeout(1);

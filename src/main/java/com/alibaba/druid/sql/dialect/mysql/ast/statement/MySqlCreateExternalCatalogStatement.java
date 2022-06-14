@@ -16,9 +16,7 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
@@ -26,12 +24,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MySqlCreateExternalCatalogStatement extends MySqlStatementImpl implements SQLAlterStatement {
-    private SQLName            name;
+    private SQLName name;
 
-    private boolean            ifNotExists;
+    private boolean ifNotExists;
 
     private Map<SQLName, SQLName> properties = new HashMap<SQLName, SQLName>();
-    private SQLName            comment;
+    private SQLName comment;
 
     public MySqlCreateExternalCatalogStatement() {
         setDbType(DbType.mysql);

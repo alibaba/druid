@@ -15,6 +15,13 @@
  */
 package com.alibaba.druid.support.jconsole;
 
+import com.alibaba.druid.support.jconsole.model.*;
+
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -22,142 +29,125 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
-
-import com.alibaba.druid.support.jconsole.model.ColumnGroup;
-import com.alibaba.druid.support.jconsole.model.DruidTableModel;
-import com.alibaba.druid.support.jconsole.model.GroupableTableHeader;
-import com.alibaba.druid.support.jconsole.model.GroupableTableHeaderUI;
-import com.alibaba.druid.support.jconsole.model.RowHeaderTable;
-
 /**
  * 请求地址 /sql.json
- * 
+ * <p>
  * 返回数据格式：
  * <pre>
  * {
-    "ResultCode": 1,
-    "Content": [
-        {
-            "BatchSizeMax": 0,
-            "BatchSizeTotal": 0,
-            "ConcurrentMax": 1,
-            "DbType": "h2",
-            "EffectedRowCount": 18,
-            "EffectedRowCountHistogram": [
-                0,6,0,0,0,0
-            ],
-            "EffectedRowCountMax": 4,
-            "ErrorCount": 0,
-            "ExecuteAndResultHoldTimeHistogram": [
-                5,0,1,0,0,0,0,0
-            ],
-            "ExecuteAndResultSetHoldTime": 0,
-            "ExecuteCount": 6,
-            "FetchRowCount": 0,
-            "FetchRowCountHistogram": [
-                6,0,0,0,0,0
-            ],
-            "FetchRowCountMax": 0,
-            "Histogram": [
-                5,0,1,0,0,0,0,0
-            ],
-            "ID": 9,
-            "InTransactionCount": 6,
-            "LastSlowParameters": "[4]",
-            "LastTime": "2012-08-22 02:57:56",
-            "MaxTimespan": 18,
-            "MaxTimespanOccurTime": "2012-08-22 12:38:56",
-            "ResultSetHoldTime": 0,
-            "RunningCount": 0,
-            "SQL": "delete from acct_group_permission where group_id=?",
-            "TotalTime": 21
-        },
-     ]
-  }
-  </pre>
-  
-  @author yunnysunny [yunnysunny@gmail.com]
- * */
+ * "ResultCode": 1,
+ * "Content": [
+ * {
+ * "BatchSizeMax": 0,
+ * "BatchSizeTotal": 0,
+ * "ConcurrentMax": 1,
+ * "DbType": "h2",
+ * "EffectedRowCount": 18,
+ * "EffectedRowCountHistogram": [
+ * 0,6,0,0,0,0
+ * ],
+ * "EffectedRowCountMax": 4,
+ * "ErrorCount": 0,
+ * "ExecuteAndResultHoldTimeHistogram": [
+ * 5,0,1,0,0,0,0,0
+ * ],
+ * "ExecuteAndResultSetHoldTime": 0,
+ * "ExecuteCount": 6,
+ * "FetchRowCount": 0,
+ * "FetchRowCountHistogram": [
+ * 6,0,0,0,0,0
+ * ],
+ * "FetchRowCountMax": 0,
+ * "Histogram": [
+ * 5,0,1,0,0,0,0,0
+ * ],
+ * "ID": 9,
+ * "InTransactionCount": 6,
+ * "LastSlowParameters": "[4]",
+ * "LastTime": "2012-08-22 02:57:56",
+ * "MaxTimespan": 18,
+ * "MaxTimespanOccurTime": "2012-08-22 12:38:56",
+ * "ResultSetHoldTime": 0,
+ * "RunningCount": 0,
+ * "SQL": "delete from acct_group_permission where group_id=?",
+ * "TotalTime": 21
+ * },
+ * ]
+ * }
+ * </pre>
+ *
+ * @author yunnysunny [yunnysunny@gmail.com]
+ */
 public class DruidSQLPanel extends DruidPanel {
+    private static final long serialVersionUID = 1L;
+    private static final String REQUEST_URL = "/sql.json";
+    private static final ArrayList<String> SHOW_LIST = new ArrayList<String>() {
+        private static final long serialVersionUID = 1L;
 
-    private static final long              serialVersionUID               = 1L;
-    private static final String            REQUEST_URL                    = "/sql.json";
-    private static final ArrayList<String> SHOW_LIST                      = new ArrayList<String>() {
+        {
+            add("SQL");
+            add("ExecuteCount");
+            add("TotalTime");
+            add("InTransactionCount");
+            add("ErrorCount");
+            add("EffectedRowCount");
+            add("FetchRowCount");
+            add("RunningCount");
+            add("ConcurrentMax");
+            add("Histogram");
+            add("EffectedRowCountHistogram");
+            add("ExecuteAndResultHoldTimeHistogram");
+            add("FetchRowCountHistogram");
+        }
 
-                                                                              private static final long serialVersionUID = 1L;
+    };
+    private static final ArrayList<String> REAL_SHOW_LIST = new ArrayList<String>() {
+        private static final long serialVersionUID = 1L;
 
-                                                                              {
-                                                                                  add("SQL");
-                                                                                  add("ExecuteCount");
-                                                                                  add("TotalTime");
-                                                                                  add("InTransactionCount");
-                                                                                  add("ErrorCount");
-                                                                                  add("EffectedRowCount");
-                                                                                  add("FetchRowCount");
-                                                                                  add("RunningCount");
-                                                                                  add("ConcurrentMax");
-                                                                                  add("Histogram");
-                                                                                  add("EffectedRowCountHistogram");
-                                                                                  add("ExecuteAndResultHoldTimeHistogram");
-                                                                                  add("FetchRowCountHistogram");
-                                                                              }
+        {
+            add("SQL");
+            add("ExecuteCount");
+            add("TotalTime");
+            add("InTransactionCount");
+            add("ErrorCount");
+            add("EffectedRowCount");
+            add("FetchRowCount");
+            add("RunningCount");
+            add("ConcurrentMax");
+            add("Histogram");
+            add("EffectedRowCountHistogram");
+            add("ExecuteAndResultHoldTimeHistogram");
+            add("FetchRowCountHistogram");
+        }
+    };
+    private static final String HISTOGRAM = "Histogram";
+    private static final String Effected_RowCount_HISOGRAM = "EffectedRowCountHistogram";
+    private static final String ExecuteAndResult_Hold_HISOGRAM = "ExecuteAndResultHoldTimeHistogram";
+    private static final String FetchRowCount_HISOGRAM = "FetchRowCountHistogram";
+    private static final ArrayList<String> ARRAY_DATA_MAP = new ArrayList<String>() {
+        private static final long serialVersionUID = 1L;
 
-                                                                          };
-    private static final ArrayList<String> REAL_SHOW_LIST                 = new ArrayList<String>() {
+        {
+            add(HISTOGRAM);
+            add(Effected_RowCount_HISOGRAM);
+            add(ExecuteAndResult_Hold_HISOGRAM);
+            add(FetchRowCount_HISOGRAM);
+        }
+    };
+    private static final int FIST_LIST_OFFSET = 9;
 
-                                                                              private static final long serialVersionUID = 1L;
+    private ColumnGroup groupHistogram;
+    private ColumnGroup groupEffectedRowCountHistogram;
+    private ColumnGroup groupExecuteAndResultHoldTimeHistogram;
+    private ColumnGroup groupFetchRowCountHistogram;
+    private ArrayList<Integer> listHistogram;
+    private ArrayList<Integer> listEffectedRowCountHistogram;
+    private ArrayList<Integer> listExecuteAndResultHoldTimeHistogram;
+    private ArrayList<Integer> listFetchRowCountHistogram;
+    private ArrayList<String> ids;
+    private static final String JSON_ID_NAME = "ID";
 
-                                                                              {
-                                                                                  add("SQL");
-                                                                                  add("ExecuteCount");
-                                                                                  add("TotalTime");
-                                                                                  add("InTransactionCount");
-                                                                                  add("ErrorCount");
-                                                                                  add("EffectedRowCount");
-                                                                                  add("FetchRowCount");
-                                                                                  add("RunningCount");
-                                                                                  add("ConcurrentMax");
-                                                                                  add("Histogram");
-                                                                                  add("EffectedRowCountHistogram");
-                                                                                  add("ExecuteAndResultHoldTimeHistogram");
-                                                                                  add("FetchRowCountHistogram");
-                                                                              }
-                                                                          };
-    private static final String            HISTOGRAM                      = "Histogram";
-    private static final String            Effected_RowCount_HISOGRAM     = "EffectedRowCountHistogram";
-    private static final String            ExecuteAndResult_Hold_HISOGRAM = "ExecuteAndResultHoldTimeHistogram";
-    private static final String            FetchRowCount_HISOGRAM         = "FetchRowCountHistogram";
-    private static final ArrayList<String> ARRAY_DATA_MAP                 = new ArrayList<String>() {
-
-                                                                              private static final long serialVersionUID = 1L;
-                                                                              {
-                                                                                  add(HISTOGRAM);
-                                                                                  add(Effected_RowCount_HISOGRAM);
-                                                                                  add(ExecuteAndResult_Hold_HISOGRAM);
-                                                                                  add(FetchRowCount_HISOGRAM);
-                                                                              }
-                                                                          };
-    private static final int               FIST_LIST_OFFSET               = 9;
-
-    private ColumnGroup                    groupHistogram;
-    private ColumnGroup                    groupEffectedRowCountHistogram;
-    private ColumnGroup                    groupExecuteAndResultHoldTimeHistogram;
-    private ColumnGroup                    groupFetchRowCountHistogram;
-    private ArrayList<Integer>             listHistogram;
-    private ArrayList<Integer>             listEffectedRowCountHistogram;
-    private ArrayList<Integer>             listExecuteAndResultHoldTimeHistogram;
-    private ArrayList<Integer>             listFetchRowCountHistogram;
-    private ArrayList<String>              ids;
-    private static final String            JSON_ID_NAME                   = "ID";
-
-    public DruidSQLPanel(){
+    public DruidSQLPanel() {
         super();
         this.url = REQUEST_URL;
     }
@@ -177,7 +167,7 @@ public class DruidSQLPanel extends DruidPanel {
 
     /**
      * 数据预处理，将没有用到的数据删除掉，将牵扯到时间分布的数据拆分出来。
-     * 
+     *
      * @param data 要处理的数据
      * @return 最终的处理结果
      */
@@ -196,7 +186,7 @@ public class DruidSQLPanel extends DruidPanel {
         int dataIndex = 0;
         for (LinkedHashMap<String, Object> dataNow : data) {
             // 先把不需要显示的内容删除掉
-            for (Iterator<Entry<String, Object>> it = dataNow.entrySet().iterator(); it.hasNext();) {
+            for (Iterator<Entry<String, Object>> it = dataNow.entrySet().iterator(); it.hasNext(); ) {
                 Entry<String, Object> entry = it.next();
                 String key = entry.getKey();
                 Object value = entry.getValue();
@@ -211,11 +201,11 @@ public class DruidSQLPanel extends DruidPanel {
             // System.out.println(dataNow.toString());
             int offset = FIST_LIST_OFFSET;
 
-            for (String arrayKey : ARRAY_DATA_MAP) {// 把数组数据显示为单个数据
+            for (String arrayKey : ARRAY_DATA_MAP) {
+                // 把数组数据显示为单个数据
                 Object arrayData = dataNow.get(arrayKey);
 
                 if (arrayData instanceof ArrayList<?>) {
-
                     dataNow.remove(arrayKey);
                     if (dataIndex == 0) {
                         REAL_SHOW_LIST.remove(arrayKey);
@@ -248,7 +238,6 @@ public class DruidSQLPanel extends DruidPanel {
     }
 
     private void addTableGroup() {
-
         TableColumnModel cm = table.getColumnModel();
         // System.out.println(SHOW_LIST.size());
         for (int i : listHistogram) {
@@ -275,12 +264,10 @@ public class DruidSQLPanel extends DruidPanel {
     @Override
     protected void tableDataProcess(ArrayList<LinkedHashMap<String, Object>> data) {
         table = new JTable() {
-
             private static final long serialVersionUID = 1L;
 
             @Override
             protected JTableHeader createDefaultTableHeader() {
-
                 return new GroupableTableHeader(columnModel);
             }
         };
@@ -292,12 +279,12 @@ public class DruidSQLPanel extends DruidPanel {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         addTableGroup();
         table.addMouseListener(new MouseAdapter() {
-
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {// 点击几次，这里是双击事件
+                if (e.getClickCount() == 2) {
+                    // 点击几次，这里是双击事件
                     int row = table.getSelectedRow();
                     String id = ids.get(row);
-                    new DruidSqlDetailFrame(id,conn);
+                    new DruidSqlDetailFrame(id, conn);
                 }
             }
         });

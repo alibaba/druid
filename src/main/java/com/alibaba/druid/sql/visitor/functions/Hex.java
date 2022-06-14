@@ -24,8 +24,7 @@ import com.alibaba.druid.util.HexBin;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Hex implements Function {
-
-    public final static Hex instance = new Hex();
+    public static final Hex instance = new Hex();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getArguments().size() != 1) {

@@ -26,22 +26,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLExplainStatement extends SQLStatementImpl {
-    protected String               type;
-    protected String               format;
-    protected boolean              extended;
-    protected boolean              dependency;
-    protected boolean              authorization;
-    protected boolean              optimizer;
-    protected SQLStatement         statement;
+    protected String type;
+    protected String format;
+    protected boolean extended;
+    protected boolean dependency;
+    protected boolean authorization;
+    protected boolean optimizer;
+    protected SQLStatement statement;
     protected List<SQLCommentHint> hints;
-    protected boolean              parenthesis;
-    
+    protected boolean parenthesis;
+
     public SQLExplainStatement() {
-        
     }
-    
+
     public SQLExplainStatement(DbType dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLStatement getStatement() {

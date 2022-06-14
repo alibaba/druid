@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class HiveSelectTest_41 extends TestCase {
-
     public void test_0() throws Exception {
         String sql = "select\n" +
                 "field['id'].string_type as banner_id\n" +

@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class EvalMethodSqrtTest extends TestCase {
-
     public void test_reverse() throws Exception {
         Assert.assertEquals(Math.sqrt(1), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "sqrt(1)"));
         Assert.assertEquals(Math.sqrt(1.001), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "sqrt(1.001)"));

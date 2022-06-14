@@ -11,7 +11,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
  * Date 2019-06-03 15:50
  */
 public class MySqlAlterTableLock extends MySqlObjectImpl implements SQLAlterTableItem {
-
     private SQLExpr lockType;
 
     @Override

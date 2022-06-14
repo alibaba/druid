@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlAlterTableDiscardTablespace extends MySqlObjectImpl implements SQLAlterTableItem, MySqlObject {
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {

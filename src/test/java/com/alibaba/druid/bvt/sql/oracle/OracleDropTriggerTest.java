@@ -27,10 +27,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleDropTriggerTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = //
-        "DROP TRIGGER hr.salary_check; ";
+                "DROP TRIGGER hr.salary_check; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -39,7 +38,7 @@ public class OracleDropTriggerTest extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("DROP TRIGGER hr.salary_check;",
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

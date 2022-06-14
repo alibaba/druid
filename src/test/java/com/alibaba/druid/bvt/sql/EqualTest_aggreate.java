@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class EqualTest_aggreate extends TestCase {
-
     public void test_exits() throws Exception {
         String sql = "count(*)";
         String sql_c = "count(id)";
@@ -30,7 +29,7 @@ public class EqualTest_aggreate extends TestCase {
         Assert.assertTrue(exprA.equals(exprA));
         Assert.assertFalse(exprA.equals(new Object()));
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        
+
         Assert.assertEquals(new SQLAggregateExpr(null), new SQLAggregateExpr(null));
         Assert.assertEquals(new SQLAggregateExpr(null).hashCode(), new SQLAggregateExpr(null).hashCode());
     }

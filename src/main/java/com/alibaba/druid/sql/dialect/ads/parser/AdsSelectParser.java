@@ -15,22 +15,20 @@
  */
 package com.alibaba.druid.sql.dialect.ads.parser;
 
-import com.alibaba.druid.sql.dialect.h2.parser.H2ExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectListCache;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 
 public class AdsSelectParser extends SQLSelectParser {
-
-    public AdsSelectParser(SQLExprParser exprParser){
+    public AdsSelectParser(SQLExprParser exprParser) {
         super(exprParser);
     }
 
-    public AdsSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+    public AdsSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
         super(exprParser, selectListCache);
     }
 
-    public AdsSelectParser(String sql){
+    public AdsSelectParser(String sql) {
         this(new AdsExprParser(sql));
     }
 

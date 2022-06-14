@@ -25,7 +25,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGInsertTest7 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "insert into test(k,v) values (1,2) ON CONFLICT (k) DO UPDATE SET v = EXCLUDED.v; ";
 

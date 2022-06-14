@@ -27,18 +27,16 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class TenantSelectTest3 extends TestCase {
-
-    private String sql        = "SELECT ID, NAME " + //
-                                "FROM orders o inner join users u ON o.userid = u.id " + //
-                                "WHERE FID = ? OR FID = ?";
+    private String sql = "SELECT ID, NAME " + //
+            "FROM orders o inner join users u ON o.userid = u.id " + //
+            "WHERE FID = ? OR FID = ?";
     private String expect_sql = "SELECT ID, NAME, u.tenant, o.tenant" + //
-                                "\nFROM orders o" + //
-                                "\n\tINNER JOIN users u ON o.userid = u.id" + //
-                                "\nWHERE FID = ?" + //
-                                "\n\tOR FID = ?";
+            "\nFROM orders o" + //
+            "\n\tINNER JOIN users u ON o.userid = u.id" + //
+            "\nWHERE FID = ?" + //
+            "\n\tOR FID = ?";
 
     protected void setUp() throws Exception {
-
     }
 
     public void testMySql() throws Exception {
@@ -48,7 +46,7 @@ public class TenantSelectTest3 extends TestCase {
         config.setTenantColumn("tenant");
 
         config_callback.setTenantCallBack(new TenantTestCallBack());
-        
+
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);

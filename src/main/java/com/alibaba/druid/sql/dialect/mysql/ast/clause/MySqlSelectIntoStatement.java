@@ -24,41 +24,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author zz [455910092@qq.com]
  */
-public class MySqlSelectIntoStatement extends MySqlStatementImpl{
+public class MySqlSelectIntoStatement extends MySqlStatementImpl {
+    //select statement
+    private SQLSelect select;
+    //var list
+    private List<SQLExpr> varList = new ArrayList<SQLExpr>();
 
-	//select statement
-	private SQLSelect select;
-	//var list
-	private List<SQLExpr> varList=new ArrayList<SQLExpr>();
-	
-	public SQLSelect getSelect() {
-		return select;
-	}
+    public SQLSelect getSelect() {
+        return select;
+    }
 
-	public void setSelect(SQLSelect select) {
-		this.select = select;
-	}
+    public void setSelect(SQLSelect select) {
+        this.select = select;
+    }
 
-	public List<SQLExpr> getVarList() {
-		return varList;
-	}
+    public List<SQLExpr> getVarList() {
+        return varList;
+    }
 
-	public void setVarList(List<SQLExpr> varList) {
-		this.varList = varList;
-	}
+    public void setVarList(List<SQLExpr> varList) {
+        this.varList = varList;
+    }
 
-	
-	
-	@Override
-	public void accept0(MySqlASTVisitor visitor) {
-		if (visitor.visit(this)) {
+    @Override
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
             acceptChild(visitor, select);
             acceptChild(visitor, varList);
         }
         visitor.endVisit(this);
-	}
+    }
 
 }

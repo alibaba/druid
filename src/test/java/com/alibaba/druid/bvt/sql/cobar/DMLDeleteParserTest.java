@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class DMLDeleteParserTest extends TestCase {
-
     public void testDelete_0() throws Exception {
         String sql = "deLetE LOW_PRIORITY from id1.id , id using t1 a where col1 =? ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -44,7 +43,7 @@ public class DMLDeleteParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE FROM id1.id" + //
-                            "\nUSING t1", output);
+                "\nUSING t1", output);
     }
 
     public void testDelete_2() throws Exception {
@@ -66,8 +65,8 @@ public class DMLDeleteParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE FROM id1.id\n" + //
-                            "WHERE col1 = 'adf'\n" + //
-                            "LIMIT 1, ?", output);
+                "WHERE col1 = 'adf'\n" + //
+                "LIMIT 1, ?", output);
     }
 
     public void testDelete_4() throws Exception {
@@ -77,9 +76,9 @@ public class DMLDeleteParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE FROM id\n" + //
-                            "WHERE col1 = 'adf'\n" + //
-                            "ORDER BY d\n" + //
-                            "LIMIT 2, ?", output);
+                "WHERE col1 = 'adf'\n" + //
+                "ORDER BY d\n" + //
+                "LIMIT 2, ?", output);
     }
 
     public void testDelete_5() throws Exception {
@@ -89,9 +88,9 @@ public class DMLDeleteParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE id.*\n" + //
-                            "FROM t1, t2\n" + //
-                            "WHERE col1 = 'adf'\n" + //
-                            "\tAND col2 = 1", output);
+                "FROM t1, t2\n" + //
+                "WHERE col1 = 'adf'\n" + //
+                "\tAND col2 = 1", output);
     }
 
     public void testDelete_6() throws Exception {
@@ -101,7 +100,7 @@ public class DMLDeleteParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE id, id.t\n" + //
-                            "FROM t1", output);
+                "FROM t1", output);
     }
 
     public void testDelete_7() throws Exception {
@@ -111,11 +110,11 @@ public class DMLDeleteParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE FROM t1\n" + //
-                            "WHERE t1.id1 = 'abc'\n" + //
-                            "ORDER BY a\n" + //
-                            "LIMIT 5", output);
+                "WHERE t1.id1 = 'abc'\n" + //
+                "ORDER BY a\n" + //
+                "LIMIT 5", output);
     }
-    
+
     public void testDelete_8() throws Exception {
         String sql = "deLetE from t1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -124,7 +123,7 @@ public class DMLDeleteParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE FROM t1", output);
     }
-    
+
     public void testDelete_9() throws Exception {
         String sql = "deLetE ignore tb1.*,id1.t from t1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -132,9 +131,9 @@ public class DMLDeleteParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE IGNORE tb1.*, id1.t\n" +
-        		"FROM t1", output);
+                "FROM t1", output);
     }
-    
+
     public void testDelete_10() throws Exception {
         String sql = "deLetE quick tb1.*,id1.t from t1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

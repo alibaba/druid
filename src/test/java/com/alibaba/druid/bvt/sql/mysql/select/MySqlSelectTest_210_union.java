@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import java.util.List;
 
 public class MySqlSelectTest_210_union extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT count(*)\n" +
                 "FROM (\n" +
@@ -45,7 +44,7 @@ public class MySqlSelectTest_210_union extends MysqlTest {
                 "      )\n" +
                 ")";
 
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);

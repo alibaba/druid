@@ -24,7 +24,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGSelectTest10 extends PGTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT nextval('passport_id_seq'::regclass) as id";
 

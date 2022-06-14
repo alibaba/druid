@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest70 extends MysqlTest {
-
     @Test
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `app_customer_license` ("
@@ -53,7 +52,7 @@ public class MySqlCreateTableTest70 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
+
         Column column = visitor.getColumn("app_customer_license", "version");
         Assert.assertNotNull(column);
         Assert.assertEquals("bigint", column.getDataType());
@@ -75,7 +74,7 @@ public class MySqlCreateTableTest70 extends MysqlTest {
                     + "\n\tUNIQUE `idx_app_customer_license_deviceId` USING BTREE (`device_id`)"
                     + "\n) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci AUTO_INCREMENT = 1 ROW_FORMAT = DYNAMIC", output);
         }
-        
+
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table `app_customer_license` ("

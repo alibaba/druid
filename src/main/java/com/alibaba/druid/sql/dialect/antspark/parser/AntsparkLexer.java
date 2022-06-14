@@ -13,12 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author peiheng.qph
  * @version $Id: AntsparkLexer.java, v 0.1 2018年09月14日 15:04 peiheng.qph Exp $
  */
 public class AntsparkLexer extends Lexer {
-    public final static Keywords DEFAULT_ANTSPARK_KEYWORDS;
+    public static final Keywords DEFAULT_ANTSPARK_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -46,10 +45,10 @@ public class AntsparkLexer extends Lexer {
 
         DEFAULT_ANTSPARK_KEYWORDS = new Keywords(map);
     }
+
     public AntsparkLexer(String input) {
         super(input);
-        dbType= DbType.antspark;
+        dbType = DbType.antspark;
         super.keywords = DEFAULT_ANTSPARK_KEYWORDS;
     }
-
 }

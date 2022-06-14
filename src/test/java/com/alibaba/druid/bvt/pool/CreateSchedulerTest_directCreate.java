@@ -15,8 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class CreateSchedulerTest_directCreate extends PoolTestCase {
-
-    private DruidDataSource[]        dataSources;
+    private DruidDataSource[] dataSources;
     private ScheduledExecutorService createScheduler;
     private ScheduledExecutorService destroyScheduler;
 

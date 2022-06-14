@@ -19,10 +19,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowCreateDatabaseStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
     private SQLExpr database;
 
-    private boolean ifNotExists = false;
+    private boolean ifNotExists;
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

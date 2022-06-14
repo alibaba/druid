@@ -19,8 +19,7 @@ import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowErrorsStatement extends MySqlStatementImpl implements MySqlShowStatement {
-
-    private boolean count = false;
+    private boolean count;
     private SQLLimit limit;
 
     public boolean isCount() {

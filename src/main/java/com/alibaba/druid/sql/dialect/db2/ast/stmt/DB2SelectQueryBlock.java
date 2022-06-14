@@ -27,9 +27,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Object {
     private Isolation isolation;
 
-    private boolean   forReadOnly;
+    private boolean forReadOnly;
 
-    private SQLExpr   optimizeFor;
+    private SQLExpr optimizeFor;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

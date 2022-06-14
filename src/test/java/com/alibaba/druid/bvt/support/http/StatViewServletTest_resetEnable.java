@@ -24,7 +24,6 @@ import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.http.StatViewServlet;
 
 public class StatViewServletTest_resetEnable extends TestCase {
-
     protected void setUp() throws Exception {
         DruidStatService.getInstance().setResetEnable(true);
     }

@@ -24,19 +24,18 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_exception_6 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
-				"  credit_limit CONSTANT NUMBER(3) := 5000;  -- Maximum value is 999\n" +
-				"BEGIN\n" +
-				"  NULL;\n" +
-				"EXCEPTION\n" +
-				"  WHEN VALUE_ERROR THEN\n" +
-				"    DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
-				"END;"; //
+                "  credit_limit CONSTANT NUMBER(3) := 5000;  -- Maximum value is 999\n" +
+                "BEGIN\n" +
+                "  NULL;\n" +
+                "EXCEPTION\n" +
+                "  WHEN VALUE_ERROR THEN\n" +
+                "    DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -60,28 +59,28 @@ public class Oracle_pl_exception_6 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
-			System.out.println(output);
-			assertEquals("DECLARE\n" +
-							"\tcredit_limit CONSTANT NUMBER(3) := 5000;\n" +
-							"BEGIN\n" +
-							"\tNULL;\n" +
-							"EXCEPTION\n" +
-							"\tWHEN VALUE_ERROR THEN DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("declare\n" +
-							"\tcredit_limit constant NUMBER(3) := 5000;\n" +
-							"begin\n" +
-							"\tnull;\n" +
-							"exception\n" +
-							"\twhen VALUE_ERROR then DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+            System.out.println(output);
+            assertEquals("DECLARE\n" +
+                            "\tcredit_limit CONSTANT NUMBER(3) := 5000;\n" +
+                            "BEGIN\n" +
+                            "\tNULL;\n" +
+                            "EXCEPTION\n" +
+                            "\tWHEN VALUE_ERROR THEN DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("declare\n" +
+                            "\tcredit_limit constant NUMBER(3) := 5000;\n" +
+                            "begin\n" +
+                            "\tnull;\n" +
+                            "exception\n" +
+                            "\twhen VALUE_ERROR then DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

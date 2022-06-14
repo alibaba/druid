@@ -23,15 +23,14 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest30 extends TestCase {
-
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select * from t where FID = 1 OR UNHEX(HEX('MySQL')) = 'MySQL'")); //
+                "select * from t where FID = 1 OR UNHEX(HEX('MySQL')) = 'MySQL'")); //
     }
 }

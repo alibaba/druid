@@ -27,11 +27,10 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class MySqlInsertTest_6 extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "insert into document(the_key,the_namespace,Gmt_create,Gmt_modify,Expired_time,the_value) " + //
-                     "values (?,?,now(),now(),date_add(now(),interval ? second),?) " + //
-                     "on duplicate key update Gmt_modify = values(Gmt_modify),Expired_time = values(Expired_time),the_value = values(the_value)";
+                "values (?,?,now(),now(),date_add(now(),interval ? second),?) " + //
+                "on duplicate key update Gmt_modify = values(Gmt_modify),Expired_time = values(Expired_time),the_value = values(the_value)";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -49,18 +48,18 @@ public class MySqlInsertTest_6 extends MysqlTest {
         stmt.accept(visitor);
 
         Assert.assertEquals("INSERT INTO document (the_key, the_namespace, Gmt_create, Gmt_modify, Expired_time" + //
-                                    "\n\t, the_value)" + //
-                                    "\nVALUES (?, ?, now(), now(), date_add(now(), INTERVAL ? SECOND)" + //
-                                    "\n\t, ?)" + //
-                                    "\nON DUPLICATE KEY UPDATE Gmt_modify = VALUES(Gmt_modify), Expired_time = VALUES(Expired_time), the_value = VALUES(the_value)",
-                            SQLUtils.toMySqlString(insertStmt));
-        
+                        "\n\t, the_value)" + //
+                        "\nVALUES (?, ?, now(), now(), date_add(now(), INTERVAL ? SECOND)" + //
+                        "\n\t, ?)" + //
+                        "\nON DUPLICATE KEY UPDATE Gmt_modify = VALUES(Gmt_modify), Expired_time = VALUES(Expired_time), the_value = VALUES(the_value)",
+                SQLUtils.toMySqlString(insertStmt));
+
 
         Assert.assertEquals("insert into document (the_key, the_namespace, Gmt_create, Gmt_modify, Expired_time" + //
-                                    "\n\t, the_value)" + //
-                                    "\nvalues (?, ?, now(), now(), date_add(now(), interval ? second)" + //
-                                    "\n\t, ?)" + //
-                                    "\non duplicate key update Gmt_modify = VALUES(Gmt_modify), Expired_time = VALUES(Expired_time), the_value = VALUES(the_value)",
-                            SQLUtils.toMySqlString(insertStmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                        "\n\t, the_value)" + //
+                        "\nvalues (?, ?, now(), now(), date_add(now(), interval ? second)" + //
+                        "\n\t, ?)" + //
+                        "\non duplicate key update Gmt_modify = VALUES(Gmt_modify), Expired_time = VALUES(Expired_time), the_value = VALUES(the_value)",
+                SQLUtils.toMySqlString(insertStmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

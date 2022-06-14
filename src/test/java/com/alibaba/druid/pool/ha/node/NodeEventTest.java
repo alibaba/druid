@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class NodeEventTest {
-
     @Test
     public void testGetEventListFromProperties_emptyProperties() {
         Properties p1 = new Properties();

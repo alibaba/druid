@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class BitStringTest extends PGTest {
-
     public void test_timestamp() throws Exception {
         String sql = "B'101'";
         PGExprParser parser = new PGExprParser(sql);

@@ -26,14 +26,14 @@ import java.io.IOException;
 public class SQLNCharExpr extends SQLTextLiteralExpr {
     private static SQLDataType defaultDataType = new SQLCharacterDataType("nvarchar");
 
-    public SQLNCharExpr(){
-
+    public SQLNCharExpr() {
     }
 
-    public SQLNCharExpr(String text){
+    public SQLNCharExpr(String text) {
         this.text = text;
     }
-    public SQLNCharExpr(String text, SQLObject parent){
+
+    public SQLNCharExpr(String text, SQLObject parent) {
         this.text = text;
         this.parent = parent;
     }

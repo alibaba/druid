@@ -24,26 +24,24 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class Oracle_pl_for_2 extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "DROP TABLE employees_temp;\n" +
-				"CREATE TABLE employees_temp AS SELECT * FROM employees;\n" +
-				"\n" +
-				"DECLARE\n" +
-				"  TYPE NumList IS VARRAY(20) OF NUMBER;\n" +
-				"  depts NumList := NumList(10, 30, 70);  -- department numbers\n" +
-				"BEGIN\n" +
-				"  FOR i IN depts.FIRST..depts.LAST LOOP\n" +
-				"    DELETE FROM employees_temp\n" +
-				"    WHERE department_id = depts(i);\n" +
-				"  END LOOP;\n" +
-				"END;"; //
+                "CREATE TABLE employees_temp AS SELECT * FROM employees;\n" +
+                "\n" +
+                "DECLARE\n" +
+                "  TYPE NumList IS VARRAY(20) OF NUMBER;\n" +
+                "  depts NumList := NumList(10, 30, 70);  -- department numbers\n" +
+                "BEGIN\n" +
+                "  FOR i IN depts.FIRST..depts.LAST LOOP\n" +
+                "    DELETE FROM employees_temp\n" +
+                "    WHERE department_id = depts(i);\n" +
+                "  END LOOP;\n" +
+                "END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		assertEquals(3, statementList.size());
+        assertEquals(3, statementList.size());
 
-		SQLStatement stmt = statementList.get(0);
-
+        SQLStatement stmt = statementList.get(0);
 
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
@@ -68,44 +66,44 @@ public class Oracle_pl_for_2 extends OracleTest {
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
-			System.out.println(output);
-			assertEquals("DROP TABLE employees_temp;\n" +
-							"CREATE TABLE employees_temp\n" +
-							"AS\n" +
-							"SELECT *\n" +
-							"FROM employees;\n" +
-							"DECLARE\n" +
-							"\tTYPE NumList IS VARRAY(20) OF NUMBER;\n" +
-							"\tdepts NumList := NumList(10, 30, 70);\n" +
-							"BEGIN\n" +
-							"\tFOR i IN depts.FIRST..depts.LAST\n" +
-							"\tLOOP\n" +
-							"\t\tDELETE FROM employees_temp\n" +
-							"\t\tWHERE department_id = depts(i);\n" +
-							"\tEND LOOP;\n" +
-							"END;", //
-					output);
-		}
-		{
-			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("drop table employees_temp;\n" +
-							"create table employees_temp\n" +
-							"as\n" +
-							"select *\n" +
-							"from employees;\n" +
-							"declare\n" +
-							"\ttype NumList is VARRAY(20) OF NUMBER;\n" +
-							"\tdepts NumList := NumList(10, 30, 70);\n" +
-							"begin\n" +
-							"\tfor i in depts.FIRST..depts.LAST\n" +
-							"\tloop\n" +
-							"\t\tdelete from employees_temp\n" +
-							"\t\twhere department_id = depts(i);\n" +
-							"\tend loop;\n" +
-							"end;", //
-					output);
-		}
-	}
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+            System.out.println(output);
+            assertEquals("DROP TABLE employees_temp;\n" +
+                            "CREATE TABLE employees_temp\n" +
+                            "AS\n" +
+                            "SELECT *\n" +
+                            "FROM employees;\n" +
+                            "DECLARE\n" +
+                            "\tTYPE NumList IS VARRAY(20) OF NUMBER;\n" +
+                            "\tdepts NumList := NumList(10, 30, 70);\n" +
+                            "BEGIN\n" +
+                            "\tFOR i IN depts.FIRST..depts.LAST\n" +
+                            "\tLOOP\n" +
+                            "\t\tDELETE FROM employees_temp\n" +
+                            "\t\tWHERE department_id = depts(i);\n" +
+                            "\tEND LOOP;\n" +
+                            "END;", //
+                    output);
+        }
+        {
+            String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            assertEquals("drop table employees_temp;\n" +
+                            "create table employees_temp\n" +
+                            "as\n" +
+                            "select *\n" +
+                            "from employees;\n" +
+                            "declare\n" +
+                            "\ttype NumList is VARRAY(20) OF NUMBER;\n" +
+                            "\tdepts NumList := NumList(10, 30, 70);\n" +
+                            "begin\n" +
+                            "\tfor i in depts.FIRST..depts.LAST\n" +
+                            "\tloop\n" +
+                            "\t\tdelete from employees_temp\n" +
+                            "\t\twhere department_id = depts(i);\n" +
+                            "\tend loop;\n" +
+                            "end;", //
+                    output);
+        }
+    }
 }

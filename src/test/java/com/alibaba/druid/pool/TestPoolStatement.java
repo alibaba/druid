@@ -27,11 +27,9 @@ import junit.framework.TestCase;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestPoolStatement extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:oracle:thin:@a.b.c.d:1521:testconn");
         dataSource.setInitialSize(1);
@@ -83,7 +81,6 @@ public class TestPoolStatement extends TestCase {
         stmt.setLong(1, new Random().nextInt(1000 * 100));
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-
         }
         rs.close();
         stmt.close();

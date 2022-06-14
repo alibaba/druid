@@ -11,7 +11,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class MySqlCreateTable_like_test extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE like_test (LIKE t1)";
 
@@ -29,7 +28,6 @@ public class MySqlCreateTable_like_test extends MysqlTest {
                 "\tLIKE t1\n" +
                 ")", stmt.toString());
     }
-
 
     public void test_1() throws Exception {
         String sql = "CREATE TABLE like_test (`LIKE` t1)";

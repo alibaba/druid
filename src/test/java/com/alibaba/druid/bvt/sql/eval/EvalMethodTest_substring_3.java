@@ -8,9 +8,8 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class EvalMethodTest_substring_3 extends TestCase {
-
     public void test_method() throws Exception {
         Assert.assertEquals("aki",
-                            SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "SUBSTRING('Sakila', -5, 3)"));
+                SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "SUBSTRING('Sakila', -5, 3)"));
     }
 }

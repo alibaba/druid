@@ -14,7 +14,6 @@ import static com.alibaba.druid.sql.visitor.VisitorFeature.OutputParameterizedQu
  */
 public class MySqlParameterizedOutputVisitorTest_60_in extends TestCase {
     public void test_for_parameterize() throws Exception {
-
         String sql = "select * from a where id in (1, 2,3)";
 
         List<Object> params = new ArrayList<Object>();
@@ -29,7 +28,6 @@ public class MySqlParameterizedOutputVisitorTest_60_in extends TestCase {
     }
 
     public void test_for_parameterize_1() throws Exception {
-
         String sql = "select * from a where (id,userId) in ((1,2), (2,3),(3,4))";
 
         List<Object> params = new ArrayList<Object>();
@@ -44,7 +42,6 @@ public class MySqlParameterizedOutputVisitorTest_60_in extends TestCase {
     }
 
     public void test_for_parameterize_2() throws Exception {
-
         String sql = "select * from a where (id,userId) in ((1,2), (2,3),(3,4))";
 
         List<Object> params = new ArrayList<Object>();
@@ -63,14 +60,13 @@ public class MySqlParameterizedOutputVisitorTest_60_in extends TestCase {
     }
 
     public void test_for_parameterize_3() throws Exception {
-
         String sql = "select * from a where (id,userId) in ((1,2))";
 
         List<Object> params = new ArrayList<Object>();
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, OutputParameterizedQuesUnMergeInList);
         assertEquals("SELECT *\n" +
-                     "FROM a\n" +
-                     "WHERE (id, userId) IN ((?, ?))", psql);
+                "FROM a\n" +
+                "WHERE (id, userId) IN ((?, ?))", psql);
         assertEquals(2, params.size());
         assertEquals("1", params.get(0).toString());
         assertEquals("2", params.get(1).toString());

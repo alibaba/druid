@@ -21,11 +21,9 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableRename extends SQLObjectImpl implements SQLAlterTableItem {
-
     protected SQLExprTableSource to;
 
     public SQLAlterTableRename() {
-
     }
 
     public SQLAlterTableRename(SQLExpr to) {

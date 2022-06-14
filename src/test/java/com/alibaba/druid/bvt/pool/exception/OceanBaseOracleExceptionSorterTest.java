@@ -14,12 +14,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class OceanBaseOracleExceptionSorterTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-        
+
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OceanBaseOracleExceptionSorter());
@@ -68,10 +67,10 @@ public class OceanBaseOracleExceptionSorterTest extends TestCase {
         } catch (SQLException ex) {
             commitError = ex;
         }
-        
+
         Assert.assertNotNull(commitError);
         Assert.assertSame(exception, commitError.getCause());
-        
+
         conn.close();
     }
 

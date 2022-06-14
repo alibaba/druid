@@ -24,20 +24,19 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
- * 
+ *
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
  */
 public class MySqlWallTest72 extends TestCase {
-
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         provider.getConfig().setCommentAllow(true);
 
         Assert.assertFalse(provider.checkValid(//
-        "select * from t /**/ where fid = 123 AND 1=1"));
+                "select * from t /**/ where fid = 123 AND 1=1"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

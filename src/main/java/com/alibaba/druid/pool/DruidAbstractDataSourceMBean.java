@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface DruidAbstractDataSourceMBean {
-
     int getLoginTimeout();
 
     String getDbType();
@@ -111,7 +110,7 @@ public interface DruidAbstractDataSourceMBean {
     long getCreateErrorCount();
 
     int getMaxActive();
-    
+
     void setMaxActive(int maxActive);
 
     long getTimeBetweenConnectErrorMillis();
@@ -163,14 +162,14 @@ public interface DruidAbstractDataSourceMBean {
     long getCachedPreparedStatementMissCount();
 
     long getCachedPreparedStatementHitCount();
-    
+
     boolean isUseOracleImplicitCache();
-    
+
     void setUseOracleImplicitCache(boolean useOracleImplicitCache);
-    
+
     int getDriverMajorVersion();
-    
+
     int getDriverMinorVersion();
-    
+
     String getExceptionSorterClassName();
 }
