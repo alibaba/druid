@@ -324,13 +324,15 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
             }
 
             printTableSourceExpr(x.getName());
-            print(' ');
+            this.indentCount++;
+            println();
 
             SQLAlterTableItem item = x.getItems().get(i);
             accept(item);
             if (i != x.getItems().size() - 1) {
                 print(';');
             }
+            this.indentCount--;
         }
 
         return false;
