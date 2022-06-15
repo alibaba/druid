@@ -140,6 +140,12 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
         for (int i = 0; i < size; ++i) {
             SQLTableElement element = tableElementList.get(i);
             if (element instanceof SQLPrimaryKey) {
+                SQLName name = ((SQLPrimaryKey) element).getName();
+                if (name != null) {
+                    printUcase("CONSTRAINT ");
+                    name.accept(this);
+                    print(' ');
+                }
                 printUcase("PRIMARY KEY ");
                 acceptChildName(((SQLPrimaryKey) element).getColumns());
             } else if (element instanceof SQLUnique) {
