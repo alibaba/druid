@@ -316,26 +316,31 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
         | { SET { VISIBLE | INVISIBLE } } }
          */
 
+        printAlterTable(x);
+        this.indentCount++;
         for (int i = 0; i < x.getItems().size(); ++i) {
-            print0(ucase ? "ALTER TABLE " : "alter table ");
-
-            if (x.isIfExists()) {
-                print0(ucase ? "IF EXISTS " : "if exists ");
-            }
-
-            printTableSourceExpr(x.getName());
-            this.indentCount++;
-            println();
-
             SQLAlterTableItem item = x.getItems().get(i);
+            println();
             accept(item);
-            if (i != x.getItems().size() - 1) {
-                print(';');
+            if (i + 1 < x.getItems().size()) {
+                SQLAlterTableItem later = x.getItems().get(i + 1);
+                if (later instanceof MySqlAlterTableModifyColumn) {
+                    print(";\n");
+                    printAlterTable(x);
+                }
             }
-            this.indentCount--;
         }
+        this.indentCount--;
 
         return false;
+    }
+
+    private void printAlterTable(SQLAlterTableStatement x) {
+        printUcase("ALTER TABLE ");
+        if (x.isIfExists()) {
+            printUcase("IF EXISTS ");
+        }
+        printTableSourceExpr(x.getName());
     }
 
     private void accept(SQLAlterTableItem item) {
