@@ -6109,6 +6109,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(using);
         }
         */
+        if (x.isGlobal()) {
+            print0(ucase ? " GLOBAL" : " global");
+        } else if (x.isVisible()) {
+            print0(ucase ? " LOCAL" : " local");
+        }
 
         if (x.isInvisible()) {
             print0(ucase ? " INVISIBLE" : " invisible");

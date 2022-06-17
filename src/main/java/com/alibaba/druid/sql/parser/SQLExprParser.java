@@ -5430,6 +5430,14 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 indexDefinition.getOptions().setVisible(true);
             } else if ((DbType.mysql == dbType) &&
+                    lexer.identifierEquals("GLOBAL")) {
+                lexer.nextToken();
+                indexDefinition.getOptions().setGlobal(true);
+            } else if ((DbType.mysql == dbType) &&
+                    lexer.identifierEquals("LOCAL")) {
+                lexer.nextToken();
+                indexDefinition.getOptions().setLocal(true);
+            } else if ((DbType.mysql == dbType) &&
                     lexer.token == Token.HINT && lexer.stringVal().trim().equals("!80000 INVISIBLE")) {
                 lexer.nextToken();
                 indexDefinition.getOptions().setInvisible(true);
@@ -5536,6 +5544,9 @@ public class SQLExprParser extends SQLParser {
                         } else if (lexer.identifierEquals(FnvHash.Constants.TBPARTITIONS)) {
                             lexer.nextToken();
                             indexDefinition.setTbPartitions(primary());
+                        //} else if (lexer.identifierEquals(FnvHash.Constants.GLOBAL)) {
+                        //    lexer.nextToken();
+                        //    indexDefinition.setGlobal(true);
                         } else {
                             break _opts;
                         }
