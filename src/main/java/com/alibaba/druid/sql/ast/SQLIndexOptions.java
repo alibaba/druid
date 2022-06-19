@@ -21,6 +21,8 @@ public class SQLIndexOptions extends SQLObjectImpl {
     private String lock;
     private boolean invisible;
     private boolean visible;
+    private boolean global;
+    private boolean local;
     private List<SQLAssignItem> otherOptions = new ArrayList<SQLAssignItem>();
 
     public SQLIndexOptions() {
@@ -36,6 +38,22 @@ public class SQLIndexOptions extends SQLObjectImpl {
 
     public SQLExpr getKeyBlockSize() {
         return keyBlockSize;
+    }
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
     }
 
     public void setKeyBlockSize(SQLExpr keyBlockSize) {
@@ -176,5 +194,8 @@ public class SQLIndexOptions extends SQLObjectImpl {
         }
 
         options.invisible = invisible;
+
+        options.global = global;
+        options.local = local;
     }
 }
