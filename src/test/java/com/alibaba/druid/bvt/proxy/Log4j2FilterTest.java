@@ -43,7 +43,7 @@ public class Log4j2FilterTest extends TestCase {
         Log4j2Filter filter = null;
         try {
             filter = new Log4j2Filter();
-        } catch (NoSuchFieldError ignored) {
+        } catch (Throwable ignored) {
             return;
         }
 
