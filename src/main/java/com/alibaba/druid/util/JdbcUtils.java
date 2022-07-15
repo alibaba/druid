@@ -15,18 +15,18 @@
  */
 package com.alibaba.druid.util;
 
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
-import javax.sql.DataSource;
-
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.sql.*;
 import java.util.*;
+
+import javax.sql.DataSource;
+
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -589,6 +589,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.as400;
         } else if (rawUrl.startsWith("jdbc:sapdb:")) {
             return DbType.sapdb;
+        } else if (rawUrl.startsWith("jdbc:sap:")) {
+            return DbType.sap_hana;
         } else if (rawUrl.startsWith("jdbc:JSQLConnect:")) {
             return DbType.JSQLConnect;
         } else if (rawUrl.startsWith("jdbc:JTurbo:")) {
