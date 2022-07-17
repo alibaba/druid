@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.parser;
 
 import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class SQLLexerTest2 extends TestCase {
 
@@ -66,6 +67,19 @@ public class SQLLexerTest2 extends TestCase {
                 break;
             }
         }
+    }
+
+    public void test_lexer_computePos() {
+        String sql = "SELECT;\nSELECT;";
+        Lexer lexer = new Lexer(sql);
+        lexer.nextToken();
+        lexer.nextToken();
+        lexer.computeRowAndColumn();
+        int posLine = lexer.getPosLine();
+        int column = lexer.getPosColumn();
+        Assert.assertEquals(posLine, 1);
+        Assert.assertEquals(column, 7);
+
     }
     
 }
