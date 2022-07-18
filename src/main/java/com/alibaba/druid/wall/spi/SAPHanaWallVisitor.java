@@ -18,18 +18,21 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.dialect.saphana.ast.statement.*;
+import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaASTVisitor;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-public class SapHanaWallVisitor extends WallVisitorBase implements WallVisitor, MySqlASTVisitor {
+/**
+ * 
+ * @author nukiyoam
+ */
+public class SAPHanaWallVisitor extends WallVisitorBase implements WallVisitor, SAPHanaASTVisitor {
 
-    public SapHanaWallVisitor(WallProvider provider) {
+    public SAPHanaWallVisitor(WallProvider provider) {
         super(provider);
     }
 
@@ -39,31 +42,33 @@ public class SapHanaWallVisitor extends WallVisitorBase implements WallVisitor, 
     }
 
     @Override
-    public boolean visit(MySqlSelectQueryBlock x) {
+    public boolean visit(SAPHanaSelectQueryBlock x) {
         WallVisitorUtils.checkSelelct(this, x);
         return true;
     }
 
     @Override
-    public boolean visit(MySqlDeleteStatement x) {
+    public boolean visit(SAPHanaDeleteStatement x) {
         WallVisitorUtils.checkReadOnly(this, x.getFrom());
         return visit((SQLDeleteStatement)x);
     }
 
     @Override
-    public boolean visit(MySqlUpdateStatement x) {
+    public boolean visit(SAPHanaUpdateStatement x) {
         return visit((SQLUpdateStatement)x);
     }
 
     @Override
-    public boolean visit(MySqlInsertStatement x) {
+    public boolean visit(SAPHanaInsertStatement x) {
         return visit((SQLInsertStatement)x);
     }
 
+    @Override
     public boolean visit(SQLIdentifierExpr x) {
         return true;
     }
 
+    @Override
     public boolean visit(SQLPropertyExpr x) {
         if (x.getOwner() instanceof SQLVariantRefExpr) {
             SQLVariantRefExpr varExpr = (SQLVariantRefExpr)x.getOwner();
@@ -99,7 +104,60 @@ public class SapHanaWallVisitor extends WallVisitorBase implements WallVisitor, 
         return true;
     }
 
-    public boolean checkVar(SQLObject parent, String varName) {
+    @Override
+    public boolean isDenyTable(String name) {
+        if (!config.isTableCheck()) {
+            return false;
+        }
+
+        return !this.provider.checkDenyTable(name);
+    }
+
+    @Override
+    public boolean visit(SAPHanaCreateTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLVariantRefExpr x) {
+        String varName = x.getName();
+        if (varName == null) {
+            return false;
+        }
+
+        if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
+            final WallTopStatementContext topStatementContext = WallVisitorUtils.getWallTopStatementContext();
+            if (topStatementContext != null
+                && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
+                return false;
+            }
+
+            boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
+            if (!isTop) {
+                boolean allow =
+                    !isDeny(varName) || (!WallVisitorUtils.isWhereOrHaving(x) && !WallVisitorUtils.checkSqlExpr(x));
+
+                if (!allow) {
+                    violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
+                        "variable not allow : " + x.getName(), toSQL(x)));
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isDeny(String varName) {
+        if (varName.startsWith("@@")) {
+            varName = varName.substring(2);
+        }
+
+        varName = varName.toLowerCase();
+        return config.getDenyVariants().contains(varName);
+    }
+
+    private boolean checkVar(SQLObject parent, String varName) {
         if (varName == null) {
             return false;
         }
@@ -120,73 +178,6 @@ public class SapHanaWallVisitor extends WallVisitorBase implements WallVisitor, 
             varName = varName.substring(2);
         }
 
-        if (config.getPermitVariants().contains(varName)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean isDeny(String varName) {
-        if (varName.startsWith("@@")) {
-            varName = varName.substring(2);
-        }
-
-        varName = varName.toLowerCase();
-        return config.getDenyVariants().contains(varName);
-    }
-
-    public boolean visit(SQLVariantRefExpr x) {
-        String varName = x.getName();
-        if (varName == null) {
-            return false;
-        }
-
-        if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
-            final WallTopStatementContext topStatementContext = WallVisitorUtils.getWallTopStatementContext();
-            if (topStatementContext != null
-                && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
-                return false;
-            }
-
-            boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
-            if (!isTop) {
-                boolean allow = true;
-                if (isDeny(varName) && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(x))) {
-                    allow = false;
-                }
-
-                if (!allow) {
-                    violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
-                        "variable not allow : " + x.getName(), toSQL(x)));
-                }
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean visit(MySqlOutFileExpr x) {
-        if (!config.isSelectIntoOutfileAllow() && !WallVisitorUtils.isTopSelectOutFile(x)) {
-            violations.add(new IllegalSQLObjectViolation(ErrorCode.INTO_OUTFILE, "into out file not allow", toSQL(x)));
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean isDenyTable(String name) {
-        if (!config.isTableCheck()) {
-            return false;
-        }
-
-        return !this.provider.checkDenyTable(name);
-    }
-
-    @Override
-    public boolean visit(MySqlCreateTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
+        return config.getPermitVariants().contains(varName);
     }
 }

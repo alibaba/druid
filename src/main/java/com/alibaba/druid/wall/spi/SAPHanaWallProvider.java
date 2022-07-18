@@ -27,15 +27,15 @@ import com.alibaba.druid.wall.WallVisitor;
  * 
  * @author nukiyoam
  */
-public class SapHanaWallProvider extends WallProvider {
+public class SAPHanaWallProvider extends WallProvider {
 
     public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/saphana";
 
-    public SapHanaWallProvider() {
+    public SAPHanaWallProvider() {
         this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
-    public SapHanaWallProvider(WallConfig config) {
+    public SAPHanaWallProvider(WallConfig config) {
         super(config, DbType.sap_hana);
     }
 
@@ -47,11 +47,12 @@ public class SapHanaWallProvider extends WallProvider {
 
     @Override
     public WallVisitor createWallVisitor() {
-        return new MySqlWallVisitor(this);
+        return new SAPHanaWallVisitor(this);
     }
 
     @Override
     public ExportParameterVisitor createExportParameterVisitor() {
+
         return new MySqlExportParameterVisitor();
     }
 
