@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.saphana.ast.statement.SAPHanaSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.util.JdbcUtils;
@@ -161,6 +162,7 @@ public class PagerUtils {
             case h2:
             case ads:
             case clickhouse:
+            case sap_hana:
                 return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
             case postgresql:
             case hive:
@@ -558,6 +560,8 @@ public class PagerUtils {
                 return new DB2SelectQueryBlock();
             case odps:
                 return new OdpsSelectQueryBlock();
+            case sap_hana:
+                return new SAPHanaSelectQueryBlock();
             default:
                 return new SQLSelectQueryBlock(dbType);
         }
