@@ -14,6 +14,7 @@ package com.alibaba.druid.sql.dialect.saphana.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -85,7 +86,11 @@ public class SAPHanaOutputVisitor extends SQLASTOutputVisitor implements SAPHana
             visit(orderBy);
         }
 
-        printFetchFirst(x);
+        SQLLimit limit = x.getLimit();
+        if (limit != null) {
+            println();
+            visit(limit);
+        }
 
         return false;
     }
@@ -152,6 +157,22 @@ public class SAPHanaOutputVisitor extends SQLASTOutputVisitor implements SAPHana
             indentCount--;
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLLimit x) {
+        print0(ucase ? "LIMIT " : "limit ");
+        SQLExpr rowCount = x.getRowCount();
+        if (rowCount != null) {
+            printExpr(rowCount, parameterized);
+            print(' ');
+        }
+        SQLExpr offset = x.getOffset();
+        if (offset != null) {
+            print0(ucase ? "OFFSET " : "offset ");
+            printExpr(offset, parameterized);
+        }
         return false;
     }
 }

@@ -163,7 +163,7 @@ public class PagerUtils {
             case ads:
             case clickhouse:
             case sap_hana:
-                return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
+                return limitMySqlQueryBlock(queryBlock, offset, count, check);
             case postgresql:
             case hive:
             case odps:
@@ -441,7 +441,6 @@ public class PagerUtils {
     }
 
     private static boolean limitMySqlQueryBlock(SQLSelectQueryBlock queryBlock,
-                                                DbType dbType,
                                                 int offset,
                                                 int count,
                                                 boolean check) {

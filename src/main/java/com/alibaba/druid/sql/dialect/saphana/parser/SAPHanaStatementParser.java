@@ -89,4 +89,5 @@ public class SAPHanaStatementParser extends SQLStatementParser {
         SAPHanaCreateTableParser parser = new SAPHanaCreateTableParser(this.exprParser);
         return parser.parseCreateTable();
     }
+
 }
