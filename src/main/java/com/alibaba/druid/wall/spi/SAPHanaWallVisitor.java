@@ -27,11 +27,9 @@ import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 /**
- * 
  * @author nukiyoam
  */
 public class SAPHanaWallVisitor extends WallVisitorBase implements WallVisitor, SAPHanaASTVisitor {
-
     public SAPHanaWallVisitor(WallProvider provider) {
         super(provider);
     }
@@ -50,17 +48,17 @@ public class SAPHanaWallVisitor extends WallVisitorBase implements WallVisitor, 
     @Override
     public boolean visit(SAPHanaDeleteStatement x) {
         WallVisitorUtils.checkReadOnly(this, x.getFrom());
-        return visit((SQLDeleteStatement)x);
+        return visit((SQLDeleteStatement) x);
     }
 
     @Override
     public boolean visit(SAPHanaUpdateStatement x) {
-        return visit((SQLUpdateStatement)x);
+        return visit((SQLUpdateStatement) x);
     }
 
     @Override
     public boolean visit(SAPHanaInsertStatement x) {
-        return visit((SQLInsertStatement)x);
+        return visit((SQLInsertStatement) x);
     }
 
     @Override
@@ -71,13 +69,13 @@ public class SAPHanaWallVisitor extends WallVisitorBase implements WallVisitor, 
     @Override
     public boolean visit(SQLPropertyExpr x) {
         if (x.getOwner() instanceof SQLVariantRefExpr) {
-            SQLVariantRefExpr varExpr = (SQLVariantRefExpr)x.getOwner();
+            SQLVariantRefExpr varExpr = (SQLVariantRefExpr) x.getOwner();
             SQLObject parent = x.getParent();
             String varName = varExpr.getName();
             if (varName.equalsIgnoreCase("@@session") || varName.equalsIgnoreCase("@@global")) {
                 if (!(parent instanceof SQLSelectItem) && !(parent instanceof SQLAssignItem)) {
                     violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
-                        "variable in condition not allow", toSQL(x)));
+                            "variable in condition not allow", toSQL(x)));
                     return false;
                 }
 
@@ -86,13 +84,13 @@ public class SAPHanaWallVisitor extends WallVisitorBase implements WallVisitor, 
                     if (!isTop) {
                         boolean allow = true;
                         if (isDeny(varName)
-                            && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(varExpr))) {
+                                && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(varExpr))) {
                             allow = false;
                         }
 
                         if (!allow) {
                             violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
-                                "variable not allow : " + x.getName(), toSQL(x)));
+                                    "variable not allow : " + x.getName(), toSQL(x)));
                         }
                     }
                 }
@@ -129,18 +127,18 @@ public class SAPHanaWallVisitor extends WallVisitorBase implements WallVisitor, 
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
             final WallTopStatementContext topStatementContext = WallVisitorUtils.getWallTopStatementContext();
             if (topStatementContext != null
-                && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
+                    && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
                 return false;
             }
 
             boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
             if (!isTop) {
                 boolean allow =
-                    !isDeny(varName) || (!WallVisitorUtils.isWhereOrHaving(x) && !WallVisitorUtils.checkSqlExpr(x));
+                        !isDeny(varName) || (!WallVisitorUtils.isWhereOrHaving(x) && !WallVisitorUtils.checkSqlExpr(x));
 
                 if (!allow) {
                     violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
-                        "variable not allow : " + x.getName(), toSQL(x)));
+                            "variable not allow : " + x.getName(), toSQL(x)));
                 }
             }
         }

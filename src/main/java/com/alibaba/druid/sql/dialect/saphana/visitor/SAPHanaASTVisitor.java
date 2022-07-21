@@ -17,11 +17,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
  * SAP HANA visitor
- * 
+ *
  * @author nukiyoam
  */
 public interface SAPHanaASTVisitor extends SQLASTVisitor {
-
     default boolean visit(SAPHanaSelectQueryBlock x) {
         return true;
     }

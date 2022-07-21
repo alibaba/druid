@@ -15,18 +15,18 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
+import javax.sql.DataSource;
+
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.sql.*;
 import java.util.*;
-
-import javax.sql.DataSource;
-
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -524,6 +524,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.OSCAR_DRIVER;
         } else if (rawUrl.startsWith("jdbc:dbcp:")) {
             return JdbcConstants.TYDB_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:sap:")) {
+            return JdbcConstants.SAP_HANA_DRIVER;
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
@@ -926,6 +928,10 @@ public final class JdbcUtils implements JdbcConstants {
         return driverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
                 || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)
                 || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_REPLICATE);
+    }
+
+    public static boolean isSAPHanaDriver(String driverClassName) {
+        return Objects.equals(driverClassName, JdbcConstants.SAP_HANA_DRIVER);
     }
 
     public static boolean isOracleDbType(String dbType) {

@@ -1314,6 +1314,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 || (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER2))) {
             DbType dbType = DbType.of(this.dbTypeName);
             this.validConnectionChecker = new OceanBaseValidConnectionChecker(dbType);
+        } else if (JdbcUtils.isSAPHanaDriver(realDriverClassName)) {
+            this.validConnectionChecker = new SAPHanaValidConnectionChecker();
         }
 
     }

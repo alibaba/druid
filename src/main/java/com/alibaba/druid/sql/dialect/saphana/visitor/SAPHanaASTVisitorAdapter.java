@@ -17,4 +17,5 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 /**
  * @author nukiyoam
  */
-public class SAPHanaASTVisitorAdapter extends SQLASTVisitorAdapter implements SAPHanaASTVisitor {}
+public class SAPHanaASTVisitorAdapter extends SQLASTVisitorAdapter implements SAPHanaASTVisitor {
+}

@@ -20,11 +20,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * @author nukiyoam
  */
 public abstract class SAPHanaObjectImpl extends SQLObjectImpl implements SAPHanaObject {
-
     @Override
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof SAPHanaASTVisitor) {
-            accept0((SAPHanaASTVisitor)v);
+            accept0((SAPHanaASTVisitor) v);
         } else {
             throw new IllegalArgumentException("not support visitor type : " + v.getClass().getName());
         }

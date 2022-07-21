@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * @author nukiyoam
  */
 public class SAPHanaCreateTableStatement extends SQLCreateTableStatement implements SAPHanaStatement {
-
     public SAPHanaCreateTableStatement() {
         super(DbType.sap_hana);
     }
@@ -30,7 +29,7 @@ public class SAPHanaCreateTableStatement extends SQLCreateTableStatement impleme
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof SAPHanaASTVisitor) {
-            accept0((SAPHanaASTVisitor)visitor);
+            accept0((SAPHanaASTVisitor) visitor);
         } else {
             super.accept0(visitor);
         }
@@ -39,7 +38,6 @@ public class SAPHanaCreateTableStatement extends SQLCreateTableStatement impleme
     @Override
     public void accept0(SAPHanaASTVisitor visitor) {
         if (visitor.visit(this)) {
-
             if (tableSource != null) {
                 tableSource.accept(visitor);
             }

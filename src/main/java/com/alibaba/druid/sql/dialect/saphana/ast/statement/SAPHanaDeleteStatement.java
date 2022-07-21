@@ -18,11 +18,9 @@ import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
- * 
  * @author nukiyoam
  */
 public class SAPHanaDeleteStatement extends SQLDeleteStatement implements SAPHanaStatement {
-
     public SAPHanaDeleteStatement() {
         super(DbType.sap_hana);
     }
@@ -40,7 +38,7 @@ public class SAPHanaDeleteStatement extends SQLDeleteStatement implements SAPHan
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof SAPHanaASTVisitor) {
-            accept0((SAPHanaASTVisitor)visitor);
+            accept0((SAPHanaASTVisitor) visitor);
         } else {
             super.accept0(visitor);
         }

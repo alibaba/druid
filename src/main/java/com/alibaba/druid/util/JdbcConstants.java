@@ -152,4 +152,10 @@ public interface JdbcConstants {
 
     DbType TYDB = DbType.tydb;
     String TYDB_DRIVER = "com.dbcp.jdbc.Driver";
+
+    /**
+     * sap hana
+     */
+    DbType SAP_HANA = DbType.sap_hana;
+    String SAP_HANA_DRIVER = "com.sap.db.jdbc.Driver";
 }

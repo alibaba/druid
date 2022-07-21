@@ -18,4 +18,5 @@ import com.alibaba.druid.sql.dialect.saphana.ast.SAPHanaObject;
 /**
  * @author nukiyoam
  */
-public interface SAPHanaStatement extends SQLStatement, SAPHanaObject {}
+public interface SAPHanaStatement extends SQLStatement, SAPHanaObject {
+}

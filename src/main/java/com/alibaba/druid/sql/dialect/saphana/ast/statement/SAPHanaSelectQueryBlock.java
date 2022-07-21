@@ -12,8 +12,6 @@
  */
 package com.alibaba.druid.sql.dialect.saphana.ast.statement;
 
-import java.util.Objects;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLWindow;
@@ -24,11 +22,12 @@ import com.alibaba.druid.sql.dialect.saphana.ast.SAPHanaObject;
 import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.Objects;
+
 /**
  * @author nukiyoam
  */
 public class SAPHanaSelectQueryBlock extends SQLSelectQueryBlock implements SAPHanaObject {
-
     public SAPHanaSelectQueryBlock() {
         dbType = DbType.sap_hana;
     }
@@ -52,7 +51,7 @@ public class SAPHanaSelectQueryBlock extends SQLSelectQueryBlock implements SAPH
             return false;
         }
 
-        SAPHanaSelectQueryBlock that = (SAPHanaSelectQueryBlock)o;
+        SAPHanaSelectQueryBlock that = (SAPHanaSelectQueryBlock) o;
 
         if (!Objects.equals(hints, that.hints)) {
             return false;
@@ -71,7 +70,7 @@ public class SAPHanaSelectQueryBlock extends SQLSelectQueryBlock implements SAPH
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof SAPHanaASTVisitor) {
-            accept0((SAPHanaASTVisitor)visitor);
+            accept0((SAPHanaASTVisitor) visitor);
             return;
         }
 

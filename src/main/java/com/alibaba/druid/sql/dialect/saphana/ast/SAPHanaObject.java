@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaASTVisitor;
  * @author nukiyoam
  */
 public interface SAPHanaObject extends SQLObject {
-
     void accept0(SAPHanaASTVisitor v);
 
 }

@@ -1,17 +1,14 @@
 /*
  * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 package com.alibaba.druid.sql;
 
@@ -44,6 +41,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
+import com.alibaba.druid.sql.dialect.saphana.ast.SAPHanaObject;
+import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.*;
@@ -66,14 +65,11 @@ import java.util.TimeZone;
 public class SQLUtils {
     public static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private static final SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
-            SQLParserFeature.KeepComments,
-            SQLParserFeature.EnableSQLBinaryOpExprGroup
-    };
+    private static final SQLParserFeature[] FORMAT_DEFAULT_FEATURES =
+            {SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup};
 
     public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption(true, true);
-    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION
-            = new FormatOption(false, true);
+    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION = new FormatOption(false, true);
 
     private static final Log LOG = LogFactory.getLog(SQLUtils.class);
 
@@ -89,9 +85,7 @@ public class SQLUtils {
         return toSQLString(sqlObject, dbType, option, null);
     }
 
-    public static String toSQLString(SQLObject sqlObject,
-                                     DbType dbType,
-                                     FormatOption option,
+    public static String toSQLString(SQLObject sqlObject, DbType dbType, FormatOption option,
                                      VisitorFeature... features) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createOutputVisitor(out, dbType);
@@ -130,6 +124,10 @@ public class SQLUtils {
             return toMySqlString(obj);
         }
 
+        if (obj instanceof SAPHanaObject) {
+            return toSAPHanaString(obj);
+        }
+
         StringBuilder out = new StringBuilder();
         obj.accept(new SQLASTOutputVisitor(out));
 
@@ -161,6 +159,10 @@ public class SQLUtils {
         return toMySqlString(sqlObject, (FormatOption) null);
     }
 
+    public static String toSAPHanaString(SQLObject sqlObject) {
+        return toSAPHanaString(sqlObject, (FormatOption) null);
+    }
+
     public static String toMySqlStringIfNotNull(SQLObject sqlObject, String defaultStr) {
         if (sqlObject == null) {
             return defaultStr;
@@ -171,6 +173,10 @@ public class SQLUtils {
 
     public static String toMySqlString(SQLObject sqlObject, VisitorFeature... features) {
         return toMySqlString(sqlObject, new FormatOption(features));
+    }
+
+    public static String toSAPHanaString(SQLObject sqlObject, VisitorFeature... features) {
+        return toSAPHanaString(sqlObject, new FormatOption(features));
     }
 
     public static String toNormalizeMysqlString(SQLObject sqlObject) {
@@ -184,8 +190,16 @@ public class SQLUtils {
         return toSQLString(sqlObject, DbType.mysql, option);
     }
 
+    public static String toSAPHanaString(SQLObject sqlObject, FormatOption option) {
+        return toSQLString(sqlObject, DbType.sap_hana, option);
+    }
+
     public static SQLExpr toMySqlExpr(String sql) {
         return toSQLExpr(sql, DbType.mysql);
+    }
+
+    public static SQLExpr toSAPHanaExpr(String sql) {
+        return toSQLExpr(sql, DbType.sap_hana);
     }
 
     public static String formatMySql(String sql) {
@@ -194,6 +208,14 @@ public class SQLUtils {
 
     public static String formatMySql(String sql, FormatOption option) {
         return format(sql, DbType.mysql, option);
+    }
+
+    public static String formatSAPHana(String sql) {
+        return format(sql, DbType.sap_hana);
+    }
+
+    public static String formatSAPHana(String sql, FormatOption option) {
+        return format(sql, DbType.sap_hana, option);
     }
 
     public static String formatOracle(String sql) {
@@ -213,8 +235,7 @@ public class SQLUtils {
     }
 
     public static String formatPresto(String sql, FormatOption option) {
-        SQLParserFeature[] features = {SQLParserFeature.KeepComments,
-                SQLParserFeature.EnableSQLBinaryOpExprGroup,
+        SQLParserFeature[] features = {SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup,
                 SQLParserFeature.KeepNameQuotes};
         return format(sql, DbType.mysql, null, option, features);
     }
@@ -368,20 +389,13 @@ public class SQLUtils {
         return toSQLString(statementList, dbType, parameters, null, null);
     }
 
-    public static String toSQLString(List<SQLStatement> statementList,
-                                     DbType dbType,
-                                     List<Object> parameters,
+    public static String toSQLString(List<SQLStatement> statementList, DbType dbType, List<Object> parameters,
                                      FormatOption option) {
         return toSQLString(statementList, dbType, parameters, option, null);
     }
 
-    public static String toSQLString(
-            List<SQLStatement> statementList,
-            DbType dbType,
-            List<Object> parameters,
-            FormatOption option,
-            Map<String, String> tableMapping
-    ) {
+    public static String toSQLString(List<SQLStatement> statementList, DbType dbType, List<Object> parameters,
+                                     FormatOption option, Map<String, String> tableMapping) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
         if (parameters != null) {
@@ -433,15 +447,15 @@ public class SQLUtils {
                 }
             }
 
-//            {
-//                List<String> comments = stmt.getBeforeCommentsDirect();
-//                if (comments != null){
-//                    for(String comment : comments) {
-//                        visitor.printComment(comment);
-//                        visitor.println();
-//                    }
-//                }
-//            }
+            // {
+            // List<String> comments = stmt.getBeforeCommentsDirect();
+            // if (comments != null){
+            // for(String comment : comments) {
+            // visitor.printComment(comment);
+            // visitor.println();
+            // }
+            // }
+            // }
             stmt.accept(visitor);
 
             if (i == size - 1) {
@@ -465,8 +479,7 @@ public class SQLUtils {
         return createFormatOutputVisitor(out, null, dbType);
     }
 
-    public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out,
-                                                                List<SQLStatement> statementList,
+    public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out, List<SQLStatement> statementList,
                                                                 DbType dbType) {
         if (dbType == null) {
             if (statementList != null && statementList.size() > 0) {
@@ -513,6 +526,8 @@ public class SQLUtils {
                 return new PrestoOutputVisitor(out);
             case clickhouse:
                 return new ClickhouseOutputVisitor(out);
+            case sap_hana:
+                return new SAPHanaOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }
@@ -838,72 +853,24 @@ public class SQLUtils {
         selectItem.setParent(selectItem);
     }
 
-    public static class FormatOption {
-        private int features = VisitorFeature.of(
-                VisitorFeature.OutputUCase,
-                VisitorFeature.OutputPrettyFormat
-        );
-
-        public FormatOption() {
+    public static boolean isValue(SQLExpr expr) {
+        if (expr instanceof SQLLiteralExpr) {
+            return true;
         }
 
-        public FormatOption(VisitorFeature... features) {
-            this.features = VisitorFeature.of(features);
+        if (expr instanceof SQLVariantRefExpr) {
+            return true;
         }
 
-        public FormatOption(boolean ucase) {
-            this(ucase, true);
+        if (expr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
+            SQLBinaryOperator op = binaryOpExpr.getOperator();
+            if (op == SQLBinaryOperator.Add || op == SQLBinaryOperator.Subtract || op == SQLBinaryOperator.Multiply) {
+                return isValue(binaryOpExpr.getLeft()) && isValue(binaryOpExpr.getRight());
+            }
         }
 
-        public FormatOption(boolean ucase, boolean prettyFormat) {
-            this(ucase, prettyFormat, false);
-        }
-
-        public FormatOption(boolean ucase, boolean prettyFormat, boolean parameterized) {
-            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputUCase, ucase);
-            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputPrettyFormat, prettyFormat);
-            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputParameterized, parameterized);
-        }
-
-        public boolean isDesensitize() {
-            return isEnabled(VisitorFeature.OutputDesensitize);
-        }
-
-        public void setDesensitize(boolean val) {
-            config(VisitorFeature.OutputDesensitize, val);
-        }
-
-        public boolean isUppCase() {
-            return isEnabled(VisitorFeature.OutputUCase);
-        }
-
-        public void setUppCase(boolean val) {
-            config(VisitorFeature.OutputUCase, val);
-        }
-
-        public boolean isPrettyFormat() {
-            return isEnabled(VisitorFeature.OutputPrettyFormat);
-        }
-
-        public void setPrettyFormat(boolean prettyFormat) {
-            config(VisitorFeature.OutputPrettyFormat, prettyFormat);
-        }
-
-        public boolean isParameterized() {
-            return isEnabled(VisitorFeature.OutputParameterized);
-        }
-
-        public void setParameterized(boolean parameterized) {
-            config(VisitorFeature.OutputParameterized, parameterized);
-        }
-
-        public void config(VisitorFeature feature, boolean state) {
-            features = VisitorFeature.config(features, feature, state);
-        }
-
-        public final boolean isEnabled(VisitorFeature feature) {
-            return VisitorFeature.isEnabled(this.features, feature);
-        }
+        return false;
     }
 
     public static String refactor(String sql, DbType dbType, Map<String, String> tableMapping) {
@@ -1085,27 +1052,69 @@ public class SQLUtils {
         return normalize_a.equalsIgnoreCase(normalize_b);
     }
 
-    public static boolean isValue(SQLExpr expr) {
-        if (expr instanceof SQLLiteralExpr) {
-            return true;
+    public static class FormatOption {
+        private int features = VisitorFeature.of(VisitorFeature.OutputUCase, VisitorFeature.OutputPrettyFormat);
+
+        public FormatOption() {
         }
 
-        if (expr instanceof SQLVariantRefExpr) {
-            return true;
+        public FormatOption(VisitorFeature... features) {
+            this.features = VisitorFeature.of(features);
         }
 
-        if (expr instanceof SQLBinaryOpExpr) {
-            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
-            SQLBinaryOperator op = binaryOpExpr.getOperator();
-            if (op == SQLBinaryOperator.Add
-                    || op == SQLBinaryOperator.Subtract
-                    || op == SQLBinaryOperator.Multiply) {
-                return isValue(binaryOpExpr.getLeft())
-                        && isValue(binaryOpExpr.getRight());
-            }
+        public FormatOption(boolean ucase) {
+            this(ucase, true);
         }
 
-        return false;
+        public FormatOption(boolean ucase, boolean prettyFormat) {
+            this(ucase, prettyFormat, false);
+        }
+
+        public FormatOption(boolean ucase, boolean prettyFormat, boolean parameterized) {
+            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputUCase, ucase);
+            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputPrettyFormat, prettyFormat);
+            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputParameterized, parameterized);
+        }
+
+        public boolean isDesensitize() {
+            return isEnabled(VisitorFeature.OutputDesensitize);
+        }
+
+        public void setDesensitize(boolean val) {
+            config(VisitorFeature.OutputDesensitize, val);
+        }
+
+        public boolean isUppCase() {
+            return isEnabled(VisitorFeature.OutputUCase);
+        }
+
+        public void setUppCase(boolean val) {
+            config(VisitorFeature.OutputUCase, val);
+        }
+
+        public boolean isPrettyFormat() {
+            return isEnabled(VisitorFeature.OutputPrettyFormat);
+        }
+
+        public void setPrettyFormat(boolean prettyFormat) {
+            config(VisitorFeature.OutputPrettyFormat, prettyFormat);
+        }
+
+        public boolean isParameterized() {
+            return isEnabled(VisitorFeature.OutputParameterized);
+        }
+
+        public void setParameterized(boolean parameterized) {
+            config(VisitorFeature.OutputParameterized, parameterized);
+        }
+
+        public void config(VisitorFeature feature, boolean state) {
+            features = VisitorFeature.config(features, feature, state);
+        }
+
+        public final boolean isEnabled(VisitorFeature feature) {
+            return VisitorFeature.isEnabled(this.features, feature);
+        }
     }
 
     public static boolean replaceInParent(SQLExpr expr, SQLExpr target) {

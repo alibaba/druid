@@ -1,17 +1,14 @@
 /*
  * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 package com.alibaba.druid.sql.parser;
 
@@ -58,6 +55,10 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.presto.parser.PrestoExprParser;
 import com.alibaba.druid.sql.dialect.presto.parser.PrestoLexer;
 import com.alibaba.druid.sql.dialect.presto.parser.PrestoStatementParser;
+import com.alibaba.druid.sql.dialect.saphana.ast.statement.SAPHanaSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.saphana.parser.SAPHanaExprParser;
+import com.alibaba.druid.sql.dialect.saphana.parser.SAPHanaLexer;
+import com.alibaba.druid.sql.dialect.saphana.parser.SAPHanaStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerExprParser;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
@@ -140,6 +141,8 @@ public class SQLParserUtils {
                 return new AntsparkStatementParser(sql);
             case clickhouse:
                 return new ClickhouseStatementParser(sql);
+            case sap_hana:
+                return new SAPHanaStatementParser(sql);
             default:
                 return new SQLStatementParser(sql, dbType);
         }
@@ -180,6 +183,8 @@ public class SQLParserUtils {
                 return new PrestoExprParser(sql, features);
             case hive:
                 return new HiveExprParser(sql, features);
+            case sap_hana:
+                return new SAPHanaExprParser(sql, features);
             default:
                 return new SQLExprParser(sql, dbType, features);
         }
@@ -221,6 +226,8 @@ public class SQLParserUtils {
                 return new PrestoLexer(sql);
             case antspark:
                 return new AntsparkLexer(sql);
+            case sap_hana:
+                return new SAPHanaLexer(sql);
             default:
                 return new Lexer(sql, null, dbType);
         }
@@ -244,6 +251,8 @@ public class SQLParserUtils {
                 return new OdpsSelectQueryBlock();
             case sqlserver:
                 return new SQLServerSelectQueryBlock();
+            case sap_hana:
+                return new SAPHanaSelectQueryBlock();
             default:
                 return new SQLSelectQueryBlock(dbType);
         }
@@ -497,8 +506,7 @@ public class SQLParserUtils {
             lexer.config(SQLParserFeature.KeepComments, true);
 
             while (lexer.token != Token.EOF) {
-                if (lexer.token == Token.LINE_COMMENT
-                        || lexer.token == Token.MULTI_LINE_COMMENT
+                if (lexer.token == Token.LINE_COMMENT || lexer.token == Token.MULTI_LINE_COMMENT
                         || lexer.token == Token.SEMI) {
                     containsCommentAndSemi = true;
                     break;
@@ -533,10 +541,7 @@ public class SQLParserUtils {
                 int len = lexer.startPos - start;
                 if (len > 0) {
                     String lineSql = sql.substring(start, lexer.startPos);
-                    String splitSql = set
-                            ? removeLeftComment(lineSql, dbType)
-                            : removeComment(lineSql, dbType
-                    ).trim();
+                    String splitSql = set ? removeLeftComment(lineSql, dbType) : removeComment(lineSql, dbType).trim();
                     if (!splitSql.isEmpty()) {
                         list.add(splitSql);
                     }
@@ -546,10 +551,7 @@ public class SQLParserUtils {
             } else if (token == Token.MULTI_LINE_COMMENT) {
                 int len = lexer.startPos - start;
                 if (len > 0) {
-                    String splitSql = removeComment(
-                            sql.substring(start, lexer.startPos),
-                            dbType
-                    ).trim();
+                    String splitSql = removeComment(sql.substring(start, lexer.startPos), dbType).trim();
                     if (!splitSql.isEmpty()) {
                         list.add(splitSql);
                     }
@@ -775,9 +777,7 @@ public class SQLParserUtils {
                 case FROM:
                 case JOIN:
                     lexer.nextToken();
-                    if (lexer.token != Token.LPAREN
-                            && lexer.token != Token.VALUES
-                    ) {
+                    if (lexer.token != Token.LPAREN && lexer.token != Token.VALUES) {
                         SQLName name = exprParser.name();
                         tables.add(name.toString());
                     }

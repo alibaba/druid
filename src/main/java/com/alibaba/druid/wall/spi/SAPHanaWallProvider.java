@@ -24,11 +24,10 @@ import com.alibaba.druid.wall.WallVisitor;
 
 /**
  * sap hana
- * 
+ *
  * @author nukiyoam
  */
 public class SAPHanaWallProvider extends WallProvider {
-
     public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/saphana";
 
     public SAPHanaWallProvider() {
@@ -42,7 +41,7 @@ public class SAPHanaWallProvider extends WallProvider {
     @Override
     public SQLStatementParser createParser(String sql) {
         return new MySqlStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup,
-            SQLParserFeature.StrictForWall);
+                SQLParserFeature.StrictForWall);
     }
 
     @Override
@@ -52,7 +51,6 @@ public class SAPHanaWallProvider extends WallProvider {
 
     @Override
     public ExportParameterVisitor createExportParameterVisitor() {
-
         return new MySqlExportParameterVisitor();
     }
 

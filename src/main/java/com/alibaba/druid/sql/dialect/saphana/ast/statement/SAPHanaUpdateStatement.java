@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * @author nukiyoam
  */
 public class SAPHanaUpdateStatement extends SQLUpdateStatement implements SAPHanaStatement {
-
     public SAPHanaUpdateStatement() {
         super(DbType.sap_hana);
     }
@@ -30,7 +29,7 @@ public class SAPHanaUpdateStatement extends SQLUpdateStatement implements SAPHan
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof SAPHanaASTVisitor) {
-            accept0((SAPHanaASTVisitor)visitor);
+            accept0((SAPHanaASTVisitor) visitor);
         } else {
             super.accept0(visitor);
         }
