@@ -3036,6 +3036,11 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token == Token.GLOBAL) {
             global = true;
             lexer.nextToken();
+            // global not in logic
+            if(lexer.token == Token.NOT){
+                lexer.nextToken();
+                return notRationalRest(expr, true);
+            }
         }
 
         if (lexer.token == Token.IN) {
@@ -3729,12 +3734,12 @@ public class SQLExprParser extends SQLParser {
                 break;
             case NOT:
                 lexer.nextToken();
-                expr = notRationalRest(expr);
+                expr = notRationalRest(expr, false);
                 break;
             case BANG:
                 if (dbType == DbType.odps) {
                     lexer.nextToken();
-                    expr = notRationalRest(expr);
+                    expr = notRationalRest(expr, false);
                 }
                 break;
             case BETWEEN:
@@ -3894,7 +3899,7 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public SQLExpr notRationalRest(SQLExpr expr) {
+    public SQLExpr notRationalRest(SQLExpr expr, boolean global) {
         switch (lexer.token) {
             case LIKE:
                 lexer.nextTokenValue();
@@ -3953,6 +3958,7 @@ public class SQLExprParser extends SQLParser {
                         inSubQueryExpr.setNot(true);
                         inSubQueryExpr.setExpr(inListExpr.getExpr());
                         inSubQueryExpr.setSubQuery(((SQLQueryExpr) targetExpr).getSubQuery());
+                        inSubQueryExpr.setGlobal(global);
                         expr = inSubQueryExpr;
                     }
                 }
@@ -4547,6 +4553,7 @@ public class SQLExprParser extends SQLParser {
         return charType;
     }
 
+    @Override
     public void accept(Token token) {
         if (lexer.token == token) {
             lexer.nextToken();
