@@ -3037,7 +3037,7 @@ public class SQLExprParser extends SQLParser {
             global = true;
             lexer.nextToken();
             // global not in logic
-            if(lexer.token == Token.NOT) {
+            if (lexer.token == Token.NOT) {
                 lexer.nextToken();
                 return notRationalRest(expr, true);
             }
