@@ -4327,7 +4327,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLInSubQueryExpr x) {
         x.getExpr().accept(this);
         if (x.isNot()) {
-            print0(ucase ? " NOT IN (" : " not in (");
+            if (x.isGlobal()) {
+                print0(ucase ? " GLOBAL NOT IN (" : " global not in (");
+            } else {
+                print0(ucase ? " NOT IN (" : " not in (");
+            }
         } else {
             if (x.isGlobal()) {
                 print0(ucase ? " GLOBAL IN (" : " global in (");
