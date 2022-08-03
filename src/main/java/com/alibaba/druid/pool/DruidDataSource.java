@@ -2841,7 +2841,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 } catch (RuntimeException e) {
                     LOG.error("create connection RuntimeException", e);
                     setFailContinuous(true);
-                    continue;
+                    break;
                 } catch (Error e) {
                     LOG.error("create connection Error", e);
                     setFailContinuous(true);
