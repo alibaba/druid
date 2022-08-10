@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.dialect.ads.parser.AdsStatementParser;
 import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkLexer;
 import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkStatementParser;
 import com.alibaba.druid.sql.dialect.blink.parser.BlinkStatementParser;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseExprParser;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseLexer;
 import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
@@ -180,6 +182,8 @@ public class SQLParserUtils {
                 return new PrestoExprParser(sql, features);
             case hive:
                 return new HiveExprParser(sql, features);
+            case clickhouse:
+                return new ClickhouseExprParser(sql, features);
             default:
                 return new SQLExprParser(sql, dbType, features);
         }
@@ -221,6 +225,8 @@ public class SQLParserUtils {
                 return new PrestoLexer(sql);
             case antspark:
                 return new AntsparkLexer(sql);
+            case clickhouse:
+                return new ClickhouseLexer(sql);
             default:
                 return new Lexer(sql, null, dbType);
         }
@@ -745,6 +751,9 @@ public class SQLParserUtils {
                 break;
             case mysql:
                 exprParser = new MySqlExprParser(lexer);
+                break;
+            case clickhouse:
+                exprParser = new ClickhouseExprParser(lexer);
                 break;
             default:
                 exprParser = new SQLExprParser(lexer);

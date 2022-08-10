@@ -153,7 +153,9 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
 
     public boolean visit(SQLIntervalExpr x) {
         SQLExpr value = x.getValue();
+        print('(');
         value.accept(this);
+        print(')');
 
         SQLIntervalUnit unit = x.getUnit();
         if (unit != null) {

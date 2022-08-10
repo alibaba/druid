@@ -484,7 +484,7 @@
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
 			<artifactId>fastjson2</artifactId>
-			<version>2.0.3</version>
+			<version>2.0.8</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -635,22 +635,6 @@
 			<artifactId>mariadb-java-client</artifactId>
 			<version>2.4.0</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sun</groupId>
-			<artifactId>tools</artifactId>
-			<version>1.8</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/openjdk-1.8-tools.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sun</groupId>
-			<artifactId>jconsole</artifactId>
-			<version>1.8</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
 		</dependency>
 
 		<dependency>
