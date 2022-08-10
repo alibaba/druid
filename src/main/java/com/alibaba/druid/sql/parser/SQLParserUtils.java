@@ -517,6 +517,17 @@ public class SQLParserUtils {
             if (lexer.identifierEquals("pai") || lexer.identifierEquals("jar")) {
                 return Collections.singletonList(sql);
             }
+
+            if (dbType == DbType.odps) {
+                switch (lexer.token) {
+                    case IF:
+                    case VARIANT:
+                    case WHILE:
+                        return Collections.singletonList(sql);
+                    default:
+                        break;
+                }
+            }
         }
 
         List list = new ArrayList();
