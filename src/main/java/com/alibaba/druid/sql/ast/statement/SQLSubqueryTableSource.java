@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -72,6 +73,12 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
     public void cloneTo(SQLSubqueryTableSource x) {
         x.alias = alias;
+
+        if (this instanceof OracleSelectSubqueryTableSource) {
+            if (((OracleSelectSubqueryTableSource)this).getPivot() != null) {
+                ((OracleSelectSubqueryTableSource)x).setPivot(((OracleSelectSubqueryTableSource)this).getPivot());
+            }
+        }
 
         if (select != null) {
             x.select = select.clone();
