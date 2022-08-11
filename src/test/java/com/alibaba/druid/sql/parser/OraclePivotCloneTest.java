@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * @author gfChris
@@ -15,40 +16,25 @@ public class OraclePivotCloneTest extends TestCase {
 
     public void testCreateCharset() {
 
-        String sql = "Select \n" +
-                "DEPT_ID,\n" +
-                "M01,M02,M03,M04,M05,M06,M07,M08,M09,M10,M11,M12\n" +
-                "from \n" +
-                "(\n" +
-                "Select \n" +
-                "DEPT_ID,CMONTH,\n" +
-                "SUM(SO_TAXMONEY) AS SO_TAXMONEY\n" +
-                "FROM DW_SCM_DIM_SALEDATA\n" +
-                "GROUP BY \n" +
-                "DEPT_ID,CMONTH\n" +
-                ")  \n" +
-                "pivot(\n" +
-                "    sum(SO_TAXMONEY) for CMONTH in (    \n" +
-                "        '01' as M01,                \n" +
-                "        '02' as M02,                \n" +
-                "        '03' as M03,\n" +
-                "        '04' as M04,\n" +
-                "        '05' as M05,\n" +
-                "        '06' as M06,\n" +
-                "        '07' as M07,\n" +
-                "        '08' as M08,\n" +
-                "        '09' as M09,\n" +
-                "        '10' as M10,\n" +
-                "        '11' as M11,\n" +
-                "        '12' as M12\n" +
-                "    )\n" +
-                "  );";
+        String sql = "SELECT DEPT_ID, M01, M02, M03, M04\n" +
+                "\t, M05, M06, M07, M08, M09\n" +
+                "\t, M10, M11, M12\n" +
+                "FROM (\n" +
+                "\tSELECT DEPT_ID, CMONTH, SUM(SO_TAXMONEY) AS SO_TAXMONEY\n" +
+                "\tFROM DW_SCM_DIM_SALEDATA\n" +
+                "\tGROUP BY DEPT_ID, CMONTH\n" +
+                ")\n" +
+                "PIVOT (sum(SO_TAXMONEY) FOR CMONTH IN ('01' AS M01, '02' AS M02, '03' AS M03, '04' AS M04, '05' AS M05, '06' AS M06, '07' AS M07, '08' AS M08, '09' AS M09, '10' AS M10, '11' AS M11, '12' AS M12));";
 
         SQLStatement sqlStatement = SQLUtils.parseSingleStatement(sql, DbType.oracle);
 
         SQLStatement sqlStatement1 = sqlStatement.clone();
 
         System.out.println(sqlStatement1.toString());
+
+
+        Assert.assertTrue(sqlStatement1.toString().equals(sql));
+
     }
 
 }
