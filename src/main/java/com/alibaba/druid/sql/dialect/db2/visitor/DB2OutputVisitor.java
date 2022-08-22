@@ -19,9 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalUnit;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -153,9 +151,13 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
 
     public boolean visit(SQLIntervalExpr x) {
         SQLExpr value = x.getValue();
-        print('(');
-        value.accept(this);
-        print(')');
+        if (value instanceof SQLLiteralExpr || value instanceof SQLName || value instanceof SQLVariantRefExpr) {
+            value.accept(this);
+        } else {
+            print('(');
+            value.accept(this);
+            print(')');
+        }
 
         SQLIntervalUnit unit = x.getUnit();
         if (unit != null) {
