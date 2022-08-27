@@ -866,6 +866,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             initCheck();
 
+            this.netTimeoutExecutor = new SynchronousExecutor();
+
             initExceptionSorter();
             initValidConnectionChecker();
             validationQueryCheck();
@@ -1221,7 +1223,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } else if (dbType == DbType.db2) {
             db2ValidationQueryCheck();
         } else if (dbType == DbType.mysql
-                || JdbcUtils.MYSQL_DRIVER_6.equals(this.driverClass)) {
+                || JdbcUtils.MYSQL_DRIVER.equals(this.driverClass)
+                || JdbcUtils.MYSQL_DRIVER_6.equals(this.driverClass)
+        ) {
             isMySql = true;
         }
 

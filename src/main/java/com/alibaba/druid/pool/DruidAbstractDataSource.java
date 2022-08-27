@@ -43,6 +43,7 @@ import java.io.Serializable;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
@@ -70,6 +71,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public static final long DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = 60 * 1000L;
     public static final long DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 500;
     public static final int DEFAULT_NUM_TESTS_PER_EVICTION_RUN = 3;
+    public static final int DEFAULT_TIME_CONNECT_TIMEOUT_MILLIS = 10_000;
+    public static final int DEFAULT_TIME_SOCKET_TIMEOUT_MILLIS = 10_000;
 
     public static final long DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS = 1000L * 60L * 30L;
     public static final long DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS = 1000L * 60L * 60L * 7;
@@ -119,8 +122,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected Driver driver;
 
-    protected volatile int queryTimeout;
-    protected volatile int transactionQueryTimeout;
+    protected volatile int connectTimeout = DEFAULT_TIME_CONNECT_TIMEOUT_MILLIS; // milliSeconds
+    protected volatile int socketTimeout = DEFAULT_TIME_SOCKET_TIMEOUT_MILLIS; // milliSeconds
+
+    protected volatile int queryTimeout; // seconds
+    protected volatile int transactionQueryTimeout; // seconds
 
     protected long createTimespan;
 
@@ -251,6 +257,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long failContinuousTimeMillis;
     protected ScheduledExecutorService destroyScheduler;
     protected ScheduledExecutorService createScheduler;
+    protected Executor netTimeoutExecutor;
+    protected volatile boolean netTimeoutError;
 
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> failContinuousTimeMillisUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "failContinuousTimeMillis");
     static final AtomicIntegerFieldUpdater<DruidAbstractDataSource> failContinuousUpdater = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "failContinuous");
@@ -995,6 +1003,38 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.queryTimeout = seconds;
     }
 
+    /**
+     *
+     * @since 1.2.12
+     */
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    /**
+     *
+     * @since 1.2.12
+     */
+    public void setConnectTimeout(int milliSeconds) {
+        this.connectTimeout = milliSeconds;
+    }
+
+    /**
+     *
+     * @since 1.2.12
+     */
+    public int getSocketTimeout() {
+        return socketTimeout;
+    }
+
+    /**
+     *
+     * @since 1.2.12
+     */
+    public void setSocketTimeout(int milliSeconds) {
+        this.socketTimeout = milliSeconds;
+    }
+
     public String getName() {
         if (name != null) {
             return name;
@@ -1691,6 +1731,17 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             physicalConnectProperties.put("password", password);
         }
 
+        if (connectTimeout > 0) {
+            if (isMySql) {
+                physicalConnectProperties.put("connectTimeout", connectTimeout);
+            } else if (isOracle) {
+                physicalConnectProperties.put("oracle.net.CONNECT_TIMEOUT", connectTimeout);
+            } else if (driver != null && "org.postgresql.Driver".equals(driver.getClass().getName())) {
+                physicalConnectProperties.put("loginTimeout", connectTimeout);
+                physicalConnectProperties.put("socketTimeout", connectTimeout);
+            }
+        }
+
         Connection conn = null;
 
         long connectStartNanos = System.nanoTime();
@@ -1715,6 +1766,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
             initPhysicalConnection(conn, variables, globalVariables);
             initedNanos = System.nanoTime();
+
+            if (socketTimeout > 0 && !netTimeoutError) {
+                try {
+                    conn.setNetworkTimeout(netTimeoutExecutor, socketTimeout);
+                } catch (SQLFeatureNotSupportedException | AbstractMethodError e) {
+                    netTimeoutError = true;
+                } catch (Exception ignored) {
+                    // ignored
+                }
+            }
 
             validateConnection(conn);
             validatedNanos = System.nanoTime();
@@ -2223,6 +2284,21 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         public Map<String, Object> getGlobalVairiables() {
             return globalVairiables;
+        }
+    }
+
+    class SynchronousExecutor implements Executor {
+        @Override
+        public void execute(Runnable command) {
+            try {
+                command.run();
+            } catch (AbstractMethodError error) {
+                netTimeoutError = true;
+            } catch (Exception ignored) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("failed to execute command " + command);
+                }
+            }
         }
     }
 }
