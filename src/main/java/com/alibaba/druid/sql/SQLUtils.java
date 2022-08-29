@@ -36,6 +36,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
@@ -49,10 +50,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.repository.SchemaRepository;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.sql.visitor.VisitorFeature;
+import com.alibaba.druid.sql.visitor.*;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.*;
@@ -63,6 +61,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class SQLUtils {
     public static final Charset UTF8 = Charset.forName("UTF-8");
@@ -793,6 +793,55 @@ public class SQLUtils {
 
     public static String addSelectItem(String selectSql, String expr, String alias, DbType dbType) {
         return addSelectItem(selectSql, expr, alias, false, dbType);
+    }
+
+    public static void acceptBooleanOr(String sql, DbType dbType, Consumer<SQLBinaryOpExprGroup> consumer) {
+        acceptBinaryOpExpr(sql, dbType, consumer, e -> e.getOperator() == SQLBinaryOperator.BooleanOr);
+    }
+
+    public static void acceptBinaryOpExpr(String sql, DbType dbType, Consumer<SQLBinaryOpExprGroup> consumer, Predicate<SQLBinaryOpExprGroup> filter) {
+        if (sql == null || sql.isEmpty()) {
+            return;
+        }
+
+        List<SQLStatement> stmtList = new ArrayList<>();
+
+        try {
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableMultiUnion, SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup);
+            parser.parseStatementList(stmtList, -1, null);
+        } catch (Exception ignored) {
+            return;
+        }
+
+        SQLASTVisitor visitor;
+        switch (dbType) {
+            case odps:
+                visitor = new OdpsASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLBinaryOpExprGroup x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return super.visit(x);
+                    }
+                };
+                break;
+            default:
+                visitor = new SQLASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLBinaryOpExprGroup x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return super.visit(x);
+                    }
+                };
+                break;
+        }
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
     }
 
     public static String addSelectItem(String selectSql, String expr, String alias, boolean first, DbType dbType) {

@@ -37,6 +37,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     private final long createdTimeMillis = System.currentTimeMillis();
     private long lastActiveTimeMillis = System.currentTimeMillis();
+    private int networkTimeout;
 
     private SQLException error;
 
@@ -455,11 +456,11 @@ public class MockConnection extends ConnectionBase implements Connection {
     }
 
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        this.networkTimeout = milliseconds;
     }
 
     public int getNetworkTimeout() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return networkTimeout;
     }
 
     @Override

@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.dialect.ads.parser.AdsStatementParser;
 import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkLexer;
 import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkStatementParser;
 import com.alibaba.druid.sql.dialect.blink.parser.BlinkStatementParser;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseExprParser;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseLexer;
 import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
@@ -48,10 +50,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oscar.parser.OscarExprParser;
-import com.alibaba.druid.sql.dialect.oscar.parser.OscarLexer;
-import com.alibaba.druid.sql.dialect.oscar.visitor.OscarStatementParser;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixExprParser;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixLexer;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixStatementParser;
@@ -144,8 +142,6 @@ public class SQLParserUtils {
                 return new AntsparkStatementParser(sql);
             case clickhouse:
                 return new ClickhouseStatementParser(sql);
-            case oscar:
-                return new OscarStatementParser(sql);
             default:
                 return new SQLStatementParser(sql, dbType);
         }
@@ -186,6 +182,8 @@ public class SQLParserUtils {
                 return new PrestoExprParser(sql, features);
             case hive:
                 return new HiveExprParser(sql, features);
+            case clickhouse:
+                return new ClickhouseExprParser(sql, features);
             case oscar:
                 return new OscarExprParser(sql, features);
             default:
@@ -231,6 +229,8 @@ public class SQLParserUtils {
                 return new AntsparkLexer(sql);
             case oscar:
                 return new OscarLexer(sql);
+            case clickhouse:
+                return new ClickhouseLexer(sql);
             default:
                 return new Lexer(sql, null, dbType);
         }
