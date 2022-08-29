@@ -19,6 +19,5 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
 
 public interface OscarObject extends SQLObject {
-
     void accept0(OscarASTVisitor visitor);
 }

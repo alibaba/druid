@@ -25,7 +25,6 @@ import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class OscarLexer extends Lexer {
-
     public static final Keywords DEFAULT_OSCAR_KEYWORDS;
 
     static {
@@ -58,10 +57,10 @@ public class OscarLexer extends Lexer {
         map.put("SHARE", Token.SHARE);
         map.put("SHOW", Token.SHOW);
         map.put("START", Token.START);
-        
+
         map.put("USING", Token.USING);
         map.put("WINDOW", Token.WINDOW);
-        
+
         map.put("TRUE", Token.TRUE);
         map.put("FALSE", Token.FALSE);
         map.put("ARRAY", Token.ARRAY);
@@ -93,7 +92,7 @@ public class OscarLexer extends Lexer {
             config(feature, true);
         }
     }
-    
+
     protected void scanString() {
         mark = pos;
         boolean hasSpecial = false;
@@ -184,7 +183,7 @@ public class OscarLexer extends Lexer {
             stringVal = new String(buf, 0, bufPos);
         }
     }
-    
+
     public void scanSharp() {
         scanChar();
         if (ch == '>') {

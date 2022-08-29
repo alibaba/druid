@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarUpdateStatement extends SQLUpdateStatement implements OscarStatement {
-
     private boolean only;
 
     public OscarUpdateStatement() {

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarDropSchemaStatement extends SQLStatementImpl implements OscarStatement, SQLDropStatement {
-
     private SQLIdentifierExpr schemaName;
     private boolean ifExists;
     private boolean cascade;

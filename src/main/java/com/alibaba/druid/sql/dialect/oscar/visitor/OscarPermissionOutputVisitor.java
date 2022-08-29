@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.oscar.ast.stmt.*;
 import java.util.List;
 
 public class OscarPermissionOutputVisitor extends OscarOutputVisitor {
-
     public OscarPermissionOutputVisitor(Appendable appender) {
         super(appender);
         this.dbType = DbType.oscar;
@@ -40,14 +39,11 @@ public class OscarPermissionOutputVisitor extends OscarOutputVisitor {
 
     @Override
     public boolean visit(SQLExprTableSource x) {
-
         String catalog = x.getCatalog();
         String schema = x.getSchema();
         String tableName = x.getTableName();
         List<SQLName> columns1 = x.getColumns();
         int sourceColumn = x.getSourceColumn();
-
-        System.out.println(" catalog : " + catalog + " schema : " + schema + " table : " + tableName + " colums :" + columns1);
 
         //SQLExpr sqlExpr = SQLUtils.toSQLExpr("id=3", dbType);
 

@@ -29,11 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OscarFunctionTableSource extends SQLExprTableSource implements OscarObject {
-
     private final List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
     public OscarFunctionTableSource() {
-
     }
 
     public OscarFunctionTableSource(SQLExpr expr) {
@@ -59,7 +57,6 @@ public class OscarFunctionTableSource extends SQLExprTableSource implements Osca
 
     @Override
     public PGFunctionTableSource clone() {
-
         PGFunctionTableSource x = new PGFunctionTableSource();
 
         x.setAlias(this.alias);

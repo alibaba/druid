@@ -20,18 +20,15 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
 
 public class OscarTop extends OscarObjectImpl {
-
     private SQLExpr expr;
     private boolean percent;
     private boolean withTies;
 
     public OscarTop() {
-
     }
 
     @Override
     public void accept0(OscarASTVisitor visitor) {
-
     }
 
     public OscarTop(SQLExpr expr) {
@@ -68,7 +65,6 @@ public class OscarTop extends OscarObjectImpl {
     public void setWithTies(boolean withTies) {
         this.withTies = withTies;
     }
-
 
     public OscarTop clone() {
         OscarTop x = new OscarTop();

@@ -19,5 +19,4 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oscar.ast.OscarObject;
 
 public interface OscarStatement extends SQLStatement, OscarObject {
-
 }

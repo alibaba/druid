@@ -30,7 +30,6 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.List;
 
 public class OscarSelectParser extends SQLSelectParser {
-
     public OscarSelectParser(SQLExprParser exprParser) {
         super(exprParser);
     }
@@ -270,7 +269,7 @@ public class OscarSelectParser extends SQLSelectParser {
                 if (alias != null) {
                     functionTableSource.setAlias(alias);
                 }
-                
+
                 lexer.nextToken();
                 parserParameters(functionTableSource.getParameters());
                 accept(Token.RPAREN);

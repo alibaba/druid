@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarCreateSchemaStatement extends SQLStatementImpl implements OscarStatement, SQLCreateStatement {
-
     private SQLIdentifierExpr schemaName;
     private SQLIdentifierExpr userName;
     private boolean ifNotExists;

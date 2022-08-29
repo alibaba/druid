@@ -39,7 +39,7 @@ public class OscarStatementParser extends SQLStatementParser {
     public OscarStatementParser(OscarExprParser parser) {
         super(parser);
     }
-    
+
     public OscarStatementParser(String sql) {
         super(new OscarExprParser(sql));
     }
@@ -114,7 +114,7 @@ public class OscarStatementParser extends SQLStatementParser {
             }
 
         }
-        
+
         if (lexer.token() == Token.DEFAULT) {
             lexer.nextToken();
             accept(Token.VALUES);
@@ -328,7 +328,7 @@ public class OscarStatementParser extends SQLStatementParser {
         SQLName tableName = exprParser.name();
 
         deleteStatement.setTableName(tableName);
-        
+
         if (lexer.token() == Token.AS) {
             accept(Token.AS);
         }
@@ -388,9 +388,6 @@ public class OscarStatementParser extends SQLStatementParser {
 
                 break;
         }
-
-
-
         return false;
     }
 
@@ -489,7 +486,7 @@ public class OscarStatementParser extends SQLStatementParser {
         }
         return alterColumn;
     }
-    
+
     public SQLStatement parseShow() {
         accept(Token.SHOW);
         OscarShowStatement stmt = new OscarShowStatement();
@@ -504,7 +501,7 @@ public class OscarStatementParser extends SQLStatementParser {
         }
         return stmt;
     }
-    
+
     @Override
     public SQLStatement parseCommit() {
         SQLCommitStatement stmt = new SQLCommitStatement();

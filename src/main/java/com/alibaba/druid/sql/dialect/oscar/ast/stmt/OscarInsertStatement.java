@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OscarInsertStatement extends SQLInsertStatement implements OscarStatement {
-
-
     private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
     private SQLExpr returning;
     private boolean defaultValues;
@@ -67,7 +65,6 @@ public class OscarInsertStatement extends SQLInsertStatement implements OscarSta
     public void setReturning(SQLExpr returning) {
         this.returning = returning;
     }
-
 
     public ValuesClause getValues() {
         if (valuesList.isEmpty()) {

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarSelectStatement extends SQLSelectStatement implements OscarStatement {
-
     public OscarSelectStatement() {
         super(DbType.oscar);
     }

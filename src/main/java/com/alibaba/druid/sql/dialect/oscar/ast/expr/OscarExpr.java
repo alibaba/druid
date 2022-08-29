@@ -19,5 +19,4 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oscar.ast.OscarObject;
 
 public interface OscarExpr extends SQLExpr, OscarObject {
-
 }

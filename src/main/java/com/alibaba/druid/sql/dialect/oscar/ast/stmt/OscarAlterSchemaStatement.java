@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarAlterSchemaStatement extends SQLStatementImpl implements OscarStatement, SQLAlterStatement {
-
     private SQLIdentifierExpr schemaName;
     private SQLIdentifierExpr newName;
     private SQLIdentifierExpr newOwner;

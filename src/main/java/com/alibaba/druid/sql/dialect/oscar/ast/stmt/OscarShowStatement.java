@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OscarShowStatement extends SQLStatementImpl implements OscarStatement, SQLShowStatement {
-
     private SQLExpr expr;
 
     public SQLExpr getExpr() {

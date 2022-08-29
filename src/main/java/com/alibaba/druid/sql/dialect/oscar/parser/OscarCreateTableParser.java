@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.SQLPartitionByList;
 import com.alibaba.druid.sql.parser.*;
 
 public class OscarCreateTableParser extends SQLCreateTableParser {
-
     public OscarCreateTableParser(Lexer lexer) {
         super(new OscarExprParser(lexer));
     }

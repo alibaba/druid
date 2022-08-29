@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Set;
 
 public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTVisitor, OracleASTVisitor {
-
     public OscarOutputVisitor(Appendable appender) {
         super(appender);
         this.dbType = DbType.oscar;
@@ -119,7 +118,6 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
 
         return false;
     }
-
 
     public boolean visit(OscarSelectQueryBlock x) {
         if ((!isParameterized()) && isPrettyFormat() && x.hasBeforeComment()) {

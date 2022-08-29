@@ -30,7 +30,6 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Arrays;
 
 public class OscarExprParser extends SQLExprParser {
-
     public static final String[] AGGREGATE_FUNCTIONS;
 
     public static final long[] AGGREGATE_FUNCTIONS_CODES;
@@ -65,7 +64,7 @@ public class OscarExprParser extends SQLExprParser {
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
         this.dbType = DbType.oscar;
     }
-    
+
     @Override
     public SQLDataType parseDataType() {
         if (lexer.token() == Token.TYPE) {
@@ -85,7 +84,7 @@ public class OscarExprParser extends SQLExprParser {
 
         return dataType;
     }
-    
+
     public OscarSelectParser createSelectParser() {
         return new OscarSelectParser(this);
     }
@@ -147,7 +146,7 @@ public class OscarExprParser extends SQLExprParser {
                             .select());
             return queryExpr;
         }
-        
+
         return super.primary();
     }
 
@@ -237,15 +236,15 @@ public class OscarExprParser extends SQLExprParser {
         if (lexer.token() == Token.COLONCOLON) {
             lexer.nextToken();
             SQLDataType dataType = this.parseDataType();
-            
+
             PGTypeCastExpr castExpr = new PGTypeCastExpr();
-            
+
             castExpr.setExpr(expr);
             castExpr.setDataType(dataType);
 
             return primaryRest(castExpr);
         }
-        
+
         if (lexer.token() == Token.LBRACKET) {
             SQLArrayExpr array = new SQLArrayExpr();
             array.setExpr(expr);
@@ -254,7 +253,7 @@ public class OscarExprParser extends SQLExprParser {
             accept(Token.RBRACKET);
             return primaryRest(array);
         }
-        
+
         if (expr.getClass() == SQLIdentifierExpr.class) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
             String ident = identifierExpr.getName();
@@ -295,7 +294,6 @@ public class OscarExprParser extends SQLExprParser {
                     accept(Token.LITERAL_CHARS);
                 }
 
-
                 return primaryRest(timestamp);
             } else if (FnvHash.Constants.TIMESTAMPTZ == hash) {
                 if (lexer.token() != Token.LITERAL_ALIAS //
@@ -322,26 +320,25 @@ public class OscarExprParser extends SQLExprParser {
                     accept(Token.LITERAL_CHARS);
                 }
 
-
                 return primaryRest(timestamp);
             } else if (FnvHash.Constants.EXTRACT == hash) {
                 accept(Token.LPAREN);
-                
+
                 PGExtractExpr extract = new PGExtractExpr();
-                
+
                 String fieldName = lexer.stringVal();
                 PGDateField field = PGDateField.valueOf(fieldName.toUpperCase());
                 lexer.nextToken();
-                
+
                 extract.setField(field);
-                
+
                 accept(Token.FROM);
                 SQLExpr source = this.expr();
-                
+
                 extract.setSource(source);
-                
+
                 accept(Token.RPAREN);
-                
+
                 return primaryRest(extract);
             } else if (FnvHash.Constants.POINT == hash) {
                 switch (lexer.token()) {

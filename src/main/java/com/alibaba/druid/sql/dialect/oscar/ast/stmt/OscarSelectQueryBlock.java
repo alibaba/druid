@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarObject {
-
     private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
 
     private OscarTop top;
@@ -38,7 +37,6 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
     private ForClause forClause;
     private IntoOptionTemp intoOptionTemp;
     private IntoOptionLocal intoOptionLocal;
-
 
     @Override
     public void accept0(OscarASTVisitor visitor) {
@@ -121,7 +119,6 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
     }
 
     public static class FetchClause extends OscarObjectImpl {
-
         public static enum Option {
             FIRST, NEXT
         }
@@ -166,14 +163,11 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
         return top;
     }
 
-
     public void setTop(int rowCount) {
         setTop(new OscarTop(new SQLIntegerExpr(rowCount)));
     }
 
-
     public static class ForClause extends OscarObjectImpl {
-
         public static enum Option {
             UPDATE, SHARE
         }
@@ -223,7 +217,4 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
             visitor.endVisit(this);
         }
     }
-
-
-
 }

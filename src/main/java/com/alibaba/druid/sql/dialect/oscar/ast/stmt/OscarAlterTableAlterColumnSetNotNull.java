@@ -15,7 +15,5 @@
  */
 package com.alibaba.druid.sql.dialect.oscar.ast.stmt;
 
-
 public class OscarAlterTableAlterColumnSetNotNull {
-
 }
