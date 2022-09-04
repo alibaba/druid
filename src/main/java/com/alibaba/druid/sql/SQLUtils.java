@@ -29,6 +29,10 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
@@ -36,6 +40,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
@@ -881,6 +886,253 @@ public class SQLUtils {
                 visitor = new SQLASTVisitorAdapter() {
                     @Override
                     public boolean visit(SQLSelectQueryBlock x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+        }
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+    }
+
+    public static void acceptAggregateFunction(String sql, DbType dbType, Consumer<SQLAggregateExpr> consumer, Predicate<SQLAggregateExpr> filter) {
+        if (sql == null || sql.isEmpty()) {
+            return;
+        }
+
+        List<SQLStatement> stmtList = new ArrayList<>();
+
+        try {
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableMultiUnion, SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup);
+            parser.parseStatementList(stmtList, -1, null);
+        } catch (Exception ignored) {
+            return;
+        }
+
+        SQLASTVisitor visitor;
+        switch (dbType) {
+            case odps:
+                visitor = new OdpsASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            default:
+                visitor = new SQLASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+        }
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+    }
+
+    public static void acceptFunction(String sql, DbType dbType, Consumer<SQLMethodInvokeExpr> consumer, Predicate<SQLMethodInvokeExpr> filter) {
+        if (sql == null || sql.isEmpty()) {
+            return;
+        }
+
+        List<SQLStatement> stmtList = new ArrayList<>();
+
+        try {
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableMultiUnion, SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup);
+            parser.parseStatementList(stmtList, -1, null);
+        } catch (Exception ignored) {
+            return;
+        }
+
+        SQLASTVisitor visitor;
+        switch (dbType) {
+            case odps:
+                visitor = new OdpsASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLMethodInvokeExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            default:
+                visitor = new SQLASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                    @Override
+                    public boolean visit(SQLMethodInvokeExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+        }
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+    }
+
+    public static void acceptInsertInto(String sql, DbType dbType, Consumer<SQLInsertInto> consumer, Predicate<SQLInsertInto> filter) {
+        if (sql == null || sql.isEmpty()) {
+            return;
+        }
+
+        List<SQLStatement> stmtList = new ArrayList<>();
+
+        try {
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableMultiUnion, SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup);
+            parser.parseStatementList(stmtList, -1, null);
+        } catch (Exception ignored) {
+            return;
+        }
+
+        SQLASTVisitor visitor;
+        switch (dbType) {
+            case odps:
+                visitor = new OdpsASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLSelectStatement x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(SQLCreateTableStatement x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(HiveCreateTableStatement x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(OdpsCreateTableStatement x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(SQLSelectQueryBlock x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(OdpsSelectQueryBlock x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(SQLInsertStatement x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(HiveInsertStatement x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(HiveInsert x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return false;
+                    }
+                };
+                break;
+            case hive:
+                visitor = new HiveASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLSelectStatement x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(SQLCreateTableStatement x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(HiveCreateTableStatement x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(SQLInsertStatement x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(HiveInsertStatement x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(HiveInsert x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return false;
+                    }
+                };
+                break;
+            default:
+                visitor = new SQLASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLSelectStatement x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(SQLCreateTableStatement x) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean visit(SQLInsertStatement x) {
                         if (filter == null || filter.test(x)) {
                             consumer.accept(x);
                         }
