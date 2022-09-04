@@ -1,7 +1,5 @@
 package com.alibaba.druid.support.clickhouse;
 
-
-
 import com.github.housepower.jdbc.BalancedClickhouseDataSource;
 
 import java.sql.Connection;
