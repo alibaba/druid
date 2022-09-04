@@ -34,7 +34,7 @@ public class HiveSelectTest_45_issue_3987 extends TestCase {
                 "\t, name\n" +
                 "FROM (\n" +
                 "\tSELECT id, number_id, parent_id, layer_id, alias\n" +
-                "\t\t, name, row_number() OVER (DISTRIBUTE BY number_idSORT BY number_id) AS rownum\n" +
+                "\t\t, name, row_number() OVER (DISTRIBUTE BY number_id SORT BY create_time DESC, id DESC) AS rownum\n" +
                 "\tFROM hdw_ods.ods_my_coredata__dts_device_category\n" +
                 "\tWHERE pdate = ''\n" +
                 ") m\n" +
