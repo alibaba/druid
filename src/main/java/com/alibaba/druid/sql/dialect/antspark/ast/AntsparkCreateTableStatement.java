@@ -76,7 +76,7 @@ public class AntsparkCreateTableStatement extends SQLCreateTableStatement {
     }
 
     /**
-     * Getter method for property <tt>datasource</tt>.
+     * Getter method for property datasource.
      *
      * @return property value of datasource
      */

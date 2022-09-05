@@ -21,8 +21,8 @@ import javax.management.MBeanServer;
 
 import java.lang.management.ManagementFactory;
 
-public class MBeanServerFactoryBean implements FactoryBean<MBeanServer> {
-    public MBeanServer getObject() throws Exception {
+public class MBeanServerFactoryBean implements FactoryBean {
+    public Object getObject() throws Exception {
         return ManagementFactory.getPlatformMBeanServer();
     }
 
@@ -33,5 +33,4 @@ public class MBeanServerFactoryBean implements FactoryBean<MBeanServer> {
     public boolean isSingleton() {
         return true;
     }
-
 }
