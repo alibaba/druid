@@ -639,9 +639,9 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.highgo;
         } else if (rawUrl.startsWith("jdbc:pivotal:greenplum:") || rawUrl.startsWith("jdbc:datadirect:greenplum:")) {
             return DbType.greenplum;
-        } else if (rawUrl.startsWith("jdbc:opengauss:")) {
+        } else if (rawUrl.startsWith("jdbc:opengauss:" || rawUrl.startsWith("jdbc:gaussdb:") || rawUrl.startsWith("jdbc:dws:iam:")) {
             return DbType.gaussdb;
-        }else {
+        } else {
             return null;
         }
     }

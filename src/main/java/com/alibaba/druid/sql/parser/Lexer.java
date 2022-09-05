@@ -2255,7 +2255,7 @@ public class Lexer {
             boolean ident = false;
             for (; ; ) {
                 ch = charAt(++pos);
-                if (isEOF()) {
+                if (isEOF() || ch == ';' || ch == '；') {
                     pos--;
                     bufPos--;
                     break;
@@ -2287,7 +2287,7 @@ public class Lexer {
             this.ch = charAt(pos);
 
             if (dbType == DbType.odps) {
-                while (isIdentifierChar(this.ch)) {
+                while (isIdentifierChar(this.ch) && ch != '；') {
                     ++pos;
                     bufPos++;
                     this.ch = charAt(pos);

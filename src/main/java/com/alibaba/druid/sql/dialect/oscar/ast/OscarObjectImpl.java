@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.support.spring;
+package com.alibaba.druid.sql.dialect.oscar.ast;
 
-import org.springframework.beans.factory.FactoryBean;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import javax.management.MBeanServer;
-
-import java.lang.management.ManagementFactory;
-
-public class MBeanServerFactoryBean implements FactoryBean {
-    public Object getObject() throws Exception {
-        return ManagementFactory.getPlatformMBeanServer();
+public abstract class OscarObjectImpl extends SQLObjectImpl implements OscarObject {
+    public OscarObjectImpl() {
     }
 
-    public Class<?> getObjectType() {
-        return MBeanServer.class;
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        this.accept0((OscarASTVisitor) visitor);
     }
 
-    public boolean isSingleton() {
-        return true;
-    }
+    public abstract void accept0(OscarASTVisitor visitor);
 }

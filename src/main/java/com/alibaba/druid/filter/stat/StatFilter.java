@@ -413,7 +413,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         // //////////SQL
 
         JdbcSqlStat sqlStat = statement.getSqlStat();
-        if (sqlStat == null || sqlStat.isRemoved()) {
+        if (sqlStat == null || sqlStat.isRemoved() || !sqlStat.getSql().equals(sql)) {
             sqlStat = createSqlStat(statement, sql);
             statement.setSqlStat(sqlStat);
         }

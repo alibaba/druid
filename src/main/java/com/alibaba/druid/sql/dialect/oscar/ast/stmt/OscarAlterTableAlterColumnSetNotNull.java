@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.support.spring;
+package com.alibaba.druid.sql.dialect.oscar.ast.stmt;
 
-import org.springframework.beans.factory.FactoryBean;
-
-import javax.management.MBeanServer;
-
-import java.lang.management.ManagementFactory;
-
-public class MBeanServerFactoryBean implements FactoryBean {
-    public Object getObject() throws Exception {
-        return ManagementFactory.getPlatformMBeanServer();
-    }
-
-    public Class<?> getObjectType() {
-        return MBeanServer.class;
-    }
-
-    public boolean isSingleton() {
-        return true;
-    }
+public class OscarAlterTableAlterColumnSetNotNull {
 }

@@ -17,11 +17,19 @@ package com.alibaba.druid.sql.dialect.db2.parser;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
@@ -102,5 +110,42 @@ public class DB2StatementParser extends SQLStatementParser {
         }
 
         return alterColumn;
+    }
+
+    @Override
+    public SQLDeleteStatement parseDeleteStatement() {
+        SQLDeleteStatement deleteStatement = new SQLDeleteStatement(getDbType());
+
+        if (lexer.token() == Token.DELETE) {
+            lexer.nextToken();
+            if (lexer.token() == (Token.FROM)) {
+                lexer.nextToken();
+            }
+
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+            }
+
+            SQLName tableName = exprParser.name();
+
+            deleteStatement.setTableName(tableName);
+
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
+                deleteStatement.setFrom(tableSource);
+            }
+
+            // try to parse alias
+            deleteStatement.setAlias(tableAlias());
+        }
+
+        if (lexer.token() == (Token.WHERE)) {
+            lexer.nextToken();
+            SQLExpr where = this.exprParser.expr();
+            deleteStatement.setWhere(where);
+        }
+
+        return deleteStatement;
     }
 }

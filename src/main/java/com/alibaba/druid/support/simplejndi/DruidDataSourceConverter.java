@@ -27,7 +27,7 @@ import java.util.Properties;
 
 /**
  * 支持simple-jndi
- * <h1>配置示例：</h1>
+ * <p>配置示例：</p>
  * <pre>
  * pgDruidTest/converter=com.alibaba.druid.support.simplejndi.DruidDataSourceConverter
  * pgDruidTest/type=javax.sql.DataSource

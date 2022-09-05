@@ -643,5 +643,30 @@
 			<version>4.2.0</version>
 			<scope>test</scope>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.github.housepower</groupId>
+			<artifactId>clickhouse-native-jdbc-shaded</artifactId>
+			<version>2.5.6</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>nutz</id>
+			<url>https://jfrog.nutz.cn/artifactory/libs-release</url>
+		</repository>
+		<repository>
+			<id>nutz-snapshots</id>
+			<url>https://jfrog.nutz.cn/artifactory/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
 </project>
