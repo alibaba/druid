@@ -48,6 +48,7 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
+import com.alibaba.druid.sql.dialect.oscar.visitor.OscarOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
@@ -519,6 +520,8 @@ public class SQLUtils {
                 return new PrestoOutputVisitor(out);
             case clickhouse:
                 return new ClickhouseOutputVisitor(out);
+            case oscar:
+                return new OscarOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }

@@ -50,6 +50,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.oscar.parser.OscarExprParser;
+import com.alibaba.druid.sql.dialect.oscar.parser.OscarLexer;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixExprParser;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixLexer;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixStatementParser;
@@ -184,6 +187,8 @@ public class SQLParserUtils {
                 return new HiveExprParser(sql, features);
             case clickhouse:
                 return new ClickhouseExprParser(sql, features);
+            case oscar:
+                return new OscarExprParser(sql, features);
             default:
                 return new SQLExprParser(sql, dbType, features);
         }
@@ -225,6 +230,8 @@ public class SQLParserUtils {
                 return new PrestoLexer(sql);
             case antspark:
                 return new AntsparkLexer(sql);
+            case oscar:
+                return new OscarLexer(sql);
             case clickhouse:
                 return new ClickhouseLexer(sql);
             default:
@@ -250,6 +257,8 @@ public class SQLParserUtils {
                 return new OdpsSelectQueryBlock();
             case sqlserver:
                 return new SQLServerSelectQueryBlock();
+            case oscar:
+                return new OscarSelectQueryBlock();
             default:
                 return new SQLSelectQueryBlock(dbType);
         }
@@ -523,17 +532,6 @@ public class SQLParserUtils {
             if (lexer.identifierEquals("pai") || lexer.identifierEquals("jar")) {
                 return Collections.singletonList(sql);
             }
-
-            if (dbType == DbType.odps) {
-                switch (lexer.token) {
-                    case IF:
-                    case VARIANT:
-                    case WHILE:
-                        return Collections.singletonList(sql);
-                    default:
-                        break;
-                }
-            }
         }
 
         List list = new ArrayList();
@@ -751,9 +749,6 @@ public class SQLParserUtils {
                 break;
             case mysql:
                 exprParser = new MySqlExprParser(lexer);
-                break;
-            case clickhouse:
-                exprParser = new ClickhouseExprParser(lexer);
                 break;
             default:
                 exprParser = new SQLExprParser(lexer);
