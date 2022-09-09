@@ -20,12 +20,12 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartitionByRange extends SQLPartitionBy {
     protected SQLExpr interval;
-    protected boolean isColumns = false;
+    protected boolean isColumns;
     protected SQLExpr startWith;
     protected SQLIntegerExpr expireAfter;
     protected SQLIntegerExpr preAllocate;
     protected SQLExpr pivotDateExpr;
-    protected boolean disableSchedule = false;
+    protected boolean disableSchedule;
 
     public SQLPartitionByRange() {
     }

@@ -368,7 +368,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                             if (global) {
                                 unique.setGlobal(true);
                             }
-                            if(local){
+                            if (local) {
                                 unique.setLocal(true);
                             }
                         }
