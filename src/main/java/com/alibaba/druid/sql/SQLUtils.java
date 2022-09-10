@@ -802,10 +802,10 @@ public class SQLUtils {
     }
 
     public static void acceptBooleanOr(String sql, DbType dbType, Consumer<SQLBinaryOpExprGroup> consumer) {
-        acceptBinaryOpExpr(sql, dbType, consumer, e -> e.getOperator() == SQLBinaryOperator.BooleanOr);
+        acceptBinaryOpExprGroup(sql, dbType, consumer, e -> e.getOperator() == SQLBinaryOperator.BooleanOr);
     }
 
-    public static void acceptBinaryOpExpr(String sql, DbType dbType, Consumer<SQLBinaryOpExprGroup> consumer, Predicate<SQLBinaryOpExprGroup> filter) {
+    public static void acceptBinaryOpExprGroup(String sql, DbType dbType, Consumer<SQLBinaryOpExprGroup> consumer, Predicate<SQLBinaryOpExprGroup> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
         }
@@ -836,6 +836,51 @@ public class SQLUtils {
                 visitor = new SQLASTVisitorAdapter() {
                     @Override
                     public boolean visit(SQLBinaryOpExprGroup x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return super.visit(x);
+                    }
+                };
+                break;
+        }
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+    }
+
+    public static void acceptBinaryOpExpr(String sql, DbType dbType, Consumer<SQLBinaryOpExpr> consumer, Predicate<SQLBinaryOpExpr> filter) {
+        if (sql == null || sql.isEmpty()) {
+            return;
+        }
+
+        List<SQLStatement> stmtList = new ArrayList<>();
+
+        try {
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableMultiUnion, SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup);
+            parser.parseStatementList(stmtList, -1, null);
+        } catch (Exception ignored) {
+            return;
+        }
+
+        SQLASTVisitor visitor;
+        switch (dbType) {
+            case odps:
+                visitor = new OdpsASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLBinaryOpExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return super.visit(x);
+                    }
+                };
+                break;
+            default:
+                visitor = new SQLASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLBinaryOpExpr x) {
                         if (filter == null || filter.test(x)) {
                             consumer.accept(x);
                         }
