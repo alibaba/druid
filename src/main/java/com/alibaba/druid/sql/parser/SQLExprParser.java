@@ -4544,12 +4544,12 @@ public class SQLExprParser extends SQLParser {
                     || lexer.token == Token.LITERAL_CHARS) {
                 StringBuilder collate = new StringBuilder(lexer.stringVal());
                 lexer.nextToken();
-                if (lexer.token == Token.DOT){
+                if (lexer.token == Token.DOT) {
                     lexer.nextToken();
                     if (lexer.token == Token.LITERAL_ALIAS
                             || lexer.token == Token.IDENTIFIER
-                            || lexer.token == Token.LITERAL_CHARS){
-                        collate.append(".").append(lexer.stringVal()); 
+                            || lexer.token == Token.LITERAL_CHARS) {
+                        collate.append(".").append(lexer.stringVal());
                         lexer.nextToken();
 
                     } else {
@@ -5563,9 +5563,9 @@ public class SQLExprParser extends SQLParser {
                         } else if (lexer.identifierEquals(FnvHash.Constants.TBPARTITIONS)) {
                             lexer.nextToken();
                             indexDefinition.setTbPartitions(primary());
-                        //} else if (lexer.identifierEquals(FnvHash.Constants.GLOBAL)) {
-                        //    lexer.nextToken();
-                        //    indexDefinition.setGlobal(true);
+                            //} else if (lexer.identifierEquals(FnvHash.Constants.GLOBAL)) {
+                            //    lexer.nextToken();
+                            //    indexDefinition.setGlobal(true);
                         } else {
                             break _opts;
                         }
