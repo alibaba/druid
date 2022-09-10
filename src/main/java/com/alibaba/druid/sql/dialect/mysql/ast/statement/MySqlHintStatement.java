@@ -18,7 +18,9 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.h2.visitor.H2ASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.List;
 
@@ -28,6 +30,14 @@ public class MySqlHintStatement extends MySqlStatementImpl {
     private List<SQLStatement> hintStatements;
 
     public MySqlHintStatement() {
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof H2ASTVisitor) {
+            return;
+        }
+        super.accept0(visitor);
     }
 
     public void accept0(MySqlASTVisitor visitor) {
