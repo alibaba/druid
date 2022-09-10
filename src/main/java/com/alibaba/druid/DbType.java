@@ -41,28 +41,28 @@ public enum DbType {
     blink(1 << 29),
     antspark(1 << 30),
     oceanbase_oracle(1 << 31),
-    polardb(1 << 32),
+    polardb(1L << 32),
 
-    ali_oracle(1 << 33),
-    mock(1 << 34),
-    sybase(1 << 35),
-    highgo(1 << 36),
+    ali_oracle(1L << 33),
+    mock(1L << 34),
+    sybase(1L << 35),
+    highgo(1L << 36),
     /**
      * 非常成熟的开源mpp数据库
      */
-    greenplum(1 << 37),
+    greenplum(1L << 37),
     /**
      * 华为的mpp数据库
      */
-    gaussdb(1 << 38),
+    gaussdb(1L << 38),
 
-    trino(1 << 39),
+    trino(1L << 39),
 
-    oscar(1 << 40),
+    oscar(1L << 40),
 
-    tidb(1 << 41),
+    tidb(1L << 41),
 
-    tydb(1 << 42),
+    tydb(1L << 42),
 
     ingres(0),
     cloudscape(0),
