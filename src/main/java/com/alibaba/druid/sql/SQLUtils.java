@@ -38,6 +38,8 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
@@ -45,6 +47,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
@@ -930,6 +933,25 @@ public class SQLUtils {
                     }
                 };
                 break;
+            case mysql:
+                visitor = new MySqlASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLSelectQueryBlock x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(MySqlSelectQueryBlock x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
             default:
                 visitor = new SQLASTVisitorAdapter() {
                     @Override
@@ -975,6 +997,28 @@ public class SQLUtils {
                     }
                 };
                 break;
+            case mysql:
+                visitor = new MySqlASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            case oracle:
+                visitor = new OracleASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
             default:
                 visitor = new SQLASTVisitorAdapter() {
                     @Override
@@ -1011,6 +1055,42 @@ public class SQLUtils {
         switch (dbType) {
             case odps:
                 visitor = new OdpsASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLMethodInvokeExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            case mysql:
+                visitor = new MySqlASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLMethodInvokeExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            case oracle:
+                visitor = new OracleASTVisitorAdapter() {
                     @Override
                     public boolean visit(SQLMethodInvokeExpr x) {
                         if (filter == null || filter.test(x)) {
