@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -75,5 +76,24 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
         }
 
         return x;
+    }
+
+    public void cloneTo(OracleSelectSubqueryTableSource x) {
+        x.alias = alias;
+
+        if (this.getPivot() != null) {
+            x.setPivot(this.getPivot());
+        }
+
+        if (select != null) {
+            x.select = select.clone();
+            x.select.setParent(x);
+        }
+
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
     }
 }
