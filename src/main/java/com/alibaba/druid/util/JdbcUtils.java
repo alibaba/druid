@@ -524,6 +524,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.OSCAR_DRIVER;
         } else if (rawUrl.startsWith("jdbc:dbcp:")) {
             return JdbcConstants.TYDB_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:opengauss:")) {
+            return "org.opengauss.Driver";
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
@@ -637,7 +639,7 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.highgo;
         } else if (rawUrl.startsWith("jdbc:pivotal:greenplum:") || rawUrl.startsWith("jdbc:datadirect:greenplum:")) {
             return DbType.greenplum;
-        } else if (rawUrl.startsWith("jdbc:gaussdb:") || rawUrl.startsWith("jdbc:dws:iam:")) {
+        } else if (rawUrl.startsWith("jdbc:opengauss:" || rawUrl.startsWith("jdbc:gaussdb:") || rawUrl.startsWith("jdbc:dws:iam:")) {
             return DbType.gaussdb;
         } else {
             return null;
