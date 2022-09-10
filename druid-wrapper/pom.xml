@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid-wrapper</artifactId>
-	<version>1.2.5</version>
+	<version>1.2.11</version>
 	
 	<name>druid-wrapper</name>
 	<description>Druid DataSource Wrapper</description>
@@ -32,7 +32,7 @@
 	<scm>
 		<url>https://wenshao@github.com/AlibabaTech/druid.git</url>
 		<connection>scm:git:https://wenshao@github.com/AlibabaTech/druid.git</connection>
-	</scm>My
+	</scm>
 
 	<organization>
 		<name>Alibaba Group</name>
@@ -115,7 +115,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.2.5</version>
+			<version>1.2.11</version>
 		</dependency>
 	</dependencies>
 </project>
