@@ -1,0 +1,26 @@
+select * 
+from ( 
+	select rownum rnm, z.* 
+	from (
+		select name key,value   
+		from ccccc t 
+		where t.type='VODKA._CTPCLEAN_NIRVANA_URL' and is_deleted='n' order by id
+		) z 
+	where rownum < ? ) where rnm >= ?
+
+
+
+---------------------------
+SELECT *
+FROM (
+	SELECT rownum AS rnm, z.*
+	FROM (
+		SELECT name AS KEY, value
+		FROM ccccc t
+		WHERE t.type = 'VODKA._CTPCLEAN_NIRVANA_URL'
+			AND is_deleted = 'n'
+		ORDER BY id
+	) z
+	WHERE rownum < ?
+)
+WHERE rnm >= ?
