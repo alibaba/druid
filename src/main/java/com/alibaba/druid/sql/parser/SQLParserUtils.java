@@ -1,14 +1,17 @@
 /*
  * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.alibaba.druid.sql.parser;
 
@@ -23,6 +26,8 @@ import com.alibaba.druid.sql.dialect.ads.parser.AdsStatementParser;
 import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkLexer;
 import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkStatementParser;
 import com.alibaba.druid.sql.dialect.blink.parser.BlinkStatementParser;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseExprParser;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseLexer;
 import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
@@ -183,6 +188,8 @@ public class SQLParserUtils {
                 return new PrestoExprParser(sql, features);
             case hive:
                 return new HiveExprParser(sql, features);
+            case clickhouse:
+                return new ClickhouseExprParser(sql, features);
             case sap_hana:
                 return new SAPHanaExprParser(sql, features);
             default:
@@ -226,6 +233,8 @@ public class SQLParserUtils {
                 return new PrestoLexer(sql);
             case antspark:
                 return new AntsparkLexer(sql);
+            case clickhouse:
+                return new ClickhouseLexer(sql);
             case sap_hana:
                 return new SAPHanaLexer(sql);
             default:
@@ -525,6 +534,17 @@ public class SQLParserUtils {
             if (lexer.identifierEquals("pai") || lexer.identifierEquals("jar")) {
                 return Collections.singletonList(sql);
             }
+
+            if (dbType == DbType.odps) {
+                switch (lexer.token) {
+                    case IF:
+                    case VARIANT:
+                    case WHILE:
+                        return Collections.singletonList(sql);
+                    default:
+                        break;
+                }
+            }
         }
 
         List list = new ArrayList();
@@ -736,6 +756,12 @@ public class SQLParserUtils {
                 break;
             case mysql:
                 exprParser = new MySqlExprParser(lexer);
+                break;
+            case clickhouse:
+                exprParser = new ClickhouseExprParser(lexer);
+                break;
+            case sap_hana:
+                exprParser = new SAPHanaExprParser(lexer);
                 break;
             default:
                 exprParser = new SQLExprParser(lexer);

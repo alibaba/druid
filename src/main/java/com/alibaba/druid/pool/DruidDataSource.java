@@ -39,6 +39,7 @@ import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.clickhouse.BalancedClickhouseDriver;
+import com.alibaba.druid.support.clickhouse.BalancedClickhouseDriverNative;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.*;
@@ -866,6 +867,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             initCheck();
 
+            this.netTimeoutExecutor = new SynchronousExecutor();
+
             initExceptionSorter();
             initValidConnectionChecker();
             validationQueryCheck();
@@ -1189,6 +1192,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 info.put("password", password);
                 info.putAll(connectProperties);
                 driver = new BalancedClickhouseDriver(jdbcUrl, info);
+            } else if ("com.alibaba.druid.support.clickhouse.BalancedClickhouseDriverNative".equals(driverClass)) {
+                Properties info = new Properties();
+                info.put("user", username);
+                info.put("password", password);
+                info.putAll(connectProperties);
+                driver = new BalancedClickhouseDriverNative(jdbcUrl, info);
             } else {
                 if (jdbcUrl == null && (driverClass == null || driverClass.length() == 0)) {
                     throw new SQLException("url not set");
@@ -1221,7 +1230,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } else if (dbType == DbType.db2) {
             db2ValidationQueryCheck();
         } else if (dbType == DbType.mysql
-                || JdbcUtils.MYSQL_DRIVER_6.equals(this.driverClass)) {
+                || JdbcUtils.MYSQL_DRIVER.equals(this.driverClass)
+                || JdbcUtils.MYSQL_DRIVER_6.equals(this.driverClass)
+        ) {
             isMySql = true;
         }
 
@@ -1824,7 +1835,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final ReentrantLock lock = conn.lock;
         lock.lock();
         try {
-            if ((!conn.isClosed()) || !conn.isDisable()) {
+            if ((!conn.isClosed()) && !conn.isDisable()) {
                 conn.disable(error);
                 requireDiscard = true;
             }
@@ -2162,7 +2173,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     boolean putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
-        if (poolingCount >= maxActive || e.discard || this.closed) {
+        if (poolingCount >= maxActive || e.discard || this.closed || this.closing) {
             return false;
         }
 
@@ -3821,16 +3832,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 throw new SQLException("interrupt", e);
             }
 
+            boolean result;
             try {
                 if (!this.isFillable(toCount)) {
                     JdbcUtils.close(holder.getConnection());
                     LOG.info("fill connections skip.");
                     break;
                 }
-                this.putLast(holder, System.currentTimeMillis());
+                result = this.putLast(holder, System.currentTimeMillis());
                 fillCount++;
             } finally {
                 lock.unlock();
+            }
+
+            if (!result) {
+                JdbcUtils.close(holder.getConnection());
+                LOG.info("connection fill failed.");
             }
         }
 
