@@ -4542,12 +4542,24 @@ public class SQLExprParser extends SQLParser {
             if (lexer.token == Token.LITERAL_ALIAS
                     || lexer.token == Token.IDENTIFIER
                     || lexer.token == Token.LITERAL_CHARS) {
-                charType.setCollate(lexer.stringVal());
+                StringBuilder collate = new StringBuilder(lexer.stringVal());
+                lexer.nextToken();
+                if (lexer.token == Token.DOT) {
+                    lexer.nextToken();
+                    if (lexer.token == Token.LITERAL_ALIAS
+                            || lexer.token == Token.IDENTIFIER
+                            || lexer.token == Token.LITERAL_CHARS) {
+                        collate.append(".").append(lexer.stringVal());
+                        lexer.nextToken();
+
+                    } else {
+                        throw new ParserException(lexer.info());
+                    }
+                }
+                charType.setCollate(collate.toString());
             } else {
                 throw new ParserException(lexer.info());
             }
-
-            lexer.nextToken();
         }
 
         return charType;
@@ -5551,9 +5563,9 @@ public class SQLExprParser extends SQLParser {
                         } else if (lexer.identifierEquals(FnvHash.Constants.TBPARTITIONS)) {
                             lexer.nextToken();
                             indexDefinition.setTbPartitions(primary());
-                        //} else if (lexer.identifierEquals(FnvHash.Constants.GLOBAL)) {
-                        //    lexer.nextToken();
-                        //    indexDefinition.setGlobal(true);
+                            //} else if (lexer.identifierEquals(FnvHash.Constants.GLOBAL)) {
+                            //    lexer.nextToken();
+                            //    indexDefinition.setGlobal(true);
                         } else {
                             break _opts;
                         }

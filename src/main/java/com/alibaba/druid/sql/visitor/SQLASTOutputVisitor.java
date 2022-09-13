@@ -2316,6 +2316,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(subQuery);
             this.indentCount--;
             println();
+        } else if (parent instanceof SQLMethodInvokeExpr && ((SQLMethodInvokeExpr) parent).getArguments().size() == 1) {
+            this.indentCount++;
+            println();
+            visit(subQuery);
+            this.indentCount--;
+            println();
         } else {
             print('(');
             this.indentCount++;

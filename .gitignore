@@ -2,7 +2,7 @@
 /.settings
 /.project
 /.classpath
-/.DS_Store
+.DS_Store
 /1
 /derby.log
 /src/test/resources/pool_config

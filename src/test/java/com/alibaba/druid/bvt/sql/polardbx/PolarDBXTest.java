@@ -20,6 +20,7 @@ public class PolarDBXTest extends TestCase {
 //        repository.setDefaultSchema("test1");
         SchemaObject table = repository.findTable("test1");
         Assert.assertTrue(table != null);
+        System.out.println(table.getStatement());
     }
 
     public void test_polardb_x_2() throws Throwable {
@@ -33,7 +34,7 @@ public class PolarDBXTest extends TestCase {
 //        repository.setDefaultSchema("test2");
         SchemaObject table = repository.findTable("test2");
         Assert.assertTrue(table != null);
-
+        System.out.println(table.getStatement());
     }
 
     public void test_polardb_x_3() throws Throwable {
@@ -47,6 +48,7 @@ public class PolarDBXTest extends TestCase {
 //        repository.setDefaultSchema("test3");
         SchemaObject table = repository.findTable("test3");
         Assert.assertTrue(table != null);
+        System.out.println(table.getStatement());
     }
 
     public void test_polardb_x_4() throws Throwable {
@@ -71,6 +73,35 @@ public class PolarDBXTest extends TestCase {
         repository.console(sql4);
 //        repository.setDefaultSchema("test4");
         SchemaObject table = repository.findTable("test4");
+        Assert.assertTrue(table != null);
+        System.out.println(table.getStatement());
+    }
+
+    public void test_polardb_x_5() throws Throwable {
+        SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
+        String sql5 = " CREATE TABLE `test5` (\n"
+                + "        `id` bigint(20) NOT NULL DEFAULT '0' COMMENT '',\n"
+                + "        `dksl` varchar(36) NOT NULL DEFAULT '' COMMENT '',\n"
+                + "        `dlsc` varchar(36) NOT NULL DEFAULT '' COMMENT '',\n"
+                + "        `chw` smallint(6) NOT NULL DEFAULT '0' COMMENT '',\n"
+                + "        `co2o` varchar(5000) NOT NULL DEFAULT '' COMMENT '',\n"
+                + "        `cnx` varchar(200) NOT NULL DEFAULT '' COMMENT '',\n"
+                + "        `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '',\n"
+                + "        `dow` varchar(36) NOT NULL DEFAULT '' COMMENT '',\n"
+                + "        PRIMARY KEY USING BTREE (`id`, `create_time`),\n"
+                + "        LOCAL KEY `_local_idx_xdfd` USING BTREE (`dksl`) COMMENT '',\n"
+                + "        LOCAL KEY `_local_idx_kdfs` USING BTREE (`create_time`) COMMENT ''\n"
+                + ") ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 ROW_FORMAT = COMPACT COMMENT ''\n"
+                + "LOCAL PARTITION BY RANGE (create_time)\n"
+                + "STARTWITH '2022-01-01'\n"
+                + "INTERVAL 1 MONTH\n"
+                + "EXPIRE AFTER 12\n"
+                + "PRE ALLOCATE 3\n"
+                + "PIVOTDATE NOW()\n"
+                + "DISABLE SCHEDULE\u0000";
+        repository.console(sql5);
+//        repository.setDefaultSchema("test4");
+        SchemaObject table = repository.findTable("test5");
         Assert.assertTrue(table != null);
         System.out.println(table.getStatement());
     }

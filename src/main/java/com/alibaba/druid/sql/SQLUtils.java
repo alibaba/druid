@@ -1,14 +1,17 @@
 /*
  * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.alibaba.druid.sql;
 
@@ -35,6 +38,8 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
@@ -42,9 +47,11 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
+import com.alibaba.druid.sql.dialect.oscar.visitor.OscarOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
@@ -71,11 +78,14 @@ import java.util.function.Predicate;
 public class SQLUtils {
     public static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private static final SQLParserFeature[] FORMAT_DEFAULT_FEATURES =
-            {SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup};
+    private static final SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
+            SQLParserFeature.KeepComments,
+            SQLParserFeature.EnableSQLBinaryOpExprGroup
+    };
 
     public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption(true, true);
-    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION = new FormatOption(false, true);
+    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION
+            = new FormatOption(false, true);
 
     private static final Log LOG = LogFactory.getLog(SQLUtils.class);
 
@@ -91,7 +101,9 @@ public class SQLUtils {
         return toSQLString(sqlObject, dbType, option, null);
     }
 
-    public static String toSQLString(SQLObject sqlObject, DbType dbType, FormatOption option,
+    public static String toSQLString(SQLObject sqlObject,
+                                     DbType dbType,
+                                     FormatOption option,
                                      VisitorFeature... features) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createOutputVisitor(out, dbType);
@@ -241,7 +253,8 @@ public class SQLUtils {
     }
 
     public static String formatPresto(String sql, FormatOption option) {
-        SQLParserFeature[] features = {SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup,
+        SQLParserFeature[] features = {SQLParserFeature.KeepComments,
+                SQLParserFeature.EnableSQLBinaryOpExprGroup,
                 SQLParserFeature.KeepNameQuotes};
         return format(sql, DbType.mysql, null, option, features);
     }
@@ -395,13 +408,20 @@ public class SQLUtils {
         return toSQLString(statementList, dbType, parameters, null, null);
     }
 
-    public static String toSQLString(List<SQLStatement> statementList, DbType dbType, List<Object> parameters,
+    public static String toSQLString(List<SQLStatement> statementList,
+                                     DbType dbType,
+                                     List<Object> parameters,
                                      FormatOption option) {
         return toSQLString(statementList, dbType, parameters, option, null);
     }
 
-    public static String toSQLString(List<SQLStatement> statementList, DbType dbType, List<Object> parameters,
-                                     FormatOption option, Map<String, String> tableMapping) {
+    public static String toSQLString(
+            List<SQLStatement> statementList,
+            DbType dbType,
+            List<Object> parameters,
+            FormatOption option,
+            Map<String, String> tableMapping
+    ) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
         if (parameters != null) {
@@ -453,15 +473,15 @@ public class SQLUtils {
                 }
             }
 
-            // {
-            // List<String> comments = stmt.getBeforeCommentsDirect();
-            // if (comments != null){
-            // for(String comment : comments) {
-            // visitor.printComment(comment);
-            // visitor.println();
-            // }
-            // }
-            // }
+//            {
+//                List<String> comments = stmt.getBeforeCommentsDirect();
+//                if (comments != null){
+//                    for(String comment : comments) {
+//                        visitor.printComment(comment);
+//                        visitor.println();
+//                    }
+//                }
+//            }
             stmt.accept(visitor);
 
             if (i == size - 1) {
@@ -485,7 +505,8 @@ public class SQLUtils {
         return createFormatOutputVisitor(out, null, dbType);
     }
 
-    public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out, List<SQLStatement> statementList,
+    public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out,
+                                                                List<SQLStatement> statementList,
                                                                 DbType dbType) {
         if (dbType == null) {
             if (statementList != null && statementList.size() > 0) {
@@ -532,6 +553,8 @@ public class SQLUtils {
                 return new PrestoOutputVisitor(out);
             case clickhouse:
                 return new ClickhouseOutputVisitor(out);
+            case oscar:
+                return new OscarOutputVisitor(out);
             case sap_hana:
                 return new SAPHanaOutputVisitor(out);
             default:
@@ -814,10 +837,10 @@ public class SQLUtils {
     }
 
     public static void acceptBooleanOr(String sql, DbType dbType, Consumer<SQLBinaryOpExprGroup> consumer) {
-        acceptBinaryOpExpr(sql, dbType, consumer, e -> e.getOperator() == SQLBinaryOperator.BooleanOr);
+        acceptBinaryOpExprGroup(sql, dbType, consumer, e -> e.getOperator() == SQLBinaryOperator.BooleanOr);
     }
 
-    public static void acceptBinaryOpExpr(String sql, DbType dbType, Consumer<SQLBinaryOpExprGroup> consumer, Predicate<SQLBinaryOpExprGroup> filter) {
+    public static void acceptBinaryOpExprGroup(String sql, DbType dbType, Consumer<SQLBinaryOpExprGroup> consumer, Predicate<SQLBinaryOpExprGroup> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
         }
@@ -862,6 +885,51 @@ public class SQLUtils {
         }
     }
 
+    public static void acceptBinaryOpExpr(String sql, DbType dbType, Consumer<SQLBinaryOpExpr> consumer, Predicate<SQLBinaryOpExpr> filter) {
+        if (sql == null || sql.isEmpty()) {
+            return;
+        }
+
+        List<SQLStatement> stmtList = new ArrayList<>();
+
+        try {
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableMultiUnion, SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup);
+            parser.parseStatementList(stmtList, -1, null);
+        } catch (Exception ignored) {
+            return;
+        }
+
+        SQLASTVisitor visitor;
+        switch (dbType) {
+            case odps:
+                visitor = new OdpsASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLBinaryOpExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return super.visit(x);
+                    }
+                };
+                break;
+            default:
+                visitor = new SQLASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLBinaryOpExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return super.visit(x);
+                    }
+                };
+                break;
+        }
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+    }
+
     public static void acceptSelectQueryBlock(String sql, DbType dbType, Consumer<SQLSelectQueryBlock> consumer, Predicate<SQLSelectQueryBlock> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
@@ -890,6 +958,25 @@ public class SQLUtils {
 
                     @Override
                     public boolean visit(OdpsSelectQueryBlock x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            case mysql:
+                visitor = new MySqlASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLSelectQueryBlock x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(MySqlSelectQueryBlock x) {
                         if (filter == null || filter.test(x)) {
                             consumer.accept(x);
                         }
@@ -942,6 +1029,28 @@ public class SQLUtils {
                     }
                 };
                 break;
+            case mysql:
+                visitor = new MySqlASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            case oracle:
+                visitor = new OracleASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
             default:
                 visitor = new SQLASTVisitorAdapter() {
                     @Override
@@ -978,6 +1087,44 @@ public class SQLUtils {
         switch (dbType) {
             case odps:
                 visitor = new OdpsASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLMethodInvokeExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            case mysql:
+                visitor = new MySqlASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLMethodInvokeExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLAggregateExpr x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            case oracle:
+                visitor = new OracleASTVisitorAdapter() {
                     @Override
                     public boolean visit(SQLMethodInvokeExpr x) {
                         if (filter == null || filter.test(x)) {
@@ -1222,8 +1369,11 @@ public class SQLUtils {
         if (expr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
             SQLBinaryOperator op = binaryOpExpr.getOperator();
-            if (op == SQLBinaryOperator.Add || op == SQLBinaryOperator.Subtract || op == SQLBinaryOperator.Multiply) {
-                return isValue(binaryOpExpr.getLeft()) && isValue(binaryOpExpr.getRight());
+            if (op == SQLBinaryOperator.Add
+                    || op == SQLBinaryOperator.Subtract
+                    || op == SQLBinaryOperator.Multiply) {
+                return isValue(binaryOpExpr.getLeft())
+                        && isValue(binaryOpExpr.getRight());
             }
         }
 
@@ -1410,7 +1560,10 @@ public class SQLUtils {
     }
 
     public static class FormatOption {
-        private int features = VisitorFeature.of(VisitorFeature.OutputUCase, VisitorFeature.OutputPrettyFormat);
+        private int features = VisitorFeature.of(
+                VisitorFeature.OutputUCase,
+                VisitorFeature.OutputPrettyFormat
+        );
 
         public FormatOption() {
         }

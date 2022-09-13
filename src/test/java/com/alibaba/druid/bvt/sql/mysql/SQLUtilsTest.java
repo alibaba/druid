@@ -1,13 +1,15 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.Arrays;
-
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-
 import org.junit.Assert;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SQLUtilsTest extends TestCase {
     public void test_format() throws Exception {
@@ -56,5 +58,93 @@ public class SQLUtilsTest extends TestCase {
                 "SELECT NULL, NULL, NULL, NULL, NULL\n" +
                 "\t, NULL# and lottery_notice_issue>=2014062 order by lottery_notice_issue desc";
         Assert.assertEquals(expected, formattedSql);
+    }
+
+    public void testAcceptFunctionTest() {
+        List<SQLMethodInvokeExpr> functions = new ArrayList<>();
+        SQLUtils.acceptFunction(
+                "select count(*) from t",
+                DbType.odps,
+                e -> functions.add(e),
+                e -> true
+        );
+        assertEquals(1, functions.size());
+    }
+
+    public void testAcceptFunctionTest_1() {
+        List<SQLMethodInvokeExpr> functions = new ArrayList<>();
+        SQLUtils.acceptAggregateFunction(
+                "select count(*) from t",
+                DbType.odps,
+                e -> functions.add(e),
+                e -> true
+        );
+        assertEquals(1, functions.size());
+    }
+
+    public void testAcceptFunctionTest_pg() {
+        List<SQLMethodInvokeExpr> functions = new ArrayList<>();
+        SQLUtils.acceptFunction(
+                "select count(*) from t",
+                DbType.postgresql,
+                e -> functions.add(e),
+                e -> true
+        );
+        assertEquals(1, functions.size());
+    }
+
+    public void testAcceptFunctionTest_pg_1() {
+        List<SQLMethodInvokeExpr> functions = new ArrayList<>();
+        SQLUtils.acceptAggregateFunction(
+                "select count(*) from t",
+                DbType.postgresql,
+                e -> functions.add(e),
+                e -> true
+        );
+        assertEquals(1, functions.size());
+    }
+
+    public void testAcceptFunctionTest_oracle() {
+        List<SQLMethodInvokeExpr> functions = new ArrayList<>();
+        SQLUtils.acceptFunction(
+                "select count(*) from t",
+                DbType.oracle,
+                e -> functions.add(e),
+                e -> true
+        );
+        assertEquals(1, functions.size());
+    }
+
+    public void testAcceptFunctionTest_oracle_1() {
+        List<SQLMethodInvokeExpr> functions = new ArrayList<>();
+        SQLUtils.acceptAggregateFunction(
+                "select count(*) from t",
+                DbType.oracle,
+                e -> functions.add(e),
+                e -> true
+        );
+        assertEquals(1, functions.size());
+    }
+
+    public void testAcceptFunctionTest_ck() {
+        List<SQLMethodInvokeExpr> functions = new ArrayList<>();
+        SQLUtils.acceptFunction(
+                "select count(*) from t",
+                DbType.clickhouse,
+                e -> functions.add(e),
+                e -> true
+        );
+        assertEquals(1, functions.size());
+    }
+
+    public void testAcceptFunctionTest_ck_1() {
+        List<SQLMethodInvokeExpr> functions = new ArrayList<>();
+        SQLUtils.acceptAggregateFunction(
+                "select count(*) from t",
+                DbType.clickhouse,
+                e -> functions.add(e),
+                e -> true
+        );
+        assertEquals(1, functions.size());
     }
 }

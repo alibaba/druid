@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.2.12-SNAPSHOT</version>
+	<version>1.2.13-SNSAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>druid</name>
 	<description>A JDBC datasource implementation.</description>
@@ -484,7 +484,7 @@
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
 			<artifactId>fastjson2</artifactId>
-			<version>2.0.8</version>
+			<version>2.0.13</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>

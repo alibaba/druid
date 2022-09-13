@@ -486,6 +486,9 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         if (partitioning != null) {
             x.setPartitioning(partitioning.clone());
         }
+        if (localPartitioning != null) {
+            x.setLocalPartitioning(localPartitioning.clone());
+        }
         for (SQLCommentHint hint : hints) {
             SQLCommentHint h2 = hint.clone();
             h2.setParent(x);
