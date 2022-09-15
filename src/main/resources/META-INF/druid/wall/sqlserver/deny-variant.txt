@@ -1,4 +1,0 @@
-servername
-version
-user
-system_user

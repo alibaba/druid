@@ -1,0 +1,25 @@
+select * 
+from ( 
+	select rownum rnm, z.* 
+	from (
+		select name as value,value as key 
+		from a_b_c 
+		where is_deleted='n' and type='fuse' order by ordering
+		) z 
+where rownum < ? ) where rnm >= ?
+  
+
+---------------------------
+SELECT *
+FROM (
+	SELECT rownum AS rnm, z.*
+	FROM (
+		SELECT name AS value, value AS key
+		FROM a_b_c
+		WHERE is_deleted = 'n'
+			AND type = 'fuse'
+		ORDER BY ordering
+	) z
+	WHERE rownum < ?
+)
+WHERE rnm >= ?

@@ -1,0 +1,29 @@
+
+                                   ConnectionPool
+                              |---------------------------| 
+                              |                           |
+       getConnection          |                           |    
+      (notEmpty.await)        |                           |   
+      (lowWater.signal)       |                           |
+      (maxActive.await)       |                           |
+  <-------------------------- |                           |
+  <-------------------------- |                           |
+  <-------------------------- |                           |
+                              |                           |
+                              |                           |
+  --------------------------> |                           |
+  --------------------------> |                           |    销毁多余连接的线程
+  --------------------------> |                           |    (highWater.awati, idleTimeout.await)
+    close                     |                           | --------------------------------------> 
+    (highWater.signal)        |                           |
+    (maxActive.signal)        |                           |  
+                              |                           |
+                              |                           |
+           产生连接的线程        |                           |
+     (lowWater.await)         |                           |
+     (notEmpty.signal)        |                           |
+  --------------------------> |                           |
+                              |                           |
+                              |---------------------------|
+                              
+五个Condition：notEmpty、maxActive、lowWater、hightWater, idleTime

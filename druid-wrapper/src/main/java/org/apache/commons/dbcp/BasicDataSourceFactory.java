@@ -1,10 +1,10 @@
 package org.apache.commons.dbcp;
 
-import java.util.Properties;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 
 import javax.sql.DataSource;
 
-import com.alibaba.druid.pool.DruidDataSourceFactory;
+import java.util.Properties;
 
 public class BasicDataSourceFactory extends DruidDataSourceFactory {
     public static DataSource createDataSource(Properties properties) throws Exception {
@@ -12,7 +12,7 @@ public class BasicDataSourceFactory extends DruidDataSourceFactory {
         config(dataSource, properties);
         return dataSource;
     }
-    
+
     protected DataSource createDataSourceInternal(Properties properties) throws Exception {
         BasicDataSource dataSource = new BasicDataSource();
         config(dataSource, properties);
