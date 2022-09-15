@@ -898,6 +898,60 @@ public class SQLUtils {
         }
     }
 
+    public static void acceptTableSource(String sql, DbType dbType, Consumer<SQLTableSource> consumer, Predicate<SQLTableSource> filter) {
+        if (sql == null || sql.isEmpty()) {
+            return;
+        }
+
+        List<SQLStatement> stmtList = new ArrayList<>();
+
+        try {
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, SQLParserFeature.EnableMultiUnion, SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup);
+            parser.parseStatementList(stmtList, -1, null);
+        } catch (Exception ignored) {
+            return;
+        }
+
+        SQLASTVisitor visitor;
+        switch (dbType) {
+            case odps:
+                visitor = new OdpsASTVisitorAdapter() {
+                    @Override
+                    public boolean visit(SQLExprTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            case mysql:
+                visitor = new MySqlASTVisitorAdapter() {
+                    public boolean visit(SQLExprTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            default:
+                visitor = new SQLASTVisitorAdapter() {
+                    public boolean visit(SQLExprTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+        }
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+    }
+
     public static void acceptSelectQueryBlock(String sql, DbType dbType, Consumer<SQLSelectQueryBlock> consumer, Predicate<SQLSelectQueryBlock> filter) {
         if (sql == null || sql.isEmpty()) {
             return;

@@ -39,6 +39,7 @@ public class HiveInsertStatement extends SQLInsertStatement implements SQLStatem
 
     protected void accept0(HiveASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, with);
             acceptChild(visitor, tableSource);
             acceptChild(visitor, partitions);
             acceptChild(visitor, valuesList);
@@ -49,6 +50,7 @@ public class HiveInsertStatement extends SQLInsertStatement implements SQLStatem
 
     protected void accept0(OdpsASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, with);
             acceptChild(visitor, tableSource);
             acceptChild(visitor, partitions);
             acceptChild(visitor, valuesList);
