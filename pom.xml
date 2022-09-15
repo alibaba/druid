@@ -6,7 +6,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid-parent</artifactId>
-	<version>1.2.13-SNSAPSHOT</version>
+	<version>1.2.13-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
 	<description>A JDBC datasource implementation.</description>
 	<packaging>pom</packaging>
@@ -455,7 +455,7 @@
 						<configuration>
 							<serverId>ossrh</serverId>
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>false</autoReleaseAfterClose>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
 							<!--
                             If you are deploying to Maven Central,
                             it is the Nexus Staging Plugin that is doing the deployment instead of the `deploy` plugin,
