@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
@@ -47,6 +48,9 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
@@ -808,7 +812,10 @@ public class SQLUtils {
         acceptBinaryOpExprGroup(sql, dbType, consumer, e -> e.getOperator() == SQLBinaryOperator.BooleanOr);
     }
 
-    public static void acceptBinaryOpExprGroup(String sql, DbType dbType, Consumer<SQLBinaryOpExprGroup> consumer, Predicate<SQLBinaryOpExprGroup> filter) {
+    public static void acceptBinaryOpExprGroup(String sql,
+                                               DbType dbType,
+                                               Consumer<SQLBinaryOpExprGroup> consumer,
+                                               Predicate<SQLBinaryOpExprGroup> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
         }
@@ -853,7 +860,10 @@ public class SQLUtils {
         }
     }
 
-    public static void acceptBinaryOpExpr(String sql, DbType dbType, Consumer<SQLBinaryOpExpr> consumer, Predicate<SQLBinaryOpExpr> filter) {
+    public static void acceptBinaryOpExpr(String sql,
+                                          DbType dbType,
+                                          Consumer<SQLBinaryOpExpr> consumer,
+                                          Predicate<SQLBinaryOpExpr> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
         }
@@ -898,7 +908,10 @@ public class SQLUtils {
         }
     }
 
-    public static void acceptTableSource(String sql, DbType dbType, Consumer<SQLTableSource> consumer, Predicate<SQLTableSource> filter) {
+    public static void acceptTableSource(String sql,
+                                         DbType dbType,
+                                         Consumer<SQLTableSource> consumer,
+                                         Predicate<SQLTableSource> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
         }
@@ -918,6 +931,70 @@ public class SQLUtils {
                 visitor = new OdpsASTVisitorAdapter() {
                     @Override
                     public boolean visit(SQLExprTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLJoinTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLSubqueryTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLUnionQueryTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLValuesTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLUnnestTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLWithSubqueryClause.Entry x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLLateralViewTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLAdhocTableSource x) {
                         if (filter == null || filter.test(x)) {
                             consumer.accept(x);
                         }
@@ -933,11 +1010,245 @@ public class SQLUtils {
                         }
                         return true;
                     }
+
+                    @Override
+                    public boolean visit(SQLJoinTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLSubqueryTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLUnionQueryTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLValuesTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLUnnestTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLWithSubqueryClause.Entry x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLLateralViewTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLAdhocTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(MySqlUpdateTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+                };
+                break;
+            case oracle:
+                visitor = new OracleASTVisitorAdapter() {
+                    public boolean visit(SQLExprTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLSubqueryTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLJoinTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLUnionQueryTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLValuesTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLUnnestTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLWithSubqueryClause.Entry x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLLateralViewTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLAdhocTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(OracleSelectTableReference x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(OracleWithSubqueryEntry x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(OracleSelectSubqueryTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
                 };
                 break;
             default:
                 visitor = new SQLASTVisitorAdapter() {
                     public boolean visit(SQLExprTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLJoinTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLSubqueryTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLValuesTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLUnnestTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLUnionQueryTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLWithSubqueryClause.Entry x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLLateralViewTableSource x) {
+                        if (filter == null || filter.test(x)) {
+                            consumer.accept(x);
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(SQLAdhocTableSource x) {
                         if (filter == null || filter.test(x)) {
                             consumer.accept(x);
                         }
@@ -952,7 +1263,10 @@ public class SQLUtils {
         }
     }
 
-    public static void acceptSelectQueryBlock(String sql, DbType dbType, Consumer<SQLSelectQueryBlock> consumer, Predicate<SQLSelectQueryBlock> filter) {
+    public static void acceptSelectQueryBlock(String sql,
+                                              DbType dbType,
+                                              Consumer<SQLSelectQueryBlock> consumer,
+                                              Predicate<SQLSelectQueryBlock> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
         }
@@ -1024,7 +1338,10 @@ public class SQLUtils {
         }
     }
 
-    public static void acceptAggregateFunction(String sql, DbType dbType, Consumer<SQLAggregateExpr> consumer, Predicate<SQLAggregateExpr> filter) {
+    public static void acceptAggregateFunction(String sql,
+                                               DbType dbType,
+                                               Consumer<SQLAggregateExpr> consumer,
+                                               Predicate<SQLAggregateExpr> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
         }
@@ -1091,7 +1408,10 @@ public class SQLUtils {
         }
     }
 
-    public static void acceptFunction(String sql, DbType dbType, Consumer<SQLMethodInvokeExpr> consumer, Predicate<SQLMethodInvokeExpr> filter) {
+    public static void acceptFunction(String sql,
+                                      DbType dbType,
+                                      Consumer<SQLMethodInvokeExpr> consumer,
+                                      Predicate<SQLMethodInvokeExpr> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
         }
@@ -1116,6 +1436,7 @@ public class SQLUtils {
                         }
                         return true;
                     }
+
                     @Override
                     public boolean visit(SQLAggregateExpr x) {
                         if (filter == null || filter.test(x)) {
@@ -1134,6 +1455,7 @@ public class SQLUtils {
                         }
                         return true;
                     }
+
                     @Override
                     public boolean visit(SQLAggregateExpr x) {
                         if (filter == null || filter.test(x)) {
@@ -1152,6 +1474,7 @@ public class SQLUtils {
                         }
                         return true;
                     }
+
                     @Override
                     public boolean visit(SQLAggregateExpr x) {
                         if (filter == null || filter.test(x)) {
@@ -1170,6 +1493,7 @@ public class SQLUtils {
                         }
                         return true;
                     }
+
                     @Override
                     public boolean visit(SQLMethodInvokeExpr x) {
                         if (filter == null || filter.test(x)) {
@@ -1186,7 +1510,10 @@ public class SQLUtils {
         }
     }
 
-    public static void acceptInsertInto(String sql, DbType dbType, Consumer<SQLInsertInto> consumer, Predicate<SQLInsertInto> filter) {
+    public static void acceptInsertInto(String sql,
+                                        DbType dbType,
+                                        Consumer<SQLInsertInto> consumer,
+                                        Predicate<SQLInsertInto> filter) {
         if (sql == null || sql.isEmpty()) {
             return;
         }
