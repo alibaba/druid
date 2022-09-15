@@ -1,16 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid-parent</artifactId>
 	<version>1.2.13-SNSAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>druid-parent</name>
+	<name>${project.artifactId}</name>
 	<description>A JDBC datasource implementation.</description>
+	<packaging>pom</packaging>
 	<url>https://github.com/alibaba/druid</url>
-	<inceptionYear>2013</inceptionYear>
+	<inceptionYear>2022</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+	<scm>
+		<url>https://github.com/alibaba/fastjson2</url>
+		<connection>scm:git:https://git@github.com/alibaba/fastjson2.git</connection>
+	</scm>
 
 	<properties>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<spring.version>4.3.20.RELEASE</spring.version>
 		<junit.version>4.13.1</junit.version>
 		<jmh.version>1.19</jmh.version>
@@ -26,8 +46,14 @@
 
 	<modules>
 		<module>core</module>
+		<module>druid-spring-boot-starter</module>
+		<module>druid-wrapper</module>
 	</modules>
 
+	<organization>
+		<name>Alibaba Group</name>
+		<url>https://github.com/alibaba</url>
+	</organization>
 	<developers>
 		<developer>
 			<id>wenshao</id>
@@ -57,85 +83,51 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<scm>
-		<url>https://github.com/alibaba/druid</url>
-		<connection>scm:git:https://git@github.com/alibaba/druid.git</connection>
-	</scm>
+	<dependencyManagement>
+		<dependencies>
+			<!-- spring libs -->
+		</dependencies>
+	</dependencyManagement>
 
-	<organization>
-		<name>Alibaba Group</name>
-		<url>https://github.com/alibaba</url>
-	</organization>
-
-	<licenses>
-		<license>
-			<name>Apache 2</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-			<comments>A business-friendly OSS license</comments>
-		</license>
-	</licenses>
+	<dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
+			<!--
+                Compiling Kotlin and Java sources - Using Maven - Kotlin Programming Language
+                https://kotlinlang.org/docs/reference/using-maven.html#compiling-kotlin-and-java-sources
+
+                Making sure that the kotlin plugin is above the maven-compiler-plugin in your pom.xml file!
+            -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<source>${jdk.version}</source>
-					<target>${jdk.version}</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.1</version>
-				<configuration>
-					<includes>
-						<include>**/bvt/**/*.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.1</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestEntries>
-							<Implementation-Build>${buildNumber}</Implementation-Build>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.1</version>
 				<executions>
+					<!-- Replacing default-compile as it is treated specially by maven -->
 					<execution>
-						<phase>validate</phase>
+						<id>default-compile</id>
+						<phase>none</phase>
+					</execution>
+					<!-- Replacing default-testCompile as it is treated specially by maven -->
+					<execution>
+						<id>default-testCompile</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>java-compile</id>
+						<phase>compile</phase>
 						<goals>
-							<goal>create</goal>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>java-test-compile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<format>{0,date,yyyy-MM-dd HH:mm:ss}</format>
-					<items>
-						<item>timestamp</item>
-					</items>
-					<doCheck>false</doCheck>
-					<doUpdate>true</doUpdate>
-				</configuration>
 			</plugin>
 
 			<plugin>
@@ -168,7 +160,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -464,7 +455,7 @@
 						<configuration>
 							<serverId>ossrh</serverId>
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+							<autoReleaseAfterClose>false</autoReleaseAfterClose>
 							<!--
                             If you are deploying to Maven Central,
                             it is the Nexus Staging Plugin that is doing the deployment instead of the `deploy` plugin,
