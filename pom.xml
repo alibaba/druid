@@ -48,6 +48,7 @@
 		<module>core</module>
 		<module>druid-spring-boot-starter</module>
 		<module>druid-wrapper</module>
+		<module>druid-demo-petclinic</module>
 	</modules>
 
 	<organization>
