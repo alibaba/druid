@@ -1,0 +1,19 @@
+===============================================================================
+===     Spring PetClinic sample application - PostgreSQL Configuration     ===
+===============================================================================
+
+--------------------------------------------------------------------------------
+
+1) Run the "docker-compose.yml" from the root of the project:
+
+        $ docker-compose up
+        ...
+        spring-petclinic-postgres-1  | The files belonging to this database system will be owned by user "postgres".
+        ...
+
+2) Run the app with `spring.profiles.active=postgres` (e.g. as a System property via the command
+   line, but any way that sets that property in a Spring Boot app should work). For example use
+
+   mvn spring-boot:run -Dspring-boot.run.profiles=postgres
+
+   To activate the profile on the command line.
