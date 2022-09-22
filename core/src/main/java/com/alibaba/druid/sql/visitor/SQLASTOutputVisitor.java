@@ -4034,7 +4034,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             boolean asof = x.isAsof();
             if (asof) {
-                print0(ucase ? " ASOF " : " asof");
+                print0(ucase ? " ASOF " : " asof ");
             }
 
             if (x.isNatural()) {
@@ -4823,7 +4823,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             final List<SQLAssignItem> storedOn = x.getStoredOn();
             if (storedOn.size() > 0) {
-                print0(ucase ? " ON (" : " ON (");
+                print0(ucase ? " ON (" : " on (");
                 printAndAccept(storedOn, ", ");
                 print(')');
             }
@@ -6585,7 +6585,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLExpr location = x.getLocation();
         if (location != null) {
-            print0(ucase ? " LOCATION " : " locationn ");
+            print0(ucase ? " LOCATION " : " location ");
             location.accept(this);
         }
 
@@ -7283,7 +7283,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLExpr locality = x.getLocality();
         if (locality != null) {
-            print(ucase ? " LOCALITY = " : " locality =");
+            print(ucase ? " LOCALITY = " : " locality = ");
             locality.accept(this);
         }
 
@@ -7613,7 +7613,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterTableConvertCharSet x) {
-        print0(ucase ? "CONVERT TO CHARACTER SET " : "convertToSqlNode to character set ");
+        print0(ucase ? "CONVERT TO CHARACTER SET " : "convert to character set ");
         x.getCharset().accept(this);
 
         if (x.getCollate() != null) {
@@ -7948,7 +7948,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.getStep() != null) {
-            print0(ucase ? " STEP " : " STEP ");
+            print0(ucase ? " STEP " : " step ");
             printExpr(x.getStep());
         }
 
@@ -7964,7 +7964,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " CHANGE TO SIMPLE" : " change to simple");
             final Boolean cache = x.getWithCache();
             if (cache != null && cache.booleanValue()) {
-                print0(ucase ? " WITH CACHE" : "  WITH CACHE");
+                print0(ucase ? " WITH CACHE" : "  with cache");
             }
         } else if (x.isChangeToGroup()) {
             print0(ucase ? " CHANGE TO GROUP" : " change to group");
@@ -8771,7 +8771,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (timeZone instanceof SQLIdentifierExpr) {
             if (((SQLIdentifierExpr) timeZone).getName().equalsIgnoreCase("LOCAL")) {
-                print0(ucase ? " AT LOCAL" : "alter session set ");
+                print0(ucase ? " AT LOCAL" : " at local");
                 return false;
             }
         }
@@ -9376,7 +9376,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         x.getName().accept(this);
 
         if (x.getLikeMapping() != null) {
-            print0(ucase ? " LIKE MAPPING (" : " like mapping ");
+            print0(ucase ? " LIKE MAPPING (" : " like mapping ( ");
             x.getLikeMapping().accept(this);
             print0(")");
         }
@@ -9879,7 +9879,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (indexType != SQLAnnIndex.IndexType.FastIndex.mask) {
                 print(',');
             }
-            print0(ucase ? "FLAT_INDEX" : "fast_index");
+            print0(ucase ? "FLAT_INDEX" : "flat_index");
         }
 
         print0(ucase ? "', DISTANCE = '" : "', distance = '");
@@ -9898,7 +9898,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (rtIndexType != SQLAnnIndex.IndexType.FastIndex.mask) {
                     print(',');
                 }
-                print0(ucase ? "FLAT_INDEX " : "fast_index ");
+                print0(ucase ? "FLAT_INDEX " : "flat_index ");
             }
 
             print('\'');
@@ -10314,7 +10314,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.isMaster()) {
-            print0(ucase ? " MASTER" : " MASTER");
+            print0(ucase ? " MASTER" : " master");
         }
 
         if (x.isAll()) {
@@ -10619,7 +10619,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLExternalRecordFormat format = x.getRowFormat();
         if (format != null) {
             println();
-            print0(ucase ? "ROW FORMAT" : "row rowFormat");
+            print0(ucase ? "ROW FORMAT" : "row format");
             if (format.getSerde() == null) {
                 print0(ucase ? " DELIMITED" : " delimited ");
             }
@@ -10876,7 +10876,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLSyncMetaStatement x) {
-        print0(ucase ? "SYNC META TABLE" : "SYNC META TABLE");
+        print0(ucase ? "SYNC META TABLE" : "sync meta table");
 
         Boolean restrict = x.getRestrict();
         if (restrict != null && restrict.booleanValue()) {
@@ -10989,7 +10989,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLSubmitJobStatement x) {
-        print0(ucase ? "SUBMIT JOB " : "SUBMIT JOB ");
+        print0(ucase ? "SUBMIT JOB " : "submit job ");
 
         if (x.isAwait()) {
             print0(ucase ? "AWAIT " : "await ");
@@ -11001,7 +11001,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLRestoreStatement x) {
-        print0(ucase ? "RESTORE " : "RESTORE ");
+        print0(ucase ? "RESTORE " : "restore ");
 
         x.getType().accept(this);
         print0(ucase ? " FROM " : " from ");
