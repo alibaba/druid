@@ -35,7 +35,7 @@ import com.alibaba.druid.util.Utils;
 
 public class OdpsFileTest extends TestCase {
     public void test_0() throws Exception {
-        exec_test("bvt/parser/odps-0.sql");
+        exec_test("bvt/parser/odps-0.txt");
     }
 
     public void exec_test(String resource) throws Exception {

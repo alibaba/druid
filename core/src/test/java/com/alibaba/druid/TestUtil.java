@@ -70,7 +70,7 @@ public class TestUtil {
         try (Reader reader = new InputStreamReader(
                 contextClassLoader
                         .getResourceAsStream(path), "UTF-8")
-        ){
+        ) {
             return Utils.read(reader);
         } catch (IOException ignored) {
             return null;

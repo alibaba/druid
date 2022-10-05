@@ -974,6 +974,7 @@ public final class FnvHash {
         long RETURNS = fnv1a_64_lower("RETURNS");
         long ROWTYPE = fnv1a_64_lower("ROWTYPE");
         long WINDOW = fnv1a_64_lower("WINDOW");
+        long QUALIFY = fnv1a_64_lower("QUALIFY");
         long MULTIVALUE = fnv1a_64_lower("MULTIVALUE");
         long OPTIONALLY = fnv1a_64_lower("OPTIONALLY");
         long ENCLOSED = fnv1a_64_lower("ENCLOSED");

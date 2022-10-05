@@ -473,6 +473,13 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             printAndAccept(windows, ", ");
         }
 
+        SQLExpr qualify = x.getQualify();
+        if (qualify != null) {
+            println();
+            print0(ucase ? "QUALIFY " : "qualify ");
+            qualify.accept(this);
+        }
+
         if (x.getOrderBy() != null) {
             println();
             x.getOrderBy().accept(this);
