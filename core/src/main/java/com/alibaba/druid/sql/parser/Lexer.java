@@ -1230,6 +1230,11 @@ public class Lexer {
                 continue;
             }
 
+            if (ch == EOI && pos < text.length()) {
+                ch = charAt(++pos);
+                continue;
+            }
+
             if (ch == '$' && isVaraintChar(charAt(pos + 1))) {
                 scanVariable();
                 return;

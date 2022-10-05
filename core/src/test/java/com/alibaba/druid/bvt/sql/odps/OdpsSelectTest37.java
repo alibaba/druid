@@ -23,28 +23,19 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-public class OdpsSelectTest36 extends TestCase {
+public class OdpsSelectTest37 extends TestCase {
     public void test_select() throws Exception {
         // 1095288847322
-        String sql = "select *\n" +
-                "from (\n" +
-                "\tselect 1\n" +
-                ") \n" +
-                "union all\n" +
-                "select 2;";//
-        assertEquals("SELECT *\n" +
-                "FROM (\n" +
-                "\tSELECT 1\n" +
-                ")\n" +
-                "UNION ALL\n" +
-                "SELECT 2;", SQLUtils.formatOdps(sql));
+        String sql = "-- abc\u001A" +
+                "\nselect * from t";
 
-        assertEquals("select *\n" +
-                "from (\n" +
-                "\tselect 1\n" +
-                ")\n" +
-                "union all\n" +
-                "select 2;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("-- abc\n" +
+                "SELECT *\n" +
+                "FROM t", SQLUtils.formatOdps(sql));
+
+        assertEquals("-- abc\n" +
+                "select *\n" +
+                "from t", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
@@ -59,8 +50,8 @@ public class OdpsSelectTest36 extends TestCase {
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals(0, visitor.getTables().size());
-        assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));
