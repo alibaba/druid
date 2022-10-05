@@ -124,6 +124,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected volatile int connectTimeout = DEFAULT_TIME_CONNECT_TIMEOUT_MILLIS; // milliSeconds
     protected volatile int socketTimeout = DEFAULT_TIME_SOCKET_TIMEOUT_MILLIS; // milliSeconds
+    private volatile String connectTimeoutStr;
+    private volatile String socketTimeoutSr;
 
     protected volatile int queryTimeout; // seconds
     protected volatile int transactionQueryTimeout; // seconds
@@ -1012,6 +1014,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
      */
     public void setConnectTimeout(int milliSeconds) {
         this.connectTimeout = milliSeconds;
+        this.connectTimeoutStr = null;
     }
 
     /**
@@ -1028,6 +1031,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
      */
     public void setSocketTimeout(int milliSeconds) {
         this.socketTimeout = milliSeconds;
+        this.socketTimeoutSr = null;
     }
 
     public String getName() {
@@ -1728,12 +1732,27 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         if (connectTimeout > 0) {
             if (isMySql) {
-                physicalConnectProperties.put("connectTimeout", connectTimeout);
+                if (connectTimeoutStr == null) {
+                    connectTimeoutStr = Integer.toString(connectTimeout);
+                }
+
+                physicalConnectProperties.put("connectTimeout", connectTimeoutStr);
             } else if (isOracle) {
-                physicalConnectProperties.put("oracle.net.CONNECT_TIMEOUT", connectTimeout);
+                if (connectTimeoutStr == null) {
+                    connectTimeoutStr = Integer.toString(connectTimeout);
+                }
+
+                physicalConnectProperties.put("oracle.net.CONNECT_TIMEOUT", connectTimeoutStr);
             } else if (driver != null && "org.postgresql.Driver".equals(driver.getClass().getName())) {
-                physicalConnectProperties.put("loginTimeout", connectTimeout);
-                physicalConnectProperties.put("socketTimeout", connectTimeout);
+                if (connectTimeoutStr == null) {
+                    connectTimeoutStr = Integer.toString(connectTimeout);
+                }
+                physicalConnectProperties.put("loginTimeout", connectTimeoutStr);
+
+                if (socketTimeoutSr == null) {
+                    socketTimeoutSr = Integer.toString(socketTimeout);
+                }
+                physicalConnectProperties.put("socketTimeout", socketTimeoutSr);
             }
         }
 
