@@ -2332,11 +2332,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public long getCreateCount() {
-        return createCount;
+        lock.lock();
+        try {
+            return createCount;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public long getDestroyCount() {
-        return destroyCount;
+        lock.lock();
+        try {
+            return destroyCount;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public long getConnectCount() {
