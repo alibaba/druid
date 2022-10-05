@@ -136,7 +136,7 @@ public class MySqlSelectTest_204_dla extends MysqlTest {
                 "\t\tstring_col STRING comment 'default',\n" +
                 "\t\ttimestamp_col TIMESTAMP comment 'default'\n" +
                 "\t)\n" +
-                "\trow rowFormat\n" +
+                "\trow format\n" +
                 "\t\tserde 'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'\n" +
                 "\twith serdeproperties (\n" +
                 "\t\t'field.delim' = '|',\n" +
