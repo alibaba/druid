@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.FnvHash;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 
 import java.io.IOException;
 import java.security.AccessControlException;
@@ -4318,7 +4319,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlCaseStatement x) {
         print0(ucase ? "CASE " : "case ");
-        x.getCondition().accept(this);
+        if (x.getCondition() != null) {
+            x.getCondition().accept(this);
+        }
         println();
         for (int i = 0; i < x.getWhenList().size(); i++) {
             x.getWhenList().get(i).accept(this);

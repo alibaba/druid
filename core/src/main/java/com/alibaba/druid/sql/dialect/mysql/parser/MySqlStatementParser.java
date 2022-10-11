@@ -8960,6 +8960,9 @@ public class MySqlStatementParser extends SQLStatementParser {
         {
             while (lexer.token() == Token.WHEN) {
                 MySqlWhenStatement when = new MySqlWhenStatement();
+
+                accept(Token.WHEN);
+
                 // when expr
                 when.setCondition(exprParser.expr());
 
