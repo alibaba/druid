@@ -4320,7 +4320,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlCaseStatement x) {
         print0(ucase ? "CASE " : "case ");
-        x.getCondition().accept(this);
+        if (x.getCondition() != null) {
+            x.getCondition().accept(this);
+        }
         println();
         for (int i = 0; i < x.getWhenList().size(); i++) {
             x.getWhenList().get(i).accept(this);
