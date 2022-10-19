@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.util.JdbcUtils;
+import com.oceanbase.jdbc.OceanBaseConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -47,10 +48,14 @@ public class OceanBaseValidConnectionChecker extends ValidConnectionCheckerAdapt
         }
         if (validateQuery == null || validateQuery.isEmpty()) {
             if (dbType != null) {
-                if (dbType == DbType.oceanbase) {
-                    validateQuery = mysqlModeValidateQuery;
-                } else {
-                    validateQuery = oracleModeValidateQuery;
+                if (c instanceof OceanBaseConnection) {
+                    OceanBaseConnection obConn = (OceanBaseConnection) c;
+
+                    if (obConn.getProtocol().isOracleMode()) {
+                        validateQuery = oracleModeValidateQuery;
+                    } else {
+                        validateQuery = mysqlModeValidateQuery;
+                    }
                 }
             }
         }
