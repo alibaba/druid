@@ -25,8 +25,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class OceanBaseValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker {
-    private String oracleModeValidateQuery = "SELECT 'x' FROM DUAL";
-    private String mysqlModeValidateQuery = "SELECT 'x'";
+    private String commonValidateQuery = "SELECT 'x' FROM DUAL";
     private DbType dbType;
 
     public OceanBaseValidConnectionChecker() {
@@ -47,11 +46,7 @@ public class OceanBaseValidConnectionChecker extends ValidConnectionCheckerAdapt
         }
         if (validateQuery == null || validateQuery.isEmpty()) {
             if (dbType != null) {
-                if (dbType == DbType.oceanbase) {
-                    validateQuery = mysqlModeValidateQuery;
-                } else {
-                    validateQuery = oracleModeValidateQuery;
-                }
+                validateQuery = commonValidateQuery;
             }
         }
 
