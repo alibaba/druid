@@ -143,14 +143,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         SQLExpr where = x.getWhere();
         if (where != null) {
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            where.accept(this);
-
-            if (where.hasAfterComment() && isPrettyFormat()) {
-                print(' ');
-                printlnComment(x.getWhere().getAfterCommentsDirect());
-            }
+            printWhere(where);
         }
 
         if (x.getGroupBy() != null) {

@@ -2391,10 +2391,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount--;
         }
 
-        if (x.getHaving() != null) {
-            println();
-            print0(ucase ? "HAVING " : "having ");
-            x.getHaving().accept(this);
+        SQLExpr having = x.getHaving();
+        if (having != null) {
+            printHaving(having);
         }
 
         if (x.isWithRollUp() && !paren) {
@@ -2406,6 +2405,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         return false;
+    }
+
+    protected void printHaving(SQLExpr having) {
+        println();
+        print0(ucase ? "HAVING " : "having ");
+        having.accept(this);
     }
 
     public boolean visit(SQLSelect x) {
@@ -2492,14 +2497,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLExpr where = x.getWhere();
         if (where != null) {
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            printExpr(where, parameterized);
-
-            if (where.hasAfterComment() && isPrettyFormat()) {
-                print(' ');
-                printlnComment(x.getWhere().getAfterCommentsDirect());
-            }
+            printWhere(where);
         }
 
         printHierarchical(x);
@@ -2554,6 +2552,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         return false;
+    }
+
+    protected void printWhere(SQLExpr where) {
+        println();
+        print0(ucase ? "WHERE " : "where ");
+
+        List<String> beforeComments = where.getBeforeCommentsDirect();
+        if (beforeComments != null && !beforeComments.isEmpty() && isPrettyFormat()) {
+            printlnComments(beforeComments);
+        }
+
+        printExpr(where, parameterized);
+
+        List<String> afterComments = where.getAfterCommentsDirect();
+        if (afterComments != null && !afterComments.isEmpty() && isPrettyFormat()) {
+            print(' ');
+            printlnComment(afterComments);
+        }
     }
 
     protected void printFetchFirst(SQLSelectQueryBlock x) {

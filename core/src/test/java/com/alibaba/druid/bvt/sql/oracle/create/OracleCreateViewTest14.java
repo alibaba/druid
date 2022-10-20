@@ -245,7 +245,7 @@ public class OracleCreateViewTest14 extends OracleTest {
                         "\tAND (tt.status = '3'\n" +
                         "\t\tOR tt.status = '4'\n" +
                         "\t\tOR tt.status = '5')\n" +
-                        "\tAND tt.product_id = tb.team_id\n" +
+                        "\tAND tt.product_id = tb.team_id -- 3n,4c,5c*6>\n" +
                         "UNION\n" +
                         "/*  hU*/\n" +
                         "SELECT t.order_id AS order_id, 'GN' AS product_type, t.agent_id AS order_agent, t.all_price AS collect_money, t.olduserid AS customer_id\n" +

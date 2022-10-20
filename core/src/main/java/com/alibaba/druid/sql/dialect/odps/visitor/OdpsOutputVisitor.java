@@ -448,17 +448,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         SQLExpr where = x.getWhere();
         if (where != null) {
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            if (where.hasBeforeComment() && isPrettyFormat()) {
-                printlnComments(x.getWhere().getBeforeCommentsDirect());
-            }
-
-            where.accept(this);
-            if (where.hasAfterComment() && isPrettyFormat()) {
-                print(' ');
-                printlnComment(x.getWhere().getAfterCommentsDirect());
-            }
+            printWhere(where);
         }
 
         if (x.getGroupBy() != null) {

@@ -193,9 +193,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         SQLExpr where = x.getWhere();
         if (where != null) {
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            printExpr(where, parameterized);
+            printWhere(where);
         }
 
         printHierarchical(x);

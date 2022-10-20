@@ -561,7 +561,8 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\tWHERE document_status_code != 'FI0007004'\n" +
                 "\t\t\tAND (actual_amount_total > 0\n" +
                 "\t\t\t\tOR (actual_amount_total < 0\n" +
-                "\t\t\t\t\tAND deductible = 1))\n" +
+                "\t\t\t\t\tAND deductible = 1)) --         <projectId> AND octt.project_id in ( ?{projectId} )</projectId>\n" +
+                "\t\t--         <endDate1> AND rh.actual_received_date<= ?{endDate1}</endDate1>\n" +
                 "\t\tGROUP BY octt.id\n" +
                 "\t) actualReceiMoney\n" +
                 "\tON tran.id = actualReceiMoney.id\n" +
@@ -572,7 +573,8 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\t\tLEFT JOIN midea_sd_actual_received_head rh ON ar.actual_received_head_id = rh.id\n" +
                 "\t\tWHERE rh.document_status_code != 'FI0007004'\n" +
                 "\t\t\tAND ar.fund_type_code IN ('FIFT01', 'FIFT02')\n" +
-                "\t\t\tAND ar.actual_amount_total > 0\n" +
+                "\t\t\tAND ar.actual_amount_total > 0 --                       <projectId> AND octt.project_id in ( ?{projectId} )</projectId>\n" +
+                "\t\t--                       <endDate1> AND rh.actual_received_date<= ?{endDate1}</endDate1>\n" +
                 "\t\tGROUP BY octt.id\n" +
                 "\t) act1_date\n" +
                 "\tON tran.id = act1_date.id\n" +
@@ -637,7 +639,7 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\t\tEND) AS whkAmount\n" +
                 "\t\tFROM midea_sd_payment_plan pp\n" +
                 "\t\t\tJOIN midea_sd_order_contract_transaction ort ON ort.id = pp.transaction_id\n" +
-                "\t\tWHERE 1 = 1\n" +
+                "\t\tWHERE 1 = 1 --         <projectId> AND ort.project_id in ( ?{projectId} )</projectId>\n" +
                 "\t\tGROUP BY ort.id\n" +
                 "\t) paymentplan\n" +
                 "\tON tran.id = paymentplan.id\n" +
@@ -649,12 +651,12 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\t\t\tSELECT r2.transaction_id, MAX(r1.exec_date) AS exec_date\n" +
                 "\t\t\t\tFROM midea_sd_reserve_area r1\n" +
                 "\t\t\t\t\tLEFT JOIN midea_sd_reserve_area_detail r2 ON r2.reserve_area_id = r1.id\n" +
-                "\t\t\t\tWHERE r1.status_code = 'SD050104'\n" +
+                "\t\t\t\tWHERE r1.status_code = 'SD050104' -- <projectId> AND r1.project_id in ( ?{projectId} )</projectId>\n" +
                 "\t\t\t\tGROUP BY r2.contract_id\n" +
                 "\t\t\t) ra3\n" +
                 "\t\t\tON ra3.transaction_id = ra2.transaction_id\n" +
                 "\t\t\t\tAND ra3.exec_date = ra1.exec_date\n" +
-                "\t\tWHERE ra1.status_code = 'SD050104'\n" +
+                "\t\tWHERE ra1.status_code = 'SD050104' -- <projectId> AND ra1.project_id in ( ?{projectId} )</projectId> \n" +
                 "\t) areaDetail\n" +
                 "\tON areaDetail.transaction_id = tran.id\n" +
                 "\tLEFT JOIN midea_sd_payment_method payment ON tran.payment_method_id = payment.id\n" +
@@ -668,11 +670,14 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\t\tON tran.id = salesMemberItem.transaction_id\n" +
                 "\t\t\t\tAND salesMemberItem.modify_type != 1\n" +
                 "\t\t\tLEFT JOIN midea_sd_user_account ON salesMemberItem.sale_member_id = midea_sd_user_account.id\n" +
-                "\t\tWHERE 1 = 1\n" +
+                "\t\tWHERE 1 = 1 -- <projectId> AND tran.project_id in ( ?{projectId} )</projectId>\n" +
                 "\t\tGROUP BY tran.id\n" +
                 "\t) salesTeam\n" +
                 "\tON salesTeam.id = tran.id\n" +
                 "WHERE contract.status_code IN ('SD040501', 'SD040502') -- <orgId> AND org.id in (?{orgId}) </orgId>\n" +
+                "-- <projectId> AND tran.project_id in ( ?{projectId} )</projectId>\n" +
+                "-- <startDate2>AND contract.vesting_date >= ?{startDate2} </startDate2>\n" +
+                "-- <endDate2> AND  contract.vesting_date <= ?{endDate2} </endDate2> -- <orgId> AND org.id in (?{orgId}) </orgId>\n" +
                 "-- <projectId> AND tran.project_id in ( ?{projectId} )</projectId>\n" +
                 "-- <startDate2>AND contract.vesting_date >= ?{startDate2} </startDate2>\n" +
                 "-- <endDate2> AND  contract.vesting_date <= ?{endDate2} </endDate2>\n" +

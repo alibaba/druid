@@ -410,9 +410,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         if (x.getWhere() != null) {
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            x.getWhere().accept(this);
+            printWhere(x.getWhere());
         }
 
         printHierarchical(x);
