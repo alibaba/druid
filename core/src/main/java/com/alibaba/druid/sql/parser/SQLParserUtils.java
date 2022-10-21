@@ -724,6 +724,13 @@ public class SQLParserUtils {
                 start = lexer.startPos + lexer.stringVal().length();
             }
 
+            if (lexer.identifierEquals("ADD")) {
+                lexer.nextToken();
+                if (lexer.identifierEquals("JAR")) {
+                    lexer.nextPath();
+                }
+            }
+
             lexer.nextToken();
             token = lexer.token;
         }

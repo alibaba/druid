@@ -1132,7 +1132,7 @@ public class Lexer {
         }
         stringVal = null;
         mark = pos;
-        while (!isWhitespace(ch)) {
+        while (!isWhitespace(ch) && ch != ';') {
             ch = charAt(++pos);
         }
         bufPos = pos - mark;
