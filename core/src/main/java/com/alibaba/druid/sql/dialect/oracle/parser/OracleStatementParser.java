@@ -223,6 +223,13 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
+            if (lexer.identifierEquals("REFRESH")) {
+                SQLStatement stmt = parseRefresh();
+                stmt.setParent(parent);
+                statementList.add(stmt);
+                continue;
+            }
+
             if (lexer.token() == Token.CONTINUE) {
                 lexer.nextToken();
                 OracleContinueStatement stmt = new OracleContinueStatement();

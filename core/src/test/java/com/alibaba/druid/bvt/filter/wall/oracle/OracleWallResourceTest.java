@@ -28,6 +28,10 @@ public class OracleWallResourceTest extends PGTest {
         exec_test("bvt/wall/oracle/oracle-01.sql");
     }
 
+    public void test_2() throws Exception {
+        exec_test("bvt/wall/oracle/oracle-02.sql");
+    }
+
     public void exec_test(String resource) throws Exception {
         String sql = TestUtil.getResource(resource);
         OracleWallProvider provider = new OracleWallProvider();
