@@ -22,8 +22,8 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>https://github.com/alibaba/fastjson2</url>
-		<connection>scm:git:https://git@github.com/alibaba/fastjson2.git</connection>
+		<url>https://github.com/alibaba/druid</url>
+		<connection>scm:git:https://git@github.com/alibaba/druid.git</connection>
 	</scm>
 
 	<properties>
