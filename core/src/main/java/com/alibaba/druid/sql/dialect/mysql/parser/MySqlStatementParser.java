@@ -1264,6 +1264,24 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (lexer.identifierEquals("XA")) {
+            lexer.nextToken();
+            MySqlXAStatement stmt = new MySqlXAStatement();
+            String typeStr = lexer.stringVal();
+            stmt.setType(
+                    MySqlXAStatement.XAType.of(typeStr)
+            );
+            lexer.nextToken();
+
+            if (lexer.token() != EOF && lexer.token() != SEMI) {
+                SQLExpr xid = exprParser.expr();
+                stmt.setId(xid);
+            }
+
+            statementList.add(stmt);
+            return true;
+        }
+
         if (lexer.token() == Token.EXPLAIN) {
             SQLStatement stmt = this.parseExplain();
             statementList.add(stmt);

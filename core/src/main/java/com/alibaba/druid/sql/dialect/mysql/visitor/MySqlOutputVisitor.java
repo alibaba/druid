@@ -5553,6 +5553,16 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    public void endVisit(MysqlAlterTableAlterCheck x) {
+    public boolean visit(MySqlXAStatement x) {
+        print0(ucase ? "XA " : "xa ");
+
+        MySqlXAStatement.XAType type = x.getType();
+        print0(ucase ? type.name() : type.name().toLowerCase());
+        SQLExpr id = x.getId();
+        if (id != null) {
+            print(' ');
+            printExpr(id);
+        }
+        return false;
     }
 } //
