@@ -529,7 +529,13 @@ public class SQLParserUtils {
         {
             Lexer lexer = createLexer(sql, dbType);
             lexer.nextToken();
-            if (lexer.identifierEquals("pai") || lexer.identifierEquals("jar")) {
+
+            boolean script = false;
+            if (dbType == DbType.odps && lexer.token == Token.VARIANT) {
+                script = true;
+            }
+
+            if (script || lexer.identifierEquals("pai") || lexer.identifierEquals("jar")) {
                 return Collections.singletonList(sql);
             }
         }
