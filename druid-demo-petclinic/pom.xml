@@ -33,7 +33,7 @@
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>druid-spring-boot-starter</artifactId>
-      <version>1.2.14</version>
+      <version>1.2.15-SNAPSHOT</version>
     </dependency>
     <!-- Spring and Spring Boot dependencies -->
     <dependency>
