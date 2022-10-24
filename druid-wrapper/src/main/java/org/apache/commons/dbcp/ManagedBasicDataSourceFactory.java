@@ -1,8 +1,8 @@
 package org.apache.commons.dbcp;
 
-import java.util.Properties;
-
 import javax.sql.DataSource;
+
+import java.util.Properties;
 
 public class ManagedBasicDataSourceFactory extends BasicDataSourceFactory {
     public static DataSource createDataSource(Properties properties) throws Exception {

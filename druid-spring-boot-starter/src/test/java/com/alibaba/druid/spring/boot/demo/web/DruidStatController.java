@@ -1,7 +1,6 @@
 package com.alibaba.druid.spring.boot.demo.web;
 
 import com.alibaba.druid.stat.DruidStatManagerFacade;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

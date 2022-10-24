@@ -1,0 +1,29 @@
+<html>
+<body>
+  <form>
+    <th:block th:fragment="select (label, name, items)">
+      <div th:with="valid=${!#fields.hasErrors(name)}"
+        th:class="${'form-group' + (valid ? '' : ' has-error')}"
+        class="form-group">
+        <label class="col-sm-2 control-label" th:text="${label}">Label</label>
+
+        <div class="col-sm-10">
+          <select th:field="*{__${name}__}">
+            <option th:each="item : ${items}" th:value="${item}"
+              th:text="${item}">dog</option>
+          </select>
+          <span th:if="${valid}"
+            class="fa fa-ok form-control-feedback"
+            aria-hidden="true"></span>
+          <th:block th:if="${!valid}">
+            <span
+              class="fa fa-remove form-control-feedback"
+              aria-hidden="true"></span>
+            <span class="help-inline" th:errors="*{__${name}__}">Error</span>
+          </th:block>
+        </div>
+      </div>
+    </th:block>
+  </form>
+</body>
+</html>
