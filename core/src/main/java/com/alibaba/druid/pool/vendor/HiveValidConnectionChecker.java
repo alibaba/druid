@@ -17,7 +17,7 @@ public class HiveValidConnectionChecker extends ValidConnectionCheckerAdapter im
     @Override
     public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
         int queryTimeout = validationQueryTimeout <= 0 ? defaultQueryTimeout : validationQueryTimeout;
-        if (conn.isClosed() || conn.isValid(queryTimeout)) {
+        if (conn.isClosed() || !conn.isValid(queryTimeout)) {
             return false;
         }
         String query = validateQuery;
