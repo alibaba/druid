@@ -1097,4 +1097,16 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         printExpr(x.getPackageName());
         return false;
     }
+
+    public boolean visit(OdpsPAIStmt x) {
+        print0(ucase ? "PAI " : "pai ");
+        print0(x.getArguments());
+        return false;
+    }
+
+    public boolean visit(OdpsCopyStmt x) {
+        print0(ucase ? "COPY " : "copy ");
+        print0(x.getArguments());
+        return false;
+    }
 }

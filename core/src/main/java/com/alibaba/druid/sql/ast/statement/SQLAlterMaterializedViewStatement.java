@@ -175,4 +175,9 @@ public class SQLAlterMaterializedViewStatement extends SQLStatementImpl implemen
         }
         visitor.endVisit(this);
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.MATERIALIZED_VIEW;
+    }
 }

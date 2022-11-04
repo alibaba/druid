@@ -172,4 +172,17 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
         }
         this.where = x;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.TABLE;
+    }
+
+    public SQLName getName() {
+        if (tableSources.size() == 1) {
+            SQLExprTableSource dataSource0 = tableSources.get(0);
+            return dataSource0.getName();
+        }
+        return null;
+    }
 }

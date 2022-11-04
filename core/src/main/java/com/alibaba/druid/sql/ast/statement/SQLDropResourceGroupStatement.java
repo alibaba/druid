@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class SQLDropResourceGroupStatement
         extends SQLStatementImpl implements SQLDropStatement {
-    private SQLExpr name;
+    private SQLName name;
     private boolean ifExists;
 
     public SQLDropResourceGroupStatement() {
@@ -44,11 +44,11 @@ public class SQLDropResourceGroupStatement
         visitor.endVisit(this);
     }
 
-    public SQLExpr getName() {
+    public SQLName getName() {
         return name;
     }
 
-    public void setName(SQLExpr x) {
+    public void setName(SQLName x) {
         if (x != null) {
             x.setParent(this);
         }

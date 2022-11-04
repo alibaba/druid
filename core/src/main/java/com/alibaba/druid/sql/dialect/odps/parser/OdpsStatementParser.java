@@ -309,6 +309,12 @@ public class OdpsStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (lexer.identifierEquals("alias")) {
+            SQLStatement stmt = parseSet();
+            statementList.add(stmt);
+            return true;
+        }
+
         if (lexer.identifierEquals("EXSTORE")) {
             lexer.nextToken();
             OdpsExstoreStatement stmt = new OdpsExstoreStatement();
@@ -327,6 +333,40 @@ public class OdpsStatementParser extends SQLStatementParser {
             stmt.setPackageName(
                     this.exprParser.name()
             );
+            statementList.add(stmt);
+            return true;
+        }
+
+        if (lexer.identifierEquals("PAI")) {
+            lexer.nextToken();
+            int semiPos = lexer.text.indexOf(';', lexer.pos());
+            while (semiPos != -1 && semiPos + 2 < lexer.text.length()) {
+                char next = lexer.text.charAt(semiPos + 1);
+                if (next == '"' || next == '\'') {
+                    semiPos = lexer.text.indexOf(';', semiPos + 1);
+                    continue;
+                }
+                break;
+            }
+            String arguments;
+            if (semiPos != -1) {
+                int count = semiPos - lexer.pos();
+                arguments = lexer.subString(lexer.pos(), count);
+                lexer.reset(semiPos);
+            } else {
+                arguments = lexer.subString(lexer.pos());
+                lexer.reset(lexer.text.length());
+            }
+            lexer.nextToken();
+
+            OdpsPAIStmt stmt = new OdpsPAIStmt();
+            stmt.setArguments(arguments);
+            statementList.add(stmt);
+            return true;
+        }
+
+        if (lexer.identifierEquals("COPY")) {
+            SQLStatement stmt = parseCopy();
             statementList.add(stmt);
             return true;
         }
@@ -1199,6 +1239,8 @@ public class OdpsStatementParser extends SQLStatementParser {
         if (identifierEquals("SETPROJECT")) {
             lexer.nextToken();
             setProject = true;
+        } else if (dbType == DbType.odps && identifierEquals("ALIAS")) {
+            lexer.nextToken();
         } else {
             accept(Token.SET);
         }
@@ -1541,6 +1583,25 @@ public class OdpsStatementParser extends SQLStatementParser {
             );
         }
 
+        return stmt;
+    }
+
+    public SQLStatement parseCopy() {
+        lexer.nextToken();
+        int semiPos = lexer.text.indexOf(';', lexer.pos());
+        String arguments;
+        if (semiPos != -1) {
+            int count = semiPos - lexer.pos();
+            arguments = lexer.subString(lexer.pos(), count);
+            lexer.reset(semiPos);
+        } else {
+            arguments = lexer.subString(lexer.pos());
+            lexer.reset(lexer.text.length());
+        }
+        lexer.nextToken();
+
+        OdpsCopyStmt stmt = new OdpsCopyStmt();
+        stmt.setArguments(arguments);
         return stmt;
     }
 }

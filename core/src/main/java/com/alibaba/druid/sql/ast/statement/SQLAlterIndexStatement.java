@@ -161,4 +161,9 @@ public class SQLAlterIndexStatement extends SQLStatementImpl implements SQLAlter
         }
         this.dbPartitionBy = x;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.INDEX;
+    }
 }

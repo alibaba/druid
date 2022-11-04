@@ -269,5 +269,8 @@ public class SQLCreateDatabaseStatement extends SQLStatementImpl implements SQLC
         this.physical = physical;
     }
 
-    //    public static class StoredAs
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.DATABASE;
+    }
 }

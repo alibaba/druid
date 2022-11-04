@@ -74,4 +74,9 @@ public class SQLDropRoleStatement extends SQLStatementImpl implements SQLCreateS
 
         return false;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.ROLE;
+    }
 }

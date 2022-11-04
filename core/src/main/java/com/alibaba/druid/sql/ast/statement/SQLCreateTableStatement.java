@@ -1566,4 +1566,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
         this.engine = x;
     }
+
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.TABLE;
+    }
 }

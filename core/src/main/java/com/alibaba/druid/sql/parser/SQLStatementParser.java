@@ -861,6 +861,8 @@ public class SQLStatementParser extends SQLParser {
                     stmt = x;
                 } else if (lexer.identifierEquals("MATERIALIZED")) {
                     stmt = parseDropMaterializedView();
+                } else if (lexer.identifierEquals("OFFLINEMODEL")) {
+                    stmt = parseDropOfflineModel();
                 } else {
                     throw new ParserException("TODO " + lexer.info());
                 }
@@ -959,6 +961,25 @@ public class SQLStatementParser extends SQLParser {
         acceptIdentifier("MATERIALIZED");
 
         accept(Token.VIEW);
+
+        if (lexer.token == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+
+        stmt.setName(this.exprParser.name());
+        return stmt;
+    }
+
+    public SQLStatement parseDropOfflineModel() {
+        if (lexer.token() == Token.DROP) {
+            lexer.nextToken();
+        }
+        SQLDropOfflineModelStatement stmt = new SQLDropOfflineModelStatement();
+        stmt.setDbType(dbType);
+
+        acceptIdentifier("OFFLINEMODEL");
 
         if (lexer.token == Token.IF) {
             lexer.nextToken();
@@ -2148,6 +2169,14 @@ public class SQLStatementParser extends SQLParser {
                             accept(RPAREN);
                             stmt.addItem(alterTablePartition);
                             continue;
+                        } else if (lexer.identifierEquals("ARCHIVE")) {
+                            SQLAlterTableArchive archive = new SQLAlterTableArchive();
+                            for (SQLAssignItem condition : renamePartition.getPartition()) {
+                                archive.getPartition().add(condition);
+                                condition.setParent(archive);
+                            }
+                            stmt.addItem(archive);
+                            continue;
                         } else if (lexer.identifierEquals(FnvHash.Constants.ADD)) {
                             alterTableAdd(stmt);
                             continue;
@@ -2189,14 +2218,15 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.identifierEquals(FnvHash.Constants.ARCHIVE)) {
                     lexer.nextToken();
 
-                    accept(Token.PARTITION);
+                    if (lexer.token == PARTITION) {
+                        lexer.nextToken();
 
-                    SQLAlterTableArchivePartition item = new SQLAlterTableArchivePartition();
-                    accept(Token.LPAREN);
-                    parseAssignItems(item.getPartitions(), item, false);
-                    accept(Token.RPAREN);
-
-                    stmt.addItem(item);
+                        SQLAlterTableArchivePartition item = new SQLAlterTableArchivePartition();
+                        accept(Token.LPAREN);
+                        parseAssignItems(item.getPartitions(), item, false);
+                        accept(Token.RPAREN);
+                        stmt.addItem(item);
+                    }
                 } else if (lexer.identifierEquals(FnvHash.Constants.UNARCHIVE)) {
                     lexer.nextToken();
 

@@ -1045,6 +1045,13 @@ public interface SQLASTVisitor {
     default void endVisit(SQLAlterTablePartition x) {
     }
 
+    default boolean visit(SQLAlterTableArchive x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableArchive x) {
+    }
+
     default boolean visit(SQLAlterTablePartition x) {
         return true;
     }
@@ -1988,6 +1995,13 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLDropOutlineStatement x) {
+    }
+
+    default boolean visit(SQLDropOfflineModelStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLDropOfflineModelStatement x) {
     }
 
     default boolean visit(SQLAlterOutlineStatement x) {

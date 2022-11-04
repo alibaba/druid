@@ -109,4 +109,9 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDropSta
     public List getChildren() {
         return tableSources;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.VIEW;
+    }
 }

@@ -128,4 +128,9 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDropSt
     public void setIfExists(boolean ifExists) {
         this.ifExists = ifExists;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.INDEX;
+    }
 }

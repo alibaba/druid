@@ -283,4 +283,9 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
     public void setNotClustered(boolean notClustered) {
         this.notClustered = notClustered;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.TABLE;
+    }
 }

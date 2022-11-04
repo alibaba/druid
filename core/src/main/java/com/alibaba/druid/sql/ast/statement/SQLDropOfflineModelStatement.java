@@ -22,14 +22,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLDropTypeStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-    private SQLName name;
-    private boolean ifExists;
+public class SQLDropOfflineModelStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
+    protected SQLName name;
+    protected boolean ifExists;
 
-    public SQLDropTypeStatement() {
+    public SQLDropOfflineModelStatement() {
     }
 
-    public SQLDropTypeStatement(DbType dbType) {
+    public SQLDropOfflineModelStatement(DbType dbType) {
         super(dbType);
     }
 
@@ -41,25 +41,6 @@ public class SQLDropTypeStatement extends SQLStatementImpl implements SQLDropSta
         visitor.endVisit(this);
     }
 
-    public SQLName getName() {
-        return name;
-    }
-
-    public void setName(SQLName x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.name = x;
-    }
-
-    public boolean isIfExists() {
-        return ifExists;
-    }
-
-    public void setIfExists(boolean ifExists) {
-        this.ifExists = ifExists;
-    }
-
     @Override
     public List<SQLObject> getChildren() {
         List<SQLObject> children = new ArrayList<SQLObject>();
@@ -67,6 +48,34 @@ public class SQLDropTypeStatement extends SQLStatementImpl implements SQLDropSta
             children.add(name);
         }
         return children;
+    }
+
+    public SQLName getName() {
+        return name;
+    }
+
+    public void setName(SQLName name) {
+        this.name = name;
+    }
+
+    public String getTableGroupName() {
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLName) {
+            return name.getSimpleName();
+        }
+
+        return null;
+    }
+
+    public boolean isIfExists() {
+        return ifExists;
+    }
+
+    public void setIfExists(boolean ifNotExists) {
+        this.ifExists = ifNotExists;
     }
 
     public boolean replace(SQLExpr expr, SQLExpr target) {
@@ -78,8 +87,4 @@ public class SQLDropTypeStatement extends SQLStatementImpl implements SQLDropSta
         return false;
     }
 
-    @Override
-    public DDLObjectType getDDLObjectType() {
-        return DDLObjectType.TYPE;
-    }
 }

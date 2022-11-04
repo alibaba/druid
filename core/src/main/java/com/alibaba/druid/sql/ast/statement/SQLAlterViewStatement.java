@@ -278,4 +278,9 @@ public class SQLAlterViewStatement extends SQLStatementImpl implements SQLCreate
 
         return x;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.VIEW;
+    }
 }

@@ -2101,7 +2101,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLAllColumnExpr x) {
+        SQLExpr owner = x.getOwner();
+        if (owner != null) {
+            printExpr(owner);
+            print('.');
+        }
+
         print('*');
+
+        List<SQLExpr> except = x.getExcept();
+        if (except != null) {
+            print(ucase ? " EXCEPT(" : "except(");
+            printAndAccept(except, ", ");
+            print(')');
+        }
+
         return true;
     }
 
@@ -6747,6 +6761,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLAlterTableArchive x) {
+        if (!x.getPartition().isEmpty()) {
+            print0(ucase ? "PARTITION (" : "partition (");
+            printAndAccept(x.getPartition(), ", ");
+            print0(") ");
+        }
+
+        print0(ucase ? "ARCHIVE" : "archive");
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLAlterTableDisableLifecycle x) {
         if (!x.getPartition().isEmpty()) {
             print0(ucase ? "PARTITION (" : "partition (");
@@ -10242,6 +10268,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLDropOutlineStatement x) {
         print0(ucase ? "DROP OUTLINE " : "drop outline ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+        x.getName().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropOfflineModelStatement x) {
+        print0(ucase ? "DROP OFFLINEMODEL " : "drop offlinemodel ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
         x.getName().accept(this);
         return false;
     }

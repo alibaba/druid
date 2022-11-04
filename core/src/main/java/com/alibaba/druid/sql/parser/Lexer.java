@@ -142,6 +142,10 @@ public class Lexer {
         return text.substring(offset, offset + count);
     }
 
+    public final String subString(int offset) {
+        return text.substring(offset);
+    }
+
     public final char[] sub_chars(int offset, int count) {
         char[] chars = new char[count];
         text.getChars(offset, offset + count, chars, 0);
@@ -1132,12 +1136,14 @@ public class Lexer {
         }
         stringVal = null;
         mark = pos;
-        while (!isWhitespace(ch) && ch != ';') {
+        while (!isWhitespace(ch) && ch != ';' && pos < text.length()) {
             ch = charAt(++pos);
         }
         bufPos = pos - mark;
 
-        ch = charAt(++pos);
+        if (ch != ';') {
+            ch = charAt(++pos);
+        }
 
         token = LITERAL_PATH;
     }
@@ -1147,7 +1153,13 @@ public class Lexer {
             ch = charAt(++pos);
         }
 
-        if (isFirstIdentifierChar(ch) || ch == '{') {
+        char first = ch;
+        if (first == '$') {
+            scanVariable();
+            return;
+        }
+
+        if (isFirstIdentifierChar(first) || first == '{') {
             stringVal = null;
             mark = pos;
             while (ch != ';' && ch != EOI) {
@@ -2275,12 +2287,25 @@ public class Lexer {
                     break;
                 }
 
-                if (ident && isWhitespace(ch)) {
-                    break;
+                if (ident && ch == '$') {
+                    if (charAt(pos + 1) == '{') {
+                        bufPos++;
+                        ident = false;
+                        continue;
+                    }
+                }
+
+                if (ident) {
+                    if (isWhitespace(ch)) {
+                        pos--;
+                        break;
+                    } else if (ch == ',' || ch == ')' || ch == '(' || ch == ';') {
+                        pos--;
+                        break;
+                    }
                 }
 
                 bufPos++;
-                continue;
             }
 
             if (ch != '}' && !ident) {
@@ -2289,10 +2314,11 @@ public class Lexer {
             ++pos;
             bufPos++;
 
+            char endChar = ch;
             this.ch = charAt(pos);
 
-            if (dbType == DbType.odps) {
-                while (isIdentifierChar(this.ch) && ch != '；') {
+            if (dbType == DbType.odps && !isWhitespace(endChar)) {
+                while (isIdentifierChar(this.ch) && ch != ';') {
                     ++pos;
                     bufPos++;
                     this.ch = charAt(pos);
@@ -2515,7 +2541,9 @@ public class Lexer {
                     bufPos++;
                     break;
                 } else if (ch == EOI) {
-                    break;
+                    if (pos >= text.length()) {
+                        break;
+                    }
                 }
 
                 if (ch == '\n') {
