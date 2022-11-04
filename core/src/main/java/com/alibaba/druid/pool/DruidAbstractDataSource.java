@@ -2108,7 +2108,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         to.maxPoolPreparedStatementPerConnectionSize = this.maxPoolPreparedStatementPerConnectionSize;
         to.logWriter = this.logWriter;
         if (this.filters != null) {
-            to.filters = new ArrayList<Filter>(this.filters);
+            to.filters = new ArrayList<>(this.filters);
         }
         to.exceptionSorter = this.exceptionSorter;
         to.driver = this.driver;
@@ -2137,6 +2137,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         to.asyncCloseConnectionEnable = this.asyncCloseConnectionEnable;
         to.createScheduler = this.createScheduler;
         to.destroyScheduler = this.destroyScheduler;
+        to.socketTimeout = this.socketTimeout;
+        to.connectTimeout = this.connectTimeout;
+        to.socketTimeoutSr = this.socketTimeoutSr;
+        to.connectTimeoutStr = this.connectTimeoutStr;
     }
 
     public abstract void discardConnection(Connection realConnection);

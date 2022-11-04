@@ -3496,7 +3496,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return dataSourceStat;
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         return cloneDruidDataSource();
     }
 
