@@ -12,7 +12,7 @@ import java.sql.Statement;
 public class HiveValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
     private static final long serialVersionUID = -3642139641360283076L;
     public static final String DEFAULT_VALIDATION_QUERY = "SELECT 1";
-    private int defaultQueryTimeout = 0;
+    private int defaultQueryTimeout;
 
     @Override
     public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
