@@ -122,8 +122,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected Driver driver;
 
-    protected volatile int connectTimeout = DEFAULT_TIME_CONNECT_TIMEOUT_MILLIS; // milliSeconds
-    protected volatile int socketTimeout = DEFAULT_TIME_SOCKET_TIMEOUT_MILLIS; // milliSeconds
+    protected volatile int connectTimeout; // milliSeconds
+    protected volatile int socketTimeout; // milliSeconds
     private volatile String connectTimeoutStr;
     private volatile String socketTimeoutSr;
 
@@ -1017,6 +1017,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.connectTimeoutStr = null;
     }
 
+    protected void setConnectTimeout(String milliSeconds) {
+        try {
+            this.connectTimeout = Integer.parseInt(milliSeconds);
+        } catch (Exception ignored) {
+            // ignored
+        }
+        this.connectTimeoutStr = null;
+    }
+
     /**
      *
      * @since 1.2.12
@@ -1031,6 +1040,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
      */
     public void setSocketTimeout(int milliSeconds) {
         this.socketTimeout = milliSeconds;
+        this.socketTimeoutSr = null;
+    }
+
+    protected void setSocketTimeout(String milliSeconds) {
+        try {
+            this.socketTimeout = Integer.parseInt(milliSeconds);
+        } catch (Exception ignored) {
+            // ignored
+        }
         this.socketTimeoutSr = null;
     }
 
