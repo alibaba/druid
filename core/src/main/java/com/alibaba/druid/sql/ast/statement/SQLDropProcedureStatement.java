@@ -58,4 +58,8 @@ public class SQLDropProcedureStatement extends SQLStatementImpl implements SQLDr
         this.ifExists = ifExists;
     }
 
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.PROCEDURE;
+    }
 }

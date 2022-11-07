@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.ast.statement;
+package com.alibaba.druid.sql.dialect.odps.ast;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public interface SQLDDLStatement extends SQLStatement {
-    default DDLObjectType getDDLObjectType() {
-        return DDLObjectType.OTHER;
+public class OdpsPAIStmt extends OdpsStatementImpl {
+    private String arguments;
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((OdpsASTVisitor) visitor);
     }
 
-    enum DDLObjectType {
-        DATABASE,
-        TABLE,
-        VIEW,
-        MATERIALIZED_VIEW,
-        TABLE_SPACE,
-        TABLE_GROUP,
-        FUNCTION,
-        TRIGGER,
-        USER,
-        ROLE,
-        SEQUENCE,
-        INDEX,
-        PROCEDURE,
-        TYPE,
-        OTHER
+    public void accept0(OdpsASTVisitor visitor) {
+        visitor.visit(this);
+        visitor.endVisit(this);
+    }
+
+    public String getArguments() {
+        return arguments;
+    }
+
+    public void setArguments(String arguments) {
+        this.arguments = arguments;
     }
 }

@@ -254,6 +254,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                         case TABLE:
                         case PARTITION:
                         case SEQUENCE:
+                        case VARIANT:
                             break;
                         default:
                             throw new ParserException("expect identifier. " + lexer.info());

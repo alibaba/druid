@@ -15,7 +15,8 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
-
-public interface SQLAlterStatement extends SQLStatement {
+public interface SQLAlterStatement extends SQLDDLStatement {
+    default DDLObjectType getDDLObjectType() {
+        return DDLObjectType.OTHER;
+    }
 }

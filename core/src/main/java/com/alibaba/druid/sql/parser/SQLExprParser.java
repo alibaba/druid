@@ -81,12 +81,21 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token == Token.STAR) {
             lexer.nextToken();
 
-            SQLExpr expr = new SQLAllColumnExpr();
+            SQLAllColumnExpr expr = new SQLAllColumnExpr();
 
             if (lexer.token == Token.DOT) {
                 lexer.nextToken();
                 accept(Token.STAR);
                 return new SQLPropertyExpr(expr, "*");
+            }
+
+            if (lexer.token == Token.EXCEPT) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                List<SQLExpr> except = new ArrayList<>();
+                this.exprList(except, expr);
+                expr.setExcept(except);
+                accept(Token.RPAREN);
             }
 
             return expr;
@@ -1958,7 +1967,21 @@ public class SQLExprParser extends SQLParser {
     protected SQLExpr dotRest(SQLExpr expr) {
         if (lexer.token == Token.STAR) {
             lexer.nextToken();
-            expr = new SQLPropertyExpr(expr, "*");
+            if (lexer.token == Token.EXCEPT) {
+                SQLAllColumnExpr allColumnExpr = new SQLAllColumnExpr();
+                allColumnExpr.setOwner(expr);
+
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                List<SQLExpr> except = new ArrayList<>();
+                this.exprList(except, allColumnExpr);
+                allColumnExpr.setExcept(except);
+                accept(Token.RPAREN);
+
+                expr = allColumnExpr;
+            } else {
+                expr = new SQLPropertyExpr(expr, "*");
+            }
         } else {
             String name;
             long hash_lower = 0L;
@@ -2008,7 +2031,7 @@ public class SQLExprParser extends SQLParser {
                         && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.WMSYS;
                 expr = methodRest(expr, name, aggregate);
             } else {
-                if (name.charAt(0) == '`') {
+                if (name.length() > 0 && name.charAt(0) == '`') {
                     if (lexer.isEnabled(SQLParserFeature.IgnoreNameQuotes)) {
                         name = name.substring(1, name.length() - 1);
                     }
@@ -2369,7 +2392,9 @@ public class SQLExprParser extends SQLParser {
                 return name;
             }
 
-            if (lexer.token != Token.LITERAL_ALIAS && lexer.token != Token.IDENTIFIER
+            if (lexer.token != Token.LITERAL_ALIAS
+                    && lexer.token != Token.IDENTIFIER
+                    && lexer.token != Token.VARIANT
                     && (!lexer.getKeywords().containsValue(lexer.token))) {
                 throw new ParserException("error, " + lexer.info());
             }

@@ -75,4 +75,9 @@ public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDrop
 
         return false;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.TRIGGER;
+    }
 }

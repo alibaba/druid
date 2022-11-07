@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateUserStatement extends SQLStatementImpl {
+public class SQLCreateUserStatement extends SQLStatementImpl implements SQLCreateStatement {
     private SQLName user;
     private SQLExpr password;
 
@@ -59,5 +59,10 @@ public class SQLCreateUserStatement extends SQLStatementImpl {
             acceptChild(visitor, password);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.USER;
     }
 }

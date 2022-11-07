@@ -810,6 +810,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (this.jdbcUrl != null) {
                 this.jdbcUrl = this.jdbcUrl.trim();
                 initFromWrapDriverUrl();
+
+                initFromUrlOrProperties();
+            }
+
+            if (connectTimeout == 0) {
+                socketTimeout = DEFAULT_TIME_CONNECT_TIMEOUT_MILLIS;
+            }
+
+            if (socketTimeout == 0) {
+                socketTimeout = DEFAULT_TIME_SOCKET_TIMEOUT_MILLIS;
             }
 
             for (Filter filter : filters) {
@@ -973,6 +983,38 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 msg += "} inited";
 
                 LOG.info(msg);
+            }
+        }
+    }
+
+    private void initFromUrlOrProperties() {
+        if (jdbcUrl.startsWith("jdbc:mysql://")) {
+            if (jdbcUrl.indexOf("connectTimeout=") != -1 || jdbcUrl.indexOf("socketTimeout=") != -1) {
+                String[] items = jdbcUrl.split("(\\?|&)");
+                for (int i = 0; i < items.length; i++) {
+                    String item = items[i];
+                    if (item.startsWith("connectTimeout=")) {
+                        String strVal = item.substring("connectTimeout=".length());
+                        setConnectTimeout(strVal);
+                    } else if (item.startsWith("socketTimeout=")) {
+                        String strVal = item.substring("socketTimeout=".length());
+                        setSocketTimeout(strVal);
+                    }
+                }
+            }
+
+            Object propertyConnectTimeout = connectProperties.get("connectTimeout");
+            if (propertyConnectTimeout instanceof String) {
+                setConnectTimeout((String) propertyConnectTimeout);
+            } else if (propertyConnectTimeout instanceof Number) {
+                setConnectTimeout(((Number) propertyConnectTimeout).intValue());
+            }
+
+            Object propertySocketTimeout = connectProperties.get("socketTimeout");
+            if (propertySocketTimeout instanceof String) {
+                setSocketTimeout((String) propertySocketTimeout);
+            } else if (propertySocketTimeout instanceof Number) {
+                setSocketTimeout(((Number) propertySocketTimeout).intValue());
             }
         }
     }
@@ -3497,7 +3539,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return dataSourceStat;
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         return cloneDruidDataSource();
     }
 

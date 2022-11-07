@@ -224,4 +224,9 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
         }
         this.restartWith = x;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.SEQUENCE;
+    }
 }

@@ -364,6 +364,10 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
         this.script = x;
     }
 
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.VIEW;
+    }
+
     public SQLCreateViewStatement clone() {
         SQLCreateViewStatement x = new SQLCreateViewStatement();
 
