@@ -21,6 +21,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DatabaseDriver;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -47,6 +49,26 @@ public class DruidDataSourceWrapper extends DruidDataSource implements Initializ
         if (super.getDriverClassName() == null) {
             super.setDriverClassName(basicProperties.getDriverClassName());
         }
+        if (super.getValidationQuery() == null) {
+            super.setValidationQuery(this.determineValidationQuery());
+        }
+    }
+
+    private String determineValidationQuery() {
+        String url = super.getUrl();
+        if (!StringUtils.hasText(url)) {
+            return null;
+        }
+        DatabaseDriver databaseDriver;
+        try {
+            databaseDriver = DatabaseDriver.fromJdbcUrl(url);
+        } catch (Throwable ignore) {
+            return null;
+        }
+        if (DatabaseDriver.UNKNOWN.equals(databaseDriver)) {
+            return null;
+        }
+        return databaseDriver.getValidationQuery();
     }
 
     @Autowired(required = false)
