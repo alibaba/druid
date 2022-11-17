@@ -35,7 +35,7 @@ import java.util.Properties;
 
 public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
     public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT = 1;
-    public static final String DEFAULT_VALIDATION_QUERY = "SELECT 1";
+    public static final String DEFAULT_VALIDATION_QUERY = "/* ping */ SELECT 1";
 
     private static final long serialVersionUID = 1L;
     private static final Log LOG = LogFactory.getLog(MySqlValidConnectionChecker.class);
