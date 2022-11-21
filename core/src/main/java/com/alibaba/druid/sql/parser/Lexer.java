@@ -1891,6 +1891,7 @@ public class Lexer {
                         }
                         break;
                     default:
+                        putChar('\\');
                         putChar(ch);
                         break;
                 }

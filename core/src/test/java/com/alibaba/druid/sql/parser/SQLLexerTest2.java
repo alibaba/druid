@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import junit.framework.TestCase;
 import org.junit.Assert;
@@ -86,6 +87,20 @@ public class SQLLexerTest2 extends TestCase {
         Assert.assertEquals("not supported.pos 13, line 2, column 2, token IDENTIFIER FORM", exception.getMessage());
 
 
+    }
+
+    public void test_lexer_scanstring01() {
+        String sql = "'\\c'";
+        MySqlLexer lexer = new MySqlLexer(sql);
+        lexer.nextToken();
+       Assert.assertEquals("\\c",lexer.stringVal);
+    }
+
+    public void test_lexer_scanstring02() {
+        String sql = "'\r'";
+        MySqlLexer lexer = new MySqlLexer(sql);
+        lexer.nextToken();
+        Assert.assertEquals("\r",lexer.stringVal);
     }
 
 
