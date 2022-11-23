@@ -1,5 +1,11 @@
 package org.logicalcobwebs.proxool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+
+import javax.naming.*;
+import javax.naming.spi.ObjectFactory;
+import javax.sql.DataSource;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,25 +16,15 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import javax.naming.Context;
-import javax.naming.Name;
-import javax.naming.RefAddr;
-import javax.naming.Reference;
-import javax.naming.StringRefAddr;
-import javax.naming.spi.ObjectFactory;
-import javax.sql.DataSource;
-
-import com.alibaba.druid.pool.DruidDataSource;
-
 public class ProxoolDataSource implements DataSource, ObjectFactory {
-    private DruidDataSource druid              = new DruidDataSource();
+    private DruidDataSource druid = new DruidDataSource();
 
-    private Properties      delegateProperties = new Properties();
+    private Properties delegateProperties = new Properties();
 
-    public ProxoolDataSource(){
+    public ProxoolDataSource() {
     }
 
-    public ProxoolDataSource(String alias){
+    public ProxoolDataSource(String alias) {
         druid.setName(alias);
     }
 
@@ -61,7 +57,10 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     @SuppressWarnings("rawtypes")
-    public Object getObjectInstance(Object refObject, Name name, Context context, Hashtable hashtable) throws Exception {
+    public Object getObjectInstance(Object refObject,
+                                    Name name,
+                                    Context context,
+                                    Hashtable hashtable) throws Exception {
         if (!(refObject instanceof Reference)) {
             return null;
         }
@@ -393,7 +392,7 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
                 delegateProperties.put(stInner.nextToken().trim(), stInner.nextToken().trim());
             } else {
                 throw new IllegalArgumentException("Unexpected delegateProperties value: '" + properties
-                                                   + "'. Expected 'name=value'");
+                        + "'. Expected 'name=value'");
             }
         }
     }

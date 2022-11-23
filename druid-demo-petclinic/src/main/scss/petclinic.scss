@@ -1,0 +1,210 @@
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ @import "bootstrap";
+
+$icon-font-path:    "../../webjars/bootstrap/fonts/";
+
+$spring-green:      #6db33f;
+$spring-dark-green: #5fa134;
+$spring-brown:      #34302D;
+$spring-grey:       #838789;
+$spring-light-grey: #f1f1f1;
+
+$body-bg:                           $spring-light-grey;
+$text-color:                        $spring-brown;
+$link-color:                        $spring-dark-green;
+$link-hover-color:                  $spring-dark-green;
+
+$navbar-default-link-color:         $spring-light-grey;
+$navbar-default-link-active-color:  $spring-light-grey;
+$navbar-default-link-hover-color:   $spring-light-grey;
+$navbar-default-link-hover-bg:      $spring-green;
+$navbar-default-toggle-icon-bar-bg: $spring-light-grey;
+$navbar-default-toggle-hover-bg:    transparent;
+$navbar-default-link-active-bg:     $spring-green;
+
+$border-radius-base:             0;
+$border-radius-large:            0;
+$border-radius-small:            0;
+
+$nav-tabs-active-link-hover-color:        $spring-light-grey;
+$nav-tabs-active-link-hover-bg:           $spring-brown;
+$nav-tabs-active-link-hover-border-color: $spring-brown;
+$nav-tabs-border-color:                   $spring-brown;
+
+$pagination-active-bg:                    $spring-brown;
+$pagination-active-border:                $spring-green;
+$table-border-color:                      $spring-brown;
+
+.table > thead > tr > th {
+  background-color: lighten($spring-brown, 3%);
+  color: $spring-light-grey;
+}
+
+.table-filter {
+  background-color: $spring-brown;
+  padding: 9px 12px;
+}
+
+.nav > li > a {
+  color: $spring-grey;
+}
+
+.btn-primary {
+  margin-top: 12px;
+  border-width: 2px;
+  transition: border 0.15s;
+  color: $spring-light-grey;
+  background: $spring-brown;
+  border-color: $spring-green;
+  -webkit-transition: border 0.15s;
+  -moz-transition: border 0.15s;
+  -o-transition: border 0.15s;
+  -ms-transition: border 0.15s;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.active,
+  .open .dropdown-toggle {
+    background-color: $spring-brown;
+    border-color: $spring-brown;
+  }
+}
+
+
+.container .text-muted {
+  margin: 20px 0;
+}
+
+code {
+  font-size: 80%;
+}
+
+.xd-container {
+  margin-top: 40px;
+  margin-bottom: 100px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+h1 {
+  margin-bottom: 15px
+}
+
+.index-page--subtitle {
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0 0 30px;
+}
+
+.form-horizontal button.btn-inverse {
+  margin-left: 32px;
+}
+
+#job-params-modal .modal-dialog {
+  width: 90%;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+[ng-cloak].splash {
+  display: block !important;
+}
+[ng-cloak] {
+  display: none;
+}
+
+.splash {
+  background: $spring-green;
+  color: $spring-brown;
+  display: none;
+}
+
+.error-page {
+  margin-top: 100px;
+  text-align: center;
+}
+
+.error-page .error-title {
+  font-size: 24px;
+  line-height: 24px;
+  margin: 30px 0 0;
+}
+
+table td {
+  vertical-align: middle;
+}
+
+table td .progress {
+  margin-bottom: 0;
+}
+
+table td.action-column {
+  width: 1px;
+}
+
+.help-block {
+  color: lighten($text-color, 50%); // lighten the text some for contrast
+}
+
+.xd-containers {
+  font-size: 15px;
+}
+
+.cluster-view > table td {
+  vertical-align: top;
+}
+
+.cluster-view .label, .cluster-view .column-block {
+  display: block;
+}
+
+.cluster-view .input-group-addon {
+  width: 0%;
+}
+
+.cluster-view {
+  margin-bottom: 0;
+}
+
+.container-details-table th {
+  background-color: lighten($spring-brown, 3%);
+  color: $spring-light-grey;
+}
+
+.status-help-content-table td {
+  color: $spring-brown;
+}
+
+.myspinner {
+  animation-name: spinner;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+
+  -webkit-transform-origin: 49% 50%;
+  -webkit-animation-name: spinner;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+}
+
+hr {
+  border-top: 1px dotted $spring-brown;
+}
+
+@import "typography.scss";
+@import "header.scss";
+@import "responsive.scss";

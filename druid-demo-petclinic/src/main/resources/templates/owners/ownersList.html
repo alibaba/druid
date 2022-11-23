@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+
+<body>
+
+<h2>Owners</h2>
+
+<table id="owners" class="table table-striped">
+  <thead>
+  <tr>
+    <th style="width: 150px;">Name</th>
+    <th style="width: 200px;">Address</th>
+    <th>City</th>
+    <th style="width: 120px">Telephone</th>
+    <th>Pets</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="owner : ${listOwners}">
+    <td>
+      <a th:href="@{/owners/__${owner.id}__}" th:text="${owner.firstName + ' ' + owner.lastName}"/></a>
+    </td>
+    <td th:text="${owner.address}"/>
+    <td th:text="${owner.city}"/>
+    <td th:text="${owner.telephone}"/>
+    <td><span th:text="${#strings.listJoin(owner.pets, ', ')}"/></td>
+  </tr>
+  </tbody>
+</table>
+<div th:if="${totalPages > 1}">
+  <span>Pages:</span>
+  <span>[</span>
+  <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+      <a th:if="${currentPage != i}" th:href="@{'/owners/?page=' + ${i}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span>
+    </span>
+  <span>]&nbsp;</span>
+  <span>
+      <a th:if="${currentPage > 1}" th:href="@{'/owners/?page=1'}" title="First"
+         class="fa fa-fast-backward"></a>
+      <span th:unless="${currentPage > 1}" title="First" class="fa fa-fast-backward"></span>
+    </span>
+  <span>
+      <a th:if="${currentPage > 1}" th:href="@{'/owners/?page=' + ${currentPage - 1}}" title="Previous"
+         class="fa fa-step-backward"></a>
+      <span th:unless="${currentPage > 1}" title="Previous" class="fa fa-step-backward"></span>
+    </span>
+  <span>
+      <a th:if="${currentPage < totalPages}" th:href="@{'/owners/?page=' + ${currentPage + 1}}" title="Next"
+         class="fa fa-step-forward"></a>
+      <span th:unless="${currentPage < totalPages}" title="Next" class="fa fa-step-forward"></span>
+    </span>
+  <span>
+      <a th:if="${currentPage < totalPages}" th:href="@{'/owners/?page=' + ${totalPages}}" title="Last"
+         class="fa fa-fast-forward"></a>
+      <span th:unless="${currentPage < totalPages}" title="Last" class="fa fa-step-forward"></span>
+    </span>
+</div>
+</body>
+</html>
+

@@ -1,16 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>com.alibaba</groupId>
-	<artifactId>druid</artifactId>
-	<version>1.2.12-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>druid</name>
+	<artifactId>druid-parent</artifactId>
+	<version>1.2.15</version>
+	<name>${project.artifactId}</name>
 	<description>A JDBC datasource implementation.</description>
+	<packaging>pom</packaging>
 	<url>https://github.com/alibaba/druid</url>
-	<inceptionYear>2013</inceptionYear>
+	<inceptionYear>2022</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+	<scm>
+		<url>https://github.com/alibaba/druid</url>
+		<connection>scm:git:https://git@github.com/alibaba/druid.git</connection>
+	</scm>
 
 	<properties>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<spring.version>4.3.20.RELEASE</spring.version>
 		<junit.version>4.13.1</junit.version>
 		<jmh.version>1.19</jmh.version>
@@ -20,8 +40,21 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
+
+		<maven.deploy.skip>false</maven.deploy.skip>
 	</properties>
 
+	<modules>
+		<module>core</module>
+		<module>druid-spring-boot-starter</module>
+		<module>druid-wrapper</module>
+		<module>druid-demo-petclinic</module>
+	</modules>
+
+	<organization>
+		<name>Alibaba Group</name>
+		<url>https://github.com/alibaba</url>
+	</organization>
 	<developers>
 		<developer>
 			<id>wenshao</id>
@@ -40,152 +73,62 @@
 		</developer>
 	</developers>
 
-	<scm>
-		<url>https://wenshao@github.com/alibaba/druid.git</url>
-		<connection>scm:git:https://wenshao@github.com/alibaba/druid.git</connection>
-	</scm>
+	<distributionManagement>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
-	<organization>
-		<name>Alibaba Group</name>
-		<url>http://code.alibabatech.com/</url>
-	</organization>
+	<dependencyManagement>
+		<dependencies>
+			<!-- spring libs -->
+		</dependencies>
+	</dependencyManagement>
 
-	<licenses>
-		<license>
-			<name>Apache 2</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-			<comments>A business-friendly OSS license</comments>
-		</license>
-	</licenses>
+	<dependencies>
+	</dependencies>
 
-	<issueManagement>
-		<system>Jira</system>
-		<url>http://code.alibabatech.com/jira/browse/DRUID</url>
-	</issueManagement>
 	<build>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-webdav</artifactId>
-				<version>1.0-beta-2</version>
-			</extension>
-		</extensions>
 		<plugins>
+			<!--
+                Compiling Kotlin and Java sources - Using Maven - Kotlin Programming Language
+                https://kotlinlang.org/docs/reference/using-maven.html#compiling-kotlin-and-java-sources
+
+                Making sure that the kotlin plugin is above the maven-compiler-plugin in your pom.xml file!
+            -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<source>${jdk.version}</source>
-					<target>${jdk.version}</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.1</version>
-				<configuration>
-					<includes>
-						<include>**/bvt/**/*.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
 				<executions>
+					<!-- Replacing default-compile as it is treated specially by maven -->
 					<execution>
-						<id>attach-sources</id>
+						<id>default-compile</id>
+						<phase>none</phase>
+					</execution>
+					<!-- Replacing default-testCompile as it is treated specially by maven -->
+					<execution>
+						<id>default-testCompile</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>java-compile</id>
+						<phase>compile</phase>
 						<goals>
-							<goal>jar-no-fork</goal>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>java-test-compile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<attach>true</attach>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>attach-javadoc</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<skip>${javadoc.skip}</skip>
-					<show>public</show>
-					<charset>UTF-8</charset>
-					<encoding>UTF-8</encoding>
-					<docencoding>UTF-8</docencoding>
-					<links>
-						<link>http://docs.oracle.com/javase/6/docs/api</link>
-					</links>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
-				<configuration>
-					<skip>${gpg.skip}</skip>
-				</configuration>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.1</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestEntries>
-							<Implementation-Build>${buildNumber}</Implementation-Build>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.1</version>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<format>{0,date,yyyy-MM-dd HH:mm:ss}</format>
-					<items>
-						<item>timestamp</item>
-					</items>
-					<doCheck>false</doCheck>
-					<doUpdate>true</doUpdate>
-				</configuration>
 			</plugin>
 
 			<plugin>
@@ -218,26 +161,249 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.2.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.3.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.2.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.2.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.10.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.4.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M7</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.4.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.12.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>3.0.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>3.0.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.3.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonatype.plugins</groupId>
+					<artifactId>nexus-staging-maven-plugin</artifactId>
+					<version>1.6.13</version>
+				</plugin>
+				<plugin>
+					<groupId>org.moditect</groupId>
+					<artifactId>moditect-maven-plugin</artifactId>
+					<version>1.0.0.RC2</version>
+					<executions>
+						<execution>
+							<id>add-module-infos</id>
+							<phase>package</phase>
+							<goals>
+								<goal>add-module-info</goal>
+							</goals>
+							<configuration>
+								<jvmVersion>9</jvmVersion>
+								<overwriteExistingFiles>true</overwriteExistingFiles>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<profiles>
 		<profile>
-			<id>travis</id>
+			<id>gen-src</id>
 			<activation>
 				<property>
-					<name>env.TRAVIS</name>
+					<name>performRelease</name>
 					<value>true</value>
 				</property>
 			</activation>
 			<build>
 				<plugins>
 					<plugin>
-						<!-- for codecov.io -->
-						<!-- config example: https://github.com/codecov/example-java -->
-						<!-- plugin docs: http://eclemma.org/jacoco/trunk/doc/ -->
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<attach>true</attach>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>gen-javadoc</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<javadoc.default.exclude.packages>
+					*.internal:*.internal.*:*.internal.*.*:*.internal.*.*.*:*.internal.*.*.*.*
+				</javadoc.default.exclude.packages>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadoc</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<show>protected</show>
+							<charset>UTF-8</charset>
+							<encoding>UTF-8</encoding>
+							<docencoding>UTF-8</docencoding>
+							<!-- https://maven.apache.org/plugins/maven-javadoc-plugin/examples/exclude-package-names.html -->
+							<excludePackageNames>${javadoc.default.exclude.packages}</excludePackageNames>
+							<doclint>all,-missing</doclint>
+							<links>
+								<link>https://docs.oracle.com/javase/8/docs/api</link>
+							</links>
+							<additionalJOptions>
+								<additionalJOption>-J-Duser.language=en -J-Duser.country=US</additionalJOption>
+							</additionalJOptions>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>gen-sign</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>gen-git-properties</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<!--
+                        Maven plugin which includes build-time git repository information into an POJO / *.properties).
+                        Make your apps tell you which version exactly they were built from! Priceless in large distributed deployments.
+                            https://github.com/git-commit-id/git-commit-id-maven-plugin
+                    -->
+					<plugin>
+						<groupId>io.github.git-commit-id</groupId>
+						<artifactId>git-commit-id-maven-plugin</artifactId>
+						<!-- DO NOT upgrade to v5+, since don't support java 8 -->
+						<version>5.0.0</version>
+						<executions>
+							<execution>
+								<id>get-the-git-infos</id>
+								<goals>
+									<goal>revision</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>validate-the-git-infos</id>
+								<goals>
+									<goal>validateRevision</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<validationProperties>
+								<!-- verify that the current repository is not dirty -->
+								<validationProperty>
+									<name>validating git dirty</name>
+									<value>${git.dirty}</value>
+									<shouldMatchTo>false</shouldMatchTo>
+								</validationProperty>
+							</validationProperties>
+							<generateGitPropertiesFile>true</generateGitPropertiesFile>
+							<generateGitPropertiesFilename>
+								${project.build.outputDirectory}/META-INF/scm/${project.groupId}/${project.artifactId}/git.properties
+							</generateGitPropertiesFilename>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>gen-code-cov</id>
+			<build>
+				<plugins>
+					<plugin>
+						<!--
+                            Code Coverage
+                            config example: https://github.com/codecov/example-java
+                            plugin docs: https://eclemma.org/jacoco/trunk/doc/
+                        -->
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.7.6.201602180812</version>
+						<version>0.8.8</version>
 						<executions>
 							<execution>
 								<goals>
@@ -256,408 +422,54 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>deploy-settings</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<extensions>true</extensions>
+						<!--
+                            In multi-module builds using the deploy-at-end feature,
+                            the deployment of all components is performed in the last module based on the reactor order.
+                            If this property is set to true in the last module,
+                            all staging deployment for all modules will be skipped.
+                            so, we'll config nexus deploy after deploy phase of every module
+                            see: https://github.com/sonatype/nexus-maven-plugins/tree/master/staging/maven-plugin#configuring-the-plugin
+                        -->
+						<executions>
+							<execution>
+								<id>default-deploy</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+							<!--
+                            If you are deploying to Maven Central,
+                            it is the Nexus Staging Plugin that is doing the deployment instead of the `deploy` plugin,
+                            so the configuration of the `deploy` plugin has no effect.
+                            To make the Nexus deploy plugin skip,
+                            set skipNexusStagingDeployMojo in its configuration to true.
+                            see: https://stackoverflow.com/questions/59552549/preventing-maven-modules-from-being-deployed
+                        -->
+							<skipNexusStagingDeployMojo>${maven.deploy.skip}</skipNexusStagingDeployMojo>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
-
-	<dependencies>
-		<dependency>
-			<groupId>simple-jndi</groupId>
-			<artifactId>simple-jndi</artifactId>
-			<version>0.11.4.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
-			<version>1.1</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.2</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-ibatis</artifactId>
-			<version>2.0.8</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>3.4.0</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis-spring</artifactId>
-			<version>1.3.0</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.9</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.9</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.13.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.17.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.21</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.jtds</groupId>
-			<artifactId>jtds</artifactId>
-			<version>1.3.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.2.18</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.oracle.ojdbc</groupId>
-			<artifactId>ojdbc8</artifactId>
-			<version>19.3.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.kylin</groupId>
-			<artifactId>kylin-jdbc</artifactId>
-			<version>2.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>io.trino</groupId>
-			<artifactId>trino-jdbc</artifactId>
-			<version>352</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.quartz-scheduler</groupId>
-			<artifactId>quartz</artifactId>
-			<version>2.3.2</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.apache.ibatis</groupId>
-			<artifactId>ibatis-sqlmap</artifactId>
-			<version>2.3.4.726</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.4.199</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.1.0.Final</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-c3p0</artifactId>
-			<version>5.1.0.Final</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.aliyun.odps</groupId>
-			<artifactId>odps-sdk-udf</artifactId>
-			<version>0.37.10-public</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.validation</groupId>
-					<artifactId>validation-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.calcite</groupId>
-			<artifactId>calcite-core</artifactId>
-			<version>1.26.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>30.1-jre</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>dubbo</artifactId>
-			<version>2.5.3</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.curator</groupId>
-			<artifactId>curator-recipes</artifactId>
-			<version>4.2.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.alibaba.fastjson2</groupId>
-			<artifactId>fastjson2</artifactId>
-			<version>2.0.3</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hive</groupId>
-			<artifactId>hive-jdbc</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>ru.yandex.clickhouse</groupId>
-			<artifactId>clickhouse-jdbc</artifactId>
-			<version>0.2.4</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!--
-			test dependences
-		-->
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.aliyun.odps</groupId>
-			<artifactId>odps-jdbc</artifactId>
-			<version>1.6</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-			<version>10.12.1.1</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-dbcp2</artifactId>
-			<version>2.5.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp</artifactId>
-			<version>0.8.0.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp-spring</artifactId>
-			<version>0.8.0.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>c3p0</groupId>
-			<artifactId>c3p0</artifactId>
-			<version>0.9.1.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-jdbc</artifactId>
-			<version>8.0.32</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.nutz</groupId>
-			<artifactId>nutz</artifactId>
-			<version>1.r.55</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.javasimon</groupId>
-			<artifactId>javasimon-spring</artifactId>
-			<version>4.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.javasimon</groupId>
-			<artifactId>javasimon-jdbc41</artifactId>
-			<version>4.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.javasimon</groupId>
-			<artifactId>javasimon-javaee</artifactId>
-			<version>4.1.1</version>
-			<scope>test</scope>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.apache.calcite</groupId>
-			<artifactId>calcite-druid</artifactId>
-			<version>1.26.0</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-dbutils</groupId>
-			<artifactId>commons-dbutils</artifactId>
-			<version>1.6</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr4</artifactId>
-			<version>4.7</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openjdk.jmh</groupId>
-			<artifactId>jmh-core</artifactId>
-			<version>${jmh.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openjdk.jmh</groupId>
-			<artifactId>jmh-generator-annprocess</artifactId>
-			<version>${jmh.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mariadb.jdbc</groupId>
-			<artifactId>mariadb-java-client</artifactId>
-			<version>2.4.0</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sun</groupId>
-			<artifactId>tools</artifactId>
-			<version>1.8</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/openjdk-1.8-tools.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sun</groupId>
-			<artifactId>jconsole</artifactId>
-			<version>1.8</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/openjdk-1.8-jconsole.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.curator</groupId>
-			<artifactId>curator-test</artifactId>
-			<version>4.2.0</version>
-			<scope>test</scope>
-		</dependency>
-    </dependencies>
 </project>

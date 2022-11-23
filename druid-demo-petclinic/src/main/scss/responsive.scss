@@ -1,0 +1,41 @@
+@media (max-width: 768px) {
+  .navbar-toggle {
+    position:absolute;
+    z-index: 9999;
+    left:0px;
+    top:0px;
+  }
+
+  .navbar a.navbar-brand {
+    display: block;
+    margin: 0 auto 0 auto;
+    width: 148px;
+    height: 50px;
+    float: none;
+    background: url("../images/spring-logo-dataflow-mobile.png") 0 center no-repeat;
+  }
+
+  .homepage-billboard .homepage-subtitle {
+    font-size: 21px;
+    line-height: 21px;
+  }
+
+  .navbar a.navbar-brand span {
+    display: none;
+  }
+
+  .navbar {
+    border-top-width: 0;
+  }
+
+  .xd-container {
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+
+  .index-page--subtitle {
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+
+}

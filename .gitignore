@@ -2,7 +2,7 @@
 /.settings
 /.project
 /.classpath
-/.DS_Store
+.DS_Store
 /1
 /derby.log
 /src/test/resources/pool_config
@@ -18,3 +18,4 @@ out/
 /druid-inner-test
 hs_err_pid*.log
 replay_pid*.log
+/core/derby.log

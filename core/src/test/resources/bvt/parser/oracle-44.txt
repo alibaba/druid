@@ -1,0 +1,11 @@
+SELECT location_id  FROM locations 
+UNION ALL 
+SELECT location_id  FROM departments
+ORDER BY location_id;
+---------------------------
+SELECT location_id
+FROM locations
+UNION ALL
+SELECT location_id
+FROM departments
+ORDER BY location_id;

@@ -2,7 +2,6 @@ package org.apache.commons.dbcp2;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 
-import javax.sql.DataSource;
 import java.util.Properties;
 
 public class BasicDataSourceFactory extends DruidDataSourceFactory {
