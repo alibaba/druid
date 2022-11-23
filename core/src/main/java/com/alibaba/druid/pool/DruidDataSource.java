@@ -1560,7 +1560,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             activeCount--;
             discardCount++;
 
-            if (activeCount <= minIdle) {
+            if (activeCount + poolingCount < minIdle) {
                 emptySignal();
             }
         } finally {
@@ -1592,7 +1592,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             holder.discard = true;
 
-            if (activeCount <= minIdle) {
+            if (activeCount + poolingCount < minIdle) {
                 emptySignal();
             }
         } finally {
@@ -1878,6 +1878,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             if ((!conn.isClosed()) && !conn.isDisable()) {
                 conn.disable(error);
+                //这里会设置成回收
                 requireDiscard = true;
             }
 
@@ -1890,16 +1891,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lastFatalErrorSql = sql;
         } finally {
             lock.unlock();
-        }
-
-        if (onFatalError && holder != null && holder.getDataSource() != null) {
-            ReentrantLock dataSourceLock = holder.getDataSource().lock;
-            dataSourceLock.lock();
-            try {
-                emptySignal();
-            } finally {
-                dataSourceLock.unlock();
-            }
         }
 
         if (requireDiscard) {
@@ -2832,12 +2823,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 try {
                     boolean emptyWait = true;
 
+                    //创建失败 并且 线程池没有空闲的 并且有回收过 的不需要等待
                     if (createError != null
                             && poolingCount == 0
                             && !discardChanged) {
                         emptyWait = false;
                     }
-
+                    //异步初始化并且 创建数量小于初始化数量的时候不需要等待
                     if (emptyWait
                             && asyncInit && createCount < initialSize) {
                         emptyWait = false;
