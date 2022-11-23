@@ -59,7 +59,10 @@ public enum SQLBinaryOperator {
 
     IsDistinctFrom("IS DISTINCT FROM", 110),
     IsNotDistinctFrom("IS NOT DISTINCT FROM", 110),
-
+    
+    In("IN",110),
+    NotIn("NOT IN",110),
+    
     Like("LIKE", 110),
     SoudsLike("SOUNDS LIKE", 110),
     NotLike("NOT LIKE", 110),
