@@ -237,9 +237,11 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public List<String> getColumnComments() {
-        List<String> comments = new ArrayList<String>();
-        for (SQLColumnDefinition definition : getColumnDefinitions()) {
-            comments.add(((SQLCharExpr) definition.getComment()).getText());
+        List<SQLColumnDefinition> columnDefinitions = getColumnDefinitions();
+        List<String> comments = new ArrayList<String>( columnDefinitions.size());
+        for (SQLColumnDefinition definition : columnDefinitions) {
+            SQLExpr comment = definition.getComment();
+            comments.add(comment == null ? null : ((SQLCharExpr) comment).getText());
         }
         return comments;
     }
