@@ -238,7 +238,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     public List<String> getColumnComments() {
         List<SQLColumnDefinition> columnDefinitions = getColumnDefinitions();
-        List<String> comments = new ArrayList<String>( columnDefinitions.size());
+        List<String> comments = new ArrayList<String>(columnDefinitions.size());
         for (SQLColumnDefinition definition : columnDefinitions) {
             SQLExpr comment = definition.getComment();
             comments.add(comment == null ? null : ((SQLCharExpr) comment).getText());
