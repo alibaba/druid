@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
@@ -33,7 +32,6 @@ import java.util.List;
  * @author nukiyoam
  */
 public class SAPHanaExportParameterVisitor extends SAPHanaOutputVisitor implements ExportParameterVisitor {
-
     /**
      * true= if require parameterized sql output
      */
@@ -116,6 +114,5 @@ public class SAPHanaExportParameterVisitor extends SAPHanaOutputVisitor implemen
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);
         return true;
     }
-
 
 }

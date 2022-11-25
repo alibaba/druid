@@ -13,8 +13,6 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.saphana.parser.SAPHanaStatementParser;
 import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;

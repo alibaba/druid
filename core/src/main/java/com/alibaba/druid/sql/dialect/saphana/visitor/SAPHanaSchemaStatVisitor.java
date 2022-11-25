@@ -16,15 +16,8 @@
 package com.alibaba.druid.sql.dialect.saphana.visitor;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.*;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 
 /**
  *
@@ -38,6 +31,5 @@ public class SAPHanaSchemaStatVisitor extends SchemaStatVisitor implements SAPHa
     public SAPHanaSchemaStatVisitor(SchemaRepository repository) {
         super(repository);
     }
-
 
 }
