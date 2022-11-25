@@ -29,11 +29,11 @@ public class OdpsSelectTest37 extends TestCase {
         String sql = "-- abc\u001A" +
                 "\nselect * from t";
 
-        assertEquals("-- abc\n" +
+        assertEquals("-- abc\u001A\n" +
                 "SELECT *\n" +
                 "FROM t", SQLUtils.formatOdps(sql));
 
-        assertEquals("-- abc\n" +
+        assertEquals("-- abc\u001A\n" +
                 "select *\n" +
                 "from t", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

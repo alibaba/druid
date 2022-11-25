@@ -46,7 +46,7 @@ public class OdpsLexerTest extends TestCase {
         lexer.nextToken();
         assertEquals(Token.IDENTIFIER, lexer.token());
         lexer.nextToken();
-        assertEquals(Token.IDENTIFIER, lexer.token());
+        assertEquals(Token.VARIANT, lexer.token());
         assertEquals("@{yyyyMMdd}_${rundt}", lexer.stringVal());
     }
 

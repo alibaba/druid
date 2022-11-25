@@ -580,7 +580,10 @@ public class SQLParserUtils {
                         list.add(splitSql);
                     }
                 }
-                start = lexer.startPos + 1;
+                lexer.nextToken();
+                token = lexer.token;
+                start = lexer.startPos;
+                continue;
             } else if (token == Token.CREATE) {
                 lexer.nextToken();
 

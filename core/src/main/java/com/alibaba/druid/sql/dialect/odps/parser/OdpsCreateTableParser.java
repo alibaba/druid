@@ -210,7 +210,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                         throw new ParserException("expect identifier. " + lexer.info());
                 }
 
-                stmt.getTableElementList().add(column);
+                stmt.addColumn(column);
 
                 if (lexer.isKeepComments() && lexer.hasComment()) {
                     column.addAfterComment(lexer.readAndResetComments());
