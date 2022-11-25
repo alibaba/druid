@@ -61,6 +61,7 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.saphana.ast.SAPHanaObject;
 import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaOutputVisitor;
+import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.*;
@@ -613,6 +614,8 @@ public class SQLUtils {
                 return new AntsparkSchemaStatVisitor(repository);
             case clickhouse:
                 return new ClickSchemaStatVisitor(repository);
+            case sap_hana:
+                return new SAPHanaSchemaStatVisitor(repository);
             default:
                 return new SchemaStatVisitor(repository);
         }

@@ -165,9 +165,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 break;
             case sap_hana:
                 if (config == null) {
-                    config = new WallConfig(ClickhouseWallProvider.DEFAULT_CONFIG_DIR);
+                    config = new WallConfig(SAPHanaWallProvider.DEFAULT_CONFIG_DIR);
                 }
-                provider = new ClickhouseWallProvider(config);
+                provider = new SAPHanaWallProvider(config);
                 break;
             default:
                 throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());

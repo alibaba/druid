@@ -35,6 +35,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVis
 import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
+import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -422,6 +423,8 @@ public class ParameterizedOutputVisitorUtils {
                 return new PhoenixOutputVisitor(out, true);
             case presto:
                 return new PrestoOutputVisitor(out, true);
+            case sap_hana:
+                return new SAPHanaOutputVisitor(out, true);
             default:
                 return new SQLASTOutputVisitor(out, true);
         }

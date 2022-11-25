@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.builder.SQLDeleteBuilder;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
+import com.alibaba.druid.sql.dialect.saphana.ast.statement.SAPHanaDeleteStatement;
 
 import java.util.List;
 
@@ -131,6 +132,8 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
                 return new MySqlDeleteStatement();
             case postgresql:
                 return new PGDeleteStatement();
+            case sap_hana:
+                return new SAPHanaDeleteStatement();
             default:
                 return new SQLDeleteStatement();
         }

@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2ExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGExportParameterVisitor;
+import com.alibaba.druid.sql.dialect.saphana.visitor.SAPHanaExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
 
 import java.util.ArrayList;
@@ -56,6 +57,8 @@ public final class ExportParameterVisitorUtils {
             case postgresql:
             case edb:
                 return new PGExportParameterVisitor(out);
+            case sap_hana:
+                return new SAPHanaExportParameterVisitor(out);
             default:
                 return new ExportParameterizedOutputVisitor(out);
         }
