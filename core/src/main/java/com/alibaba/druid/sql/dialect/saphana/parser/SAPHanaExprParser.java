@@ -13,12 +13,11 @@
 package com.alibaba.druid.sql.dialect.saphana.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.saphana.ast.statement.SAPHanaCreateTableStatement;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
@@ -104,5 +103,26 @@ public class SAPHanaExprParser extends SQLExprParser {
     @Override
     protected SQLCreateTableStatement newCreateStatement() {
         return new SAPHanaCreateTableStatement();
+    }
+
+    @Override
+    public SQLExpr primary() {
+        final Token tok = lexer.token();
+        SQLExpr sqlExpr = null;
+        switch (tok) {
+            case CURRENT_SCHEMA:
+                lexer.nextToken();
+                sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                break;
+            default:
+                // ignore
+        }
+
+        super.primaryRest(sqlExpr);
+
+        if (sqlExpr == null) {
+            sqlExpr = super.primary();
+        }
+        return sqlExpr;
     }
 }
