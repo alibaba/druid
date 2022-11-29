@@ -1898,9 +1898,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    protected void printMethodParameters(SQLMethodInvokeExpr x) {
+    private void printMethodParameters(SQLMethodInvokeExpr x, List<SQLExpr> parameters) {
         String function = x.getMethodName();
-        List<SQLExpr> parameters = x.getArguments();
 
         print('(');
 
@@ -1949,6 +1948,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
 
             printExpr(param, parameterized);
+        }
+    }
+    protected void printMethodParameters(SQLMethodInvokeExpr x) {
+        List<SQLExpr> parameters = x.getArguments();
+
+        printMethodParameters(x, parameters);
+        if (x instanceof SQLParametricMethodInvokeExpr) {
+            print(')');
+            printMethodParameters(x, ((SQLParametricMethodInvokeExpr) x).getSecondArguments());
         }
 
         SQLExpr from = x.getFrom();
