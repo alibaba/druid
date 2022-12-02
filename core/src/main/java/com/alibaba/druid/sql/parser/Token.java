@@ -324,6 +324,7 @@ public enum Token {
     QUES("?"),
     QUESQUES("??"),
     QUESBAR("?|"),
+    QUESQUESBAR("??|"),
     QUESAMP("?&"),
     COLON(":"),
     COLONCOLON("::"),

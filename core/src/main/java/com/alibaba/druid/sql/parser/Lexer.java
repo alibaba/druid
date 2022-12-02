@@ -1394,7 +1394,8 @@ public class Lexer {
                         scanChar();
                         if (ch == '|') {
                             scanChar();
-                            token = Token.QUESBAR;
+//                            token = Token.QUESBAR;
+                            token = QUESQUESBAR;
                         } else {
                             token = Token.QUESQUES;
                         }
