@@ -142,8 +142,8 @@ public class Schema {
 
     public SchemaObject findFunction(String functionName) {
         functionName = SQLUtils.normalize(functionName);
-        String lowerName = functionName.toLowerCase();
-        return functions.get(lowerName);
+        // FnvHash.hashCode64 is case insensitivity
+        return functions.get(FnvHash.hashCode64(functionName));
     }
 
     public boolean isSequence(String name) {
