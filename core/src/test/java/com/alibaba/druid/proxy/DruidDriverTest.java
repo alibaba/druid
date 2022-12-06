@@ -14,6 +14,13 @@ public class DruidDriverTest {
         Properties properties;
         DataSourceProxyConfig config;
         String url = "";
+        //non driver property , getRawDriverClassName() = convert(jdbc:sqlite:) = org.sqlite.JDBC
+        url = "jdbc:wrap-jdbc:jdbc:sqlite:";
+        properties = new Properties();
+        config = DruidDriver.parseConfig(url,properties);
+        Assert.assertEquals(config.getRawDriverClassName() , JdbcConstants.SQLITE_DRIVER);
+        Assert.assertEquals(config.getRawUrl() , "jdbc:sqlite:");
+
         //have driver property , getRawDriverClassName() = driver1 , getRawUrl()=jdbc:sqlite:
         url = "jdbc:wrap-jdbc:driver=driver1:filters=com.alibaba.druid.filter.stat.StatFilter,com.alibaba.druid.filter.encoding.EncodingConvertFilter:name=name1:jmx=true:jdbc:sqlite:";
         properties = new Properties();
