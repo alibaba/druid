@@ -851,14 +851,14 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             SQLTableElement e = tableElementList.get(i);
             if (e instanceof SQLUniqueConstraint) {
                 SQLUniqueConstraint unique = (SQLUniqueConstraint) e;
-                if (unique.getName().nameHashCode64() == indexNameHashCode64) {
+                if (unique.getName() != null && unique.getName().nameHashCode64() == indexNameHashCode64) {
                     tableElementList.remove(i);
                     return true;
                 }
 
             } else if (e instanceof MySqlTableIndex) {
                 MySqlTableIndex tableIndex = (MySqlTableIndex) e;
-                if (SQLUtils.nameEquals(tableIndex.getName(), x.getIndexName())) {
+                if (tableIndex.getName() != null && SQLUtils.nameEquals(tableIndex.getName(), x.getIndexName())) {
                     tableElementList.remove(i);
                     return true;
                 }
