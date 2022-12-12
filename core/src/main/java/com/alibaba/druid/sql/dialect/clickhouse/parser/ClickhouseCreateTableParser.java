@@ -31,7 +31,7 @@ public class ClickhouseCreateTableParser extends SQLCreateTableParser {
             );
         }
 
-        if (lexer.identifierEquals("PARTITION")) {
+        if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
             accept(Token.BY);
             SQLExpr expr = this.exprParser.expr();

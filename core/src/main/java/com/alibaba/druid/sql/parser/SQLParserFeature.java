@@ -51,9 +51,10 @@ public enum SQLParserFeature {
     EnableMultiUnion,
 
     Spark,
-    Presto;
+    Presto,
+    MySQLSupportStandardComment;
 
-    private SQLParserFeature() {
+    SQLParserFeature() {
         mask = (1 << ordinal());
     }
 

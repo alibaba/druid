@@ -188,12 +188,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             print0(ucase ? " SHARDS" : " shards");
         }
 
-        if (x.getLifecycle() != null) {
-            println();
-            print0(ucase ? "LIFECYCLE " : "lifecycle ");
-            x.getLifecycle().accept(this);
-        }
-
         SQLSelect select = x.getSelect();
         if (select != null) {
             println();
@@ -232,6 +226,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         }
 
         this.printTblProperties(x);
+
+        if (x.getLifecycle() != null) {
+            println();
+            print0(ucase ? "LIFECYCLE " : "lifecycle ");
+            x.getLifecycle().accept(this);
+        }
 
         SQLExpr using = x.getUsing();
         if (using != null) {

@@ -603,21 +603,17 @@ public class SQLParserUtils {
                 lexer.nextTokenForSet();
                 token = lexer.token;
                 continue;
-            } else if (dbType == DbType.odps && (lexer.identifierEquals("pai") || lexer.identifierEquals("jar"))) {
-                if (lexer.startPos - start > 0) {
-                    int semiIndex = sql.indexOf(';', lexer.startPos);
-                    if (semiIndex != -1) {
-                        lexer.pos = semiIndex - 1;
-                        lexer.nextToken();
-                        token = lexer.token;
-                        continue;
-                    }
-                    String str = sql.substring(start, lexer.startPos).trim();
-                    if (str.isEmpty()) {
-                        lexer.startPos = sql.length();
-                        paiOrJar = true;
-                        break;
-                    }
+            } else if (dbType == DbType.odps
+                    && lexer.ch != '.'
+                    && (lexer.identifierEquals("pai") || lexer.identifierEquals("jar"))) {
+                lexer.scanLineArgument();
+                paiOrJar = true;
+            }
+
+            if (lexer.identifierEquals("USING")) {
+                lexer.nextToken();
+                if (lexer.identifierEquals("jar")) {
+                    lexer.nextToken();
                 }
             }
 
@@ -637,7 +633,11 @@ public class SQLParserUtils {
         }
 
         if (start != sql.length() && token != Token.SEMI) {
-            String splitSql = sql.substring(start, lexer.startPos).trim();
+            int end = lexer.startPos;
+            if (end > sql.length()) {
+                end = sql.length();
+            }
+            String splitSql = sql.substring(start, end).trim();
             if (!paiOrJar) {
                 splitSql = removeComment(splitSql, dbType).trim();
             } else {
@@ -712,6 +712,10 @@ public class SQLParserUtils {
 
         sql = sql.trim();
         if (sql.startsWith("jar")) {
+            return sql;
+        }
+
+        if ((sql.startsWith("pai") || sql.startsWith("PAI")) && sql.indexOf(';') == -1) {
             return sql;
         }
 
