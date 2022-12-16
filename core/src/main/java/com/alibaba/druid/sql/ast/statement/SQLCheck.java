@@ -60,7 +60,7 @@ public class SQLCheck extends SQLConstraintImpl implements SQLTableElement, SQLT
         super.cloneTo(x);
 
         if (expr != null) {
-            expr = expr.clone();
+            x.expr = expr.clone();
         }
 
         x.enforced = enforced;
