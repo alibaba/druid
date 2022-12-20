@@ -815,7 +815,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             if (connectTimeout == 0) {
-                socketTimeout = DEFAULT_TIME_CONNECT_TIMEOUT_MILLIS;
+                connectTimeout = DEFAULT_TIME_CONNECT_TIMEOUT_MILLIS;
             }
 
             if (socketTimeout == 0) {
