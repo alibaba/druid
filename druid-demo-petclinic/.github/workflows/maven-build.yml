@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{matrix.java}}
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: maven
       - name: Build with Maven Wrapper
         run: ./mvnw -B package
