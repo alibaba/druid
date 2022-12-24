@@ -1888,6 +1888,10 @@ public class SQLUtils {
                 if (dotIndex > 0) {
                     if (c0 == '`') {
                         normalizeName = normalizeName.replaceAll("`\\.`", ".");
+                    } else if (c0 == '"') {
+                        normalizeName = normalizeName.replaceAll("\"\\.\"", ".");
+                    } else if (c0 == '\'') {
+                        normalizeName = normalizeName.replaceAll("'\\.'", ".");
                     }
                 }
 
