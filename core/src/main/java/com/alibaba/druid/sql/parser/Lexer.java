@@ -2573,6 +2573,39 @@ public class Lexer {
         }
     }
 
+    public List<String> scanLineArgument() {
+        List<String> args = new ArrayList<>();
+        while (ch == ' ') {
+            scanChar();
+        }
+
+        int start = pos;
+        for (;;) {
+            if (ch == ' ' || ch == '\r' || ch == '\n' || ch == EOI) {
+                String arg = text.substring(start, pos);
+                arg = arg.trim();
+                if (arg.length() > 0) {
+                    args.add(arg);
+                }
+                scanChar();
+                start = pos;
+                if (ch == '\r' || ch == '\n' || ch == EOI) {
+                    break;
+                } else {
+                    continue;
+                }
+            }
+
+            scanChar();
+        }
+        if (ch == EOI) {
+            token = EOF;
+        } else {
+            nextToken();
+        }
+        return args;
+    }
+
     private void scanMultiLineComment() {
         Token lastToken = this.token;
         int depth = 1;

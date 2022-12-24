@@ -2,26 +2,19 @@ package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
-public class ClickhouseStatementParser extends SQLStatementParser {
-    public ClickhouseStatementParser(String sql) {
-        super(new ClickhouseExprParser(sql));
+public class ClickhouseSelectParser
+        extends SQLSelectParser {
+    public ClickhouseSelectParser(Lexer lexer) {
+        super(lexer);
     }
 
-    public ClickhouseStatementParser(String sql, SQLParserFeature... features) {
-        super(new ClickhouseExprParser(sql, features));
+    public ClickhouseSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
+        super(exprParser, selectListCache);
     }
 
-    public ClickhouseStatementParser(Lexer lexer) {
-        super(new ClickhouseExprParser(lexer));
-    }
-
-    public SQLSelectParser createSQLSelectParser() {
-        return new ClickhouseSelectParser(this.exprParser, selectListCache);
-    }
-
-    @Override
-    public SQLWithSubqueryClause parseWithQuery() {
+    public SQLWithSubqueryClause parseWith() {
         SQLWithSubqueryClause withQueryClause = new SQLWithSubqueryClause();
         if (lexer.hasComment() && lexer.isKeepComments()) {
             withQueryClause.addBeforeComment(lexer.readAndResetComments());
@@ -29,30 +22,36 @@ public class ClickhouseStatementParser extends SQLStatementParser {
 
         accept(Token.WITH);
 
+        if (lexer.token() == Token.RECURSIVE || lexer.identifierEquals(FnvHash.Constants.RECURSIVE)) {
+            lexer.nextToken();
+            withQueryClause.setRecursive(true);
+        }
+
         for (; ; ) {
             SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
             entry.setParent(withQueryClause);
 
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
+
                 switch (lexer.token()) {
-                    case VALUES:
-                    case WITH:
                     case SELECT:
-                        entry.setSubQuery(
-                                this.createSQLSelectParser()
-                                        .select());
+                    case LPAREN:
+                    case WITH:
+                    case FROM:
+                        entry.setSubQuery(select());
                         break;
                     default:
                         break;
                 }
-                accept(Token.RPAREN);
 
+                accept(Token.RPAREN);
             } else {
-                entry.setExpr(exprParser.expr());
+                throw new ParserException("TODO");
             }
 
             accept(Token.AS);
+
             String alias = this.lexer.stringVal();
             lexer.nextToken();
             entry.setAlias(alias);
@@ -68,9 +67,5 @@ public class ClickhouseStatementParser extends SQLStatementParser {
         }
 
         return withQueryClause;
-    }
-
-    public SQLCreateTableParser getSQLCreateTableParser() {
-        return new ClickhouseCreateTableParser(this.exprParser);
     }
 }

@@ -1832,19 +1832,26 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String alias = x.getAlias();
         SQLWithSubqueryClause with = (SQLWithSubqueryClause) x.getParent();
 
+        SQLStatement returningStatement = x.getReturningStatement();
+        SQLExpr expr = x.getExpr();
+
         if (Boolean.TRUE == with.getRecursive()) {
             SQLSelect select = x.getSubQuery();
             if (select != null) {
                 select.accept(this);
             } else {
-                x.getReturningStatement().accept(this);
+                returningStatement.accept(this);
             }
         } else {
             SQLSelect select = x.getSubQuery();
             if (select != null) {
                 select.accept(this);
+            } else if (expr != null) {
+                expr.accept(this);
             } else {
-                x.getReturningStatement().accept(this);
+                if (returningStatement != null) {
+                    returningStatement.accept(this);
+                }
             }
         }
 

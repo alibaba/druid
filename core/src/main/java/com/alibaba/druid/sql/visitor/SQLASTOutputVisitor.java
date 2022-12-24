@@ -5561,6 +5561,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         printTableSourceExpr(x.getName());
+
+        SQLName on = x.getOn();
+        if (on != null) {
+            print(ucase ? " ON CLUSTER " : " on cluster ");
+            printExpr(on);
+        }
+
         this.indentCount++;
         for (int i = 0; i < x.getItems().size(); ++i) {
             SQLAlterTableItem item = x.getItems().get(i);
