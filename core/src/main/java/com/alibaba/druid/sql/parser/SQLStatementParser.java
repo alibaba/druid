@@ -4657,6 +4657,12 @@ public class SQLStatementParser extends SQLParser {
         } else if (lexer.token == Token.COLUMN) {
             stmt.setType(SQLCommentStatement.Type.COLUMN);
             lexer.nextToken();
+        } else if (lexer.token == INDEX) {
+            stmt.setType(SQLCommentStatement.Type.INDEX);
+            lexer.nextToken();
+        } else if (lexer.token == VIEW) {
+            stmt.setType(SQLCommentStatement.Type.VIEW);
+            lexer.nextToken();
         }
 
         stmt.setOn(this.exprParser.name());
