@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.repository.Schema;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,8 @@ import java.util.Map;
 public class MySqlRepCheckTest {
     final private SchemaRepository repository = new SchemaRepository(JdbcUtils.MYSQL);
 
-    public static void main(String[] args) {
+    @Test
+    public void test_check() {
         MySqlRepCheckTest testRep = new MySqlRepCheckTest();
         String schemaName = "test_db";
         testRep.repository.setDefaultSchema(schemaName);
