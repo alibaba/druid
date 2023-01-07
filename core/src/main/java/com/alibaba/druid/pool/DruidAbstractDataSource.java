@@ -274,6 +274,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long lastFatalErrorTimeMillis;
     protected volatile String lastFatalErrorSql;
     protected volatile Throwable lastFatalError;
+    protected volatile Throwable keepAliveError;
 
     public DruidAbstractDataSource(boolean lockFair) {
         lock = new ReentrantLock(lockFair);

@@ -64,9 +64,11 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -82,6 +84,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private static final long serialVersionUID = 1L;
     // stats
     private volatile long recycleErrorCount;
+    private volatile long discardErrorCount;
+    private volatile Throwable discardErrorLast;
     private long connectCount;
     private long closeCount;
     private volatile long connectErrorCount;
@@ -95,6 +99,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long activePeakTime;
     private int poolingPeak;
     private long poolingPeakTime;
+    private volatile int keepAliveCheckErrorCount;
+    private volatile Throwable keepAliveCheckErrorLast;
     // store
     private volatile DruidConnectionHolder[] connections;
     private int poolingCount;
@@ -156,6 +162,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "resetCount");
     protected static final AtomicLongFieldUpdater<DruidDataSource> createTaskIdSeedUpdater
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "createTaskIdSeed");
+    protected static final AtomicLongFieldUpdater<DruidDataSource> discardErrorCountUpdater
+            = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "discardErrorCount");
+    protected static final AtomicIntegerFieldUpdater<DruidDataSource> keepAliveCheckErrorCountUpdater
+            = AtomicIntegerFieldUpdater.newUpdater(DruidDataSource.class, "keepAliveCheckErrorCount");
 
     public DruidDataSource() {
         this(false);
@@ -1549,11 +1559,28 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     /**
      * 抛弃连接，不进行回收，而是抛弃
      *
-     * @param realConnection
+     * @param conn
      * @deprecated
      */
-    public void discardConnection(Connection realConnection) {
-        JdbcUtils.close(realConnection);
+    public void discardConnection(Connection conn) {
+        if (conn == null) {
+            return;
+        }
+
+        try {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+        } catch (SQLRecoverableException ignored) {
+            discardErrorCountUpdater.incrementAndGet(this);
+            // ignored
+        } catch (Throwable e) {
+            discardErrorCountUpdater.incrementAndGet(this);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("discard close connection error", e);
+            }
+        }
 
         lock.lock();
         try {
@@ -3238,25 +3265,26 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (keepAliveCount > 0) {
             // keep order
             for (int i = keepAliveCount - 1; i >= 0; --i) {
-                DruidConnectionHolder holer = keepAliveConnections[i];
-                Connection connection = holer.getConnection();
-                holer.incrementKeepAliveCheckCount();
+                DruidConnectionHolder holder = keepAliveConnections[i];
+                Connection connection = holder.getConnection();
+                holder.incrementKeepAliveCheckCount();
 
                 boolean validate = false;
                 try {
                     this.validateConnection(connection);
                     validate = true;
                 } catch (Throwable error) {
+                    keepAliveCheckErrorLast = error;
+                    keepAliveCheckErrorCountUpdater.incrementAndGet(this);
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("keepAliveErr", error);
                     }
-                    // skip
                 }
 
                 boolean discard = !validate;
                 if (validate) {
-                    holer.lastKeepTimeMillis = System.currentTimeMillis();
-                    boolean putOk = put(holer, 0L, true);
+                    holder.lastKeepTimeMillis = System.currentTimeMillis();
+                    boolean putOk = put(holder, 0L, true);
                     if (!putOk) {
                         discard = true;
                     }
@@ -3265,8 +3293,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (discard) {
                     try {
                         connection.close();
-                    } catch (Exception e) {
-                        // skip
+                    } catch (Exception error) {
+                        discardErrorLast = error;
+                        discardErrorCountUpdater.incrementAndGet(DruidDataSource.this);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("discard connection error", error);
+                        }
                     }
 
                     lock.lock();
