@@ -3296,8 +3296,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     } catch (Exception error) {
                         discardErrorLast = error;
                         discardErrorCountUpdater.incrementAndGet(DruidDataSource.this);
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("discard connection error", error);
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error("discard connection error", error);
                         }
                     }
 
