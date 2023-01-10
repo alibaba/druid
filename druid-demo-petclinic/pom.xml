@@ -9,6 +9,7 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.7.3</version>
+    <relativePath/>
   </parent>
   <name>druid-demo-petclinic</name>
 
