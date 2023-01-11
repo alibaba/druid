@@ -5245,7 +5245,7 @@ public class SQLExprParser extends SQLParser {
             }
         } else {
             if (lexer.token == Token.EQ) {
-                if (dbType == DbType.odps) {
+                if (dbType == DbType.odps && (parent instanceof SQLSetStatement || parent == null)) {
                     lexer.nextTokenForSet();
                 } else {
                     lexer.nextToken();

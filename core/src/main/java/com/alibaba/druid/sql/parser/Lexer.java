@@ -1159,7 +1159,7 @@ public class Lexer {
             return;
         }
 
-        if (isFirstIdentifierChar(first) || first == '{') {
+        if (isFirstIdentifierChar(first) || (first >= '0' && first <= '9') || first == '{') {
             stringVal = null;
             mark = pos;
             while (ch != ';' && ch != EOI) {
