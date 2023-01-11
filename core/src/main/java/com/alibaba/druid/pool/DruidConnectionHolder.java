@@ -26,6 +26,8 @@ import com.alibaba.druid.util.Utils;
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
+import java.lang.reflect.Field;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -42,6 +44,13 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class DruidConnectionHolder {
     private static final Log LOG = LogFactory.getLog(DruidConnectionHolder.class);
+
+    static volatile boolean ORACLE_SOCKET_FIELD_ERROR;
+    static volatile Field ORACLE_FIELD_NET;
+    static volatile Field ORACLE_FIELD_S_ATTS;
+    static volatile Field ORACLE_FIELD_NT;
+    static volatile Field ORACLE_FIELD_SOCKET;
+
     public static boolean holdabilityUnsupported;
 
     protected final DruidAbstractDataSource dataSource;
@@ -71,17 +80,20 @@ public final class DruidConnectionHolder {
     protected volatile boolean discard;
     protected volatile boolean active;
     protected final Map<String, Object> variables;
-    protected final Map<String, Object> globleVariables;
+    protected final Map<String, Object> globalVariables;
     final ReentrantLock lock = new ReentrantLock();
     protected String initSchema;
+    protected Socket socket;
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
             throws SQLException {
-        this(dataSource,
+        this(
+                dataSource,
                 pyConnectInfo.getPhysicalConnection(),
                 pyConnectInfo.getConnectNanoSpan(),
                 pyConnectInfo.getVairiables(),
-                pyConnectInfo.getGlobalVairiables());
+                pyConnectInfo.getGlobalVairiables()
+        );
     }
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan)
@@ -89,14 +101,18 @@ public final class DruidConnectionHolder {
         this(dataSource, conn, connectNanoSpan, null, null);
     }
 
-    public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan,
-                                 Map<String, Object> variables, Map<String, Object> globleVariables)
-            throws SQLException {
+    public DruidConnectionHolder(
+            DruidAbstractDataSource dataSource,
+            Connection conn,
+            long connectNanoSpan,
+            Map<String, Object> variables,
+            Map<String, Object> globalVariables
+    ) throws SQLException {
         this.dataSource = dataSource;
         this.conn = conn;
         this.createNanoSpan = connectNanoSpan;
         this.variables = variables;
-        this.globleVariables = globleVariables;
+        this.globalVariables = globalVariables;
 
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;
@@ -108,6 +124,46 @@ public final class DruidConnectionHolder {
             this.connectionId = ((WrapperProxy) conn).getId();
         } else {
             this.connectionId = dataSource.createConnectionId();
+        }
+
+        Class<? extends Connection> conClass = conn.getClass();
+        String connClassName = conClass.getName();
+        if ((!ORACLE_SOCKET_FIELD_ERROR) && connClassName.equals("oracle.jdbc.driver.T4CConnection")) {
+            try {
+                if (ORACLE_FIELD_NT == null) {
+                    Field field = conClass.getDeclaredField("net");
+                    field.setAccessible(true);
+                    ORACLE_FIELD_NT = field;
+                }
+                Object net = ORACLE_FIELD_NT.get(conn);
+
+                if (ORACLE_FIELD_S_ATTS == null) {
+                    Field field = net.getClass().getDeclaredField("sAtts");
+                    field.setAccessible(true);
+                    ORACLE_FIELD_S_ATTS = field;
+                }
+
+                Object sAtts = ORACLE_FIELD_S_ATTS.get(net);
+
+                if (ORACLE_FIELD_NT == null) {
+                    Field field = sAtts.getClass().getDeclaredField("nt");
+                    field.setAccessible(true);
+                    ORACLE_FIELD_NT = field;
+                }
+
+                Object nt = ORACLE_FIELD_NT.get(sAtts);
+
+                if (ORACLE_FIELD_SOCKET == null) {
+                    Field field = nt.getClass().getDeclaredField("socket");
+                    field.setAccessible(true);
+                    ORACLE_FIELD_SOCKET = field;
+                }
+
+                socket = (Socket) ORACLE_FIELD_SOCKET.get(nt);
+            } catch (Throwable ignored) {
+                ORACLE_SOCKET_FIELD_ERROR = true;
+                // ignored
+            }
         }
 
         {

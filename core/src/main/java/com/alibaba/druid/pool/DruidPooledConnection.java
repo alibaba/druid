@@ -1290,6 +1290,6 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
      * @since 1.0.28
      */
     public Map<String, Object> getGloablVariables() {
-        return this.holder.globleVariables;
+        return this.holder.globalVariables;
     }
 }

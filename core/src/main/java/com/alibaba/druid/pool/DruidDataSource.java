@@ -60,6 +60,7 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
 import java.io.Closeable;
+import java.net.Socket;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Connection;
@@ -1603,6 +1604,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         Connection conn = holder.getConnection();
         if (conn != null) {
             JdbcUtils.close(conn);
+        }
+
+        Socket socket = holder.socket;
+        if (socket != null) {
+            JdbcUtils.close(socket);
         }
 
         lock.lock();
@@ -3301,8 +3307,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         }
                     }
 
+                    if (holder.socket != null) {
+                        try {
+                            holder.socket.close();
+                        } catch (Exception error) {
+                            discardErrorLast = error;
+                            discardErrorCountUpdater.incrementAndGet(DruidDataSource.this);
+                            if (LOG.isErrorEnabled()) {
+                                LOG.error("discard connection error", error);
+                            }
+                        }
+                    }
+
                     lock.lock();
                     try {
+                        holder.discard = true;
                         discardCount++;
 
                         if (activeCount + poolingCount <= minIdle) {
