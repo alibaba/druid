@@ -112,6 +112,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     //
     private DruidConnectionHolder[] evictConnections;
     private DruidConnectionHolder[] keepAliveConnections;
+    private DruidConnectionHolder[] shrinkConnections;
 
     // threads
     private volatile ScheduledFuture<?> destroySchedulerFuture;
@@ -721,10 +722,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.connections = Arrays.copyOf(this.connections, maxActive);
                 evictConnections = new DruidConnectionHolder[maxActive];
                 keepAliveConnections = new DruidConnectionHolder[maxActive];
+                shrinkConnections = new DruidConnectionHolder[maxActive];
             } else {
                 this.connections = Arrays.copyOf(this.connections, allCount);
                 evictConnections = new DruidConnectionHolder[allCount];
                 keepAliveConnections = new DruidConnectionHolder[allCount];
+                shrinkConnections = new DruidConnectionHolder[allCount];
             }
 
             this.maxActive = maxActive;
@@ -911,6 +914,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             connections = new DruidConnectionHolder[maxActive];
             evictConnections = new DruidConnectionHolder[maxActive];
             keepAliveConnections = new DruidConnectionHolder[maxActive];
+            shrinkConnections = new DruidConnectionHolder[maxActive];
 
             SQLException connectError = null;
 
@@ -3186,6 +3190,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         boolean needFill = false;
         int evictCount = 0;
         int keepAliveCount = 0;
+        int shrinkCount = 0;
         int fatalErrorIncrement = fatalErrorCount - fatalErrorCountLastShrink;
         fatalErrorCountLastShrink = fatalErrorCount;
 
@@ -3194,6 +3199,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 return;
             }
 
+            // 超过最少连接数的数量，也就是最多可以从连接池中移除的连接数量
             final int checkCount = poolingCount - minIdle;
             final long currentTimeMillis = System.currentTimeMillis();
             for (int i = 0; i < poolingCount; ++i) {
@@ -3201,6 +3207,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 if ((onFatalError || fatalErrorIncrement > 0) && (lastFatalErrorTimeMillis > connection.connectTimeMillis)) {
                     keepAliveConnections[keepAliveCount++] = connection;
+                    shrinkConnections[shrinkCount++] = connection;
                     continue;
                 }
 
@@ -3218,14 +3225,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (idleMillis < minEvictableIdleTimeMillis
                             && idleMillis < keepAliveBetweenTimeMillis
                     ) {
+                        // i之后的所有connection都不需要检测
+                        System.arraycopy(connections, i, shrinkConnections, shrinkCount, poolingCount - i);
+                        shrinkCount += poolingCount - i;
                         break;
                     }
 
                     if (idleMillis >= minEvictableIdleTimeMillis) {
-                        if (checkTime && i < checkCount) {
-                            evictConnections[evictCount++] = connection;
-                            continue;
-                        } else if (idleMillis > maxEvictableIdleTimeMillis) {
+                        if (evictCount < checkCount || idleMillis > maxEvictableIdleTimeMillis) {
                             evictConnections[evictCount++] = connection;
                             continue;
                         }
@@ -3234,10 +3241,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (keepAlive && idleMillis >= keepAliveBetweenTimeMillis) {
                         keepAliveConnections[keepAliveCount++] = connection;
                     }
+                    shrinkConnections[shrinkCount++] = connection;
                 } else {
-                    if (i < checkCount) {
+                    if (evictCount < checkCount) {
                         evictConnections[evictCount++] = connection;
                     } else {
+                        System.arraycopy(connections, i, shrinkConnections, shrinkCount, poolingCount - i);
+                        shrinkCount += poolingCount - i;
                         break;
                     }
                 }
@@ -3245,9 +3255,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             int removeCount = evictCount + keepAliveCount;
             if (removeCount > 0) {
-                System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
-                Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
-                poolingCount -= removeCount;
+                System.arraycopy(shrinkConnections, 0, connections, 0, shrinkCount);
+                Arrays.fill(connections, shrinkCount, poolingCount, null);
+                poolingCount = shrinkCount;
             }
             keepAliveCheckCount += keepAliveCount;
 
@@ -3258,6 +3268,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
+        if (shrinkCount > 0) {
+            Arrays.fill(shrinkConnections, 0, shrinkCount, null);
+        }
+
         if (evictCount > 0) {
             for (int i = 0; i < evictCount; ++i) {
                 DruidConnectionHolder item = evictConnections[i];
@@ -3265,7 +3279,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 JdbcUtils.close(connection);
                 destroyCountUpdater.incrementAndGet(this);
             }
-            Arrays.fill(evictConnections, null);
+            Arrays.fill(evictConnections, 0, evictCount, null);
         }
 
         if (keepAliveCount > 0) {
@@ -3333,7 +3347,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
             this.getDataSourceStat().addKeepAliveCheckCount(keepAliveCount);
-            Arrays.fill(keepAliveConnections, null);
+            Arrays.fill(keepAliveConnections, 0, keepAliveCount, null);
         }
 
         if (needFill) {
