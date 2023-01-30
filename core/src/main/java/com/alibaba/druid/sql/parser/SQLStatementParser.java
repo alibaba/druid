@@ -3590,6 +3590,10 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.token() == FOREIGN) {
                     lexer.reset(mark);
                     return parseCreateTable();
+                } else if (lexer.token == Token.TEMP) {
+                    lexer.nextToken();
+                    lexer.reset(mark);
+                    return parseCreateTable();
                 }
 
                 throw new ParserException("TODO " + lexer.info());

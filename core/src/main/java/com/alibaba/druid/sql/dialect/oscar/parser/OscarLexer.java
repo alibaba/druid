@@ -79,6 +79,7 @@ public class OscarLexer extends Lexer {
 
         map.put("TEMPORARY", Token.TEMPORARY);
         map.put("TEMP", Token.TEMP);
+        map.put("RETURN", Token.RETURN);
 
         DEFAULT_OSCAR_KEYWORDS = new Keywords(map);
     }

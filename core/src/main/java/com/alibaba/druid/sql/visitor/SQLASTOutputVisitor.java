@@ -3630,6 +3630,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "LOCAL TEMPORARY " : "local temporary ");
         } else if (SQLCreateTableStatement.Type.SHADOW.equals(tableType)) {
             print0(ucase ? "SHADOW " : "shadow ");
+        } else if (SQLCreateTableStatement.Type.TEMPORARY.equals(tableType)) {
+            print0(ucase ? "TEMP " : "temp ");
         }
 
         if (x.isDimension()) {

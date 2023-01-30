@@ -77,6 +77,9 @@ public class SQLCreateTableParser extends SQLDDLParser {
             } else {
                 throw new ParserException("syntax error. " + lexer.info());
             }
+        } else if (lexer.token == Token.TEMP) {
+            lexer.nextToken();
+            createTable.setType(SQLCreateTableStatement.Type.TEMPORARY);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.DIMENSION)) {

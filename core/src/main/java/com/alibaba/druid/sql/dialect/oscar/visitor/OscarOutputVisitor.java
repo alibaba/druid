@@ -2458,4 +2458,111 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
         print(']');
         return false;
     }
+
+    @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        boolean create = x.isCreate();
+        if (!create) {
+            print0(ucase ? "FUNCTION " : "function ");
+        } else if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR REPLACE FUNCTION " : "create or replace function ");
+        } else {
+            print0(ucase ? "CREATE FUNCTION " : "create function ");
+        }
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        if (paramSize > 0) {
+            print0(" (");
+            this.indentCount++;
+            println();
+
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+
+            this.indentCount--;
+            println();
+            print(')');
+        }
+
+        String wrappedSource = x.getWrappedSource();
+        if (wrappedSource != null) {
+            print0(ucase ? " WRAPPED " : " wrapped ");
+            print0(wrappedSource);
+
+            if (x.isAfterSemi()) {
+                print(';');
+            }
+            return false;
+        }
+
+        println();
+        print(ucase ? "RETURN " : "return ");
+        x.getReturnDataType().accept(this);
+
+        if (x.isPipelined()) {
+            print(ucase ? "PIPELINED " : "pipelined ");
+        }
+
+        if (x.isDeterministic()) {
+            print(ucase ? "DETERMINISTIC " : "deterministic ");
+        }
+
+        SQLName authid = x.getAuthid();
+        if (authid != null) {
+            print(ucase ? " AUTHID " : " authid ");
+            authid.accept(this);
+        }
+
+        SQLStatement block = x.getBlock();
+
+        if (block != null && !create) {
+            println();
+            println("IS");
+        } else {
+            println();
+            if (block instanceof SQLBlockStatement) {
+//                SQLBlockStatement blockStatement = (SQLBlockStatement) block;
+//                if (blockStatement.getParameters().size() > 0 || authid != null) {
+                println(ucase ? "AS" : "as");
+//                }
+            }
+        }
+
+        String javaCallSpec = x.getJavaCallSpec();
+        if (javaCallSpec != null) {
+            print0(ucase ? "LANGUAGE JAVA NAME '" : "language java name '");
+            print0(javaCallSpec);
+            print('\'');
+            return false;
+        }
+
+        if (x.isParallelEnable()) {
+            print0(ucase ? "PARALLEL_ENABLE" : "parallel_enable");
+            println();
+        }
+
+        if (x.isAggregate()) {
+            print0(ucase ? "AGGREGATE" : "aggregate");
+            println();
+        }
+
+        SQLName using = x.getUsing();
+        if (using != null) {
+            print0(ucase ? "USING " : "using ");
+            using.accept(this);
+        }
+
+        if (block != null) {
+            block.accept(this);
+        }
+        return false;
+    }
 }
