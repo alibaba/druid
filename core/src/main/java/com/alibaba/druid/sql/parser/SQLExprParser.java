@@ -749,6 +749,7 @@ public class SQLExprParser extends SQLParser {
             case SHOW:
             case INOUT:
             case OUTER:
+            case QUALIFY:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;

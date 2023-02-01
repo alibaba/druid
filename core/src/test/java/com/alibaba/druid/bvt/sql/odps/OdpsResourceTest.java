@@ -36,6 +36,10 @@ public class OdpsResourceTest extends TestCase {
         exec_test("bvt/parser/odps-9.txt");
     }
 
+    public void test_10() throws Exception {
+        exec_test("bvt/parser/odps-10.txt");
+    }
+
     public void exec_test(String resource) throws Exception {
         String input = TestUtil.getResource(resource);
         String[] items = input.split("---------------------------");

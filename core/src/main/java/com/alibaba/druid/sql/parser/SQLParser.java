@@ -283,6 +283,7 @@ public class SQLParser {
                 case REPEAT:
                 case USE:
                 case MOD:
+                case QUALIFY:
                 case OUT: {
                     String strVal = lexer.stringVal();
                     lexer.nextToken();

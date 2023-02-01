@@ -1,0 +1,6 @@
+select qualify.api_name
+from t_api qualify where qualify.api_name is not null;
+---------------------------
+SELECT qualify.api_name
+FROM t_api qualify
+WHERE qualify.api_name IS NOT NULL;
