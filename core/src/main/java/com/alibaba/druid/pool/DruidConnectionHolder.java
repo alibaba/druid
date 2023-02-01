@@ -130,15 +130,16 @@ public final class DruidConnectionHolder {
         String connClassName = conClass.getName();
         if ((!ORACLE_SOCKET_FIELD_ERROR) && connClassName.equals("oracle.jdbc.driver.T4CConnection")) {
             try {
-                if (ORACLE_FIELD_NT == null) {
+                if (ORACLE_FIELD_NET == null) {
                     Field field = conClass.getDeclaredField("net");
                     field.setAccessible(true);
-                    ORACLE_FIELD_NT = field;
+                    ORACLE_FIELD_NET = field;
                 }
-                Object net = ORACLE_FIELD_NT.get(conn);
+                Object net = ORACLE_FIELD_NET.get(conn);
 
                 if (ORACLE_FIELD_S_ATTS == null) {
-                    Field field = net.getClass().getDeclaredField("sAtts");
+                    // NSProtocol
+                    Field field = net.getClass().getSuperclass().getDeclaredField("sAtts");
                     field.setAccessible(true);
                     ORACLE_FIELD_S_ATTS = field;
                 }
