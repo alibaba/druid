@@ -2494,6 +2494,9 @@ public class SQLStatementParser extends SQLParser {
             SQLConstraint constraint = this.exprParser.parseConstaint();
             SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(constraint);
             stmt.addItem(item);
+        } else if (lexer.token == LITERAL_ALIAS && dbType == DbType.sqlserver) {
+            SQLAlterTableAddColumn item = parseAlterTableAddColumn();
+            stmt.addItem(item);
         } else {
             throw new ParserException("TODO " + lexer.info());
         }
