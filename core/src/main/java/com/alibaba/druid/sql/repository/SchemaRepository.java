@@ -33,6 +33,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStateme
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.repository.function.Function;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
@@ -85,6 +87,9 @@ public class SchemaRepository {
                 break;
             case oracle:
                 consoleVisitor = new OracleConsoleSchemaVisitor();
+                break;
+            case sqlserver:
+                consoleVisitor = new SqlServerConsoleSchemaVisitor();
                 break;
             default:
                 consoleVisitor = new DefaultConsoleSchemaVisitor();
@@ -460,7 +465,7 @@ public class SchemaRepository {
         try {
             StringBuffer buf = new StringBuffer();
 
-            List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType);
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType, SQLParserFeature.IgnoreNameQuotes);
 
             for (SQLStatement stmt : stmtList) {
                 if (stmt instanceof SQLShowColumnsStatement) {
@@ -823,6 +828,73 @@ public class SchemaRepository {
         }
     }
 
+    public class SqlServerConsoleSchemaVisitor extends SQLServerASTVisitorAdapter {
+        public SqlServerConsoleSchemaVisitor() {
+            this.dbType = DbType.sqlserver;
+        }
+
+        public boolean visit(SQLDropSequenceStatement x) {
+            acceptDropSequence(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateSequenceStatement x) {
+            acceptCreateSequence(x);
+            return false;
+        }
+
+        public boolean visit(OracleCreateTableStatement x) {
+            visit((SQLCreateTableStatement) x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateTableStatement x) {
+            acceptCreateTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLDropTableStatement x) {
+            acceptDropTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateViewStatement x) {
+            acceptView(x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterViewStatement x) {
+            acceptView(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateIndexStatement x) {
+            acceptCreateIndex(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateFunctionStatement x) {
+            acceptCreateFunction(x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            acceptAlterTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLUseStatement x) {
+            String schema = x.getDatabase().getSimpleName();
+            setDefaultSchema(schema);
+            return false;
+        }
+
+        public boolean visit(SQLDropIndexStatement x) {
+            acceptDropIndex(x);
+            return false;
+        }
+    }
+
     public class DefaultConsoleSchemaVisitor extends SQLASTVisitorAdapter {
         public boolean visit(SQLDropSequenceStatement x) {
             acceptDropSequence(x);
@@ -1090,8 +1162,18 @@ public class SchemaRepository {
 
     boolean acceptAlterTable(SQLAlterTableStatement x) {
         String schemaName = x.getSchema();
-        Schema schema = findSchema(schemaName, true);
 
+        if (dbType == DbType.sqlserver) {
+            SQLName tableName = x.getTableSource().getName();
+            if (tableName instanceof SQLPropertyExpr) {
+                SQLExpr owner = ((SQLPropertyExpr) tableName).getOwner();
+                if (owner instanceof SQLPropertyExpr) {
+                    schemaName = ((SQLPropertyExpr) owner).getName();
+                }
+            }
+        }
+
+        Schema schema = findSchema(schemaName, true);
         SchemaObject object = schema.findTable(x.nameHashCode64());
         if (object != null) {
             SQLCreateTableStatement stmt = (SQLCreateTableStatement) object.getStatement();

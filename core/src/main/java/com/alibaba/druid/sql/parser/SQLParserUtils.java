@@ -123,7 +123,7 @@ public class SQLParserUtils {
                 return new PGSQLStatementParser(sql, features);
             case sqlserver:
             case jtds:
-                return new SQLServerStatementParser(sql);
+                return new SQLServerStatementParser(sql, features);
             case h2:
                 return new H2StatementParser(sql, features);
             case blink:
