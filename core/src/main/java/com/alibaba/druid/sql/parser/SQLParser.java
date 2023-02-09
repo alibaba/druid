@@ -283,11 +283,29 @@ public class SQLParser {
                 case REPEAT:
                 case USE:
                 case MOD:
-                case QUALIFY:
                 case OUT: {
                     String strVal = lexer.stringVal();
                     lexer.nextToken();
                     return strVal;
+                }
+                case QUALIFY: {
+                    String strVal = lexer.stringVal();
+                    Lexer.SavePoint mark = lexer.mark();
+                    lexer.nextToken();
+                    if (lexer.token != Token.WHERE
+                            && lexer.token != Token.GROUP
+                            && lexer.token != Token.HAVING
+                            && lexer.token != Token.WINDOW
+                            && lexer.token != Token.ORDER
+                            && lexer.token != Token.LIMIT
+                            && lexer.token != Token.EOF
+                            && lexer.token != Token.COMMA
+                    ) {
+                        lexer.reset(mark);
+                        return null;
+                    } else {
+                        return strVal;
+                    }
                 }
                 case DISTRIBUTE: {
                     String strVal = lexer.stringVal();

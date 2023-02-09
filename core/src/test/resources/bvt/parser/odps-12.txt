@@ -1,0 +1,9 @@
+--asdasdas \u001Aasdad
+select api_name
+from t_api
+where api_name is not null;
+---------------------------
+-- asdasdas \u001Aasdad
+SELECT api_name
+FROM t_api
+WHERE api_name IS NOT NULL;
