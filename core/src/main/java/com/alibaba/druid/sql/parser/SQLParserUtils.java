@@ -535,7 +535,7 @@ public class SQLParserUtils {
                 script = true;
             }
 
-            if (script || lexer.identifierEquals("pai") || lexer.identifierEquals("jar")) {
+            if (script || lexer.identifierEquals("pai") || lexer.identifierEquals("jar") || lexer.identifierEquals("copy")) {
                 return Collections.singletonList(sql);
             }
         }
