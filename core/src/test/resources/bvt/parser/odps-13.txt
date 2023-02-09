@@ -1,0 +1,23 @@
+select case when t1.type='JP' and t1.value>0
+    then (case when t1.category_id =29   --注释1
+               then ((0.95*t1.value)*1.04)+0.3
+               when t1.category_id =48 --注释2
+               then ((0.85*t1.value)*1.04)+0.3
+               when t1.category_id in (2,92)   --注释3
+               then ((0.75*t1.value)*1.04)+0.3
+               else ((0.65*t1.value)*1.04)+0.3
+            end  ) end from t_demo t1
+---------------------------
+SELECT CASE
+		WHEN t1.type = 'JP'
+			AND t1.value > 0
+		THEN
+			CASE
+				WHEN t1.category_id = 29 THEN 0.95 * t1.value * 1.04 + 0.3
+				WHEN t1.category_id = 48 THEN 0.85 * t1.value * 1.04 + 0.3
+				WHEN t1.category_id IN (2, 92) -- 注释3
+				THEN 0.75 * t1.value * 1.04 + 0.3
+				ELSE 0.65 * t1.value * 1.04 + 0.3
+			END
+	END
+FROM t_demo t1

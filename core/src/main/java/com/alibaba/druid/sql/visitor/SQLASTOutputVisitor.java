@@ -1289,7 +1289,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printExpr(conditionExpr, parameterized);
         this.indentCount--;
 
-        if (lines != this.lines) {
+        boolean println = lines != this.lines;
+        if (isPrettyFormat() && !println) {
+            List<String> afterComments = conditionExpr.getAfterCommentsDirect();
+            if (afterComments != null && !afterComments.isEmpty()) {
+                println = true;
+            }
+        }
+
+        if (println) {
             println();
         } else {
             print(' ');
