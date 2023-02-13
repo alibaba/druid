@@ -1877,7 +1877,7 @@ public class SQLUtils {
         if (name.length() > 2) {
             char c0 = name.charAt(0);
             char x0 = name.charAt(name.length() - 1);
-            if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`') || (c0 == '\'' && x0 == '\'')) {
+            if ((c0 == '[' && x0 == ']') || (c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`') || (c0 == '\'' && x0 == '\'')) {
                 String normalizeName = name.substring(1, name.length() - 1);
 
                 if (isTrimmed) {
