@@ -2945,10 +2945,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     break;
                 }
 
-                if (connection == null) {
-                    continue;
-                }
-
                 if (connection != null) {
                     boolean result = put(connection);
                     if (!result) {
