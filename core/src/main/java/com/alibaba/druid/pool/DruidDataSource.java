@@ -2949,13 +2949,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     continue;
                 }
 
-                boolean result = put(connection);
-                if (!result) {
-                    JdbcUtils.close(connection.getPhysicalConnection());
-                    LOG.info("put physical connection to pool failed.");
-                }
+                if (connection != null) {
+                    boolean result = put(connection);
+                    if (!result) {
+                        JdbcUtils.close(connection.getPhysicalConnection());
+                        LOG.info("put physical connection to pool failed.");
+                    }
 
-                errorCount = 0; // reset errorCount
+                    errorCount = 0; // reset errorCount
+                }
 
                 if (closing || closed) {
                     break;
