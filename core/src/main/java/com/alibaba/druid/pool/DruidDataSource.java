@@ -2945,17 +2945,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     break;
                 }
 
-                if (connection == null) {
-                    continue;
-                }
+                if (connection != null) {
+                    boolean result = put(connection);
+                    if (!result) {
+                        JdbcUtils.close(connection.getPhysicalConnection());
+                        LOG.info("put physical connection to pool failed.");
+                    }
 
-                boolean result = put(connection);
-                if (!result) {
-                    JdbcUtils.close(connection.getPhysicalConnection());
-                    LOG.info("put physical connection to pool failed.");
+                    errorCount = 0; // reset errorCount
                 }
-
-                errorCount = 0; // reset errorCount
 
                 if (closing || closed) {
                     break;
