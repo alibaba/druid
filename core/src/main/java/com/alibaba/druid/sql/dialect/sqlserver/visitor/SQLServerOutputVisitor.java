@@ -578,4 +578,23 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         printAndAccept(x.getColumns(), ", ");
         return false;
     }
+
+    @Override
+    public boolean visit(SQLAlterTableDropColumnItem x) {
+        print0(ucase ? "DROP " : "drop ");
+
+        List<SQLName> columns = x.getColumns();
+        for (int i = 0, size = columns.size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            print0(ucase ? "COLUMN " : "column ");
+            columns.get(i).accept(this);
+        }
+
+        if (x.isCascade()) {
+            print0(ucase ? " CASCADE" : " cascade");
+        }
+        return false;
+    }
 }
