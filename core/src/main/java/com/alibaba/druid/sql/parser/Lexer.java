@@ -2581,7 +2581,12 @@ public class Lexer {
 
         int start = pos;
         for (; ; ) {
-            if (ch == ' ' || ch == '\r' || ch == '\n' || ch == EOI) {
+            if (ch == ' '
+                    || ch == '\r'
+                    || ch == '\n'
+                    || ch == EOI
+                    || (ch == ';' && (pos >= text.length() - 1 || isWhitespace(text.charAt(pos + 1))))
+            ) {
                 while (pos < text.length() - 1) {
                     char c1 = text.charAt(pos);
                     if (c1 == ' ' || c1 == '\r' || c1 == '\n' || c1 == '\t') {
@@ -2596,8 +2601,11 @@ public class Lexer {
                 if (arg.length() > 0) {
                     args.add(arg);
                 }
+                if (ch == ';') {
+                    break;
+                }
                 scanChar();
-                start = pos;
+                start = pos - 1;
                 if (ch == '\r' || ch == '\n' || ch == EOI) {
                     break;
                 } else {
@@ -2609,6 +2617,8 @@ public class Lexer {
         }
         if (ch == EOI) {
             token = EOF;
+        } else if (ch == ';') {
+            token = COMMA;
         } else {
             nextToken();
         }
