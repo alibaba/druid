@@ -594,16 +594,12 @@ public class SQLServerStatementParser extends SQLStatementParser {
             SQLName name = exprParser.name();
             name.setParent(item);
             item.addColumn(name);
-
             while (lexer.token() == Token.COMMA) {
-                Lexer.SavePoint savePoint = lexer.markOut();
                 lexer.nextToken();
-                if (lexer.token() != Token.COLUMN) {
-                    lexer.reset(savePoint);
-                    break;
-                }
 
-                lexer.nextToken();
+                if (lexer.token() == Token.COLUMN) {
+                    lexer.nextToken();
+                }
                 name = exprParser.name();
                 name.setParent(item);
                 item.addColumn(name);
