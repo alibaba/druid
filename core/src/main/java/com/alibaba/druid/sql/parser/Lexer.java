@@ -2580,8 +2580,17 @@ public class Lexer {
         }
 
         int start = pos;
-        for (;;) {
+        for (; ; ) {
             if (ch == ' ' || ch == '\r' || ch == '\n' || ch == EOI) {
+                while (pos < text.length() - 1) {
+                    char c1 = text.charAt(pos);
+                    if (c1 == ' ' || c1 == '\r' || c1 == '\n' || c1 == '\t') {
+                        pos++;
+                        continue;
+                    }
+                    break;
+                }
+
                 String arg = text.substring(start, pos);
                 arg = arg.trim();
                 if (arg.length() > 0) {

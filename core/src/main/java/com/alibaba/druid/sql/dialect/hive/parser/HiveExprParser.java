@@ -90,6 +90,11 @@ public class HiveExprParser extends SQLExprParser {
                     lexer.nextToken();
                     Number num = ((SQLNumericLiteralExpr) expr).getNumber();
                     expr = new SQLDecimalExpr(num.toString());
+                } else if (lexer.identifierEquals(FnvHash.Constants.DAYS)) { // hortonworks
+                    lexer.nextToken();
+                    SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
+                    intervalExpr.setValue(expr);
+                    intervalExpr.setUnit(SQLIntervalUnit.DAY);
                 }
                 break;
             default:
