@@ -69,6 +69,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
     public static final String PROP_EXCEPTION_SORTER_CLASS_NAME = "exception-sorter-class-name";
     public static final String PROP_NAME = "name";
     public static final String PROP_INIT = "init";
+    public static final String PROP_MAXEVICTABLEIDLETIMEMILLIS = "maxEvictableIdleTimeMillis";
 
     private static final String[] ALL_PROPERTIES = {
             PROP_DEFAULTAUTOCOMMIT,
@@ -105,6 +106,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
             PROP_EXCEPTION_SORTER_CLASS_NAME,
             PROP_INIT,
             PROP_NAME,
+            PROP_MAXEVICTABLEIDLETIMEMILLIS,
 
             "druid.timeBetweenLogStatsMillis",
             "druid.stat.sql.MaxSize",
@@ -389,6 +391,11 @@ public class DruidDataSourceFactory implements ObjectFactory {
         value = (String) properties.get(PROP_INIT);
         if ("true".equals(value)) {
             dataSource.init();
+        }
+
+        value = (String) properties.get(PROP_MAXEVICTABLEIDLETIMEMILLIS);
+        if (value != null) {
+            dataSource.setMaxEvictableIdleTimeMillis(Long.parseLong(value));
         }
     }
 }
