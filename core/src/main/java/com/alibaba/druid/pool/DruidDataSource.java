@@ -3245,9 +3245,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             int removeCount = evictCount + keepAliveCount;
             if (removeCount > 0) {
-                System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
-                Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
+                List<DruidConnectionHolder> holders = new ArrayList<>(Arrays.asList(connections));
+                for (DruidConnectionHolder dh : evictConnections) {
+                    holders.remove(dh);
+                }
+                for (DruidConnectionHolder dh : keepAliveConnections) {
+                    holders.remove(dh);
+                }
                 poolingCount -= removeCount;
+                connections = holders.toArray(new DruidConnectionHolder[maxActive]);
             }
             keepAliveCheckCount += keepAliveCount;
 
