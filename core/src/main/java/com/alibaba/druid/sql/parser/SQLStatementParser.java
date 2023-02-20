@@ -3785,6 +3785,20 @@ public class SQLStatementParser extends SQLParser {
                         }
                         accept(Token.RPAREN);
                         stmt.setDistributedByType(new SQLIdentifierExpr("HASH"));
+                    } else if (lexer.identifierEquals(Constants.DUPLICATE)) {
+                        lexer.nextToken();
+                        accept(Token.LPAREN);
+                        for (; ; ) {
+                            SQLName name = this.exprParser.name();
+                            stmt.getDistributedBy().add(name);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
+                        }
+                        accept(Token.RPAREN);
+                        stmt.setDistributedByType(new SQLIdentifierExpr("DUPLICATE"));
                     } else if (lexer.identifierEquals(FnvHash.Constants.BROADCAST)) {
                         lexer.nextToken();
                         stmt.setDistributedByType(new SQLIdentifierExpr("BROADCAST"));

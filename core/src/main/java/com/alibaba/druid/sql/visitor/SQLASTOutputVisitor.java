@@ -8609,6 +8609,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     printAndAccept(x.getDistributedBy(), ",");
                     print0(")");
 
+                } else if ("DUPLICATE".equalsIgnoreCase(distributeByType.getSimpleName())) {
+                    print0(ucase ? "DUPLICATE(" : "duplicate(");
+                    printAndAccept(x.getDistributedBy(), ",");
+                    print0(")");
+
                 } else if ("BROADCAST".equalsIgnoreCase(distributeByType.getSimpleName())) {
                     print0(ucase ? "BROADCAST " : "broadcast ");
                 }
@@ -9698,6 +9703,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             if ("HASH".equalsIgnoreCase(distributeByType.getSimpleName())) {
                 print0(ucase ? "HASH(" : "hash(");
+                printAndAccept(x.getDistributeBy(), ",");
+                print0(")");
+
+            } else if ("DUPLICATE".equalsIgnoreCase(distributeByType.getSimpleName())) {
+                print0(ucase ? "DUPLICATE(" : "duplicate(");
                 printAndAccept(x.getDistributeBy(), ",");
                 print0(")");
 
