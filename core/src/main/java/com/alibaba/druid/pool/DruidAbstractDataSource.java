@@ -45,6 +45,7 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Condition;
@@ -1763,8 +1764,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
                 physicalConnectProperties.put("oracle.net.CONNECT_TIMEOUT", connectTimeoutStr);
             } else if (driver != null && "org.postgresql.Driver".equals(driver.getClass().getName())) {
-                physicalConnectProperties.put("loginTimeout", connectTimeout);
-                physicalConnectProperties.put("socketTimeout", socketTimeout);
+                physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
+                if (socketTimeout > 0) {
+                    physicalConnectProperties.put("socketTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(socketTimeout)));
+                }
+            } else if (dbTypeName.equals(DbType.sqlserver.name())) {
+                physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
+                if (socketTimeout > 0) {
+                    physicalConnectProperties.put("socketTimeout", Integer.toString(socketTimeout));
+                }
             }
         }
 
