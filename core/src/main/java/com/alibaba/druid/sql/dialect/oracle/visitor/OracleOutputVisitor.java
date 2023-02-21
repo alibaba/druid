@@ -1983,6 +1983,36 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
+    public boolean visit(OracleAlterTableRowMovement x) {
+        if (x.isEnable()) {
+            print0(ucase ? " ENABLE ROW MOVEMENT " : " enable row movement ");
+        } else {
+            print0(ucase ? " DISABLE ROW MOVEMENT " : " disable row movement ");
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableShrinkSpace x) {
+        print0(ucase ? " SHRINK SPACE " : " shrink space ");
+
+        if (x.isCompact()) {
+            print0(ucase ? "COMPACT " : "compact ");
+        }
+
+        if (x.isCascade()) {
+            print0(ucase ? "CASCADE " : "cascade ");
+        }
+
+        if (x.isCheck()) {
+            print0(ucase ? "CHECK " : "check ");
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean visit(OracleFileSpecification x) {
         printAndAccept(x.getFileNames(), ", ");
 
