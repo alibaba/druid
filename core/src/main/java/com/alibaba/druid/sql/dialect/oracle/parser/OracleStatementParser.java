@@ -1600,6 +1600,12 @@ public class OracleStatementParser extends SQLStatementParser {
                     SQLAlterTableDisableConstraint item = new SQLAlterTableDisableConstraint();
                     item.setConstraintName(this.exprParser.name());
                     stmt.addItem(item);
+                } else if (lexer.token() == Token.ROW) {
+                    lexer.nextToken();
+                    OracleAlterTableRowMovement item = new OracleAlterTableRowMovement();
+                    acceptIdentifier("MOVEMENT");
+                    item.setEnable(false);
+                    stmt.addItem(item);
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
                 }
@@ -1610,8 +1616,26 @@ public class OracleStatementParser extends SQLStatementParser {
                     SQLAlterTableEnableConstraint item = new SQLAlterTableEnableConstraint();
                     item.setConstraintName(this.exprParser.name());
                     stmt.addItem(item);
+                } else if (lexer.token() == Token.ROW) {
+                    lexer.nextToken();
+                    OracleAlterTableRowMovement item = new OracleAlterTableRowMovement();
+                    acceptIdentifier("MOVEMENT");
+                    item.setEnable(true);
+                    stmt.addItem(item);
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
+                }
+            } else if (lexer.identifierEquals("SHRINK")) {
+                lexer.nextToken();
+                if (lexer.identifierEquals("SPACE")) {
+                    lexer.nextToken();
+
+                    OracleAlterTableShrinkSpace item = new OracleAlterTableShrinkSpace();
+                    fillShrinkSpace(item);
+                    fillShrinkSpace(item);
+                    fillShrinkSpace(item);
+
+                    stmt.addItem(item);
                 }
             }
 
@@ -1631,6 +1655,19 @@ public class OracleStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+
+    public void fillShrinkSpace(OracleAlterTableShrinkSpace item) {
+        if (lexer.identifierEquals("COMPACT")) {
+            item.setCompact(true);
+            lexer.nextToken();
+        } else if (lexer.token() == Token.CASCADE) {
+            item.setCascade(true);
+            lexer.nextToken();
+        } else if (lexer.token() == Token.CHECK) {
+            item.setCheck(true);
+            lexer.nextToken();
+        }
     }
 
     public void parseAlterDrop(SQLAlterTableStatement stmt) {
