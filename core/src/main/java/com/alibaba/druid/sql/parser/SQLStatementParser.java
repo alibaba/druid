@@ -2786,7 +2786,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (lexer.identifierEquals(FnvHash.Constants.CASCADE)) {
+            if (lexer.identifierEquals(FnvHash.Constants.CASCADE) || lexer.token == CASCADE) {
                 lexer.nextToken();
                 stmt.setCascade(true);
 
@@ -2880,7 +2880,7 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.identifierEquals("RESTRICT")) {
             lexer.nextToken();
             stmt.setRestrict(true);
-        } else if (lexer.identifierEquals("CASCADE")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.CASCADE) || lexer.token == CASCADE) {
             lexer.nextToken();
 
             if (lexer.identifierEquals("CONSTRAINTS")) { // for oracle
