@@ -924,9 +924,9 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     private void parsePivot(OracleSelectTableSource tableSource) {
-        OracleSelectPivot.Item item;
         if (lexer.identifierEquals(FnvHash.Constants.PIVOT)) {
             lexer.nextToken();
+            OracleSelectPivot.Item item;
 
             OracleSelectPivot pivot = new OracleSelectPivot();
 
@@ -1001,6 +1001,7 @@ public class OracleSelectParser extends SQLSelectParser {
             tableSource.setPivot(pivot);
         } else if (lexer.identifierEquals("UNPIVOT")) {
             lexer.nextToken();
+            OracleSelectUnPivot.Item item;
 
             OracleSelectUnPivot unPivot = new OracleSelectUnPivot();
             if (lexer.identifierEquals("INCLUDE")) {
@@ -1046,24 +1047,48 @@ public class OracleSelectParser extends SQLSelectParser {
             accept(Token.IN);
             accept(Token.LPAREN);
             if (lexer.token() == (Token.LPAREN)) {
-                throw new ParserException("TODO. " + lexer.info());
-            }
-
-            if (lexer.token() == (Token.SELECT)) {
-                throw new ParserException("TODO. " + lexer.info());
-            }
-
-            for (; ; ) {
-                item = new OracleSelectPivot.Item();
-                item.setExpr(this.exprParser.expr());
-                item.setAlias(as());
-                unPivot.getPivotIn().add(item);
-
-                if (lexer.token() != Token.COMMA) {
-                    break;
+                while (true) {
+                    item = new OracleSelectUnPivot.Item();
+                    lexer.nextToken();
+                    this.exprParser.exprList(item.getColumns(), item);
+                    accept(Token.RPAREN);
+                    if (lexer.token() == (Token.AS)) {
+                        lexer.setToken(null);//Prevents the 'AS' token from escaping single quotes in the following literal characters
+                        lexer.nextToken();
+                        if (lexer.token() == (Token.LPAREN)) {
+                            lexer.nextToken();
+                            this.exprParser.exprList(item.getLiterals(), item);
+                            accept(Token.RPAREN);
+                        } else {
+                            item.addLiteral(this.exprParser.expr());
+                        }
+                    }
+                    unPivot.getPivotIn().add(item);
+                    
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    }
+                    
+                    lexer.nextToken();
                 }
+                
+            } else {
+                while (true) {
+                    item = new OracleSelectUnPivot.Item();
+                    this.exprParser.exprList(item.getColumns(), item);
+                    if (lexer.token() == (Token.AS)) {
+                        lexer.setToken(null);//Prevents the 'AS' token from escaping single quotes in the following literal characters
+                        lexer.nextToken();
+                        item.addLiteral(this.exprParser.expr());
+                    }
+                    unPivot.getPivotIn().add(item);
 
-                lexer.nextToken();
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    }
+
+                    lexer.nextToken();
+                }
             }
 
             accept(Token.RPAREN);

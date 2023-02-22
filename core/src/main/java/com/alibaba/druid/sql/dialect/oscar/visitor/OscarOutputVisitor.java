@@ -1942,6 +1942,28 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
     }
 
     @Override
+    public boolean visit(OracleSelectUnPivot.Item x) {
+        if (x.getColumns().size() == 1) {
+            ((SQLExpr) x.getColumns().get(0)).accept(this);
+        } else {
+            print('(');
+            printAndAccept(x.getColumns(), ", ");
+            print(')');
+        }
+        if ((x.getLiterals() != null) && (x.getLiterals().size() > 0)) {
+            print0(ucase ? " AS " : " as ");
+            if (x.getLiterals().size() == 1) {
+                ((SQLExpr) x.getLiterals().get(0)).accept(this);
+            } else {
+                print('(');
+                printAndAccept(x.getLiterals(), ", ");
+                print(')');
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean visit(OracleUpdateStatement x) {
         print0(ucase ? "UPDATE " : "update ");
 

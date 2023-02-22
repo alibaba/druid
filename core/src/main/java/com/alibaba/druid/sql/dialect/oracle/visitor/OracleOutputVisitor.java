@@ -32,7 +32,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartit
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot.Item;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.CheckOption;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.ReadOnly;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
@@ -356,7 +355,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(Item x) {
+    public boolean visit(OracleSelectPivot.Item x) {
         x.getExpr().accept(this);
         if ((x.getAlias() != null) && (x.getAlias().length() > 0)) {
             print0(ucase ? " AS " : " as ");
@@ -590,6 +589,27 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         print(')');
+        return false;
+    }
+
+    public boolean visit(OracleSelectUnPivot.Item x) {
+        if (x.getColumns().size() == 1) {
+            ((SQLExpr) x.getColumns().get(0)).accept(this);
+        } else {
+            print('(');
+            printAndAccept(x.getColumns(), ", ");
+            print(')');
+        }
+        if ((x.getLiterals() != null) && (x.getLiterals().size() > 0)) {
+            print0(ucase ? " AS " : " as ");
+            if (x.getLiterals().size() == 1) {
+                ((SQLExpr) x.getLiterals().get(0)).accept(this);
+            } else {
+                print('(');
+                printAndAccept(x.getLiterals(), ", ");
+                print(')');
+            }
+        }
         return false;
     }
 

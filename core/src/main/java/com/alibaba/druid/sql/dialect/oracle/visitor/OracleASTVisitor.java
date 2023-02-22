@@ -66,6 +66,9 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     default void endVisit(OracleSelectUnPivot x) {
     }
 
+    default void endVisit(OracleSelectUnPivot.Item x) {
+    }
+
     default void endVisit(OracleUpdateStatement x) {
     }
 
@@ -114,6 +117,10 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default boolean visit(OracleSelectUnPivot x) {
+        return true;
+    }
+
+    default boolean visit(OracleSelectUnPivot.Item x) {
         return true;
     }
 

@@ -96,6 +96,11 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
+    public boolean visit(OracleSelectUnPivot.Item x) {
+        return false;
+    }
+
+    @Override
     public boolean visit(OracleUpdateStatement x) {
         return false;
     }
