@@ -28,9 +28,7 @@ import java.util.List;
 
 public class OracleAlterTableTest26 extends OracleTest {
     public void test_0() throws Exception {
-//        String sql = "alter table \"EIFINI_BCS\".\"SHEET_DA\" shrink space CHECK;";
         String sql = "alter table mytable enable row movement";
-
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -70,5 +68,92 @@ public class OracleAlterTableTest26 extends OracleTest {
         Assert.assertEquals(1, visitor.getTables().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
+    }
+
+    public void test_2() throws Exception {
+        String sql = "alter table \"EIFINI_BCS\".\"SHEET_DA\" shrink space compact";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
+                        "\t SHRINK SPACE COMPACT ",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        Assert.assertEquals(1, visitor.getTables().size());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
+    }
+
+    public void test_3() throws Exception {
+        String sql = "alter table \"EIFINI_BCS\".\"SHEET_DA\" shrink space CASCADE";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
+                        "\t SHRINK SPACE CASCADE ",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        Assert.assertEquals(1, visitor.getTables().size());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
+    }
+
+    public void test_4() throws Exception {
+        String sql = "alter table \"EIFINI_BCS\".\"SHEET_DA\" shrink space COMPACT CASCADE";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
+                        "\t SHRINK SPACE COMPACT CASCADE ",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        Assert.assertEquals(1, visitor.getTables().size());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
+    }
+
+    public void test_5() throws Exception {
+        String sql = "ALTER TABLE tester.t1 RENAME TO tester.\"BIN$9SBcFDaAYgDgUykdEKzT1Q==$0\"";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("RENAME tester.t1 TO tester.\"BIN$9SBcFDaAYgDgUykdEKzT1Q==$0\"",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        Assert.assertEquals(1, visitor.getTables().size());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tester.t1")));
     }
 }
