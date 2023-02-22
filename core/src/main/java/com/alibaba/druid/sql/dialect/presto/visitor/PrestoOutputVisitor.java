@@ -16,8 +16,11 @@
 package com.alibaba.druid.sql.dialect.presto.visitor;
 
 import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
 import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+
+import java.math.BigDecimal;
 
 /**
  * presto 的输出的视图信息
@@ -42,6 +45,15 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PhoenixA
         }
         this.print0(this.ucase ? " LIMIT " : " limit ");
         x.getRowCount().accept(this);
+        return false;
+    }
+
+    public boolean visit(SQLDecimalExpr x) {
+        BigDecimal value = x.getValue();
+        print0(ucase ? "DECIMAL '" : "decimal '");
+        print(value.toString());
+        print('\'');
+
         return false;
     }
 }

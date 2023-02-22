@@ -76,4 +76,30 @@ public class PGCreateIndexTest_0 extends PGTest {
 //
 //        assertEquals(1, visitor.getColumns().size() );
     }
+
+    public void test_2() throws Exception {
+        String sql = "create index if not exists idx_json_data_path on yida_entity_instance using gin(json_data jsonb_path_ops)";
+
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+
+        assertEquals("CREATE INDEX IF NOT EXISTS idx_json_data_path ON yida_entity_instance USING gin (json_data jsonb_path_ops)", SQLUtils.toPGString(stmt));
+
+        assertEquals("create index if not exists idx_json_data_path on yida_entity_instance using gin (json_data jsonb_path_ops)", stmt.toLowerCaseString());
+
+        assertEquals(1, statementList.size());
+
+        PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
+        stmt.accept(visitor);
+
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("public.city")));
+//
+//        assertTrue(visitor.getTables().get(new TableStat.Name("public.city")).getCreateIndexCount() == 1);
+//
+//        assertEquals(1, visitor.getColumns().size() );
+    }
 }

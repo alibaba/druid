@@ -163,6 +163,11 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             println();
         }
 
+        List<String> insertBeforeComments = x.getInsertBeforeCommentsDirect();
+        if (insertBeforeComments != null) {
+            printlnComments(insertBeforeComments);
+        }
+
         if (x.isOverwrite()) {
             print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
         } else {
