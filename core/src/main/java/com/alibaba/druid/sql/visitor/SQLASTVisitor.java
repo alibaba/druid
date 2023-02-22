@@ -776,6 +776,13 @@ public interface SQLASTVisitor {
     default void endVisit(SQLAlterTableRenameColumn x) {
     }
 
+    default boolean visit(SQLAlterTableRenameConstraint x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableRenameConstraint x) {
+    }
+
     default boolean visit(SQLColumnReference x) {
         return true;
     }
