@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterTableShrinkSpace extends OracleAlterTableItem {
-
     private boolean compact;
 
     private boolean cascade;
