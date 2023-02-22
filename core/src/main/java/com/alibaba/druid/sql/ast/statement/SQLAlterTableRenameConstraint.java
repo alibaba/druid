@@ -34,7 +34,6 @@ public class SQLAlterTableRenameConstraint extends SQLObjectImpl implements SQLA
         }
         visitor.endVisit(this);
     }
-    
     public SQLName getConstraint() {
         return constraint;
     }

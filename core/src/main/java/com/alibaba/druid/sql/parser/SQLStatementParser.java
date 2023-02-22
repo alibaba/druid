@@ -2762,7 +2762,16 @@ public class SQLStatementParser extends SQLParser {
 
         for (; ; ) {
             SQLName name = this.exprParser.name();
-            stmt.addPartition(new SQLExprTableSource(name));
+            SQLExprTableSource tab;
+            if (lexer.token == Token.AS) {
+                lexer.nextToken();
+                String alias = this.exprParser.name().getSimpleName();
+                tab = new SQLExprTableSource(name, alias);
+            } else {
+                tab = new SQLExprTableSource(name);
+            }
+
+            stmt.addPartition(tab);
             if (lexer.token == Token.COMMA) {
                 lexer.nextToken();
                 continue;
