@@ -179,8 +179,8 @@ public class OracleAlterTableTest26 extends OracleTest {
     }
 
 
-    public void test_7()throws Exception{
-        String sql="create table \"JUNYU_ORCL\".\"KBS_QUESTION\"(\n" +
+    public void test_7() throws Exception {
+        String sql = "create table \"JUNYU_ORCL\".\"KBS_QUESTION\"(\n" +
                 "  \"ID\"  number(19, 0)  not null,\n" +
                 "  \"QUESTION\"  varchar2(1500)  null,\n" +
                 "  \"GRADE\"  number(3, 0) default 0 not null,\n" +
@@ -304,7 +304,7 @@ public class OracleAlterTableTest26 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("customers")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.MYSQL_ALL_TYPES_FOR_8_0")));
     }
 
     public void test_9() throws Exception {
@@ -326,6 +326,27 @@ public class OracleAlterTableTest26 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("customers")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.KBS_QUESTION")));
+    }
+
+    public void test_10() throws Exception {
+        String sql = "drop table KBS_QUESTION AS \"BIN$9Ue7xItyBs3gUyUdEKzZKg==$0\"\n";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("DROP TABLE KBS_QUESTION  AS \"BIN$9Ue7xItyBs3gUyUdEKzZKg==$0\"",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        Assert.assertEquals(1, visitor.getTables().size());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("KBS_QUESTION")));
     }
 }
