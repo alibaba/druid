@@ -160,6 +160,7 @@ public class Keywords {
         map.put("INOUT", Token.INOUT);
 
         map.put("LIMIT", Token.LIMIT);
+        map.put("CASCADE", Token.CASCADE);
 
         DEFAULT_KEYWORDS = new Keywords(map);
 
