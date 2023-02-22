@@ -2520,6 +2520,13 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.TO);
             renameColumn.setTo(this.exprParser.name());
             return renameColumn;
+        } else if (lexer.token == Token.CONSTRAINT) {
+            lexer.nextToken();
+            SQLAlterTableRenameConstraint renameConstraint = new SQLAlterTableRenameConstraint();
+            renameConstraint.setConstraint(this.exprParser.name());
+            accept(Token.TO);
+            renameConstraint.setTo(this.exprParser.name());
+            return renameConstraint;
         }
 
         if (lexer.token == Token.TO) {
