@@ -638,7 +638,15 @@ public class PGSQLStatementParser extends SQLStatementParser {
         accept(Token.LPAREN);
 
         for (; ; ) {
-            SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+            SQLSelectOrderByItem item;
+            item = this.exprParser.parseSelectOrderByItem();
+
+            if (lexer.identifierEquals("jsonb_path_ops") && item.getExpr() instanceof SQLIdentifierExpr) {
+                String ident = ((SQLIdentifierExpr) item.getExpr()).getName() + " " + lexer.stringVal();
+                lexer.nextToken();
+                item.setExpr(new SQLIdentifierExpr(ident));
+            }
+
             item.setParent(stmt);
             stmt.addItem(item);
             if (lexer.token() == Token.COMMA) {

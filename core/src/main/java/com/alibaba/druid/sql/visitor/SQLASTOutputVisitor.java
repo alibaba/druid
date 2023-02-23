@@ -2378,6 +2378,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount++;
             for (int i = 0; i < itemSize; ++i) {
                 SQLExpr item = items.get(i);
+                if (isPrettyFormat() && item.hasBeforeComment()) {
+                    if (i != 0) {
+                        print(' ');
+                    }
+                    printlnComments(item.getBeforeCommentsDirect());
+                }
+
                 if (i != 0) {
                     if (groupItemSingleLine) {
                         println(", ");

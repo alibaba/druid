@@ -579,4 +579,46 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         return stmt;
     }
+
+    public void parseAlterDrop(SQLAlterTableStatement stmt) {
+        lexer.nextToken();
+        if (lexer.token() == Token.CONSTRAINT) {
+            lexer.nextToken();
+            SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
+            item.setConstraintName(this.exprParser.name());
+            stmt.addItem(item);
+        } else if (lexer.token() == Token.COLUMN) {
+            lexer.nextToken();
+            SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
+
+            SQLName name = exprParser.name();
+            name.setParent(item);
+            item.addColumn(name);
+            while (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+
+                if (lexer.token() == Token.COLUMN) {
+                    lexer.nextToken();
+                }
+                name = exprParser.name();
+                name.setParent(item);
+                item.addColumn(name);
+            }
+
+            stmt.addItem(item);
+        } else if (lexer.token() == Token.INDEX) {
+            lexer.nextToken();
+            SQLName indexName = this.exprParser.name();
+            SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
+            item.setIndexName(indexName);
+            stmt.addItem(item);
+        } else if (lexer.token() == Token.PRIMARY) {
+            lexer.nextToken();
+            accept(Token.KEY);
+            SQLAlterTableDropPrimaryKey item = new SQLAlterTableDropPrimaryKey();
+            stmt.addItem(item);
+        } else {
+            throw new ParserException("TODO : " + lexer.info());
+        }
+    }
 }

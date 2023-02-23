@@ -548,6 +548,8 @@ public class SQLParserUtils {
 
         boolean set = false, paiOrJar = false;
         int start = 0;
+        Token preToken = null;
+        int prePos = 0;
         Token token = lexer.token;
         for (; lexer.token != Token.EOF; ) {
             if (token == Token.SEMI) {
@@ -604,8 +606,8 @@ public class SQLParserUtils {
                 token = lexer.token;
                 continue;
             } else if (dbType == DbType.odps
-                    && lexer.ch != '.'
-                    && (lexer.identifierEquals("pai") || lexer.identifierEquals("jar"))) {
+                    && (preToken == null || preToken == Token.LINE_COMMENT || preToken == Token.SEMI)
+                    && (lexer.identifierEquals("pai") || lexer.identifierEquals("jar") || lexer.identifierEquals("copy"))) {
                 lexer.scanLineArgument();
                 paiOrJar = true;
             }
@@ -621,6 +623,7 @@ public class SQLParserUtils {
                 set = true;
             }
 
+            prePos = lexer.pos;
             if (lexer.identifierEquals("ADD") && (dbType == DbType.hive || dbType == DbType.odps)) {
                 lexer.nextToken();
                 if (lexer.identifierEquals("JAR")) {
@@ -629,7 +632,13 @@ public class SQLParserUtils {
             } else {
                 lexer.nextToken();
             }
+            preToken = token;
             token = lexer.token;
+            if (token == Token.LINE_COMMENT
+                    && (preToken == Token.SEMI || preToken == Token.LINE_COMMENT || preToken == Token.MULTI_LINE_COMMENT)
+            ) {
+                start = lexer.pos;
+            }
         }
 
         if (start != sql.length() && token != Token.SEMI) {
