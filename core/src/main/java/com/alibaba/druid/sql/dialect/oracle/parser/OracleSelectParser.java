@@ -1046,49 +1046,22 @@ public class OracleSelectParser extends SQLSelectParser {
 
             accept(Token.IN);
             accept(Token.LPAREN);
-            if (lexer.token() == (Token.LPAREN)) {
-                while (true) {
-                    item = new OracleSelectUnPivot.Item();
-                    lexer.nextToken();
-                    this.exprParser.exprList(item.getColumns(), item);
-                    accept(Token.RPAREN);
-                    if (lexer.token() == (Token.AS)) {
-                        lexer.setToken(null);//Prevents the 'AS' token from escaping single quotes in the following literal characters
-                        lexer.nextToken();
-                        if (lexer.token() == (Token.LPAREN)) {
-                            lexer.nextToken();
-                            this.exprParser.exprList(item.getLiterals(), item);
-                            accept(Token.RPAREN);
-                        } else {
-                            item.addLiteral(this.exprParser.expr());
-                        }
-                    }
-                    unPivot.getPivotIn().add(item);
-                    
-                    if (lexer.token() != Token.COMMA) {
-                        break;
-                    }
-                    
-                    lexer.nextToken();
-                }
-                
-            } else {
-                while (true) {
-                    item = new OracleSelectUnPivot.Item();
-                    this.exprParser.exprList(item.getColumns(), item);
-                    if (lexer.token() == (Token.AS)) {
-                        lexer.setToken(null);//Prevents the 'AS' token from escaping single quotes in the following literal characters
-                        lexer.nextToken();
-                        item.addLiteral(this.exprParser.expr());
-                    }
-                    unPivot.getPivotIn().add(item);
 
-                    if (lexer.token() != Token.COMMA) {
-                        break;
-                    }
-
+            while (true) {
+                item = new OracleSelectUnPivot.Item();
+                this.exprParser.exprList(item.getColumns(), item);
+                if (lexer.token() == (Token.AS)) {
+                    lexer.setToken(Token.COMMA);//Prevents the 'AS' token from escaping single quotes in the following literal characters
                     lexer.nextToken();
+                    item.addLiteral(this.exprParser.expr());
                 }
+                unPivot.getPivotIn().add(item);
+
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+
+                lexer.nextToken();
             }
 
             accept(Token.RPAREN);

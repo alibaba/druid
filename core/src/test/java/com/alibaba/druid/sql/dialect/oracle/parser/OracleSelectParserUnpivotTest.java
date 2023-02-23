@@ -39,7 +39,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "               '90' AS wjf,\n"
 				+ "               '88' AS xxds,\n"
 				+ "               '85' sjjg,\n"
-				+ "               '70' czxt\n"
+				+ "               '71' czxt\n"
 				+ "          FROM DUAL)\n"
 				+ "UNPIVOT(score FOR subject IN(\n"
 				+ "wjf   as '微积分',\n"
@@ -48,6 +48,34 @@ public class OracleSelectParserUnpivotTest {
 				+ "czxt as '操作系统')) t";
 		SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
 		System.out.println(stat.toString());
+		System.out.println();
+	}
+
+	@Test
+	public void testUnpivotSingleColumn2() {
+		String sql = "SELECT\n"
+				+ "	TERM,\n"
+				+ "	subject,\n"
+				+ "	STU_NAME,\n"
+				+ "	score\n"
+				+ "FROM\n"
+				+ "	(\n"
+				+ "	SELECT\n"
+				+ "		'罗飞' STU_NAME,\n"
+				+ "		'2001-2002' TERM,\n"
+				+ "		'90' AS wjf,\n"
+				+ "		'88' AS xxds,\n"
+				+ "		'85' sjjg,\n"
+				+ "		'72' czxt\n"
+				+ "	FROM DUAL)\n"
+				+ "			UNPIVOT(score FOR (subject, hello) IN(\n"
+				+ "			wjf AS ('微积分', '微积分'||'123'),\n"
+				+ "			xxds AS ('线性代数', 'abc'),\n"
+				+ "			sjjg AS ('数据结构', 'def'),\n"
+				+ "			czxt AS ('操作系统', 'ghk'))) t";
+		SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
+		System.out.println(stat.toString());
+		System.out.println();
 	}
 
 	@Test
@@ -58,7 +86,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "               '90' AS wjf,\n"
 				+ "               '88' AS xxds,\n"
 				+ "               '85' sjjg,\n"
-				+ "               '70' czxt\n"
+				+ "               '73' czxt\n"
 				+ "          FROM DUAL\n"
 				+ "        UNION ALL\n"
 				+ "        SELECT '罗游' STU_NAME,\n"
@@ -66,7 +94,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "               '91' AS wjf,\n"
 				+ "               '81' AS xxds,\n"
 				+ "               '81' sjjg,\n"
-				+ "               '71' czxt\n"
+				+ "               '74' czxt\n"
 				+ "          FROM DUAL\n"
 				+ "          )\n"
 				+ "UNPIVOT((NAME, score) FOR subject IN(\n"
@@ -76,6 +104,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "(STU_NAME, czxt) as '操作系统')) t";
 		SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
 		System.out.println(stat.toString());
+		System.out.println();
 	}
 
 	@Test
@@ -86,7 +115,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "               '90' AS wjf,\n"
 				+ "               '88' AS xxds,\n"
 				+ "               '85' sjjg,\n"
-				+ "               '70' czxt\n"
+				+ "               '75' czxt\n"
 				+ "          FROM DUAL\n"
 				+ "        UNION ALL\n"
 				+ "        SELECT '罗游' STU_NAME,\n"
@@ -94,7 +123,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "               '91' AS wjf,\n"
 				+ "               '81' AS xxds,\n"
 				+ "               '81' sjjg,\n"
-				+ "               '71' czxt\n"
+				+ "               '76' czxt\n"
 				+ "          FROM DUAL\n"
 				+ "        UNION ALL\n"
 				+ "        SELECT '罗飞' STU_NAME,\n"
@@ -102,7 +131,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "               '91' AS wjf,\n"
 				+ "               '81' AS xxds,\n"
 				+ "               '81' sjjg,\n"
-				+ "               '71' czxt\n"
+				+ "               '77' czxt\n"
 				+ "          FROM DUAL\n"
 				+ "          ) \n"
 				+ "UNPIVOT((NAME,score) FOR (subject,hello) IN(\n"
@@ -112,6 +141,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "(STU_NAME,czxt) as ('操作系统','ghk'))) t";
 		SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
 		System.out.println(stat.toString());
+		System.out.println();
 	}
 
 }
