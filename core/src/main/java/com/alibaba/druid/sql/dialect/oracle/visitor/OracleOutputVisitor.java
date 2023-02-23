@@ -2003,6 +2003,36 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
+    public boolean visit(OracleAlterTableRowMovement x) {
+        if (x.isEnable()) {
+            print0(ucase ? " ENABLE ROW MOVEMENT " : " enable row movement ");
+        } else {
+            print0(ucase ? " DISABLE ROW MOVEMENT " : " disable row movement ");
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableShrinkSpace x) {
+        print0(ucase ? " SHRINK SPACE " : " shrink space ");
+
+        if (x.isCompact()) {
+            print0(ucase ? "COMPACT " : "compact ");
+        }
+
+        if (x.isCascade()) {
+            print0(ucase ? "CASCADE " : "cascade ");
+        }
+
+        if (x.isCheck()) {
+            print0(ucase ? "CHECK " : "check ");
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean visit(OracleFileSpecification x) {
         printAndAccept(x.getFileNames(), ", ");
 
@@ -2882,6 +2912,46 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             } else {
                 print0(ucase ? " DISALLOW ANYSCHEMA" : " disallow anyschema");
             }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLExprTableSource x) {
+        printTableSourceExpr(x.getExpr());
+
+        final SQLTableSampling sampling = x.getSampling();
+        if (sampling != null) {
+            print(' ');
+            sampling.accept(this);
+        }
+
+        String alias = x.getAlias();
+        List<SQLName> columns = x.getColumnsDirect();
+        if (alias != null) {
+            SQLObject parent = x.getParent();
+            if (parent instanceof SQLCreateIndexStatement
+                    || parent instanceof SQLMergeStatement
+                    || parent instanceof SQLDeleteStatement) {
+                print(' ');
+                print0(alias);
+            } else {
+                print(' ');
+                print0(ucase ? " AS " : " as ");
+                print0(alias);
+            }
+        }
+
+        if (columns != null && columns.size() > 0) {
+            print(" (");
+            printAndAccept(columns, ", ");
+            print(')');
+        }
+
+        if (isPrettyFormat() && x.hasAfterComment()) {
+            print(' ');
+            printlnComment(x.getAfterCommentsDirect());
         }
 
         return false;

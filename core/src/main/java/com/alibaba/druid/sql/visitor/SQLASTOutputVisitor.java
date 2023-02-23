@@ -5769,6 +5769,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLAlterTableRenameConstraint x) {
+        print0(ucase ? "RENAME CONSTRAINT " : "rename constraint ");
+        x.getConstraint().accept(this);
+        print0(ucase ? " TO " : " to ");
+        x.getTo().accept(this);
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLColumnReference x) {
         SQLName name = x.getName();
         if (name != null) {

@@ -35,6 +35,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static com.alibaba.druid.sql.parser.Token.CASCADE;
+
 public class SQLExprParser extends SQLParser {
     public static final String[] AGGREGATE_FUNCTIONS;
 
@@ -1027,6 +1029,10 @@ public class SQLExprParser extends SQLParser {
                 break;
             case DATABASE:
                 sqlExpr = new SQLIdentifierExpr("DATABASE");
+                lexer.nextToken();
+                break;
+            case CASCADE:
+                sqlExpr = new SQLIdentifierExpr("CASCADE");
                 lexer.nextToken();
                 break;
             case LOCK:
@@ -4946,7 +4952,7 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.RESTRICT || lexer.identifierEquals(FnvHash.Constants.RESTRICT)) {
             option = SQLForeignKeyImpl.Option.RESTRICT;
             lexer.nextToken();
-        } else if (lexer.identifierEquals(FnvHash.Constants.CASCADE)) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.CASCADE) || lexer.token == CASCADE) {
             option = SQLForeignKeyImpl.Option.CASCADE;
             lexer.nextToken();
         } else if (lexer.token() == Token.SET) {
