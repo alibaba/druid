@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLServerStatementImpl extends SQLStatementImpl implements SQLServerStatement {
+
     public SQLServerStatementImpl() {
         super(DbType.sqlserver);
     }
