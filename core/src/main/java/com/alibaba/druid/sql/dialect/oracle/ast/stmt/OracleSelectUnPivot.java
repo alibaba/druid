@@ -15,16 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleSelectUnPivot extends OracleSelectPivotBase {
+import java.util.ArrayList;
+import java.util.List;
 
-	private NullsIncludeType nullsIncludeType;
+public class OracleSelectUnPivot extends OracleSelectPivotBase {
+    private NullsIncludeType nullsIncludeType;
     private final List<SQLExpr> items = new ArrayList<SQLExpr>();
 
     private final List<Item> pivotIn = new ArrayList<Item>();
@@ -113,43 +112,43 @@ public class OracleSelectUnPivot extends OracleSelectPivotBase {
         public Item() {
         }
 
-		public List<SQLExpr> getLiterals() {
-			return literals;
-		}
+        public List<SQLExpr> getLiterals() {
+            return literals;
+        }
 
-		public List<SQLExpr> getColumns() {
-			return columns;
-		}
+        public List<SQLExpr> getColumns() {
+            return columns;
+        }
 
-		public void setLiterals(List<SQLExpr> literals) {
-			this.literals = literals;
-		}
+        public void setLiterals(List<SQLExpr> literals) {
+            this.literals = literals;
+        }
 
-		public void addLiteral(SQLExpr literal) {
-			literal.setParent(this);
-			this.literals.add(literal);;
-		}
+        public void addLiteral(SQLExpr literal) {
+            literal.setParent(this);
+            this.literals.add(literal);
+        }
 
-		public void addLiteral(int index, SQLExpr literal) {
-			literal.setParent(this);
-			this.literals.add(index, literal);;
-		}
+        public void addLiteral(int index, SQLExpr literal) {
+            literal.setParent(this);
+            this.literals.add(index, literal);
+        }
 
-		public void setColumns(List<SQLExpr> columns) {
-			this.columns = columns;
-		}
+        public void setColumns(List<SQLExpr> columns) {
+            this.columns = columns;
+        }
 
-		public void addColumn(SQLExpr column) {
-			column.setParent(this);
-			this.columns.add(column);;
-		}
+        public void addColumn(SQLExpr column) {
+            column.setParent(this);
+            this.columns.add(column);
+        }
 
-		public void addColumn(int index, SQLExpr column) {
-			column.setParent(this);
-			this.columns.add(index, column);;
-		}
+        public void addColumn(int index, SQLExpr column) {
+            column.setParent(this);
+            this.columns.add(index, column);
+        }
 
-		public void accept0(OracleASTVisitor visitor) {
+        public void accept0(OracleASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, this.columns);
             }
@@ -163,13 +162,13 @@ public class OracleSelectUnPivot extends OracleSelectPivotBase {
 
             if (this.columns != null) {
                 for (SQLExpr e : this.columns) {
-                	x.columns.add(e.clone());
+                    x.columns.add(e.clone());
                 }
             }
 
             if (this.literals != null) {
                 for (SQLExpr e : this.literals) {
-                	x.literals.add(e.clone());
+                    x.literals.add(e.clone());
                 }
             }
 

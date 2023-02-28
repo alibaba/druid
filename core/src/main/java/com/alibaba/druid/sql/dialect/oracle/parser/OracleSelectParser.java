@@ -1051,7 +1051,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 item = new OracleSelectUnPivot.Item();
                 this.exprParser.exprList(item.getColumns(), item);
                 if (lexer.token() == (Token.AS)) {
-                    lexer.setToken(Token.COMMA);//Prevents the 'AS' token from escaping single quotes in the following literal characters
+                    lexer.setToken(Token.COMMA);    //Prevents the 'AS' token from escaping single quotes in the following literal characters
                     lexer.nextToken();
                     item.addLiteral(this.exprParser.expr());
                 }
