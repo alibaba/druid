@@ -1168,7 +1168,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         DataSourceProxyConfig config = DruidDriver.parseConfig(jdbcUrl, null);
         this.driverClass = config.getRawDriverClassName();
 
-        LOG.error("error url : '" + jdbcUrl + "', it should be : '" + config.getRawUrl() + "'");
+        LOG.error("error url : '" + sanitizedUrl(jdbcUrl) + "', it should be : '" + config.getRawUrl() + "'");
 
         this.jdbcUrl = config.getRawUrl();
         if (this.name == null) {
@@ -2759,7 +2759,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         return;
                     }
                 } catch (SQLException e) {
-                    LOG.error("create connection SQLException, url: " + jdbcUrl, e);
+                    LOG.error("create connection SQLException, url: " + sanitizedUrl(jdbcUrl), e);
 
                     errorCount++;
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
@@ -2899,7 +2899,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     lastErrorTimeMillis = System.currentTimeMillis();
 
                     if ((!closing) && (!closed)) {
-                        LOG.error("create connection thread interrupted, url: " + jdbcUrl, e);
+                        LOG.error("create connection thread interrupted, url: " + sanitizedUrl(jdbcUrl), e);
                     }
                     break;
                 } finally {
@@ -2911,7 +2911,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 try {
                     connection = createPhysicalConnection();
                 } catch (SQLException e) {
-                    LOG.error("create connection SQLException, url: " + jdbcUrl + ", errorCode " + e.getErrorCode()
+                    LOG.error("create connection SQLException, url: " + sanitizedUrl(jdbcUrl) + ", errorCode " + e.getErrorCode()
                             + ", state " + e.getSQLState(), e);
 
                     errorCount++;
@@ -3924,7 +3924,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 PhysicalConnectionInfo pyConnInfo = createPhysicalConnection();
                 holder = new DruidConnectionHolder(this, pyConnInfo);
             } catch (SQLException e) {
-                LOG.error("fill connection error, url: " + this.jdbcUrl, e);
+                LOG.error("fill connection error, url: " + sanitizedUrl(this.jdbcUrl), e);
                 connectErrorCountUpdater.incrementAndGet(this);
                 throw e;
             }
@@ -3960,6 +3960,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         return fillCount;
+    }
+
+    private String sanitizedUrl(String url) {
+        if (url == null) {
+            return null;
+        }
+
+        return url.replaceAll("([?&;]password=)[^&#;]*(.*)", "$1<masked>$2");
     }
 
     private boolean isFillable(int toCount) {
