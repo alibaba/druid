@@ -471,5 +471,61 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>rewrite</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>3.1.2</version>
+						<dependencies>
+							<dependency>
+								<groupId>com.puppycrawl.tools</groupId>
+								<artifactId>checkstyle</artifactId>
+								<version>9.2</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>checkstyle</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+								<configuration>
+									<skip>true</skip>
+									<failOnViolation>false</failOnViolation>
+									<includeTestSourceDirectory>false</includeTestSourceDirectory>
+									<configLocation>src/checkstyle/druid-checks.xml</configLocation>
+									<excludes>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.openrewrite.maven</groupId>
+						<artifactId>rewrite-maven-plugin</artifactId>
+						<version>4.41.0</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<phase>verify</phase>
+							</execution>
+						</executions>
+						<configuration>
+							<skipMavenParsing>true</skipMavenParsing>
+							<activeRecipes>
+								<recipe>org.openrewrite.java.cleanup.Cleanup</recipe>
+							</activeRecipes>
+							<checkstyleDetectionEnabled>true</checkstyleDetectionEnabled>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>
