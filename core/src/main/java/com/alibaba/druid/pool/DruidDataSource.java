@@ -1286,6 +1286,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } else if (dbType == DbType.mysql
                 || JdbcUtils.MYSQL_DRIVER.equals(this.driverClass)
                 || JdbcUtils.MYSQL_DRIVER_6.equals(this.driverClass)
+                || JdbcUtils.MYSQL_DRIVER_603.equals(this.driverClass)
         ) {
             isMySql = true;
         }
@@ -1395,7 +1396,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         for (Class<?> driverClass = driver.getClass(); ; ) {
             String realDriverClassName = driverClass.getName();
             if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
-                    || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
+                    || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)
+                    || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_603)) {
                 this.exceptionSorter = new MySqlExceptionSorter();
                 this.isMySql = true;
             } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
