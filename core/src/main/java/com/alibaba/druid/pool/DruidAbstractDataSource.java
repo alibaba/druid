@@ -1772,7 +1772,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     physicalConnectProperties.put("socketTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(socketTimeout)));
                 }
             } else if (dbTypeName.equals(DbType.sqlserver.name())) {
-                // see https://www.connectionstrings.com/all-sql-server-connection-string-keywords/
+                // see https://learn.microsoft.com/en-us/sql/connect/jdbc/setting-the-connection-properties?view=sql-server-ver16
                 physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
                 if (socketTimeout > 0) {
                     // As SQLServer-jdbc-driver 6.1.2 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
