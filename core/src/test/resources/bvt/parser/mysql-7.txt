@@ -1,0 +1,18 @@
+insert into accontexchangeinfo a 			 
+	(a.id,a.sourceid,a.batchno,a.applicant,a.out_uid,a.in_uid,a.moneytype,a.amount,a.remark,a.gmt_create,a.gmt_modified) 			
+	values 			
+(
+	SEQ_ACCONTEXCHANGEINFO.nextval,?,?,?,?,?,?,?,?,SYSDATE,SYSDATE)
+	
+
+    
+
+
+---------------------------
+INSERT INTO accontexchangeinfo a (a.id, a.sourceid, a.batchno, a.applicant, a.out_uid
+	, a.in_uid, a.moneytype, a.amount, a.remark, a.gmt_create
+	, a.gmt_modified)
+VALUES (SEQ_ACCONTEXCHANGEINFO.nextval, ?, ?, ?, ?
+	, ?, ?, ?, ?, SYSDATE
+	, SYSDATE)
+	

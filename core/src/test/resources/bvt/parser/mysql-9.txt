@@ -1,0 +1,115 @@
+SELECT a.id AS "appId", a.name AS "appName", b.number AS "instanceNumber", b.hostname AS "hostname", c.name AS "monitorItemName" , d.id AS "alarmRuleStatusId", d.name AS "alarmRuleName", d.current_status AS "alarmRuleStatus", d.last_change_time AS "lastChangeTimeOfAlarmRule" FROM mi_alarm_rule_status d LEFT JOIN monitor_item_status c ON d.mi_status_id = c.id LEFT JOIN instance b ON b.number = c.inst_num AND b.app_num = c.app_num AND b.hostname = c.hostname LEFT JOIN app a ON a.number = b.app_num WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? 
+OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? ORDER BY lastChangeTimeOfAlarmRule DESC LIMIT ?, ?
+---------------------------
+SELECT a.id AS "appId", a.name AS "appName", b.number AS "instanceNumber", b.hostname AS "hostname", c.name AS "monitorItemName"
+	, d.id AS "alarmRuleStatusId", d.name AS "alarmRuleName", d.current_status AS "alarmRuleStatus", d.last_change_time AS "lastChangeTimeOfAlarmRule"
+FROM mi_alarm_rule_status d
+	LEFT JOIN monitor_item_status c ON d.mi_status_id = c.id
+	LEFT JOIN instance b
+	ON b.number = c.inst_num
+		AND b.app_num = c.app_num
+		AND b.hostname = c.hostname
+	LEFT JOIN app a ON a.number = b.app_num
+WHERE 1 = 0
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+ORDER BY lastChangeTimeOfAlarmRule DESC
+LIMIT ?, ?
+---------------------------
+SELECT a.id AS "appId", a.name AS "appName", b.number AS "instanceNumber", b.hostname AS "hostname", c.name AS "monitorItemName"
+	, d.id AS "alarmRuleStatusId", d.name AS "alarmRuleName", d.current_status AS "alarmRuleStatus", d.last_change_time AS "lastChangeTimeOfAlarmRule"
+FROM mi_alarm_rule_status d
+	LEFT JOIN monitor_item_status c ON d.mi_status_id = c.id
+	LEFT JOIN instance b
+	ON b.number = c.inst_num
+		AND b.app_num = c.app_num
+		AND b.hostname = c.hostname
+	LEFT JOIN app a ON a.number = b.app_num
+WHERE 1 = 0
+	OR a.id = ?
+ORDER BY lastChangeTimeOfAlarmRule DESC
+LIMIT ?, ?

@@ -1,0 +1,15 @@
+select  bk.attr_id as attrId,                   group_concat(distinct(bk.value_id)) as attrValueStr,                   
+	group_concat(distinct(pt.name)) as themeNameStr           
+from                a_c_ pt 
+	left join cde_f bk on pt.spu_id=bk.spu_id            
+where                pt.status='action'                and pt.category_id=? 		 		 		           
+group by bk.attr_id;              
+
+
+---------------------------
+SELECT bk.attr_id AS attrId, group_concat(DISTINCT bk.value_id) AS attrValueStr, group_concat(DISTINCT pt.name) AS themeNameStr
+FROM a_c_ pt
+	LEFT JOIN cde_f bk ON pt.spu_id = bk.spu_id 
+WHERE pt.status = 'action'
+	AND pt.category_id = ?
+GROUP BY bk.attr_id;

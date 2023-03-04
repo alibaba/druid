@@ -5,9 +5,7 @@
  */
 package org.logicalcobwebs.proxool;
 
-
 public interface ProxoolConstants {
-
     public final String PROXOOL = "proxool";
 
     /**
@@ -22,27 +20,35 @@ public interface ProxoolConstants {
 
     public final String URL_DELIMITER = ":";
 
-    /** Standard JDBC property */
+    /**
+     * Standard JDBC property
+     */
     public final String USER_PROPERTY = "user";
 
-    /** Standard JDBC property */
+    /**
+     * Standard JDBC property
+     */
     public final String PASSWORD_PROPERTY = "password";
 
-    /** Used to build up URL */
+    /**
+     * Used to build up URL
+     */
     public final String ALIAS_PROPERTY = PROPERTY_PREFIX + "alias";
 
-    /** Instead of defining the driver in the url you can also use this property */
+    /**
+     * Instead of defining the driver in the url you can also use this property
+     */
     public final String DELEGATE_DRIVER = "driver";
 
-     public final String DELEGATE_DRIVER_PROPERTY = PROPERTY_PREFIX + DELEGATE_DRIVER;
+    public final String DELEGATE_DRIVER_PROPERTY = PROPERTY_PREFIX + DELEGATE_DRIVER;
 
     public final String DELEGATE_URL = "url";
 
-     public final String DELEGATE_URL_PROPERTY = PROPERTY_PREFIX + DELEGATE_URL;
+    public final String DELEGATE_URL_PROPERTY = PROPERTY_PREFIX + DELEGATE_URL;
 
     public final String HOUSE_KEEPING_SLEEP_TIME = "house-keeping-sleep-time";
 
-     public final String HOUSE_KEEPING_SLEEP_TIME_PROPERTY = PROPERTY_PREFIX + HOUSE_KEEPING_SLEEP_TIME;
+    public final String HOUSE_KEEPING_SLEEP_TIME_PROPERTY = PROPERTY_PREFIX + HOUSE_KEEPING_SLEEP_TIME;
 
     public final String HOUSE_KEEPING_TEST_SQL = "house-keeping-test-sql";
 
@@ -78,12 +84,16 @@ public interface ProxoolConstants {
 
     public final String SIMULTANEOUS_BUILD_THROTTLE_PROPERTY = PROPERTY_PREFIX + SIMULTANEOUS_BUILD_THROTTLE;
 
-    /** @see #MINIMUM_CONNECTION_COUNT_PROPERTY */
+    /**
+     * @see #MINIMUM_CONNECTION_COUNT_PROPERTY
+     */
     public final String MINIMUM_CONNECTION_COUNT = "minimum-connection-count";
 
     public final String MINIMUM_CONNECTION_COUNT_PROPERTY = PROPERTY_PREFIX + MINIMUM_CONNECTION_COUNT;
 
-    /** @see #PROTOTYPE_COUNT_PROPERTY */
+    /**
+     * @see #PROTOTYPE_COUNT_PROPERTY
+     */
     public final String PROTOTYPE_COUNT = "prototype-count";
 
     public final String PROTOTYPE_COUNT_PROPERTY = PROPERTY_PREFIX + PROTOTYPE_COUNT;
@@ -121,22 +131,30 @@ public interface ProxoolConstants {
      */
     public final String DEBUG_LEVEL_PROPERTY = PROPERTY_PREFIX + "debug-level";
 
-    /** @see #VERBOSE_PROPERTY */
+    /**
+     * @see #VERBOSE_PROPERTY
+     */
     public final String VERBOSE = "verbose";
 
     public final String VERBOSE_PROPERTY = PROPERTY_PREFIX + VERBOSE;
 
-    /** @see #TRACE_PROPERTY */
+    /**
+     * @see #TRACE_PROPERTY
+     */
     public final String TRACE = "trace";
 
     public final String TRACE_PROPERTY = PROPERTY_PREFIX + TRACE;
 
-    /** @see #FATAL_SQL_EXCEPTION_PROPERTY **/
+    /**
+     * @see #FATAL_SQL_EXCEPTION_PROPERTY
+     **/
     public final String FATAL_SQL_EXCEPTION = "fatal-sql-exception";
 
     public final String FATAL_SQL_EXCEPTION_PROPERTY = PROPERTY_PREFIX + FATAL_SQL_EXCEPTION;
 
-    /** @see #FATAL_SQL_EXCEPTION_WRAPPER_CLASS_PROPERTY**/
+    /**
+     * @see #FATAL_SQL_EXCEPTION_WRAPPER_CLASS_PROPERTY
+     **/
     public final String FATAL_SQL_EXCEPTION_WRAPPER_CLASS = "fatal-sql-exception-wrapper-class";
 
     public final String FATAL_SQL_EXCEPTION_WRAPPER_CLASS_PROPERTY = PROPERTY_PREFIX + FATAL_SQL_EXCEPTION_WRAPPER_CLASS;
@@ -150,8 +168,10 @@ public interface ProxoolConstants {
     public final String STATISTICS_LOG_LEVEL_PROPERTY = PROPERTY_PREFIX + STATISTICS_LOG_LEVEL;
 
     public static final String JNDI_NAME = "jndi-name";
-    
-    /** Prefix for generic JNDI properties. */
+
+    /**
+     * Prefix for generic JNDI properties.
+     */
     public static final String JNDI_PROPERTY_PREFIX = "jndi-";
 
     public final String JNDI_NAME_PROPERTY = PROPERTY_PREFIX + JNDI_NAME;
@@ -168,7 +188,6 @@ public interface ProxoolConstants {
      * Element name for the container of properties passed directlry to the delegate driver.
      */
     public static final String DRIVER_PROPERTIES = "driver-properties";
-
 
     /**
      * Configuration attribute used to indicate that a pool should be registered with JMX.
@@ -188,24 +207,24 @@ public interface ProxoolConstants {
     public final String JMX_AGENT_PROPERTY = PROPERTY_PREFIX + JMX_AGENT_ID;
 
     /**
-     *  Un-prefixed propety name for the Proxool alias configuration property. Value: alias
+     * Un-prefixed propety name for the Proxool alias configuration property. Value: alias
      */
     public final String ALIAS = "alias";
 
     /**
-     *  Un-prefixed propety name for the Proxool driver class  configuration property. Value: driver-class
+     * Un-prefixed propety name for the Proxool driver class  configuration property. Value: driver-class
      */
     public final String DRIVER_CLASS = "driver-class";
     /**
-     *  Prefixed propety name for the Proxool driver class  configuration property. Value: proxool.driver-class
+     * Prefixed propety name for the Proxool driver class  configuration property. Value: proxool.driver-class
      */
-    public final String DRIVER_CLASS_PROPERTY = PROPERTY_PREFIX + DRIVER_CLASS;;
+    public final String DRIVER_CLASS_PROPERTY = PROPERTY_PREFIX + DRIVER_CLASS;
     /**
-     *  Un-prefixed propety name for the Proxool driver url configuration property. Value: driver-url
+     * Un-prefixed propety name for the Proxool driver url configuration property. Value: driver-url
      */
     public final String DRIVER_URL = "driver-url";
     /**
-     *  Prefixed propety name for the Proxool driver url configuration property. Value: proxool.driver-url
+     * Prefixed propety name for the Proxool driver url configuration property. Value: proxool.driver-url
      */
     public final String DRIVER_URL_PROPERTY = PROPERTY_PREFIX + DRIVER_URL;
 }

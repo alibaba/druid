@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.spring.boot.autoconfigure;
 
-
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.core.env.Environment;
 
@@ -23,14 +22,13 @@ import org.springframework.core.env.Environment;
  * @author lihengming [89921218@qq.com]
  */
 public class DruidDataSourceBuilder {
-
     public static DruidDataSourceBuilder create() {
         return new DruidDataSourceBuilder();
     }
 
     /**
      * For build multiple DruidDataSource, detail see document.
-     *
+     * <p>
      * -------
      * The method is history, and now you can use 'new DruidDataSourceWrapper()' instead.
      */
@@ -43,8 +41,9 @@ public class DruidDataSourceBuilder {
      * <p>
      * 这是为了兼容 Spring Boot 1.X 中 .properties 内配置属性不能按照配置声明顺序进行绑定，进而导致配置出错（issue #1796 ）而提供的方法。
      * 如果你不存在上述问题或者使用 .yml 进行配置则不必使用该方法，使用上面的{@link DruidDataSourceBuilder#build}即可，Spring Boot 2.0 修复了该问题，该方法届时也会停用。
-     *
+     * <p>
      * fixed, the method will be removed in future versions.
+     *
      * @see DruidDataSourceWrapper#setMaxEvictableIdleTimeMillis(long)
      */
     @Deprecated

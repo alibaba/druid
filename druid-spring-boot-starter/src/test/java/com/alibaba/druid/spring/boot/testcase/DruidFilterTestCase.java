@@ -1,15 +1,10 @@
 package com.alibaba.druid.spring.boot.testcase;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.spring.boot.demo.DemoApplication;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -20,6 +15,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,13 +45,11 @@ public class DruidFilterTestCase {
     @Configuration
     @ComponentScan
     public static class Config{
-
         /**
          * @author dk
          */
         @Component
         public static class SomeCustomFilter extends FilterAdapter {
-
             private static Logger logger = LoggerFactory.getLogger(SomeCustomFilter.class);
 
             @Override

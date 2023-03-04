@@ -1,6 +1,6 @@
 package com.alibaba.druid.admin.util;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
  * @date 2020-09-16 16:12
  **/
 public class HttpUtil {
-
     public static <T> T get(String url, Class<T> resultType) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(url);

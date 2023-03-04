@@ -21,7 +21,6 @@ import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.RegexpMethodPointcutAdvisor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
@@ -30,7 +29,6 @@ import org.springframework.context.annotation.Bean;
  */
 @ConditionalOnProperty("spring.datasource.druid.aop-patterns")
 public class DruidSpringAopConfiguration {
-
     @Bean
     public Advice advice() {
         return new DruidStatInterceptor();
@@ -42,7 +40,7 @@ public class DruidSpringAopConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.aop.auto",havingValue = "false")
+    @ConditionalOnProperty(name = "spring.aop.auto", havingValue = "false")
     public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);

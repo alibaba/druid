@@ -15,18 +15,16 @@
  */
 package com.alibaba.druid.spring.boot.testcase;
 
-import java.sql.SQLException;
-
-import javax.annotation.Resource;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.demo.DemoApplication;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
+import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +35,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = DemoApplication.class)
 @ActiveProfiles("multi-datasource")
 public class DruidMultiDataSourceTestCase {
-
     @Resource
     private DruidDataSource dataSourceOne;
     @Resource
@@ -45,7 +42,6 @@ public class DruidMultiDataSourceTestCase {
 
     @Test
     public void testDataSourceOne() throws SQLException {
-
         assertThat(dataSourceOne.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
         assertThat(dataSourceOne.getUsername()).isEqualTo("sa");
         assertThat(dataSourceOne.getPassword()).isEqualTo("sa");
@@ -58,7 +54,6 @@ public class DruidMultiDataSourceTestCase {
     }
     @Test
     public void testDataSourceTwo() throws SQLException {
-
         assertThat(dataSourceTwo.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
         assertThat(dataSourceTwo.getUsername()).isEqualTo("sa");
         assertThat(dataSourceTwo.getPassword()).isEqualTo("sa");

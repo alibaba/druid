@@ -1,5 +1,11 @@
 package org.logicalcobwebs.proxool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+
+import javax.naming.*;
+import javax.naming.spi.ObjectFactory;
+import javax.sql.DataSource;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,27 +16,15 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import javax.naming.Context;
-import javax.naming.Name;
-import javax.naming.RefAddr;
-import javax.naming.Reference;
-import javax.naming.StringRefAddr;
-import javax.naming.spi.ObjectFactory;
-import javax.sql.DataSource;
-
-import com.alibaba.druid.pool.DruidDataSource;
-
 public class ProxoolDataSource implements DataSource, ObjectFactory {
+    private DruidDataSource druid = new DruidDataSource();
 
-    private DruidDataSource druid              = new DruidDataSource();
+    private Properties delegateProperties = new Properties();
 
-    private Properties      delegateProperties = new Properties();
-
-    public ProxoolDataSource(){
-
+    public ProxoolDataSource() {
     }
 
-    public ProxoolDataSource(String alias){
+    public ProxoolDataSource(String alias) {
         druid.setName(alias);
     }
 
@@ -63,7 +57,10 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     @SuppressWarnings("rawtypes")
-    public Object getObjectInstance(Object refObject, Name name, Context context, Hashtable hashtable) throws Exception {
+    public Object getObjectInstance(Object refObject,
+                                    Name name,
+                                    Context context,
+                                    Hashtable hashtable) throws Exception {
         if (!(refObject instanceof Reference)) {
             return null;
         }
@@ -110,7 +107,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setMaximumConnectionLifetime(int maximumConnectionLifetime) {
-
     }
 
     @Deprecated
@@ -120,7 +116,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setPrototypeCount(int prototypeCount) {
-
     }
 
     public int getMinimumConnectionCount() {
@@ -152,7 +147,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setSimultaneousBuildThrottle(int simultaneousBuildThrottle) {
-
     }
 
     public long getRecentlyStartedThreshold() {
@@ -160,7 +154,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setRecentlyStartedThreshold(int recentlyStartedThreshold) {
-
     }
 
     public long getOverloadWithoutRefusalLifetime() {
@@ -168,7 +161,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setOverloadWithoutRefusalLifetime(int overloadWithoutRefusalLifetime) {
-
     }
 
     public long getMaximumActiveTime() {
@@ -185,7 +177,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setVerbose(boolean verbose) {
-
     }
 
     public boolean isTrace() {
@@ -216,7 +207,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setFatalSqlExceptionsAsString(String fatalSqlExceptionsAsString) {
-
     }
 
     public String getFatalSqlExceptionWrapperClass() {
@@ -224,7 +214,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setFatalSqlExceptionWrapperClass(String fatalSqlExceptionWrapperClass) {
-
     }
 
     public String getHouseKeepingTestSql() {
@@ -256,7 +245,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
     }
 
     public void setJmx(boolean jmx) {
-
     }
 
     @Deprecated
@@ -266,7 +254,6 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
 
     @Deprecated
     public void setJmxAgentId(String jmxAgentId) {
-
     }
 
     public boolean isTestBeforeUse() {
@@ -405,7 +392,7 @@ public class ProxoolDataSource implements DataSource, ObjectFactory {
                 delegateProperties.put(stInner.nextToken().trim(), stInner.nextToken().trim());
             } else {
                 throw new IllegalArgumentException("Unexpected delegateProperties value: '" + properties
-                                                   + "'. Expected 'name=value'");
+                        + "'. Expected 'name=value'");
             }
         }
     }

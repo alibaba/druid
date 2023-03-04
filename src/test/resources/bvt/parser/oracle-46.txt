@@ -1,7 +1,0 @@
-SELECT employee_id, manager_id 
-   FROM employees
-   WHERE employees.manager_id(+) = employees.employee_id;
----------------------------
-SELECT employee_id, manager_id
-FROM employees
-WHERE employees.manager_id(+) = employees.employee_id;

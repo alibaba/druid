@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="User">
+    <typeAlias alias="User" type="com.alibaba.druid.spring.User"/>
+
+    <update id="insert" parameterClass="User">
+        insert into t_User (id, name)
+        values (#id#, #name#)
+    </update>
+
+    <delete id="delete" parameterClass="long">
+        delete
+        from t_User
+        where id =
+              #id#
+    </delete>
+
+    <update id="update" parameterClass="User">
+        update t_User
+        set name =
+                #name#
+        where id = #id#
+    </update>
+
+    <select id="select" resultClass="User">
+        select id, name
+        from t_User
+    </select>
+</sqlMap>

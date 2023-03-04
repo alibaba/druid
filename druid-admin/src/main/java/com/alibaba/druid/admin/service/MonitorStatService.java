@@ -15,9 +15,9 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -40,12 +40,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class MonitorStatService implements DruidStatServiceMBean {
+    public static final int RESULT_CODE_SUCCESS = 1;
+    public static final int RESULT_CODE_ERROR = -1;
 
-    public final static int RESULT_CODE_SUCCESS = 1;
-    public final static int RESULT_CODE_ERROR = -1;
-
-    private final static int DEFAULT_PAGE = 1;
-    private final static int DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
+    private static final int DEFAULT_PAGE = 1;
+    private static final int DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
     private static final String ORDER_TYPE_DESC = "desc";
     private static final String ORDER_TYPE_ASC = "asc";
     private static final String DEFAULT_ORDER_TYPE = ORDER_TYPE_ASC;

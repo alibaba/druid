@@ -1,0 +1,8 @@
+select i, p, o
+    from qt
+    qualify row_number() over (partition by p order by o) = 1
+    ;
+---------------------------
+SELECT i, p, o
+FROM qt
+QUALIFY row_number() OVER (PARTITION BY p ORDER BY o) = 1;

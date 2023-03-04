@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+       default-lazy-init="false">
+
+    <bean id="test-filter" class="com.alibaba.druid.bvt.pool.SpringIbatisFilterTest$TestFilter"/>
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter"/>
+
+    <bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig"
+          init-method="init">
+        <property name="dir" value="META-INF/druid/wall/mysql"/>
+        <property name="createTableAllow" value="true"/>
+        <property name="dropTableAllow" value="true"/>
+    </bean>
+
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql"/>
+        <property name="config" ref="wall-filter-config"/>
+    </bean>
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="url" value="jdbc:derby:memory:spring-test;create=true"/>
+        <property name="initialSize" value="1"/>
+        <property name="maxActive" value="20"/>
+        <property name="proxyFilters">
+            <list>
+                <ref bean="test-filter"/>
+                <ref bean="stat-filter"/>
+                <ref bean="wall-filter"/>
+            </list>
+        </property>
+        <property name="filters" value="log4j"/>
+    </bean>
+
+    <bean id="dataSourceMbeanServer" class="com.alibaba.druid.spring.MBeanServerFactoryBean"/>
+
+    <bean id="dataSourceExporter" class="org.springframework.jmx.export.MBeanExporter"
+          lazy-init="false">
+        <property name="beans">
+            <map>
+                <entry key="com.alibaba.druid.test:type=WallConfig"
+                       value-ref="wall-filter-config"/>
+                <entry key="com.alibaba.druid.test:type=WallFilter"
+                       value-ref="wall-filter"/>
+                <entry key="com.alibaba.druid.test:type=StatFilter"
+                       value-ref="stat-filter"/>
+            </map>
+        </property>
+        <property name="server" ref="dataSourceMbeanServer"/>
+    </bean>
+
+    <bean id="txManager-druid-test"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="txManager-druid-test" proxy-target-class="false"/>
+</beans>
