@@ -52,6 +52,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
+import static com.alibaba.druid.util.JdbcConstants.POSTGRESQL_DRIVER;
+
 /**
  * @author wenshao [szujobs@hotmail.com]
  * @author ljw [ljw2083@alibaba-inc.com]
@@ -1762,14 +1764,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
 
                 physicalConnectProperties.put("oracle.net.CONNECT_TIMEOUT", connectTimeoutStr);
-            } else if (driver != null && "org.postgresql.Driver".equals(driver.getClass().getName())) {
+            } else if (driver != null && POSTGRESQL_DRIVER.equals(driver.getClass().getName())) {
+                // see https://github.com/pgjdbc/pgjdbc/blob/2b90ad04696324d107b65b085df4b1db8f6c162d/README.md
                 physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
+                physicalConnectProperties.put("connectTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
                 if (socketTimeout > 0) {
                     physicalConnectProperties.put("socketTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(socketTimeout)));
                 }
             } else if (dbTypeName.equals(DbType.sqlserver.name())) {
+                // see https://www.connectionstrings.com/all-sql-server-connection-string-keywords/
                 physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
                 if (socketTimeout > 0) {
+                    // As SQLServer-jdbc-driver 6.1.2 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
                     physicalConnectProperties.put("socketTimeout", Integer.toString(socketTimeout));
                 }
             }
@@ -1802,7 +1808,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
             if (socketTimeout > 0 && !netTimeoutError) {
                 try {
-                    conn.setNetworkTimeout(netTimeoutExecutor, socketTimeout);
+                    // As SQLServer-jdbc-driver 6.1.7 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
+                    conn.setNetworkTimeout(netTimeoutExecutor, socketTimeout); // here is milliseconds defined by JDBC
                 } catch (SQLFeatureNotSupportedException | AbstractMethodError e) {
                     netTimeoutError = true;
                 } catch (Exception ignored) {
