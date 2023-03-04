@@ -657,7 +657,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
             this.validConnectionChecker = validConnectionChecker;
         } else {
-            LOG.error("load validConnectionCheckerClass error : " + validConnectionCheckerClass);
+            if (LOG.isErrorEnabled()) {
+                LOG.error("load validConnectionCheckerClass["
+                        + validConnectionCheckerClass + "] error, and use JDBC4ValidConnectionChecker.");
+            }
+            this.validConnectionChecker = new JDBC4ValidConnectionChecker();
         }
     }
 

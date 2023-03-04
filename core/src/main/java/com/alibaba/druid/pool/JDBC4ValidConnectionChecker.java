@@ -10,11 +10,10 @@ import java.util.Properties;
  * @create 2023/3/4 16:48
  */
 public class JDBC4ValidConnectionChecker implements ValidConnectionChecker {
-
     @Override
     public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) throws Exception {
         Connection conn = c;
-        if(conn instanceof DruidPooledConnection) {
+        if (conn instanceof DruidPooledConnection) {
             conn = ((DruidPooledConnection) conn).getConnection();
         }
         return conn.isValid(validationQueryTimeout);
@@ -22,6 +21,5 @@ public class JDBC4ValidConnectionChecker implements ValidConnectionChecker {
 
     @Override
     public void configFromProperties(Properties properties) {
-
     }
 }
