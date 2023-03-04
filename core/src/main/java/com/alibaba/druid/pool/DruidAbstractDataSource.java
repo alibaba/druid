@@ -281,7 +281,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public DruidAbstractDataSource(boolean lockFair) {
         lock = new ReentrantLock(lockFair);
-
         notEmpty = lock.newCondition();
         empty = lock.newCondition();
     }
@@ -388,11 +387,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public java.util.Date getLastErrorTime() {
-        if (lastErrorTimeMillis <= 0) {
-            return null;
-        }
-
-        return new java.util.Date(lastErrorTimeMillis);
+        return lastErrorTimeMillis <= 0 ? null : new java.util.Date(lastErrorTimeMillis);
     }
 
     public long getLastCreateErrorTimeMillis() {
@@ -400,19 +395,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public java.util.Date getLastCreateErrorTime() {
-        if (lastCreateErrorTimeMillis <= 0) {
-            return null;
-        }
-
-        return new java.util.Date(lastCreateErrorTimeMillis);
+        return lastCreateErrorTimeMillis <= 0 ? null : new java.util.Date(lastCreateErrorTimeMillis);
     }
 
     public int getTransactionQueryTimeout() {
-        if (transactionQueryTimeout <= 0) {
-            return queryTimeout;
-        }
-
-        return transactionQueryTimeout;
+        return transactionQueryTimeout <= 0 ? queryTimeout : transactionQueryTimeout;
     }
 
     public void setTransactionQueryTimeout(int transactionQueryTimeout) {
@@ -605,12 +592,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize) {
-        if (maxPoolPreparedStatementPerConnectionSize > 0) {
-            this.poolPreparedStatements = true;
-        } else {
-            this.poolPreparedStatements = false;
-        }
-
+        this.poolPreparedStatements = maxPoolPreparedStatementPerConnectionSize > 0;
         this.maxPoolPreparedStatementPerConnectionSize = maxPoolPreparedStatementPerConnectionSize;
     }
 
@@ -643,11 +625,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public String getValidConnectionCheckerClassName() {
-        if (validConnectionChecker == null) {
-            return null;
-        }
-
-        return validConnectionChecker.getClass().getName();
+        return validConnectionChecker == null ? null : validConnectionChecker.getClass().getName();
     }
 
     public void setValidConnectionCheckerClassName(String validConnectionCheckerClass) throws Exception {
@@ -670,11 +648,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setDbType(DbType dbType) {
-        if (dbType == null) {
-            this.dbTypeName = null;
-        } else {
-            this.dbTypeName = dbType.name();
-        }
+        this.dbTypeName = dbType == null ? null : dbType.name();
     }
 
     public void setDbType(String dbType) {
@@ -694,11 +668,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public Collection<String> getConnectionInitSqls() {
-        Collection<String> result = connectionInitSqls;
-        if (result == null) {
-            return Collections.emptyList();
-        }
-        return result;
+        return connectionInitSqls == null ? Collections.emptyList() : connectionInitSqls;
     }
 
     public void setConnectionInitSqls(Collection<? extends Object> connectionInitSqls) {
@@ -782,7 +752,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (minEvictableIdleTimeMillis < 1000 * 30) {
             LOG.error("minEvictableIdleTimeMillis should be greater than 30000");
         }
-
         this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
     }
 
@@ -1142,7 +1111,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     @Deprecated
     public void setMaxIdle(int maxIdle) {
         LOG.error("maxIdle is deprecated");
-
         this.maxIdle = maxIdle;
     }
 
