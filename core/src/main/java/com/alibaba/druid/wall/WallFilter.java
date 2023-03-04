@@ -121,7 +121,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             case oracle:
             case ali_oracle:
             case oceanbase_oracle:
-            case dm:
+            //case dm:
                 if (config == null) {
                     config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
                 }
