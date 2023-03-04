@@ -382,7 +382,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
                 }
             }
             if (dataSourceProperties != null) {
-                dataSource.configFromPropety(dataSourceProperties);
+                dataSource.configFromPropeties(dataSourceProperties);
             }
         }
 

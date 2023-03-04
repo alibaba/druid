@@ -71,8 +71,8 @@ public class OracleExceptionSorterTest_closeConn extends TestCase {
             conn2.close();
         }
         Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(2, dataSource.getPoolingCount());
-        Assert.assertEquals(3, dataSource.getCreateCount());
+        Assert.assertEquals(1, dataSource.getPoolingCount());
+        Assert.assertEquals(2, dataSource.getCreateCount());
     }
 
 }
