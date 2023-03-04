@@ -78,7 +78,7 @@ public class StickyRandomDataSourceSelector extends RandomDataSourceSelector {
     }
 
     private boolean isExpired(StickyDataSourceHolder holder) {
-        return System.currentTimeMillis() - holder.getRetrievingTime() > expireSeconds * 1000;
+        return System.currentTimeMillis() - holder.getRetrievingTime() > expireSeconds * 1000L;
     }
 
     public int getExpireSeconds() {

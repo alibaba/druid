@@ -100,7 +100,7 @@ public class RandomDataSourceValidateThread implements Runnable {
         try {
             LOG.debug("[RandomDataSourceValidateThread@" + hashCode() + "] Sleep " + newSleepSeconds
                     + " second(s) until next checking.");
-            Thread.sleep(newSleepSeconds * 1000);
+            Thread.sleep(newSleepSeconds * 1000L);
         } catch (InterruptedException e) {
             // ignore
         }
@@ -213,8 +213,8 @@ public class RandomDataSourceValidateThread implements Runnable {
         LOG.debug("DataSource=" + name + ", lastSuccessTime=" + lastSuccessTime
                 + ", lastCheckTime=" + lastCheckTime + ", currentTime=" + currentTime);
         return lastSuccessTime != null && lastCheckTime != null
-                && (currentTime - lastSuccessTime) <= checkingIntervalSeconds * 1000
-                && (currentTime - lastCheckTime) <= 5 * checkingIntervalSeconds * 1000
+                && (currentTime - lastSuccessTime) <= checkingIntervalSeconds * 1000L
+                && (currentTime - lastCheckTime) <= checkingIntervalSeconds * 1000L * 5
                 && (!errorCounts.containsKey(name) || errorCounts.get(name) < 1);
     }
 
