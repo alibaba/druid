@@ -26,7 +26,7 @@ public class MySqlExceptionSorterTest_1 extends PoolTestCase {
             }
 
             SQLException rootException = new SQLException(
-                    new SQLException("Could not retrieve transation read-only status server",
+                    new SQLException("Could not retrieve transition read-only status server",
                             (Exception) constructor.newInstance(null, 0, 0, null)
                     )
             );
@@ -42,7 +42,7 @@ public class MySqlExceptionSorterTest_1 extends PoolTestCase {
             }
 
             SQLException rootException = new SQLException(
-                    new SQLException("Could not retrieve transation read-only status server",
+                    new SQLException("Could not retrieve transition read-only status server",
                             (Exception) constructor.newInstance(null, null)
                     )
             );

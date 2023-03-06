@@ -389,6 +389,9 @@ public class MySqlUtils {
                 class_connectionImpl = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
                 if (class_connectionImpl == null) {
                     class_connectionImpl = Utils.loadClass("com.mysql.cj.MysqlConnection");
+                    if (class_connectionImpl == null) {
+                        class_connectionImpl = Utils.loadClass("com.mysql.cj.api.MysqlConnection");
+                    }
                     if (class_connectionImpl != null) {
                         mysqlJdbcVersion6 = true;
                     }

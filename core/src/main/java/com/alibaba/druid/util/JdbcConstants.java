@@ -50,6 +50,7 @@ public interface JdbcConstants {
     DbType MYSQL = DbType.mysql;
     String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
     String MYSQL_DRIVER_6 = "com.mysql.cj.jdbc.Driver";
+    String MYSQL_DRIVER_603 = "com.mysql.cj.api.MysqlConnection";
     String MYSQL_DRIVER_REPLICATE = "com.mysql.jdbc.";
 
     String MARIADB = "mariadb";

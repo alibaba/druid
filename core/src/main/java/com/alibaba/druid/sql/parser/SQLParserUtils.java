@@ -205,37 +205,42 @@ public class SQLParserUtils {
 
         switch (dbType) {
             case oracle:
-                return new OracleLexer(sql);
+                return new OracleLexer(sql, features);
             case mysql:
             case mariadb:
-                return new MySqlLexer(sql);
+                return new MySqlLexer(sql, features);
             case elastic_search: {
-                MySqlLexer lexer = new MySqlLexer(sql);
+                MySqlLexer lexer = new MySqlLexer(sql, features);
                 lexer.dbType = dbType;
                 return lexer;
             }
             case h2:
-                return new H2Lexer(sql);
+                return new H2Lexer(sql, features);
             case postgresql:
             case edb:
-                return new PGLexer(sql);
+                return new PGLexer(sql, features);
             case db2:
-                return new DB2Lexer(sql);
+                return new DB2Lexer(sql, features);
             case odps:
-                return new OdpsLexer(sql);
+                return new OdpsLexer(sql, features);
             case phoenix:
-                return new PhoenixLexer(sql);
+                return new PhoenixLexer(sql, features);
             case presto:
             case trino:
-                return new PrestoLexer(sql);
+                return new PrestoLexer(sql, features);
             case antspark:
                 return new AntsparkLexer(sql);
             case oscar:
-                return new OscarLexer(sql);
+                return new OscarLexer(sql, features);
             case clickhouse:
-                return new ClickhouseLexer(sql);
-            default:
-                return new Lexer(sql, null, dbType);
+                return new ClickhouseLexer(sql, features);
+            default: {
+                Lexer lexer = new Lexer(sql, null, dbType);
+                for (SQLParserFeature feature : features) {
+                    lexer.config(feature, true);
+                }
+                return lexer;
+            }
         }
     }
 
