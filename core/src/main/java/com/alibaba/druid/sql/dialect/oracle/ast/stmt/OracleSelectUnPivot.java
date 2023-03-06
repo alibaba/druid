@@ -104,7 +104,6 @@ public class OracleSelectUnPivot extends OracleSelectPivotBase {
         return x;
     }
 
-
     public static class Item extends OracleSQLObjectImpl implements Cloneable {
         private List<SQLExpr> columns = new ArrayList<SQLExpr>();
         private List<SQLExpr> literals = new ArrayList<SQLExpr>();
