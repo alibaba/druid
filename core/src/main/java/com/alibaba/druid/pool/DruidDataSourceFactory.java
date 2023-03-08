@@ -281,10 +281,6 @@ public class DruidDataSourceFactory implements ObjectFactory {
             dataSource.setMaxEvictableIdleTimeMillis(Long.parseLong(value));
         }
 
-        if (dataSource.getMaxEvictableIdleTimeMillis() < dataSource.getMinEvictableIdleTimeMillis()) {
-            throw new IllegalArgumentException("maxEvictableIdleTimeMillis must be grater than minEvictableIdleTimeMillis");
-        }
-
         value = (String) properties.get(PROP_PHY_TIMEOUT_MILLIS);
         if (value != null) {
             dataSource.setPhyTimeoutMillis(Long.parseLong(value));
