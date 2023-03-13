@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -87,5 +88,10 @@ public class PrestoStatementParser extends SQLStatementParser {
 
             break;
         }
+    }
+
+    @Override
+    public SQLCreateTableParser getSQLCreateTableParser() {
+        return new PrestoCreateTableParser(this.exprParser);
     }
 }
