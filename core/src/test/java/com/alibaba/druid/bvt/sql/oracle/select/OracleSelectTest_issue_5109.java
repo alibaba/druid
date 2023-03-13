@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class OracleSelectTest_issue_5109 extends OracleTest {
-
     @Test
     public void test_group_by_connect_by1() {
         String sql = "SELECT\n" +
