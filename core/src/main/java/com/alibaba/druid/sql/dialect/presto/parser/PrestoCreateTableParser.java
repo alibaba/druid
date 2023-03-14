@@ -29,8 +29,6 @@ import java.util.List;
  * presto 的create table解析器
  *
  * @author yanlong
- * @see <a href="https://prestodb.io/docs/current/sql/create-table.html">CREATE_TABLE STATEMENT</a>
- * @see <a href=" https://prestodb.io/docs/current/sql/create-table-as.html">CREATE_TABLE_AS STATEMENT</a>
  * @since 2023-03-13
  */
 public class PrestoCreateTableParser extends SQLCreateTableParser {
