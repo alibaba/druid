@@ -18,4 +18,4 @@ package com.alibaba.druid.sql.dialect.presto.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.PrestoObject;
 
-public interface PrestoSQLStatement  extends SQLStatement, PrestoObject {}
+public interface PrestoSQLStatement extends SQLStatement, PrestoObject {}
