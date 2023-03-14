@@ -15,44 +15,44 @@
  */
 package com.alibaba.druid.sql.dialect.presto.ast.stmt;
 
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterFunctionStatement;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class PrestoCreateTableStatement extends SQLCreateTableStatement implements PrestoSQLStatement {
-    public PrestoCreateTableStatement() {
-        this.dbType = DbType.hive;
+public class PrestoAlterFunctionStatement extends SQLAlterFunctionStatement implements PrestoSQLStatement {
+    public PrestoAlterFunctionStatement() {
     }
 
-    public PrestoCreateTableStatement(DbType dbType) {
-        this.dbType = dbType;
+    private boolean returnsNullOnNullInput;
+    private boolean calledOnNullInput;
+
+    public boolean isReturnsNullOnNullInput() {
+        return returnsNullOnNullInput;
+    }
+
+    public void setReturnsNullOnNullInput(boolean returnsNullOnNullInput) {
+        this.returnsNullOnNullInput = returnsNullOnNullInput;
+    }
+
+    public boolean isCalledOnNullInput() {
+        return calledOnNullInput;
+    }
+
+    public void setCalledOnNullInput(boolean calledOnNullInput) {
+        this.calledOnNullInput = calledOnNullInput;
     }
 
     @Override
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof PrestoVisitor) {
             this.accept0((PrestoVisitor) v);
+        } else {
+            super.accept0(v);
         }
-        super.accept0(v);
     }
 
     @Override
     public void accept0(PrestoVisitor visitor) {
         visitor.visit(this);
-    }
-
-    protected void acceptChild(SQLASTVisitor v) {
-        super.acceptChild(v);
-    }
-
-    public void cloneTo(PrestoCreateTableStatement x) {
-        super.cloneTo(x);
-    }
-
-    public PrestoCreateTableStatement clone() {
-        PrestoCreateTableStatement x = new PrestoCreateTableStatement();
-        cloneTo(x);
-        return x;
     }
 }
