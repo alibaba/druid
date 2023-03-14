@@ -15,26 +15,25 @@
  */
 package com.alibaba.druid.sql.dialect.presto.ast.stmt;
 
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class PrestoCreateTableStatement extends SQLCreateTableStatement implements PrestoSQLStatement {
-    public PrestoCreateTableStatement() {
-        this.dbType = DbType.hive;
-    }
+public class PrestoAlterSchemaStatement extends SQLStatementImpl implements PrestoSQLStatement, SQLAlterStatement {
+    private SQLName schemaName;
 
-    public PrestoCreateTableStatement(DbType dbType) {
-        this.dbType = dbType;
-    }
+    private SQLIdentifierExpr newName;
 
     @Override
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof PrestoVisitor) {
             this.accept0((PrestoVisitor) v);
+        } else {
+            super.accept0(v);
         }
-        super.accept0(v);
     }
 
     @Override
@@ -42,17 +41,19 @@ public class PrestoCreateTableStatement extends SQLCreateTableStatement implemen
         visitor.visit(this);
     }
 
-    protected void acceptChild(SQLASTVisitor v) {
-        super.acceptChild(v);
+    public SQLName getSchemaName() {
+        return schemaName;
     }
 
-    public void cloneTo(PrestoCreateTableStatement x) {
-        super.cloneTo(x);
+    public void setSchemaName(SQLName schemaName) {
+        this.schemaName = schemaName;
     }
 
-    public PrestoCreateTableStatement clone() {
-        PrestoCreateTableStatement x = new PrestoCreateTableStatement();
-        cloneTo(x);
-        return x;
+    public SQLIdentifierExpr getNewName() {
+        return newName;
+    }
+
+    public void setNewName(SQLIdentifierExpr newName) {
+        this.newName = newName;
     }
 }

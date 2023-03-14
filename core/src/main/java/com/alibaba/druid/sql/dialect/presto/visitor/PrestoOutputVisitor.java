@@ -17,10 +17,9 @@ package com.alibaba.druid.sql.dialect.presto.visitor;
 
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixASTVisitor;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
+import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterSchemaStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.math.BigDecimal;
@@ -32,7 +31,7 @@ import java.util.List;
  * @author zhangcanlong
  * @since 2022-01-07
  */
-public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PhoenixASTVisitor {
+public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVisitor {
     public PrestoOutputVisitor(Appendable appender) {
         super(appender);
     }
@@ -106,6 +105,31 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PhoenixA
             println();
             visit(select);
         }
+        return false;
+    }
+
+    @Override
+    public boolean visit(PrestoAlterFunctionStatement x) {
+        print0(ucase ? "ALTER FUNCTION " : "alter function ");
+        x.getName().accept(this);
+
+        if (x.isCalledOnNullInput()) {
+            print0(" CALLED ON NULL INPUT");
+        }
+
+        if (x.isReturnsNullOnNullInput()) {
+            print0(" RETURNS NULL ON NULL INPUT");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(PrestoAlterSchemaStatement x) {
+        print0(ucase ? "ALTER SCHEMA " : "alter achema ");
+        x.getSchemaName().accept(this);
+
+        print0(ucase ? " RENAME TO " : " rename to ");
+        x.getNewName().accept(this);
         return false;
     }
 }

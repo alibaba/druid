@@ -138,5 +138,4 @@ public class PrestoCreateTable_0 {
                 "FROM orders\n" +
                 "GROUP BY orderdate", stmt.toString());
     }
-
 }
