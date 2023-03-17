@@ -16,8 +16,16 @@ import java.util.Map;
 public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     protected SQLName modelKey;
     protected SQLExpr partitionBy;
+    protected SQLExpr start;
+    protected SQLExpr end;
+    protected SQLExpr every;
+
+    protected boolean lessThan;
+    protected boolean fixedRange;
+
     protected Map<SQLObject, SQLObject> lessThanMap = new LinkedHashMap<>();
-    protected Map<SQLObject, SQLObject> fixedRangeMap = new LinkedHashMap<>();
+
+    protected Map<SQLObject, List<SQLObject>> fixedRangeMap = new LinkedHashMap<>();
 
     protected final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
@@ -25,6 +33,54 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
 
     public StarRocksCreateTableStatement() {
         super(DbType.starrocks);
+    }
+
+    public SQLExpr getStart() {
+        return start;
+    }
+
+    public SQLExpr getEnd() {
+        return end;
+    }
+
+    public SQLExpr getEvery() {
+        return every;
+    }
+
+    public void setStart(SQLExpr start) {
+        this.start = start;
+    }
+
+    public void setEnd(SQLExpr end) {
+        this.end = end;
+    }
+
+    public void setEvery(SQLExpr every) {
+        this.every = every;
+    }
+
+    public boolean isFixedRange() {
+        return fixedRange;
+    }
+
+    public void setFixedRange(boolean fixedRange) {
+        this.fixedRange = fixedRange;
+    }
+
+    public Map<SQLObject, List<SQLObject>> getFixedRangeMap() {
+        return fixedRangeMap;
+    }
+
+    public void setFixedRangeMap(Map<SQLObject, List<SQLObject>> fixedRangeMap) {
+        this.fixedRangeMap = fixedRangeMap;
+    }
+
+    public boolean isLessThan() {
+        return lessThan;
+    }
+
+    public void setLessThan(boolean lessThan) {
+        this.lessThan = lessThan;
     }
 
     public Map<SQLObject, SQLObject> getLessThanMap() {

@@ -47,9 +47,9 @@ public class SrCreateTableTest{
                 "DUPLICATE KEY(`recruit_date`, `region_num`)\n" +
                 "PARTITION BY RANGE(`recruit_date`)\n" +
                 "(\n" +
-                "    PARTITION p1 VALUES LESS THAN (\"2021-01-02\"),\n" +
-                "    PARTITION p2 VALUES LESS THAN (\"2021-01-03\"),\n" +
-                "    PARTITION p20220313 VALUES [('2022-03-13'), ('2022-03-14')),\n" +
+                "START (\"2021-01-01\") END (\"2021-01-04\") EVERY (INTERVAL \n" +
+                "1\n" +
+                " day)\n" +
                 ")";
 
 

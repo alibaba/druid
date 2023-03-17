@@ -1143,5 +1143,6 @@ public final class FnvHash {
         long AGGREGATE = fnv1a_64_lower("AGGREGATE");
         long UNIQUE = fnv1a_64_lower("UNIQUE");
         long PRIMARY = fnv1a_64_lower("PRIMARY");
+        long THAN = fnv1a_64_lower("THAN");
     }
 }
