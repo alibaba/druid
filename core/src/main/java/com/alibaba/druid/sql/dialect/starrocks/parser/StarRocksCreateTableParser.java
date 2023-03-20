@@ -48,7 +48,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             SQLName model = this.exprParser.name();
             srStmt.setModelKey(model);
             accept(Token.KEY);
-            this.exprParser.exprList(srStmt.getParameters(), srStmt);
+            this.exprParser.exprList(srStmt.getModelKeyParameters(), srStmt);
         }
 
         if (lexer.token() == Token.PARTITION) {
@@ -135,27 +135,46 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                 int bucket = lexer.integerValue().intValue();
                 stmt.setBuckets(bucket);
                 lexer.nextToken();
-
             }
-
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.PROPERTIES)) {
             lexer.nextToken();
             accept(Token.LPAREN);
-            for (; ;) {
+            Map<String, String> properties = srStmt.getPropertiesMap();
+            Map<String, String> lBracketProperties = srStmt.getlBracketPropertiesMap();
+            for (; ; ) {
                 if (lexer.token() == Token.LBRACKET) {
                     lexer.nextToken();
-
+                    parseProperties(lBracketProperties);
+                } else {
+                    parseProperties(properties);
                 }
-                String s = lexer.stringVal();
                 lexer.nextToken();
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+                if (lexer.token() == Token.RBRACKET) {
+                    lexer.nextToken();
+                }
+                if (lexer.token() == Token.RPAREN) {
+                    lexer.nextToken();
+                    srStmt.setPropertiesMap(properties);
+                    srStmt.setlBracketPropertiesMap(lBracketProperties);
+                    break;
+                }
             }
-
-
         }
 
 
+    }
+
+    private void parseProperties(Map<String, String> propertiesType) {
+        String key = lexer.stringVal();
+        lexer.nextToken();
+        accept(Token.EQ);
+        String value = lexer.stringVal();
+        propertiesType.put(key, value);
     }
 
     protected StarRocksCreateTableStatement newCreateStatement() {

@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
+
     protected SQLName modelKey;
+
     protected SQLExpr partitionBy;
     protected SQLExpr start;
     protected SQLExpr end;
@@ -25,30 +27,27 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     protected boolean fixedRange;
     protected boolean startEnd;
 
+    protected final List<SQLExpr> modelKeyParameters = new ArrayList<SQLExpr>();
+
     protected Map<SQLObject, SQLObject> lessThanMap = new LinkedHashMap<>();
-
     protected Map<SQLObject, List<SQLObject>> fixedRangeMap = new LinkedHashMap<>();
+    protected Map<String, String> propertiesMap = new LinkedHashMap<>();
+    protected Map<String, String> lBracketPropertiesMap = new LinkedHashMap<>();
 
-    protected final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
-
-    protected  List<String> properties = new ArrayList<>();
-    protected  List<String> lProperties = new ArrayList<>();
-
-
-    public List<String> getProperties() {
-        return properties;
+    public Map<String, String> getPropertiesMap() {
+        return propertiesMap;
     }
 
-    public List<String> getlProperties() {
-        return lProperties;
+    public Map<String, String> getlBracketPropertiesMap() {
+        return lBracketPropertiesMap;
     }
 
-    public void setProperties(List<String> properties) {
-        this.properties = properties;
+    public void setPropertiesMap(Map<String, String> propertiesMap) {
+        this.propertiesMap = propertiesMap;
     }
 
-    public void setlProperties(List<String> lProperties) {
-        this.lProperties = lProperties;
+    public void setlBracketPropertiesMap(Map<String, String> lBracketPropertiesMap) {
+        this.lBracketPropertiesMap = lBracketPropertiesMap;
     }
 
     public StarRocksCreateTableStatement() {
@@ -63,12 +62,9 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         return startEnd;
     }
 
-
-
     public void setDistributedBy(SQLExpr distributedBy) {
         this.distributedBy = distributedBy;
     }
-
 
     public SQLExpr getDistributedBy() {
         return distributedBy;
@@ -138,8 +134,8 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         this.modelKey = modelKey;
     }
 
-    public List<SQLExpr> getParameters() {
-        return parameters;
+    public List<SQLExpr> getModelKeyParameters() {
+        return modelKeyParameters;
     }
 
     public void setPartitionBy(SQLExpr x) {
@@ -152,8 +148,6 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     public SQLExpr getPartitionBy() {
         return partitionBy;
     }
-
-
 
     @Override
     protected void accept0(SQLASTVisitor v) {

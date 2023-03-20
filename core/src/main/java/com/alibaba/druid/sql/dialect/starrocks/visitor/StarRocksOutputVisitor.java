@@ -61,12 +61,12 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             }
             print(' ');
             print0(ucase ? "KEY" : "key");
-            if (x.getParameters().size() > 0) {
-                for (int i = 0; i < x.getParameters().size(); ++i) {
+            if (x.getModelKeyParameters().size() > 0) {
+                for (int i = 0; i < x.getModelKeyParameters().size(); ++i) {
                     if (i != 0) {
                         println(", ");
                     }
-                    x.getParameters().get(i).accept(this);
+                    x.getModelKeyParameters().get(i).accept(this);
                 }
             }
         }
@@ -154,9 +154,44 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         }
 
         println();
-        if (x.getProperties() != null) {
-//            print0(ucase ? "PROPERTIES " : "properties ");
-//            x.getProperties().accept(this);
+        int propertiesSize = x.getPropertiesMap().size();
+        int lBracketSize = x.getlBracketPropertiesMap().size();
+        if (propertiesSize > 0 || lBracketSize > 0) {
+            print0(ucase ? "PROPERTIES " : "properties ");
+            if (propertiesSize > 0) {
+                Map<String, String> propertiesMap = x.getPropertiesMap();
+                Set<String> keySet = propertiesMap.keySet();
+                int i= 0;
+                for (String key : keySet) {
+                    println();
+                    print0(key);
+                    print0(" = ");
+                    print0(propertiesMap.get(key));
+                    if (i != keySet.size() - 1){
+                        println(",");
+                    }
+                    i++;
+                }
+            }
+
+            if (lBracketSize > 0) {
+                Map<String, String> lBracketPropertiesMap = x.getlBracketPropertiesMap();
+                Set<String> keySet = lBracketPropertiesMap.keySet();
+                int i = 0;
+                for (String key : keySet) {
+                    println();
+                    print0("[");
+                    print0(key);
+                    print0(" = ");
+                    print0(lBracketPropertiesMap.get(key));
+                    if (i != keySet.size() - 1){
+                        print0(",");
+                    }
+                    print0("]");
+                    i++;
+                }
+            }
+
         }
 
         return false;

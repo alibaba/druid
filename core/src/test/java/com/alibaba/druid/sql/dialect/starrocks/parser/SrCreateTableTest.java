@@ -168,6 +168,24 @@ public class SrCreateTableTest{
                 "    \"replication_num\" = \"1\" \n" +
                 ");";
 
+
+//        String sql5 = "CREATE TABLE example_db.table_hash\n" +
+//                "(\n" +
+//                "    k1 TINYINT,\n" +
+//                "    k2 DECIMAL(\n" +
+//                "10\n" +
+//                ", \n" +
+//                "2\n" +
+//                ") DEFAULT \"10.5\",\n" +
+//                "    INDEX k1_idx (k1)  COMMENT 'xxxxxx'\n" +
+//                ")\n" +
+//                "ENGINE = olap\n" +
+//                "AGGREGATE KEY(k1, k2)\n" +
+//                "DISTRIBUTED BY HASH(k1) BUCKETS \n" +
+//                "10\n" +
+//                "\n" +
+//                "PROPERTIES (\"storage_type\" = \"column\");";
+
         String sql5 = "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
                 "    `recruit_date`  DATE           NOT NULL COMMENT \"YYYY-MM-DD\",\n" +
                 "    `region_num`    TINYINT        COMMENT \"range [-128, 127]\",\n" +
