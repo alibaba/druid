@@ -107,6 +107,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                     }
                 }
             } else if (lexer.identifierEquals(FnvHash.Constants.START)) {
+                srStmt.setStartEnd(true);
                 lexer.nextToken();
                 SQLExpr start = this.exprParser.expr();
                 srStmt.setStart(start);
@@ -122,9 +123,39 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                     accept(Token.RPAREN);
                 }
             }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.DISTRIBUTED)) {
+            lexer.nextToken();
+            accept(Token.BY);
+            SQLExpr hash = this.exprParser.expr();
+            srStmt.setDistributedBy(hash);
+            if (lexer.identifierEquals(FnvHash.Constants.BUCKETS)) {
+                lexer.nextToken();
+                int bucket = lexer.integerValue().intValue();
+                stmt.setBuckets(bucket);
+                lexer.nextToken();
+
+            }
+
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.PROPERTIES)) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            for (; ;) {
+                if (lexer.token() == Token.LBRACKET) {
+                    lexer.nextToken();
+
+                }
+                String s = lexer.stringVal();
+                lexer.nextToken();
+            }
 
 
         }
+
+
     }
 
     protected StarRocksCreateTableStatement newCreateStatement() {

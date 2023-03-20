@@ -3,9 +3,14 @@ package com.alibaba.druid.sql.dialect.starrocks.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarRocksASTVisitor{
 
@@ -71,6 +76,87 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             println();
             print0(ucase ? "PARTITION BY " : "partition by ");
             partitionBy.accept(this);
+            println();
+            print0("(");
+            println();
+            if (x.isLessThan()) {
+                Map<SQLObject, SQLObject> lessThanMap = x.getLessThanMap();
+                Set<SQLObject> keySet = lessThanMap.keySet();
+                int size = keySet.size();
+                if (size > 0) {
+                    int i = 0;
+                    for (SQLObject key : keySet) {
+                        if (i != 0) {
+                            println(", ");
+                        }
+                        SQLObject value = lessThanMap.get(key);
+                        print0(ucase ? "  PARTITION " : "  partition ");
+                        key.accept(this);
+                        print0(ucase ? " LESS THAN " : " less than ");
+                        value.accept(this);
+                        i++;
+                    }
+                }
+            } else if (x.isFixedRange()) {
+                Map<SQLObject, List<SQLObject>> fixedRangeMap = x.getFixedRangeMap();
+                Set<SQLObject> keySet = fixedRangeMap.keySet();
+                int size = keySet.size();
+                if (size > 0) {
+                    int i = 0;
+                    for (SQLObject key : keySet) {
+                        if (i != 0) {
+                            println(", ");
+                        }
+                        List<SQLObject> valueList = fixedRangeMap.get(key);
+                        int listSize = valueList.size();
+                        print0(ucase ? "  PARTITION " : "  partition ");
+                        key.accept(this);
+                        print0(ucase ? " VALUES " : " values ");
+                        print0("[");
+                        for (int j = 0; j < listSize; ++j) {
+                            valueList.get(i).accept(this);
+                            print0(",");
+                        }
+                        println();
+                    }
+                }
+            } else if (x.isStartEnd()) {
+                if (x.getStart() != null) {
+                    print0(ucase ? "  START " : "  start ");
+                    print0("(");
+                    x.getStart().accept(this);
+                    print0(")");
+                }
+                if (x.getEnd() != null) {
+                    print0(ucase ? "  END " : "  end ");
+                    print0("(");
+                    x.getEnd().accept(this);
+                    print0(")");
+                }
+                if (x.getEvery() != null) {
+                    print0(ucase ? "  EVERY " : "  every ");
+                    print0("(");
+                    x.getEvery().accept(this);
+                    print0(")");
+                }
+
+            }
+            println();
+            print0(")");
+        }
+        println();
+        if (x.getDistributedBy() != null) {
+            print0(ucase ? "DISTRIBUTED BY " : "distributed by ");
+            x.getDistributedBy().accept(this);
+            print0(ucase ? " BUCKETS " : "buckets ");
+            int buckets = x.getBuckets();
+            print0(String.valueOf(buckets));
+        }
+
+        println();
+        if (x.getProperties() != null) {
+//            print0(ucase ? "PROPERTIES " : "properties ");
+//            x.getProperties().accept(this);
         }
 
         return false;

@@ -19,9 +19,11 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     protected SQLExpr start;
     protected SQLExpr end;
     protected SQLExpr every;
+    protected SQLExpr distributedBy;
 
     protected boolean lessThan;
     protected boolean fixedRange;
+    protected boolean startEnd;
 
     protected Map<SQLObject, SQLObject> lessThanMap = new LinkedHashMap<>();
 
@@ -29,10 +31,47 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
 
     protected final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
+    protected  List<String> properties = new ArrayList<>();
+    protected  List<String> lProperties = new ArrayList<>();
 
+
+    public List<String> getProperties() {
+        return properties;
+    }
+
+    public List<String> getlProperties() {
+        return lProperties;
+    }
+
+    public void setProperties(List<String> properties) {
+        this.properties = properties;
+    }
+
+    public void setlProperties(List<String> lProperties) {
+        this.lProperties = lProperties;
+    }
 
     public StarRocksCreateTableStatement() {
         super(DbType.starrocks);
+    }
+
+    public void setStartEnd(boolean startEnd) {
+        this.startEnd = startEnd;
+    }
+
+    public boolean isStartEnd() {
+        return startEnd;
+    }
+
+
+
+    public void setDistributedBy(SQLExpr distributedBy) {
+        this.distributedBy = distributedBy;
+    }
+
+
+    public SQLExpr getDistributedBy() {
+        return distributedBy;
     }
 
     public SQLExpr getStart() {

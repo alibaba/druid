@@ -1144,5 +1144,6 @@ public final class FnvHash {
         long UNIQUE = fnv1a_64_lower("UNIQUE");
         long PRIMARY = fnv1a_64_lower("PRIMARY");
         long THAN = fnv1a_64_lower("THAN");
+        long PROPERTIES = fnv1a_64_lower("PROPERTIES");
     }
 }
