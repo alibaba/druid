@@ -4,15 +4,17 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarRocksASTVisitor{
+public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarRocksASTVisitor {
 
     {
         this.dbType = DbType.starrocks;
@@ -34,8 +36,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
 
-
-
     public boolean visit(StarRocksCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
 
@@ -44,16 +44,16 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             println();
             String modelName = model.getSimpleName().toLowerCase();
             switch (modelName) {
-                case "duplicate" :
+                case "duplicate":
                     print0(ucase ? "DUPLICATE" : "duplicate");
                     break;
-                case "aggregate" :
+                case "aggregate":
                     print0(ucase ? "AGGREGATE" : "aggregate");
                     break;
-                case "unique" :
+                case "unique":
                     print0(ucase ? "UNIQUE" : "unique");
                     break;
-                case "primary" :
+                case "primary":
                     print0(ucase ? "PRIMARY" : "primary");
                     break;
                 default:
@@ -93,7 +93,14 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         print0(ucase ? "  PARTITION " : "  partition ");
                         key.accept(this);
                         print0(ucase ? " LESS THAN " : " less than ");
-                        value.accept(this);
+                        String s = value.toString();
+                        if (s.startsWith("MAXVALUE")) {
+                            value.accept(this);
+                        } else {
+                            print0("(");
+                            value.accept(this);
+                            print0(")");
+                        }
                         i++;
                     }
                 }
@@ -104,9 +111,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 if (size > 0) {
                     int i = 0;
                     for (SQLObject key : keySet) {
-                        if (i != 0) {
-                            println(", ");
-                        }
                         List<SQLObject> valueList = fixedRangeMap.get(key);
                         int listSize = valueList.size();
                         print0(ucase ? "  PARTITION " : "  partition ");
@@ -114,9 +118,18 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         print0(ucase ? " VALUES " : " values ");
                         print0("[");
                         for (int j = 0; j < listSize; ++j) {
-                            valueList.get(i).accept(this);
-                            print0(",");
+                            print0("(");
+                            valueList.get(j).accept(this);
+                            print0(")");
+                            print0(")");
+                            if (j != listSize - 1) {
+                                print0(",");
+                            }
                         }
+                        if (i != size - 1) {
+                            print0(", ");
+                        }
+                        i++;
                         println();
                     }
                 }
@@ -158,17 +171,19 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         int lBracketSize = x.getlBracketPropertiesMap().size();
         if (propertiesSize > 0 || lBracketSize > 0) {
             print0(ucase ? "PROPERTIES " : "properties ");
+            print0("(");
             if (propertiesSize > 0) {
                 Map<String, String> propertiesMap = x.getPropertiesMap();
                 Set<String> keySet = propertiesMap.keySet();
-                int i= 0;
+                int i = 0;
                 for (String key : keySet) {
                     println();
+                    print0("  ");
                     print0(key);
                     print0(" = ");
                     print0(propertiesMap.get(key));
-                    if (i != keySet.size() - 1){
-                        println(",");
+                    if (lBracketSize > 0 || i != keySet.size() - 1) {
+                        print0(",");
                     }
                     i++;
                 }
@@ -180,36 +195,47 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 int i = 0;
                 for (String key : keySet) {
                     println();
+                    print0("  ");
                     print0("[");
                     print0(key);
                     print0(" = ");
                     print0(lBracketPropertiesMap.get(key));
-                    if (i != keySet.size() - 1){
+                    if (i != keySet.size() - 1) {
                         print0(",");
                     }
                     print0("]");
                     i++;
                 }
             }
-
+            println();
+            print0(")");
         }
 
         return false;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public boolean visit(SQLColumnDefinition x) {
+        super.visit((SQLColumnDefinition) x);
+        if (x.getAggType() != null) {
+            print(' ');
+            print0(ucase ? x.getAggType().getText().toUpperCase(Locale.ROOT) : x.getAggType().getText().toLowerCase(Locale.ROOT));
+        }
+        if (x.getBitmap() != null) {
+            print(' ');
+            print0("[");
+            print0(ucase ? "USING " : "using ");
+            print0(ucase ? x.getBitmap().getText().toUpperCase(Locale.ROOT) : x.getBitmap().getText().toLowerCase(Locale.ROOT));
+            print0("]");
+        }
+        if (x.getIndexComment() != null) {
+            print(' ');
+            print0("[");
+            print0(ucase ? "COMMENT " : "comment ");
+            x.getIndexComment().accept(this);
+            print0("]");
+        }
+        return false;
+    }
 
 
 }

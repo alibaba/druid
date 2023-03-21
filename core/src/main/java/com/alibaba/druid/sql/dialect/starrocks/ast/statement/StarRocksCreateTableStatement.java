@@ -34,6 +34,10 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     protected Map<String, String> propertiesMap = new LinkedHashMap<>();
     protected Map<String, String> lBracketPropertiesMap = new LinkedHashMap<>();
 
+    public StarRocksCreateTableStatement() {
+        super(DbType.starrocks);
+    }
+
     public Map<String, String> getPropertiesMap() {
         return propertiesMap;
     }
@@ -50,9 +54,6 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         this.lBracketPropertiesMap = lBracketPropertiesMap;
     }
 
-    public StarRocksCreateTableStatement() {
-        super(DbType.starrocks);
-    }
 
     public void setStartEnd(boolean startEnd) {
         this.startEnd = startEnd;

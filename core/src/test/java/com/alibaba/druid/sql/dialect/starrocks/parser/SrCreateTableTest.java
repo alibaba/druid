@@ -227,6 +227,27 @@ public class SrCreateTableTest{
 
         String dml = "SELECT t1.c1, t1.c2, t1.c2 FROM t1 LEFT ANTI JOIN t2 ON t1.id = t2.id;";
 
+        String sql6 = "CREATE TABLE d0.table_hash\n" +
+                "(\n" +
+                "    k1 TINYINT,\n" +
+                "    k2 DECIMAL(\n" +
+                "10\n" +
+                ", \n" +
+                "2\n" +
+                ") DEFAULT \"10.5\",\n" +
+                "    v1 CHAR(\n" +
+                "10\n" +
+                ") REPLACE,\n" +
+                "    v2 INT SUM,\n" +
+                "    INDEX index_name (column_name) [USING BITMAP] [COMMENT '']\n" +
+                ")\n" +
+                "ENGINE = olap\n" +
+                "AGGREGATE KEY(k1, k2)\n" +
+                "DISTRIBUTED BY HASH(k1) BUCKETS \n" +
+                "10\n" +
+                "\n" +
+                "PROPERTIES (\"storage_type\" = \"column\");";
+
 
 
 //        StarRocksStatementParser starRocksStatementParserDML = new StarRocksStatementParser(dml, SQLParserFeature.KeepComments);
@@ -234,13 +255,15 @@ public class SrCreateTableTest{
 //        StarRocksStatementParser starRocksStatementParser2 = new StarRocksStatementParser(sql2, SQLParserFeature.KeepComments);
 //        StarRocksStatementParser starRocksStatementParser3 = new StarRocksStatementParser(sql3, SQLParserFeature.KeepComments);
 //        StarRocksStatementParser starRocksStatementParser4 = new StarRocksStatementParser(sql4, SQLParserFeature.KeepComments);
-        StarRocksStatementParser starRocksStatementParser5 = new StarRocksStatementParser(sql5, SQLParserFeature.KeepComments);
+//        StarRocksStatementParser starRocksStatementParser5 = new StarRocksStatementParser(sql5, SQLParserFeature.KeepComments);
+        StarRocksStatementParser starRocksStatementParser6 = new StarRocksStatementParser(sql6, SQLParserFeature.KeepComments);
 
 //        List<SQLStatement> sqlStatements = starRocksStatementParser.parseStatementList();
 //        List<SQLStatement> sqlStatements2 = starRocksStatementParser2.parseStatementList();
 //        List<SQLStatement> sqlStatements3 = starRocksStatementParser3.parseStatementList();
 //        List<SQLStatement> sqlStatements4 = starRocksStatementParser4.parseStatementList();
-        List<SQLStatement> sqlStatements5 = starRocksStatementParser5.parseStatementList();
+//        List<SQLStatement> sqlStatements5 = starRocksStatementParser5.parseStatementList();
+        List<SQLStatement> sqlStatements6 = starRocksStatementParser6.parseStatementList();
 //        List<SQLStatement> sqlStatements = starRocksStatementParserDML.parseStatementList();
 //        for (SQLStatement sqlStatement : sqlStatements) {
 //            System.out.println(sqlStatement.toString());
@@ -251,7 +274,7 @@ public class SrCreateTableTest{
 //        for (SQLStatement sqlStatement : sqlStatements) {
 //            System.out.println(sqlStatement.toString());
 //        }
-
+//
 //        System.out.println("大小为:" + sqlStatements2.size());
 //        System.out.println("sql2:");
 //        for (SQLStatement sqlStatement : sqlStatements2) {
@@ -269,10 +292,16 @@ public class SrCreateTableTest{
 //        for (SQLStatement sqlStatement : sqlStatements4) {
 //            System.out.println(sqlStatement.toString());
 //        }
+//
+//        System.out.println("大小为:" + sqlStatements5.size());
+//        System.out.println("sql5:");
+//        for (SQLStatement sqlStatement : sqlStatements5) {
+//            System.out.println(sqlStatement.toString());
+//        }
 
-        System.out.println("大小为:" + sqlStatements5.size());
-        System.out.println("sql5:");
-        for (SQLStatement sqlStatement : sqlStatements5) {
+        System.out.println("大小为:" + sqlStatements6.size());
+        System.out.println("sql6:");
+        for (SQLStatement sqlStatement : sqlStatements6) {
             System.out.println(sqlStatement.toString());
         }
 

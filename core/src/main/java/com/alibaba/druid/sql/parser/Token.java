@@ -299,6 +299,19 @@ public enum Token {
 
     UPSERT("UPSERT"), // Phoenix
 
+    // StarRocks
+    ADD("ADD"),
+    ANTI("ANTI"),
+    AUTHENTICATION("AUTHENTICATION"),
+    BIGINT("BIGINT"),
+    BITMAP("BITMAP"),
+    BOTH("BOTH"),
+    CANCEL("CANCEL"),
+    CURRENT_DATE("CURRENT_DATE"),
+    CURRENT_TIME("CURRENT_TIME"),
+
+
+
     LPAREN("("),
     RPAREN(")"),
     LBRACE("{"),
