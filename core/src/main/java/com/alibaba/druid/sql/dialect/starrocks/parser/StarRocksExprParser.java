@@ -87,7 +87,7 @@ public class StarRocksExprParser extends SQLExprParser {
         }
         if (lexer.token() == Token.LBRACKET) {
             lexer.nextToken();
-            if (lexer.identifierEquals(FnvHash.Constants.USING)) {
+            if (lexer.token() == Token.USING) {
                 lexer.nextToken();
                 SQLCharExpr bitmap = new StarRocksCharExpr(lexer.stringVal());
                 column.setBitmap(bitmap);

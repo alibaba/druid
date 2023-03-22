@@ -15,17 +15,10 @@ public class StarRocksLexer extends Lexer {
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
-        map.put("ADD", Token.ADD);
-        map.put("ANALYZE", Token.ANALYZE);
-        map.put("ANTI", Token.ANTI);
-        map.put("AUTHENTICATION", Token.AUTHENTICATION);
-        map.put("BIGINT", Token.BIGINT);
         map.put("BITMAP", Token.BITMAP);
-        map.put("BOTH", Token.BOTH);
         map.put("USING", Token.USING);
-        map.put("CANCEL", Token.CANCEL);
-        map.put("CURRENT_DATE", Token.CURRENT_DATE);
-        map.put("CURRENT_TIME", Token.CURRENT_TIME);
+        map.put("PARTITION", Token.PARTITION);
+
         DEFAULT_STARROCKS_KEYWORDS = new Keywords(map);
     }
 

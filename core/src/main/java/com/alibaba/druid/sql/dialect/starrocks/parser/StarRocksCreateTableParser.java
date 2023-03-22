@@ -2,8 +2,9 @@ package com.alibaba.druid.sql.dialect.starrocks.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.expr.StarRocksCharExpr;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -60,8 +61,8 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
 
             if (lexer.token() == Token.PARTITION) {
                 for (; ; ) {
-                    Map<SQLObject, SQLObject> lessThanMap = srStmt.getLessThanMap();
-                    Map<SQLObject, List<SQLObject>> fixedRangeMap = srStmt.getFixedRangeMap();
+                    Map<SQLExpr, SQLExpr> lessThanMap = srStmt.getLessThanMap();
+                    Map<SQLExpr, List<SQLExpr>> fixedRangeMap = srStmt.getFixedRangeMap();
                     lexer.nextToken();
                     SQLExpr area = this.exprParser.expr();
                     accept(Token.VALUES);
@@ -83,7 +84,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                     } else if (lexer.token() == Token.LBRACKET) {
                         lexer.nextToken();
                         srStmt.setFixedRange(true);
-                        List<SQLObject> valueList = new ArrayList<>();
+                        List<SQLExpr> valueList = new ArrayList<>();
 
                         for (; ; ) {
                             SQLExpr value = this.exprParser.expr();
@@ -141,8 +142,8 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.PROPERTIES)) {
             lexer.nextToken();
             accept(Token.LPAREN);
-            Map<String, String> properties = srStmt.getPropertiesMap();
-            Map<String, String> lBracketProperties = srStmt.getlBracketPropertiesMap();
+            Map<SQLCharExpr, SQLCharExpr> properties = srStmt.getPropertiesMap();
+            Map<SQLCharExpr, SQLCharExpr> lBracketProperties = srStmt.getlBracketPropertiesMap();
             for (; ; ) {
                 if (lexer.token() == Token.LBRACKET) {
                     lexer.nextToken();
@@ -169,11 +170,13 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
 
     }
 
-    private void parseProperties(Map<String, String> propertiesType) {
-        String key = lexer.stringVal();
+    private void parseProperties(Map<SQLCharExpr, SQLCharExpr> propertiesType) {
+        String keyText = lexer.stringVal();
+        SQLCharExpr key = new StarRocksCharExpr(keyText);
         lexer.nextToken();
         accept(Token.EQ);
-        String value = lexer.stringVal();
+        String valueText = lexer.stringVal();
+        SQLCharExpr value = new StarRocksCharExpr(valueText);
         propertiesType.put(key, value);
     }
 

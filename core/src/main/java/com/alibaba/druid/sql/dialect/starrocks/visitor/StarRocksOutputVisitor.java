@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
@@ -80,8 +81,8 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print0("(");
             println();
             if (x.isLessThan()) {
-                Map<SQLObject, SQLObject> lessThanMap = x.getLessThanMap();
-                Set<SQLObject> keySet = lessThanMap.keySet();
+                Map<SQLExpr, SQLExpr> lessThanMap = x.getLessThanMap();
+                Set<SQLExpr> keySet = lessThanMap.keySet();
                 int size = keySet.size();
                 if (size > 0) {
                     int i = 0;
@@ -105,13 +106,13 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                     }
                 }
             } else if (x.isFixedRange()) {
-                Map<SQLObject, List<SQLObject>> fixedRangeMap = x.getFixedRangeMap();
-                Set<SQLObject> keySet = fixedRangeMap.keySet();
+                Map<SQLExpr, List<SQLExpr>> fixedRangeMap = x.getFixedRangeMap();
+                Set<SQLExpr> keySet = fixedRangeMap.keySet();
                 int size = keySet.size();
                 if (size > 0) {
                     int i = 0;
                     for (SQLObject key : keySet) {
-                        List<SQLObject> valueList = fixedRangeMap.get(key);
+                        List<SQLExpr> valueList = fixedRangeMap.get(key);
                         int listSize = valueList.size();
                         print0(ucase ? "  PARTITION " : "  partition ");
                         key.accept(this);
@@ -173,15 +174,15 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print0(ucase ? "PROPERTIES " : "properties ");
             print0("(");
             if (propertiesSize > 0) {
-                Map<String, String> propertiesMap = x.getPropertiesMap();
-                Set<String> keySet = propertiesMap.keySet();
+                Map<SQLCharExpr, SQLCharExpr> propertiesMap = x.getPropertiesMap();
+                Set<SQLCharExpr> keySet = propertiesMap.keySet();
                 int i = 0;
-                for (String key : keySet) {
+                for (SQLCharExpr key : keySet) {
                     println();
                     print0("  ");
-                    print0(key);
+                    print0(key.getText());
                     print0(" = ");
-                    print0(propertiesMap.get(key));
+                    print0(propertiesMap.get(key).getText());
                     if (lBracketSize > 0 || i != keySet.size() - 1) {
                         print0(",");
                     }
@@ -190,16 +191,16 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             }
 
             if (lBracketSize > 0) {
-                Map<String, String> lBracketPropertiesMap = x.getlBracketPropertiesMap();
-                Set<String> keySet = lBracketPropertiesMap.keySet();
+                Map<SQLCharExpr, SQLCharExpr> lBracketPropertiesMap = x.getlBracketPropertiesMap();
+                Set<SQLCharExpr> keySet = lBracketPropertiesMap.keySet();
                 int i = 0;
-                for (String key : keySet) {
+                for (SQLCharExpr key : keySet) {
                     println();
                     print0("  ");
                     print0("[");
-                    print0(key);
+                    print0(key.getText());
                     print0(" = ");
-                    print0(lBracketPropertiesMap.get(key));
+                    print0(lBracketPropertiesMap.get(key).getText());
                     if (i != keySet.size() - 1) {
                         print0(",");
                     }

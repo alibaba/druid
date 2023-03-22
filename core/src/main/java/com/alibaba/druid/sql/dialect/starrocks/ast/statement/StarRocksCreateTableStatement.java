@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -29,28 +30,28 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
 
     protected final List<SQLExpr> modelKeyParameters = new ArrayList<SQLExpr>();
 
-    protected Map<SQLObject, SQLObject> lessThanMap = new LinkedHashMap<>();
-    protected Map<SQLObject, List<SQLObject>> fixedRangeMap = new LinkedHashMap<>();
-    protected Map<String, String> propertiesMap = new LinkedHashMap<>();
-    protected Map<String, String> lBracketPropertiesMap = new LinkedHashMap<>();
+    protected Map<SQLExpr, SQLExpr> lessThanMap = new LinkedHashMap<>();
+    protected Map<SQLExpr, List<SQLExpr>> fixedRangeMap = new LinkedHashMap<>();
+    protected Map<SQLCharExpr, SQLCharExpr> propertiesMap = new LinkedHashMap<>();
+    protected Map<SQLCharExpr, SQLCharExpr> lBracketPropertiesMap = new LinkedHashMap<>();
 
     public StarRocksCreateTableStatement() {
         super(DbType.starrocks);
     }
 
-    public Map<String, String> getPropertiesMap() {
+    public Map<SQLCharExpr, SQLCharExpr> getPropertiesMap() {
         return propertiesMap;
     }
 
-    public Map<String, String> getlBracketPropertiesMap() {
+    public Map<SQLCharExpr, SQLCharExpr> getlBracketPropertiesMap() {
         return lBracketPropertiesMap;
     }
 
-    public void setPropertiesMap(Map<String, String> propertiesMap) {
+    public void setPropertiesMap(Map<SQLCharExpr, SQLCharExpr> propertiesMap) {
         this.propertiesMap = propertiesMap;
     }
 
-    public void setlBracketPropertiesMap(Map<String, String> lBracketPropertiesMap) {
+    public void setlBracketPropertiesMap(Map<SQLCharExpr, SQLCharExpr> lBracketPropertiesMap) {
         this.lBracketPropertiesMap = lBracketPropertiesMap;
     }
 
@@ -103,11 +104,11 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         this.fixedRange = fixedRange;
     }
 
-    public Map<SQLObject, List<SQLObject>> getFixedRangeMap() {
+    public Map<SQLExpr, List<SQLExpr>> getFixedRangeMap() {
         return fixedRangeMap;
     }
 
-    public void setFixedRangeMap(Map<SQLObject, List<SQLObject>> fixedRangeMap) {
+    public void setFixedRangeMap(Map<SQLExpr, List<SQLExpr>> fixedRangeMap) {
         this.fixedRangeMap = fixedRangeMap;
     }
 
@@ -119,11 +120,11 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         this.lessThan = lessThan;
     }
 
-    public Map<SQLObject, SQLObject> getLessThanMap() {
+    public Map<SQLExpr, SQLExpr> getLessThanMap() {
         return lessThanMap;
     }
 
-    public void setLessThanMap(Map<SQLObject, SQLObject> lessThanMap) {
+    public void setLessThanMap(Map<SQLExpr, SQLExpr> lessThanMap) {
         this.lessThanMap = lessThanMap;
     }
 

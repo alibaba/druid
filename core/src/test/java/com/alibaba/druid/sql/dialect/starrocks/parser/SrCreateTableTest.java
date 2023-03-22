@@ -251,53 +251,53 @@ public class SrCreateTableTest{
 
 
 //        StarRocksStatementParser starRocksStatementParserDML = new StarRocksStatementParser(dml, SQLParserFeature.KeepComments);
-//        StarRocksStatementParser starRocksStatementParser = new StarRocksStatementParser(sql, SQLParserFeature.KeepComments);
-//        StarRocksStatementParser starRocksStatementParser2 = new StarRocksStatementParser(sql2, SQLParserFeature.KeepComments);
-//        StarRocksStatementParser starRocksStatementParser3 = new StarRocksStatementParser(sql3, SQLParserFeature.KeepComments);
-//        StarRocksStatementParser starRocksStatementParser4 = new StarRocksStatementParser(sql4, SQLParserFeature.KeepComments);
-//        StarRocksStatementParser starRocksStatementParser5 = new StarRocksStatementParser(sql5, SQLParserFeature.KeepComments);
+        StarRocksStatementParser starRocksStatementParser = new StarRocksStatementParser(sql, SQLParserFeature.KeepComments);
+        StarRocksStatementParser starRocksStatementParser2 = new StarRocksStatementParser(sql2, SQLParserFeature.KeepComments);
+        StarRocksStatementParser starRocksStatementParser3 = new StarRocksStatementParser(sql3, SQLParserFeature.KeepComments);
+        StarRocksStatementParser starRocksStatementParser4 = new StarRocksStatementParser(sql4, SQLParserFeature.KeepComments);
+        StarRocksStatementParser starRocksStatementParser5 = new StarRocksStatementParser(sql5, SQLParserFeature.KeepComments);
         StarRocksStatementParser starRocksStatementParser6 = new StarRocksStatementParser(sql6, SQLParserFeature.KeepComments);
 
-//        List<SQLStatement> sqlStatements = starRocksStatementParser.parseStatementList();
-//        List<SQLStatement> sqlStatements2 = starRocksStatementParser2.parseStatementList();
-//        List<SQLStatement> sqlStatements3 = starRocksStatementParser3.parseStatementList();
-//        List<SQLStatement> sqlStatements4 = starRocksStatementParser4.parseStatementList();
-//        List<SQLStatement> sqlStatements5 = starRocksStatementParser5.parseStatementList();
+        List<SQLStatement> sqlStatements = starRocksStatementParser.parseStatementList();
+        List<SQLStatement> sqlStatements2 = starRocksStatementParser2.parseStatementList();
+        List<SQLStatement> sqlStatements3 = starRocksStatementParser3.parseStatementList();
+        List<SQLStatement> sqlStatements4 = starRocksStatementParser4.parseStatementList();
+        List<SQLStatement> sqlStatements5 = starRocksStatementParser5.parseStatementList();
         List<SQLStatement> sqlStatements6 = starRocksStatementParser6.parseStatementList();
 //        List<SQLStatement> sqlStatements = starRocksStatementParserDML.parseStatementList();
 //        for (SQLStatement sqlStatement : sqlStatements) {
 //            System.out.println(sqlStatement.toString());
 //        }
 
-//        System.out.println("大小为:" + sqlStatements.size());
-//        System.out.println("sql1:");
-//        for (SQLStatement sqlStatement : sqlStatements) {
-//            System.out.println(sqlStatement.toString());
-//        }
-//
-//        System.out.println("大小为:" + sqlStatements2.size());
-//        System.out.println("sql2:");
-//        for (SQLStatement sqlStatement : sqlStatements2) {
-//            System.out.println(sqlStatement.toString());
-//        }
-//
-//        System.out.println("大小为:" + sqlStatements3.size());
-//        System.out.println("sql3:");
-//        for (SQLStatement sqlStatement : sqlStatements3) {
-//            System.out.println(sqlStatement.toString());
-//        }
-//
-//        System.out.println("大小为:" + sqlStatements4.size());
-//        System.out.println("sql4:");
-//        for (SQLStatement sqlStatement : sqlStatements4) {
-//            System.out.println(sqlStatement.toString());
-//        }
-//
-//        System.out.println("大小为:" + sqlStatements5.size());
-//        System.out.println("sql5:");
-//        for (SQLStatement sqlStatement : sqlStatements5) {
-//            System.out.println(sqlStatement.toString());
-//        }
+        System.out.println("大小为:" + sqlStatements.size());
+        System.out.println("sql1:");
+        for (SQLStatement sqlStatement : sqlStatements) {
+            System.out.println(sqlStatement.toString());
+        }
+
+        System.out.println("大小为:" + sqlStatements2.size());
+        System.out.println("sql2:");
+        for (SQLStatement sqlStatement : sqlStatements2) {
+            System.out.println(sqlStatement.toString());
+        }
+
+        System.out.println("大小为:" + sqlStatements3.size());
+        System.out.println("sql3:");
+        for (SQLStatement sqlStatement : sqlStatements3) {
+            System.out.println(sqlStatement.toString());
+        }
+
+        System.out.println("大小为:" + sqlStatements4.size());
+        System.out.println("sql4:");
+        for (SQLStatement sqlStatement : sqlStatements4) {
+            System.out.println(sqlStatement.toString());
+        }
+
+        System.out.println("大小为:" + sqlStatements5.size());
+        System.out.println("sql5:");
+        for (SQLStatement sqlStatement : sqlStatements5) {
+            System.out.println(sqlStatement.toString());
+        }
 
         System.out.println("大小为:" + sqlStatements6.size());
         System.out.println("sql6:");
