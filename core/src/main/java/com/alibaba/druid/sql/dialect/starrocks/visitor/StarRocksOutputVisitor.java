@@ -58,7 +58,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                     print0(ucase ? "PRIMARY" : "primary");
                     break;
                 default:
-                    throw new IllegalArgumentException("Unsupported data model type ");
+                    break;
             }
             print(' ');
             print0(ucase ? "KEY" : "key");
