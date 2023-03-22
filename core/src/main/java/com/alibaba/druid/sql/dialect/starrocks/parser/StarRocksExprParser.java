@@ -50,7 +50,7 @@ public class StarRocksExprParser extends SQLExprParser {
     }
 
     public StarRocksExprParser(Lexer lexer) {
-        super(lexer, DbType.mysql);
+        super(lexer, DbType.starrocks);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }

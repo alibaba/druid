@@ -93,7 +93,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         SQLObject value = lessThanMap.get(key);
                         print0(ucase ? "  PARTITION " : "  partition ");
                         key.accept(this);
-                        print0(ucase ? " LESS THAN " : " less than ");
+                        print0(ucase ? " VALUES LESS THAN " : " values less than ");
                         String s = value.toString();
                         if (s.startsWith("MAXVALUE")) {
                             value.accept(this);
@@ -141,7 +141,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         print0(")");
 
                         if (i != size - 1) {
-                            print0(", ");
+                            print0(",");
                             println();
                         }
                         i++;

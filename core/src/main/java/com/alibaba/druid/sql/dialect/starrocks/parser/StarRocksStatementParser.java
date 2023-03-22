@@ -29,8 +29,6 @@ public class StarRocksStatementParser extends SQLStatementParser {
         super(new StarRocksExprParser(lexer));
     }
 
-//    public boolean parseStatementListDialect(List<SQLStatement> statementList){
-//}
 
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new StarRocksCreateTableParser(this.exprParser);
