@@ -47,11 +47,11 @@ public class SrCreateTableTest{
                 "DUPLICATE KEY(`recruit_date`, `region_num`)\n" +
                 "PARTITION BY RANGE(`recruit_date`)\n" +
                 "(\n" +
-                "    PARTITION p20220311 VALUES [('2022-03-11'), ('2022-03-12')),\n" +
-                "    PARTITION p20220312 VALUES [('2022-03-12'), ('2022-03-13')),\n" +
-                "    PARTITION p20220313 VALUES [('2022-03-13'), ('2022-03-14')),\n" +
-                "    PARTITION p20220314 VALUES [('2022-03-14'), ('2022-03-15')),\n" +
-                "    PARTITION p20220315 VALUES [('2022-03-15'), ('2022-03-16'))\n" +
+                "    PARTITION p20220311 VALUES [(\"2022-03-11\",\"2022-03-11\"), (\"2022-03-12\",\"2022-03-11\")),\n" +
+                "    PARTITION p20220312 VALUES [(\"2022-03-12\"), (\"2022-03-13\")),\n" +
+                "    PARTITION p20220313 VALUES [(\"2022-03-13\"), (\"2022-03-14\")),\n" +
+                "    PARTITION p20220314 VALUES [(\"2022-03-14\"), (\"2022-03-15\")),\n" +
+                "    PARTITION p20220315 VALUES [(\"2022-03-15\"), (\"2022-03-16\"))\n" +
                 ")\n" +
                 "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS \n" +
                 "8\n" +

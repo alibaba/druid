@@ -1,4 +1,6 @@
 package com.alibaba.druid.sql.dialect.starrocks.ast.expr;
 
-public interface StarRocksExpr {
+import com.alibaba.druid.sql.ast.SQLExpr;
+
+public interface StarRocksExpr extends SQLExpr {
 }

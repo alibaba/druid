@@ -112,26 +112,40 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 if (size > 0) {
                     int i = 0;
                     for (SQLObject key : keySet) {
+
                         List<SQLExpr> valueList = fixedRangeMap.get(key);
                         int listSize = valueList.size();
+
                         print0(ucase ? "  PARTITION " : "  partition ");
                         key.accept(this);
                         print0(ucase ? " VALUES " : " values ");
                         print0("[");
+
                         for (int j = 0; j < listSize; ++j) {
-                            print0("(");
-                            valueList.get(j).accept(this);
-                            print0(")");
-                            print0(")");
+                            SQLExpr sqlExpr = valueList.get(j);
+                            String[] split = sqlExpr.toString().split(",");
+
+                            if (split.length <= 1) {
+                                print0("(");
+                                sqlExpr.accept(this);
+                                print0(")");
+                            } else {
+                                sqlExpr.accept(this);
+                            }
+
                             if (j != listSize - 1) {
                                 print0(",");
                             }
+
                         }
+                        print0(")");
+
                         if (i != size - 1) {
                             print0(", ");
+                            println();
                         }
                         i++;
-                        println();
+
                     }
                 }
             } else if (x.isStartEnd()) {
