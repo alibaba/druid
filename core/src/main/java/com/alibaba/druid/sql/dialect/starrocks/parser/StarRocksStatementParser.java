@@ -1,10 +1,10 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
-import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseCreateTableParser;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
 
-import java.util.List;
 
 public class StarRocksStatementParser extends SQLStatementParser {
 
