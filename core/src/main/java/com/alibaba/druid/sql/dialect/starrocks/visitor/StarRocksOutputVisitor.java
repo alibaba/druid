@@ -237,17 +237,13 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         }
         if (x.getBitmap() != null) {
             print(' ');
-            print0("[");
             print0(ucase ? "USING " : "using ");
             print0(ucase ? x.getBitmap().getText().toUpperCase(Locale.ROOT) : x.getBitmap().getText().toLowerCase(Locale.ROOT));
-            print0("]");
         }
         if (x.getIndexComment() != null) {
             print(' ');
-            print0("[");
             print0(ucase ? "COMMENT " : "comment ");
             x.getIndexComment().accept(this);
-            print0("]");
         }
         return false;
     }

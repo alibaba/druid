@@ -1,13 +1,7 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
-import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
-import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
-import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksStatement;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
 import junit.framework.TestCase;
 
 public class StarRocksCreateTableParserTest extends TestCase {
@@ -187,7 +181,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                         "\tk2 DECIMAL(10, 2) DEFAULT \"10.5\",\n" +
                         "\tv1 CHAR(10) REPLACE,\n" +
                         "\tv2 INT SUM,\n" +
-                        "\tINDEX index_name(column_name) [USING BITMAP] [COMMENT '']\n" +
+                        "\tINDEX index_name(column_name) USING BITMAP COMMENT '22'\n" +
                         ") ENGINE = olap\n" +
                         "AGGREGATE KEY(k1, k2)\n" +
                         "DISTRIBUTED BY HASH(k1) BUCKETS 10\n" +

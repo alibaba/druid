@@ -38,8 +38,6 @@ public class StarRocksExprParser extends SQLExprParser {
     }
 
 
-
-
     public StarRocksExprParser(String sql) {
         this(new StarRocksLexer(sql));
         this.lexer.nextToken();
@@ -85,24 +83,19 @@ public class StarRocksExprParser extends SQLExprParser {
                 lexer.nextToken();
             }
         }
-        if (lexer.token() == Token.LBRACKET) {
+
+        if (lexer.token() == Token.USING) {
             lexer.nextToken();
-            if (lexer.token() == Token.USING) {
-                lexer.nextToken();
-                SQLCharExpr bitmap = new StarRocksCharExpr(lexer.stringVal());
-                column.setBitmap(bitmap);
-                lexer.nextToken();
-                accept(Token.RBRACKET);
-                if (lexer.token() == Token.LBRACKET) {
-                    lexer.nextToken();
-                    accept(Token.COMMENT);
-                    SQLCharExpr indexComment = new StarRocksCharExpr(lexer.stringVal());
-                    column.setIndexComment(indexComment);
-                    lexer.nextToken();
-                    accept(Token.RBRACKET);
-                }
-            }
+            SQLCharExpr bitmap = new StarRocksCharExpr(lexer.stringVal());
+            column.setBitmap(bitmap);
+            lexer.nextToken();
+            accept(Token.COMMENT);
+            SQLCharExpr indexComment = new StarRocksCharExpr(lexer.stringVal());
+            column.setIndexComment(indexComment);
+            lexer.nextToken();
+
         }
+
 
         return super.parseColumnRest(column);
     }
