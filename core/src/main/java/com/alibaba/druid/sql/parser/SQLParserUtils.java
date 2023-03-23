@@ -66,6 +66,9 @@ import com.alibaba.druid.sql.dialect.presto.parser.PrestoStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerExprParser;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
+import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksExprParser;
+import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksLexer;
+import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.StringUtils;
@@ -145,6 +148,8 @@ public class SQLParserUtils {
                 return new AntsparkStatementParser(sql);
             case clickhouse:
                 return new ClickhouseStatementParser(sql);
+            case starrocks:
+                return new StarRocksStatementParser(sql);
             default:
                 return new SQLStatementParser(sql, dbType);
         }
@@ -189,6 +194,8 @@ public class SQLParserUtils {
                 return new ClickhouseExprParser(sql, features);
             case oscar:
                 return new OscarExprParser(sql, features);
+            case starrocks:
+                return new StarRocksExprParser(sql, features);
             default:
                 return new SQLExprParser(sql, dbType, features);
         }
@@ -234,6 +241,8 @@ public class SQLParserUtils {
                 return new OscarLexer(sql);
             case clickhouse:
                 return new ClickhouseLexer(sql);
+            case starrocks:
+                return new StarRocksLexer(sql);
             default:
                 return new Lexer(sql, null, dbType);
         }
