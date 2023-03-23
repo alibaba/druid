@@ -17,7 +17,7 @@ public class MySqlExceptionSorterTest_2 extends PoolTestCase {
         MySqlExceptionSorter sorter = new MySqlExceptionSorter();
 
         SQLException rootException = new SQLException(
-                new SQLException("Could not retrieve transation read-only status server",
+                new SQLException("Could not retrieve transition read-only status server",
                         new SocketTimeoutException()
                 )
         );

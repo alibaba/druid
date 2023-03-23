@@ -45,11 +45,14 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
+
+import static com.alibaba.druid.util.JdbcConstants.POSTGRESQL_DRIVER;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -278,7 +281,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public DruidAbstractDataSource(boolean lockFair) {
         lock = new ReentrantLock(lockFair);
-
         notEmpty = lock.newCondition();
         empty = lock.newCondition();
     }
@@ -385,11 +387,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public java.util.Date getLastErrorTime() {
-        if (lastErrorTimeMillis <= 0) {
-            return null;
-        }
-
-        return new java.util.Date(lastErrorTimeMillis);
+        return lastErrorTimeMillis <= 0 ? null : new java.util.Date(lastErrorTimeMillis);
     }
 
     public long getLastCreateErrorTimeMillis() {
@@ -397,19 +395,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public java.util.Date getLastCreateErrorTime() {
-        if (lastCreateErrorTimeMillis <= 0) {
-            return null;
-        }
-
-        return new java.util.Date(lastCreateErrorTimeMillis);
+        return lastCreateErrorTimeMillis <= 0 ? null : new java.util.Date(lastCreateErrorTimeMillis);
     }
 
     public int getTransactionQueryTimeout() {
-        if (transactionQueryTimeout <= 0) {
-            return queryTimeout;
-        }
-
-        return transactionQueryTimeout;
+        return transactionQueryTimeout <= 0 ? queryTimeout : transactionQueryTimeout;
     }
 
     public void setTransactionQueryTimeout(int transactionQueryTimeout) {
@@ -602,12 +592,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize) {
-        if (maxPoolPreparedStatementPerConnectionSize > 0) {
-            this.poolPreparedStatements = true;
-        } else {
-            this.poolPreparedStatements = false;
-        }
-
+        this.poolPreparedStatements = maxPoolPreparedStatementPerConnectionSize > 0;
         this.maxPoolPreparedStatementPerConnectionSize = maxPoolPreparedStatementPerConnectionSize;
     }
 
@@ -640,11 +625,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public String getValidConnectionCheckerClassName() {
-        if (validConnectionChecker == null) {
-            return null;
-        }
-
-        return validConnectionChecker.getClass().getName();
+        return validConnectionChecker == null ? null : validConnectionChecker.getClass().getName();
     }
 
     public void setValidConnectionCheckerClassName(String validConnectionCheckerClass) throws Exception {
@@ -654,7 +635,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
             this.validConnectionChecker = validConnectionChecker;
         } else {
-            LOG.error("load validConnectionCheckerClass error : " + validConnectionCheckerClass);
+            if (LOG.isErrorEnabled()) {
+                LOG.error("load validConnectionCheckerClass["
+                        + validConnectionCheckerClass + "] error, and use JDBC4ValidConnectionChecker.");
+            }
+            this.validConnectionChecker = new JDBC4ValidConnectionChecker();
         }
     }
 
@@ -663,11 +648,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setDbType(DbType dbType) {
-        if (dbType == null) {
-            this.dbTypeName = null;
-        } else {
-            this.dbTypeName = dbType.name();
-        }
+        this.dbTypeName = dbType == null ? null : dbType.name();
     }
 
     public void setDbType(String dbType) {
@@ -687,11 +668,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public Collection<String> getConnectionInitSqls() {
-        Collection<String> result = connectionInitSqls;
-        if (result == null) {
-            return Collections.emptyList();
-        }
-        return result;
+        return connectionInitSqls == null ? Collections.emptyList() : connectionInitSqls;
     }
 
     public void setConnectionInitSqls(Collection<? extends Object> connectionInitSqls) {
@@ -775,7 +752,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (minEvictableIdleTimeMillis < 1000 * 30) {
             LOG.error("minEvictableIdleTimeMillis should be greater than 30000");
         }
-
         this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
     }
 
@@ -1135,7 +1111,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     @Deprecated
     public void setMaxIdle(int maxIdle) {
         LOG.error("maxIdle is deprecated");
-
         this.maxIdle = maxIdle;
     }
 
@@ -1526,8 +1501,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
                     if (lastPacketReceivedTimeMs > 0) {
                         long mysqlIdleMillis = currentTimeMillis - lastPacketReceivedTimeMs;
-                        if (lastPacketReceivedTimeMs > 0 //
-                                && mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
+                        if (mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
                             discardConnection(holder);
                             String errorMsg = "discard long time none received connection. "
                                     + ", jdbcUrl : " + jdbcUrl
@@ -1762,16 +1736,20 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
 
                 physicalConnectProperties.put("oracle.net.CONNECT_TIMEOUT", connectTimeoutStr);
-            } else if (driver != null && "org.postgresql.Driver".equals(driver.getClass().getName())) {
-                if (connectTimeoutStr == null) {
-                    connectTimeoutStr = Integer.toString(connectTimeout);
+            } else if (driver != null && POSTGRESQL_DRIVER.equals(driver.getClass().getName())) {
+                // see https://github.com/pgjdbc/pgjdbc/blob/2b90ad04696324d107b65b085df4b1db8f6c162d/README.md
+                physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
+                physicalConnectProperties.put("connectTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
+                if (socketTimeout > 0) {
+                    physicalConnectProperties.put("socketTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(socketTimeout)));
                 }
-                physicalConnectProperties.put("loginTimeout", connectTimeoutStr);
-
-                if (socketTimeoutSr == null) {
-                    socketTimeoutSr = Integer.toString(socketTimeout);
+            } else if (dbTypeName.equals(DbType.sqlserver.name())) {
+                // see https://learn.microsoft.com/en-us/sql/connect/jdbc/setting-the-connection-properties?view=sql-server-ver16
+                physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
+                if (socketTimeout > 0) {
+                    // As SQLServer-jdbc-driver 6.1.2 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
+                    physicalConnectProperties.put("socketTimeout", Integer.toString(socketTimeout));
                 }
-                physicalConnectProperties.put("socketTimeout", socketTimeoutSr);
             }
         }
 
@@ -1802,7 +1780,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
             if (socketTimeout > 0 && !netTimeoutError) {
                 try {
-                    conn.setNetworkTimeout(netTimeoutExecutor, socketTimeout);
+                    // As SQLServer-jdbc-driver 6.1.7 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
+                    conn.setNetworkTimeout(netTimeoutExecutor, socketTimeout); // here is milliseconds defined by JDBC
                 } catch (SQLFeatureNotSupportedException | AbstractMethodError e) {
                     netTimeoutError = true;
                 } catch (Exception ignored) {

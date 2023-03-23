@@ -32,7 +32,7 @@ public class KeepAliveTest_scheduler extends TestCase {
 
         Properties properties = new Properties();
         properties.put("druid.keepAlive", "true");
-        dataSource.configFromPropety(properties);
+        dataSource.configFromPropeties(properties);
         dataSource.setCreateScheduler(scheduler);
     }
 
