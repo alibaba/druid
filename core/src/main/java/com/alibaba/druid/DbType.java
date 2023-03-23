@@ -64,7 +64,7 @@ public enum DbType {
 
     tydb(1L << 42),
 
-    starrocks(1l << 43),
+    starrocks(1L << 43),
 
     ingres(0),
     cloudscape(0),
