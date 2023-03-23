@@ -86,7 +86,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 int size = keySet.size();
                 if (size > 0) {
                     int i = 0;
-                    for (SQLObject key : keySet) {
+                    for (SQLExpr key : keySet) {
                         if (i != 0) {
                             println(", ");
                         }
@@ -111,7 +111,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 int size = keySet.size();
                 if (size > 0) {
                     int i = 0;
-                    for (SQLObject key : keySet) {
+                    for (SQLExpr key : keySet) {
 
                         List<SQLExpr> valueList = fixedRangeMap.get(key);
                         int listSize = valueList.size();
