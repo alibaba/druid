@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StarRocksLexer extends Lexer {
-
     public static final Keywords DEFAULT_STARROCKS_KEYWORDS;
 
     static {
@@ -25,9 +24,6 @@ public class StarRocksLexer extends Lexer {
     {
         dbType = DbType.starrocks;
     }
-
-
-
 
     public StarRocksLexer(String input) {
         this(input, true, true);

@@ -303,9 +303,6 @@ public enum Token {
     BIGINT("BIGINT"),
     BITMAP("BITMAP"),
 
-
-
-
     LPAREN("("),
     RPAREN(")"),
     LBRACE("{"),

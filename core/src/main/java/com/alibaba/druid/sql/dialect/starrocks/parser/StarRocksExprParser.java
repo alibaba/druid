@@ -37,7 +37,6 @@ public class StarRocksExprParser extends SQLExprParser {
         }
     }
 
-
     public StarRocksExprParser(String sql) {
         this(new StarRocksLexer(sql));
         this.lexer.nextToken();
@@ -70,9 +69,7 @@ public class StarRocksExprParser extends SQLExprParser {
     public StarRocksExprParser(String sql, SQLParserFeature... features) {
         super(new StarRocksLexer(sql, features), DbType.starrocks);
         this.lexer.nextToken();
-
     }
-
 
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         String text = lexer.stringVal();
@@ -95,7 +92,6 @@ public class StarRocksExprParser extends SQLExprParser {
             lexer.nextToken();
 
         }
-
 
         return super.parseColumnRest(column);
     }

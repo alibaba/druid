@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 public class StarRocksCreateTableParser extends SQLCreateTableParser {
-
     public StarRocksCreateTableParser(Lexer lexer) {
         super(new StarRocksExprParser(lexer));
     }
@@ -29,7 +28,6 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
     public StarRocksCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
     }
-
 
     public void parseCreateTableRest(SQLCreateTableStatement stmt) {
         StarRocksCreateTableStatement srStmt = (StarRocksCreateTableStatement) stmt;
@@ -166,8 +164,6 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                 }
             }
         }
-
-
     }
 
     private void parseProperties(Map<SQLCharExpr, SQLCharExpr> propertiesType) {

@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class StarRocksCharExpr extends SQLCharExpr implements StarRocksExpr {
-
     private String charset;
 
     public StarRocksCharExpr() {
@@ -27,7 +26,6 @@ public class StarRocksCharExpr extends SQLCharExpr implements StarRocksExpr {
     public void setCharset(String charset) {
         this.charset = charset;
     }
-
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

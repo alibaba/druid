@@ -5,10 +5,7 @@ import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
-
 public class StarRocksStatementParser extends SQLStatementParser {
-
-
     public StarRocksStatementParser(String sql) {
         super(new StarRocksExprParser(sql));
     }
@@ -28,7 +25,6 @@ public class StarRocksStatementParser extends SQLStatementParser {
     public StarRocksStatementParser(Lexer lexer) {
         super(new StarRocksExprParser(lexer));
     }
-
 
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new StarRocksCreateTableParser(this.exprParser);

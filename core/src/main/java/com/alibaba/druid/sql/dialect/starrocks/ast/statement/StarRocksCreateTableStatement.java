@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
-
     protected SQLName modelKey;
 
     protected SQLExpr partitionBy;
@@ -53,7 +52,6 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     public void setlBracketPropertiesMap(Map<SQLCharExpr, SQLCharExpr> lBracketPropertiesMap) {
         this.lBracketPropertiesMap = lBracketPropertiesMap;
     }
-
 
     public void setStartEnd(boolean startEnd) {
         this.startEnd = startEnd;

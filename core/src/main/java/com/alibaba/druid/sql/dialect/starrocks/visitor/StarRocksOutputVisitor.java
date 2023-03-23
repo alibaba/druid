@@ -16,13 +16,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarRocksASTVisitor {
-
     {
         this.dbType = DbType.starrocks;
         this.shardingSupport = true;
         this.quote = '`';
     }
-
 
     public StarRocksOutputVisitor(Appendable appender) {
         super(appender);
@@ -35,7 +33,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     public StarRocksOutputVisitor(Appendable appender, boolean parameterized) {
         super(appender, parameterized);
     }
-
 
     public boolean visit(StarRocksCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
@@ -112,7 +109,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 if (size > 0) {
                     int i = 0;
                     for (SQLExpr key : keySet) {
-
                         List<SQLExpr> valueList = fixedRangeMap.get(key);
                         int listSize = valueList.size();
 
@@ -247,6 +243,4 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         }
         return false;
     }
-
-
 }
