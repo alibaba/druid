@@ -856,13 +856,29 @@ public class SQLSelectParser extends SQLParser {
             }
 
             for (; ; ) {
+                List<String> comments = null;
+                if (lexer.hasComment()) {
+                    comments = lexer.readAndResetComments();
+                }
                 SQLExpr item = parseGroupByItem();
+                if (comments != null) {
+                    item.addBeforeComment(comments);
+                }
 
                 item.setParent(groupBy);
                 groupBy.addItem(item);
 
                 if (lexer.token == Token.COMMA) {
+                    int line = lexer.line;
                     lexer.nextToken();
+
+                    if (lexer.hasComment()
+                            && lexer.isKeepComments()
+                            && lexer.getComments().size() == 1
+                            && lexer.getComments().get(0).startsWith("--")
+                            && lexer.line == line + 1) {
+                        item.addAfterComment(lexer.readAndResetComments());
+                    }
                     continue;
                 } else if (lexer.identifierEquals(FnvHash.Constants.GROUPING)) {
                     continue;

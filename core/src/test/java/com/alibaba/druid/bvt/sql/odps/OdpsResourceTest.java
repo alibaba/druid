@@ -47,10 +47,22 @@ public class OdpsResourceTest extends TestCase {
     public void test_10() throws Exception {
         exec_test("bvt/parser/odps-10.txt");
     }
+
+    public void test_11() throws Exception {
+        exec_test("bvt/parser/odps-11.txt");
+    }
+
+    public void test_12() throws Exception {
+        exec_test("bvt/parser/odps-12.txt");
+    }
 //
 //    public void test_13() throws Exception {
 //        exec_test("bvt/parser/odps-13.txt");
 //    }
+
+    public void test_14() throws Exception {
+        exec_test("bvt/parser/odps-14.txt");
+    }
 
     public void exec_test(String resource) throws Exception {
         String input = TestUtil.getResource(resource);
@@ -62,8 +74,7 @@ public class OdpsResourceTest extends TestCase {
             expect = items[1].trim();
         }
 
-        OdpsStatementParser parser = new OdpsStatementParser(sql);
-        parser.config(SQLParserFeature.KeepComments, true);
+        OdpsStatementParser parser = new OdpsStatementParser(sql, SQLParserFeature.KeepComments);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 

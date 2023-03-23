@@ -117,28 +117,28 @@ public class MySqlCreateTableTest84 extends MysqlTest {
 
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         repository.console(sql);
-        assertEquals("CREATE TABLE `test` (\n" +
-                        "\t`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
-                        "\t`c_tinyint` tinyint(4) DEFAULT '1' COMMENT 'tinyint',\n" +
-                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
-                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
-                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
-                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
-                        "\t`c_decimal` decimal(10, 3) DEFAULT NULL COMMENT 'decimal',\n" +
-                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
-                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
-                        "\t`c_timestamp` timestamp NULL DEFAULT NULL COMMENT 'timestamp',\n" +
-                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
-                        "\t`c_char` char(10) DEFAULT NULL COMMENT 'char',\n" +
-                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
-                        "\t`c_blob` blob COMMENT 'blob',\n" +
-                        "\t`c_text` text COMMENT 'text',\n" +
-                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
-                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
-                        "\tPRIMARY KEY (`id`),\n" +
-                        "\tUNIQUE KEY `uk_a` (`c_tinyint`),\n" +
-                        "\tKEY `k_b` (`c_smallint`),\n" +
-                        "\tKEY `k_c` (`c_mediumint`, `c_int`)\n" +
+        assertEquals("CREATE TABLE test (\n" +
+                        "\tid bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\tc_tinyint tinyint(4) DEFAULT '1' COMMENT 'tinyint',\n" +
+                        "\tc_smallint smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\tc_mediumint mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\tc_int int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\tc_bigint bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\tc_decimal decimal(10, 3) DEFAULT NULL COMMENT 'decimal',\n" +
+                        "\tc_date date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\tc_datetime datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\tc_timestamp timestamp NULL DEFAULT NULL COMMENT 'timestamp',\n" +
+                        "\tc_time time DEFAULT NULL COMMENT 'time',\n" +
+                        "\tc_char char(10) DEFAULT NULL COMMENT 'char',\n" +
+                        "\tc_varchar varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\tc_blob blob COMMENT 'blob',\n" +
+                        "\tc_text text COMMENT 'text',\n" +
+                        "\tc_mediumtext mediumtext COMMENT 'mediumtext',\n" +
+                        "\tc_longblob longblob COMMENT 'longblob',\n" +
+                        "\tPRIMARY KEY (id),\n" +
+                        "\tUNIQUE KEY uk_a (c_tinyint),\n" +
+                        "\tKEY k_b (c_smallint),\n" +
+                        "\tKEY k_c (c_mediumint, c_int)\n" +
                         ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
                 , repository.console("show create table test"));
     }

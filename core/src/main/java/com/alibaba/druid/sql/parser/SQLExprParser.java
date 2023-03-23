@@ -35,6 +35,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static com.alibaba.druid.sql.parser.Token.CASCADE;
+
 public class SQLExprParser extends SQLParser {
     public static final String[] AGGREGATE_FUNCTIONS;
 
@@ -1029,6 +1031,10 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLIdentifierExpr("DATABASE");
                 lexer.nextToken();
                 break;
+            case CASCADE:
+                sqlExpr = new SQLIdentifierExpr("CASCADE");
+                lexer.nextToken();
+                break;
             case LOCK:
                 sqlExpr = new SQLIdentifierExpr("LOCK");
                 lexer.nextToken();
@@ -1612,6 +1618,9 @@ public class SQLExprParser extends SQLParser {
             accept(Token.RPAREN);
 
             return groupingSets;
+        } else if (lexer.token == Token.LITERAL_CHARS && expr instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) expr).hashCode64() == FnvHash.Constants.DECIMAL) {
+            expr = new SQLDecimalExpr(lexer.stringVal());
+            lexer.nextToken();
         } else {
             if (lexer.token == Token.LPAREN &&
                     !(expr instanceof SQLIntegerExpr) && !(expr instanceof SQLHexExpr)) {
@@ -4943,7 +4952,7 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.RESTRICT || lexer.identifierEquals(FnvHash.Constants.RESTRICT)) {
             option = SQLForeignKeyImpl.Option.RESTRICT;
             lexer.nextToken();
-        } else if (lexer.identifierEquals(FnvHash.Constants.CASCADE)) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.CASCADE) || lexer.token == CASCADE) {
             option = SQLForeignKeyImpl.Option.CASCADE;
             lexer.nextToken();
         } else if (lexer.token() == Token.SET) {

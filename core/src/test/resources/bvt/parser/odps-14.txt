@@ -1,0 +1,44 @@
+-- 1 开头注释 ok
+insert into table tmp.abc
+-- 1.1 test ok
+select -- 2 select注释
+-- 3 空白注释
+a,b,-- 4 空白注释 ok
+c, -- 5 空白注释 ok
+d,e,f -- 6 空白注释
+-- 7 空白注释
+from tmp t1 -- 8 空白注释 ok
+-- 9 空白注释 ok
+group by -- 10 空白注释 ok
+a,b,c,
+d,-- 11 空白注释 ok
+-- 12 空白注释 ok
+e,f
+-- 13 空白注释 ok
+grouping sets( -- 14 空白注释
+-- 15 空白注释
+(a,b,c),(b,c,d),(d,e,f))
+-- 16 空白注释 ok
+---------------------------
+-- 1 开头注释 ok
+INSERT INTO TABLE tmp.abc
+-- 1.1 test ok
+SELECT a -- 2 select注释
+	-- 3 空白注释
+	, b -- 4 空白注释 ok
+	, c -- 5 空白注释 ok
+	, d, e, f -- 6 空白注释
+	-- 7 空白注释
+FROM tmp t1 -- 8 空白注释 ok
+-- 9 空白注释 ok
+GROUP BY -- 10 空白注释 ok
+	a, 
+	b, 
+	c, 
+	d -- 11 空白注释 ok
+	-- 12 空白注释 ok
+	, 
+	e, 
+	f -- 13 空白注释 ok
+	, 
+	GROUPING SETS ((a, b, c), (b, c, d), (d, e, f))

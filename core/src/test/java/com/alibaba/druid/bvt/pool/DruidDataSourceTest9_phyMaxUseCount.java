@@ -1,15 +1,10 @@
 package com.alibaba.druid.bvt.pool;
 
-import com.alibaba.druid.filter.FilterAdapter;
-import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class DruidDataSourceTest9_phyMaxUseCount extends TestCase {
@@ -25,11 +20,11 @@ public class DruidDataSourceTest9_phyMaxUseCount extends TestCase {
 
         Properties properties = new Properties();
         properties.put("druid.phyMaxUseCount", "20");
-        dataSource.configFromPropety(properties);
+        dataSource.configFromPropeties(properties);
         assertEquals(20, dataSource.getPhyMaxUseCount());
 
         properties.put("druid.phyMaxUseCount", "10");
-        dataSource.configFromPropety(properties);
+        dataSource.configFromPropeties(properties);
         assertEquals(10, dataSource.getPhyMaxUseCount());
 
         dataSource.setFilters("log4j");

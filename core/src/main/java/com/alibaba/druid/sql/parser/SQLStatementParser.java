@@ -2520,6 +2520,13 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.TO);
             renameColumn.setTo(this.exprParser.name());
             return renameColumn;
+        } else if (lexer.token == Token.CONSTRAINT) {
+            lexer.nextToken();
+            SQLAlterTableRenameConstraint renameConstraint = new SQLAlterTableRenameConstraint();
+            renameConstraint.setConstraint(this.exprParser.name());
+            accept(Token.TO);
+            renameConstraint.setTo(this.exprParser.name());
+            return renameConstraint;
         }
 
         if (lexer.token == Token.TO) {
@@ -2755,7 +2762,16 @@ public class SQLStatementParser extends SQLParser {
 
         for (; ; ) {
             SQLName name = this.exprParser.name();
-            stmt.addPartition(new SQLExprTableSource(name));
+            SQLExprTableSource tab;
+            if (lexer.token == Token.AS) {
+                lexer.nextToken();
+                String alias = this.exprParser.name().getSimpleName();
+                tab = new SQLExprTableSource(name, alias);
+            } else {
+                tab = new SQLExprTableSource(name);
+            }
+
+            stmt.addPartition(tab);
             if (lexer.token == Token.COMMA) {
                 lexer.nextToken();
                 continue;
@@ -2770,7 +2786,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (lexer.identifierEquals(FnvHash.Constants.CASCADE)) {
+            if (lexer.identifierEquals(FnvHash.Constants.CASCADE) || lexer.token == CASCADE) {
                 lexer.nextToken();
                 stmt.setCascade(true);
 
@@ -2864,7 +2880,7 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.identifierEquals("RESTRICT")) {
             lexer.nextToken();
             stmt.setRestrict(true);
-        } else if (lexer.identifierEquals("CASCADE")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.CASCADE) || lexer.token == CASCADE) {
             lexer.nextToken();
 
             if (lexer.identifierEquals("CONSTRAINTS")) { // for oracle

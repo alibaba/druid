@@ -2378,6 +2378,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount++;
             for (int i = 0; i < itemSize; ++i) {
                 SQLExpr item = items.get(i);
+                if (isPrettyFormat() && item.hasBeforeComment()) {
+                    if (i != 0) {
+                        print(' ');
+                    }
+                    printlnComments(item.getBeforeCommentsDirect());
+                }
+
                 if (i != 0) {
                     if (groupItemSingleLine) {
                         println(", ");
@@ -5756,6 +5763,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAlterTableRenameColumn x) {
         print0(ucase ? "RENAME COLUMN " : "rename column ");
         x.getColumn().accept(this);
+        print0(ucase ? " TO " : " to ");
+        x.getTo().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableRenameConstraint x) {
+        print0(ucase ? "RENAME CONSTRAINT " : "rename constraint ");
+        x.getConstraint().accept(this);
         print0(ucase ? " TO " : " to ");
         x.getTo().accept(this);
         return false;
