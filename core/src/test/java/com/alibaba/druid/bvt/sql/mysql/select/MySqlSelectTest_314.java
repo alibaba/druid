@@ -40,4 +40,17 @@ public class MySqlSelectTest_314
         SQLStatement stmt = stmtList.get(0);
         assertNotNull(stmt);
     }
+
+    public void test3() throws Exception {
+        String sql = Utils.readFromResource("bvt/parser/mysql_35.txt");
+
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.mysql);
+        SQLStatement stmt = stmtList.get(0);
+        assertNotNull(stmt);
+        assertEquals("SELECT *\n" +
+                "FROM t1\n" +
+                "WHERE BINARY (l1 = 'zgecgy'\n" +
+                "\tOR l2 = 'zgecgy')\n" +
+                "\tAND l3 = 0", stmt.toString());
+    }
 }

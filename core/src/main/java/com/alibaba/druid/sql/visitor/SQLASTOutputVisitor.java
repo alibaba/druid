@@ -3925,7 +3925,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             case Prior:
             case ConnectByRoot:
                 print(' ');
-                expr.accept(this);
+                if (expr instanceof SQLBinaryOpExpr) {
+                    print('(');
+                    expr.accept(this);
+                    print(')');
+                } else {
+                    expr.accept(this);
+                }
                 return false;
             default:
                 break;
