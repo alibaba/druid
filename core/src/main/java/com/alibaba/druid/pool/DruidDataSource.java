@@ -1013,20 +1013,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                 }
             }
+        }
+        Object propertyConnectTimeout = connectProperties.get("connectTimeout");
+        if (propertyConnectTimeout instanceof String) {
+            setConnectTimeout((String) propertyConnectTimeout);
+        } else if (propertyConnectTimeout instanceof Number) {
+            setConnectTimeout(((Number) propertyConnectTimeout).intValue());
+        }
 
-            Object propertyConnectTimeout = connectProperties.get("connectTimeout");
-            if (propertyConnectTimeout instanceof String) {
-                setConnectTimeout((String) propertyConnectTimeout);
-            } else if (propertyConnectTimeout instanceof Number) {
-                setConnectTimeout(((Number) propertyConnectTimeout).intValue());
-            }
-
-            Object propertySocketTimeout = connectProperties.get("socketTimeout");
-            if (propertySocketTimeout instanceof String) {
-                setSocketTimeout((String) propertySocketTimeout);
-            } else if (propertySocketTimeout instanceof Number) {
-                setSocketTimeout(((Number) propertySocketTimeout).intValue());
-            }
+        Object propertySocketTimeout = connectProperties.get("socketTimeout");
+        if (propertySocketTimeout instanceof String) {
+            setSocketTimeout((String) propertySocketTimeout);
+        } else if (propertySocketTimeout instanceof Number) {
+            setSocketTimeout(((Number) propertySocketTimeout).intValue());
         }
     }
 
