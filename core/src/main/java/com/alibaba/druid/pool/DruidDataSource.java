@@ -1013,8 +1013,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                 }
             }
-
         }
+
         Object propertyConnectTimeout = connectProperties.get("connectTimeout");
         if (propertyConnectTimeout instanceof String) {
             setConnectTimeout((String) propertyConnectTimeout);
