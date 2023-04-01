@@ -538,12 +538,8 @@ public class SQLEvalVisitorUtils {
                 // 3. 遍历父对象找到当前函数所对应的字段并用函数的结果替换函数表达式
                 for (Field field : fields) {
                     try {
-                        Object o = null;
                         field.setAccessible(true);
-                        if (field.isAccessible()) {
-                            o = field.get(parent);
-                        }
-                        if (field.isAccessible() && o == x) {
+                        if (field.isAccessible() && field.get(parent) == x) {
                             String fieldName = field.getName();
                             String setMethodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
                             Method setMethod = parentClass.getMethod(setMethodName, SQLExpr.class);
