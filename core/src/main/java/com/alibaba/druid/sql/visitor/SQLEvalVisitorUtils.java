@@ -525,9 +525,9 @@ public class SQLEvalVisitorUtils {
         return false;
     }
 
-    public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x, boolean preComputed) {
+    public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x, boolean preCompute) {
         boolean visit = visit(visitor, x);
-        if(!preComputed){
+        if(!preCompute){
             return visit;
         }else{
             // 1. 拿到函数的计算结果
