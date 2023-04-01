@@ -527,22 +527,20 @@ public class SQLEvalVisitorUtils {
 
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x, boolean preCompute) {
         boolean visit = visit(visitor, x);
-        if(!preCompute){
-            return visit;
-        }else{
+        if (preCompute) {
             // 1. 拿到函数的计算结果
             Object result = x.getAttributes().get(EVAL_VALUE);
-            if(result instanceof SQLExpr){
+            if (result instanceof SQLExpr) {
                 // 2. 获得函数的父节点
                 SQLObject parent = x.getParent();
                 Class<? extends SQLObject> parentClass = parent.getClass();
                 Field[] fields = parentClass.getDeclaredFields();
                 // 3. 遍历父对象找到当前函数所对应的字段并用函数的结果替换函数表达式
-                for(Field field: fields){
+                for (Field field : fields) {
                     try {
                         Object o = null;
                         field.setAccessible(true);
-                        if(field.isAccessible()){
+                        if (field.isAccessible()) {
                             o = field.get(parent);
                         }
                         if (field.isAccessible() && o == x) {
@@ -551,13 +549,13 @@ public class SQLEvalVisitorUtils {
                             Method setMethod = parentClass.getMethod(setMethodName, SQLExpr.class);
                             setMethod.invoke(parent, result);
                         }
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         throw new ParserException("SQL rebuild failed");
                     }
                 }
             }
-            return true;
         }
+        return visit;
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLCharExpr x) {

@@ -33,7 +33,7 @@ public class PrecomputedFunctionTest extends TestCase {
             @Override
             public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
                 List<SQLExpr> arguments = x.getArguments();
-                if(!arguments.get(0).computeDataType().isString() && !arguments.get(1).computeDataType().isString()){
+                if (!arguments.get(0).computeDataType().isString() && !arguments.get(1).computeDataType().isString()) {
                     throw new RuntimeException("函数参数类型错误");
                 }
                 SQLCharExpr dateFormat = (SQLCharExpr) arguments.get(1);
