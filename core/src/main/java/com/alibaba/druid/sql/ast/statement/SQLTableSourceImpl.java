@@ -29,6 +29,8 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     protected List<SQLHint> hints;
     protected SQLExpr flashback;
     protected long aliasHashCode64;
+    protected SQLPivot pivot;
+    protected SQLUnpivot unpivot;
 
     public SQLTableSourceImpl() {
     }
@@ -212,5 +214,29 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
         result = 31 * result + (flashback != null ? flashback.hashCode() : 0);
         result = 31 * result + (int) (aliasHashCode64() ^ (aliasHashCode64() >>> 32));
         return result;
+    }
+
+    @Override
+    public SQLPivot getPivot() {
+        return pivot;
+    }
+
+    @Override
+    public void setPivot(SQLPivot x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.pivot = x;
+    }
+
+    public SQLUnpivot getUnpivot() {
+        return unpivot;
+    }
+
+    public void setUnpivot(SQLUnpivot x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.unpivot = x;
     }
 }

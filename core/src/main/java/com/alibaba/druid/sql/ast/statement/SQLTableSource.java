@@ -15,10 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.*;
 
 import java.util.List;
 
@@ -58,4 +55,12 @@ public interface SQLTableSource extends SQLObject {
     SQLTableSource findTableSource(String alias);
 
     SQLTableSource findTableSource(long alias_hash);
+
+    SQLPivot getPivot();
+
+    void setPivot(SQLPivot pivot);
+
+    SQLUnpivot getUnpivot();
+
+    void setUnpivot(SQLUnpivot x);
 }
