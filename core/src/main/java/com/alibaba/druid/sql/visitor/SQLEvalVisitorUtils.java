@@ -38,7 +38,6 @@ import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
