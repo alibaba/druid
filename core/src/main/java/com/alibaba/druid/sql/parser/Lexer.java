@@ -3256,7 +3256,7 @@ public class Lexer {
 
         char[] value = sub_chars(mark, bufPos);
         if (!StringUtils.isNumber(value)) {
-            throw new ParserException(value + " is not a number! " + info());
+            throw new ParserException(new String(value) + " is not a number! " + info());
         }
         return new BigDecimal(value);
     }
@@ -3264,7 +3264,7 @@ public class Lexer {
     public SQLNumberExpr numberExpr() {
         char[] value = sub_chars(mark, bufPos);
         if (!StringUtils.isNumber(value)) {
-            throw new ParserException(value + " is not a number! " + info());
+            throw new ParserException(new String(value) + " is not a number! " + info());
         }
 
         return new SQLNumberExpr(value);
@@ -3273,7 +3273,7 @@ public class Lexer {
     public SQLNumberExpr numberExpr(SQLObject parent) {
         char[] value = sub_chars(mark, bufPos);
         if (!StringUtils.isNumber(value)) {
-            throw new ParserException(value + " is not a number! " + info());
+            throw new ParserException(new String(value) + " is not a number! " + info());
         }
 
         return new SQLNumberExpr(value, parent);
@@ -3282,7 +3282,7 @@ public class Lexer {
     public SQLNumberExpr numberExpr(boolean negate) {
         char[] value = sub_chars(mark, bufPos);
         if (!StringUtils.isNumber(value)) {
-            throw new ParserException(value + " is not a number! " + info());
+            throw new ParserException(new String(value) + " is not a number! " + info());
         }
 
         if (negate) {
