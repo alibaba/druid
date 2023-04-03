@@ -28,11 +28,8 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleAnalyticWindowing().accept(adapter);
         new SQLDateExpr().accept(adapter);
         new SQLDbLinkExpr().accept(adapter);
-        new OracleSelectPivot.Item().accept(adapter);
-        new OracleSelectPivot().accept(adapter);
         new CheckOption().accept(adapter);
         new ReadOnly().accept(adapter);
-        new OracleSelectUnPivot().accept(adapter);
         new SQLTimestampExpr().accept(adapter);
         new PartitionExtensionClause().accept(adapter);
         new SQLGroupingSetExpr().accept(adapter);

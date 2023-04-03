@@ -66,16 +66,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     }
 
     @Override
-    public boolean visit(OracleSelectPivot x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(OracleSelectPivot.Item x) {
-        return false;
-    }
-
-    @Override
     public boolean visit(OracleSelectRestriction.CheckOption x) {
         return false;
     }
@@ -87,11 +77,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
 
     @Override
     public boolean visit(OracleSelectSubqueryTableSource x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(OracleSelectUnPivot x) {
         return false;
     }
 

@@ -1370,7 +1370,9 @@ public class SQLSelectParser extends SQLParser {
                 case OUTER:
                     break;
                 default:
-                    if (!(token == Token.IDENTIFIER
+                    if (identifierEquals("PIVOT") || identifierEquals("UNPIVOT")) {
+                        parsePivot(tableSource);
+                    } else if (!(token == Token.IDENTIFIER
                             && ((hash = lexer.hashLCase()) == FnvHash.Constants.STRAIGHT_JOIN
                             || hash == FnvHash.Constants.CROSS))) {
                         boolean must = false;
@@ -2090,5 +2092,158 @@ public class SQLSelectParser extends SQLParser {
         }
 
         return tableSource;
+    }
+
+    protected void parsePivot(SQLTableSource tableSource) {
+        SQLSelectItem item;
+        if (lexer.identifierEquals(FnvHash.Constants.PIVOT)) {
+            lexer.nextToken();
+
+            SQLPivot pivot = new SQLPivot();
+
+            if (lexer.identifierEquals("XML")) {
+                lexer.nextToken();
+                pivot.setXml(true);
+            }
+
+            accept(Token.LPAREN);
+            while (true) {
+                item = new SQLSelectItem();
+                item.setExpr((SQLAggregateExpr) this.exprParser.expr());
+                item.setAlias(as());
+                pivot.addItem(item);
+
+                if (!(lexer.token() == (Token.COMMA))) {
+                    break;
+                }
+                lexer.nextToken();
+            }
+
+            accept(Token.FOR);
+
+            if (lexer.token() == (Token.LPAREN)) {
+                lexer.nextToken();
+                while (true) {
+                    pivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                    lexer.nextToken();
+
+                    if (!(lexer.token() == (Token.COMMA))) {
+                        break;
+                    }
+                    lexer.nextToken();
+                }
+
+                accept(Token.RPAREN);
+            } else {
+                pivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                lexer.nextToken();
+            }
+
+            accept(Token.IN);
+            accept(Token.LPAREN);
+//            if (lexer.token() == (Token.LPAREN)) {
+//                throw new ParserException("TODO. " + lexer.info());
+//            }
+
+            if (lexer.token() == (Token.SELECT)) {
+                SQLExpr expr = this.exprParser.expr();
+                item = new SQLSelectItem();
+                item.setExpr(expr);
+                item.setParent(pivot);
+                pivot.getPivotIn().add(item);
+            } else {
+                for (; ; ) {
+                    item = new SQLSelectItem();
+                    item.setExpr(this.exprParser.expr());
+                    item.setAlias(as());
+                    item.setParent(pivot);
+                    pivot.getPivotIn().add(item);
+
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    }
+
+                    lexer.nextToken();
+                }
+            }
+
+            accept(Token.RPAREN);
+
+            accept(Token.RPAREN);
+
+            tableSource.setPivot(pivot);
+        } else if (lexer.identifierEquals("UNPIVOT")) {
+            lexer.nextToken();
+
+            SQLUnpivot unPivot = new SQLUnpivot();
+            if (lexer.identifierEquals("INCLUDE")) {
+                lexer.nextToken();
+                acceptIdentifier("NULLS");
+                unPivot.setNullsIncludeType(SQLUnpivot.NullsIncludeType.INCLUDE_NULLS);
+            } else if (lexer.identifierEquals("EXCLUDE")) {
+                lexer.nextToken();
+                acceptIdentifier("NULLS");
+                unPivot.setNullsIncludeType(SQLUnpivot.NullsIncludeType.EXCLUDE_NULLS);
+            }
+
+            accept(Token.LPAREN);
+
+            if (lexer.token() == (Token.LPAREN)) {
+                lexer.nextToken();
+                this.exprParser.exprList(unPivot.getItems(), unPivot);
+                accept(Token.RPAREN);
+            } else {
+                unPivot.addItem(this.exprParser.expr());
+            }
+
+            accept(Token.FOR);
+
+            if (lexer.token() == (Token.LPAREN)) {
+                lexer.nextToken();
+                while (true) {
+                    unPivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                    lexer.nextToken();
+
+                    if (!(lexer.token() == (Token.COMMA))) {
+                        break;
+                    }
+                    lexer.nextToken();
+                }
+
+                accept(Token.RPAREN);
+            } else {
+                unPivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                lexer.nextToken();
+            }
+
+            accept(Token.IN);
+            accept(Token.LPAREN);
+            if (lexer.token() == (Token.LPAREN)) {
+                throw new ParserException("TODO. " + lexer.info());
+            }
+
+            if (lexer.token() == (Token.SELECT)) {
+                throw new ParserException("TODO. " + lexer.info());
+            }
+
+            for (; ; ) {
+                item = new SQLSelectItem();
+                item.setExpr(this.exprParser.expr());
+                item.setAlias(as());
+                unPivot.getPivotIn().add(item);
+
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+
+                lexer.nextToken();
+            }
+
+            accept(Token.RPAREN);
+
+            accept(Token.RPAREN);
+
+            tableSource.setUnpivot(unPivot);
+        }
     }
 }

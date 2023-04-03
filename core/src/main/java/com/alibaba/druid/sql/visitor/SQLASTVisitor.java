@@ -2480,4 +2480,18 @@ public interface SQLASTVisitor {
     default void endVisit(SQLOptimizeStatement x) {
     }
 
+    default boolean visit(SQLPivot x) {
+        return true;
+    }
+
+    default void endVisit(SQLPivot x) {
+    }
+
+    default boolean visit(SQLUnpivot x) {
+        return true;
+    }
+
+    default void endVisit(SQLUnpivot x) {
+    }
+
 }
