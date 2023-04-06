@@ -57,7 +57,8 @@ public class OracleSelectParserUnpivotTest {
 				+ "	TERM,\n"
 				+ "	subject,\n"
 				+ "	STU_NAME,\n"
-				+ "	score\n"
+				+ "	score,\n"
+				+ "	hello\n"
 				+ "FROM\n"
 				+ "	(\n"
 				+ "	SELECT\n"
@@ -69,7 +70,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "		'72' czxt\n"
 				+ "	FROM DUAL)\n"
 				+ "			UNPIVOT(score FOR (subject, hello) IN(\n"
-				+ "			wjf AS ('微积分', '微积分'||'123'),\n"
+				+ "			wjf AS ('微积分', '微积分'),\n"
 				+ "			xxds AS ('线性代数', 'abc'),\n"
 				+ "			sjjg AS ('数据结构', 'def'),\n"
 				+ "			czxt AS ('操作系统', 'ghk'))) t";
@@ -98,7 +99,7 @@ public class OracleSelectParserUnpivotTest {
 				+ "          FROM DUAL\n"
 				+ "          )\n"
 				+ "UNPIVOT((NAME, score) FOR subject IN(\n"
-				+ "(STU_NAME, wjf)   as '微积分'||'123',\n"
+				+ "(STU_NAME, wjf)   as '微积分',\n"
 				+ "(STU_NAME, xxds) as '线性代数',\n"
 				+ "(STU_NAME, sjjg) as '数据结构',\n"
 				+ "(STU_NAME, czxt) as '操作系统')) t";
@@ -140,6 +141,15 @@ public class OracleSelectParserUnpivotTest {
 				+ "(STU_NAME,sjjg) as ('数据结构','def'),\n"
 				+ "(STU_NAME,czxt) as ('操作系统','ghk'))) t";
 		SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
+		System.out.println(stat.toString());
+		System.out.println();
+	}
+
+	@Test
+	public void testUnpivotMultiColumns3() {
+		String sql = "select * from mf_shops\r\n"
+			+ "unpivot (sales for shop in (shop1 as 'shop_name_1', shop2 as 'shop_name_2', shop3 as 'shop_name_3', shop4 as 'shop_name_4'))";
+		SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.odps, false);
 		System.out.println(stat.toString());
 		System.out.println();
 	}

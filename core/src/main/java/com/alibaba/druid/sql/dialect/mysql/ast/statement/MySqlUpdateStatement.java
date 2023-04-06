@@ -191,7 +191,7 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
         if (queryOnPk != that.queryOnPk) {
             return false;
         }
-        if (this.hints != null ? hints.equals(that.hints) : that.hints != null) {
+        if (this.hints != null ? !hints.equals(that.hints) : that.hints != null) {
             return false;
         }
         if (limit != null ? !limit.equals(that.limit) : that.limit != null) {

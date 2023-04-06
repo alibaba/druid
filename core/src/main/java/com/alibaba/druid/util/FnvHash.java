@@ -1138,5 +1138,12 @@ public final class FnvHash {
         long CLONE = fnv1a_64_lower("CLONE");
         long INSTALL = fnv1a_64_lower("INSTALL");
         long UNLOAD = fnv1a_64_lower("UNLOAD");
+
+        long DUPLICATE = fnv1a_64_lower("DUPLICATE");
+        long AGGREGATE = fnv1a_64_lower("AGGREGATE");
+        long UNIQUE = fnv1a_64_lower("UNIQUE");
+        long PRIMARY = fnv1a_64_lower("PRIMARY");
+        long THAN = fnv1a_64_lower("THAN");
+        long PROPERTIES = fnv1a_64_lower("PROPERTIES");
     }
 }

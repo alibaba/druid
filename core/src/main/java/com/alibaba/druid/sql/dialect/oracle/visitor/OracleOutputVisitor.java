@@ -299,10 +299,16 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             printFlashback(x.getFlashback());
         }
 
-        OracleSelectPivotBase pivot = x.getPivot();
+        SQLPivot pivot = x.getPivot();
         if (pivot != null) {
             println();
             pivot.accept(this);
+        }
+
+        SQLUnpivot unpivot = x.getUnpivot();
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
         }
 
         return false;
@@ -322,45 +328,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(x.getNullsOrderType().toFormalString());
         }
 
-        return false;
-    }
-
-    public boolean visit(OracleSelectPivot x) {
-        print0(ucase ? "PIVOT" : "pivot");
-        if (x.isXml()) {
-            print0(ucase ? " XML" : " xml");
-        }
-        print0(" (");
-        printAndAccept(x.getItems(), ", ");
-
-        if (x.getPivotFor().size() > 0) {
-            print0(ucase ? " FOR " : " for ");
-            if (x.getPivotFor().size() == 1) {
-                ((SQLExpr) x.getPivotFor().get(0)).accept(this);
-            } else {
-                print('(');
-                printAndAccept(x.getPivotFor(), ", ");
-                print(')');
-            }
-        }
-
-        if (x.getPivotIn().size() > 0) {
-            print0(ucase ? " IN (" : " in (");
-            printAndAccept(x.getPivotIn(), ", ");
-            print(')');
-        }
-
-        print(')');
-
-        return false;
-    }
-
-    public boolean visit(OracleSelectPivot.Item x) {
-        x.getExpr().accept(this);
-        if ((x.getAlias() != null) && (x.getAlias().length() > 0)) {
-            print0(ucase ? " AS " : " as ");
-            print0(x.getAlias());
-        }
         return false;
     }
 
@@ -483,10 +450,16 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         println();
         print(')');
 
-        OracleSelectPivotBase pivot = x.getPivot();
+        SQLPivot pivot = x.getPivot();
         if (pivot != null) {
             println();
             pivot.accept(this);
+        }
+
+        SQLUnpivot unpivot = x.getUnpivot();
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
         }
 
         printFlashback(x.getFlashback());
@@ -533,6 +506,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getPivot().accept(this);
         }
 
+        SQLUnpivot unpivot = x.getUnpivot();
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
+        }
+
         printFlashback(x.getFlashback());
 
         printAlias(x.getAlias());
@@ -553,64 +532,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "AS OF " : "as of ");
             flashback.accept(this);
         }
-    }
-
-    public boolean visit(OracleSelectUnPivot x) {
-        print0(ucase ? "UNPIVOT" : "unpivot");
-        if (x.getNullsIncludeType() != null) {
-            print(' ');
-            print0(OracleSelectUnPivot.NullsIncludeType.toString(x.getNullsIncludeType(), ucase));
-        }
-
-        print0(" (");
-        if (x.getItems().size() == 1) {
-            ((SQLExpr) x.getItems().get(0)).accept(this);
-        } else {
-            print0(" (");
-            printAndAccept(x.getItems(), ", ");
-            print(')');
-        }
-
-        if (x.getPivotFor().size() > 0) {
-            print0(ucase ? " FOR " : " for ");
-            if (x.getPivotFor().size() == 1) {
-                ((SQLExpr) x.getPivotFor().get(0)).accept(this);
-            } else {
-                print('(');
-                printAndAccept(x.getPivotFor(), ", ");
-                print(')');
-            }
-        }
-
-        if (x.getPivotIn().size() > 0) {
-            print0(ucase ? " IN (" : " in (");
-            printAndAccept(x.getPivotIn(), ", ");
-            print(')');
-        }
-
-        print(')');
-        return false;
-    }
-
-    public boolean visit(OracleSelectUnPivot.Item x) {
-        if (x.getColumns().size() == 1) {
-            ((SQLExpr) x.getColumns().get(0)).accept(this);
-        } else {
-            print('(');
-            printAndAccept(x.getColumns(), ", ");
-            print(')');
-        }
-        if ((x.getLiterals() != null) && (x.getLiterals().size() > 0)) {
-            print0(ucase ? " AS " : " as ");
-            if (x.getLiterals().size() == 1) {
-                ((SQLExpr) x.getLiterals().get(0)).accept(this);
-            } else {
-                print('(');
-                printAndAccept(x.getLiterals(), ", ");
-                print(')');
-            }
-        }
-        return false;
     }
 
     public boolean visit(OracleUpdateStatement x) {

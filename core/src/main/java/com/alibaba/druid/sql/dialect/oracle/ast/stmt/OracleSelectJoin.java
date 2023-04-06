@@ -25,8 +25,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelectTableSource {
-    protected OracleSelectPivotBase pivot;
-
     public OracleSelectJoin(String alias) {
         super(alias);
     }
@@ -36,14 +34,6 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     public OracleSelectJoin(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition) {
         super(left, joinType, right, condition);
-    }
-
-    public OracleSelectPivotBase getPivot() {
-        return pivot;
-    }
-
-    public void setPivot(OracleSelectPivotBase pivot) {
-        this.pivot = pivot;
     }
 
     @Override
@@ -84,12 +74,16 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
         if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) {
             return false;
         }
+        if (unpivot != null ? !unpivot.equals(that.unpivot) : that.unpivot != null) {
+            return false;
+        }
         return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
     }
 
     @Override
     public int hashCode() {
         int result = pivot != null ? pivot.hashCode() : 0;
+        result = 31 * result + (unpivot != null ? unpivot.hashCode() : 0);
         result = 31 * result + (flashback != null ? flashback.hashCode() : 0);
         return result;
     }
@@ -104,6 +98,10 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
         if (pivot != null) {
             x.setPivot(pivot.clone());
+        }
+
+        if (unpivot != null) {
+            x.setUnpivot(unpivot.clone());
         }
 
         if (flashback != null) {
