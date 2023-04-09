@@ -1214,6 +1214,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
+        if ("odps".equals(dbTypeName)) {
+            return;
+        }
+
         String errorMessage = "";
 
         if (testOnBorrow) {

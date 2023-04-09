@@ -275,7 +275,7 @@
 		<dependency>
 			<groupId>com.aliyun.odps</groupId>
 			<artifactId>odps-sdk-udf</artifactId>
-			<version>0.37.10-public</version>
+			<version>0.43.3-public</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 			<exclusions>
@@ -343,7 +343,7 @@
 		<dependency>
 			<groupId>com.aliyun.odps</groupId>
 			<artifactId>odps-jdbc</artifactId>
-			<version>1.6</version>
+			<version>3.4.2</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -443,7 +443,7 @@
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4</artifactId>
-			<version>4.7</version>
+			<version>4.11.1</version>
 			<scope>test</scope>
 		</dependency>
 
