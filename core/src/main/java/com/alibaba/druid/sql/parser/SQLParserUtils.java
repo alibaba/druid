@@ -111,6 +111,7 @@ public class SQLParserUtils {
             case oceanbase_oracle:
                 return new OracleStatementParser(sql, features);
             case mysql:
+            case tidb:
             case mariadb:
             case drds: {
                 return new MySqlStatementParser(sql, features);

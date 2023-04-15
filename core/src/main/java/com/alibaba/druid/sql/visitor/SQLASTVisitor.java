@@ -503,6 +503,13 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default void endVisit(SQLBeginStatement x) {
+    }
+
+    default boolean visit(SQLBeginStatement x) {
+        return true;
+    }
+
     default void endVisit(SQLUseStatement x) {
     }
 
