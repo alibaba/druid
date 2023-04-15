@@ -4594,6 +4594,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLBeginStatement x) {
+        print0(ucase ? "BEGIN " : "begin ");
+        if(x.getTidbTxnMode()!=null){
+            x.getTidbTxnMode().accept(this);
+        }
+        return false;
+    }
+    @Override
     public boolean visit(SQLUseStatement x) {
         print0(ucase ? "USE " : "use ");
         x.getDatabase().accept(this);

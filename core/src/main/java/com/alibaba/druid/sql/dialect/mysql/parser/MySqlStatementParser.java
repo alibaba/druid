@@ -1737,6 +1737,15 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.BEGIN) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (lexer.token() == Token.SEMI || lexer.token() == Token.EOF || lexer.token() == Token.IDENTIFIER) {
+                lexer.reset(mark);
+                statementList.add(this.parseTiDBBeginStatment());
+                return true;
+            } else {
+                lexer.reset(mark);
+            }
             statementList.add(this.parseBlock());
             return true;
         }
@@ -2354,6 +2363,16 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+
+    public SQLBeginStatement parseTiDBBeginStatment() {
+        SQLBeginStatement tidbBegin = new SQLBeginStatement();
+        tidbBegin.setDbType(dbType);
+        accept(Token.BEGIN);
+        if (lexer.token() == Token.IDENTIFIER) {
+            tidbBegin.setTidbTxnMode(this.exprParser.name());
+        }
+        return tidbBegin;
     }
 
     public SQLBlockStatement parseBlock() {
