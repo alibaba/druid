@@ -186,6 +186,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         this.asyncInit = asyncInit;
     }
 
+    @Deprecated
+    public void configFromPropety(Properties properties) {
+        configFromPropeties(properties);
+    }
+
     public void configFromPropeties(Properties properties) {
         {
             String property = properties.getProperty("druid.name");
