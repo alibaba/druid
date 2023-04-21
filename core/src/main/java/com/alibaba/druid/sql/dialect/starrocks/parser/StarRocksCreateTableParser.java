@@ -1,15 +1,15 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 import com.alibaba.druid.sql.dialect.starrocks.ast.expr.StarRocksCharExpr;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
@@ -29,9 +29,131 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
+    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+        SQLCreateTableStatement createTable = newCreateStatement();
+        createTable.setDbType(getDbType());
+
+        if (acceptCreate) {
+            if (lexer.hasComment() && lexer.isKeepComments()) {
+                createTable.addBeforeComment(lexer.readAndResetComments());
+            }
+
+            accept(Token.CREATE);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
+            lexer.nextToken();
+            createTable.setExternal(true);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.DIMENSION)) {
+            lexer.nextToken();
+            createTable.setDimension(true);
+        }
+
+        accept(Token.TABLE);
+
+        if (lexer.token() == Token.IF || lexer.identifierEquals("IF")) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+
+            createTable.setIfNotExiists(true);
+        }
+
+        createTable.setName(this.exprParser.name());
+
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+
+            for (; ; ) {
+                Token token = lexer.token();
+                if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
+                        && DbType.oracle == dbType) {
+                    SQLTableElement element = this.parseCreateTableSupplementalLogingProps();
+                    element.setParent(createTable);
+                    createTable.getTableElementList().add(element);
+                } else if (token == Token.IDENTIFIER //
+                        || token == Token.LITERAL_ALIAS) {
+                    SQLColumnDefinition column = this.exprParser.parseColumn(createTable);
+                    column.setParent(createTable);
+                    createTable.getTableElementList().add(column);
+                } else if (token == Token.PRIMARY //
+                        || token == Token.UNIQUE //
+                        || token == Token.CHECK //
+                        || token == Token.CONSTRAINT
+                        || token == Token.FOREIGN) {
+                    SQLConstraint constraint = this.exprParser.parseConstaint();
+                    constraint.setParent(createTable);
+                    createTable.getTableElementList().add((SQLTableElement) constraint);
+                } else if (token == Token.TABLESPACE) {
+                    throw new ParserException("TODO " + lexer.info());
+                } else {
+                    SQLColumnDefinition column = this.exprParser.parseColumn();
+                    createTable.getTableElementList().add(column);
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+
+                    if (lexer.token() == Token.RPAREN) { // compatible for sql server
+                        break;
+                    }
+                    continue;
+                }
+
+                break;
+            }
+
+            accept(Token.RPAREN);
+
+            if (lexer.identifierEquals(FnvHash.Constants.INHERITS)) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                SQLName inherits = this.exprParser.name();
+                createTable.setInherits(new SQLExprTableSource(inherits));
+                accept(Token.RPAREN);
+            }
+        }
+
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+
+            SQLSelect select = null;
+            if (DbType.oracle == dbType) {
+                select = new OracleSelectParser(this.exprParser).select();
+            } else {
+                select = this.createSQLSelectParser().select();
+            }
+            createTable.setSelect(select);
+        }
+
+        if (lexer.token() == Token.WITH && DbType.postgresql == dbType) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            parseAssignItems(createTable.getTableOptions(), createTable, false);
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.token() == Token.TABLESPACE) {
+            lexer.nextToken();
+            createTable.setTablespace(
+                    this.exprParser.name()
+            );
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            SQLPartitionBy partitionClause = parsePartitionBy();
+            createTable.setPartitioning(partitionClause);
+        }
+
+        parseCreateTableRest(createTable);
+
+        return createTable;
+    }
+
     public void parseCreateTableRest(SQLCreateTableStatement stmt) {
         StarRocksCreateTableStatement srStmt = (StarRocksCreateTableStatement) stmt;
-
         if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
             lexer.nextToken();
             if (lexer.token() == Token.EQ) {
@@ -40,6 +162,12 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             stmt.setEngine(
                     this.exprParser.expr()
             );
+        }
+
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+            srStmt.setComment(new SQLCharExpr(lexer.stringVal()));
+            accept(lexer.token());
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE) || lexer.identifierEquals(FnvHash.Constants.AGGREGATE)

@@ -44,6 +44,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                         "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
                         "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
                         ") ENGINE = OLAP\n" +
+                        "COMMENT 'detailDemo detailDemo '\n" +
                         "DUPLICATE KEY(`recruit_date`, `region_num`)\n" +
                         "PARTITION BY RANGE(`recruit_date`)\n" +
                         "(\n" +
@@ -187,6 +188,21 @@ public class StarRocksCreateTableParserTest extends TestCase {
                         "DISTRIBUTED BY HASH(k1) BUCKETS 10\n" +
                         "PROPERTIES (\n" +
                         "  \"storage_type\" = \"column\"\n" +
+                        ")",
+
+                // 8. 外部表
+                "CREATE EXTERNAL TABLE example_db.table_mysql (\n" +
+                        "\tk1 DATE,\n" +
+                        "\tk2 INT,\n" +
+                        "\tk3 SMALLINT,\n" +
+                        "\tk4 VARCHAR(2048),\n" +
+                        "\tk5 DATETIME\n" +
+                        ") ENGINE = mysql\n" +
+                        "\n" +
+                        "PROPERTIES (\n" +
+                        "  \"odbc_catalog_resource\" = \"mysql_resource\",\n" +
+                        "  \"database\" = \"mysql_db_test\",\n" +
+                        "  \"table\" = \"mysql_table_test\"\n" +
                         ")"
 
         };

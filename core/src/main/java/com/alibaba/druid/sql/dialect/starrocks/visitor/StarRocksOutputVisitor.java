@@ -37,6 +37,12 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     public boolean visit(StarRocksCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
 
+        if (x.getComment() != null) {
+            println();
+            print0(ucase ? "COMMENT " : "comment ");
+            x.getComment().accept(this);
+        }
+
         SQLName model = x.getModelKey();
         if (model != null) {
             println();
