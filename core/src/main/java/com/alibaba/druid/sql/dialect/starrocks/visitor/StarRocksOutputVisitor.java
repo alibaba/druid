@@ -267,7 +267,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             keys[i].accept(this);
             print0(" = ");
             ps.get(keys[i]).accept(this);
-            if (i != keys.length -1) {
+            if (i != keys.length - 1) {
                 println(", ");
             }
         }

@@ -63,7 +63,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         acceptIdentifier("PROPERTIES");
         accept(Token.LPAREN);
 
-        while(true) {
+        while (true) {
             if (Token.RPAREN == lexer.token()) {
                 accept(Token.RPAREN);
                 break;

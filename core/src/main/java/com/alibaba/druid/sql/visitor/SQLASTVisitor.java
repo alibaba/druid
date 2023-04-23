@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLAlterResourceGroupSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLCreateResourceGroupStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLListResourceGroupStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
-import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 
 public interface SQLASTVisitor {
     default void endVisit(SQLAllColumnExpr x) {
