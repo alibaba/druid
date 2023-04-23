@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -30,4 +31,8 @@ public class StarRocksStatementParser extends SQLStatementParser {
         return new StarRocksCreateTableParser(this.exprParser);
     }
 
+    @Override
+    public SQLCreateTableStatement parseCreateTable() {
+        return getSQLCreateTableParser().parseCreateTable();
+    }
 }
