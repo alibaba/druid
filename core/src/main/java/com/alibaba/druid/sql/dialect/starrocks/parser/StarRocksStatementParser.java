@@ -1,10 +1,13 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.dialect.starrocks.ast.expr.StarRocksCharExpr;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
+import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
 public class StarRocksStatementParser extends SQLStatementParser {
     public StarRocksStatementParser(String sql) {
@@ -34,5 +37,48 @@ public class StarRocksStatementParser extends SQLStatementParser {
     @Override
     public SQLCreateTableStatement parseCreateTable() {
         return getSQLCreateTableParser().parseCreateTable();
+    }
+
+    @Override
+    public SQLStatement parseCreate() {
+        Lexer.SavePoint savePoint = lexer.markOut();
+        lexer.nextToken();
+
+        // create external source
+        if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
+            acceptIdentifier("EXTERNAL");
+            if (lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
+                acceptIdentifier("RESOURCE");
+                return parseCreateResourceStatement();
+            }
+        }
+
+        lexer.reset(savePoint);
+        return super.parseCreate();
+    }
+
+    private StarRocksCreateResourceStatement parseCreateResourceStatement() {
+        StarRocksCreateResourceStatement stmt = new StarRocksCreateResourceStatement();
+        stmt.setName(this.exprParser.name());
+        acceptIdentifier("PROPERTIES");
+        accept(Token.LPAREN);
+
+        while(true) {
+            if (Token.RPAREN == lexer.token()) {
+                accept(Token.RPAREN);
+                break;
+            } else if (Token.COMMA == lexer.token()) {
+                accept(Token.COMMA);
+            }
+
+            String keyText = SQLUtils.forcedNormalize(lexer.stringVal(), getDbType());
+            lexer.nextToken();
+            accept(Token.EQ);
+            SQLCharExpr value = new StarRocksCharExpr(SQLUtils.forcedNormalize(lexer.stringVal(), getDbType()));
+            stmt.addProperty(keyText, value);
+            lexer.nextToken();
+        }
+
+        return stmt;
     }
 }

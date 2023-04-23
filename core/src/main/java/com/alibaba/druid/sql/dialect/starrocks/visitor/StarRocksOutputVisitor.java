@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -247,6 +248,32 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print0(ucase ? "COMMENT " : "comment ");
             x.getIndexComment().accept(this);
         }
+        return false;
+    }
+
+    public boolean visit(StarRocksCreateResourceStatement x) {
+        print0(ucase ? "CREATE EXTERNAL RESOURCE " : "create external resource ");
+        x.getName().accept(this);
+        println();
+
+        print0(ucase ? "PROPERTIES" : "properties");
+        println(" (");
+        Map<SQLCharExpr, SQLExpr> ps = x.getProperties();
+
+        SQLCharExpr[] keys = ps.keySet().toArray(new SQLCharExpr[0]);
+
+        for (int i = 0; i < keys.length; i++) {
+            print0("  ");
+            keys[i].accept(this);
+            print0(" = ");
+            ps.get(keys[i]).accept(this);
+            if (i != keys.length -1) {
+                println(", ");
+            }
+        }
+        println();
+        print0(")");
+
         return false;
     }
 }
