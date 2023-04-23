@@ -186,6 +186,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         this.asyncInit = asyncInit;
     }
 
+    @Deprecated
+    public void configFromPropety(Properties properties) {
+        configFromPropeties(properties);
+    }
+
     public void configFromPropeties(Properties properties) {
         {
             String property = properties.getProperty("druid.name");
@@ -1211,6 +1216,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         if (this.validationQuery != null && this.validationQuery.length() > 0) {
+            return;
+        }
+
+        if ("odps".equals(dbTypeName)) {
             return;
         }
 
