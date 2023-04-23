@@ -173,6 +173,11 @@ public class DruidDataSourceFactory implements ObjectFactory {
     public static void config(DruidDataSource dataSource, Map<?, ?> properties) throws SQLException {
         String value = null;
 
+        value = (String) properties.get(PROP_NAME);
+        if (value != null) {
+            dataSource.setName(value);
+        }
+
         value = (String) properties.get(PROP_DEFAULTAUTOCOMMIT);
         if (value != null) {
             dataSource.setDefaultAutoCommit(Boolean.valueOf(value).booleanValue());
@@ -377,7 +382,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
                 }
             }
             if (dataSourceProperties != null) {
-                dataSource.configFromPropety(dataSourceProperties);
+                dataSource.configFromPropeties(dataSourceProperties);
             }
         }
 

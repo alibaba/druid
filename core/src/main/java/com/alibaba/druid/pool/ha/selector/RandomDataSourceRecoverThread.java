@@ -83,7 +83,7 @@ public class RandomDataSourceRecoverThread implements Runnable {
         if (validationSleepSeconds > 0) {
             try {
                 LOG.debug("Sleep " + validationSleepSeconds + " second(s) before validation.");
-                Thread.sleep(validationSleepSeconds * 1000);
+                Thread.sleep(validationSleepSeconds * 1000L);
             } catch (InterruptedException e) {
                 // ignore
             }
@@ -92,7 +92,7 @@ public class RandomDataSourceRecoverThread implements Runnable {
 
     private void sleep() {
         try {
-            Thread.sleep(recoverIntervalSeconds * 1000);
+            Thread.sleep(recoverIntervalSeconds * 1000L);
         } catch (InterruptedException e) {
             // ignore
         }

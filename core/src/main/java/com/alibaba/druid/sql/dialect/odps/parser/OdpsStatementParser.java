@@ -286,6 +286,7 @@ public class OdpsStatementParser extends SQLStatementParser {
         if (lexer.identifierEquals("WHOAMI")) {
             lexer.nextToken();
             SQLWhoamiStatement stmt = new SQLWhoamiStatement();
+            stmt.setDbType(DbType.odps);
             statementList.add(stmt);
             return true;
         }

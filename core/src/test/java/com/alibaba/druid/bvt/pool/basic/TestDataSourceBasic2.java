@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.JDBC4ValidConnectionChecker;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -48,7 +49,8 @@ public class TestDataSourceBasic2 extends PoolTestCase {
 
         dataSource.setValidConnectionChecker(null);
         dataSource.setValidConnectionCheckerClassName(null);
-        assertEquals(null, dataSource.getValidConnectionChecker());
+        assertNotNull(dataSource.getValidConnectionChecker());
+        assertTrue(dataSource.getValidConnectionChecker() instanceof JDBC4ValidConnectionChecker);
 
         dataSource.addConnectionProperty("user", "ljw");
         assertEquals(1, dataSource.getConnectProperties().size());

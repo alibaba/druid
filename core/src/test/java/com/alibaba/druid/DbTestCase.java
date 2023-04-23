@@ -38,7 +38,7 @@ public abstract class DbTestCase extends TestCase {
         }
 
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.configFromPropety(properties);
+        dataSource.configFromPropeties(properties);
         return dataSource;
     }
 

@@ -294,7 +294,7 @@ public class HighAvailableDataSource extends WrapperAdapter implements DataSourc
 
     private void createNodeMap() {
         if (nodeListener == null) {
-            // Compatiable with the old version.
+            // Compatible with the old version.
             // Create a FileNodeListener to watch the dataSourceFile.
             FileNodeListener listener = new FileNodeListener();
             listener.setFile(dataSourceFile);

@@ -889,6 +889,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             x.getPivot().accept(this);
         }
 
+        SQLUnpivot unpivot = x.getUnpivot();
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
+        }
+
         printAlias(x.getAlias());
 
         return false;
@@ -1952,6 +1958,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             x.getPivot().accept(this);
         }
 
+        SQLUnpivot unpivot = x.getUnpivot();
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
+        }
+
         printFlashback(x.getFlashback());
 
         if ((x.getAlias() != null) && (x.getAlias().length() != 0)) {
@@ -1963,11 +1975,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    public boolean visit(OracleSelectUnPivot x) {
+    public boolean visit(SQLUnpivot x) {
         print0(ucase ? "UNPIVOT" : "unpivot");
         if (x.getNullsIncludeType() != null) {
             print(' ');
-            print0(OracleSelectUnPivot.NullsIncludeType.toString(x.getNullsIncludeType(), ucase));
+            print0(SQLUnpivot.NullsIncludeType.toString(x.getNullsIncludeType(), ucase));
         }
 
         print0(" (");
@@ -2113,47 +2125,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             printFlashback(x.getFlashback());
         }
 
-        return false;
-    }
-
-    @Override
-    public boolean visit(OracleSelectPivot x) {
-        print0(ucase ? "PIVOT" : "pivot");
-        if (x.isXml()) {
-            print0(ucase ? " XML" : " xml");
-        }
-        print0(" (");
-        printAndAccept(x.getItems(), ", ");
-
-        if (x.getPivotFor().size() > 0) {
-            print0(ucase ? " FOR " : " for ");
-            if (x.getPivotFor().size() == 1) {
-                ((SQLExpr) x.getPivotFor().get(0)).accept(this);
-            } else {
-                print('(');
-                printAndAccept(x.getPivotFor(), ", ");
-                print(')');
-            }
-        }
-
-        if (x.getPivotIn().size() > 0) {
-            print0(ucase ? " IN (" : " in (");
-            printAndAccept(x.getPivotIn(), ", ");
-            print(')');
-        }
-
-        print(')');
-
-        return false;
-    }
-
-    @Override
-    public boolean visit(OracleSelectPivot.Item x) {
-        x.getExpr().accept(this);
-        if ((x.getAlias() != null) && (x.getAlias().length() > 0)) {
-            print0(ucase ? " AS " : " as ");
-            print0(x.getAlias());
-        }
         return false;
     }
 
