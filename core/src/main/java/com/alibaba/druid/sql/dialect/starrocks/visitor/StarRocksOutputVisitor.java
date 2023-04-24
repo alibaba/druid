@@ -252,7 +252,12 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(StarRocksCreateResourceStatement x) {
-        print0(ucase ? "CREATE EXTERNAL RESOURCE " : "create external resource ");
+        print0(ucase ? "CREATE " : "create ");
+        if (x.isExternal()) {
+            print0(ucase ? "EXTERNAL " : "external ");
+        }
+
+        print0(ucase ? "RESOURCE " : "resource ");
         x.getName().accept(this);
         println();
 

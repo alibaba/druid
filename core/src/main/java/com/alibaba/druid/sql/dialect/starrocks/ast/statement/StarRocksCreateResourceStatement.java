@@ -16,6 +16,7 @@ import java.util.Map;
 public class StarRocksCreateResourceStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
     private SQLName name;
     private Map<SQLCharExpr, SQLExpr> properties = new HashMap<SQLCharExpr, SQLExpr>();
+    private boolean external;
 
     public StarRocksCreateResourceStatement() {
         dbType = DbType.starrocks;
@@ -53,6 +54,18 @@ public class StarRocksCreateResourceStatement extends SQLStatementImpl implement
 
     public Map<SQLCharExpr, SQLExpr> getProperties() {
         return properties;
+    }
+
+    public void setProperties(Map<SQLCharExpr, SQLExpr> properties) {
+        this.properties = properties;
+    }
+
+    public boolean isExternal() {
+        return external;
+    }
+
+    public void setExternal(boolean external) {
+        this.external = external;
     }
 
     @Override

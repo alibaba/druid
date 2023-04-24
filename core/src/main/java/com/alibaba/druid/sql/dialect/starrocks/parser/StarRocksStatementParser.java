@@ -47,10 +47,11 @@ public class StarRocksStatementParser extends SQLStatementParser {
         // create external source
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             acceptIdentifier("EXTERNAL");
-            if (lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
-                acceptIdentifier("RESOURCE");
-                return parseCreateResourceStatement();
-            }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
+            lexer.reset(savePoint);
+            return parseCreateResourceStatement();
         }
 
         lexer.reset(savePoint);
@@ -59,6 +60,15 @@ public class StarRocksStatementParser extends SQLStatementParser {
 
     private StarRocksCreateResourceStatement parseCreateResourceStatement() {
         StarRocksCreateResourceStatement stmt = new StarRocksCreateResourceStatement();
+        accept(Token.CREATE);
+        // create external source
+        if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
+            acceptIdentifier("EXTERNAL");
+            stmt.setExternal(true);
+        }
+
+        acceptIdentifier("RESOURCE");
+
         stmt.setName(this.exprParser.name());
         acceptIdentifier("PROPERTIES");
         accept(Token.LPAREN);
