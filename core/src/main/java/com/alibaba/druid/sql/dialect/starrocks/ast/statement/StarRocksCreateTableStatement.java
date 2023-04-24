@@ -2,7 +2,7 @@ package com.alibaba.druid.sql.dialect.starrocks.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLIndexDefinition;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
-    protected SQLName modelKey;
+    protected SQLIndexDefinition modelKey;
 
     protected SQLExpr partitionBy;
     protected SQLExpr start;
@@ -125,11 +125,11 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         this.lessThanMap = lessThanMap;
     }
 
-    public SQLName getModelKey() {
+    public SQLIndexDefinition getModelKey() {
         return modelKey;
     }
 
-    public void setModelKey(SQLName modelKey) {
+    public void setModelKey(SQLIndexDefinition modelKey) {
         this.modelKey = modelKey;
     }
 

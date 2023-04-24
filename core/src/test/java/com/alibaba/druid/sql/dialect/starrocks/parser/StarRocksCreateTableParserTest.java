@@ -42,8 +42,8 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
                     "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
                     ") ENGINE = OLAP\n" +
+                    "DUPLICATE KEY (`recruit_date`, `region_num`)\n" +
                     "COMMENT 'detailDemo detailDemo '\n" +
-                    "DUPLICATE KEY(`recruit_date`, `region_num`)\n" +
                     "PARTITION BY RANGE(`recruit_date`)\n" +
                     "(\n" +
                     "  PARTITION p1 VALUES LESS THAN (\"2021-01-02\"), \n" +
@@ -72,7 +72,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
                     "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
                     ") ENGINE = OLAP\n" +
-                    "DUPLICATE KEY(`recruit_date`, `region_num`)\n" +
+                    "DUPLICATE KEY (`recruit_date`, `region_num`)\n" +
                     "PARTITION BY RANGE(`recruit_date`)\n" +
                     "(\n" +
                     "  PARTITION partition_name1 VALUES LESS THAN MAXVALUE | (\"value1\", \"value2\"), \n" +
@@ -100,7 +100,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
                     "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
                     ") ENGINE = OLAP\n" +
-                    "DUPLICATE KEY(`recruit_date`, `region_num`)\n" +
+                    "DUPLICATE KEY (`recruit_date`, `region_num`)\n" +
                     "PARTITION BY RANGE(`recruit_date`)\n" +
                     "(\n" +
                     "  PARTITION p202101 VALUES [(\"20210101\"),(\"20210201\")),\n" +
@@ -129,7 +129,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
                     "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
                     ") ENGINE = OLAP\n" +
-                    "DUPLICATE KEY(`recruit_date`, `region_num`)\n" +
+                    "DUPLICATE KEY (`recruit_date`, `region_num`)\n" +
                     "PARTITION BY RANGE(`recruit_date`, `region_num`, `num_plate`)\n" +
                     "(\n" +
                     "  PARTITION partition_name1 VALUES [(\"k1-lower1\", \"k2-lower1\", \"k3-lower1\"),(\"k1-upper1\", \"k2-upper1\", \"k3-upper1\")),\n" +
@@ -157,7 +157,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
                     "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
                     ") ENGINE = OLAP\n" +
-                    "DUPLICATE KEY(`recruit_date`, `region_num`)\n" +
+                    "DUPLICATE KEY (`recruit_date`, `region_num`)\n" +
                     "PARTITION BY RANGE(`recruit_date`)\n" +
                     "(\n" +
                     "  PARTITION p202101 VALUES [(\"20210101\"),(\"20210201\")),\n" +
@@ -182,7 +182,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "\tv2 INT SUM,\n" +
                     "\tINDEX index_name(column_name) USING BITMAP COMMENT '22'\n" +
                     ") ENGINE = olap\n" +
-                    "AGGREGATE KEY(k1, k2)\n" +
+                    "AGGREGATE KEY (k1, k2)\n" +
                     "DISTRIBUTED BY HASH(k1) BUCKETS 10\n" +
                     "PROPERTIES (\n" +
                     "  \"storage_type\" = \"column\"\n" +
@@ -201,6 +201,22 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "  \"odbc_catalog_resource\" = \"mysql_resource\",\n" +
                     "  \"database\" = \"mysql_db_test\",\n" +
                     "  \"table\" = \"mysql_table_test\"\n" +
+                    ")",
+
+            // 9. 数据模型列只有一列
+            "CREATE TABLE `olap_5e61d03d605641ebafd100c809dbf15c` (\n" +
+                    "\t`a` int(11) NULL,\n" +
+                    "\t`b` text NULL,\n" +
+                    "\t`c` text NULL\n" +
+                    ") ENGINE = OLAP\n" +
+                    "DUPLICATE KEY (`a`)\n" +
+                    "COMMENT 'OLAP'\n" +
+                    "DISTRIBUTED BY RANDOM BUCKETS 10\n" +
+                    "PROPERTIES (\n" +
+                    "  \"replication_allocation\" = \"tag.location.default: 1\",\n" +
+                    "  \"in_memory\" = \"false\",\n" +
+                    "  \"storage_format\" = \"V2\",\n" +
+                    "  \"disable_auto_compaction\" = \"false\"\n" +
                     ")"
     };
 

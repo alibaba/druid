@@ -2,7 +2,7 @@ package com.alibaba.druid.sql.dialect.starrocks.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLIndexDefinition;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -38,42 +38,16 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     public boolean visit(StarRocksCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
 
+        SQLIndexDefinition model = x.getModelKey();
+        if (model != null) {
+            println();
+            model.accept(this);
+        }
+
         if (x.getComment() != null) {
             println();
             print0(ucase ? "COMMENT " : "comment ");
             x.getComment().accept(this);
-        }
-
-        SQLName model = x.getModelKey();
-        if (model != null) {
-            println();
-            String modelName = model.getSimpleName().toLowerCase();
-            switch (modelName) {
-                case "duplicate":
-                    print0(ucase ? "DUPLICATE" : "duplicate");
-                    break;
-                case "aggregate":
-                    print0(ucase ? "AGGREGATE" : "aggregate");
-                    break;
-                case "unique":
-                    print0(ucase ? "UNIQUE" : "unique");
-                    break;
-                case "primary":
-                    print0(ucase ? "PRIMARY" : "primary");
-                    break;
-                default:
-                    break;
-            }
-            print(' ');
-            print0(ucase ? "KEY" : "key");
-            if (x.getModelKeyParameters().size() > 0) {
-                for (int i = 0; i < x.getModelKeyParameters().size(); ++i) {
-                    if (i != 0) {
-                        println(", ");
-                    }
-                    x.getModelKeyParameters().get(i).accept(this);
-                }
-            }
         }
 
         SQLExpr partitionBy = x.getPartitionBy();

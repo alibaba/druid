@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.starrocks.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLIndexDefinition;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -164,18 +165,21 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             );
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE) || lexer.identifierEquals(FnvHash.Constants.AGGREGATE)
+                || lexer.identifierEquals(FnvHash.Constants.UNIQUE) || lexer.identifierEquals(FnvHash.Constants.PRIMARY)) {
+            SQLName model = this.exprParser.name();
+            accept(Token.KEY);
+            SQLIndexDefinition modelKey = new SQLIndexDefinition();
+            modelKey.setType(model.getSimpleName());
+            modelKey.setKey(true);
+            srStmt.setModelKey(modelKey);
+            this.exprParser.parseIndexRest(modelKey, srStmt);
+        }
+
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
             srStmt.setComment(new SQLCharExpr(lexer.stringVal()));
             accept(lexer.token());
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE) || lexer.identifierEquals(FnvHash.Constants.AGGREGATE)
-                || lexer.identifierEquals(FnvHash.Constants.UNIQUE) || lexer.identifierEquals(FnvHash.Constants.PRIMARY)) {
-            SQLName model = this.exprParser.name();
-            srStmt.setModelKey(model);
-            accept(Token.KEY);
-            this.exprParser.exprList(srStmt.getModelKeyParameters(), srStmt);
         }
 
         if (lexer.token() == Token.PARTITION) {
