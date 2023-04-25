@@ -29,35 +29,35 @@ public class StarRocksStatementParserTest extends TestCase {
         String[] ddlList = new String[] {
                 "CREATE EXTERNAL RESOURCE \"spark0\"\n" +
                         "PROPERTIES (\n" +
-                        "  'spark.master' = 'yarn', \n" +
-                        "  'spark.executor.memory' = '1g', \n" +
-                        "  'working_dir' = 'hdfs://127.0.0.1:10000/tmp/doris', \n" +
-                        "  'spark.submit.deployMode' = 'cluster', \n" +
-                        "  'broker' = 'broker0', \n" +
-                        "  'type' = 'spark', \n" +
-                        "  'spark.yarn.queue' = 'queue0', \n" +
-                        "  'spark.hadoop.yarn.resourcemanager.address' = '127.0.0.1:9999', \n" +
-                        "  'broker.password' = 'password0', \n" +
-                        "  'broker.username' = 'user0', \n" +
-                        "  'spark.hadoop.fs.defaultFS' = 'hdfs://127.0.0.1:10000', \n" +
-                        "  'spark.jars' = 'xxx.jar,yyy.jar', \n" +
-                        "  'spark.files' = '/tmp/aaa,/tmp/bbb'\n" +
+                        "\t'spark.master' = 'yarn',\n" +
+                        "\t'spark.executor.memory' = '1g',\n" +
+                        "\t'working_dir' = 'hdfs://127.0.0.1:10000/tmp/doris',\n" +
+                        "\t'spark.submit.deployMode' = 'cluster',\n" +
+                        "\t'broker' = 'broker0',\n" +
+                        "\t'type' = 'spark',\n" +
+                        "\t'spark.yarn.queue' = 'queue0',\n" +
+                        "\t'spark.hadoop.yarn.resourcemanager.address' = '127.0.0.1:9999',\n" +
+                        "\t'broker.password' = 'password0',\n" +
+                        "\t'broker.username' = 'user0',\n" +
+                        "\t'spark.hadoop.fs.defaultFS' = 'hdfs://127.0.0.1:10000',\n" +
+                        "\t'spark.jars' = 'xxx.jar,yyy.jar',\n" +
+                        "\t'spark.files' = '/tmp/aaa,/tmp/bbb'\n" +
                         ");",
                 "CREATE RESOURCE \"spark0\"\n" +
                         "PROPERTIES (\n" +
-                        "  'spark.master' = 'yarn', \n" +
-                        "  'spark.executor.memory' = '1g', \n" +
-                        "  'working_dir' = 'hdfs://127.0.0.1:10000/tmp/doris', \n" +
-                        "  'spark.submit.deployMode' = 'cluster', \n" +
-                        "  'broker' = 'broker0', \n" +
-                        "  'type' = 'spark', \n" +
-                        "  'spark.yarn.queue' = 'queue0', \n" +
-                        "  'spark.hadoop.yarn.resourcemanager.address' = '127.0.0.1:9999', \n" +
-                        "  'broker.password' = 'password0', \n" +
-                        "  'broker.username' = 'user0', \n" +
-                        "  'spark.hadoop.fs.defaultFS' = 'hdfs://127.0.0.1:10000', \n" +
-                        "  'spark.jars' = 'xxx.jar,yyy.jar', \n" +
-                        "  'spark.files' = '/tmp/aaa,/tmp/bbb'\n" +
+                        "\t'spark.master' = 'yarn',\n" +
+                        "\t'spark.executor.memory' = '1g',\n" +
+                        "\t'working_dir' = 'hdfs://127.0.0.1:10000/tmp/doris',\n" +
+                        "\t'spark.submit.deployMode' = 'cluster',\n" +
+                        "\t'broker' = 'broker0',\n" +
+                        "\t'type' = 'spark',\n" +
+                        "\t'spark.yarn.queue' = 'queue0',\n" +
+                        "\t'spark.hadoop.yarn.resourcemanager.address' = '127.0.0.1:9999',\n" +
+                        "\t'broker.password' = 'password0',\n" +
+                        "\t'broker.username' = 'user0',\n" +
+                        "\t'spark.hadoop.fs.defaultFS' = 'hdfs://127.0.0.1:10000',\n" +
+                        "\t'spark.jars' = 'xxx.jar,yyy.jar',\n" +
+                        "\t'spark.files' = '/tmp/aaa,/tmp/bbb'\n" +
                         ");",
         };
 

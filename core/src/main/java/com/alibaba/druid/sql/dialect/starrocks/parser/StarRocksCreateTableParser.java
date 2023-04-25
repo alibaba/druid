@@ -1,19 +1,17 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLIndexDefinition;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
-import com.alibaba.druid.sql.dialect.starrocks.ast.expr.StarRocksCharExpr;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -272,44 +270,46 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.PROPERTIES)) {
             lexer.nextToken();
             accept(Token.LPAREN);
-            Map<SQLCharExpr, SQLCharExpr> properties = srStmt.getPropertiesMap();
-            Map<SQLCharExpr, SQLCharExpr> lBracketProperties = srStmt.getlBracketPropertiesMap();
-            for (; ; ) {
-                if (lexer.token() == Token.LBRACKET) {
-                    lexer.nextToken();
-                    parseProperties(lBracketProperties);
-                } else {
-                    parseProperties(properties);
-                }
-                lexer.nextToken();
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                }
-                if (lexer.token() == Token.RBRACKET) {
-                    lexer.nextToken();
-                }
-                if (lexer.token() == Token.RPAREN) {
-                    lexer.nextToken();
-                    srStmt.setPropertiesMap(properties);
-                    srStmt.setlBracketPropertiesMap(lBracketProperties);
-                    break;
-                }
-            }
+            srStmt.getStarRocksProperties()
+                    .addAll(parseProperties(srStmt));
         }
-    }
-
-    private void parseProperties(Map<SQLCharExpr, SQLCharExpr> propertiesType) {
-        String keyText = lexer.stringVal();
-        SQLCharExpr key = new StarRocksCharExpr(keyText);
-        lexer.nextToken();
-        accept(Token.EQ);
-        String valueText = lexer.stringVal();
-        SQLCharExpr value = new StarRocksCharExpr(valueText);
-        propertiesType.put(key, value);
     }
 
     protected StarRocksCreateTableStatement newCreateStatement() {
         return new StarRocksCreateTableStatement();
     }
 
+    public List<SQLExpr> parseProperties(SQLObject parent) {
+        List<SQLExpr> starRocksProperties = new LinkedList<>();
+        SQLArrayExpr arrayExpr;
+        for (; ; ) {
+            if (lexer.token() == Token.LBRACKET) {
+                accept(Token.LBRACKET);
+                arrayExpr = new SQLArrayExpr();
+                arrayExpr.setParent(parent);
+                arrayExpr.getValues().add(
+                        this.exprParser.parseAssignItem(true, arrayExpr)
+                );
+                starRocksProperties.add(arrayExpr);
+
+                if (lexer.token() == Token.COMMA) {
+                    accept(Token.COMMA);
+                }
+                accept(Token.RBRACKET);
+            } else {
+                starRocksProperties.add(this.exprParser.parseAssignItem(true, parent));
+            }
+
+            if (lexer.token() == Token.COMMA) {
+                accept(Token.COMMA);
+            }
+
+            if (lexer.token() == Token.RPAREN) {
+                accept(Token.RPAREN);
+                break;
+            }
+        }
+
+        return starRocksProperties;
+    }
 }

@@ -52,7 +52,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ")\n" +
                     "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n" +
                     "PROPERTIES (\n" +
-                    "  \"replication_num\" = \"1\"\n" +
+                    "\t\"replication_num\" = \"1\"\n" +
                     ")",
 
             // 3.LESS THAN分区含有 MAXVALUE| 值的建表语句
@@ -80,7 +80,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ")\n" +
                     "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n" +
                     "PROPERTIES (\n" +
-                    "  \"replication_num\" = \"1\"\n" +
+                    "\t\"replication_num\" = \"1\"\n" +
                     ")",
 
             // 4.分区类型为 Fixed Range的建表语句
@@ -109,7 +109,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ")\n" +
                     "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n" +
                     "PROPERTIES (\n" +
-                    "  \"replication_num\" = \"1\"\n" +
+                    "\t\"replication_num\" = \"1\"\n" +
                     ")",
 
             // 5.分区类型为 Fixed Range, 多分段的建表语句
@@ -137,7 +137,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ")\n" +
                     "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n" +
                     "PROPERTIES (\n" +
-                    "  \"replication_num\" = \"1\"\n" +
+                    "\t\"replication_num\" = \"1\"\n" +
                     ")",
 
             // 6. 多种 PROPERTIES 参数类型的建表语句
@@ -166,12 +166,12 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ")\n" +
                     "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n" +
                     "PROPERTIES (\n" +
-                    "  \"storage_medium\" = \"[SSD|HDD]\",\n" +
-                    "  \"dynamic_partition.enable\" = \"true|false\",\n" +
-                    "  \"dynamic_partition.time_unit\" = \"DAY|WEEK|MONTH\",\n" +
-                    "  \"dynamic_partition.start\" = \"${integer_value}\",\n" +
-                    "  [\"storage_cooldown_time\" = \"yyyy-MM-dd HH:mm:ss\",]\n" +
-                    "  [\"replication_num\" = \"3\"]\n" +
+                    "\t\"storage_medium\" = \"[SSD|HDD]\",\n" +
+                    "\t\"dynamic_partition.enable\" = \"true|false\",\n" +
+                    "\t\"dynamic_partition.time_unit\" = \"DAY|WEEK|MONTH\",\n" +
+                    "\t\"dynamic_partition.start\" = \"${integer_value}\",\n" +
+                    "\t[\"storage_cooldown_time\" = \"yyyy-MM-dd HH:mm:ss\",]\n" +
+                    "\t[\"replication_num\" = \"3\"]\n" +
                     ")",
 
             // 7.含有 Bitmap 索引和聚合函数的建表语句
@@ -185,7 +185,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "AGGREGATE KEY (k1, k2)\n" +
                     "DISTRIBUTED BY HASH(k1) BUCKETS 10\n" +
                     "PROPERTIES (\n" +
-                    "  \"storage_type\" = \"column\"\n" +
+                    "\t\"storage_type\" = \"column\"\n" +
                     ")",
 
             // 8. 外部表
@@ -198,9 +198,9 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ") ENGINE = mysql\n" +
                     "\n" +
                     "PROPERTIES (\n" +
-                    "  \"odbc_catalog_resource\" = \"mysql_resource\",\n" +
-                    "  \"database\" = \"mysql_db_test\",\n" +
-                    "  \"table\" = \"mysql_table_test\"\n" +
+                    "\t\"odbc_catalog_resource\" = \"mysql_resource\",\n" +
+                    "\t\"database\" = \"mysql_db_test\",\n" +
+                    "\t\"table\" = \"mysql_table_test\"\n" +
                     ")",
 
             // 9. 数据模型列只有一列
@@ -213,10 +213,10 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "COMMENT 'OLAP'\n" +
                     "DISTRIBUTED BY RANDOM BUCKETS 10\n" +
                     "PROPERTIES (\n" +
-                    "  \"replication_allocation\" = \"tag.location.default: 1\",\n" +
-                    "  \"in_memory\" = \"false\",\n" +
-                    "  \"storage_format\" = \"V2\",\n" +
-                    "  \"disable_auto_compaction\" = \"false\"\n" +
+                    "\t\"replication_allocation\" = \"tag.location.default: 1\",\n" +
+                    "\t\"in_memory\" = \"false\",\n" +
+                    "\t\"storage_format\" = \"V2\",\n" +
+                    "\t\"disable_auto_compaction\" = \"false\"\n" +
                     ")"
     };
 

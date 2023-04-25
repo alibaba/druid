@@ -1,21 +1,21 @@
 package com.alibaba.druid.sql.dialect.starrocks.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDDLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 public class StarRocksCreateResourceStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
     private SQLName name;
-    private Map<SQLCharExpr, SQLExpr> properties = new HashMap<SQLCharExpr, SQLExpr>();
+    private List<SQLAssignItem> properties = new LinkedList<>();
     private boolean external;
 
     public StarRocksCreateResourceStatement() {
@@ -37,27 +37,27 @@ public class StarRocksCreateResourceStatement extends SQLStatementImpl implement
         this.name = x;
     }
 
-    public void addProperty(SQLCharExpr name, SQLExpr value) {
-        if (value != null) {
-            value.setParent(this);
-        }
-        name.setParent(this);
-        properties.put(name, value);
-    }
-
-    public void addProperty(String name, SQLExpr value) {
-        addProperty(
-                new SQLCharExpr(SQLUtils.forcedNormalize(name, getDbType())),
-                value
-        );
-    }
-
-    public Map<SQLCharExpr, SQLExpr> getProperties() {
+    public List<SQLAssignItem> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map<SQLCharExpr, SQLExpr> properties) {
+    public void setProperties(List<SQLAssignItem> properties) {
         this.properties = properties;
+    }
+
+    public void addProperty(SQLAssignItem assignItem) {
+        if (assignItem != null) {
+            assignItem.setParent(this);
+        }
+        this.properties.add(assignItem);
+    }
+
+    public void addProperty(SQLExpr key, SQLExpr value) {
+        addProperty(new SQLAssignItem(key, value));
+    }
+
+    public void addProperty(String key, String value) {
+        addProperty(new SQLCharExpr(key), new SQLCharExpr(value));
     }
 
     public boolean isExternal() {

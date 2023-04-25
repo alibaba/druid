@@ -1,10 +1,7 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.starrocks.ast.expr.StarRocksCharExpr;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -73,20 +70,16 @@ public class StarRocksStatementParser extends SQLStatementParser {
         acceptIdentifier("PROPERTIES");
         accept(Token.LPAREN);
 
-        while (true) {
-            if (Token.RPAREN == lexer.token()) {
+        for (; ; ) {
+            if (lexer.token() == Token.RPAREN) {
                 accept(Token.RPAREN);
                 break;
-            } else if (Token.COMMA == lexer.token()) {
-                accept(Token.COMMA);
             }
 
-            String keyText = SQLUtils.forcedNormalize(lexer.stringVal(), getDbType());
-            lexer.nextToken();
-            accept(Token.EQ);
-            SQLCharExpr value = new StarRocksCharExpr(SQLUtils.forcedNormalize(lexer.stringVal(), getDbType()));
-            stmt.addProperty(keyText, value);
-            lexer.nextToken();
+            stmt.addProperty(this.exprParser.parseAssignItem(true, stmt));
+            if (lexer.token() == Token.COMMA) {
+                accept(Token.COMMA);
+            }
         }
 
         return stmt;

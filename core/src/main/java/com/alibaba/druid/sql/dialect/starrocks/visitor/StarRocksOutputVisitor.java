@@ -4,12 +4,14 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLIndexDefinition;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
 import java.util.Locale;
@@ -159,51 +161,63 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         }
 
         println();
-        int propertiesSize = x.getPropertiesMap().size();
-        int lBracketSize = x.getlBracketPropertiesMap().size();
-        if (propertiesSize > 0 || lBracketSize > 0) {
-            print0(ucase ? "PROPERTIES " : "properties ");
-            print0("(");
-            if (propertiesSize > 0) {
-                Map<SQLCharExpr, SQLCharExpr> propertiesMap = x.getPropertiesMap();
-                Set<SQLCharExpr> keySet = propertiesMap.keySet();
-                int i = 0;
-                for (SQLCharExpr key : keySet) {
-                    println();
-                    print0("  ");
-                    print0(key.getText());
-                    print0(" = ");
-                    print0(propertiesMap.get(key).getText());
-                    if (lBracketSize > 0 || i != keySet.size() - 1) {
-                        print0(",");
-                    }
-                    i++;
-                }
-            }
-
-            if (lBracketSize > 0) {
-                Map<SQLCharExpr, SQLCharExpr> lBracketPropertiesMap = x.getlBracketPropertiesMap();
-                Set<SQLCharExpr> keySet = lBracketPropertiesMap.keySet();
-                int i = 0;
-                for (SQLCharExpr key : keySet) {
-                    println();
-                    print0("  ");
-                    print0("[");
-                    print0(key.getText());
-                    print0(" = ");
-                    print0(lBracketPropertiesMap.get(key).getText());
-                    if (i != keySet.size() - 1) {
-                        print0(",");
-                    }
-                    print0("]");
-                    i++;
-                }
-            }
-            println();
-            print0(")");
+        if (x.getStarRocksProperties().size() > 0) {
+            print0(ucase ? "PROPERTIES" : "properties");
+            print(x.getStarRocksProperties());
         }
 
         return false;
+    }
+
+    protected void print(List<? extends SQLExpr> exprList) {
+        int size = exprList.size();
+        if (size == 0) {
+            return;
+        }
+
+        print0(" (");
+
+        this.indentCount++;
+        println();
+        for (int i = 0; i < size; ++i) {
+            SQLExpr element = exprList.get(i);
+
+            if (element instanceof SQLArrayExpr) {
+                SQLArrayExpr array = ((SQLArrayExpr) element);
+                SQLExpr expr = array.getExpr();
+
+                if (expr instanceof SQLIdentifierExpr
+                        && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.ARRAY
+                        && printNameQuote
+                ) {
+                    print0(((SQLIdentifierExpr) expr).getName());
+                } else if (expr != null) {
+                    expr.accept(this);
+                }
+
+                print('[');
+                printAndAccept(array.getValues(), ", ");
+
+                if (i != size - 1) {
+                    print0(",");
+                }
+
+                print(']');
+            } else {
+                element.accept(this);
+            }
+
+            if (i != size - 1 && !(element instanceof SQLArrayExpr)) {
+                print(',');
+            }
+
+            if (i != size - 1) {
+                println();
+            }
+        }
+        this.indentCount--;
+        println();
+        print(')');
     }
 
     public boolean visit(SQLColumnDefinition x) {
@@ -236,22 +250,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         println();
 
         print0(ucase ? "PROPERTIES" : "properties");
-        println(" (");
-        Map<SQLCharExpr, SQLExpr> ps = x.getProperties();
-
-        SQLCharExpr[] keys = ps.keySet().toArray(new SQLCharExpr[0]);
-
-        for (int i = 0; i < keys.length; i++) {
-            print0("  ");
-            keys[i].accept(this);
-            print0(" = ");
-            ps.get(keys[i]).accept(this);
-            if (i != keys.length - 1) {
-                println(", ");
-            }
-        }
-        println();
-        print0(")");
+        print(x.getProperties());
 
         return false;
     }
