@@ -1438,6 +1438,18 @@ public class OracleStatementParser extends SQLStatementParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.TYPE)) {
             lexer.reset(savePoint);
             return parseAlterType();
+        } else if (lexer.identifierEquals("SUMMARY")) {
+            lexer.nextToken();
+
+            OracleAlterSummaryStatement stmt = new OracleAlterSummaryStatement();
+            stmt.setName(this.exprParser.name());
+
+            if (lexer.identifierEquals("COMPILE")) {
+                lexer.nextToken();
+                stmt.setCompile(true);
+            }
+
+            return stmt;
         }
 
         throw new ParserException("TODO : " + lexer.info());

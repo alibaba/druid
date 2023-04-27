@@ -392,4 +392,18 @@ public class OracleAlterTableTest26 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.WORKER_STATS")));
     }
+
+    public void test_13() throws Exception {
+        String sql = " /* QSMQ VALIDATION */ ALTER SUMMARY \"CHJMESPRO\".\"MV_PRODUCTION_OVERVIEW_HOUR\" COMPILE;";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("ALTER SUMMARY \"CHJMESPRO\".\"MV_PRODUCTION_OVERVIEW_HOUR\" COMPILE ;",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+    }
 }
