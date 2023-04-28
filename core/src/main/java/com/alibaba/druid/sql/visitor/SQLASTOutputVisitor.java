@@ -7280,7 +7280,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public void setUppCase(boolean val) {
-        this.config(VisitorFeature.OutputUCase, true);
+        this.config(VisitorFeature.OutputUCase, val);
     }
 
     @Override
