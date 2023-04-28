@@ -1,6 +1,6 @@
 # druid
 
-[![Java CI](https://img.shields.io/github/workflow/status/alibaba/fastjson2/Java%20CI/main?logo=github&logoColor=white)](https://github.com/alibaba/fastjson2/actions/workflows/ci.yaml)
+[![Java CI](https://img.shields.io/github/actions/workflow/status/alibaba/fastjson2/Java%20CI/main?logo=github&logoColor=white)](https://github.com/alibaba/fastjson2/actions/workflows/ci.yaml)
 [![Codecov](https://img.shields.io/codecov/c/github/alibaba/driud/main?logo=codecov&logoColor=white)](https://codecov.io/gh/alibaba/druid/branch/master) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid/)
 [![GitHub release](https://img.shields.io/github/release/alibaba/druid.svg)](https://github.com/alibaba/druid/releases)
