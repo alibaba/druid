@@ -48,6 +48,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -185,6 +186,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long cachedPreparedStatementDeleteCount;
     protected volatile long cachedPreparedStatementMissCount;
 
+    private volatile FilterChainImpl filterChain;
+
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> errorCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "errorCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> dupCloseCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "dupCloseCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> startTransactionCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "startTransactionCount");
@@ -196,6 +199,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> cachedPreparedStatementCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "cachedPreparedStatementCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> cachedPreparedStatementDeleteCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "cachedPreparedStatementDeleteCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> cachedPreparedStatementMissCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "cachedPreparedStatementMissCount");
+    protected static final AtomicReferenceFieldUpdater<DruidAbstractDataSource, FilterChainImpl> filterChainUpdater
+            = AtomicReferenceFieldUpdater.newUpdater(DruidAbstractDataSource.class, FilterChainImpl.class, "filterChain");
 
     protected final Histogram transactionHistogram = new Histogram(1,
             10,
@@ -255,7 +260,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected long timeBetweenLogStatsMillis;
     protected DruidDataSourceStatLogger statLogger = new DruidDataSourceStatLoggerImpl();
 
-    private boolean asyncCloseConnectionEnable;
+    protected boolean asyncCloseConnectionEnable;
     protected int maxCreateTaskCount = 3;
     protected boolean failFast;
     protected volatile int failContinuous;
@@ -283,6 +288,19 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         lock = new ReentrantLock(lockFair);
         notEmpty = lock.newCondition();
         empty = lock.newCondition();
+    }
+
+    protected FilterChainImpl createChain() {
+        FilterChainImpl chain = filterChainUpdater.getAndSet(this, null);
+        if (chain == null) {
+            chain = new FilterChainImpl(this);
+        }
+        return chain;
+    }
+
+    protected void recycleFilterChain(FilterChainImpl chain) {
+        chain.reset();
+        filterChainUpdater.lazySet(this, chain);
     }
 
     public boolean isUseLocalSessionState() {
@@ -1672,7 +1690,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (getProxyFilters().isEmpty()) {
             conn = getDriver().connect(url, info);
         } else {
-            conn = new FilterChainImpl(this).connection_connect(info);
+            FilterChainImpl filterChain = createChain();
+            conn = filterChain.connection_connect(info);
+            recycleFilterChain(filterChain);
         }
 
         createCountUpdater.incrementAndGet(this);

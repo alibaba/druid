@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.filter.FilterChainImpl;
-
 import java.sql.NClob;
 
 public class NClobProxyImpl extends ClobProxyImpl implements NClobProxy {
@@ -26,10 +23,6 @@ public class NClobProxyImpl extends ClobProxyImpl implements NClobProxy {
     public NClobProxyImpl(DataSourceProxy dataSource, ConnectionProxy connection, NClob clob) {
         super(dataSource, connection, clob);
         this.nclob = clob;
-    }
-
-    public FilterChain createChain() {
-        return new FilterChainImpl(dataSource);
     }
 
     @Override

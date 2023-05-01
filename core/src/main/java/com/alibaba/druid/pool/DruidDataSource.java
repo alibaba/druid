@@ -1462,9 +1462,14 @@ public class DruidDataSource extends DruidAbstractDataSource
     public DruidPooledConnection getConnection(long maxWaitMillis) throws SQLException {
         init();
 
-        if (filters.size() > 0) {
-            FilterChainImpl filterChain = new FilterChainImpl(this);
-            return filterChain.dataSource_connect(this, maxWaitMillis);
+        final int filtersSize = filters.size();
+        if (filtersSize > 0) {
+            FilterChainImpl filterChain = createChain();
+            try {
+                return filterChain.dataSource_connect(this, maxWaitMillis);
+            } finally {
+                recycleFilterChain(filterChain);
+            }
         } else {
             return getConnectionDirect(maxWaitMillis);
         }
@@ -1990,9 +1995,12 @@ public class DruidDataSource extends DruidAbstractDataSource
             return;
         }
 
+        boolean asyncCloseConnectionEnable = this.removeAbandoned || this.asyncCloseConnectionEnable;
+        boolean isSameThread = pooledConnection.ownerThread == Thread.currentThread();
+
         if (logDifferentThread //
-                && (!isAsyncCloseConnectionEnable()) //
-                && pooledConnection.ownerThread != Thread.currentThread()//
+                && (!asyncCloseConnectionEnable) //
+                && !isSameThread
         ) {
             LOG.warn("get/close not same thread");
         }
@@ -2028,7 +2036,6 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             // reset holder, restore default settings, clear warnings
-            boolean isSameThread = pooledConnection.ownerThread == Thread.currentThread();
             if (!isSameThread) {
                 final ReentrantLock lock = pooledConnection.lock;
                 lock.lock();

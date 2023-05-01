@@ -57,7 +57,8 @@ public abstract class WrapperProxyImpl implements WrapperProxy {
             return true;
         }
 
-        return createChain().isWrapperFor(raw, iface);
+        FilterChain chain = createChain();
+        return chain.isWrapperFor(raw, iface);
     }
 
     @SuppressWarnings("unchecked")
