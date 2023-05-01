@@ -50,6 +50,36 @@ public class DruidWebUtils {
         return ip;
     }
 
+    public static String getRemoteAddr(jakarta.servlet.http.HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip != null && !isValidAddress(ip)) {
+            ip = null;
+        }
+
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+            if (ip != null && !isValidAddress(ip)) {
+                ip = null;
+            }
+        }
+
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+            if (ip != null && !isValidAddress(ip)) {
+                ip = null;
+            }
+        }
+
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+            if (ip != null && !isValidAddress(ip)) {
+                ip = null;
+            }
+        }
+
+        return ip;
+    }
+
     private static boolean isValidAddress(String ip) {
         if (ip == null) {
             return false;
@@ -83,7 +113,29 @@ public class DruidWebUtils {
         return contextPath;
     }
 
+    private static String getContextPath_2_5(jakarta.servlet.ServletContext context) {
+        String contextPath = context.getContextPath();
+
+        if (contextPath == null || contextPath.length() == 0) {
+            contextPath = "/";
+        }
+
+        return contextPath;
+    }
+
     public static String getContextPath(ServletContext context) {
+        if (context.getMajorVersion() == 2 && context.getMinorVersion() < 5) {
+            return null;
+        }
+
+        try {
+            return getContextPath_2_5(context);
+        } catch (NoSuchMethodError error) {
+            return null;
+        }
+    }
+
+    public static String getContextPath(jakarta.servlet.ServletContext context) {
         if (context.getMajorVersion() == 2 && context.getMinorVersion() < 5) {
             return null;
         }
