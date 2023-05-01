@@ -47,7 +47,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     protected TransactionInfo transactionInfo;
     private final boolean dupCloseLogEnable;
     protected volatile boolean traceEnable;
-    private volatile boolean disable;
+    protected volatile boolean disable;
     protected volatile boolean closed;
     static AtomicIntegerFieldUpdater CLOSING_UPDATER = AtomicIntegerFieldUpdater.newUpdater(DruidPooledConnection.class, "closing");
     protected final Thread ownerThread;
@@ -298,7 +298,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
                 return;
             }
 
-            for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
+            for (ConnectionEventListener listener : holder.connectionEventListeners) {
                 listener.connectionClosed(new ConnectionEvent(this));
             }
 

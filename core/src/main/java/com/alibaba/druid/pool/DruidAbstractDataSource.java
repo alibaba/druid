@@ -978,7 +978,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     *
      * @since 1.2.12
      */
     public int getConnectTimeout() {
@@ -986,7 +985,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     *
      * @since 1.2.12
      */
     public void setConnectTimeout(int milliSeconds) {
@@ -1004,7 +1002,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     *
      * @since 1.2.12
      */
     public int getSocketTimeout() {
@@ -1012,7 +1009,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     *
      * @since 1.2.12
      */
     public void setSocketTimeout(int milliSeconds) {
@@ -1663,9 +1659,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         handleConnectionException(conn, t, null);
     }
 
-    public abstract void handleConnectionException(DruidPooledConnection conn,
-                                                   Throwable t,
-                                                   String sql) throws SQLException;
+    public abstract void handleConnectionException(
+            DruidPooledConnection conn,
+            Throwable t,
+            String sql
+    ) throws SQLException;
 
     protected abstract void recycle(DruidPooledConnection pooledConnection) throws SQLException;
 
