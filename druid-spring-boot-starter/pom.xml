@@ -15,7 +15,7 @@
     <url>https://github.com/alibaba/druid</url>
 
     <properties>
-        <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
+        <spring-boot.version>1.5.22.RELEASE</spring-boot.version>
     </properties>
 
     <developers>
@@ -64,6 +64,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.2</version>
         </dependency>
 
         <dependency>
