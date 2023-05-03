@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -26,12 +23,14 @@ import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author lizongbo
  * @see <a href="https://docs.pingcap.com/tidb/stable/sql-statement-begin">BEGIN | TiDB SQL Statement Reference</a>
  */
 public class SQLBeginStatement extends SQLStatementImpl implements SQLReplaceable {
-
     //tidb
     private SQLName tidbTxnMode;
 
