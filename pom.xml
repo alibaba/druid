@@ -478,7 +478,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>enable-incubators-for-jdk17+</id>
+			<id>enable-for-jdk17+</id>
 			<activation>
 				<jdk>[17,)</jdk>
 			</activation>

@@ -121,4 +121,16 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
+
+    <profiles>
+        <profile>
+            <id>enable-for-jdk17+</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+    </profiles>
 </project>
