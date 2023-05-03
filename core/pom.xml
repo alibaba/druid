@@ -320,7 +320,7 @@
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
 			<artifactId>fastjson2</artifactId>
-			<version>2.0.26</version>
+			<version>2.0.29</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
