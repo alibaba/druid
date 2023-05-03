@@ -8544,8 +8544,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLRefreshMaterializedViewStatement x) {
-        print0(ucase ? "REFRESH MATERIALIZED VIEW " : "refresh materialized view ");
+        print0(ucase ? "REFRESH MATERIALIZED" : "refresh materialized");
+
+        if (x.isConcurrently()) {
+            print0(ucase ? " CONCURRENTLY" : " concurrently");
+        }
+
+        print0(ucase ? " VIEW " : " view ");
+
         x.getName().accept(this);
+
+        if (x.isWithNoData()) {
+            print0(ucase ? " WITH NO DATA" : " with no data");
+        } else if (x.isWithData()) {
+            print0(ucase ? " WITH DATA" : " with data");
+        }
+
         return false;
     }
 
