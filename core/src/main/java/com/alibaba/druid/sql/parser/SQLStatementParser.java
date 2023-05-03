@@ -926,9 +926,29 @@ public class SQLStatementParser extends SQLParser {
 
         acceptIdentifier("MATERIALIZED");
 
+        if (lexer.identifierEquals("CONCURRENTLY")) {
+            lexer.nextToken();
+            stmt.setConcurrently(true);
+        }
         accept(Token.VIEW);
 
         stmt.setName(this.exprParser.name());
+
+        if (lexer.token() == WITH) {
+            lexer.nextToken();
+
+            if (lexer.token() == IDENTIFIER && "NO".equalsIgnoreCase(lexer.stringVal())) {
+                lexer.nextToken();
+                stmt.setWithNoData(true);
+            }
+
+            if (lexer.token() == IDENTIFIER && "DATA".equalsIgnoreCase(lexer.stringVal())) {
+                lexer.nextToken();
+                stmt.setWithData(true);
+            } else {
+                throw new ParserException("syntax error, expect DATA, actual " + lexer.token() + ", pos " + lexer.pos());
+            }
+        }
         return stmt;
     }
 

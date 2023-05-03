@@ -27,11 +27,23 @@ import java.util.List;
 public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
     private SQLExpr name;
 
+    private boolean concurrently;
+
+    private boolean withNoData;
+
+    private boolean withData;
+
     public SQLRefreshMaterializedViewStatement() {
+        this.setConcurrently(false);
+        this.setWithData(false);
+        this.setWithNoData(false);
     }
 
     public SQLRefreshMaterializedViewStatement(DbType dbType) {
         super(dbType);
+        this.setConcurrently(false);
+        this.setWithData(false);
+        this.setWithNoData(false);
     }
 
     @Override
@@ -51,6 +63,30 @@ public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
             x.setParent(this);
         }
         this.name = x;
+    }
+
+    public boolean isConcurrently() {
+        return concurrently;
+    }
+
+    public void setConcurrently(boolean concurrently) {
+        this.concurrently = concurrently;
+    }
+
+    public boolean isWithNoData() {
+        return withNoData;
+    }
+
+    public void setWithNoData(boolean withNoData) {
+        this.withNoData = withNoData;
+    }
+
+    public void setWithData(boolean withData) {
+        this.withData = withData;
+    }
+
+    public boolean isWithData() {
+        return withData;
     }
 
     @Override
