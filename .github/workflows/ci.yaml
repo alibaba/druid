@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-18.04 ]
-        java: [ 8 ]
+        java: [ 8, 17 ]
       fail-fast: false
       max-parallel: 16
     name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
@@ -33,10 +33,3 @@ jobs:
           cache: 'maven'
       - name: Build with Maven
         run: ./mvnw -Pgen-javadoc clean package -B
-      - name: Generate code coverage
-        run: ./mvnw -Pgen-code-cov clean test
-      # https://github.com/marketplace/actions/codecov
-      - uses: codecov/codecov-action@v3
-        with:
-          name: codecov-umbrella
-          token: ${{ secrets.CODECOV_TOKEN }}
