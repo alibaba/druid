@@ -95,6 +95,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected boolean shardingSupport;
 
     protected transient int lines;
+
+    protected boolean printBlankAsEnter;
+
     private TimeZone timeZone;
 
     protected Boolean printStatementAfterSemi = defaultPrintStatementAfterSemi;
@@ -548,7 +551,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        print('\n');
+        if (printBlankAsEnter) {
+            print(' ');
+        } else {
+            print('\n');
+        }
+
         lines++;
         printIndent();
     }
@@ -11438,4 +11446,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         return false;
     }
+
+    public void setPrintBlankAsEnter(boolean printBlankAsEnter) {
+        this.printBlankAsEnter = printBlankAsEnter;
+    }
+
 }
