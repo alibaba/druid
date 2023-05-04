@@ -39,6 +39,12 @@ import java.util.List;
 import java.util.Map;
 
 public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTVisitor {
+
+    /**
+     * 默认使用 '
+     */
+    protected boolean useBackSlashAsPrefixForSingleQuotation;
+
     {
         this.dbType = DbType.mysql;
         this.shardingSupport = true;
@@ -763,7 +769,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 for (int i = 0; i < text.length(); ++i) {
                     char ch = text.charAt(i);
                     if (ch == '\'') {
-                        appender.append('\'');
+                        if (useBackSlashAsPrefixForSingleQuotation) {
+                            appender.append('\\');
+                        } else {
+                            appender.append('\'');
+                        }
                         appender.append('\'');
                     } else if (ch == '\\') {
                         appender.append('\\');
@@ -5567,4 +5577,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
+
+    public void setUseBackSlashAsPrefixForSingleQuotation(boolean useBackSlashAsPrefixForSingleQuotation) {
+        this.useBackSlashAsPrefixForSingleQuotation = useBackSlashAsPrefixForSingleQuotation;
+    }
+
 } //
