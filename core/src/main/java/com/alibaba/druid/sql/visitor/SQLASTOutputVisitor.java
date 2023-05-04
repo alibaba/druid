@@ -329,6 +329,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (date instanceof java.sql.Date) {
             dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             print0("DATE ");
+        } else if (date instanceof java.sql.Time) {
+            dateFormat = new SimpleDateFormat("HH:mm:ss");
+            print0("TIME ");
         } else {
             dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             print0("TIMESTAMP ");
@@ -6468,6 +6471,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLBooleanExpr x) {
+        if (isParameterized()) {
+            print('?');
+            return false;
+        }
         print0(x.getBooleanValue() ? "true" : "false");
         return false;
     }
