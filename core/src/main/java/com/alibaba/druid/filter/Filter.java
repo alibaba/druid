@@ -1375,4 +1375,12 @@ public interface Filter extends Wrapper {
     String resultSetMetaData_getColumnClassName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
             throws SQLException;
 
+    ConnectionProxy dataSource_getConnection(
+            FilterChain chain, FilterDataSource dataSource)
+            throws SQLException;
+
+    ConnectionProxy dataSource_getConnection(
+            FilterChain chain, FilterDataSource dataSource, String username, String password)
+            throws SQLException;
+
 }

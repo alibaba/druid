@@ -2888,4 +2888,19 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
             throws SQLException {
         return chain.resultSetMetaData_getColumnClassName(metaData, column);
     }
+
+    @Override
+    public ConnectionProxy dataSource_getConnection(
+            FilterChain chain, FilterDataSource dataSource)
+            throws SQLException {
+        return chain.dataSource_connect(dataSource);
+    }
+
+    @Override
+    public ConnectionProxy dataSource_getConnection(
+            FilterChain chain, FilterDataSource dataSource, String username, String password)
+            throws SQLException {
+        return chain.dataSource_connect(dataSource, username, password);
+    }
+
 }
