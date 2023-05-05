@@ -53,6 +53,7 @@
 	<modules>
 		<module>core</module>
 		<module>druid-spring-boot-starter</module>
+		<module>druid-spring-boot-3-starter</module>
 		<module>druid-wrapper</module>
 		<module>druid-demo-petclinic</module>
 	</modules>
