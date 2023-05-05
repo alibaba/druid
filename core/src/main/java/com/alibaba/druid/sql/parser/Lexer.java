@@ -142,6 +142,10 @@ public class Lexer {
         return text.substring(offset, offset + count);
     }
 
+    public final String subString(int offset) {
+        return text.substring(offset);
+    }
+
     public final char[] sub_chars(int offset, int count) {
         char[] chars = new char[count];
         text.getChars(offset, offset + count, chars, 0);
@@ -1132,12 +1136,14 @@ public class Lexer {
         }
         stringVal = null;
         mark = pos;
-        while (!isWhitespace(ch)) {
+        while (!isWhitespace(ch) && ch != ';' && pos < text.length()) {
             ch = charAt(++pos);
         }
         bufPos = pos - mark;
 
-        ch = charAt(++pos);
+        if (ch != ';') {
+            ch = charAt(++pos);
+        }
 
         token = LITERAL_PATH;
     }
@@ -1147,7 +1153,13 @@ public class Lexer {
             ch = charAt(++pos);
         }
 
-        if (isFirstIdentifierChar(ch) || ch == '{') {
+        char first = ch;
+        if (first == '$') {
+            scanVariable();
+            return;
+        }
+
+        if (isFirstIdentifierChar(first) || (first >= '0' && first <= '9') || first == '{') {
             stringVal = null;
             mark = pos;
             while (ch != ';' && ch != EOI) {
@@ -1227,6 +1239,11 @@ public class Lexer {
 
                 ch = charAt(++pos);
                 startPos = pos;
+                continue;
+            }
+
+            if (ch == EOI && pos < text.length()) {
+                ch = charAt(++pos);
                 continue;
             }
 
@@ -2255,7 +2272,7 @@ public class Lexer {
             boolean ident = false;
             for (; ; ) {
                 ch = charAt(++pos);
-                if (isEOF() || ch == ';' || ch == '；') {
+                if (isEOF() || ch == ';' || ch == '；' || ch == '\r' || ch == '\n') {
                     pos--;
                     bufPos--;
                     break;
@@ -2270,12 +2287,25 @@ public class Lexer {
                     break;
                 }
 
-                if (ident && isWhitespace(ch)) {
-                    break;
+                if (ident && ch == '$') {
+                    if (charAt(pos + 1) == '{') {
+                        bufPos++;
+                        ident = false;
+                        continue;
+                    }
+                }
+
+                if (ident) {
+                    if (isWhitespace(ch)) {
+                        pos--;
+                        break;
+                    } else if (ch == ',' || ch == ')' || ch == '(' || ch == ';') {
+                        pos--;
+                        break;
+                    }
                 }
 
                 bufPos++;
-                continue;
             }
 
             if (ch != '}' && !ident) {
@@ -2284,10 +2314,11 @@ public class Lexer {
             ++pos;
             bufPos++;
 
+            char endChar = ch;
             this.ch = charAt(pos);
 
-            if (dbType == DbType.odps) {
-                while (isIdentifierChar(this.ch) && ch != '；') {
+            if (dbType == DbType.odps && !isWhitespace(endChar)) {
+                while (isIdentifierChar(this.ch) && ch != ';' && ch != '；') {
                     ++pos;
                     bufPos++;
                     this.ch = charAt(pos);
@@ -2510,7 +2541,9 @@ public class Lexer {
                     bufPos++;
                     break;
                 } else if (ch == EOI) {
-                    break;
+                    if (pos >= text.length()) {
+                        break;
+                    }
                 }
 
                 if (ch == '\n') {
@@ -2538,6 +2571,58 @@ public class Lexer {
 
             return;
         }
+    }
+
+    public List<String> scanLineArgument() {
+        List<String> args = new ArrayList<>();
+        while (ch == ' ') {
+            scanChar();
+        }
+
+        int start = pos;
+        for (; ; ) {
+            if (ch == ' '
+                    || ch == '\r'
+                    || ch == '\n'
+                    || ch == EOI
+                    || (ch == ';' && (pos >= text.length() - 1 || isWhitespace(text.charAt(pos + 1))))
+            ) {
+                while (pos < text.length() - 1) {
+                    char c1 = text.charAt(pos);
+                    if (c1 == ' ' || c1 == '\r' || c1 == '\n' || c1 == '\t') {
+                        pos++;
+                        continue;
+                    }
+                    break;
+                }
+
+                String arg = text.substring(start, pos);
+                arg = arg.trim();
+                if (arg.length() > 0) {
+                    args.add(arg);
+                }
+                if (ch == ';') {
+                    break;
+                }
+                scanChar();
+                start = pos - 1;
+                if (ch == '\r' || ch == '\n' || ch == EOI) {
+                    break;
+                } else {
+                    continue;
+                }
+            }
+
+            scanChar();
+        }
+        if (ch == EOI) {
+            token = EOF;
+        } else if (ch == ';') {
+            token = COMMA;
+        } else {
+            nextToken();
+        }
+        return args;
     }
 
     private void scanMultiLineComment() {

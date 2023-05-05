@@ -16,6 +16,10 @@ public class ClickhouseStatementParser extends SQLStatementParser {
         super(new ClickhouseExprParser(lexer));
     }
 
+    public SQLSelectParser createSQLSelectParser() {
+        return new ClickhouseSelectParser(this.exprParser, selectListCache);
+    }
+
     @Override
     public SQLWithSubqueryClause parseWithQuery() {
         SQLWithSubqueryClause withQueryClause = new SQLWithSubqueryClause();

@@ -194,6 +194,11 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
         this.definer = x;
     }
 
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.TRIGGER;
+    }
+
     public static enum TriggerType {
         BEFORE, AFTER, INSTEAD_OF
     }

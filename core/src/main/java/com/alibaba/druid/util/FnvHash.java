@@ -385,6 +385,7 @@ public final class FnvHash {
         long START = fnv1a_64_lower("START");
         long BTREE = fnv1a_64_lower("BTREE");
         long HASH = fnv1a_64_lower("HASH");
+        long DUPLICATE = fnv1a_64_lower("DUPLICATE");
         long LIST = fnv1a_64_lower("LIST");
         long NO_WAIT = fnv1a_64_lower("NO_WAIT");
         long WAIT = fnv1a_64_lower("WAIT");
@@ -974,6 +975,7 @@ public final class FnvHash {
         long RETURNS = fnv1a_64_lower("RETURNS");
         long ROWTYPE = fnv1a_64_lower("ROWTYPE");
         long WINDOW = fnv1a_64_lower("WINDOW");
+        long QUALIFY = fnv1a_64_lower("QUALIFY");
         long MULTIVALUE = fnv1a_64_lower("MULTIVALUE");
         long OPTIONALLY = fnv1a_64_lower("OPTIONALLY");
         long ENCLOSED = fnv1a_64_lower("ENCLOSED");
@@ -1137,5 +1139,11 @@ public final class FnvHash {
         long CLONE = fnv1a_64_lower("CLONE");
         long INSTALL = fnv1a_64_lower("INSTALL");
         long UNLOAD = fnv1a_64_lower("UNLOAD");
+
+        long AGGREGATE = fnv1a_64_lower("AGGREGATE");
+        long UNIQUE = fnv1a_64_lower("UNIQUE");
+        long PRIMARY = fnv1a_64_lower("PRIMARY");
+        long THAN = fnv1a_64_lower("THAN");
+        long PROPERTIES = fnv1a_64_lower("PROPERTIES");
     }
 }

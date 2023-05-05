@@ -851,7 +851,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             SQLTableElement e = tableElementList.get(i);
             if (e instanceof SQLUniqueConstraint) {
                 SQLUniqueConstraint unique = (SQLUniqueConstraint) e;
-                if (unique.getName().nameHashCode64() == indexNameHashCode64) {
+                if (unique.getName() != null && unique.getName().nameHashCode64() == indexNameHashCode64) {
                     tableElementList.remove(i);
                     return true;
                 }
@@ -1565,5 +1565,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             x.setParent(this);
         }
         this.engine = x;
+    }
+
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.TABLE;
     }
 }

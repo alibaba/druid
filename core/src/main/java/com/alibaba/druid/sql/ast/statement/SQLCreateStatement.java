@@ -15,5 +15,10 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLName;
+
 public interface SQLCreateStatement extends SQLDDLStatement {
+    default SQLName getName() {
+        return null;
+    }
 }

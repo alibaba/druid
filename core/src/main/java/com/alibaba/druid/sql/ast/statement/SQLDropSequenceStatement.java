@@ -88,4 +88,9 @@ public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDro
 
         return false;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.SEQUENCE;
+    }
 }

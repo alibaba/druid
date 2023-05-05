@@ -326,4 +326,9 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     public void setIfNotExists(boolean ifNotExists) {
         this.ifNotExists = ifNotExists;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.INDEX;
+    }
 }

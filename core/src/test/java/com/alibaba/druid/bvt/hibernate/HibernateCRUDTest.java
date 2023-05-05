@@ -101,7 +101,6 @@ public class HibernateCRUDTest extends TestCase {
             doCreate(session);
         } finally {
             if (session != null) {
-                session.flush();
                 session.close();
             }
         }
@@ -115,7 +114,6 @@ public class HibernateCRUDTest extends TestCase {
             doGet(session);
         } finally {
             if (session != null) {
-                session.flush();
                 session.close();
             }
         }
@@ -129,7 +127,6 @@ public class HibernateCRUDTest extends TestCase {
             doUpdate(session);
         } finally {
             if (session != null) {
-                session.flush();
                 session.close();
             }
         }
@@ -143,7 +140,6 @@ public class HibernateCRUDTest extends TestCase {
             doDelete(session);
         } finally {
             if (session != null) {
-                session.flush();
                 session.close();
             }
         }
@@ -161,7 +157,6 @@ public class HibernateCRUDTest extends TestCase {
                 tran.commit();
             }
             if (session != null) {
-                session.flush();
                 session.close();
             }
         }
@@ -180,7 +175,6 @@ public class HibernateCRUDTest extends TestCase {
                 tran.commit();
             }
             if (session != null) {
-                session.flush();
                 session.close();
             }
         }
@@ -199,7 +193,6 @@ public class HibernateCRUDTest extends TestCase {
                 tran.commit();
             }
             if (session != null) {
-                session.flush();
                 session.close();
             }
         }

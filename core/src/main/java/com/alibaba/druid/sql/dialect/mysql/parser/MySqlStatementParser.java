@@ -1264,6 +1264,24 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (lexer.identifierEquals("XA")) {
+            lexer.nextToken();
+            MySqlXAStatement stmt = new MySqlXAStatement();
+            String typeStr = lexer.stringVal();
+            stmt.setType(
+                    MySqlXAStatement.XAType.of(typeStr)
+            );
+            lexer.nextToken();
+
+            if (lexer.token() != EOF && lexer.token() != SEMI) {
+                SQLExpr xid = exprParser.expr();
+                stmt.setId(xid);
+            }
+
+            statementList.add(stmt);
+            return true;
+        }
+
         if (lexer.token() == Token.EXPLAIN) {
             SQLStatement stmt = this.parseExplain();
             statementList.add(stmt);
@@ -1719,6 +1737,15 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.BEGIN) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (lexer.token() == Token.SEMI || lexer.token() == Token.EOF || lexer.token() == Token.IDENTIFIER) {
+                lexer.reset(mark);
+                statementList.add(this.parseTiDBBeginStatment());
+                return true;
+            } else {
+                lexer.reset(mark);
+            }
             statementList.add(this.parseBlock());
             return true;
         }
@@ -2336,6 +2363,16 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+
+    public SQLBeginStatement parseTiDBBeginStatment() {
+        SQLBeginStatement tidbBegin = new SQLBeginStatement();
+        tidbBegin.setDbType(dbType);
+        accept(Token.BEGIN);
+        if (lexer.token() == Token.IDENTIFIER) {
+            tidbBegin.setTidbTxnMode(this.exprParser.name());
+        }
+        return tidbBegin;
     }
 
     public SQLBlockStatement parseBlock() {
@@ -8942,6 +8979,9 @@ public class MySqlStatementParser extends SQLStatementParser {
         {
             while (lexer.token() == Token.WHEN) {
                 MySqlWhenStatement when = new MySqlWhenStatement();
+
+                accept(Token.WHEN);
+
                 // when expr
                 when.setCondition(exprParser.expr());
 

@@ -47,7 +47,8 @@ public class MySqlSelectTest_243 extends MysqlTest {
                 "\tAND enable_status = 1 -- AND seller_id= 100154704\n" +
                 "\tAND buyer_full_name LIKE concat('%', 'Zaini Abd', '%')\n" +
                 "\tAND _features.wt = 'dropshipping'\n" +
-                "\tAND _features.ads = 'pending'\n" +
+                "\tAND _features.ads = 'pending' -- GROUP BY buyer_id,\n" +
+                "--  buyer_full_name \n" +
                 "LIMIT 0, 10", stmt.toString());
 
 

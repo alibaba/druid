@@ -58,12 +58,10 @@ public class PropertiesUtils {
             } catch (Exception e) {
                 LOG.error("Exception occurred while loading " + file, e);
             } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (Exception e) {
-                        LOG.debug("Can not close Inputstream.", e);
-                    }
+                try {
+                    is.close();
+                } catch (Exception e) {
+                    LOG.debug("Can not close Inputstream.", e);
                 }
             }
         } else {

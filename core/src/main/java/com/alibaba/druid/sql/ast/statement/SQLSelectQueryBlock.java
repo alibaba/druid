@@ -46,6 +46,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
     protected SQLSelectGroupByClause groupBy;
     protected List<SQLWindow> windows;
+    protected SQLExpr qualify;
     protected SQLOrderBy orderBy;
     protected boolean forUpdate;
     protected boolean noWait;
@@ -111,6 +112,17 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
             windows = new ArrayList<SQLWindow>(4);
         }
         this.windows.add(x);
+    }
+
+    public SQLExpr getQualify() {
+        return qualify;
+    }
+
+    public void setQualify(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.qualify = x;
     }
 
     public SQLExpr getWhere() {

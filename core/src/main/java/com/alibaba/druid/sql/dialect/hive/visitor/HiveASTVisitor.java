@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
+import com.alibaba.druid.sql.dialect.hive.ast.HiveAddJarStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
@@ -66,4 +67,10 @@ public interface HiveASTVisitor extends SQLASTVisitor {
     default void endVisit(HiveMsckRepairStatement x) {
     }
 
+    default boolean visit(HiveAddJarStatement x) {
+        return true;
+    }
+
+    default void endVisit(HiveAddJarStatement x) {
+    }
 }

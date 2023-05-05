@@ -87,4 +87,8 @@ public class SQLDropTableGroupStatement extends SQLStatementImpl implements SQLD
         return false;
     }
 
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.TABLE_GROUP;
+    }
 }

@@ -18,4 +18,25 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
 public interface SQLDDLStatement extends SQLStatement {
+    default DDLObjectType getDDLObjectType() {
+        return DDLObjectType.OTHER;
+    }
+
+    enum DDLObjectType {
+        DATABASE,
+        TABLE,
+        VIEW,
+        MATERIALIZED_VIEW,
+        TABLE_SPACE,
+        TABLE_GROUP,
+        FUNCTION,
+        TRIGGER,
+        USER,
+        ROLE,
+        SEQUENCE,
+        INDEX,
+        PROCEDURE,
+        TYPE,
+        OTHER
+    }
 }

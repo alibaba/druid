@@ -78,4 +78,9 @@ public class SQLDropUserStatement extends SQLStatementImpl implements SQLDropSta
 
         return false;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.USER;
+    }
 }

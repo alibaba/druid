@@ -257,4 +257,9 @@ public class SQLCreateSequenceStatement extends SQLStatementImpl implements SQLC
         }
         this.step = step;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.SEQUENCE;
+    }
 }

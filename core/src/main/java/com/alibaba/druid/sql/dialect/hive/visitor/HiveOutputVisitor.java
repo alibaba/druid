@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveAddJarStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
@@ -160,6 +161,11 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         if (with != null) {
             visit(with);
             println();
+        }
+
+        List<String> insertBeforeComments = x.getInsertBeforeCommentsDirect();
+        if (insertBeforeComments != null) {
+            printlnComments(insertBeforeComments);
         }
 
         if (x.isOverwrite()) {
@@ -489,6 +495,12 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             print0(buf.toString());
         }
 
+        return false;
+    }
+
+    public boolean visit(HiveAddJarStatement x) {
+        print0(ucase ? "ADD JAR " : "add jar ");
+        print0(x.getPath());
         return false;
     }
 }

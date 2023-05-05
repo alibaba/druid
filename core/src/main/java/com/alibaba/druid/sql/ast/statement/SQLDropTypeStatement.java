@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropTypeStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-    private SQLExpr name;
+    private SQLName name;
     private boolean ifExists;
 
     public SQLDropTypeStatement() {
@@ -41,11 +41,11 @@ public class SQLDropTypeStatement extends SQLStatementImpl implements SQLDropSta
         visitor.endVisit(this);
     }
 
-    public SQLExpr getName() {
+    public SQLName getName() {
         return name;
     }
 
-    public void setName(SQLExpr x) {
+    public void setName(SQLName x) {
         if (x != null) {
             x.setParent(this);
         }
@@ -76,5 +76,10 @@ public class SQLDropTypeStatement extends SQLStatementImpl implements SQLDropSta
         }
 
         return false;
+    }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.TYPE;
     }
 }

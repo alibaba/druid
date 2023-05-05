@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDropServerStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
-    private SQLExpr name;
+    private SQLName name;
     private boolean ifExists;
 
     public SQLDropServerStatement() {
@@ -41,11 +41,11 @@ public class SQLDropServerStatement extends SQLStatementImpl implements SQLDropS
         visitor.endVisit(this);
     }
 
-    public SQLExpr getName() {
+    public SQLName getName() {
         return name;
     }
 
-    public void setName(SQLExpr x) {
+    public void setName(SQLName x) {
         if (x != null) {
             x.setParent(this);
         }

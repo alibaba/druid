@@ -548,6 +548,7 @@ public class MySqlLexer extends Lexer {
         Token lastToken = this.token;
 
         if (ch == '-') {
+            boolean supportStandardComment = (features & SQLParserFeature.MySQLSupportStandardComment.mask) != 0;
             /*
              * just for tddl test case;
              * test case : MySqlSelectTest_plus_sub_comment.java
@@ -558,7 +559,10 @@ public class MySqlLexer extends Lexer {
                 scanChar();
                 token = Token.SUB;
                 return;
-            } else if ((before_1 == ' ' || (before_1 != '-' && before_1 != '+')) && (next_2 == ' ' || next_2 == EOI || next_2 == '\n')) {
+            } else if (supportStandardComment
+                    || ((before_1 == ' ' || (before_1 != '-' && before_1 != '+'))
+                    && (next_2 == ' ' || next_2 == EOI || next_2 == '\n'))
+            ) {
                 // it is comments
             } else if ((before_1 == '-' || before_1 == '+') && next_2 == ' ') {
                 throw new ParserException("illegal state. " + info());

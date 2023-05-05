@@ -227,6 +227,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public boolean visit(OracleSelectSubqueryTableSource x) {
         accept(x.getSelect());
         accept(x.getPivot());
+        accept(x.getUnpivot());
         accept(x.getFlashback());
         return false;
     }

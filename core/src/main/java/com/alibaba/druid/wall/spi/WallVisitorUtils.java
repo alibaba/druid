@@ -2643,7 +2643,9 @@ public class WallVisitorUtils {
             denyMessage = "block statement not allow";
             errorCode = ErrorCode.BLOCK_NOT_ALLOW;
         } else if (x instanceof SQLExplainStatement
-                || x instanceof MySqlOptimizeStatement) {
+                || x instanceof MySqlOptimizeStatement
+                || x instanceof SQLRefreshMaterializedViewStatement
+        ) {
             allow = true;
             errorCode = 0;
             denyMessage = null;

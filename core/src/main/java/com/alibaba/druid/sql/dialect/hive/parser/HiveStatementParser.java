@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveAddJarStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
@@ -184,6 +185,14 @@ public class HiveStatementParser extends SQLStatementParser {
             SQLStatement stmt = parseImport();
             statementList.add(stmt);
             return true;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.ADD)) {
+            SQLStatement stmt = parseAdd();
+            if (stmt != null) {
+                statementList.add(stmt);
+                return true;
+            }
         }
 
         if (lexer.identifierEquals("MSCK")) {
@@ -473,6 +482,23 @@ public class HiveStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+
+    protected SQLStatement parseAdd() {
+        Lexer.SavePoint mark = lexer.mark();
+        lexer.nextToken();
+
+        if (lexer.identifierEquals("JAR")) {
+            lexer.nextPath();
+            String path = lexer.stringVal();
+            HiveAddJarStatement stmt = new HiveAddJarStatement();
+            stmt.setPath(path);
+            lexer.nextToken();
+            return stmt;
+        }
+
+        lexer.reset(mark);
+        return null;
     }
 
     protected SQLStatement parseImport() {

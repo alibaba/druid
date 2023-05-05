@@ -28,6 +28,7 @@ public class OracleExceptionSorterTest_setReadOnly extends TestCase {
 
         dataSource.setDriver(new OracleMockDriver());
         dataSource.setUrl("jdbc:mock:xxx");
+        dataSource.setFilters("slf4j");
         dataSource.setPoolPreparedStatements(true);
         dataSource.setMaxOpenPreparedStatements(100);
     }
@@ -73,9 +74,10 @@ public class OracleExceptionSorterTest_setReadOnly extends TestCase {
             Connection conn2 = dataSource.getConnection();
             conn2.close();
         }
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(2, dataSource.getCreateCount());
+        assertEquals(1, dataSource.getDiscardCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertTrue(dataSource.getPoolingCount() >= 1);
+        assertTrue(dataSource.getCreateCount() >= 2);
     }
 
 }

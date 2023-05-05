@@ -15,37 +15,57 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
 
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLParserUtils;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
+
+import static org.junit.Assert.assertEquals;
 
 public class OdpsResourceTest extends TestCase {
     public void test_0() throws Exception {
-        exec_test("bvt/parser/odps-0.sql");
+        exec_test("bvt/parser/odps-0.txt");
+    }
+
+    public void test_9() throws Exception {
+        exec_test("bvt/parser/odps-9.txt");
+    }
+
+    public void test_10() throws Exception {
+        exec_test("bvt/parser/odps-10.txt");
+    }
+
+    public void test_11() throws Exception {
+        exec_test("bvt/parser/odps-11.txt");
+    }
+
+    public void test_12() throws Exception {
+        exec_test("bvt/parser/odps-12.txt");
+    }
+//
+//    public void test_13() throws Exception {
+//        exec_test("bvt/parser/odps-13.txt");
+//    }
+
+    public void test_14() throws Exception {
+        exec_test("bvt/parser/odps-14.txt");
     }
 
     public void exec_test(String resource) throws Exception {
-//        System.out.println(resource);
-        InputStream is = null;
-
-        is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-        Reader reader = new InputStreamReader(is, "UTF-8");
-        String input = Utils.read(reader);
-        JdbcUtils.close(reader);
+        String input = TestUtil.getResource(resource);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
         String expect = null;
@@ -54,7 +74,7 @@ public class OdpsResourceTest extends TestCase {
             expect = items[1].trim();
         }
 
-        OdpsStatementParser parser = new OdpsStatementParser(sql);
+        OdpsStatementParser parser = new OdpsStatementParser(sql, SQLParserFeature.KeepComments);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
@@ -63,29 +83,9 @@ public class OdpsResourceTest extends TestCase {
         SchemaStatVisitor visitor = new OdpsSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println(sql);
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//
-//        System.out.println();
-//        System.out.println("---------------------------");
-//        System.out.println(SQLUtils.toOdpsString(stmt));
+        if (expect != null) {
+            String result = stmt.toString(VisitorFeature.OutputPrettyFormat);
+            assertEquals(expect, result);
+        }
     }
-
-    void mergValidate(String sql, String expect) {
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-
-        Assert.assertEquals(1, statementList.size());
-
-        StringBuilder out = new StringBuilder();
-        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
-        statemen.accept(visitor);
-
-        System.out.println(out.toString());
-
-        Assert.assertEquals(expect, out.toString());
-    }
-
 }

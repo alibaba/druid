@@ -75,6 +75,18 @@ public class HiveResourceTest extends TestCase {
         exec_test("bvt/parser/hive-10.txt");
     }
 
+    public void test_tpcds_5() throws Exception {
+        exec_test("bvt/parser/hive/tpcds/query5.sql");
+    }
+
+    public void test_tpcds_12() throws Exception {
+        exec_test("bvt/parser/hive/tpcds/query12.sql");
+    }
+
+    public void test_tpcds_16() throws Exception {
+        exec_test("bvt/parser/hive/tpcds/query16.sql");
+    }
+
     public void exec_test(String resource) throws Exception {
 //        System.out.println(resource);
         InputStream is = null;

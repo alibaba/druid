@@ -456,7 +456,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         super.connection_commit(chain, connection);
 
         if (connectionCommitAfterLogEnable && isConnectionLogEnabled()) {
-            connectionLog("{conn-" + connection.getId() + "} commited");
+            connectionLog("{conn-" + connection.getId() + "} committed");
         }
     }
 

@@ -42,6 +42,10 @@ public class H2ResourceTest extends TestCase {
         exec_test("bvt/parser/h2-2.txt");
     }
 
+    public void test_3() throws Exception {
+        exec_test("bvt/parser/h2-3.txt");
+    }
+
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);
         InputStream is = null;
@@ -70,7 +74,7 @@ public class H2ResourceTest extends TestCase {
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("conditions : " + visitor.getConditions());
 
         System.out.println();
         System.out.println();

@@ -49,6 +49,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
     public static final String PROP_TIMEBETWEENEVICTIONRUNSMILLIS = "timeBetweenEvictionRunsMillis";
     public static final String PROP_NUMTESTSPEREVICTIONRUN = "numTestsPerEvictionRun";
     public static final String PROP_MINEVICTABLEIDLETIMEMILLIS = "minEvictableIdleTimeMillis";
+    public static final String PROP_MAXEVICTABLEIDLETIMEMILLIS = "maxEvictableIdleTimeMillis";
     public static final String PROP_PHY_TIMEOUT_MILLIS = "phyTimeoutMillis";
     public static final String PROP_TESTWHILEIDLE = "testWhileIdle";
     public static final String PROP_PASSWORD = "password";
@@ -86,6 +87,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
             PROP_TIMEBETWEENEVICTIONRUNSMILLIS,
             PROP_NUMTESTSPEREVICTIONRUN,
             PROP_MINEVICTABLEIDLETIMEMILLIS,
+            PROP_MAXEVICTABLEIDLETIMEMILLIS,
             PROP_TESTWHILEIDLE,
             PROP_PASSWORD,
             PROP_FILTERS,
@@ -172,6 +174,11 @@ public class DruidDataSourceFactory implements ObjectFactory {
     @SuppressWarnings({"deprecation", "rawtypes"})
     public static void config(DruidDataSource dataSource, Map<?, ?> properties) throws SQLException {
         String value = null;
+
+        value = (String) properties.get(PROP_NAME);
+        if (value != null) {
+            dataSource.setName(value);
+        }
 
         value = (String) properties.get(PROP_DEFAULTAUTOCOMMIT);
         if (value != null) {
@@ -267,6 +274,11 @@ public class DruidDataSourceFactory implements ObjectFactory {
         value = (String) properties.get(PROP_MINEVICTABLEIDLETIMEMILLIS);
         if (value != null) {
             dataSource.setMinEvictableIdleTimeMillis(Long.parseLong(value));
+        }
+
+        value = (String) properties.get(PROP_MAXEVICTABLEIDLETIMEMILLIS);
+        if (value != null) {
+            dataSource.setMaxEvictableIdleTimeMillis(Long.parseLong(value));
         }
 
         value = (String) properties.get(PROP_PHY_TIMEOUT_MILLIS);
@@ -377,7 +389,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
                 }
             }
             if (dataSourceProperties != null) {
-                dataSource.configFromPropety(dataSourceProperties);
+                dataSource.configFromPropeties(dataSourceProperties);
             }
         }
 

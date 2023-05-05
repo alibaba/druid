@@ -98,4 +98,9 @@ public class SQLAlterProcedureStatement extends SQLStatementImpl implements SQLA
         }
         this.comment = comment;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.PROCEDURE;
+    }
 }

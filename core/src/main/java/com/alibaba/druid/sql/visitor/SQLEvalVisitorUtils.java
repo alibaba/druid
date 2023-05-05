@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2EvalVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
 import com.alibaba.druid.sql.visitor.functions.*;
 import com.alibaba.druid.util.HexBin;
 import com.alibaba.druid.util.Utils;
@@ -123,7 +124,7 @@ public class SQLEvalVisitorUtils {
                 return new PGEvalVisitor();
             case sqlserver:
             case jtds:
-                return new PGEvalVisitor();
+                return new SQLServerEvalVisitor();
             case db2:
                 return new DB2EvalVisitor();
             default:

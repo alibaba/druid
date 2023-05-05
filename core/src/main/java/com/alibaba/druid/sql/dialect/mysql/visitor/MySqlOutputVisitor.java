@@ -193,9 +193,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         SQLExpr where = x.getWhere();
         if (where != null) {
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            printExpr(where, parameterized);
+            printWhere(where);
         }
 
         printHierarchical(x);
@@ -4320,7 +4318,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlCaseStatement x) {
         print0(ucase ? "CASE " : "case ");
-        x.getCondition().accept(this);
+        if (x.getCondition() != null) {
+            x.getCondition().accept(this);
+        }
         println();
         for (int i = 0; i < x.getWhenList().size(); i++) {
             x.getWhenList().get(i).accept(this);
@@ -5555,6 +5555,16 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    public void endVisit(MysqlAlterTableAlterCheck x) {
+    public boolean visit(MySqlXAStatement x) {
+        print0(ucase ? "XA " : "xa ");
+
+        MySqlXAStatement.XAType type = x.getType();
+        print0(ucase ? type.name() : type.name().toLowerCase());
+        SQLExpr id = x.getId();
+        if (id != null) {
+            print(' ');
+            printExpr(id);
+        }
+        return false;
     }
 } //

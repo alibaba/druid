@@ -77,9 +77,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         SQLExpr where = x.getWhere();
         if (where != null) {
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            printExpr(where);
+            printWhere(where);
         }
 
         SQLSelectGroupByClause groupBy = x.getGroupBy();

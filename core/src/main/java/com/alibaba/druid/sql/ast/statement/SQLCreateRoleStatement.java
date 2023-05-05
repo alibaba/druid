@@ -68,4 +68,8 @@ public class SQLCreateRoleStatement extends SQLStatementImpl implements SQLCreat
         this.ifNotExists = ifNotExists;
     }
 
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.ROLE;
+    }
 }

@@ -61,6 +61,7 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.*;
@@ -529,6 +530,8 @@ public class SQLUtils {
                 return new ClickhouseOutputVisitor(out);
             case oscar:
                 return new OscarOutputVisitor(out);
+            case starrocks:
+                return new StarRocksOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }
@@ -1877,7 +1880,7 @@ public class SQLUtils {
         if (name.length() > 2) {
             char c0 = name.charAt(0);
             char x0 = name.charAt(name.length() - 1);
-            if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`') || (c0 == '\'' && x0 == '\'')) {
+            if ((c0 == '[' && x0 == ']') || (c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`') || (c0 == '\'' && x0 == '\'')) {
                 String normalizeName = name.substring(1, name.length() - 1);
 
                 if (isTrimmed) {

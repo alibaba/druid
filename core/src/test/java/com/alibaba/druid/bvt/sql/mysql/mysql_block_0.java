@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -33,7 +34,7 @@ public class mysql_block_0 extends OracleTest {
                 "    COMMIT;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        assertEquals(1, statementList.size());
+        assertEquals(4, statementList.size());
         SQLStatement stmt = statementList.get(0);
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -59,33 +60,21 @@ public class mysql_block_0 extends OracleTest {
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
         {
-            String output = SQLUtils.toMySqlString(stmt);
-            assertEquals("BEGIN;\n" +
+            String output = SQLUtils.toSQLString(statementList, DbType.mysql);
+            assertEquals("BEGIN ;\n" +
+                            "\n" +
                             "DELETE t0\n" +
                             "FROM ktv_ind_columns t0\n" +
                             "WHERE t0.dbid = ?;\n" +
+                            "\n" +
                             "INSERT INTO ktv_ind_columns (index_owner, index_name, table_owner, TABLE_NAME, COLUMN_NAME\n" +
                             "\t, column_position, column_length, descend, dbId, collection_time)\n" +
                             "SELECT DISTINCT index_owner, index_name, table_owner, TABLE_NAME, COLUMN_NAME\n" +
                             "\t, column_position, column_length, descend, dbId, now()\n" +
                             "FROM ktv_tmp_ind_columns\n" +
                             "WHERE dbid = ?;\n" +
+                            "\n" +
                             "COMMIT;", //
-                    output);
-        }
-        {
-            String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("begin;\n" +
-                            "delete t0\n" +
-                            "from ktv_ind_columns t0\n" +
-                            "where t0.dbid = ?;\n" +
-                            "insert into ktv_ind_columns (index_owner, index_name, table_owner, TABLE_NAME, COLUMN_NAME\n" +
-                            "\t, column_position, column_length, descend, dbId, collection_time)\n" +
-                            "select distinct index_owner, index_name, table_owner, TABLE_NAME, COLUMN_NAME\n" +
-                            "\t, column_position, column_length, descend, dbId, now()\n" +
-                            "from ktv_tmp_ind_columns\n" +
-                            "where dbid = ?;\n" +
-                            "commit;", //
                     output);
         }
     }

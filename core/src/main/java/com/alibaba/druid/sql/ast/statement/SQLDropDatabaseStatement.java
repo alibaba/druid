@@ -186,4 +186,9 @@ public class SQLDropDatabaseStatement extends SQLStatementImpl implements SQLDro
     public void setPhysical(boolean physical) {
         this.physical = physical;
     }
+
+    @Override
+    public DDLObjectType getDDLObjectType() {
+        return DDLObjectType.DATABASE;
+    }
 }

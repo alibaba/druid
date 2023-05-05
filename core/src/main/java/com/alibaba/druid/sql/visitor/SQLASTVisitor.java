@@ -503,6 +503,13 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default void endVisit(SQLBeginStatement x) {
+    }
+
+    default boolean visit(SQLBeginStatement x) {
+        return true;
+    }
+
     default void endVisit(SQLUseStatement x) {
     }
 
@@ -776,6 +783,13 @@ public interface SQLASTVisitor {
     default void endVisit(SQLAlterTableRenameColumn x) {
     }
 
+    default boolean visit(SQLAlterTableRenameConstraint x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableRenameConstraint x) {
+    }
+
     default boolean visit(SQLColumnReference x) {
         return true;
     }
@@ -1043,6 +1057,13 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTablePartition x) {
+    }
+
+    default boolean visit(SQLAlterTableArchive x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableArchive x) {
     }
 
     default boolean visit(SQLAlterTablePartition x) {
@@ -1990,6 +2011,13 @@ public interface SQLASTVisitor {
     default void endVisit(SQLDropOutlineStatement x) {
     }
 
+    default boolean visit(SQLDropOfflineModelStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLDropOfflineModelStatement x) {
+    }
+
     default boolean visit(SQLAlterOutlineStatement x) {
         return true;
     }
@@ -2457,6 +2485,20 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLOptimizeStatement x) {
+    }
+
+    default boolean visit(SQLPivot x) {
+        return true;
+    }
+
+    default void endVisit(SQLPivot x) {
+    }
+
+    default boolean visit(SQLUnpivot x) {
+        return true;
+    }
+
+    default void endVisit(SQLUnpivot x) {
     }
 
 }

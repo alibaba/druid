@@ -1267,4 +1267,11 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     default void endVisit(MysqlAlterTableAlterCheck x) {
     }
+
+    default boolean visit(MySqlXAStatement x) {
+        return true;
+    }
+
+    default void endVisit(MySqlXAStatement x) {
+    }
 } //

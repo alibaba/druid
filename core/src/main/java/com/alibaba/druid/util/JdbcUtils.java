@@ -927,6 +927,7 @@ public final class JdbcUtils implements JdbcConstants {
     public static boolean isMySqlDriver(String driverClassName) {
         return driverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
                 || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)
+                || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_603)
                 || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_REPLICATE);
     }
 

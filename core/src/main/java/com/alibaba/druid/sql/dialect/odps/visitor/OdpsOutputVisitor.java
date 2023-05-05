@@ -188,12 +188,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             print0(ucase ? " SHARDS" : " shards");
         }
 
-        if (x.getLifecycle() != null) {
-            println();
-            print0(ucase ? "LIFECYCLE " : "lifecycle ");
-            x.getLifecycle().accept(this);
-        }
-
         SQLSelect select = x.getSelect();
         if (select != null) {
             println();
@@ -232,6 +226,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         }
 
         this.printTblProperties(x);
+
+        if (x.getLifecycle() != null) {
+            println();
+            print0(ucase ? "LIFECYCLE " : "lifecycle ");
+            x.getLifecycle().accept(this);
+        }
 
         SQLExpr using = x.getUsing();
         if (using != null) {
@@ -448,17 +448,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         SQLExpr where = x.getWhere();
         if (where != null) {
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            if (where.hasBeforeComment() && isPrettyFormat()) {
-                printlnComments(x.getWhere().getBeforeCommentsDirect());
-            }
-
-            where.accept(this);
-            if (where.hasAfterComment() && isPrettyFormat()) {
-                print(' ');
-                printlnComment(x.getWhere().getAfterCommentsDirect());
-            }
+            printWhere(where);
         }
 
         if (x.getGroupBy() != null) {
@@ -471,6 +461,13 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             println();
             print0(ucase ? "WINDOW " : "window ");
             printAndAccept(windows, ", ");
+        }
+
+        SQLExpr qualify = x.getQualify();
+        if (qualify != null) {
+            println();
+            print0(ucase ? "QUALIFY " : "qualify ");
+            qualify.accept(this);
         }
 
         if (x.getOrderBy() != null) {
@@ -1098,6 +1095,18 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     public boolean visit(OdpsInstallPackageStatement x) {
         print0(ucase ? "INSTALL PACKAGE " : "install package ");
         printExpr(x.getPackageName());
+        return false;
+    }
+
+    public boolean visit(OdpsPAIStmt x) {
+        print0(ucase ? "PAI " : "pai ");
+        print0(x.getArguments());
+        return false;
+    }
+
+    public boolean visit(OdpsCopyStmt x) {
+        print0(ucase ? "COPY " : "copy ");
+        print0(x.getArguments());
         return false;
     }
 }

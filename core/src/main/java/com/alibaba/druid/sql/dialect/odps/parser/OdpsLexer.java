@@ -45,6 +45,7 @@ public class OdpsLexer extends Lexer {
         map.put("RLIKE", Token.RLIKE);
         map.put("DIV", Token.DIV);
         map.put("LATERAL", Token.LATERAL);
+        map.put("QUALIFY", Token.QUALIFY);
         map.put("；", Token.SEMI);
 
         DEFAULT_ODPS_KEYWORDS = new Keywords(map);

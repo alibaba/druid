@@ -15,6 +15,13 @@
  */
 package com.alibaba.druid;
 
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.management.ManagementFactory;
 
 import javax.management.MBeanServer;
@@ -55,6 +62,18 @@ public class TestUtil {
             return (Long) mbeanServer.getAttribute(objectName, "CollectionCount");
         } catch (Exception e) {
             throw new RuntimeException("error");
+        }
+    }
+
+    public static String getResource(String path) {
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        try (Reader reader = new InputStreamReader(
+                contextClassLoader
+                        .getResourceAsStream(path), "UTF-8")
+        ) {
+            return Utils.read(reader);
+        } catch (IOException ignored) {
+            return null;
         }
     }
 }

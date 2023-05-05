@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -46,7 +47,7 @@ public class mysql_block_1 extends OracleTest {
                 "    DELETE FROM ktv_tmp_sqlarea WHERE dbid=?;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-        assertEquals(2, statementList.size());
+        assertEquals(7, statementList.size());
         SQLStatement stmt = statementList.get(0);
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -72,11 +73,13 @@ public class mysql_block_1 extends OracleTest {
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
         {
-            String output = SQLUtils.toMySqlString(stmt);
-            assertEquals("BEGIN;\n" +
+            String output = SQLUtils.toSQLString(statementList, DbType.mysql);
+            assertEquals("BEGIN ;\n" +
+                            "\n" +
                             "DELETE t0\n" +
                             "FROM ktv_tmp_sqlarea t0\n" +
                             "WHERE t0.dbid = ?;\n" +
+                            "\n" +
                             "INSERT INTO ktv_tmp_sqlarea (`dbid`, `sql_id`, `parsing_schema_name`, `sql_fulltext`, `cpu_time`\n" +
                             "\t, `buffer_gets`, `executions`, `command_name`, `sharable_mem`, `persiste\n" +
                             "nt_mem`\n" +
@@ -100,8 +103,10 @@ public class mysql_block_1 extends OracleTest {
                             "FROM ktv_sqlarea\n" +
                             "WHERE dbid = ?\n" +
                             "GROUP BY sql_fulltext;\n" +
+                            "\n" +
                             "DELETE FROM ktv_sqlarea\n" +
                             "WHERE dbid = ?;\n" +
+                            "\n" +
                             "INSERT INTO ktv_sqlarea (`dbid`, `sql_id`, `parsing_schema_name`, `sql_fulltext`, `cpu_time`\n" +
                             "\t, `buffer_gets`, `executions`, `command_name`, `sharable_mem`, `persistent_m\n" +
                             "em`\n" +
@@ -119,58 +124,11 @@ public class mysql_block_1 extends OracleTest {
                             "FROM ktv_tmp_sqlarea\n" +
                             "WHERE dbid = ?\n" +
                             "\tAND sql_fulltext IS NOT NULL;\n" +
-                            "COMMIT;", //
-                    output);
-        }
-        {
-            String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("begin;\n" +
-                            "delete t0\n" +
-                            "from ktv_tmp_sqlarea t0\n" +
-                            "where t0.dbid = ?;\n" +
-                            "insert into ktv_tmp_sqlarea (`dbid`, `sql_id`, `parsing_schema_name`, `sql_fulltext`, `cpu_time`\n" +
-                            "\t, `buffer_gets`, `executions`, `command_name`, `sharable_mem`, `persiste\n" +
-                            "nt_mem`\n" +
-                            "\t, `users_opening`, `fetches`, `loads`, `disk_reads`, `direct_writes`\n" +
-                            "\t, `command_type`, `plan_hash_value`, `action`, `remote`, `is_obsolete`\n" +
-                            "\t, `physical_read_requests`, `\n" +
-                            "physical_write_requests`, `elapsed_time`, `user_io_wait_time`, `collection_time`)\n" +
-                            "select `dbid`, `sql_id`, `parsing_schema_name`, `sql_fulltext`\n" +
-                            "\t, sum(`cpu_time`), sum(`buffer_gets`)\n" +
-                            "\t, sum(`executions`), max(`command_name`)\n" +
-                            "\t, sum(`sharable_mem`), sum(`\n" +
-                            "persistent_mem`)\n" +
-                            "\t, sum(`users_opening`), sum(`fetches`)\n" +
-                            "\t, sum(`loads`), sum(`disk_reads`)\n" +
-                            "\t, sum(`direct_writes`), max(`command_type`)\n" +
-                            "\t, max(`plan_hash_value`), max(`action`)\n" +
-                            "\t, max(`remote`), max(`is_obsolete`)\n" +
-                            "\t, sum(`physical_read_requests`), sum(`physical_write_requests`)\n" +
-                            "\t, sum(`elapsed_time`), sum(`user_io_wait_time`)\n" +
-                            "\t, max(`collection_time`)\n" +
-                            "from ktv_sqlarea\n" +
-                            "where dbid = ?\n" +
-                            "group by sql_fulltext;\n" +
-                            "delete from ktv_sqlarea\n" +
-                            "where dbid = ?;\n" +
-                            "insert into ktv_sqlarea (`dbid`, `sql_id`, `parsing_schema_name`, `sql_fulltext`, `cpu_time`\n" +
-                            "\t, `buffer_gets`, `executions`, `command_name`, `sharable_mem`, `persistent_m\n" +
-                            "em`\n" +
-                            "\t, `users_opening`, `fetches`, `loads`, `disk_reads`, `direct_writes`\n" +
-                            "\t, `command_type`, `plan_hash_value`, `action`, `remote`, `is_obsolete`\n" +
-                            "\t, `physical_read_requests`, `phys\n" +
-                            "ical_write_requests`, `elapsed_time`, `user_io_wait_time`, `collection_time`)\n" +
-                            "select `dbid`, `sql_id`, `parsing_schema_name`, `sql_fulltext`, `cpu_time`\n" +
-                            "\t, `buffer_gets`, `executions`, `command_name`, `sharable_mem`, `persistent_mem`\n" +
-                            "\t, `users_openin\n" +
-                            "g`, `fetches`, `loads`, `disk_reads`, `direct_writes`\n" +
-                            "\t, `command_type`, `plan_hash_value`, `action`, `remote`, `is_obsolete`\n" +
-                            "\t, `physical_read_requests`, `physical_write_reques\n" +
-                            "ts`, `elapsed_time`, `user_io_wait_time`, `collection_time`\n" +
-                            "from ktv_tmp_sqlarea\n" +
-                            "where dbid = ?\n" +
-                            "\tand sql_fulltext is not null;\n" +
-                            "commit;", //
+                            "\n" +
+                            "COMMIT;\n" +
+                            "\n" +
+                            "DELETE FROM ktv_tmp_sqlarea\n" +
+                            "WHERE dbid = ?;", //
                     output);
         }
     }
