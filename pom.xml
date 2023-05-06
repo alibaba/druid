@@ -32,6 +32,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<spring.version>4.3.20.RELEASE</spring.version>
+
+		<springframework5.version>5.3.27</springframework5.version>
+		<springframework6.version>6.0.8</springframework6.version>
+		<springboot2.version>2.7.9</springboot2.version>
+		<springboot3.version>3.0.6</springboot3.version>
+
 		<junit.version>4.13.1</junit.version>
 		<jmh.version>1.19</jmh.version>
 
@@ -47,6 +53,7 @@
 	<modules>
 		<module>core</module>
 		<module>druid-spring-boot-starter</module>
+		<module>druid-spring-boot-3-starter</module>
 		<module>druid-wrapper</module>
 		<module>druid-demo-petclinic</module>
 	</modules>
@@ -470,6 +477,18 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		<profile>
+			<id>enable-for-jdk17+</id>
+			<activation>
+				<jdk>[17,)</jdk>
+			</activation>
+			<modules>
+				<!--
+                <module>example-graalvm-native</module>
+                -->
+				<module>druid-spring-boot-3-starter</module>
+			</modules>
 		</profile>
 	</profiles>
 </project>

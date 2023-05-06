@@ -385,6 +385,7 @@ public final class FnvHash {
         long START = fnv1a_64_lower("START");
         long BTREE = fnv1a_64_lower("BTREE");
         long HASH = fnv1a_64_lower("HASH");
+        long DUPLICATE = fnv1a_64_lower("DUPLICATE");
         long LIST = fnv1a_64_lower("LIST");
         long NO_WAIT = fnv1a_64_lower("NO_WAIT");
         long WAIT = fnv1a_64_lower("WAIT");
@@ -1139,7 +1140,6 @@ public final class FnvHash {
         long INSTALL = fnv1a_64_lower("INSTALL");
         long UNLOAD = fnv1a_64_lower("UNLOAD");
 
-        long DUPLICATE = fnv1a_64_lower("DUPLICATE");
         long AGGREGATE = fnv1a_64_lower("AGGREGATE");
         long UNIQUE = fnv1a_64_lower("UNIQUE");
         long PRIMARY = fnv1a_64_lower("PRIMARY");

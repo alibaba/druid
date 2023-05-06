@@ -329,6 +329,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (date instanceof java.sql.Date) {
             dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             print0("DATE ");
+        } else if (date instanceof java.sql.Time) {
+            dateFormat = new SimpleDateFormat("HH:mm:ss");
+            print0("TIME ");
         } else {
             dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             print0("TIMESTAMP ");
@@ -4594,6 +4597,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLBeginStatement x) {
+        print0(ucase ? "BEGIN " : "begin ");
+        if (x.getTidbTxnMode() != null) {
+            x.getTidbTxnMode().accept(this);
+        }
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLUseStatement x) {
         print0(ucase ? "USE " : "use ");
         x.getDatabase().accept(this);
@@ -6459,6 +6471,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLBooleanExpr x) {
+        if (isParameterized()) {
+            print('?');
+            return false;
+        }
         print0(x.getBooleanValue() ? "true" : "false");
         return false;
     }
@@ -7280,7 +7296,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public void setUppCase(boolean val) {
-        this.config(VisitorFeature.OutputUCase, true);
+        this.config(VisitorFeature.OutputUCase, val);
     }
 
     @Override
@@ -8637,6 +8653,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     printAndAccept(x.getDistributedBy(), ",");
                     print0(")");
 
+                } else if ("DUPLICATE".equalsIgnoreCase(distributeByType.getSimpleName())) {
+                    print0(ucase ? "DUPLICATE(" : "duplicate(");
+                    printAndAccept(x.getDistributedBy(), ",");
+                    print0(")");
+
                 } else if ("BROADCAST".equalsIgnoreCase(distributeByType.getSimpleName())) {
                     print0(ucase ? "BROADCAST " : "broadcast ");
                 }
@@ -9726,6 +9747,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             if ("HASH".equalsIgnoreCase(distributeByType.getSimpleName())) {
                 print0(ucase ? "HASH(" : "hash(");
+                printAndAccept(x.getDistributeBy(), ",");
+                print0(")");
+
+            } else if ("DUPLICATE".equalsIgnoreCase(distributeByType.getSimpleName())) {
+                print0(ucase ? "DUPLICATE(" : "duplicate(");
                 printAndAccept(x.getDistributeBy(), ",");
                 print0(")");
 
