@@ -11459,4 +11459,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         return false;
     }
+
+    public boolean visit(SQLShowHistoryStatement x) {
+        if (x.isTables()) {
+            print0(ucase ? "SHOW HISTORY FOR TABLES " : "show history for tables ");
+        } else {
+            print0(ucase ? "SHOW HISTORY FOR TABLE " : "show history for table ");
+        }
+        x.getTable().accept(this);
+
+        List<SQLAssignItem> properties = x.getProperties();
+        if (!properties.isEmpty()) {
+            print0(" (");
+            printAndAccept(properties, ", ");
+            print(')');
+        }
+
+        List<SQLAssignItem> partitions = x.getPartitions();
+        if (!partitions.isEmpty()) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            printAndAccept(partitions, ", ");
+            print(')');
+        }
+        // HISTORY
+        return false;
+    }
 }
