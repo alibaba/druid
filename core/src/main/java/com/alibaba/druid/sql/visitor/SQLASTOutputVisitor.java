@@ -4007,13 +4007,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printlnComments(x.getBeforeCommentsDirect());
         }
 
+        SQLSetStatement.Option option = x.getOption();
+
         boolean printSet = x.getAttribute("parser.set") == Boolean.TRUE || !JdbcUtils.isOracleDbType(dbType);
         if (printSet) {
-            print0(ucase ? "SET " : "set ");
+            if (option == SQLSetStatement.Option.PROJECT) {
+                print0(ucase ? "SETPROJECT " : "setproject ");
+            } else {
+                print0(ucase ? "SET " : "set ");
+            }
         }
 
-        SQLSetStatement.Option option = x.getOption();
-        if (option != null) {
+        if (option != null && option != SQLSetStatement.Option.PROJECT) {
             print(option.name());
             print(' ');
         }
@@ -11482,6 +11487,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
         // HISTORY
+        return false;
+    }
+
+    public boolean visit(SQLCostStatement x) {
+        print0(ucase ? "COST SQL" : "cost sql");
+        println();
+        x.getStatement().accept(this);
         return false;
     }
 }

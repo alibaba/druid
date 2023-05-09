@@ -2501,4 +2501,11 @@ public interface SQLASTVisitor {
     default void endVisit(SQLUnpivot x) {
     }
 
+    default boolean visit(SQLCostStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLCostStatement x) {
+    }
+
 }
