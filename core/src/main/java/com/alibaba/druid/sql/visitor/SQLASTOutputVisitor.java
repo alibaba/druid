@@ -3022,6 +3022,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        if (stmt.hasBeforeComment()) {
+            printlnComments(stmt.getBeforeCommentsDirect());
+        }
+
         SQLSelect select = stmt.getSelect();
         if (select != null) {
             this.visit(select);

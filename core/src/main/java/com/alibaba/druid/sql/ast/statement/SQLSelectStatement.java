@@ -120,4 +120,16 @@ public class SQLSelectStatement extends SQLStatementImpl {
     public boolean addWhere(SQLExpr where) {
         return select.addWhere(where);
     }
+
+    public void addBeforeComment(String comment) {
+        if (headHints == null && attributes == null && select.hints == null && select.getBeforeCommentsDirect() == null) {
+            SQLSelectQueryBlock queryBlock = select.getQueryBlock();
+            List<String> queryBlockBeforeComments = queryBlock.getBeforeCommentsDirect();
+            if (queryBlockBeforeComments != null) {
+                queryBlockBeforeComments.add(comment);
+                return;
+            }
+        }
+        super.addBeforeComment(comment);
+    }
 }
