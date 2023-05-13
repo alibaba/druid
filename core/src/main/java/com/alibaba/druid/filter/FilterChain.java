@@ -1189,4 +1189,12 @@ public interface FilterChain {
     boolean resultSetMetaData_isDefinitelyWritable(ResultSetMetaDataProxy metaData, int column) throws SQLException;
 
     String resultSetMetaData_getColumnClassName(ResultSetMetaDataProxy metaData, int column) throws SQLException;
+
+    ConnectionProxy dataSource_connect(
+            FilterDataSource dataSource) throws SQLException;
+
+    ConnectionProxy dataSource_connect(
+            FilterDataSource dataSource, String username, String password)
+            throws SQLException;
+
 }

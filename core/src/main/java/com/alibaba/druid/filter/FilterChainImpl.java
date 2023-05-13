@@ -5268,4 +5268,27 @@ public class FilterChainImpl implements FilterChain {
                 .getColumnClassName(column);
     }
 
+    @Override
+    public ConnectionProxy dataSource_connect(
+            FilterDataSource dataSource) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .dataSource_getConnection(this, dataSource);
+        }
+
+        return dataSource.getConnectionDirect();
+    }
+
+    @Override
+    public ConnectionProxy dataSource_connect(
+            FilterDataSource dataSource, String username, String password)
+            throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter()
+                    .dataSource_getConnection(this, dataSource, username, password);
+        }
+
+        return dataSource.getConnectionDirect(username, password);
+    }
+
 }
