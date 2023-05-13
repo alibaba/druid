@@ -34,7 +34,7 @@
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>druid-spring-boot-starter</artifactId>
-      <version>1.2.18</version>
+      <version>1.2.19-SNAPSHOT</version>
     </dependency>
     <!-- Spring and Spring Boot dependencies -->
     <dependency>
