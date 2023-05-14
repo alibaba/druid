@@ -119,7 +119,7 @@ public class PagerUtils {
     private static boolean limitUnion(SQLUnionQuery queryBlock, DbType dbType, int offset, int count, boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
-            if (offset > 0) {
+            if (offset >= 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
             }
 
@@ -184,7 +184,7 @@ public class PagerUtils {
                                               boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
-            if (offset > 0) {
+            if (offset >= 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
             }
 
@@ -447,7 +447,7 @@ public class PagerUtils {
                                                 boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
-            if (offset > 0) {
+            if (offset >= 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
             }
 

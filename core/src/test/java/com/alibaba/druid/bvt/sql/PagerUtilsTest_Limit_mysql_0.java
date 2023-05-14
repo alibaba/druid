@@ -76,6 +76,6 @@ public class PagerUtilsTest_Limit_mysql_0 extends TestCase {
         String result = PagerUtils.limit(sql, JdbcConstants.MYSQL, 0, 100, true);
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
-                "LIMIT 1000, 100", result);
+                "LIMIT 0, 100", result);
     }
 }
