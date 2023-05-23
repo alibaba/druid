@@ -579,8 +579,10 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.sqlite;
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
             return DbType.ingres;
-        } else if (rawUrl.startsWith("jdbc:h2:") || rawUrl.startsWith("jdbc:log4jdbc:h2:") || rawUrl.startsWith("jdbc:lealone:")) {
+        } else if (rawUrl.startsWith("jdbc:h2:") || rawUrl.startsWith("jdbc:log4jdbc:h2:")) {
             return DbType.h2;
+        } else if (rawUrl.startsWith("jdbc:lealone:")) {
+            return DbType.lealone;
         } else if (rawUrl.startsWith("jdbc:mckoi:")) {
             return DbType.mock;
         } else if (rawUrl.startsWith("jdbc:cloudscape:")) {
