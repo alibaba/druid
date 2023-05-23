@@ -460,6 +460,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "com.ingres.jdbc.IngresDriver";
         } else if (rawUrl.startsWith("jdbc:h2:")) {
             return H2_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:lealone:")) {
+            return LEALONE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mckoi:")) {
             return "com.mckoi.JDBCDriver";
         } else if (rawUrl.startsWith("jdbc:cloudscape:")) {
@@ -577,7 +579,7 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.sqlite;
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
             return DbType.ingres;
-        } else if (rawUrl.startsWith("jdbc:h2:") || rawUrl.startsWith("jdbc:log4jdbc:h2:")) {
+        } else if (rawUrl.startsWith("jdbc:h2:") || rawUrl.startsWith("jdbc:log4jdbc:h2:") || rawUrl.startsWith("jdbc:lealone:")) {
             return DbType.h2;
         } else if (rawUrl.startsWith("jdbc:mckoi:")) {
             return DbType.mock;
@@ -961,6 +963,7 @@ public final class JdbcUtils implements JdbcConstants {
             case mariadb:
             case tidb:
             case h2:
+            case lealone:
                 return true;
             default:
                 return false;
