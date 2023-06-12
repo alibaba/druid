@@ -71,6 +71,9 @@ public interface JdbcConstants {
     DbType DM = DbType.dm;
     String DM_DRIVER = "dm.jdbc.driver.DmDriver";
 
+    DbType HALO = DbType.halo;
+    String HALO_DRIVER = "com.halo.driver";
+
     DbType KINGBASE = DbType.kingbase;
     String KINGBASE_DRIVER = "com.kingbase.Driver";
     String KINGBASE8_DRIVER = "com.kingbase8.Driver";

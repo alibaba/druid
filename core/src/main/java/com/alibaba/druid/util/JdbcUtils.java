@@ -488,6 +488,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "com.mimer.jdbc.Driver";
         } else if (rawUrl.startsWith("jdbc:dm:")) {
             return JdbcConstants.DM_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:halo:")) {
+            return JdbcConstants.HALO_DRIVER;
         } else if (rawUrl.startsWith("jdbc:kingbase:")) {
             return JdbcConstants.KINGBASE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:kingbase8:")) {
@@ -607,6 +609,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.mimer;
         } else if (rawUrl.startsWith("jdbc:dm:")) {
             return JdbcConstants.DM;
+        } else if (rawUrl.startsWith("jdbc:halo:")) {
+            return JdbcConstants.HALO;
         } else if (rawUrl.startsWith("jdbc:kingbase:") || rawUrl.startsWith("jdbc:kingbase8:")) {
             return JdbcConstants.KINGBASE;
         } else if (rawUrl.startsWith("jdbc:gbase:")) {
@@ -983,6 +987,7 @@ public final class JdbcUtils implements JdbcConstants {
             case polardb:
             case greenplum:
             case gaussdb:
+            case halo:
                 return true;
             default:
                 return false;

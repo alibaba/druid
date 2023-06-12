@@ -140,6 +140,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             case polardb:
             case greenplum:
             case gaussdb:
+            case halo:
                 if (config == null) {
                     config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
                 }
