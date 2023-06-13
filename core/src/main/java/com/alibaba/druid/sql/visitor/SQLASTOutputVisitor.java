@@ -1923,6 +1923,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printMethodParameters(SQLMethodInvokeExpr x) {
         String function = x.getMethodName();
+        long nameHashCode64 = x.methodNameHashCode64();
         List<SQLExpr> parameters = x.getArguments();
 
         print('(');
@@ -1967,6 +1968,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     this.indentCount++;
                     printExpr(param, parameterized);
                     this.indentCount--;
+                    continue;
+                }
+            }
+
+            if (i == 0 && (nameHashCode64 == FnvHash.Constants.TIMESTAMPDIFF || nameHashCode64 == FnvHash.Constants.TIMESTAMPADD)
+                    && param instanceof SQLIdentifierExpr) {
+                if (DbType.mysql == dbType) {
+                    print(((SQLIdentifierExpr) param).getName());
                     continue;
                 }
             }
