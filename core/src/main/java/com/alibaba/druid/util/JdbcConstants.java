@@ -131,6 +131,8 @@ public interface JdbcConstants {
     DbType CLICKHOUSE = DbType.clickhouse;
     String CLICKHOUSE_DRIVER = "ru.yandex.clickhouse.ClickHouseDriver";
 
+    String CLICKHOUSE_DRIVER_NEW = "com.clickhouse.jdbc.ClickHouseDriver";
+
     String KDB = "kdb";
     String KDB_DRIVER = "com.inspur.jdbc.KdDriver";
 
