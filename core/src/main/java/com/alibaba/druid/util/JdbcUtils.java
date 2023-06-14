@@ -38,6 +38,8 @@ public final class JdbcUtils implements JdbcConstants {
 
     private static Boolean mysql_driver_version_6;
 
+    private static Boolean clickhouse_driver_version_new;
+
     static {
         try {
             ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
@@ -509,7 +511,14 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:elastic:")) {
             return JdbcConstants.ELASTIC_SEARCH_DRIVER;
         } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
-            return JdbcConstants.CLICKHOUSE_DRIVER;
+            if (clickhouse_driver_version_new == null) {
+                clickhouse_driver_version_new = Utils.loadClass(JdbcConstants.CLICKHOUSE_DRIVER_NEW) != null;
+            }
+            if (clickhouse_driver_version_new) {
+                return JdbcConstants.CLICKHOUSE_DRIVER_NEW;
+            } else {
+                return JdbcConstants.CLICKHOUSE_DRIVER;
+            }
         } else if (rawUrl.startsWith("jdbc:presto:")) {
             return JdbcConstants.PRESTO_DRIVER;
         } else if (rawUrl.startsWith("jdbc:trino:")) {
