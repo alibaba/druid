@@ -105,6 +105,7 @@ public class SQLExprParser extends SQLParser {
 
         SQLExpr expr = primary();
 
+        Lexer.SavePoint mark = lexer.mark();
         Token token = lexer.token;
         if (token == Token.COMMA) {
             return expr;
@@ -114,6 +115,15 @@ public class SQLExprParser extends SQLParser {
             expr = xorRest(expr);
             expr = orRest(expr);
             return expr;
+        } if (token == Token.IN) {
+            lexer.nextToken();
+            if (lexer.token == Token.PARTITION) {
+                lexer.reset(mark);
+                return expr;
+            } else {
+                lexer.reset(mark);
+                return exprRest(expr);
+            }
         } else {
             return exprRest(expr);
         }
