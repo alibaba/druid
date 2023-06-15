@@ -116,6 +116,9 @@ public class ClickhouseStatementParser extends SQLStatementParser {
                     stmt.setWhere(this.exprParser.expr());
                 }
                 return stmt;
+            } else {
+                lexer.reset(mark);
+                return super.parseAlter();
             }
         }
         throw new ParserException("TODO " + lexer.info());
