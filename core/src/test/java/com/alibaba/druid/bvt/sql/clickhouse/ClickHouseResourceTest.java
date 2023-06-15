@@ -109,7 +109,7 @@ public class ClickHouseResourceTest extends OracleTest {
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
-        String expect = items.length > 1 ? items[1].trim() : null;
+        String expect = items.length > 1 ? items[1].trim().replace("\r\n","\n") : null;
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.clickhouse);
 
