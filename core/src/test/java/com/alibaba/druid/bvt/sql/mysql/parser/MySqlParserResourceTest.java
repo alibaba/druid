@@ -58,7 +58,7 @@ public class MySqlParserResourceTest extends TestCase {
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
-        String expect = items[1].trim();
+        String expect = items[1].trim().replaceAll("\\r\\n", "\n");
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

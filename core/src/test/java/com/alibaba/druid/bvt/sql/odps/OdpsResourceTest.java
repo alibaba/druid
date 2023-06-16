@@ -67,11 +67,11 @@ public class OdpsResourceTest extends TestCase {
     public void exec_test(String resource) throws Exception {
         String input = TestUtil.getResource(resource);
         String[] items = input.split("---------------------------");
-        String sql = items[0].trim();
+        String sql = items[0].trim().replaceAll("\\r\\n", "\n");
         String expect = null;
 
         if (items.length > 1) {
-            expect = items[1].trim();
+            expect = items[1].trim().replaceAll("\\r\\n", "\n");
         }
 
         OdpsStatementParser parser = new OdpsStatementParser(sql, SQLParserFeature.KeepComments);
