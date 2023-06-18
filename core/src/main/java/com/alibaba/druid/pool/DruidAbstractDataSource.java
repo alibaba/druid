@@ -68,6 +68,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public static final int DEFAULT_MAX_IDLE = 8;
     public static final int DEFAULT_MIN_IDLE = 0;
     public static final int DEFAULT_MAX_WAIT = -1;
+    public static final int DEFAULT_MAX_CONNECT = -1;
     public static final String DEFAULT_VALIDATION_QUERY = null;                                                //
     public static final boolean DEFAULT_TEST_ON_BORROW = false;
     public static final boolean DEFAULT_TEST_ON_RETURN = false;
@@ -104,6 +105,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int minIdle = DEFAULT_MIN_IDLE;
     protected volatile int maxIdle = DEFAULT_MAX_IDLE;
     protected volatile long maxWait = DEFAULT_MAX_WAIT;
+    protected volatile long maxConnect = DEFAULT_MAX_CONNECT;
     protected int notFullTimeoutRetryCount;
 
     protected volatile String validationQuery = DEFAULT_VALIDATION_QUERY;
@@ -1088,6 +1090,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         this.maxWait = maxWaitMillis;
+    }
+
+    public long getMaxConnect() {
+        return maxConnect;
+    }
+
+    public void setMaxConnect(long maxConnectMillis) {
+        this.maxConnect = maxConnectMillis;
     }
 
     public int getNotFullTimeoutRetryCount() {
