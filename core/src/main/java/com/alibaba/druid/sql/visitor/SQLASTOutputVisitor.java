@@ -1861,6 +1861,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (parameterized) {
+            if (isEnabled(VisitorFeature.OutputParameterizedUnMergeZero)
+                    && (number instanceof Integer
+                    || number instanceof Long) && number.longValue() == 0) {
+                parameterized = false;
+            }
+            if (isEnabled(VisitorFeature.OutputParameterizedUnMergeOne)
+                    && (number instanceof Integer
+                    || number instanceof Long) && number.longValue() == 1) {
+                parameterized = false;
+            }
+        }
+
+        if (parameterized) {
             print('?');
             incrementReplaceCunt();
 
