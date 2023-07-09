@@ -3599,6 +3599,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             sampling.accept(this);
         }
 
+        if (x.getPartitionSize() > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            printlnAndAccept(x.getPartitions(), ", ");
+            print(')');
+        }
+
         String alias = x.getAlias();
         List<SQLName> columns = x.getColumnsDirect();
         if (alias != null) {
@@ -3618,12 +3624,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         for (int i = 0; i < x.getHintsSize(); ++i) {
             print(' ');
             x.getHints().get(i).accept(this);
-        }
-
-        if (x.getPartitionSize() > 0) {
-            print0(ucase ? " PARTITION (" : " partition (");
-            printlnAndAccept(x.getPartitions(), ", ");
-            print(')');
         }
 
         return false;
