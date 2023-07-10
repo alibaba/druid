@@ -300,11 +300,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         SQLTableSource left = x.getLeft();
         left.accept(this);
 
-        if (left.hasAfterComment() && isPrettyFormat()) {
-            println();
-            printlnComment(left.getAfterCommentsDirect());
-        }
-
         if (x.getJoinType() == JoinType.COMMA) {
             print(',');
         } else {

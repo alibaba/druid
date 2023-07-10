@@ -4509,6 +4509,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
+        if (isPrettyFormat() && x.hasAfterComment()) {
+            print(' ');
+            printlnComment(x.getAfterCommentsDirect());
+        }
+
         return false;
     }
 

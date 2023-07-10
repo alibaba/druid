@@ -1023,8 +1023,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
 
                 SQLTableSource resolvedTableSource = propertyExpr.getResolvedTableSource();
-                if (resolvedTableSource instanceof SQLSubqueryTableSource) {
-                    SQLSelect select = ((SQLSubqueryTableSource) resolvedTableSource).getSelect();
+                if (resolvedTableSource instanceof SQLSubqueryTableSource || resolvedTableSource instanceof SQLWithSubqueryClause.Entry) {
+                    SQLSelect select;
+                    if (resolvedTableSource instanceof SQLSubqueryTableSource) {
+                        select = ((SQLSubqueryTableSource) resolvedTableSource).getSelect();
+                    } else {
+                        select = ((SQLWithSubqueryClause.Entry) resolvedTableSource).getSubQuery();
+                    }
+
                     SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
                     if (queryBlock != null) {
                         if (queryBlock.getGroupBy() != null) {
