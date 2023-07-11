@@ -4157,8 +4157,9 @@ public class SQLStatementParser extends SQLParser {
             stmt.setWhen(condition);
         }
 
-        List<SQLStatement> body = this.parseStatementList();
-        if (body == null || body.isEmpty()) {
+        List<SQLStatement> body = new ArrayList<>();
+        this.parseStatementList(body, 1);
+        if (body.isEmpty()) {
             throw new ParserException("syntax error");
         }
         stmt.setBody(body.get(0));
