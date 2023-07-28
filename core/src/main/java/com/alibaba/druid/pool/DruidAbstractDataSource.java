@@ -1773,7 +1773,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 if (socketTimeout > 0) {
                     physicalConnectProperties.put("socketTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(socketTimeout)));
                 }
-            } else if (DbType.sqlserver.name().equals(dbTypeName)) {
+            } else if (dbTypeName!=null && DbType.sqlserver.name().equals(dbTypeName)) {
                 // see https://learn.microsoft.com/en-us/sql/connect/jdbc/setting-the-connection-properties?view=sql-server-ver16
                 physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
                 if (socketTimeout > 0) {
