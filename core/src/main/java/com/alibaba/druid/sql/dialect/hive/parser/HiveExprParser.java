@@ -60,11 +60,15 @@ public class HiveExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-//        if(lexer.token() == Token.COLON) {
-//            lexer.nextToken();
-//            expr = dotRest(expr);
-//            return expr;
-//        }
+        if (lexer.token() == Token.COLON) {
+            lexer.nextToken();
+            expr = dotRest(expr);
+            if (expr instanceof SQLPropertyExpr) {
+                SQLPropertyExpr spe = (SQLPropertyExpr) expr;
+                spe.setSplitString(":");
+            }
+            return expr;
+        }
 
         switch (lexer.token()) {
             case LBRACKET:

@@ -23,19 +23,19 @@ public class PGSelectTest83
 
         assertEquals("SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY m ASC)\n" +
                         "FROM (\n" +
-                        "\t(SELECT DISTINCT extract(month FROM paidon) AS m\n" +
+                        "\tSELECT DISTINCT extract(month FROM paidon) AS m\n" +
                         "\tFROM core_order\n" +
                         "\tWHERE paidon BETWEEN '2019-1-01' AND '2019-5-01'\n" +
-                        "\tORDER BY m ASC)\n" +
+                        "\tORDER BY m ASC\n" +
                         ") a"
                 , stmt.toString());
 
         assertEquals("select percentile_cont(0.5) within group (order by m asc)\n" +
                 "from (\n" +
-                "\t(select distinct extract(month from paidon) as m\n" +
+                "\tselect distinct extract(month from paidon) as m\n" +
                 "\tfrom core_order\n" +
                 "\twhere paidon between '2019-1-01' and '2019-5-01'\n" +
-                "\torder by m asc)\n" +
+                "\torder by m asc\n" +
                 ") a", stmt.toLowerCaseString());
     }
 }

@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.clickhouse.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseAlterTableUpdateStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -134,6 +135,42 @@ public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements Clic
                 print(')');
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean visit(ClickhouseAlterTableUpdateStatement x) {
+        print0(ucase ? "ALTER TABLE " : "alter table ");
+        printExpr(x.getTableName());
+        if (x.getClusterName() != null) {
+            print0(ucase ? " ON CLUSTER " : " on cluster ");
+            if (parameterized) {
+                print('?');
+            } else {
+                printExpr(x.getClusterName());
+            }
+        }
+        print0(ucase ? " UPDATE " : " update ");
+        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            SQLUpdateSetItem item = x.getItems().get(i);
+            visit(item);
+        }
+        if (x.getPartitionId() != null) {
+            print0(ucase ? " IN PARTITION " : " in partition ");
+            if (parameterized) {
+                print('?');
+            } else {
+                printExpr(x.getPartitionId());
+            }
+        }
+        if (x.getWhere() != null) {
+            print0(ucase ? " WHERE " : " where ");
+            x.getWhere().accept(this);
+        }
+
         return false;
     }
 }

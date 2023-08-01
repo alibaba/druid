@@ -193,6 +193,10 @@ public class OdpsExprParser extends SQLExprParser {
                 return propertyExpr;
             }
             expr = dotRest(expr);
+            if (expr instanceof SQLPropertyExpr) {
+                SQLPropertyExpr spe = (SQLPropertyExpr) expr;
+                spe.setSplitString(":");
+            }
             return expr;
         }
 

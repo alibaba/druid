@@ -95,7 +95,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             printlnComments(x.getBeforeCommentsDirect());
         }
 
-        final boolean bracket = x.isParenthesized();
+        boolean bracket = x.isParenthesized();
+        if (bracket) {
+            if (x.getParent() instanceof SQLSelect && x.getParent().getParent() instanceof SQLSubqueryTableSource) {
+                bracket = false;
+            }
+        }
         if (bracket) {
             print('(');
         }
