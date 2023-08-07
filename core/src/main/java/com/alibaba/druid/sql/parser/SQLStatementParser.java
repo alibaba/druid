@@ -4440,29 +4440,29 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
-        SQLUpdateStatement udpateStatement = createUpdateStatement();
+        SQLUpdateStatement updateStatement = createUpdateStatement();
 
         if (lexer.token == Token.UPDATE) {
             lexer.nextToken();
 
             SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
-            udpateStatement.setTableSource(tableSource);
+            updateStatement.setTableSource(tableSource);
         }
 
         if (dbType == DbType.odps && lexer.token == PARTITION) {
             lexer.nextToken();
-            udpateStatement.setPartitions(new ArrayList<>());
-            this.exprParser.parseAssignItem(udpateStatement.getPartitions(), udpateStatement);
+            updateStatement.setPartitions(new ArrayList<>());
+            this.exprParser.parseAssignItem(updateStatement.getPartitions(), updateStatement);
         }
 
-        parseUpdateSet(udpateStatement);
+        parseUpdateSet(updateStatement);
 
         if (lexer.token == (Token.WHERE)) {
             lexer.nextToken();
-            udpateStatement.setWhere(this.exprParser.expr());
+            updateStatement.setWhere(this.exprParser.expr());
         }
 
-        return udpateStatement;
+        return updateStatement;
     }
 
     protected void parseUpdateSet(SQLUpdateStatement update) {
