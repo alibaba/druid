@@ -287,6 +287,18 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         println();
         print(')');
 
+        SQLPivot pivot = x.getPivot();
+        if (pivot != null) {
+            println();
+            pivot.accept(this);
+        }
+
+        SQLUnpivot unpivot = x.getUnpivot();
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
+        }
+
         if (x.getAlias() != null) {
             print(' ');
             print0(x.getAlias());
