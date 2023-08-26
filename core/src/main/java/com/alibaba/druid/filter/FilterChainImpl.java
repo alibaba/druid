@@ -121,7 +121,9 @@ public class FilterChainImpl implements FilterChain {
             return null;
         }
 
-        return new ConnectionProxyImpl(dataSource, nativeConnection, info, dataSource.createConnectionId());
+        ConnectionProxyImpl connectionProxyImpl = new ConnectionProxyImpl(dataSource, nativeConnection, info, dataSource.createConnectionId());
+        connectionProxyImpl.setCallMethodForConnect(info.getProperty("druid.debug.callMethodForConnect", "none"));
+        return connectionProxyImpl;
     }
 
     @Override
