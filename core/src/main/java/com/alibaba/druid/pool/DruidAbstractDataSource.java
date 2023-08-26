@@ -22,6 +22,7 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
@@ -1423,6 +1424,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             throw new SQLException("validateConnection: connection closed");
         }
 
+        if(conn instanceof ConnectionProxyImpl) {
+            ((ConnectionProxyImpl) conn).setLastRunValidateTimeMs(System.currentTimeMillis());
+        }
         if (validConnectionChecker != null) {
             boolean result;
             Exception error = null;
@@ -1449,7 +1453,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             if (!result) {
                 SQLException sqlError = error != null ? //
                         new SQLException("validateConnection false", error) //
-                        : new SQLException("validateConnection false");
+                        : new SQLException("validateConnection false errorisnull");
                 throw sqlError;
             }
             return;
@@ -1701,6 +1705,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public PhysicalConnectionInfo createPhysicalConnection() throws SQLException {
+        return createPhysicalConnectionWithCallMethod("NONE");
+    }
+    public PhysicalConnectionInfo createPhysicalConnectionWithCallMethod(String callMethodForDebug) throws SQLException {
         String url = this.getUrl();
         Properties connectProperties = getConnectProperties();
 
@@ -1729,6 +1736,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         Properties physicalConnectProperties = new Properties();
+        physicalConnectProperties.put("druid.debug.callMethodForConnect", callMethodForDebug);
         if (connectProperties != null) {
             physicalConnectProperties.putAll(connectProperties);
         }
@@ -1815,16 +1823,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             setCreateError(null);
         } catch (SQLException ex) {
             setCreateError(ex);
-            JdbcUtils.close(conn);
+            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".createPhysicalConnectionWithCallMethod,ex=" + ex.getClass() + "|" + ex);
             throw ex;
         } catch (RuntimeException ex) {
             setCreateError(ex);
-            JdbcUtils.close(conn);
+            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".createPhysicalConnectionWithCallMethod,ex=" + ex.getClass() + "|" + ex);
             throw ex;
         } catch (Error ex) {
             createErrorCountUpdater.incrementAndGet(this);
             setCreateError(ex);
-            JdbcUtils.close(conn);
+            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".createPhysicalConnectionWithCallMethod,ex=" + ex.getClass() + "|" + ex);
             throw ex;
         } finally {
             long nano = System.nanoTime() - connectStartNanos;
