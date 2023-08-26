@@ -2070,6 +2070,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);
     }
 
+    @Override
+    public long getDataSourceId() {
+        return getID();
+    }
     public long getID() {
         return this.id;
     }
