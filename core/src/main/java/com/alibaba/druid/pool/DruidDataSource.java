@@ -1124,6 +1124,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             destroySchedulerFuture = destroyScheduler.scheduleAtFixedRate(destroyTask, period, period,
                     TimeUnit.MILLISECONDS);
             initedLatch.countDown();
+            LOG.info("scheduleAtFixedRate|DestroyTask|period=" + period + "|datasourceId=" + this.id + "|url=" + jdbcUrl);
             return;
         }
 
@@ -1399,6 +1400,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             this.validConnectionChecker = new OceanBaseValidConnectionChecker(dbType);
         }
 
+        LOG.info("validConnectionChecker=" + validConnectionChecker);
     }
 
     private void initExceptionSorter() {
