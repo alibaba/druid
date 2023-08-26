@@ -244,7 +244,7 @@ public class RandomDataSourceValidateThread implements Runnable {
                     + info.getProperty("user") + "]. Exception: " + e.getMessage());
             result = false;
         } finally {
-            JdbcUtils.close(conn);
+            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".check");
         }
 
         return result;
