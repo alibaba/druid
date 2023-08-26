@@ -149,4 +149,12 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
     }
 
+    @Override
+    public String toString() {
+        return "MySqlValidConnectionChecker{" +
+            "clazz=" + clazz +
+            ", ping=" + ping +
+            ", usePingMethod=" + usePingMethod +
+            '}';
+    }
 }

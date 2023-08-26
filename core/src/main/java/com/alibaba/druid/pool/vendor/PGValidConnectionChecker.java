@@ -73,4 +73,12 @@ public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter impl
             JdbcUtils.close(stmt);
         }
     }
+
+    @Override
+    public String toString() {
+        return "PGValidConnectionChecker{" +
+            "defaultQueryTimeout=" + defaultQueryTimeout +
+            ", defaultValidateQuery='" + defaultValidateQuery + '\'' +
+            '}';
+    }
 }

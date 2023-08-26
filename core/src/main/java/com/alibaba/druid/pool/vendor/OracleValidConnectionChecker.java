@@ -92,4 +92,12 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
             JdbcUtils.close(stmt);
         }
     }
+
+    @Override
+    public String toString() {
+        return "OracleValidConnectionChecker{" +
+            "timeout=" + timeout +
+            ", defaultValidateQuery='" + defaultValidateQuery + '\'' +
+            '}';
+    }
 }

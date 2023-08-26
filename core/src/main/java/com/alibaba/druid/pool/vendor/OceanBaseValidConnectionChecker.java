@@ -65,4 +65,12 @@ public class OceanBaseValidConnectionChecker extends ValidConnectionCheckerAdapt
             JdbcUtils.close(stmt);
         }
     }
+
+    @Override
+    public String toString() {
+        return "OceanBaseValidConnectionChecker{" +
+            "commonValidateQuery='" + commonValidateQuery + '\'' +
+            ", dbType=" + dbType +
+            '}';
+    }
 }
