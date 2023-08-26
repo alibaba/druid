@@ -34,7 +34,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private final Properties properties;
 
-    private final long connectedTime;
+    private final long connectedTimeMs;
 
     private TransactionInfo transactionInfo;
 
@@ -47,11 +47,11 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         this.dataSource = dataSource;
         this.connection = connection;
         this.properties = properties;
-        this.connectedTime = System.currentTimeMillis();
+        this.connectedTimeMs = System.currentTimeMillis();
     }
 
     public Date getConnectedTime() {
-        return new Date(connectedTime);
+        return new Date(connectedTimeMs);
     }
 
     public Properties getProperties() {
