@@ -20,6 +20,7 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
@@ -273,6 +274,10 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             if (filtersSize > 0) {
                 FilterChainImpl filterChain = holder.createChain();
                 try {
+                    Connection holderConnection =  this.holder.getConnection();
+                    if(holderConnection instanceof ConnectionProxyImpl) {
+                        ((ConnectionProxyImpl) holderConnection).setLastReturnToPoolTimeMs(System.currentTimeMillis());
+                    }
                     filterChain.dataSource_recycle(this);
                 } finally {
                     holder.recycleFilterChain(filterChain);
