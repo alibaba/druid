@@ -30,7 +30,7 @@ public interface ConnectionProxy extends Connection, WrapperProxy {
     DataSourceProxy getDirectDataSource();
 
     /**
-     * 获取物理连接的创建时间
+     * 获取实际创建物理连接的时间
      * @return
      */
     Date getConnectedTime();
@@ -44,16 +44,16 @@ public interface ConnectionProxy extends Connection, WrapperProxy {
     int getCloseCount();
 
     /**
-     * 获取创建物理的原因,主要是为了排查连接使用的疑难问题
+     * 获取创建物理连接的触发调用的方法,主要是为了排查连接使用的疑难问题
      * @return
      */
-    String getReasonForConnect();
+    String getCallMethodForConnect();
 
     /**
-     * 获取关闭物理连接的原因，主要是为了排查连接使用的疑难问题
+     * 获取关闭物理连接的触发调用的方法，主要是为了排查连接使用的疑难问题
      * @return
      */
-    String getReasonForClose();
+    String getCallMethodForClose();
 
     /**
      * 获取物理连接实际从连接池中借出去使用过的次数
@@ -65,12 +65,19 @@ public interface ConnectionProxy extends Connection, WrapperProxy {
      * 获取物理连接最近一次从连接池中借出去的时间
      * @return
      */
-    int getlastBorrowFromPoolTimeMs();
+    long getLastBorrowFromPoolTimeMs();
 
     /**
      * 获取物理连接最近一次被归还到连接池的时间
      * @return
      */
-    long lastReturnToPoolTimeMs();
+    long getLastReturnToPoolTimeMs();
+
+    /**
+     * 获取物理连接最近一次被执行校验的时间
+     * @return
+     */
+    long getLastRunValidateTimeMs();
+
 
 }

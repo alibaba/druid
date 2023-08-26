@@ -42,6 +42,19 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private FilterChainImpl filterChain;
 
+    private String callMethodForConnect = "unknown";
+
+    private String callMethodForClose = "unknown";
+
+    private int usedCount;
+
+    private long lastBorrowFromPoolTimeMs;
+
+    private long lastReturnToPoolTimeMs;
+
+    private long lastRunValidateTimeMs;
+
+
     public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id) {
         super(connection, id);
         this.dataSource = dataSource;
@@ -529,5 +542,73 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public int getCloseCount() {
         return closeCount;
+    }
+
+    @Override
+    public String getCallMethodForConnect() {
+        return callMethodForConnect;
+    }
+
+    public void setCallMethodForConnect(String callMethodForConnect) {
+        this.callMethodForConnect = callMethodForConnect;
+    }
+
+    @Override
+    public String getCallMethodForClose() {
+        return callMethodForClose;
+    }
+
+    public void setCallMethodForClose(String callMethodForClose) {
+        this.callMethodForClose = callMethodForClose;
+    }
+
+    @Override
+    public int getUsedCount() {
+        return usedCount;
+    }
+
+    public void setUsedCount(int usedCount) {
+        this.usedCount = usedCount;
+    }
+
+    @Override
+    public long getLastBorrowFromPoolTimeMs() {
+        return lastBorrowFromPoolTimeMs;
+    }
+
+    public void setLastBorrowFromPoolTimeMs(long lastBorrowFromPoolTimeMs) {
+        this.lastBorrowFromPoolTimeMs = lastBorrowFromPoolTimeMs;
+    }
+
+    @Override
+    public long getLastReturnToPoolTimeMs() {
+        return lastReturnToPoolTimeMs;
+    }
+    public void setLastReturnToPoolTimeMs(long lastReturnToPoolTimeMs) {
+        this.lastReturnToPoolTimeMs = lastReturnToPoolTimeMs;
+    }
+
+    @Override
+    public long getLastRunValidateTimeMs() {
+        return lastRunValidateTimeMs;
+    }
+
+    public void setLastRunValidateTimeMs(long lastRunValidateTimeMs) {
+        this.lastRunValidateTimeMs = lastRunValidateTimeMs;
+    }
+
+    @Override
+    public String toString() {
+        return "ConnectionProxyImpl{" +
+            "id=" + getId() +
+            ", connectedTimeMs=" + new java.sql.Timestamp(connectedTimeMs) +
+            ", closeCount=" + closeCount +
+            ", callMethodForConnect='" + callMethodForConnect + '\'' +
+            ", callMethodForClose='" + callMethodForClose + '\'' +
+            ", usedCount=" + usedCount +
+            ", lastBorrowFromPoolTimeMs=" + new java.sql.Timestamp(lastBorrowFromPoolTimeMs) +
+            ", lastReturnToPoolTimeMs=" + new java.sql.Timestamp(lastReturnToPoolTimeMs) +
+            ", lastRunValidateTimeMs=" + new java.sql.Timestamp(lastRunValidateTimeMs) +
+            '}';
     }
 }
