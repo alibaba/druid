@@ -1581,7 +1581,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             Connection holderConnection = poolableConnection.holder.getConnection();
-            if(holderConnection instanceof ConnectionProxyImpl){
+            if (holderConnection instanceof ConnectionProxyImpl) {
                 ConnectionProxyImpl connProxy = (ConnectionProxyImpl) holderConnection;
                 connProxy.setUsedCount(connProxy.getUsedCount() + 1);
                 connProxy.setLastBorrowFromPoolTimeMs(System.currentTimeMillis());

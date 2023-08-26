@@ -274,8 +274,8 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             if (filtersSize > 0) {
                 FilterChainImpl filterChain = holder.createChain();
                 try {
-                    Connection holderConnection =  this.holder.getConnection();
-                    if(holderConnection instanceof ConnectionProxyImpl) {
+                    Connection holderConnection = this.holder.getConnection();
+                    if (holderConnection instanceof ConnectionProxyImpl) {
                         ((ConnectionProxyImpl) holderConnection).setLastReturnToPoolTimeMs(System.currentTimeMillis());
                     }
                     filterChain.dataSource_recycle(this);

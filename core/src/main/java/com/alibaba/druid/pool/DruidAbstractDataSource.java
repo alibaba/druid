@@ -1424,7 +1424,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             throw new SQLException("validateConnection: connection closed");
         }
 
-        if(conn instanceof ConnectionProxyImpl) {
+        if (conn instanceof ConnectionProxyImpl) {
             ((ConnectionProxyImpl) conn).setLastRunValidateTimeMs(System.currentTimeMillis());
         }
         if (validConnectionChecker != null) {
