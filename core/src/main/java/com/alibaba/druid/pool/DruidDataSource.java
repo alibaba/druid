@@ -26,6 +26,7 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.vendor.*;
 import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -936,7 +937,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 // init connections
                 while (poolingCount < initialSize) {
                     try {
-                        PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
+                        PhysicalConnectionInfo pyConnectInfo = createPhysicalConnectionWithCallMethod(this.getClass().getName() + ".init");
                         DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
                         connections[poolingCount++] = holder;
                     } catch (SQLException ex) {
@@ -1579,6 +1580,12 @@ public class DruidDataSource extends DruidAbstractDataSource
                 poolableConnection.setAutoCommit(false);
             }
 
+            Connection holderConnection = poolableConnection.holder.getConnection();
+            if(holderConnection instanceof ConnectionProxyImpl){
+                ConnectionProxyImpl connProxy = (ConnectionProxyImpl) holderConnection;
+                connProxy.setUsedCount(connProxy.getUsedCount() + 1);
+                connProxy.setLastBorrowFromPoolTimeMs(System.currentTimeMillis());
+            }
             return poolableConnection;
         }
     }
@@ -1629,7 +1636,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         Connection conn = holder.getConnection();
         if (conn != null) {
-            JdbcUtils.close(conn);
+            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".discardConnection");
         }
 
         Socket socket = holder.socket;
@@ -1684,7 +1691,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             if (createDirect) {
                 createStartNanosUpdater.set(this, System.nanoTime());
                 if (creatingCountUpdater.compareAndSet(this, 0, 1)) {
-                    PhysicalConnectionInfo pyConnInfo = DruidDataSource.this.createPhysicalConnection();
+                    PhysicalConnectionInfo pyConnInfo = DruidDataSource.this.createPhysicalConnectionWithCallMethod(this.getClass().getName() + ".getConnectionInternal");
                     holder = new DruidConnectionHolder(this, pyConnInfo);
                     holder.lastActiveTimeMillis = System.currentTimeMillis();
 
@@ -1715,7 +1722,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     }
 
                     if (discard) {
-                        JdbcUtils.close(pyConnInfo.getPhysicalConnection());
+                        JdbcUtils.closeWithCallMethod(pyConnInfo.getPhysicalConnection(), this.getClass().getName() + ".getConnectionInternal");
                     }
                 }
             }
@@ -2076,7 +2083,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             if (testOnReturn) {
                 boolean validated = testConnectionInternal(holder, physicalConnection);
                 if (!validated) {
-                    JdbcUtils.close(physicalConnection);
+                    JdbcUtils.closeWithCallMethod(physicalConnection, this.getClass().getName() + ".recycle|testOnReturn");
 
                     destroyCountUpdater.incrementAndGet(this);
 
@@ -2129,7 +2136,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             if (!result) {
-                JdbcUtils.close(holder.conn);
+                JdbcUtils.closeWithCallMethod(holder.conn, this.getClass().getName() + ".recycle|failed");
                 LOG.info("connection recycle failed.");
             }
         } catch (Throwable e) {
@@ -2749,7 +2756,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 PhysicalConnectionInfo physicalConnection = null;
 
                 try {
-                    physicalConnection = createPhysicalConnection();
+                    physicalConnection = createPhysicalConnectionWithCallMethod(this.getClass().getName() + ".runInternal");
                 } catch (OutOfMemoryError e) {
                     LOG.error("create connection OutOfMemoryError, out memory. ", e);
 
@@ -2865,7 +2872,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 physicalConnection.createTaskId = taskId;
                 boolean result = put(physicalConnection);
                 if (!result) {
-                    JdbcUtils.close(physicalConnection.getPhysicalConnection());
+                    JdbcUtils.closeWithCallMethod(physicalConnection.getPhysicalConnection(), this.getClass().getName() + ".runInternal|putopoolfailed");
                     LOG.info("put physical connection to pool failed.");
                 }
                 break;
@@ -2941,7 +2948,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 PhysicalConnectionInfo connection = null;
 
                 try {
-                    connection = createPhysicalConnection();
+                    connection = createPhysicalConnectionWithCallMethod(this.getClass().getName() + ".run");
                 } catch (SQLException e) {
                     LOG.error("create connection SQLException, url: " + jdbcUrl + ", errorCode " + e.getErrorCode()
                             + ", state " + e.getSQLState(), e);
@@ -2985,7 +2992,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                 boolean result = put(connection);
                 if (!result) {
-                    JdbcUtils.close(connection.getPhysicalConnection());
+                    JdbcUtils.closeWithCallMethod(connection.getPhysicalConnection(), this.getClass().getName() + ".run|putopoolfailed");
                     LOG.info("put physical connection to pool failed.");
                 }
 
@@ -3113,7 +3120,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     lock.unlock();
                 }
 
-                JdbcUtils.close(pooledConnection);
+                JdbcUtils.closeWithCallMethod(pooledConnection, this.getClass().getName() + ".removeAbandoned");
                 pooledConnection.abandond();
                 removeAbandonedCount++;
                 removeCount++;
@@ -3311,7 +3318,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             for (int i = 0; i < evictCount; ++i) {
                 DruidConnectionHolder item = evictConnections[i];
                 Connection connection = item.getConnection();
-                JdbcUtils.close(connection);
+                JdbcUtils.closeWithCallMethod(connection, this.getClass().getName() + ".shrink|evictCount>0|" + i + "of" + evictCount);
                 destroyCountUpdater.incrementAndGet(this);
             }
             Arrays.fill(evictConnections, null);
@@ -3968,7 +3975,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             DruidConnectionHolder holder;
             try {
-                PhysicalConnectionInfo pyConnInfo = createPhysicalConnection();
+                PhysicalConnectionInfo pyConnInfo = createPhysicalConnectionWithCallMethod(this.getClass().getName() + ".fill(" + toCount + ")");
                 holder = new DruidConnectionHolder(this, pyConnInfo);
             } catch (SQLException e) {
                 LOG.error("fill connection error, url: " + this.jdbcUrl, e);
@@ -3986,7 +3993,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             boolean result;
             try {
                 if (!this.isFillable(toCount)) {
-                    JdbcUtils.close(holder.getConnection());
+                    JdbcUtils.closeWithCallMethod(holder.getConnection(), this.getClass().getName() + ".fill(" + toCount + ")|fillskip");
                     LOG.info("fill connections skip.");
                     break;
                 }
@@ -3997,7 +4004,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             if (!result) {
-                JdbcUtils.close(holder.getConnection());
+                JdbcUtils.closeWithCallMethod(holder.getConnection(), this.getClass().getName() + ".fill(" + toCount + ")|connectionfillfailed");
                 LOG.info("connection fill failed.");
             }
         }
