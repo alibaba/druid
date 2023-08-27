@@ -55,7 +55,7 @@ public class JtdsXAConnection implements XAConnection {
             // Ignore close errors
         }
 
-        JdbcUtils.closeWithCallMethod(connection, this.getClass().getName() + ".close");
+        JdbcUtils.close(connection);
     }
 
     @Override

@@ -75,7 +75,7 @@ public class RandomDataSourceRecoverThread implements Runnable {
             LOG.warn("DataSource[" + dataSource.getName() + "] is still unavailable. Exception: "
                     + e.getMessage());
         } finally {
-            JdbcUtils.closeWithCallMethod(connection, this.getClass().getName() + ".tryOneDataSource");
+            JdbcUtils.close(connection);
         }
     }
 
