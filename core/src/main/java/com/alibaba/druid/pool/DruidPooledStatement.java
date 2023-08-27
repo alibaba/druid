@@ -160,7 +160,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             LOG.warn(killQuery + " error.", ex);
         } finally {
             JdbcUtils.close(killQueryStmt);
-            JdbcUtils.closeWithCallMethod(killQueryConn, this.getClass().getName() + ".handleSocketTimeout");
+            JdbcUtils.close(killQueryConn);
         }
     }
 
