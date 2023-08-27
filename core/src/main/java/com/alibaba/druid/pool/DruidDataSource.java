@@ -1513,12 +1513,12 @@ public class DruidDataSource extends DruidAbstractDataSource
                         LOG.debug("skip not validated connection.");
                     }
 
-                    discardConnection(poolableConnection.holder);
+                    discardConnection(poolableConnection.holder, this.getClass().getName() + ".getConnectionDirect|testOnBorrow|validated=" + validated);
                     continue;
                 }
             } else {
                 if (poolableConnection.conn.isClosed()) {
-                    discardConnection(poolableConnection.holder); // 传入null，避免重复关闭
+                    discardConnection(poolableConnection.holder, this.getClass().getName() + ".getConnectionDirect|isClosed"); // 传入null，避免重复关闭
                     continue;
                 }
 
@@ -1555,7 +1555,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                                 LOG.debug("skip not validated connection.");
                             }
 
-                            discardConnection(poolableConnection.holder);
+                            discardConnection(poolableConnection.holder, this.getClass().getName() + ".getConnectionDirect|testWhileIdle|validated=" + validated);
                             continue;
                         }
                     }
@@ -1628,15 +1628,17 @@ public class DruidDataSource extends DruidAbstractDataSource
             lock.unlock();
         }
     }
-
     public void discardConnection(DruidConnectionHolder holder) {
+        discardConnection(holder, this.getClass().getName() + ".discardConnection");
+    }
+    public void discardConnection(DruidConnectionHolder holder, String callMethodForDebug) {
         if (holder == null) {
             return;
         }
 
         Connection conn = holder.getConnection();
         if (conn != null) {
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".discardConnection");
+            JdbcUtils.closeWithCallMethod(conn, callMethodForDebug);
         }
 
         Socket socket = holder.socket;
@@ -1986,7 +1988,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
 
-            this.discardConnection(holder);
+            this.discardConnection(holder, this.getClass().getName() + ".handleFatalError|error=" + error);
         }
 
         // holder.
@@ -2062,7 +2064,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             if (phyMaxUseCount > 0 && holder.useCount >= phyMaxUseCount) {
-                discardConnection(holder);
+                discardConnection(holder, this.getClass().getName() + ".recycle|holder.useCount =" + holder.useCount + "phyMaxUseCount=" + phyMaxUseCount);
                 return;
             }
 
@@ -2106,7 +2108,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             if (!enable) {
-                discardConnection(holder);
+                discardConnection(holder, this.getClass().getName() + ".recycle|enable=" + enable);
                 return;
             }
 
@@ -2116,7 +2118,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             if (phyTimeoutMillis > 0) {
                 long phyConnectTimeMillis = currentTimeMillis - holder.connectTimeMillis;
                 if (phyConnectTimeMillis > phyTimeoutMillis) {
-                    discardConnection(holder);
+                    discardConnection(holder, this.getClass().getName() + ".recycle|phyConnectTimeMillis=" + phyConnectTimeMillis + "phyTimeoutMillis=" + phyTimeoutMillis);
                     return;
                 }
             }
@@ -2143,11 +2145,11 @@ public class DruidDataSource extends DruidAbstractDataSource
             holder.clearStatementCache();
 
             if (!holder.discard) {
-                discardConnection(holder);
+                discardConnection(holder, this.getClass().getName() + ".recycle|holder.discard=" + holder.discard);
                 holder.discard = true;
             }
 
-            LOG.error("recycle error", e);
+            LOG.error("recycle error,conn-" + holder.getConnectionId(), e);
             recycleErrorCountUpdater.incrementAndGet(this);
         }
     }
