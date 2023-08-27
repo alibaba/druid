@@ -41,12 +41,4 @@ public class CounterValidConnectionChecker implements ValidConnectionChecker {
     public void setCountBeforeFailure(int countBeforeFailure) {
         this.countBeforeFailure = countBeforeFailure;
     }
-
-    @Override
-    public String toString() {
-        return "CounterValidConnectionChecker{" +
-            "countBeforeFailure=" + countBeforeFailure +
-            ", counterMap=" + counterMap +
-            '}';
-    }
 }
