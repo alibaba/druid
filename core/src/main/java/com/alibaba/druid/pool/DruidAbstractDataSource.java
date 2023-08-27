@@ -1431,7 +1431,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
 
                 if (conn instanceof ConnectionProxyImpl) {
-                    ((ConnectionProxyImpl) conn).setLastRunValidateTimeMillis(System.currentTimeMillis());
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
                 }
                 if (result && onFatalError) {
                     lock.lock();
@@ -1484,7 +1484,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
             } finally {
                 if (conn instanceof ConnectionProxyImpl) {
-                    ((ConnectionProxyImpl) conn).setLastRunValidateTimeMillis(System.currentTimeMillis());
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
                 }
                 JdbcUtils.close(rs);
                 JdbcUtils.close(stmt);
@@ -1518,7 +1518,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     holder.lastExecTimeMillis = currentTimeMillis;
                 }
                 if (conn instanceof ConnectionProxyImpl) {
-                    ((ConnectionProxyImpl) conn).setLastRunValidateTimeMillis(currentTimeMillis);
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(currentTimeMillis);
                 }
                 if (valid && isMySql) { // unexcepted branch
                     long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
@@ -1571,7 +1571,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
             } finally {
                 if (conn instanceof ConnectionProxyImpl) {
-                    ((ConnectionProxyImpl) conn).setLastRunValidateTimeMillis(System.currentTimeMillis());
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
                 }
                 JdbcUtils.close(rset);
                 JdbcUtils.close(stmt);

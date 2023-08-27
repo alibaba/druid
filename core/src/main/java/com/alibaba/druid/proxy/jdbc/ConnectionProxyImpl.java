@@ -42,7 +42,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private FilterChainImpl filterChain;
 
-    private long lastRunValidateTimeMillis;
+    private long lastValidateTimeMillis;
 
     public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id) {
         super(connection, id);
@@ -534,12 +534,12 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     }
 
     @Override
-    public long getLastRunValidateTimeMillis() {
-        return lastRunValidateTimeMillis;
+    public long getLastValidateTimeMillis() {
+        return lastValidateTimeMillis;
     }
 
-    public void setLastRunValidateTimeMillis(long lastRunValidateTimeMillis) {
-        this.lastRunValidateTimeMillis = lastRunValidateTimeMillis;
+    public void setLastValidateTimeMillis(long lastValidateTimeMillis) {
+        this.lastValidateTimeMillis = lastValidateTimeMillis;
     }
 
     @Override
@@ -547,7 +547,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         return "ConnectionProxyImpl{" +
             "connectedTime=" + new java.sql.Timestamp(connectedTime) +
             ", closeCount=" + closeCount +
-            ", lastRunValidateTimeMillis=" + new java.sql.Timestamp(lastRunValidateTimeMillis) +
+            ", lastValidateTimeMillis=" + new java.sql.Timestamp(lastValidateTimeMillis) +
             '}';
     }
 }

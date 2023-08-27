@@ -35,5 +35,5 @@ public interface ConnectionProxy extends Connection, WrapperProxy {
 
     int getCloseCount();
 
-    long getLastRunValidateTimeMillis();
+    long getLastValidateTimeMillis();
 }
