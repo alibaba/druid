@@ -16,7 +16,6 @@
 package com.alibaba.druid.util;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
@@ -67,9 +66,6 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static void close(Connection x) {
-        closeWithCallMethod(x, "none");
-    }
-    public static void closeWithCallMethod(Connection x, String callMethodForDebug) {
         if (x == null) {
             return;
         }
@@ -79,9 +75,6 @@ public final class JdbcUtils implements JdbcConstants {
                 return;
             }
 
-            if (x instanceof ConnectionProxyImpl) {
-                ((ConnectionProxyImpl) x).setCallMethodForClose(callMethodForDebug);
-            }
             x.close();
         } catch (SQLRecoverableException e) {
             // skip

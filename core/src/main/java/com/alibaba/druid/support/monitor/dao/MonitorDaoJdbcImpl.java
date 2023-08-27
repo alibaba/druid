@@ -356,7 +356,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".load");
+            JdbcUtils.close(conn);
         }
 
         for (FieldInfo hashField : beanInfo.getHashFields()) {
@@ -443,7 +443,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".getConstValueFromDb");
+            JdbcUtils.close(conn);
         }
 
         return null;
@@ -477,7 +477,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                         // LOG.error("save const error error", ex);
                     } finally {
                         JdbcUtils.close(stmt);
-                        JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".saveHash");
+                        JdbcUtils.close(conn);
                     }
                     cachePut(hashField.getHashForType(), hash, value);
                 }
@@ -517,7 +517,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
             LOG.error("save sql error", ex);
         } finally {
             JdbcUtils.close(stmt);
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".save");
+            JdbcUtils.close(conn);
         }
     }
 
@@ -833,7 +833,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".listApp");
+            JdbcUtils.close(conn);
         }
     }
 
@@ -859,7 +859,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".findApp");
+            JdbcUtils.close(conn);
         }
     }
 
@@ -904,7 +904,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".listCluster");
+            JdbcUtils.close(conn);
         }
     }
 
@@ -941,7 +941,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".findCluster");
+            JdbcUtils.close(conn);
         }
     }
 
@@ -995,7 +995,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".findInst");
+            JdbcUtils.close(conn);
         }
     }
 
@@ -1040,7 +1040,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
-            JdbcUtils.closeWithCallMethod(conn, this.getClass().getName() + ".listInst");
+            JdbcUtils.close(conn);
         }
     }
 
