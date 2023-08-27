@@ -54,6 +54,8 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private long lastRunValidateTimeMs;
 
+    private long lastCloseTimeMs;
+
 
     public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id) {
         super(connection, id);
@@ -108,6 +110,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public void close() throws SQLException {
+        lastCloseTimeMs = System.currentTimeMillis();
         FilterChainImpl chain = createChain();
         chain.connection_close(this);
         closeCount++;
@@ -596,6 +599,10 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     public void setLastRunValidateTimeMs(long lastRunValidateTimeMs) {
         this.lastRunValidateTimeMs = lastRunValidateTimeMs;
     }
+    @Override
+    public long getLastCloseTimeMs() {
+        return lastCloseTimeMs;
+    }
 
     @Override
     public String toString() {
@@ -609,6 +616,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
             ", lastBorrowFromPoolTimeMs=" + new java.sql.Timestamp(lastBorrowFromPoolTimeMs) +
             ", lastReturnToPoolTimeMs=" + new java.sql.Timestamp(lastReturnToPoolTimeMs) +
             ", lastRunValidateTimeMs=" + new java.sql.Timestamp(lastRunValidateTimeMs) +
+            ", lastCloseTimeMs=" + new java.sql.Timestamp(lastCloseTimeMs) +
             '}';
     }
 }

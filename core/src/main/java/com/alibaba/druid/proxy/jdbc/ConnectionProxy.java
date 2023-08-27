@@ -79,5 +79,9 @@ public interface ConnectionProxy extends Connection, WrapperProxy {
      */
     long getLastRunValidateTimeMs();
 
-
+    /**
+     * 获取物理连接最近一次被执行关闭的时间，正常情况下应该是只被关闭一次
+     * @return
+     */
+    long getLastCloseTimeMs();
 }
