@@ -1483,6 +1483,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     }
                 }
             } finally {
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastRunValidateTimeMillis(System.currentTimeMillis());
+                }
                 JdbcUtils.close(rs);
                 JdbcUtils.close(stmt);
             }
@@ -1567,6 +1570,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     return false;
                 }
             } finally {
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastRunValidateTimeMillis(System.currentTimeMillis());
+                }
                 JdbcUtils.close(rset);
                 JdbcUtils.close(stmt);
             }
