@@ -34,7 +34,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private final Properties properties;
 
-    private final long connectedTimeMs;
+    private final long connectedTime;
 
     private TransactionInfo transactionInfo;
 
@@ -42,31 +42,18 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private FilterChainImpl filterChain;
 
-    private String callMethodForConnect = "unknown";
-
-    private String callMethodForClose = "unknown";
-
-    private int usedCount;
-
-    private long lastBorrowFromPoolTimeMs;
-
-    private long lastReturnToPoolTimeMs;
-
-    private long lastRunValidateTimeMs;
-
-    private long lastCloseTimeMs;
-
+    private long lastRunValidateTimeMillis;
 
     public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id) {
         super(connection, id);
         this.dataSource = dataSource;
         this.connection = connection;
         this.properties = properties;
-        this.connectedTimeMs = System.currentTimeMillis();
+        this.connectedTime = System.currentTimeMillis();
     }
 
     public Date getConnectedTime() {
-        return new Date(connectedTimeMs);
+        return new Date(connectedTime);
     }
 
     public Properties getProperties() {
@@ -110,7 +97,6 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public void close() throws SQLException {
-        lastCloseTimeMs = System.currentTimeMillis();
         FilterChainImpl chain = createChain();
         chain.connection_close(this);
         closeCount++;
@@ -548,75 +534,20 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     }
 
     @Override
-    public String getCallMethodForConnect() {
-        return callMethodForConnect;
+    public long getLastRunValidateTimeMillis() {
+        return lastRunValidateTimeMillis;
     }
 
-    public void setCallMethodForConnect(String callMethodForConnect) {
-        this.callMethodForConnect = callMethodForConnect;
-    }
-
-    @Override
-    public String getCallMethodForClose() {
-        return callMethodForClose;
-    }
-
-    public void setCallMethodForClose(String callMethodForClose) {
-        this.callMethodForClose = callMethodForClose;
-    }
-
-    @Override
-    public int getUsedCount() {
-        return usedCount;
-    }
-
-    public void setUsedCount(int usedCount) {
-        this.usedCount = usedCount;
-    }
-
-    @Override
-    public long getLastBorrowFromPoolTimeMs() {
-        return lastBorrowFromPoolTimeMs;
-    }
-
-    public void setLastBorrowFromPoolTimeMs(long lastBorrowFromPoolTimeMs) {
-        this.lastBorrowFromPoolTimeMs = lastBorrowFromPoolTimeMs;
-    }
-
-    @Override
-    public long getLastReturnToPoolTimeMs() {
-        return lastReturnToPoolTimeMs;
-    }
-    public void setLastReturnToPoolTimeMs(long lastReturnToPoolTimeMs) {
-        this.lastReturnToPoolTimeMs = lastReturnToPoolTimeMs;
-    }
-
-    @Override
-    public long getLastRunValidateTimeMs() {
-        return lastRunValidateTimeMs;
-    }
-
-    public void setLastRunValidateTimeMs(long lastRunValidateTimeMs) {
-        this.lastRunValidateTimeMs = lastRunValidateTimeMs;
-    }
-    @Override
-    public long getLastCloseTimeMs() {
-        return lastCloseTimeMs;
+    public void setLastRunValidateTimeMillis(long lastRunValidateTimeMillis) {
+        this.lastRunValidateTimeMillis = lastRunValidateTimeMillis;
     }
 
     @Override
     public String toString() {
         return "ConnectionProxyImpl{" +
-            "id=" + getId() +
-            ", connectedTimeMs=" + new java.sql.Timestamp(connectedTimeMs) +
+            "connectedTime=" + new java.sql.Timestamp(connectedTime) +
             ", closeCount=" + closeCount +
-            ", callMethodForConnect='" + callMethodForConnect + '\'' +
-            ", callMethodForClose='" + callMethodForClose + '\'' +
-            ", usedCount=" + usedCount +
-            ", lastBorrowFromPoolTimeMs=" + new java.sql.Timestamp(lastBorrowFromPoolTimeMs) +
-            ", lastReturnToPoolTimeMs=" + new java.sql.Timestamp(lastReturnToPoolTimeMs) +
-            ", lastRunValidateTimeMs=" + new java.sql.Timestamp(lastRunValidateTimeMs) +
-            ", lastCloseTimeMs=" + new java.sql.Timestamp(lastCloseTimeMs) +
+            ", lastRunValidateTimeMillis=" + new java.sql.Timestamp(lastRunValidateTimeMillis) +
             '}';
     }
 }

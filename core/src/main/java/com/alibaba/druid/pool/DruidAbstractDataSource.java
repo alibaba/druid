@@ -22,6 +22,7 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
@@ -1429,6 +1430,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             try {
                 result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
 
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastRunValidateTimeMillis(System.currentTimeMillis());
+                }
                 if (result && onFatalError) {
                     lock.lock();
                     try {
@@ -1510,7 +1514,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     holder.lastValidTimeMillis = currentTimeMillis;
                     holder.lastExecTimeMillis = currentTimeMillis;
                 }
-
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastRunValidateTimeMillis(currentTimeMillis);
+                }
                 if (valid && isMySql) { // unexcepted branch
                     long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
                     if (lastPacketReceivedTimeMs > 0) {
@@ -2074,6 +2080,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return this.id;
     }
 
+    @Override
+    public long getDataSourceId() {
+        return getID();
+    }
     public java.util.Date getCreatedTime() {
         return createdTime;
     }
