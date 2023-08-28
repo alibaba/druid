@@ -41,6 +41,7 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>${project.version}</version>
+            <classifier>jakarta</classifier>
         </dependency>
 
         <dependency>

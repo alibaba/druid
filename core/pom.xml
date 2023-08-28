@@ -21,6 +21,8 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
+
+		<jakarta.jar.skip>false</jakarta.jar.skip>
 	</properties>
 
 	<developers>
@@ -83,6 +85,46 @@
 				<configuration>
 					<attach>true</attach>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<configuration>
+					<shadedArtifactAttached>false</shadedArtifactAttached>
+					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+					<minimizeJar>true</minimizeJar>
+					<createSourcesJar>true</createSourcesJar>
+					<shadeSourcesContent>true</shadeSourcesContent>
+				</configuration>
+				<executions>
+					<execution>
+						<id>shade-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jakarta</id>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<skip>${jakarta.jar.skip}</skip>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<shadedClassifierName>jakarta</shadedClassifierName>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<relocations>
+								<relocation>
+									<pattern>javax.servlet</pattern>
+									<shadedPattern>jakarta.servlet</shadedPattern>
+								</relocation>
+							</relocations>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -486,4 +528,6 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+
 </project>
