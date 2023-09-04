@@ -1727,6 +1727,11 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             try {
+                if (activeCount >= maxActive) {
+                    createDirect = false;
+                    continue;
+                }
+
                 if (maxWaitThreadCount > 0
                         && notEmptyWaitThreadCount >= maxWaitThreadCount) {
                     connectErrorCountUpdater.incrementAndGet(this);
