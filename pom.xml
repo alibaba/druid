@@ -6,7 +6,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid-parent</artifactId>
-	<version>1.2.19-SNAPSHOT</version>
+	<version>1.2.19</version>
 	<name>${project.artifactId}</name>
 	<description>A JDBC datasource implementation.</description>
 	<packaging>pom</packaging>
