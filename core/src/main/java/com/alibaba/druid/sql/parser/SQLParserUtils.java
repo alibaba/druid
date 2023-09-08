@@ -123,6 +123,7 @@ public class SQLParserUtils {
                 return parser;
             }
             case postgresql:
+            case greenplum:
             case edb:
                 return new PGSQLStatementParser(sql, features);
             case sqlserver:
