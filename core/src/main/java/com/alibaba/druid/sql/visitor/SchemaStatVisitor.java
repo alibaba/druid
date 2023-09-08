@@ -1274,6 +1274,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             for (SQLExpr expr : groupBy.getItems()) {
                 statExpr(expr);
             }
+            if (groupBy.getHaving() != null) {
+                statExpr(groupBy.getHaving());
+            }
         }
 
         List<SQLWindow> windows = x.getWindows();
