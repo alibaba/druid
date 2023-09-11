@@ -5,7 +5,7 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGCharExpr extends SQLCharExpr implements PGExpr {
-    private boolean cSytle = false;
+    private boolean cSytle;
     @Override
     public void accept0(PGASTVisitor visitor) {
         visitor.visit(this);
