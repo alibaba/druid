@@ -385,6 +385,17 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 break;
         }
 
+        String strVal = lexer.stringVal();
+        if (strVal.equalsIgnoreCase("ANALYZE")) {
+            PGAnalyzeStatement stmt = this.parseAnalyzeTable();
+            statementList.add(stmt);
+            return true;
+        }
+        if (strVal.equalsIgnoreCase("VACUUM")) {
+            PGVacuumStatement stmt = this.parseVacuumTable();
+            statementList.add(stmt);
+            return true;
+        }
         return false;
     }
 
@@ -692,4 +703,109 @@ public class PGSQLStatementParser extends SQLStatementParser {
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new PGCreateTableParser(this.exprParser);
     }
+
+
+    public PGAnalyzeStatement parseAnalyzeTable() {
+        PGAnalyzeStatement stmt = new PGAnalyzeStatement(this.dbType);
+        acceptIdentifier("ANALYZE");
+        Lexer.SavePoint mark = lexer.mark();
+        String strVal = lexer.stringVal();
+        for (; ; ) {
+            if (strVal.equalsIgnoreCase("VERBOSE")) {
+                stmt.setVerbose(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("SKIP_LOCKED")) {
+                stmt.setSkipLocked(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else {
+                lexer.reset(mark);
+                break;
+            }
+        }
+        List<SQLName> names = new ArrayList<SQLName>();
+        this.exprParser.names(names, stmt);
+
+        for (SQLName name : names) {
+            SQLExprTableSource sqlExprTableSource = new SQLExprTableSource(name);
+            sqlExprTableSource.setParent(stmt);
+            stmt.getTableSources().add(sqlExprTableSource);
+        }
+        return stmt;
+    }
+
+    public PGVacuumStatement parseVacuumTable() {
+        PGVacuumStatement stmt = new PGVacuumStatement(this.dbType);
+        acceptIdentifier("VACUUM");
+        Lexer.SavePoint mark = lexer.mark();
+        String strVal = lexer.stringVal();
+        for (; ; ) {
+            if (strVal.equalsIgnoreCase("FULL")) {
+                stmt.setFull(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("FREEZE")) {
+                stmt.setFreeze(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("VERBOSE")) {
+                stmt.setVerbose(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("ANALYZE")) {
+                stmt.setAnalyze(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("DISABLE_PAGE_SKIPPING")) {
+                stmt.setDisablePageSkipping(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("SKIP_LOCKED")) {
+                stmt.setSkipLocked(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("PROCESS_TOAST")) {
+                stmt.setProcessToast(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("TRUNCATE")) {
+                stmt.setTruncate(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else {
+                lexer.reset(mark);
+                break;
+            }
+        }
+        List<SQLName> names = new ArrayList<SQLName>();
+        this.exprParser.names(names, stmt);
+        for (SQLName name : names) {
+            SQLExprTableSource sqlExprTableSource = new SQLExprTableSource(name);
+            sqlExprTableSource.setParent(stmt);
+            stmt.getTableSources().add(sqlExprTableSource);
+        }
+        return stmt;
+    }
+
 }
