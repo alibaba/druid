@@ -491,6 +491,7 @@ public final class FnvHash {
         long CIRCLE = fnv1a_64_lower("CIRCLE");
         long LSEG = fnv1a_64_lower("LSEG");
         long POINT = fnv1a_64_lower("POINT");
+        long E = fnv1a_64_lower("E");
         long BOX = fnv1a_64_lower("BOX");
         long MACADDR = fnv1a_64_lower("MACADDR");
         long INET = fnv1a_64_lower("INET");

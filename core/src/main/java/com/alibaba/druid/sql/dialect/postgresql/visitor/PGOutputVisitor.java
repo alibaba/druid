@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
 
@@ -2495,6 +2496,24 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print('[');
         printAndAccept(x.getArguments(), ", ");
         print(']');
+        return false;
+    }
+
+    public boolean visit(SQLCharExpr x, boolean parameterized) {
+        if (parameterized) {
+            print('?');
+            incrementReplaceCunt();
+            if (this.parameters != null) {
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
+        }
+
+        if (x instanceof PGCharExpr && ((PGCharExpr) x).isCSytle()) {
+            print('E');
+        }
+        printChars(x.getText());
+
         return false;
     }
 }
