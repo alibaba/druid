@@ -600,6 +600,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case tidb:
                 return new MySqlOrderByStatVisitor(x);
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGOrderByStatVisitor(x);
             case oracle:
                 return new OracleOrderByStatVisitor(x);

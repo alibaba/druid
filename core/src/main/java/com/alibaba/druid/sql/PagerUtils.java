@@ -163,6 +163,8 @@ public class PagerUtils {
             case clickhouse:
                 return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
             case postgresql:
+            case greenplum:
+            case edb:
             case hive:
             case odps:
             case presto:
@@ -550,6 +552,8 @@ public class PagerUtils {
             case oracle:
                 return new OracleSelectQueryBlock();
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGSelectQueryBlock();
             case sqlserver:
             case jtds:

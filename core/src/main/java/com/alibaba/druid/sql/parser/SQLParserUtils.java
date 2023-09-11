@@ -176,6 +176,7 @@ public class SQLParserUtils {
             case h2:
                 return new H2ExprParser(sql, features);
             case postgresql:
+            case greenplum:
             case edb:
                 return new PGExprParser(sql, features);
             case sqlserver:
@@ -226,6 +227,7 @@ public class SQLParserUtils {
             case h2:
                 return new H2Lexer(sql, features);
             case postgresql:
+            case greenplum:
             case edb:
                 return new PGLexer(sql, features);
             case db2:
@@ -268,6 +270,8 @@ public class SQLParserUtils {
             case db2:
                 return new DB2SelectQueryBlock();
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGSelectQueryBlock();
             case odps:
                 return new OdpsSelectQueryBlock();
