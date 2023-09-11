@@ -5442,6 +5442,56 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
+    public boolean visit(TidbSplitTableStatement x) {
+        print0(ucase ? "SPLIT " : "split ");
+        if (x.isSplitSyntaxOptionRegionFor()) {
+            print0(ucase ? "REGION FOR " : "region for ");
+        }
+        if (x.isSplitSyntaxOptionPartition()) {
+            print0(ucase ? "PARTITION " : "partition ");
+        }
+        print0(ucase ? "TABLE " : "table ");
+        x.getTableName().accept(this);
+        print(' ');
+
+        if (!x.getPartitionNameListOptions().isEmpty()) {
+            print0(ucase ? "PARTITION (" : "partition (");
+            printAndAccept(x.getPartitionNameListOptions(), ",");
+            print(") ");
+        }
+        if (x.getIndexName() != null) {
+            print0(ucase ? "INDEX " : "index ");
+            x.getIndexName().accept(this);
+            print(' ');
+        }
+        if (!x.getSplitOptionBys().isEmpty()) {
+            print0(ucase ? "BY " : "by ");
+            boolean needCommon = false;
+            for (List<SQLExpr> list : x.getSplitOptionBys()) {
+                if (!needCommon) {
+                    needCommon = true;
+                } else {
+                    print0(", ");
+                }
+                print0("(");
+                printlnAndAccept(list, ", ");
+                print0(")");
+            }
+        }
+        if (x.getSplitOptionBetween() != null) {
+            print0(ucase ? "BETWEEN (" : " between (");
+            printAndAccept(x.getSplitOptionBetween(), ", ");
+            print0(ucase ? ") AND (" : ") and (");
+            printAndAccept(x.getSplitOptionAnd(), ", ");
+            print0(") ");
+            print0(ucase ? "REGIONS " : "regions ");
+            print(x.getSplitOptionRegions());
+        }
+
+        return false;
+    }
+
+
     public boolean visit(MySqlJSONTableExpr.Column x) {
         x.getName().accept(this);
 
