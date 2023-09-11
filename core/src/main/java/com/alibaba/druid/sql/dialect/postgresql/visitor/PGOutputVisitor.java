@@ -2516,4 +2516,48 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         return false;
     }
+
+    @Override
+    public boolean visit(PGAnalyzeStatement x) {
+        print0(ucase ? "ANALYZE " : "analyze");
+        if (x.isVerbose()) {
+            print0(ucase ? "VERBOSE " : "verbose ");
+        }
+        if (x.isSkipLocked()) {
+            print0(ucase ? "SKIP_LOCKED " : "skip_locked ");
+        }
+        printAndAccept(x.getTableSources(), ", ");
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGVacuumStatement x) {
+        print0(ucase ? "VACUUM " : "vacuum");
+        if (x.isFull()) {
+            print0(ucase ? "FULL " : "full ");
+        }
+        if (x.isFreeze()) {
+            print0(ucase ? "FREEZE " : "freeze ");
+        }
+        if (x.isVerbose()) {
+            print0(ucase ? "VERBOSE " : "verbose ");
+        }
+        if (x.isAnalyze()) {
+            print0(ucase ? "ANALYZE " : "analyze ");
+        }
+        if (x.isDisablePageSkipping()) {
+            print0(ucase ? "DISABLE_PAGE_SKIPPING " : "disable_page_skipping ");
+        }
+        if (x.isSkipLocked()) {
+            print0(ucase ? "SKIP_LOCKED " : "skip_locked ");
+        }
+        if (x.isProcessToast()) {
+            print0(ucase ? "PROCESS_TOAST " : "process_toast ");
+        }
+        if (x.isTruncate()) {
+            print0(ucase ? "TRUNCATE " : "truncate ");
+        }
+        printAndAccept(x.getTableSources(), ", ");
+        return false;
+    }
 }
