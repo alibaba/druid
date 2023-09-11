@@ -6601,6 +6601,7 @@ public class SQLExprParser extends SQLParser {
             limit.setRowCount(temp);
             lexer.nextToken();
             limit.setOffset(this.expr());
+            limit.setOffsetClause(true);
         } else {
             limit.setRowCount(temp);
         }

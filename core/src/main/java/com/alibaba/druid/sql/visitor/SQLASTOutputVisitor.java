@@ -8308,7 +8308,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLLimit x) {
         print0(ucase ? "LIMIT " : "limit ");
         SQLExpr offset = x.getOffset();
-        if (offset != null) {
+        boolean offsetClause = x.isOffsetClause();
+        if (offset != null && !offsetClause) {
             printExpr(offset, parameterized);
             print0(", ");
         }
@@ -8316,6 +8317,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLExpr rowCount = x.getRowCount();
         if (rowCount != null) {
             printExpr(rowCount, parameterized);
+        }
+
+        if (offset != null && offsetClause) {
+            print0(ucase ? " OFFSET " : " offset ");
+            printExpr(offset, parameterized);
         }
 
         final List<SQLExpr> by = x.getBy();
