@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
+import com.alibaba.druid.sql.parser.Lexer.SavePoint;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.HexBin;
 import com.alibaba.druid.util.MySqlUtils;
@@ -36,6 +37,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.alibaba.druid.sql.parser.Token.CASCADE;
+import static com.alibaba.druid.sql.parser.Token.NULL;
 
 public class SQLExprParser extends SQLParser {
     public static final String[] AGGREGATE_FUNCTIONS;
@@ -4695,6 +4697,13 @@ public class SQLExprParser extends SQLParser {
                 }
                 column.addConstraint(new SQLColumnUniqueKey());
                 return parseColumnRest(column);
+            case DISABLE:
+                lexer.nextToken();
+                if (lexer.stringVal.equalsIgnoreCase("novalidate")) {
+                    column.setDisableNovalidate(true);
+                }
+                lexer.nextToken();
+                return parseColumnRest(column);
             case KEY:
                 lexer.nextToken();
                 column.addConstraint(new SQLColumnPrimaryKey());
@@ -5067,7 +5076,13 @@ public class SQLExprParser extends SQLParser {
 
         if (lexer.token == Token.DISABLE) {
             lexer.nextToken();
-            unique.setEnable(false);
+            SavePoint savePoint = lexer.mark();
+            if ("NOVALIDATE".equalsIgnoreCase(lexer.stringVal())) {
+                unique.setDisableNovalidate(true);
+                lexer.nextToken();
+            } else {
+                lexer.reset(savePoint);
+            }
         } else if (lexer.token == Token.ENABLE) {
             lexer.nextToken();
             unique.setEnable(true);
@@ -6676,8 +6691,42 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
         }
 
+
         SQLExternalRecordFormat format = new SQLExternalRecordFormat();
 
+        Lexer.SavePoint mark = lexer.mark();
+        String strVal = lexer.stringVal();
+        if (NULL.equals(lexer.token())) {
+            lexer.nextToken();
+            acceptIdentifier("DEFINED");
+            accept(Token.AS);
+            strVal = lexer.stringVal();
+            String value = strVal.substring(1, strVal.length() - 1);
+            SQLCharExpr emptyExpr = new SQLCharExpr(value);
+            format.setNullDefinedAs(emptyExpr);
+            lexer.nextToken();
+        }
+//        for (; ; ) {
+//            if (strVal.equalsIgnoreCase("FULL")) {
+//
+//                stmt.setTruncate(true);
+//                lexer.nextToken();
+//                mark = lexer.mark();
+//                strVal = lexer.stringVal();
+//                continue;
+//            } else {
+//                lexer.reset(mark);
+//                break;
+//            }
+//        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.LINES)) {
+            lexer.nextToken();
+            acceptIdentifier("TERMINATED");
+            accept(Token.BY);
+
+            format.setLinesTerminatedBy(this.expr());
+        }
         if (lexer.identifierEquals(FnvHash.Constants.FIELDS)) {
             lexer.nextToken();
             acceptIdentifier("TERMINATED");
