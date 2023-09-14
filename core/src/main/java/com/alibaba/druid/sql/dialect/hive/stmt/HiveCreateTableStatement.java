@@ -39,12 +39,30 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
     protected SQLExpr intoBuckets;
     protected SQLExpr using;
 
+    private boolean lbracketUse;
+    private boolean rbracketUse;
     public HiveCreateTableStatement() {
         this.dbType = DbType.hive;
     }
 
     public HiveCreateTableStatement(DbType dbType) {
         this.dbType = dbType;
+    }
+
+    public boolean isLbracketUse() {
+        return lbracketUse;
+    }
+
+    public void setLbracketUse(boolean lbracketUse) {
+        this.lbracketUse = lbracketUse;
+    }
+
+    public boolean isRbracketUse() {
+        return rbracketUse;
+    }
+
+    public void setRbracketUse(boolean rbracketUse) {
+        this.rbracketUse = rbracketUse;
     }
 
     protected void accept0(SQLASTVisitor v) {

@@ -191,7 +191,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public static enum Type {
-        GLOBAL_TEMPORARY, LOCAL_TEMPORARY, TEMPORARY, SHADOW
+        GLOBAL_TEMPORARY, LOCAL_TEMPORARY, TEMPORARY, SHADOW, TRANSACTIONAL
     }
 
     public List<SQLTableElement> getTableElementList() {
