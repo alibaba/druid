@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement.Type;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
@@ -3435,9 +3436,14 @@ public class SQLStatementParser extends SQLParser {
         }
 
         boolean temporary = false;
+        boolean transactional = false;
         if (lexer.identifierEquals(FnvHash.Constants.TEMPORARY) || lexer.token == Token.TEMPORARY) {
             lexer.nextToken();
             temporary = true;
+        }
+        if ("TRANSACTIONAL".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            transactional = true;
         }
 
         boolean nonclustered = false;
@@ -3461,6 +3467,9 @@ public class SQLStatementParser extends SQLParser {
                     }
                 }
 
+                if (transactional) {
+                    stmt.setType(Type.TRANSACTIONAL);
+                }
                 if (comments != null) {
                     stmt.addBeforeComment(comments);
                 }
