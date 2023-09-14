@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement.Type;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
@@ -3354,6 +3355,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        if (x.isDisableNovalidate()) {
+            print0(ucase ? " DISABLE NOVALIDATE" : " disable novalidate");
+        }
         SQLExpr generatedAlawsAs = x.getGeneratedAlawsAs();
         if (generatedAlawsAs != null) {
             print0(ucase ? " GENERATED ALWAYS AS " : " generated always as ");
@@ -3691,6 +3695,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "LOCAL TEMPORARY " : "local temporary ");
         } else if (SQLCreateTableStatement.Type.SHADOW.equals(tableType)) {
             print0(ucase ? "SHADOW " : "shadow ");
+        } else if (Type.TRANSACTIONAL.equals(tableType)) {
+            print0(ucase ? "TRANSACTIONAL " : "transactional ");
         }
 
         if (x.isDimension()) {
@@ -5813,6 +5819,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "UNIQUE (" : "unique (");
         printAndAccept(x.getColumns(), ", ");
         print(')');
+        if (x.isDisableNovalidate()) {
+            print0(ucase ? " DISABLE NOVALIDATE" : " disable novalidate");
+        }
         return false;
     }
 
@@ -10693,6 +10702,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (SQLCreateTableStatement.Type.TEMPORARY.equals(tableType)) {
             print0(ucase ? "TEMPORARY " : "temporary ");
         }
+        if (Type.TRANSACTIONAL.equals(tableType)) {
+            print0(ucase ? "TRANSACTIONAL " : "transactional ");
+        }
         print0(ucase ? "TABLE " : "table ");
 
         if (x.isIfNotExists()) {
@@ -10858,6 +10870,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLExpr storedAs = x.getStoredAs();
         if (storedAs != null) {
             println();
+            if (x.isLbracketUse()) {
+                print("[");
+            }
             print0(ucase ? "STORED AS" : "stored as");
             if (storedAs instanceof SQLIdentifierExpr) {
                 print(' ');
@@ -10867,6 +10882,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 println();
                 printExpr(storedAs, parameterized);
                 decrementIndent();
+            }
+
+            if (x.isRbracketUse()) {
+                print("]");
             }
         }
 
