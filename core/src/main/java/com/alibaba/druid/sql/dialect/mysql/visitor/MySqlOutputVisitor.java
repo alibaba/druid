@@ -5491,7 +5491,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-
     public boolean visit(MySqlJSONTableExpr.Column x) {
         x.getName().accept(this);
 

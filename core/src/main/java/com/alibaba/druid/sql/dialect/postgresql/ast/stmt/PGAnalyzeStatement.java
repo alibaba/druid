@@ -29,7 +29,6 @@ import java.util.List;
  * @see <a href="https://www.postgresql.org/docs/current/sql-analyze.html">ANALYZE — collect statistics about a database</a>
  */
 public class PGAnalyzeStatement extends SQLStatementImpl implements PGSQLStatement {
-
     private boolean verbose;
     private boolean skipLocked;
     private List<SQLExprTableSource> tableSources = new ArrayList<>();

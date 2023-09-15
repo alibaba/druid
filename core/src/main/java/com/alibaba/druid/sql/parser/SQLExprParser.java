@@ -6691,7 +6691,6 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
         }
 
-
         SQLExternalRecordFormat format = new SQLExternalRecordFormat();
 
         Lexer.SavePoint mark = lexer.mark();

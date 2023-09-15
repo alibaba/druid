@@ -24,13 +24,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author lizongbo
  * @see <a href="https://www.postgresql.org/docs/current/sql-vacuum.html">VACUUM — garbage-collect and optionally analyze a database</a>
  */
 public class PGVacuumStatement extends SQLStatementImpl implements PGSQLStatement {
-
     private boolean full;
     private boolean freeze;
     private boolean verbose;

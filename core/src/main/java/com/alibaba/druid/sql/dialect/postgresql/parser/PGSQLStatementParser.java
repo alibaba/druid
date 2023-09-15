@@ -704,7 +704,6 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return new PGCreateTableParser(this.exprParser);
     }
 
-
     public PGAnalyzeStatement parseAnalyzeTable() {
         PGAnalyzeStatement stmt = new PGAnalyzeStatement(this.dbType);
         acceptIdentifier("ANALYZE");
