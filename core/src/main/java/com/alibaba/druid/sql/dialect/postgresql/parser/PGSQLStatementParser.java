@@ -411,6 +411,16 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    public SQLStatement parseAlter() {
+        Lexer.SavePoint mark = lexer.mark();
+        accept(Token.ALTER);
+        if (lexer.token() == Token.DATABASE) {
+            lexer.nextToken();
+            return parseAlterDatabase();
+        }
+        lexer.reset(mark);
+        return super.parseAlter();
+    }
     public SQLStatement parseConnectTo() {
         acceptIdentifier("CONNECT");
         accept(Token.TO);
@@ -807,4 +817,46 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    public PGAlterDatabaseStatement parseAlterDatabase() {
+        PGAlterDatabaseStatement stmt = new PGAlterDatabaseStatement(this.getDbType());
+        stmt.setDatabaseName(this.exprParser.identifier());
+        if ("RENAME".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            accept(Token.TO);
+            stmt.setRenameToName(this.exprParser.identifier());
+        }
+        if ("OWNER".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            accept(Token.TO);
+            stmt.setOwnerToName(this.exprParser.identifier());
+        }
+        if ("REFRESH".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            acceptIdentifier("COLLATION");
+            acceptIdentifier("VERSION");
+            stmt.setRefreshCollationVersion(true);
+        }
+        if (Token.SET.equals(lexer.token())) {
+            lexer.nextToken();
+            if (Token.TABLESPACE.equals(lexer.token())) {
+                lexer.nextToken();
+                stmt.setSetTableSpaceName(this.exprParser.identifier());
+            } else {
+                stmt.setSetParameterName(this.exprParser.identifier());
+                if (Token.TO.equals(lexer.token())) {
+                    lexer.nextToken();
+                    stmt.setSetParameterValue(this.exprParser.expr());
+                } else {
+                    accept(Token.EQ);
+                    stmt.setUseEquals(true);
+                    stmt.setSetParameterValue(this.exprParser.expr());
+                }
+            }
+        }
+        if ("RESET".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            stmt.setResetParameterName(this.exprParser.identifier());
+        }
+        return stmt;
+    }
 }

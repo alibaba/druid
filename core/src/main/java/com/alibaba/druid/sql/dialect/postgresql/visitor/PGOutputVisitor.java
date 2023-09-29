@@ -2560,4 +2560,42 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         printAndAccept(x.getTableSources(), ", ");
         return false;
     }
+
+    @Override
+    public boolean visit(PGAlterDatabaseStatement x) {
+        print0(ucase ? "ALTER DATABASE " : "alter database ");
+        x.getDatabaseName().accept(this);
+        print(' ');
+        if (x.getRenameToName() != null) {
+            print0(ucase ? "RENAME TO " : "rename to ");
+            x.getRenameToName().accept(this);
+        }
+        if (x.getOwnerToName() != null) {
+            print0(ucase ? "OWNER TO " : "owner to ");
+            x.getOwnerToName().accept(this);
+        }
+
+        if (x.getSetTableSpaceName() != null) {
+            print0(ucase ? "SET TABLESPACE " : "set tablespace ");
+            x.getSetTableSpaceName().accept(this);
+        }
+        if (x.isRefreshCollationVersion()) {
+            print0(ucase ? "REFRESH COLLATION VERSION " : "refresh collation version ");
+        }
+        if (x.getSetParameterName() != null) {
+            print0(ucase ? "SET " : "set ");
+            x.getSetParameterName().accept(this);
+            if (x.isUseEquals()) {
+                print(" = ");
+            } else {
+                print0(ucase ? " TO " : " to ");
+            }
+            x.getSetParameterValue().accept(this);
+        }
+        if (x.getResetParameterName() != null) {
+            print0(ucase ? "RESET " : "reset ");
+            x.getResetParameterName().accept(this);
+        }
+        return false;
+    }
 }
