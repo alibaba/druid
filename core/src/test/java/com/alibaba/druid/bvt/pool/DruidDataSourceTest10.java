@@ -41,7 +41,22 @@ public class DruidDataSourceTest10 {
         assertEquals(3000, ds.getConnectTimeout());
         assertEquals(6000, ds.getSocketTimeout());
     }
-
+    @Test
+    public void test_timeout_is_zero() throws Exception {
+        ds.setUrl("jdbc:mysql://127.0.0.1:3306/xxx?connectTimeout=0&socketTimeout=0");
+        ds.init();
+        assertEquals(0, ds.getConnectTimeout());
+        assertEquals(0, ds.getSocketTimeout());
+    }
+    @Test
+    public void test_timeout_is_zero2() throws Exception {
+        ds.setUrl("jdbc:mysql://127.0.0.1:3306/xxx");
+        ds.setConnectTimeout(-1);
+        ds.setSocketTimeout(-1);
+        ds.init();
+        assertEquals(-1, ds.getConnectTimeout());
+        assertEquals(-1, ds.getSocketTimeout());
+    }
     @Test
     public void test2() throws Exception {
         Properties properties = new Properties();
