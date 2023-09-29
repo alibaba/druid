@@ -9914,6 +9914,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             x.getSelect().accept(this);
         }
+        if (x.getWithSelect() != null) {
+            println();
+            print0(ucase ? "AS" : "as");
+            println();
+            x.getWithSelect().accept(this);
+        }
 
         if (x.getStoredBy() != null) {
             println();
