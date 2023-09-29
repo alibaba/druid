@@ -830,19 +830,18 @@ public class DruidDataSource extends DruidAbstractDataSource
                 this.transactionIdSeedUpdater.addAndGet(this, delta);
             }
 
-            if (this.jdbcUrl != null) {
-                this.jdbcUrl = this.jdbcUrl.trim();
-                initFromWrapDriverUrl();
-
-                initFromUrlOrProperties();
-            }
-
             if (connectTimeout == 0) {
                 connectTimeout = DEFAULT_TIME_CONNECT_TIMEOUT_MILLIS;
             }
 
             if (socketTimeout == 0) {
                 socketTimeout = DEFAULT_TIME_SOCKET_TIMEOUT_MILLIS;
+            }
+
+            if (this.jdbcUrl != null) {
+                this.jdbcUrl = this.jdbcUrl.trim();
+                initFromWrapDriverUrl();
+                initFromUrlOrProperties();
             }
 
             for (Filter filter : filters) {
