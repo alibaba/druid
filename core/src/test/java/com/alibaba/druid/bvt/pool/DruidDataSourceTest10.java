@@ -57,6 +57,19 @@ public class DruidDataSourceTest10 {
         assertEquals(-1, ds.getConnectTimeout());
         assertEquals(-1, ds.getSocketTimeout());
     }
+
+    /**
+     * @throws Exception
+     * @see https://github.com/alibaba/druid/issues/5396
+     */
+    @Test
+    public void test_timeout_in_loadbalance() throws Exception {
+        ds.setUrl(
+            "jdbc:mysql:loadbalance://localhost:3306,localhost:3310/test?connectTimeout=0&socketTimeout=0&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(0, ds.getConnectTimeout());
+        assertEquals(0, ds.getSocketTimeout());
+    }
     @Test
     public void test2() throws Exception {
         Properties properties = new Properties();
