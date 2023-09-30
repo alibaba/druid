@@ -53,7 +53,7 @@ public class PGExprParser extends SQLExprParser {
     }
 
     public PGExprParser(String sql, SQLParserFeature... features) {
-        this(new PGLexer(sql));
+        this(new PGLexer(sql, features));
         this.lexer.nextToken();
         this.dbType = DbType.postgresql;
     }
