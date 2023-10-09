@@ -1012,7 +1012,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     private void initFromUrlOrProperties() {
-        if (jdbcUrl.startsWith("jdbc:mysql://") || jdbcUrl.startsWith("jdbc:mysql:loadbalance://")) {
+        if (isMysqlOrMariaDBUrl(jdbcUrl)) {
             if (jdbcUrl.indexOf("connectTimeout=") != -1 || jdbcUrl.indexOf("socketTimeout=") != -1) {
                 String[] items = jdbcUrl.split("(\\?|&)");
                 for (int i = 0; i < items.length; i++) {
@@ -1041,6 +1041,19 @@ public class DruidDataSource extends DruidAbstractDataSource
                 setSocketTimeout(((Number) propertySocketTimeout).intValue());
             }
         }
+    }
+
+    /**
+     * Issue 5192,Issue 5457
+     * @see <a href="https://dev.mysql.com/doc/connector-j/8.1/en/connector-j-reference-jdbc-url-format.html">MySQL Connection URL Syntax</a>
+     * @see <a href="https://mariadb.com/kb/en/about-mariadb-connector-j/">About MariaDB Connector/J</a>
+     * @param jdbcUrl
+     * @return
+     */
+    private static boolean isMysqlOrMariaDBUrl(String jdbcUrl) {
+        return jdbcUrl.startsWith("jdbc:mysql://") || jdbcUrl.startsWith("jdbc:mysql:loadbalance://")
+            || jdbcUrl.startsWith("jdbc:mysql:replication://") || jdbcUrl.startsWith("jdbc:mariadb://")
+            || jdbcUrl.startsWith("jdbc:mariadb:loadbalance://") || jdbcUrl.startsWith("jdbc:mariadb:replication://");
     }
 
     private void submitCreateTask(boolean initTask) {
