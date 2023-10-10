@@ -50,6 +50,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     protected SQLName tablespace;
     protected SQLPartitionBy partitioning;
+    protected SQLPartitionOf partitionOf;
     protected SQLPartitionBy localPartitioning;
     protected SQLExpr storedAs;
     protected SQLExpr location;
@@ -362,6 +363,16 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.partitioning = partitioning;
     }
 
+    public SQLPartitionOf getPartitionOf() {
+        return partitionOf;
+    }
+
+    public void setPartitionOf(SQLPartitionOf partitionOf) {
+        if (partitionOf != null) {
+            partitionOf.setParent(this);
+        }
+        this.partitionOf = partitionOf;
+    }
     public void setLocalPartitioning(SQLPartitionBy localPartitioning) {
         if (localPartitioning != null) {
             localPartitioning.setParent(this);
