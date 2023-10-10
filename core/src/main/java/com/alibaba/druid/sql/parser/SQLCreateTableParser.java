@@ -176,22 +176,32 @@ public class SQLCreateTableParser extends SQLDDLParser {
             );
         }
 
-        for (; ; ) {
-            if (lexer.token() == Token.PARTITION) {
-                Lexer.SavePoint mark = lexer.mark();
-                lexer.nextToken();
-                if (Token.OF.equals(lexer.token())) {
-                    lexer.reset(mark);
-                    SQLPartitionOf partitionOf = parsePartitionOf();
-                    createTable.setPartitionOf(partitionOf);
-                } else if (Token.BY.equals(lexer.token())) {
-                    lexer.reset(mark);
-                    SQLPartitionBy partitionClause = parsePartitionBy();
-                    createTable.setPartitioning(partitionClause);
-                }
-                continue;
+        if (lexer.token() == Token.PARTITION) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (Token.OF.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionOf partitionOf = parsePartitionOf();
+                createTable.setPartitionOf(partitionOf);
+            } else if (Token.BY.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionBy partitionClause = parsePartitionBy();
+                createTable.setPartitioning(partitionClause);
             }
-            break;
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (Token.OF.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionOf partitionOf = parsePartitionOf();
+                createTable.setPartitionOf(partitionOf);
+            } else if (Token.BY.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionBy partitionClause = parsePartitionBy();
+                createTable.setPartitioning(partitionClause);
+            }
         }
 
         parseCreateTableRest(createTable);
