@@ -12,12 +12,12 @@ public class HiveStatementParserTest extends TestCase {
      * 例子： add jar hdfs:///hadoop/parser.h.file
      */
     @Test
-    public void testAddJarStatement(){
+    public void testAddJarStatement() {
         String s = "add jar hdfs:///hadoop/parser.h.file";
         HiveStatementParser hiveStatementParser = new HiveStatementParser(s);
         SQLStatement sqlStatement = hiveStatementParser.parseAdd();
         assertTrue(sqlStatement instanceof HiveAddJarStatement);
-        assertEquals(s, sqlStatement.toString());
+        assertEquals("ADD JAR hdfs:///hadoop/parser.h.file", sqlStatement.toString());
     }
 
 }
