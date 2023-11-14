@@ -4166,6 +4166,16 @@ public class SQLStatementParser extends SQLParser {
             stmt.setWhen(condition);
         }
 
+        //for postgresql https://www.postgresql.org/docs/current/sql-createtrigger.html
+        if (lexer.identifierEquals("EXECUTE")) {
+            lexer.nextToken();
+            String executeType = lexer.stringVal();
+            stmt.setExecuteType(executeType);
+            lexer.nextToken();
+            SQLExpr executeFunc = this.exprParser.expr();
+            stmt.setExecuteFunc(executeFunc);
+            return stmt;
+        }
         List<SQLStatement> body = this.parseStatementList();
         if (body == null || body.isEmpty()) {
             throw new ParserException("syntax error");
