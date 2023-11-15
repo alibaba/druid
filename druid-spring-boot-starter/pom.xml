@@ -14,10 +14,6 @@
     <description>Spring Boot with Druid support,help you simplify Druid config in Spring Boot.</description>
     <url>https://github.com/alibaba/druid</url>
 
-    <properties>
-        <spring-boot.version>1.5.22.RELEASE</spring-boot.version>
-    </properties>
-
     <developers>
         <developer>
             <name>李恒名</name>
@@ -33,7 +29,7 @@
                     management as the parent import style -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${springboot2.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
