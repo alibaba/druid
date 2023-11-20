@@ -3266,7 +3266,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                         }
                     }
 
-                    // connection[i]'s idleMillis might be greater than connection[i+1]'s if keepAlive is true.
+                    // connection[i]'s idleMillis might be little than connection[i+1]'s if keepAlive is true.
                     long idleMillis = currentTimeMillis - connection.lastActiveTimeMillis;
 
                     if (idleMillis >= minEvictableIdleTimeMillis) {
