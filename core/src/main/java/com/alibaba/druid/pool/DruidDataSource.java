@@ -3266,13 +3266,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                         }
                     }
 
+                    // connection[i]'s idleMillis might be greater than connection[i+1]'s if keepAlive is true.
                     long idleMillis = currentTimeMillis - connection.lastActiveTimeMillis;
-
-                    if (idleMillis < minEvictableIdleTimeMillis
-                            && idleMillis < keepAliveBetweenTimeMillis
-                    ) {
-                        break;
-                    }
 
                     if (idleMillis >= minEvictableIdleTimeMillis) {
                         if (checkTime && i < checkCount) {
@@ -3308,8 +3303,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                         shrinkBuffer[remaining++] = connections[i];
                     }
                 }
-                Arrays.fill(connections, 0, poolingCount, null);
                 System.arraycopy(shrinkBuffer, 0, connections, 0, remaining);
+                Arrays.fill(connections, remaining, poolingCount, null);
                 Arrays.fill(shrinkBuffer, 0, remaining, null);
                 poolingCount -= removeCount;
             }
