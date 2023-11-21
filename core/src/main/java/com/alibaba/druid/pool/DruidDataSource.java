@@ -3728,6 +3728,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             map.put("ExecuteQueryCount", this.getExecuteQueryCount());
 
             map.put("ExecuteUpdateCount", this.getExecuteUpdateCount());
+            map.put("InitStackTrace", this.getInitStackTrace());
 
             return map;
         } catch (JMException ex) {

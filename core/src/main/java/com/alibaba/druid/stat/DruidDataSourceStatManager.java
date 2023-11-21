@@ -340,6 +340,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
                 // 45
                 SimpleType.LONG, //
+                SimpleType.STRING, //
                 //
         };
 
@@ -409,6 +410,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
                 // 45 -
                 "ExecuteUpdateCount",
+                "InitStackTrace",
         };
 
         String[] indexDescriptions = indexNames;
