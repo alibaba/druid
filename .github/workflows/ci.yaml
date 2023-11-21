@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-22.04 ]
+        os: [ ubuntu-latest ]
         java: [ 8, 17 ]
       fail-fast: false
       max-parallel: 16
@@ -30,6 +30,5 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
-          cache: 'maven'
       - name: Build with Maven
         run: ./mvnw -Pgen-javadoc clean package -B
