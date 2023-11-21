@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.ast;
 
-
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -25,7 +24,6 @@ import java.util.List;
  * @author lizongbo
  */
 public class SQLPartitionOf extends SQLObjectImpl {
-
     protected SQLExprTableSource parentTable;
     private boolean useDefault;
     private SQLName columnName;

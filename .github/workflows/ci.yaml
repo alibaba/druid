@@ -17,8 +17,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-18.04 ]
-        java: [ 8, 17 ]
+        os: [ ubuntu-latest ]
+        java: [ 8 ]
       fail-fast: false
       max-parallel: 16
     name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
@@ -30,6 +30,5 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
-          cache: 'maven'
       - name: Build with Maven
         run: ./mvnw -Pgen-javadoc clean package -B

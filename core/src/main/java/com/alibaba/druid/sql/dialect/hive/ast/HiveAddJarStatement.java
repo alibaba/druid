@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class HiveAddJarStatement extends SQLStatementImpl {
-
     public HiveAddJarStatement() {
         this.dbType = DbType.hive;
     }
