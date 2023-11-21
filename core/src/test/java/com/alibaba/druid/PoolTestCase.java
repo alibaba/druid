@@ -18,8 +18,9 @@ public class PoolTestCase extends TestCase {
             CompositeData compositeData = (CompositeData) DruidDataSourceStatManager.getInstance().getDataSourceList().values().iterator().next();
             String name = (String) compositeData.get("Name");
             String url = (String) compositeData.get("URL");
+            String initStackTrace = (String) compositeData.get("InitStackTrace");
 
-            errorInfo = "Name " + name + ", URL " + url;
+            errorInfo = "Name " + name + ", URL " + url + ", initStackTrace=" + initStackTrace;
         }
         Assert.assertEquals(errorInfo, 0, size);
     }
