@@ -30,5 +30,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
+          cache: 'maven'
       - name: Build with Maven
         run: ./mvnw -Pgen-javadoc clean package -B
