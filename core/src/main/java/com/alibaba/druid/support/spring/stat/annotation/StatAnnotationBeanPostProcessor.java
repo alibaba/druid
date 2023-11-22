@@ -20,12 +20,13 @@ import org.springframework.aop.framework.AbstractAdvisingBeanPostProcessor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @SuppressWarnings("serial")
 public class StatAnnotationBeanPostProcessor extends AbstractAdvisingBeanPostProcessor implements BeanFactoryAware {
-    @Resource(name = "druid-stat-interceptor")
+    @Autowired
+    @Qualifier("druid-stat-interceptor")
     private DruidStatInterceptor druidStatInterceptor;
 
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
