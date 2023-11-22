@@ -22,6 +22,9 @@ public class ServletPathMatcher implements PatternMatcher {
         return INSTANCE;
     }
 
+    private ServletPathMatcher() {
+    }
+
     /**
      * <p>
      * three type: endsWithMatch(eg. /xxx*=/xxx/xyz), startsWithMatch(eg.
