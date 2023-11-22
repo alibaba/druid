@@ -1,6 +1,5 @@
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
@@ -16,7 +15,6 @@ import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class PGCreateTableParser extends SQLCreateTableParser {
     public PGCreateTableParser(Lexer lexer) {
