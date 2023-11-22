@@ -327,7 +327,7 @@
 		<dependency>
 			<groupId>org.apache.hive</groupId>
 			<artifactId>hive-jdbc</artifactId>
-			<version>3.1.2</version>			
+			<version>3.1.2</version>
 			<scope>provided</scope>
 			<exclusions>
                 <exclusion>
