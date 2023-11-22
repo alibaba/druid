@@ -3,13 +3,12 @@ package com.alibaba.druid.stat;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import junit.framework.TestCase;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,7 +18,7 @@ import com.alibaba.druid.support.spring.stat.SpringStatManager;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/com/alibaba/druid/stat/spring-config-stat-annotation.xml"})
 public class StatAnnotationTest extends TestCase {
-    @Resource
+    @Autowired
     private UserService userService;
 
     @Test
