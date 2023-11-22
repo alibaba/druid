@@ -42,6 +42,7 @@ public class TestGraceShutdown extends TestCase {
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(2);
         dataSource.setMaxIdle(2);
+        dataSource.setMaxWait(5);
         dataSource.setMinIdle(1);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
@@ -81,10 +82,11 @@ public class TestGraceShutdown extends TestCase {
         for (int i = 0; i < threadCount; ++i) {
             threads[i].start();
         }
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         new Thread("close thread") {
             public void run() {
+                System.out.println("执行close start");
                 dataSource.close();
             }
         }.start();
