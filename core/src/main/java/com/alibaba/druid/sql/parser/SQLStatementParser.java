@@ -6381,7 +6381,7 @@ public class SQLStatementParser extends SQLParser {
                             expr = new SQLVariantRefExpr("?", values);
                             values.incrementReplaceCount();
                         } else {
-                            SQLNumberExpr numberExpr = lexer.numberExpr(parent);
+                            SQLNumberExpr numberExpr = lexer.numberExpr(values);
 
                             if (dataType != null
                                     && dataType.nameHashCode64() == FnvHash.Constants.DECIMAL) {
