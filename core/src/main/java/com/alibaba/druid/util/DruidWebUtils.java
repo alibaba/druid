@@ -22,6 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 public class DruidWebUtils {
     public static String getRemoteAddr(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
+        if (ip != null && ip.contains(",")) { //截取逗号前第一个ip视为源头ip
+            ip = ip.substring(0, ip.indexOf(",")).trim();
+        }
         if (ip != null && !isValidAddress(ip)) {
             ip = null;
         }
@@ -52,6 +55,9 @@ public class DruidWebUtils {
 
     public static String getRemoteAddr(jakarta.servlet.http.HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
+        if (ip != null && ip.contains(",")) { //截取逗号前第一个ip视为源头ip
+            ip = ip.substring(0, ip.indexOf(",")).trim();
+        }
         if (ip != null && !isValidAddress(ip)) {
             ip = null;
         }

@@ -794,7 +794,7 @@ public class MySqlLexer extends Lexer {
      * @return
      */
     public static boolean isIdentifierCharForVariable(char c) {
-        if (c == '.'){
+        if (c == '.') {
             return true;
         }
         return isIdentifierChar(c);

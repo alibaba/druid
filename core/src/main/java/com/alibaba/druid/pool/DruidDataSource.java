@@ -830,19 +830,18 @@ public class DruidDataSource extends DruidAbstractDataSource
                 this.transactionIdSeedUpdater.addAndGet(this, delta);
             }
 
-            if (this.jdbcUrl != null) {
-                this.jdbcUrl = this.jdbcUrl.trim();
-                initFromWrapDriverUrl();
-
-                initFromUrlOrProperties();
-            }
-
             if (connectTimeout == 0) {
                 connectTimeout = DEFAULT_TIME_CONNECT_TIMEOUT_MILLIS;
             }
 
             if (socketTimeout == 0) {
                 socketTimeout = DEFAULT_TIME_SOCKET_TIMEOUT_MILLIS;
+            }
+
+            if (this.jdbcUrl != null) {
+                this.jdbcUrl = this.jdbcUrl.trim();
+                initFromWrapDriverUrl();
+                initFromUrlOrProperties();
             }
 
             for (Filter filter : filters) {
@@ -1013,7 +1012,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     private void initFromUrlOrProperties() {
-        if (jdbcUrl.startsWith("jdbc:mysql://")) {
+        if (isMysqlOrMariaDBUrl(jdbcUrl)) {
             if (jdbcUrl.indexOf("connectTimeout=") != -1 || jdbcUrl.indexOf("socketTimeout=") != -1) {
                 String[] items = jdbcUrl.split("(\\?|&)");
                 for (int i = 0; i < items.length; i++) {
@@ -1042,6 +1041,19 @@ public class DruidDataSource extends DruidAbstractDataSource
                 setSocketTimeout(((Number) propertySocketTimeout).intValue());
             }
         }
+    }
+
+    /**
+     * Issue 5192,Issue 5457
+     * @see <a href="https://dev.mysql.com/doc/connector-j/8.1/en/connector-j-reference-jdbc-url-format.html">MySQL Connection URL Syntax</a>
+     * @see <a href="https://mariadb.com/kb/en/about-mariadb-connector-j/">About MariaDB Connector/J</a>
+     * @param jdbcUrl
+     * @return
+     */
+    private static boolean isMysqlOrMariaDBUrl(String jdbcUrl) {
+        return jdbcUrl.startsWith("jdbc:mysql://") || jdbcUrl.startsWith("jdbc:mysql:loadbalance://")
+            || jdbcUrl.startsWith("jdbc:mysql:replication://") || jdbcUrl.startsWith("jdbc:mariadb://")
+            || jdbcUrl.startsWith("jdbc:mariadb:loadbalance://") || jdbcUrl.startsWith("jdbc:mariadb:replication://");
     }
 
     private void submitCreateTask(boolean initTask) {
@@ -1727,6 +1739,11 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             try {
+                if (activeCount >= maxActive) {
+                    createDirect = false;
+                    continue;
+                }
+
                 if (maxWaitThreadCount > 0
                         && notEmptyWaitThreadCount >= maxWaitThreadCount) {
                     connectErrorCountUpdater.incrementAndGet(this);
@@ -3716,6 +3733,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             map.put("ExecuteQueryCount", this.getExecuteQueryCount());
 
             map.put("ExecuteUpdateCount", this.getExecuteUpdateCount());
+            map.put("InitStackTrace", this.getInitStackTrace());
 
             return map;
         } catch (JMException ex) {

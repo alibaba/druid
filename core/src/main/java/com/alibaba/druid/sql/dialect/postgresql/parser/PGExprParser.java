@@ -53,7 +53,7 @@ public class PGExprParser extends SQLExprParser {
     }
 
     public PGExprParser(String sql, SQLParserFeature... features) {
-        this(new PGLexer(sql));
+        this(new PGLexer(sql, features));
         this.lexer.nextToken();
         this.dbType = DbType.postgresql;
     }
@@ -291,6 +291,13 @@ public class PGExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
 
                 return primaryRest(extract);
+            } else if (FnvHash.Constants.E == hash && lexer.token() == Token.LITERAL_CHARS) {
+                String str = lexer.stringVal();
+                lexer.nextToken();
+                PGCharExpr cstyleStr = new PGCharExpr();
+                cstyleStr.setText(str);
+                cstyleStr.setCSytle(true);
+                return primaryRest(cstyleStr);
             } else if (FnvHash.Constants.POINT == hash) {
                 switch (lexer.token()) {
                     case DOT:

@@ -54,6 +54,7 @@ public final class ExportParameterVisitorUtils {
             case jtds:
                 return new MSSQLServerExportParameterVisitor(out);
             case postgresql:
+            case greenplum:
             case edb:
                 return new PGExportParameterVisitor(out);
             default:

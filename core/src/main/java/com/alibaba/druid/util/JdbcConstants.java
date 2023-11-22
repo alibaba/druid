@@ -155,4 +155,7 @@ public interface JdbcConstants {
 
     DbType TYDB = DbType.tydb;
     String TYDB_DRIVER = "com.dbcp.jdbc.Driver";
+
+    String TAOS_DATA = "com.taosdata.jdbc.TSDBDriver";
+    String TAOS_DATA_RS = "com.taosdata.jdbc.rs.RestfulDriver";
 }

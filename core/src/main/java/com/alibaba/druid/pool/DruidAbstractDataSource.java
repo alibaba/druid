@@ -22,6 +22,7 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
@@ -1429,6 +1430,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             try {
                 result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
 
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
+                }
                 if (result && onFatalError) {
                     lock.lock();
                     try {
@@ -1479,6 +1483,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     }
                 }
             } finally {
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
+                }
                 JdbcUtils.close(rs);
                 JdbcUtils.close(stmt);
             }
@@ -1510,7 +1517,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     holder.lastValidTimeMillis = currentTimeMillis;
                     holder.lastExecTimeMillis = currentTimeMillis;
                 }
-
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(currentTimeMillis);
+                }
                 if (valid && isMySql) { // unexcepted branch
                     long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
                     if (lastPacketReceivedTimeMs > 0) {
@@ -1561,6 +1570,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     return false;
                 }
             } finally {
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
+                }
                 JdbcUtils.close(rset);
                 JdbcUtils.close(stmt);
             }
@@ -1761,7 +1773,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 if (socketTimeout > 0) {
                     physicalConnectProperties.put("socketTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(socketTimeout)));
                 }
-            } else if (DbType.sqlserver.name().equals(dbTypeName)) {
+            } else if (dbTypeName != null && DbType.sqlserver.name().equals(dbTypeName)) {
                 // see https://learn.microsoft.com/en-us/sql/connect/jdbc/setting-the-connection-properties?view=sql-server-ver16
                 physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
                 if (socketTimeout > 0) {
@@ -2074,6 +2086,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return this.id;
     }
 
+    @Override
+    public long getDataSourceId() {
+        return getID();
+    }
     public java.util.Date getCreatedTime() {
         return createdTime;
     }

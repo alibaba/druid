@@ -80,7 +80,8 @@ public enum DbType {
     interbase(0),
     pointbase(0),
     edbc(0),
-    mimer(0);
+    mimer(0),
+    taosdata(0);
 
     public final long mask;
     public final long hashCode64;

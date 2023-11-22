@@ -1136,6 +1136,9 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 stmt.setSelect(query);
                 accept(Token.RPAREN);
             }
+            if (lexer.token() == Token.WITH) {
+                stmt.setWithSelect(this.parseWith());
+            }
         }
 
         SQLCommentHint hint = null;

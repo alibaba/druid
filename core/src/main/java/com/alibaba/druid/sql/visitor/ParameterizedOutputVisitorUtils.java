@@ -413,6 +413,7 @@ public class ParameterizedOutputVisitorUtils {
             case h2:
                 return new H2OutputVisitor(out, true);
             case postgresql:
+            case greenplum:
             case edb:
                 return new PGOutputVisitor(out, true);
             case sqlserver:

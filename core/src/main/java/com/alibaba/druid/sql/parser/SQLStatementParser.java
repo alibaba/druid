@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement.Type;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
@@ -3435,9 +3436,14 @@ public class SQLStatementParser extends SQLParser {
         }
 
         boolean temporary = false;
+        boolean transactional = false;
         if (lexer.identifierEquals(FnvHash.Constants.TEMPORARY) || lexer.token == Token.TEMPORARY) {
             lexer.nextToken();
             temporary = true;
+        }
+        if ("TRANSACTIONAL".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            transactional = true;
         }
 
         boolean nonclustered = false;
@@ -3461,6 +3467,9 @@ public class SQLStatementParser extends SQLParser {
                     }
                 }
 
+                if (transactional) {
+                    stmt.setType(Type.TRANSACTIONAL);
+                }
                 if (comments != null) {
                     stmt.addBeforeComment(comments);
                 }
@@ -4157,6 +4166,16 @@ public class SQLStatementParser extends SQLParser {
             stmt.setWhen(condition);
         }
 
+        //for postgresql https://www.postgresql.org/docs/current/sql-createtrigger.html
+        if (lexer.identifierEquals("EXECUTE")) {
+            lexer.nextToken();
+            String executeType = lexer.stringVal();
+            stmt.setExecuteType(executeType);
+            lexer.nextToken();
+            SQLExpr executeFunc = this.exprParser.expr();
+            stmt.setExecuteFunc(executeFunc);
+            return stmt;
+        }
         List<SQLStatement> body = this.parseStatementList();
         if (body == null || body.isEmpty()) {
             throw new ParserException("syntax error");
@@ -6362,7 +6381,7 @@ public class SQLStatementParser extends SQLParser {
                             expr = new SQLVariantRefExpr("?", values);
                             values.incrementReplaceCount();
                         } else {
-                            SQLNumberExpr numberExpr = lexer.numberExpr(parent);
+                            SQLNumberExpr numberExpr = lexer.numberExpr(values);
 
                             if (dataType != null
                                     && dataType.nameHashCode64() == FnvHash.Constants.DECIMAL) {

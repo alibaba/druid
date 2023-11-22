@@ -29,6 +29,7 @@ import java.util.List;
 public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint, SQLTableElement {
     protected final SQLIndexDefinition indexDefinition = new SQLIndexDefinition();
 
+    protected boolean disableNovalidate;
     public SQLUnique() {
         indexDefinition.setParent(this);
     }
@@ -47,6 +48,14 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
     @Override
     public void setName(String name) {
         this.setName(new SQLIdentifierExpr(name));
+    }
+
+    public boolean isDisableNovalidate() {
+        return disableNovalidate;
+    }
+
+    public void setDisableNovalidate(boolean disableNovalidate) {
+        this.disableNovalidate = disableNovalidate;
     }
 
     @Override

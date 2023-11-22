@@ -30,6 +30,8 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
     private SQLExpr offset;
     private List<SQLExpr> by;
 
+    private boolean offsetClause;
+
     public SQLLimit() {
     }
 
@@ -74,6 +76,14 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
             offset.setParent(this);
         }
         this.offset = offset;
+    }
+
+    public boolean isOffsetClause() {
+        return offsetClause;
+    }
+
+    public void setOffsetClause(boolean offsetClause) {
+        this.offsetClause = offsetClause;
     }
 
     public void merge(SQLLimit other) {
