@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 import junit.framework.TestCase;
-import org.eclipse.jetty.jndi.java.javaNameParser;
 import org.junit.Assert;
 
 /**
