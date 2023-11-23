@@ -64,9 +64,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ZookeeperNodeListener extends NodeListener {
     private static final Log LOG = LogFactory.getLog(ZookeeperNodeListener.class);
+    private final Lock lock = new ReentrantLock();
     private String zkConnectString;
     private String path = "/ha-druid-datasources";
-    private Lock lock = new ReentrantLock();
     private boolean privateZkClient; // Should I close the client?
     private PathChildrenCache cache;
     private CuratorFramework client;
@@ -161,8 +161,8 @@ public class ZookeeperNodeListener extends NodeListener {
      */
     @Override
     public List<NodeEvent> refresh() {
+        lock.lock();
         try {
-            lock.lock();
             Properties properties = getPropertiesFromCache();
             List<NodeEvent> events = NodeEvent.getEventsByDiffProperties(getProperties(), properties);
             if (events != null && !events.isEmpty()) {
