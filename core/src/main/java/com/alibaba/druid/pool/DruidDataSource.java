@@ -1792,9 +1792,9 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
 
                 if (maxWait > 0) {
-                    long waitNanos = nanos - TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis() - startTime);
-                    if (waitNanos > 0) {
-                        holder = pollLast(waitNanos);
+                    long maxWaitNanos = nanos - TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis() - startTime);
+                    if (maxWaitNanos > 0) {
+                        holder = pollLast(maxWaitNanos);
                     } else {
                         holder = null;
                         break;
@@ -2366,8 +2366,8 @@ public class DruidDataSource extends DruidAbstractDataSource
         return last;
     }
 
-    private DruidConnectionHolder pollLast(long nanos) throws InterruptedException, SQLException {
-        long estimate = nanos;
+    private DruidConnectionHolder pollLast(long maxWaitNanos) throws InterruptedException, SQLException {
+        long estimate = maxWaitNanos;
 
         for (; ; ) {
             if (poolingCount == 0) {
@@ -2423,7 +2423,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             DruidConnectionHolder last = connections[poolingCount];
             connections[poolingCount] = null;
 
-            long waitNanos = nanos - estimate;
+            long waitNanos = maxWaitNanos - estimate;
             last.setLastNotEmptyWaitNanos(waitNanos);
 
             return last;
