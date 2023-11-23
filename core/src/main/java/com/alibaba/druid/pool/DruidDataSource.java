@@ -147,7 +147,6 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     private boolean useGlobalDataSourceStat;
     private boolean mbeanRegistered;
-    public static ThreadLocal<Long> waitNanosLocal = new ThreadLocal<Long>();
     private boolean logDifferentThread = true;
     private volatile boolean keepAlive;
     private boolean asyncInit;
@@ -1690,6 +1689,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         DruidConnectionHolder holder;
 
+        long startTime = System.currentTimeMillis();  //进入循环等待之前，先记录开始尝试获取连接的时间
         for (boolean createDirect = false; ; ) {
             if (createDirect) {
                 createStartNanosUpdater.set(this, System.nanoTime());
@@ -1782,19 +1782,33 @@ public class DruidDataSource extends DruidAbstractDataSource
                         && createScheduler instanceof ScheduledThreadPoolExecutor) {
                     ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) createScheduler;
                     if (executor.getQueue().size() > 0) {
+                        if (maxWait > 0 && System.currentTimeMillis() - startTime >= maxWait) {
+                            holder = null;
+                            break;
+                        }
                         createDirect = true;
                         continue;
                     }
                 }
 
                 if (maxWait > 0) {
-                    holder = pollLast(nanos);
+                    long waitNanos = nanos - TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis() - startTime);
+                    if (waitNanos > 0) {
+                        holder = pollLast(waitNanos);
+                    } else {
+                        holder = null;
+                        break;
+                    }
                 } else {
                     holder = takeLast();
                 }
 
                 if (holder != null) {
                     if (holder.discard) {
+                        holder = null;
+                        if (maxWait > 0 && System.currentTimeMillis() - startTime >= maxWait) {
+                            break;
+                        }
                         continue;
                     }
 
@@ -1819,7 +1833,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         }
 
         if (holder == null) {
-            long waitNanos = waitNanosLocal.get();
+            long waitMillis = System.currentTimeMillis() - startTime;
 
             final long activeCount;
             final long maxActive;
@@ -1841,7 +1855,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             StringBuilder buf = new StringBuilder(128);
             buf.append("wait millis ")
-                    .append(waitNanos / (1000 * 1000))
+                    .append(waitMillis)
                     .append(", active ").append(activeCount)
                     .append(", maxActive ").append(maxActive)
                     .append(", creating ").append(creatingCount);
@@ -2364,7 +2378,6 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
 
                 if (estimate <= 0) {
-                    waitNanosLocal.set(nanos - estimate);
                     return null;
                 }
 
@@ -2402,8 +2415,6 @@ public class DruidDataSource extends DruidAbstractDataSource
                     if (estimate > 0) {
                         continue;
                     }
-
-                    waitNanosLocal.set(nanos - estimate);
                     return null;
                 }
             }
