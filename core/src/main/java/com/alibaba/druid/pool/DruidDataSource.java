@@ -1692,6 +1692,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         long startTime = System.currentTimeMillis();  //进入循环等待之前，先记录开始尝试获取连接的时间
         for (boolean createDirect = false; ; ) {
             if (createDirect) {
+                createDirect = false;
                 createStartNanosUpdater.set(this, System.nanoTime());
                 if (creatingCountUpdater.compareAndSet(this, 0, 1)) {
                     PhysicalConnectionInfo pyConnInfo = DruidDataSource.this.createPhysicalConnection();
@@ -1709,7 +1710,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     final Lock lock = this.lock;
                     lock.lock();
                     try {
-                        if (activeCount < maxActive) {
+                        if (activeCount + poolingCount < maxActive) {
                             activeCount++;
                             holder.active = true;
                             if (activeCount > activePeak) {
@@ -2305,7 +2306,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     boolean putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
-        if (poolingCount >= maxActive || e.discard || this.closed || this.closing) {
+        if (activeCount + poolingCount >= maxActive || e.discard || this.closed || this.closing) {
             return false;
         }
 
@@ -2670,7 +2671,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 return false;
             }
 
-            if (poolingCount >= maxActive) {
+            if (activeCount + poolingCount >= maxActive) {
                 if (createScheduler != null) {
                     clearCreateTask(createTaskId);
                 }
