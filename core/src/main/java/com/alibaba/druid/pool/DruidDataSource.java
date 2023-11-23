@@ -971,7 +971,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             if (keepAlive) {
                 // async fill to minIdle
                 if (createScheduler != null) {
-                    for (int i = 0; i < minIdle; ++i) {
+                    for (int i = 0; i < minIdle - initialSize; ++i) {
                         submitCreateTask(true);
                     }
                 } else {
