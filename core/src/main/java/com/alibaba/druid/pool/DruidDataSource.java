@@ -1690,7 +1690,6 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         DruidConnectionHolder holder;
 
-        long startTime = System.currentTimeMillis();  //进入循环等待之前，先记录开始尝试获取连接的时间
         for (boolean createDirect = false; ; ) {
             if (createDirect) {
                 createStartNanosUpdater.set(this, System.nanoTime());
@@ -1740,19 +1739,6 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             try {
-                if (activeCount >= maxActive) {
-                    long waitedTime = System.currentTimeMillis() - startTime;
-                    if (maxWait > 0 && waitedTime > maxWait) {
-                        //连接池已满时，如果最大等待时间大于0，且循环等待时间已经大于最大等待时间，则需要抛出异常
-                        connectErrorCountUpdater.incrementAndGet(this);
-                        throw new GetConnectionTimeoutException(
-                            "activeCount(" + activeCount + ")>= maxActive(" + maxActive + ") and waitedTime(" + waitedTime + "ms) > maxWait("
-                                + maxWait + "ms)");
-                    }
-                    createDirect = false;
-                    continue;
-                }
-
                 if (maxWaitThreadCount > 0
                         && notEmptyWaitThreadCount >= maxWaitThreadCount) {
                     connectErrorCountUpdater.incrementAndGet(this);
