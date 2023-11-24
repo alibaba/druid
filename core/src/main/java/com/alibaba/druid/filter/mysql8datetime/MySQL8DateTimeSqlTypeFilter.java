@@ -4,6 +4,7 @@ import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -58,5 +59,17 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
         }
         // 针对升级到了mysql jdbc 8.0.23以上的情况，转换回老的兼容类型
         return Timestamp.valueOf((LocalDateTime) obj);
+    }
+
+    /**
+     * mybatis查询结果为map时， 会自动做类型映射。只有在自动映射前，更改 ResultSetMetaData 里映射的 java 类型，才会生效
+     * @param chain
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public ResultSetMetaData resultSet_getMetaData(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
+        return new MySQL8DateTimeResultSetMetaData(chain.resultSet_getMetaData(resultSet));
     }
 }
