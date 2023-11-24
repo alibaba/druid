@@ -1215,7 +1215,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             }
             return;
         }
-        throw new SQLFeatureNotSupportedException();
+        conn.setSchema(schema);
     }
 
     public String getSchema() throws SQLException {
