@@ -28,11 +28,28 @@ public class WallStatTest_blackList_1 extends TestCase {
 
         WallTableStat tableStat = provider.getTableStat("t");
         Assert.assertEquals(1001, tableStat.getSelectCount());
-        Assert.assertEquals(0, provider.getBlackListHitCount());
+        Assert.assertEquals(1000, provider.getBlackListHitCount());
         Assert.assertEquals(0, provider.getWhiteListHitCount());
         Assert.assertEquals(0, provider.getWhiteList().size());
-        Assert.assertEquals(200, provider.getBlackList().size());
+        Assert.assertEquals(1, provider.getBlackList().size());
         Assert.assertEquals(1001, provider.getCheckCount());
     }
 
+
+    public void testMysql2() {
+        WallProvider provider = new MySqlWallProvider();
+
+        for (int i = 0; i < 1001; ++i) {
+            String sql = "select * from t where field_" + i + " = " + i + " OR 1 = 1";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
+
+        WallTableStat tableStat = provider.getTableStat("t");
+        Assert.assertEquals(1001, tableStat.getSelectCount());
+        Assert.assertEquals(0, provider.getBlackListHitCount());
+        Assert.assertEquals(0, provider.getWhiteListHitCount());
+        Assert.assertEquals(0, provider.getWhiteList().size());
+        Assert.assertEquals(WallProvider.BLACK_SQL_MAX_SIZE, provider.getBlackList().size());
+        Assert.assertEquals(1001, provider.getCheckCount());
+    }
 }
