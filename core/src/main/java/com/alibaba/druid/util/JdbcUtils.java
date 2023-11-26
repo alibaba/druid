@@ -535,6 +535,10 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.TYDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:opengauss:")) {
             return "org.opengauss.Driver";
+        } else if (rawUrl.startsWith("jdbc:TAOS:")) {
+            return JdbcConstants.TAOS_DATA;
+        } else if (rawUrl.startsWith("jdbc:TAOS-RS:")) {
+            return JdbcConstants.TAOS_DATA_RS;
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
@@ -650,6 +654,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.greenplum;
         } else if (rawUrl.startsWith("jdbc:opengauss:") || rawUrl.startsWith("jdbc:gaussdb:") || rawUrl.startsWith("jdbc:dws:iam:")) {
             return DbType.gaussdb;
+        } else if (rawUrl.startsWith("jdbc:TAOS:") || rawUrl.startsWith("jdbc:TAOS-RS:")) {
+            return DbType.taosdata;
         } else {
             return null;
         }

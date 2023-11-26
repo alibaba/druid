@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.sql.ast.SQLPartitionOf;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 import com.alibaba.druid.util.FnvHash;
@@ -176,8 +177,31 @@ public class SQLCreateTableParser extends SQLDDLParser {
         }
 
         if (lexer.token() == Token.PARTITION) {
-            SQLPartitionBy partitionClause = parsePartitionBy();
-            createTable.setPartitioning(partitionClause);
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (Token.OF.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionOf partitionOf = parsePartitionOf();
+                createTable.setPartitionOf(partitionOf);
+            } else if (Token.BY.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionBy partitionClause = parsePartitionBy();
+                createTable.setPartitioning(partitionClause);
+            }
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (Token.OF.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionOf partitionOf = parsePartitionOf();
+                createTable.setPartitionOf(partitionOf);
+            } else if (Token.BY.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionBy partitionClause = parsePartitionBy();
+                createTable.setPartitioning(partitionClause);
+            }
         }
 
         parseCreateTableRest(createTable);
@@ -189,6 +213,10 @@ public class SQLCreateTableParser extends SQLDDLParser {
     }
 
     public SQLPartitionBy parsePartitionBy() {
+        return null;
+    }
+
+    public SQLPartitionOf parsePartitionOf() {
         return null;
     }
 

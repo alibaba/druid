@@ -961,7 +961,7 @@ public class DALParserTest extends TestCase {
         MySqlShowProfileStatement show = (MySqlShowProfileStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
-        Assert.assertEquals("SHOW PROFILE ALL, BLOCK IO, CONTEXT SWITCHES, CPU, IPC, MEMORY, PAGE FAULTS, SOURCE, SWAPS FOR QUERY 2 LIMIT 2, 1", output);
+        Assert.assertEquals("SHOW PROFILE ALL, BLOCK IO, CONTEXT SWITCHES, CPU, IPC, MEMORY, PAGE FAULTS, SOURCE, SWAPS FOR QUERY 2 LIMIT 1 OFFSET 2", output);
     }
 
     public void test_show_relayLogEvents() throws Exception {

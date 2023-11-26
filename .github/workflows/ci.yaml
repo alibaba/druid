@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-18.04 ]
+        os: [ ubuntu-latest ]
         java: [ 8, 17 ]
       fail-fast: false
       max-parallel: 16
@@ -31,5 +31,9 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           cache: 'maven'
-      - name: Build with Maven
+      - name: Build with Maven if test jdk8
+        if: ${{ matrix.java == '8' }}
         run: ./mvnw -Pgen-javadoc clean package -B
+      - name: Build with Maven if test jdk17
+        if: ${{ matrix.java == '17' }}
+        run: ./mvnw -Penable-for-jdk17+ clean package -B

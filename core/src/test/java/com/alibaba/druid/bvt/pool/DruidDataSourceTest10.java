@@ -41,6 +41,94 @@ public class DruidDataSourceTest10 {
         assertEquals(3000, ds.getConnectTimeout());
         assertEquals(6000, ds.getSocketTimeout());
     }
+    @Test
+    public void test_timeout_is_zero() throws Exception {
+        ds.setUrl("jdbc:mysql://127.0.0.1:3306/xxx?connectTimeout=0&socketTimeout=0");
+        ds.init();
+        assertEquals(0, ds.getConnectTimeout());
+        assertEquals(0, ds.getSocketTimeout());
+    }
+    @Test
+    public void test_timeout_is_zero2() throws Exception {
+        ds.setUrl("jdbc:mysql://127.0.0.1:3306/xxx");
+        ds.setConnectTimeout(-1);
+        ds.setSocketTimeout(-1);
+        ds.init();
+        assertEquals(-1, ds.getConnectTimeout());
+        assertEquals(-1, ds.getSocketTimeout());
+    }
+
+    /**
+     * @throws Exception
+     * @see https://github.com/alibaba/druid/issues/5396
+     */
+    @Test
+    public void test_timeout_in_loadbalance() throws Exception {
+        ds.setUrl(
+            "jdbc:mysql:loadbalance://localhost:3306,localhost:3310/test?connectTimeout=0&socketTimeout=0&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(0, ds.getConnectTimeout());
+        assertEquals(0, ds.getSocketTimeout());
+    }
+
+    @Test
+    public void test_timeout_in_replication() throws Exception {
+        ds.setUrl(
+            "jdbc:mysql:replication://localhost:3306,localhost:3310/test?connectTimeout=0&socketTimeout=0&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(0, ds.getConnectTimeout());
+        assertEquals(0, ds.getSocketTimeout());
+    }
+    @Test
+    public void test_timeout_in_mariadb() throws Exception {
+        ds.setUrl(
+            "jdbc:mariadb://localhost:3306/test?connectTimeout=0&socketTimeout=0&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(0, ds.getConnectTimeout());
+        assertEquals(0, ds.getSocketTimeout());
+    }
+    @Test
+    public void test_timeout_in_mariadb_loadbalance() throws Exception {
+        ds.setUrl(
+            "jdbc:mariadb:loadbalance://localhost:3306,localhost:3310/test?connectTimeout=0&socketTimeout=0&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(0, ds.getConnectTimeout());
+        assertEquals(0, ds.getSocketTimeout());
+    }
+
+    @Test
+    public void test_timeout_in_mariadb_replication() throws Exception {
+        ds.setUrl(
+            "jdbc:mariadb:replication://localhost:3306,localhost:3310/test?connectTimeout=0&socketTimeout=0&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(0, ds.getConnectTimeout());
+        assertEquals(0, ds.getSocketTimeout());
+    }
+    @Test
+    public void test_timeout_in_mariadb2() throws Exception {
+        ds.setUrl(
+            "jdbc:mariadb://localhost:3306/test?connectTimeout=1&socketTimeout=2&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(1, ds.getConnectTimeout());
+        assertEquals(2, ds.getSocketTimeout());
+    }
+    @Test
+    public void test_timeout_in_mariadb_loadbalance2() throws Exception {
+        ds.setUrl(
+            "jdbc:mariadb:loadbalance://localhost:3306,localhost:3310/test?connectTimeout=3&socketTimeout=4&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(3, ds.getConnectTimeout());
+        assertEquals(4, ds.getSocketTimeout());
+    }
+
+    @Test
+    public void test_timeout_in_mariadb_replication2() throws Exception {
+        ds.setUrl(
+            "jdbc:mariadb:replication://localhost:3306,localhost:3310/test?connectTimeout=5&socketTimeout=6&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(5, ds.getConnectTimeout());
+        assertEquals(6, ds.getSocketTimeout());
+    }
 
     @Test
     public void test2() throws Exception {

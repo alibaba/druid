@@ -232,6 +232,11 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             print0(alias);
         }
 
+        if (isPrettyFormat() && x.hasAfterComment()) {
+            print(' ');
+            printlnComment(x.getAfterCommentsDirect());
+        }
+
         if (x.getHints() != null && x.getHints().size() > 0) {
             print0(ucase ? " WITH (" : " with (");
             printAndAccept(x.getHints(), ", ");

@@ -587,6 +587,9 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
                 }
             }
         }
+        if (x.getWithSelect() instanceof SQLSelectStatement) {
+            visit((SQLSelectStatement) x.getWithSelect());
+        }
 
         return val;
     }

@@ -432,6 +432,7 @@ public class SchemaRepository {
                 resolveVisitor = new SchemaResolveVisitorFactory.HiveResolveVisitor(this, optionsValue);
                 break;
             case postgresql:
+            case greenplum:
             case edb:
                 resolveVisitor = new SchemaResolveVisitorFactory.PGResolveVisitor(this, optionsValue);
                 break;

@@ -1,10 +1,15 @@
 package com.alibaba.druid.sql.dialect.hive.ast;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class HiveAddJarStatement extends SQLStatementImpl {
+    public HiveAddJarStatement() {
+        this.dbType = DbType.hive;
+    }
+
     private String path;
 
     public String getPath() {

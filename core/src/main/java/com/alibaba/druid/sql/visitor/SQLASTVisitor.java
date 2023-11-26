@@ -1230,6 +1230,12 @@ public interface SQLASTVisitor {
 
     default void endVisit(SQLPartitionByList x) {
     }
+    default boolean visit(SQLPartitionOf x) {
+        return true;
+    }
+
+    default void endVisit(SQLPartitionOf x) {
+    }
 
     default boolean visit(SQLSubPartition x) {
         return true;

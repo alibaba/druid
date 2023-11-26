@@ -6,7 +6,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid-parent</artifactId>
-	<version>1.2.19-SNAPSHOT</version>
+	<version>1.2.21-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
 	<description>A JDBC datasource implementation.</description>
 	<packaging>pom</packaging>
@@ -53,7 +53,6 @@
 	<modules>
 		<module>core</module>
 		<module>druid-spring-boot-starter</module>
-		<module>druid-spring-boot-3-starter</module>
 		<module>druid-wrapper</module>
 		<module>druid-demo-petclinic</module>
 	</modules>

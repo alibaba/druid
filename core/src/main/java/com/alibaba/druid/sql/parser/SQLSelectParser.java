@@ -1387,6 +1387,11 @@ public class SQLSelectParser extends SQLParser {
                             }
                             tableSource.setAlias(alias);
 
+                            if (lexer.token == Token.HINT) {
+                                tableSource.addAfterComment("/*" + lexer.stringVal + "*/");
+                                lexer.nextToken();
+                            }
+
                             if ((tableSource instanceof SQLValuesTableSource)
                                     && ((SQLValuesTableSource) tableSource).getColumns().isEmpty()) {
                                 SQLValuesTableSource values = (SQLValuesTableSource) tableSource;
