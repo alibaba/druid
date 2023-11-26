@@ -43,7 +43,6 @@ public class ZookeeperNodeRegister {
     private GroupMember member;
     private boolean privateZkClient; // Should I close the client?
 
-
     /**
      * Init a CuratorFramework if there's no CuratorFramework provided.
      */
