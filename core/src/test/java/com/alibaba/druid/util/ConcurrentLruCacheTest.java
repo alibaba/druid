@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 /**
- * @author ishenjianeng [ishenjianeng@qq.com]
+ * @author shenjianeng [ishenjianeng@qq.com]
  */
 public class ConcurrentLruCacheTest extends TestCase {
 
