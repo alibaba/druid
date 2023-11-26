@@ -1740,7 +1740,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             try {
                 if (maxWaitThreadCount > 0
-                        && notEmptyWaitThreadCount >= maxWaitThreadCount) {
+                        && notEmptyWaitThreadCount > maxWaitThreadCount) {
                     connectErrorCountUpdater.incrementAndGet(this);
                     throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
                             + lock.getQueueLength());
