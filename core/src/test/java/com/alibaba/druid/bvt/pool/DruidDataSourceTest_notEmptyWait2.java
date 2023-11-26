@@ -52,7 +52,7 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
                         System.out.println(Thread.currentThread() +" "+ LocalDateTime.now() + " getConnection== " + conn);
                         conn.close();
                     } catch (Exception e) {
-                        // e.printStackTrace();
+                         e.printStackTrace();
                         errorCount.incrementAndGet();
                     } finally {
                         endLatch.countDown();
