@@ -60,7 +60,6 @@ public abstract class WallProvider {
     // public for testing
     public static final int BLACK_SQL_MAX_SIZE = 256;
 
-
     private boolean blackListEnable = true;
 
     private final ConcurrentLruCache<String, WallSqlStat> whiteList = new ConcurrentLruCache<>(WHITE_SQL_MAX_SIZE);
@@ -288,7 +287,6 @@ public abstract class WallProvider {
         return wallSqlStat;
     }
 
-
     private String getMergedSql(String sql) {
         String mergedSql = mergedSqlCache.get(sql);
         if (mergedSql != null) {
@@ -306,7 +304,6 @@ public abstract class WallProvider {
         mergedSqlCache.computeIfAbsent(sql, key -> finalMergedSql);
         return mergedSql;
     }
-
 
     public Set<String> getWhiteList() {
         Set<String> hashSet = new HashSet<>();
@@ -649,7 +646,6 @@ public abstract class WallProvider {
             }
         }
 
-
         // check black list
         if (blackListEnable) {
             WallSqlStat sqlStat = getBlackSql(sql);
@@ -831,7 +827,6 @@ public abstract class WallProvider {
             statValue.getFunctions().add(functionStatValue);
         }
 
-
         for (Map.Entry<String, WallSqlStat> entry : whiteList.entrySet()) {
             String sql = entry.getKey();
             WallSqlStat sqlStat = entry.getValue();
@@ -865,7 +860,6 @@ public abstract class WallProvider {
             sqlStatValue.setSql(sql);
             statValue.getBlackList().add(sqlStatValue);
         }
-
 
         return statValue;
     }
