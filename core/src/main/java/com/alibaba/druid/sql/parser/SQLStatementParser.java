@@ -153,6 +153,12 @@ public class SQLStatementParser extends SQLParser {
                         SQLStatement stmt = statementList.get(statementList.size() - 1);
                         stmt.addAfterComment(lexer.readAndResetComments());
                     }
+                    if (END == lexer.token && dbType == DbType.postgresql) {
+                        SQLStatement stmt = parseEnd();
+                        stmt.setParent(parent);
+                        statementList.add(stmt);
+                        continue;
+                    }
                     return;
                 case SEMI: {
                     int line0 = lexer.getLine();
@@ -5604,6 +5610,9 @@ public class SQLStatementParser extends SQLParser {
         }
 
         return withQueryClause;
+    }
+    public SQLStatement parseEnd() {
+        throw new ParserException("TODO. " + lexer.info());
     }
 
     public SQLStatement parseWith() {
