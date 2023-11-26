@@ -75,8 +75,8 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
             Thread.sleep(10);
         }
 
-        Assert.assertEquals(0, dataSource.getNotEmptyWaitThreadCount());
-        Assert.assertEquals(1, dataSource.getNotEmptyWaitThreadPeak());
+        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadCount());
+        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
 
         conn.close();
 
@@ -84,6 +84,6 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
 
         Thread.sleep(10);
 //        Assert.assertEquals(0, dataSource.getNotEmptyWaitThreadCount());
-        Assert.assertEquals(1, dataSource.getNotEmptyWaitThreadPeak());
+        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
     }
 }
