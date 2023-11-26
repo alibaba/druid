@@ -9,14 +9,12 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 
-
 /**
  * Simple LRU (Least Recently Used) cache, bounded by a specified cache limit.
  *
  * @author shenjianeng [ishenjianeng@qq.com]
  */
 public class ConcurrentLruCache<K, V> {
-
     private final ConcurrentHashMap<K, V> cache = new ConcurrentHashMap<>();
 
     private final ConcurrentLinkedDeque<K> queue = new ConcurrentLinkedDeque<>();
@@ -52,7 +50,6 @@ public class ConcurrentLruCache<K, V> {
         }
         return cached;
     }
-
 
     public V computeIfAbsent(K key, Function<K, V> generator) {
         V cached = get(key);
@@ -96,16 +93,13 @@ public class ConcurrentLruCache<K, V> {
         return this.cache.containsKey(key);
     }
 
-
     public Set<K> keys() {
         return cache.keySet();
     }
 
-
     public Set<Map.Entry<K, V>> entrySet() {
         return cache.entrySet();
     }
-
 
     public void clear() {
         this.lock.writeLock().lock();
