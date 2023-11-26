@@ -689,7 +689,7 @@ public class SQLParserUtils {
             start = lexer.startPos;
         }
 
-        for (; lexer.token != Token.EOF; ) {
+        for (int tokens = 0; lexer.token != Token.EOF; ) {
             if (token == Token.SEMI) {
                 int len = lexer.startPos - start;
                 if (len > 0) {
@@ -707,6 +707,7 @@ public class SQLParserUtils {
                 start = lexer.startPos;
                 startToken = token;
                 set = false;
+                tokens = 0;
                 continue;
             } else if (token == Token.MULTI_LINE_COMMENT) {
                 int len = lexer.startPos - start;
@@ -723,6 +724,7 @@ public class SQLParserUtils {
                 token = lexer.token;
                 start = lexer.startPos;
                 startToken = token;
+                tokens = 0;
                 continue;
             } else if (token == Token.CREATE) {
                 lexer.nextToken();
@@ -778,12 +780,13 @@ public class SQLParserUtils {
             preToken = token;
             token = lexer.token;
             if (token == Token.LINE_COMMENT
-                    && (startToken == Token.SEMI
-                    || startToken == Token.LINE_COMMENT
-                    || startToken == Token.MULTI_LINE_COMMENT)
-            ) {
+                    && tokens == 0) {
                 start = lexer.pos;
                 startToken = token;
+            }
+
+            if (token != Token.LINE_COMMENT && token != Token.MULTI_LINE_COMMENT && token != Token.SEMI) {
+                tokens++;
             }
         }
 
