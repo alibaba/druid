@@ -60,11 +60,13 @@ public abstract class WallProvider {
     // public for testing
     public static final int BLACK_SQL_MAX_SIZE = 256;
 
+    private static final int MERGED_SQL_CACHE_SIZE = 256;
+
     private boolean blackListEnable = true;
 
     private final ConcurrentLruCache<String, WallSqlStat> whiteList = new ConcurrentLruCache<>(WHITE_SQL_MAX_SIZE);
     private final ConcurrentLruCache<String, WallSqlStat> blackList = new ConcurrentLruCache<>(BLACK_SQL_MAX_SIZE);
-    private final ConcurrentLruCache<String, String> mergedSqlCache = new ConcurrentLruCache<>(WHITE_SQL_MAX_SIZE);
+    private final ConcurrentLruCache<String, String> mergedSqlCache = new ConcurrentLruCache<>(MERGED_SQL_CACHE_SIZE);
 
     protected final WallConfig config;
 
@@ -300,8 +302,10 @@ public abstract class WallProvider {
         }
 
         String finalMergedSql = mergedSql;
-        // 这里不使用 put 方法
-        mergedSqlCache.computeIfAbsent(sql, key -> finalMergedSql);
+        if (sql.length() < MAX_SQL_LENGTH) {
+            // 这里不使用 put 方法
+            mergedSqlCache.computeIfAbsent(sql, key -> finalMergedSql);
+        }
         return mergedSql;
     }
 
