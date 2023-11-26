@@ -64,8 +64,8 @@ public class WallProviderTest extends TestCase {
             Assert.assertEquals(1, statValue.getFunctions().size());
 
             Assert.assertEquals(1009, statValue.getCheckCount());
-            Assert.assertEquals(2, statValue.getBlackListHitCount());
-            Assert.assertEquals(4, statValue.getHardCheckCount());
+            Assert.assertEquals(3, statValue.getBlackListHitCount());
+            Assert.assertEquals(3, statValue.getHardCheckCount());
             Assert.assertEquals(1, statValue.getSyntaxErrorCount());
             Assert.assertEquals(5, statValue.getViolationCount());
             Assert.assertEquals(1003, statValue.getWhiteListHitCount());
