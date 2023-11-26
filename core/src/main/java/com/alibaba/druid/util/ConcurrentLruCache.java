@@ -13,7 +13,7 @@ import java.util.function.Function;
 /**
  * Simple LRU (Least Recently Used) cache, bounded by a specified cache limit.
  *
- * @author ishenjianeng [ishenjianeng@qq.com]
+ * @author shenjianeng [ishenjianeng@qq.com]
  */
 public class ConcurrentLruCache<K, V> {
 
