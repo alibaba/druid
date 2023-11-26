@@ -15,7 +15,12 @@ public class PoolTestCase extends TestCase {
         int size = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
         String errorInfo = null;
         if (size > 0) {
-            CompositeData compositeData = (CompositeData) DruidDataSourceStatManager.getInstance().getDataSourceList().values().iterator().next();
+            CompositeData compositeData = (CompositeData) DruidDataSourceStatManager
+                    .getInstance()
+                    .getDataSourceList()
+                    .values()
+                    .iterator()
+                    .next();
             String name = (String) compositeData.get("Name");
             String url = (String) compositeData.get("URL");
             String initStackTrace = (String) compositeData.get("InitStackTrace");
