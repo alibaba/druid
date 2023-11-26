@@ -547,7 +547,17 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(PGStartTransactionStatement x) {
+        if (x.isUseBegin()) {
+            print0(ucase ? "BFGIN" : "begin");
+            return false;
+        }
         print0(ucase ? "START TRANSACTION" : "start transaction");
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGEndTransactionStatement x) {
+        print0(ucase ? "END" : "end");
         return false;
     }
 

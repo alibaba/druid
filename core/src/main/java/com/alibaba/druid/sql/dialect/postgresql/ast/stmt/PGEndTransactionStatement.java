@@ -20,19 +20,13 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class PGStartTransactionStatement extends SQLStatementImpl implements PGSQLStatement {
-    public PGStartTransactionStatement() {
+/**
+ * @author lizongbo
+ * @see  <a href="https://www.postgresql.org/docs/current/sql-end.html">end语法</a>
+ */
+public class PGEndTransactionStatement extends SQLStatementImpl implements PGSQLStatement {
+    public PGEndTransactionStatement() {
         super(DbType.postgresql);
-    }
-
-    private boolean useBegin;
-
-    public boolean isUseBegin() {
-        return useBegin;
-    }
-
-    public void setUseBegin(boolean useBegin) {
-        this.useBegin = useBegin;
     }
 
     @Override
