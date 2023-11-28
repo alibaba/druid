@@ -69,6 +69,7 @@ import java.sql.SQLRecoverableException;
 import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Lock;
@@ -107,6 +108,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     private volatile DruidConnectionHolder[] connections;
     private int poolingCount;
     private int activeCount;
+    private volatile AtomicInteger createDirectCount = new AtomicInteger(0);
     private volatile long discardCount;
     private int notEmptyWaitThreadCount;
     private int notEmptyWaitThreadPeak;
@@ -1724,6 +1726,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                         JdbcUtils.close(pyConnInfo.getPhysicalConnection());
                     }
                 }
+                createDirectCount.decrementAndGet();
             }
 
             final ReentrantLock lock = this.lock;
@@ -1774,6 +1777,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 if (createScheduler != null
                         && poolingCount == 0
                         && activeCount < maxActive
+                        && createDirectCount.get() == 0
                         && creatingCountUpdater.get(this) == 0
                         && createScheduler instanceof ScheduledThreadPoolExecutor) {
                     ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) createScheduler;
@@ -1783,6 +1787,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                             break;
                         }
                         createDirect = true;
+                        createDirectCount.incrementAndGet();
                         continue;
                     }
                 }
