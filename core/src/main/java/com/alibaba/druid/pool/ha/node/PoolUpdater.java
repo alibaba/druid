@@ -75,7 +75,9 @@ public class PoolUpdater implements Observer {
             executor.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    LOG.debug("Purging the DataSource Pool every " + intervalSeconds + "s.");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Purging the DataSource Pool every " + intervalSeconds + "s.");
+                    }
                     try {
                         removeDataSources();
                     } catch (Exception e) {
