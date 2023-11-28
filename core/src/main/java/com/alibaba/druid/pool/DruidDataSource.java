@@ -1711,6 +1711,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     final Lock lock = this.lock;
                     lock.lock();
                     try {
+                        createDirectCount.decrementAndGet();
                         if (activeCount + poolingCount < maxActive) {
                             activeCount++;
                             holder.active = true;
@@ -1729,8 +1730,9 @@ public class DruidDataSource extends DruidAbstractDataSource
                     if (discard) {
                         JdbcUtils.close(pyConnInfo.getPhysicalConnection());
                     }
+                } else {
+                    createDirectCount.decrementAndGet();
                 }
-                createDirectCount.decrementAndGet();
             }
 
             final ReentrantLock lock = this.lock;
