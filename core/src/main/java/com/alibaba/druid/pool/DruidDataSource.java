@@ -1689,44 +1689,45 @@ public class DruidDataSource extends DruidAbstractDataSource
         long startTime = System.currentTimeMillis();  //进入循环等待之前，先记录开始尝试获取连接的时间
         for (boolean createDirect = false; ; ) {
             if (createDirect) {
-                createDirect = false;
-                createStartNanosUpdater.set(this, System.nanoTime());
-                if (creatingCountUpdater.compareAndSet(this, 0, 1)) {
-                    PhysicalConnectionInfo pyConnInfo = DruidDataSource.this.createPhysicalConnection();
-                    holder = new DruidConnectionHolder(this, pyConnInfo);
-                    holder.lastActiveTimeMillis = System.currentTimeMillis();
+                try {
+                    createStartNanosUpdater.set(this, System.nanoTime());
+                    if (creatingCountUpdater.compareAndSet(this, 0, 1)) {
+                        PhysicalConnectionInfo pyConnInfo = DruidDataSource.this.createPhysicalConnection();
+                        holder = new DruidConnectionHolder(this, pyConnInfo);
+                        holder.lastActiveTimeMillis = System.currentTimeMillis();
 
-                    creatingCountUpdater.decrementAndGet(this);
-                    directCreateCountUpdater.incrementAndGet(this);
+                        creatingCountUpdater.decrementAndGet(this);
+                        directCreateCountUpdater.incrementAndGet(this);
 
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("conn-direct_create ");
-                    }
-
-                    boolean discard;
-                    final Lock lock = this.lock;
-                    lock.lock();
-                    try {
-                        createDirectCount.decrementAndGet();
-                        if (activeCount + poolingCount < maxActive) {
-                            activeCount++;
-                            holder.active = true;
-                            if (activeCount > activePeak) {
-                                activePeak = activeCount;
-                                activePeakTime = System.currentTimeMillis();
-                            }
-                            break;
-                        } else {
-                            discard = true;
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("conn-direct_create ");
                         }
-                    } finally {
-                        lock.unlock();
-                    }
 
-                    if (discard) {
-                        JdbcUtils.close(pyConnInfo.getPhysicalConnection());
+                        boolean discard;
+                        final Lock lock = this.lock;
+                        lock.lock();
+                        try {
+                            if (activeCount + poolingCount < maxActive) {
+                                activeCount++;
+                                holder.active = true;
+                                if (activeCount > activePeak) {
+                                    activePeak = activeCount;
+                                    activePeakTime = System.currentTimeMillis();
+                                }
+                                break;
+                            } else {
+                                discard = true;
+                            }
+                        } finally {
+                            lock.unlock();
+                        }
+
+                        if (discard) {
+                            JdbcUtils.close(pyConnInfo.getPhysicalConnection());
+                        }
                     }
-                } else {
+                } finally {
+                    createDirect = false;
                     createDirectCount.decrementAndGet();
                 }
             }
