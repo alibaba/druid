@@ -83,6 +83,8 @@ public class PoolUpdater implements Observer {
                     }
                 }
             }, intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
+
+            inited = true;
         }
     }
 
