@@ -14,7 +14,11 @@ import java.util.List;
 import java.util.Map;
 
 public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
-    protected SQLName modelKey;
+    protected SQLName aggDuplicate;
+    protected boolean primary;
+    protected boolean unique;
+    protected final List<SQLExpr> primaryUniqueParameters = new ArrayList<>();
+    protected final List<SQLExpr> AggDuplicateParameters  = new ArrayList<>();
 
     protected SQLExpr partitionBy;
     protected SQLExpr start;
@@ -26,7 +30,6 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     protected boolean fixedRange;
     protected boolean startEnd;
 
-    protected final List<SQLExpr> modelKeyParameters = new ArrayList<SQLExpr>();
 
     protected Map<SQLExpr, SQLExpr> lessThanMap = new LinkedHashMap<>();
     protected Map<SQLExpr, List<SQLExpr>> fixedRangeMap = new LinkedHashMap<>();
@@ -109,6 +112,22 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         this.fixedRangeMap = fixedRangeMap;
     }
 
+    public boolean isPrimary() {
+        return primary;
+    }
+
+    public void setPrimary(boolean primary) {
+        this.primary = primary;
+    }
+
+    public boolean isUnique() {
+        return unique;
+    }
+
+    public void setUnique(boolean unique) {
+        this.unique = unique;
+    }
+
     public boolean isLessThan() {
         return lessThan;
     }
@@ -125,16 +144,20 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         this.lessThanMap = lessThanMap;
     }
 
-    public SQLName getModelKey() {
-        return modelKey;
+    public SQLName getAggDuplicate() {
+        return aggDuplicate;
     }
 
-    public void setModelKey(SQLName modelKey) {
-        this.modelKey = modelKey;
+    public void setAggDuplicate(SQLName aggDuplicate) {
+        this.aggDuplicate = aggDuplicate;
     }
 
-    public List<SQLExpr> getModelKeyParameters() {
-        return modelKeyParameters;
+    public List<SQLExpr> getAggDuplicateParameters() {
+        return AggDuplicateParameters;
+    }
+
+    public List<SQLExpr> getPrimaryUniqueParameters() {
+        return primaryUniqueParameters;
     }
 
     public void setPartitionBy(SQLExpr x) {

@@ -42,12 +42,21 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             );
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE) || lexer.identifierEquals(FnvHash.Constants.AGGREGATE)
-                || lexer.identifierEquals(FnvHash.Constants.UNIQUE) || lexer.identifierEquals(FnvHash.Constants.PRIMARY)) {
+        if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE) || lexer.identifierEquals(FnvHash.Constants.AGGREGATE)) {
             SQLName model = this.exprParser.name();
-            srStmt.setModelKey(model);
+            srStmt.setAggDuplicate(model);
             accept(Token.KEY);
-            this.exprParser.exprList(srStmt.getModelKeyParameters(), srStmt);
+            this.exprParser.exprList(srStmt.getAggDuplicateParameters(), srStmt);
+        } else if (lexer.token() == Token.PRIMARY) {
+            srStmt.setPrimary(true);
+            lexer.nextToken();
+            accept(Token.KEY);
+            this.exprParser.exprList(srStmt.getPrimaryUniqueParameters(), srStmt);
+        } else if (lexer.token() == Token.UNIQUE) {
+            srStmt.setUnique(true);
+            lexer.nextToken();
+            accept(Token.KEY);
+            this.exprParser.exprList(srStmt.getPrimaryUniqueParameters(), srStmt);
         }
 
         if (lexer.token() == Token.PARTITION) {
