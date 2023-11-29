@@ -49,6 +49,10 @@ public class PoolUpdater implements Observer {
     private volatile boolean inited;
     private boolean allowEmptyPool;
 
+    public boolean isInited() {
+        return inited;
+    }
+
     public PoolUpdater(HighAvailableDataSource highAvailableDataSource) {
         setHighAvailableDataSource(highAvailableDataSource);
     }
