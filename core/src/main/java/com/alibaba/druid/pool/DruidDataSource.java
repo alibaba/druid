@@ -2707,10 +2707,10 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             if (createScheduler != null) {
                 clearCreateTask(createTaskId);
-            }
 
-            if (poolingCount + createTaskCount < notEmptyWaitThreadCount) {
-                emptySignal();
+                if (poolingCount + createTaskCount < notEmptyWaitThreadCount) {
+                    emptySignal();
+                }
             }
         } finally {
             lock.unlock();
