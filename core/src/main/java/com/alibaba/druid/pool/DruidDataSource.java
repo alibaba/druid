@@ -108,7 +108,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     private volatile DruidConnectionHolder[] connections;
     private int poolingCount;
     private int activeCount;
-    private volatile AtomicInteger createDirectCount = new AtomicInteger(0);
+    private volatile int createDirectCount;
     private volatile long discardCount;
     private int notEmptyWaitThreadCount;
     private int notEmptyWaitThreadPeak;
@@ -170,6 +170,8 @@ public class DruidDataSource extends DruidAbstractDataSource
             = AtomicLongFieldUpdater.newUpdater(DruidDataSource.class, "discardErrorCount");
     protected static final AtomicIntegerFieldUpdater<DruidDataSource> keepAliveCheckErrorCountUpdater
             = AtomicIntegerFieldUpdater.newUpdater(DruidDataSource.class, "keepAliveCheckErrorCount");
+    protected static final AtomicIntegerFieldUpdater<DruidDataSource> createDirectCountUpdater
+            = AtomicIntegerFieldUpdater.newUpdater(DruidDataSource.class, "createDirectCount");
 
     public DruidDataSource() {
         this(false);
@@ -970,13 +972,13 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             if (keepAlive) {
-                // async fill to minIdle
-                if (createScheduler != null) {
-                    for (int i = 0; i < minIdle - initialSize; ++i) {
+                for (int i = 0; i < minIdle - initialSize; ++i) {
+                    if (createScheduler != null) {
+                        // async fill to minIdle
                         submitCreateTask(true);
+                    } else {
+                        empty.signal();
                     }
-                } else {
-                    this.emptySignal();
                 }
             }
 
@@ -1624,7 +1626,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             activeCount--;
             discardCount++;
 
-            if (activeCount <= minIdle) {
+            if (activeCount + poolingCount + createTaskCount < minIdle) {
                 emptySignal();
             }
         } finally {
@@ -1661,7 +1663,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             holder.discard = true;
 
-            if (activeCount <= minIdle) {
+            if (activeCount + poolingCount + createTaskCount < minIdle) {
                 emptySignal();
             }
         } finally {
@@ -1732,7 +1734,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     }
                 } finally {
                     createDirect = false;
-                    createDirectCount.decrementAndGet();
+                    createDirectCountUpdater.decrementAndGet(this);
                 }
             }
 
@@ -1784,7 +1786,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 if (createScheduler != null
                         && poolingCount == 0
                         && activeCount < maxActive
-                        && createDirectCount.get() == 0
+                        && createDirectCountUpdater.get(this) == 0
                         && creatingCountUpdater.get(this) == 0
                         && createScheduler instanceof ScheduledThreadPoolExecutor) {
                     ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) createScheduler;
@@ -1794,7 +1796,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                             break;
                         }
                         createDirect = true;
-                        createDirectCount.incrementAndGet();
+                        createDirectCountUpdater.incrementAndGet(this);
                         continue;
                     }
                 }
@@ -2706,11 +2708,10 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             if (createScheduler != null) {
                 clearCreateTask(createTaskId);
+            }
 
-                if (poolingCount + createTaskCount < notEmptyWaitThreadCount //
-                        && activeCount + poolingCount + createTaskCount < maxActive) {
-                    emptySignal();
-                }
+            if (poolingCount + createTaskCount < notEmptyWaitThreadCount) {
+                emptySignal();
             }
         } finally {
             lock.unlock();
@@ -2764,12 +2765,12 @@ public class DruidDataSource extends DruidAbstractDataSource
                             clearCreateTask(taskId);
                             return;
                         }
+                    }
 
-                        // 防止创建超过maxActive数量的连接
-                        if (activeCount + poolingCount >= maxActive) {
-                            clearCreateTask(taskId);
-                            return;
-                        }
+                    // 防止创建超过maxActive数量的连接
+                    if (activeCount + poolingCount >= maxActive) {
+                        clearCreateTask(taskId);
+                        return;
                     }
                 } finally {
                     lock.unlock();
@@ -2949,14 +2950,13 @@ public class DruidDataSource extends DruidAbstractDataSource
                         ) {
                             empty.await();
                         }
-
-                        // 防止创建超过maxActive数量的连接
-                        if (activeCount + poolingCount >= maxActive) {
-                            empty.await();
-                            continue;
-                        }
                     }
 
+                    // 防止创建超过maxActive数量的连接
+                    if (activeCount + poolingCount >= maxActive) {
+                        empty.await();
+                        continue;
+                    }
                 } catch (InterruptedException e) {
                     lastCreateError = e;
                     lastErrorTimeMillis = System.currentTimeMillis();
@@ -3404,7 +3404,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                         holder.discard = true;
                         discardCount++;
 
-                        if (activeCount + poolingCount <= minIdle) {
+                        if (activeCount + poolingCount + createTaskCount < minIdle) {
                             emptySignal();
                         }
                     } finally {
@@ -4060,6 +4060,10 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     private void emptySignal() {
+        if (activeCount + poolingCount + createTaskCount >= maxActive) {
+            return;
+        }
+
         if (createScheduler == null) {
             empty.signal();
             return;
@@ -4069,9 +4073,6 @@ public class DruidDataSource extends DruidAbstractDataSource
             return;
         }
 
-        if (activeCount + poolingCount + createTaskCount >= maxActive) {
-            return;
-        }
         submitCreateTask(false);
     }
 
