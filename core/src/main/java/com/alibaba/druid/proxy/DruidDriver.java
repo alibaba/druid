@@ -206,8 +206,10 @@ public class DruidDriver implements Driver, DruidDriverMBean {
         int colonPos = -1;
         while ((colonPos = restUrl.indexOf(":")) != -1)
         {
-            if (restUrl.indexOf("=") == -1)
-            {
+            if (restUrl.startsWith("jdbc:")) {
+                break;
+            }
+            if (restUrl.indexOf("=") == -1) {
                 break;
             }
             String fragmentText = restUrl.substring(0, colonPos);

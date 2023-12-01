@@ -56,5 +56,23 @@ public class DruidDriverTest {
         Assert.assertEquals(config.isJmxOption() , true);
         Assert.assertEquals(config.getRawUrl() , "jdbc:sqlite:");
 
+        url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=basicType:jdbc:derby:memory:basicTypeTestDB;create=true";
+        properties = new Properties();
+        config = DruidDriver.parseConfig(url,properties);
+        Assert.assertEquals(config.getRawDriverClassName() , "org.apache.derby.jdbc.EmbeddedDriver");
+        Assert.assertEquals(config.getName() , "basicType");
+        Assert.assertEquals(config.isJmxOption() , false);
+        Assert.assertEquals(config.getRawUrl() , "jdbc:derby:memory:basicTypeTestDB;create=true");
+
+        url = "jdbc:wrap-jdbc:jmx=true:filters=default,commonLogging,log4j:name=mydsqlds:jdbc:mysql://127.0.0.1:3306/test?useInformationSchema=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&characterEncoding=utf-8";
+        properties = new Properties();
+        config = DruidDriver.parseConfig(url,properties);
+        Assert.assertEquals(config.getRawDriverClassName() , "com.mysql.cj.jdbc.Driver");
+        Assert.assertEquals(config.getName() , "mydsqlds");
+        Assert.assertEquals(config.isJmxOption() , true);
+        Assert.assertEquals(config.getRawUrl() , "jdbc:mysql://127.0.0.1:3306/test?useInformationSchema=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&characterEncoding=utf-8");
+
+
+
     }
 }
