@@ -241,7 +241,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
             restUrl = restUrl.substring(colonPos + 1);
         }
         config.setRawUrl(restUrl);
-        if (config.getRawDriverClassName() == null) {
+        if (config.getRawDriverClassName() == null || config.getRawDriverClassName().isEmpty()) {
             String rawDriverClassname = JdbcUtils.getDriverClassName(restUrl);
             config.setRawDriverClassName(rawDriverClassname);
         }
