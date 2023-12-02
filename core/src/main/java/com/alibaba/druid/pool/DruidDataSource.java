@@ -1988,18 +1988,6 @@ public class DruidDataSource extends DruidAbstractDataSource
             lock.unlock();
         }
 
-        if (onFatalError && holder != null && holder.getDataSource() != null) {
-            ReentrantLock dataSourceLock = holder.getDataSource().lock;
-            dataSourceLock.lock();
-            try {
-                // increase fatalErrorCountLastShrink otherwise emptySignal will be called again at shrink method.
-                fatalErrorCountLastShrink++;
-                emptySignal();
-            } finally {
-                dataSourceLock.unlock();
-            }
-        }
-
         if (requireDiscard) {
             if (holder.statementTrace != null) {
                 holder.lock.lock();
@@ -2012,11 +2000,24 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
 
+            // decrease activeCount by discardConnection to make sure following emptySignal calling successfully.
             this.discardConnection(holder);
         }
 
         // holder.
         LOG.error("{conn-" + holder.getConnectionId() + "} discard", error);
+
+        if (onFatalError && holder != null && holder.getDataSource() != null) {
+            ReentrantLock dataSourceLock = holder.getDataSource().lock;
+            dataSourceLock.lock();
+            try {
+                // increase fatalErrorCountLastShrink otherwise emptySignal will be called again at shrink method.
+                fatalErrorCountLastShrink++;
+                emptySignal();
+            } finally {
+                dataSourceLock.unlock();
+            }
+        }
     }
 
     /**
