@@ -1935,7 +1935,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     private void printMethodParameters(SQLMethodInvokeExpr x, List<SQLExpr> parameters) {
         String function = x.getMethodName();
         long nameHashCode64 = x.methodNameHashCode64();
-        List<SQLExpr> parameters = x.getArguments();
 
         print('(');
 

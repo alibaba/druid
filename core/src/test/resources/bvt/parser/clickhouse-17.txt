@@ -1,0 +1,32 @@
+SELECT level, sum(cnt) OVER (PARTITION BY NULL ORDER BY level DESC) AS cnt
+FROM (
+        SELECT level, count() AS cnt
+        FROM (
+                SELECT `user_id`, windowFunnel(86400, 'strict_increase')(__event_time, __event_name = 'login', __event_name = 'chat') AS level
+                FROM (
+                select user_id,__event_time,__event_name from db.table
+
+                )
+                GROUP BY `user_id`
+                HAVING level >= 1
+        )
+        GROUP BY level
+)
+ORDER BY level
+
+---------------------------
+SELECT level, sum(cnt) OVER (PARTITION BY NULL ORDER BY level DESC) AS cnt
+FROM (
+	SELECT level, count() AS cnt
+	FROM (
+		SELECT `user_id`, windowFunnel(86400, 'strict_increase')(__event_time, __event_name = 'login', __event_name = 'chat') AS level
+		FROM (
+			SELECT user_id, __event_time, __event_name
+			FROM db.table
+		)
+		GROUP BY `user_id`
+		HAVING level >= 1
+	)
+	GROUP BY level
+)
+ORDER BY level
