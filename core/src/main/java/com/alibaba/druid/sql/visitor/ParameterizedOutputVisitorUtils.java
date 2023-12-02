@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDDLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -405,12 +406,14 @@ public class ParameterizedOutputVisitorUtils {
             case oceanbase_oracle:
                 return new OracleParameterizedOutputVisitor(out);
             case mysql:
+            case tidb:
             case mariadb:
             case elastic_search:
                 return new MySqlOutputVisitor(out, true);
             case h2:
                 return new H2OutputVisitor(out, true);
             case postgresql:
+            case greenplum:
             case edb:
                 return new PGOutputVisitor(out, true);
             case sqlserver:
@@ -422,6 +425,8 @@ public class ParameterizedOutputVisitorUtils {
                 return new PhoenixOutputVisitor(out, true);
             case presto:
                 return new PrestoOutputVisitor(out, true);
+            case clickhouse:
+                return new ClickhouseOutputVisitor(out, true);
             default:
                 return new SQLASTOutputVisitor(out, true);
         }

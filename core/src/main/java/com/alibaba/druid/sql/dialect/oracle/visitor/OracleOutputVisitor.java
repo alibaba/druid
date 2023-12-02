@@ -1954,6 +1954,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
+    public boolean visit(OracleAlterSummaryStatement x) {
+        print0(ucase ? "ALTER SUMMARY " : "alter summary ");
+
+        x.getName().accept(this);
+
+        if (x.isCompile()) {
+            print0(ucase ? " COMPILE " : " compile ");
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean visit(OracleFileSpecification x) {
         printAndAccept(x.getFileNames(), ", ");
 

@@ -50,7 +50,7 @@ public class OdpsSelect_distribute_by_Test extends TestCase {
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
-        String expect = items[1].trim();
+        String expect = items[1].trim().replaceAll("\\r\\n", "\n");
 
         OdpsStatementParser parser = new OdpsStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

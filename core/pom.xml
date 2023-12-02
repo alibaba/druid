@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.alibaba</groupId>
 		<artifactId>druid-parent</artifactId>
-		<version>1.2.18-SNAPSHOT</version>
+		<version>1.2.21-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>druid</artifactId>
@@ -118,6 +118,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>5.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
@@ -170,7 +177,7 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.18-SNAPSHOT</version>
+			<version>1.2.17</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -313,15 +320,9 @@
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
 			<artifactId>fastjson2</artifactId>
-			<version>2.0.26</version>
+			<version>2.0.29</version>
 			<scope>provided</scope>
 			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hive</groupId>
-			<artifactId>hive-jdbc</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>ru.yandex.clickhouse</groupId>

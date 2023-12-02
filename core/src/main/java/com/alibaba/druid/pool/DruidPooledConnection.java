@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
@@ -47,7 +48,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     protected TransactionInfo transactionInfo;
     private final boolean dupCloseLogEnable;
     protected volatile boolean traceEnable;
-    private volatile boolean disable;
+    protected volatile boolean disable;
     protected volatile boolean closed;
     static AtomicIntegerFieldUpdater CLOSING_UPDATER = AtomicIntegerFieldUpdater.newUpdater(DruidPooledConnection.class, "closing");
     protected final Thread ownerThread;
@@ -59,6 +60,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     protected Throwable disableError;
     final ReentrantLock lock;
     protected volatile int closing;
+    protected FilterChain filterChain;
 
     public DruidPooledConnection(DruidConnectionHolder holder) {
         super(holder.getConnection());
@@ -134,14 +136,14 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     }
 
     public void closePoolableStatement(DruidPooledPreparedStatement stmt) throws SQLException {
-        PreparedStatement rawStatement = stmt.getRawPreparedStatement();
+        PreparedStatement rawStatement = stmt.stmt;
 
         final DruidConnectionHolder holder = this.holder;
         if (holder == null) {
             return;
         }
 
-        if (stmt.isPooled()) {
+        if (stmt.pooled) {
             try {
                 rawStatement.clearParameters();
             } catch (SQLException ex) {
@@ -165,9 +167,9 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             }
         }
 
-        PreparedStatementHolder stmtHolder = stmt.getPreparedStatementHolder();
-        stmtHolder.decrementInUseCount();
-        if (stmt.isPooled() && holder.isPoolPreparedStatements() && stmt.exceptionCount == 0) {
+        PreparedStatementHolder stmtHolder = stmt.holder;
+        stmtHolder.inUseCount--;
+        if (stmt.pooled && holder.dataSource.poolPreparedStatements && stmt.exceptionCount == 0) {
             holder.getStatementPool().put(stmtHolder);
 
             stmt.clearResultSet();
@@ -176,7 +178,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             stmtHolder.setFetchRowPeak(stmt.getFetchRowPeak());
 
             stmt.setClosed(true); // soft set close
-        } else if (stmt.isPooled() && holder.isPoolPreparedStatements()) {
+        } else if (stmt.pooled && holder.dataSource.poolPreparedStatements) {
             // the PreparedStatement threw an exception
             stmt.clearResultSet();
             holder.removeTrace(stmt);
@@ -192,7 +194,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
                 this.handleException(ex, null);
                 throw ex;
             } finally {
-                holder.getDataSource().incrementClosedPreparedStatementCount();
+                holder.dataSource.incrementClosedPreparedStatementCount();
             }
         }
     }
@@ -245,13 +247,13 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         }
 
         DruidAbstractDataSource dataSource = holder.getDataSource();
-        boolean isSameThread = this.getOwnerThread() == Thread.currentThread();
+        boolean isSameThread = this.ownerThread == Thread.currentThread();
 
         if (!isSameThread) {
             dataSource.setAsyncCloseConnectionEnable(true);
         }
 
-        if (dataSource.isAsyncCloseConnectionEnable()) {
+        if (dataSource.removeAbandoned || dataSource.asyncCloseConnectionEnable) {
             syncClose();
             return;
         }
@@ -261,14 +263,20 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         }
 
         try {
-            for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
+            for (int i = 0; i < holder.connectionEventListeners.size(); i++) {
+                ConnectionEventListener listener = holder.connectionEventListeners.get(i);
                 listener.connectionClosed(new ConnectionEvent(this));
             }
 
-            List<Filter> filters = dataSource.getProxyFilters();
-            if (filters.size() > 0) {
-                FilterChainImpl filterChain = new FilterChainImpl(dataSource);
-                filterChain.dataSource_recycle(this);
+            List<Filter> filters = dataSource.filters;
+            int filtersSize = filters.size();
+            if (filtersSize > 0) {
+                FilterChainImpl filterChain = holder.createChain();
+                try {
+                    filterChain.dataSource_recycle(this);
+                } finally {
+                    holder.recycleFilterChain(filterChain);
+                }
             } else {
                 recycle();
             }
@@ -298,7 +306,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
                 return;
             }
 
-            for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
+            for (ConnectionEventListener listener : holder.connectionEventListeners) {
                 listener.connectionClosed(new ConnectionEvent(this));
             }
 
@@ -332,8 +340,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         }
 
         if (!this.abandoned) {
-            DruidAbstractDataSource dataSource = holder.getDataSource();
-            dataSource.recycle(this);
+            holder.dataSource.recycle(this);
         }
 
         this.holder = null;
@@ -655,7 +662,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             handleException(ex, null);
         }
 
-        holder.getDataSource().initStatement(this, stmt);
+        holder.dataSource.initStatement(this, stmt);
 
         DruidPooledStatement poolableStatement = new DruidPooledStatement(this, stmt);
         holder.addTrace(poolableStatement);
@@ -675,7 +682,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             handleException(ex, null);
         }
 
-        holder.getDataSource().initStatement(this, stmt);
+        holder.dataSource.initStatement(this, stmt);
 
         DruidPooledStatement poolableStatement = new DruidPooledStatement(this, stmt);
         holder.addTrace(poolableStatement);
@@ -694,7 +701,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             handleException(ex, null);
         }
 
-        holder.getDataSource().initStatement(this, stmt);
+        holder.dataSource.initStatement(this, stmt);
 
         DruidPooledStatement poolableStatement = new DruidPooledStatement(this, stmt);
         holder.addTrace(poolableStatement);
@@ -871,11 +878,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     @Override
     public boolean isClosed() throws SQLException {
-        if (holder == null) {
-            return true;
-        }
-
-        return closed || disable;
+        return holder == null || closed || disable;
     }
 
     public boolean isAbandonded() {
@@ -1150,7 +1153,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void checkState() throws SQLException {
         final boolean asyncCloseEnabled;
         if (holder != null) {
-            asyncCloseEnabled = holder.getDataSource().isAsyncCloseConnectionEnable();
+            asyncCloseEnabled = holder.dataSource.isAsyncCloseConnectionEnable();
         } else {
             asyncCloseEnabled = false;
         }
@@ -1212,7 +1215,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             }
             return;
         }
-        throw new SQLFeatureNotSupportedException();
+        conn.setSchema(schema);
     }
 
     public String getSchema() throws SQLException {

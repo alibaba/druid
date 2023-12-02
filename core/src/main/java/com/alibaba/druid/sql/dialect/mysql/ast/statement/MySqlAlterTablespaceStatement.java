@@ -54,9 +54,9 @@ public class MySqlAlterTablespaceStatement extends MySqlStatementImpl implements
         return addDataFile;
     }
 
-    public void setAddDataFile(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
+    public void setAddDataFile(SQLExpr addDataFile) {
+        if (addDataFile != null) {
+            addDataFile.setParent(this);
         }
         this.addDataFile = addDataFile;
     }
@@ -65,9 +65,9 @@ public class MySqlAlterTablespaceStatement extends MySqlStatementImpl implements
         return dropDataFile;
     }
 
-    public void setDropDataFile(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
+    public void setDropDataFile(SQLExpr dropDataFile) {
+        if (dropDataFile != null) {
+            dropDataFile.setParent(this);
         }
         this.dropDataFile = dropDataFile;
     }

@@ -314,37 +314,37 @@ public class SQLServerStatementParser extends SQLStatementParser {
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
-        SQLServerUpdateStatement udpateStatement = createUpdateStatement();
+        SQLServerUpdateStatement updateStatement = createUpdateStatement();
 
         accept(Token.UPDATE);
 
         SQLServerTop top = this.getExprParser().parseTop();
         if (top != null) {
-            udpateStatement.setTop(top);
+            updateStatement.setTop(top);
         }
 
         SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
-        udpateStatement.setTableSource(tableSource);
+        updateStatement.setTableSource(tableSource);
 
-        parseUpdateSet(udpateStatement);
+        parseUpdateSet(updateStatement);
 
         SQLServerOutput output = this.getExprParser().parserOutput();
         if (output != null) {
-            udpateStatement.setOutput(output);
+            updateStatement.setOutput(output);
         }
 
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
             SQLTableSource from = this.exprParser.createSelectParser().parseTableSource();
-            udpateStatement.setFrom(from);
+            updateStatement.setFrom(from);
         }
 
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
-            udpateStatement.setWhere(this.exprParser.expr());
+            updateStatement.setWhere(this.exprParser.expr());
         }
 
-        return udpateStatement;
+        return updateStatement;
     }
 
     @Override

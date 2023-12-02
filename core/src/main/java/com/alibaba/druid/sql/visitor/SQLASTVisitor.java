@@ -504,6 +504,13 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default void endVisit(SQLBeginStatement x) {
+    }
+
+    default boolean visit(SQLBeginStatement x) {
+        return true;
+    }
+
     default void endVisit(SQLUseStatement x) {
     }
 
@@ -1223,6 +1230,12 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPartitionByList x) {
+    }
+    default boolean visit(SQLPartitionOf x) {
+        return true;
+    }
+
+    default void endVisit(SQLPartitionOf x) {
     }
 
     default boolean visit(SQLSubPartition x) {
@@ -2504,4 +2517,12 @@ public interface SQLASTVisitor {
 
     default void endVisit(StarRocksCreateResourceStatement x) {
     }
+
+    default boolean visit(SQLCostStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLCostStatement x) {
+    }
+
 }

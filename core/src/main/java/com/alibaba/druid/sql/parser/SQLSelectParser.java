@@ -1387,6 +1387,11 @@ public class SQLSelectParser extends SQLParser {
                             }
                             tableSource.setAlias(alias);
 
+                            if (lexer.token == Token.HINT) {
+                                tableSource.addAfterComment("/*" + lexer.stringVal + "*/");
+                                lexer.nextToken();
+                            }
+
                             if ((tableSource instanceof SQLValuesTableSource)
                                     && ((SQLValuesTableSource) tableSource).getColumns().isEmpty()) {
                                 SQLValuesTableSource values = (SQLValuesTableSource) tableSource;
@@ -1791,7 +1796,8 @@ public class SQLSelectParser extends SQLParser {
                 SQLExpr joinOn = expr();
                 join.setCondition(joinOn);
 
-                while (lexer.token == Token.ON) {
+                while (lexer.token == Token.ON
+                        && dbType == DbType.mysql) {
                     lexer.nextToken();
 
                     SQLExpr joinOn2 = expr();

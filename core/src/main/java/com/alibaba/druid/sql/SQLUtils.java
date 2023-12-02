@@ -506,6 +506,8 @@ public class SQLUtils {
             case tidb:
                 return new MySqlOutputVisitor(out);
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGOutputVisitor(out);
             case sqlserver:
             case jtds:
@@ -568,6 +570,8 @@ public class SQLUtils {
             case elastic_search:
                 return new MySqlSchemaStatVisitor(repository);
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGSchemaStatVisitor(repository);
             case sqlserver:
             case jtds:

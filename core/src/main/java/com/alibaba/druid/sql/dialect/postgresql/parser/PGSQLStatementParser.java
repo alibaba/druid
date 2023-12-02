@@ -55,30 +55,30 @@ public class PGSQLStatementParser extends SQLStatementParser {
     public SQLUpdateStatement parseUpdateStatement() {
         accept(Token.UPDATE);
 
-        PGUpdateStatement udpateStatement = new PGUpdateStatement();
+        PGUpdateStatement updateStatement = new PGUpdateStatement();
 
         SQLSelectParser selectParser = this.exprParser.createSelectParser();
         SQLTableSource tableSource = selectParser.parseTableSource();
-        udpateStatement.setTableSource(tableSource);
+        updateStatement.setTableSource(tableSource);
 
-        parseUpdateSet(udpateStatement);
+        parseUpdateSet(updateStatement);
 
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
             SQLTableSource from = selectParser.parseTableSource();
-            udpateStatement.setFrom(from);
+            updateStatement.setFrom(from);
         }
 
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
-            udpateStatement.setWhere(this.exprParser.expr());
+            updateStatement.setWhere(this.exprParser.expr());
         }
 
         if (lexer.token() == Token.RETURNING) {
             lexer.nextToken();
 
             for (; ; ) {
-                udpateStatement.getReturning().add(this.exprParser.expr());
+                updateStatement.getReturning().add(this.exprParser.expr());
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -87,7 +87,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
         }
 
-        return udpateStatement;
+        return updateStatement;
     }
 
     public PGInsertStatement parseInsert() {
@@ -372,6 +372,11 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 return true;
             }
+            case END: {
+                PGEndTransactionStatement stmt = parseEnd();
+                statementList.add(stmt);
+                return true;
+            }
             case WITH:
                 statementList.add(parseWith());
                 return true;
@@ -385,6 +390,17 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 break;
         }
 
+        String strVal = lexer.stringVal();
+        if (strVal.equalsIgnoreCase("ANALYZE")) {
+            PGAnalyzeStatement stmt = this.parseAnalyzeTable();
+            statementList.add(stmt);
+            return true;
+        }
+        if (strVal.equalsIgnoreCase("VACUUM")) {
+            PGVacuumStatement stmt = this.parseVacuumTable();
+            statementList.add(stmt);
+            return true;
+        }
         return false;
     }
 
@@ -395,11 +411,28 @@ public class PGSQLStatementParser extends SQLStatementParser {
             acceptIdentifier("TRANSACTION");
         } else {
             accept(Token.BEGIN);
+            stmt.setUseBegin(true);
         }
 
         return stmt;
     }
 
+    @Override
+    public PGEndTransactionStatement parseEnd() {
+        PGEndTransactionStatement stmt = new PGEndTransactionStatement();
+        accept(Token.END);
+        return stmt;
+    }
+    public SQLStatement parseAlter() {
+        Lexer.SavePoint mark = lexer.mark();
+        accept(Token.ALTER);
+        if (lexer.token() == Token.DATABASE) {
+            lexer.nextToken();
+            return parseAlterDatabase();
+        }
+        lexer.reset(mark);
+        return super.parseAlter();
+    }
     public SQLStatement parseConnectTo() {
         acceptIdentifier("CONNECT");
         accept(Token.TO);
@@ -691,5 +724,151 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new PGCreateTableParser(this.exprParser);
+    }
+
+    public PGAnalyzeStatement parseAnalyzeTable() {
+        PGAnalyzeStatement stmt = new PGAnalyzeStatement(this.dbType);
+        acceptIdentifier("ANALYZE");
+        Lexer.SavePoint mark = lexer.mark();
+        String strVal = lexer.stringVal();
+        for (; ; ) {
+            if (strVal.equalsIgnoreCase("VERBOSE")) {
+                stmt.setVerbose(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("SKIP_LOCKED")) {
+                stmt.setSkipLocked(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else {
+                lexer.reset(mark);
+                break;
+            }
+        }
+        List<SQLName> names = new ArrayList<SQLName>();
+        this.exprParser.names(names, stmt);
+
+        for (SQLName name : names) {
+            SQLExprTableSource sqlExprTableSource = new SQLExprTableSource(name);
+            sqlExprTableSource.setParent(stmt);
+            stmt.getTableSources().add(sqlExprTableSource);
+        }
+        return stmt;
+    }
+
+    public PGVacuumStatement parseVacuumTable() {
+        PGVacuumStatement stmt = new PGVacuumStatement(this.dbType);
+        acceptIdentifier("VACUUM");
+        Lexer.SavePoint mark = lexer.mark();
+        String strVal = lexer.stringVal();
+        for (; ; ) {
+            if (strVal.equalsIgnoreCase("FULL")) {
+                stmt.setFull(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("FREEZE")) {
+                stmt.setFreeze(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("VERBOSE")) {
+                stmt.setVerbose(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("ANALYZE")) {
+                stmt.setAnalyze(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("DISABLE_PAGE_SKIPPING")) {
+                stmt.setDisablePageSkipping(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("SKIP_LOCKED")) {
+                stmt.setSkipLocked(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("PROCESS_TOAST")) {
+                stmt.setProcessToast(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("TRUNCATE")) {
+                stmt.setTruncate(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else {
+                lexer.reset(mark);
+                break;
+            }
+        }
+        List<SQLName> names = new ArrayList<SQLName>();
+        this.exprParser.names(names, stmt);
+        for (SQLName name : names) {
+            SQLExprTableSource sqlExprTableSource = new SQLExprTableSource(name);
+            sqlExprTableSource.setParent(stmt);
+            stmt.getTableSources().add(sqlExprTableSource);
+        }
+        return stmt;
+    }
+
+    public PGAlterDatabaseStatement parseAlterDatabase() {
+        PGAlterDatabaseStatement stmt = new PGAlterDatabaseStatement(this.getDbType());
+        stmt.setDatabaseName(this.exprParser.identifier());
+        if ("RENAME".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            accept(Token.TO);
+            stmt.setRenameToName(this.exprParser.identifier());
+        }
+        if ("OWNER".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            accept(Token.TO);
+            stmt.setOwnerToName(this.exprParser.identifier());
+        }
+        if ("REFRESH".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            acceptIdentifier("COLLATION");
+            acceptIdentifier("VERSION");
+            stmt.setRefreshCollationVersion(true);
+        }
+        if (Token.SET.equals(lexer.token())) {
+            lexer.nextToken();
+            if (Token.TABLESPACE.equals(lexer.token())) {
+                lexer.nextToken();
+                stmt.setSetTableSpaceName(this.exprParser.identifier());
+            } else {
+                stmt.setSetParameterName(this.exprParser.identifier());
+                if (Token.TO.equals(lexer.token())) {
+                    lexer.nextToken();
+                    stmt.setSetParameterValue(this.exprParser.expr());
+                } else {
+                    accept(Token.EQ);
+                    stmt.setUseEquals(true);
+                    stmt.setSetParameterValue(this.exprParser.expr());
+                }
+            }
+        }
+        if ("RESET".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            stmt.setResetParameterName(this.exprParser.identifier());
+        }
+        return stmt;
     }
 }

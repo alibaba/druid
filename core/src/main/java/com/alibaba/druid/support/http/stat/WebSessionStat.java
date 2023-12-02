@@ -251,20 +251,36 @@ public class WebSessionStat {
     }
 
     public void addRemoteAddress(String ip) {
+        if (ip == null || ip.length() < 7) {
+            return;
+        }
         if (remoteAddresses == null) {
             this.remoteAddresses = ip;
             return;
         }
-
-        if (remoteAddresses.contains(ip)) {
+        //判断ip是否已经存在需要考虑几种情况
+        //只有一个ip的情况
+        if (remoteAddresses.equals(ip)) {
             return;
         }
-
+        //是第一个ip的情况
+        if (remoteAddresses.startsWith(ip + ';')) {
+            return;
+        }
+        String addedIp = ';' + ip;
+        //是最后一个ip的情况
+        if (remoteAddresses.endsWith(addedIp)) {
+            return;
+        }
+        //ip已经添加在中间的场景
+        if (remoteAddresses.contains(';' + ip + ';')) {
+            return;
+        }
         if (remoteAddresses.length() > 256) {
             return;
         }
 
-        remoteAddresses += ';' + ip;
+        remoteAddresses += addedIp;
     }
 
     public int getRunningCount() {
