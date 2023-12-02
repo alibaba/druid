@@ -17,12 +17,15 @@ package com.alibaba.druid.sql.dialect.presto.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
+import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterSchemaStatement;
+import com.alibaba.druid.sql.parser.*;
 
 /**
  * Created by wenshao on 16/9/13.
@@ -87,5 +90,119 @@ public class PrestoStatementParser extends SQLStatementParser {
 
             break;
         }
+    }
+
+    @Override
+    public SQLCreateTableParser getSQLCreateTableParser() {
+        return new PrestoCreateTableParser(this.exprParser);
+    }
+
+    @Override
+    public SQLStatement parseAlter() {
+        Lexer.SavePoint mark = lexer.mark();
+        accept(Token.ALTER);
+
+        if (lexer.token() == Token.FUNCTION) {
+            lexer.reset(mark);
+            return parseAlterFunction();
+        }
+        if (lexer.token() == Token.SCHEMA) {
+            lexer.reset(mark);
+            return parseAlterSchema();
+        } else {
+            lexer.reset(mark);
+            return super.parseAlter();
+        }
+    }
+
+    protected SQLStatement parseAlterFunction() {
+        accept(Token.ALTER);
+        accept(Token.FUNCTION);
+
+        PrestoAlterFunctionStatement stmt = new PrestoAlterFunctionStatement();
+        stmt.setDbType(dbType);
+
+        SQLName name = this.exprParser.name();
+
+        /*
+         * 因支持写函数参数项，名称处理
+         * ALTER FUNCTION qualified_function_name [ ( parameter_type[, ...] ) ]
+         * RETURNS NULL ON NULL INPUT | CALLED ON NULL INPUT
+         */
+        if (lexer.token() == Token.LPAREN) {
+            StringBuilder needAppendName = new StringBuilder();
+            needAppendName.append("(");
+            for (; ; ) {
+                lexer.nextToken();
+                needAppendName.append(lexer.stringVal());
+
+                lexer.nextToken();
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+
+                // 处理fn(a, )
+                if (lexer.token() == Token.COMMA) {
+                    needAppendName.append(",");
+                    Lexer.SavePoint mark = lexer.mark();
+
+                    lexer.nextToken();
+
+                    if (lexer.token() == Token.RPAREN) {
+                        setErrorEndPos(lexer.pos());
+                        throw new ParserException("syntax error, actual " + lexer.token() + ", " + lexer.info());
+                    }
+                    lexer.reset(mark);
+                }
+            }
+            accept(Token.RPAREN);
+            needAppendName.append(")");
+
+            if (needAppendName.length() > 0) {
+                if (name instanceof SQLPropertyExpr) {
+                    SQLPropertyExpr sqlPropertyExpr = (SQLPropertyExpr) name;
+                    sqlPropertyExpr.setName(sqlPropertyExpr.getName() + needAppendName);
+                } else if (name instanceof SQLIdentifierExpr) {
+                    SQLIdentifierExpr sqlIdentifierExpr = (SQLIdentifierExpr) name;
+                    sqlIdentifierExpr.setName(sqlIdentifierExpr.getName() + needAppendName);
+                }
+            }
+        }
+        stmt.setName(name);
+
+        if (lexer.identifierEquals("CALLED")) {
+            lexer.nextToken();
+            stmt.setCalledOnNullInput(true);
+        } else if (lexer.identifierEquals("RETURNS")) {
+            lexer.nextToken();
+            acceptIdentifier("NULL");
+            stmt.setCalledOnNullInput(true);
+        } else {
+            setErrorEndPos(lexer.pos());
+            throw new ParserException("syntax error, actual " + lexer.token() + ", " + lexer.info());
+        }
+        accept(Token.ON);
+        accept(Token.NULL);
+        acceptIdentifier("INPUT");
+        return stmt;
+    }
+
+    @Override
+    protected SQLStatement parseAlterSchema() {
+        accept(Token.ALTER);
+        accept(Token.SCHEMA);
+
+        PrestoAlterSchemaStatement stmt = new PrestoAlterSchemaStatement();
+        stmt.setDbType(dbType);
+
+        SQLName name = this.exprParser.name();
+        stmt.setSchemaName(name);
+
+        acceptIdentifier("RENAME");
+        accept(Token.TO);
+
+        stmt.setNewName(this.exprParser.identifier());
+
+        return stmt;
     }
 }

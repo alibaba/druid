@@ -16,36 +16,43 @@
 package com.alibaba.druid.sql.dialect.presto.ast.stmt;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-/**
- * presto 的 select语句
- * <p>
- * author zhangcanlong
- * date 2022/01/11
- */
-public class PrestoSelectStatement extends SQLSelectStatement implements PrestoSQLStatement {
-    public PrestoSelectStatement() {
-        super(DbType.postgresql);
+public class PrestoCreateTableStatement extends SQLCreateTableStatement implements PrestoSQLStatement {
+    public PrestoCreateTableStatement() {
+        this.dbType = DbType.hive;
     }
 
-    public PrestoSelectStatement(SQLSelect select) {
-        super(select, DbType.postgresql);
+    public PrestoCreateTableStatement(DbType dbType) {
+        this.dbType = dbType;
     }
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof PrestoVisitor) {
-            this.accept0((PrestoVisitor) visitor);
-        } else {
-            super.accept0(visitor);
+    protected void accept0(SQLASTVisitor v) {
+        if (v instanceof PrestoVisitor) {
+            this.accept0((PrestoVisitor) v);
         }
+        super.accept0(v);
     }
 
+    @Override
     public void accept0(PrestoVisitor visitor) {
-        super.accept0(visitor);
+        visitor.visit(this);
+    }
+
+    protected void acceptChild(SQLASTVisitor v) {
+        super.acceptChild(v);
+    }
+
+    public void cloneTo(PrestoCreateTableStatement x) {
+        super.cloneTo(x);
+    }
+
+    public PrestoCreateTableStatement clone() {
+        PrestoCreateTableStatement x = new PrestoCreateTableStatement();
+        cloneTo(x);
+        return x;
     }
 }
