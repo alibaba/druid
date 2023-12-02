@@ -1979,6 +1979,8 @@ public class DruidDataSource extends DruidAbstractDataSource
             fatalErrorCount++;
             if (fatalErrorCount - fatalErrorCountLastShrink > onFatalErrorMaxActive) {
                 onFatalError = true;
+            } else {
+                onFatalError = false;
             }
             lastFatalError = error;
             lastFatalErrorSql = sql;
