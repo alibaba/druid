@@ -1990,6 +1990,8 @@ public class DruidDataSource extends DruidAbstractDataSource
             ReentrantLock dataSourceLock = holder.getDataSource().lock;
             dataSourceLock.lock();
             try {
+                // increase fatalErrorCountLastShrink otherwise emptySignal will be called again at shrink method.
+                fatalErrorCountLastShrink++;
                 emptySignal();
             } finally {
                 dataSourceLock.unlock();
@@ -3417,7 +3419,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             } finally {
                 lock.unlock();
             }
-        } else if (onFatalError || fatalErrorIncrement > 0) {
+        } else if (fatalErrorIncrement > 0) {
             lock.lock();
             try {
                 emptySignal();
