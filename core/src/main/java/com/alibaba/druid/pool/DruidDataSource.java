@@ -967,13 +967,13 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             if (keepAlive) {
-                for (int i = 0; i < minIdle - initialSize; ++i) {
-                    if (createScheduler != null) {
-                        // async fill to minIdle
+                if (createScheduler != null) {
+                    // async fill to minIdle
+                    for (int i = 0; i < minIdle - initialSize; ++i) {
                         submitCreateTask(true);
-                    } else {
-                        empty.signal();
                     }
+                } else {
+                    empty.signal();
                 }
             }
 
