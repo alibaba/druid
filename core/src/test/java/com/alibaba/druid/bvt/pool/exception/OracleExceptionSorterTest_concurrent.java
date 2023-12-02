@@ -31,7 +31,7 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setPoolPreparedStatements(true);
         dataSource.setMaxOpenPreparedStatements(100);
-        dataSource.setMaxActive(1);
+        dataSource.setMaxActive(2);
         dataSource.setMaxWait(1000 * 100);
     }
 
