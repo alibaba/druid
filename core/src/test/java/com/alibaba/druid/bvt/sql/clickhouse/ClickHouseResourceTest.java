@@ -100,7 +100,7 @@ public class ClickHouseResourceTest extends OracleTest {
     }
 
     public void test_window_funnel() throws Exception {
-        exec_test("bvt/parser/clickhouse-15.txt");
+        exec_test("bvt/parser/clickhouse-17.txt");
     }
 
     public void exec_test(String resource) throws Exception {
