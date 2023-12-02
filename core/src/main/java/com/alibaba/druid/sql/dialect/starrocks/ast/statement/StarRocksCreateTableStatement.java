@@ -2,19 +2,17 @@ package com.alibaba.druid.sql.dialect.starrocks.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLIndexDefinition;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
-    protected SQLName modelKey;
+    protected SQLIndexDefinition modelKey;
 
     protected SQLExpr partitionBy;
     protected SQLExpr start;
@@ -30,27 +28,11 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
 
     protected Map<SQLExpr, SQLExpr> lessThanMap = new LinkedHashMap<>();
     protected Map<SQLExpr, List<SQLExpr>> fixedRangeMap = new LinkedHashMap<>();
-    protected Map<SQLCharExpr, SQLCharExpr> propertiesMap = new LinkedHashMap<>();
-    protected Map<SQLCharExpr, SQLCharExpr> lBracketPropertiesMap = new LinkedHashMap<>();
+
+    protected List<SQLExpr> starRocksProperties = new LinkedList<>();
 
     public StarRocksCreateTableStatement() {
         super(DbType.starrocks);
-    }
-
-    public Map<SQLCharExpr, SQLCharExpr> getPropertiesMap() {
-        return propertiesMap;
-    }
-
-    public Map<SQLCharExpr, SQLCharExpr> getlBracketPropertiesMap() {
-        return lBracketPropertiesMap;
-    }
-
-    public void setPropertiesMap(Map<SQLCharExpr, SQLCharExpr> propertiesMap) {
-        this.propertiesMap = propertiesMap;
-    }
-
-    public void setlBracketPropertiesMap(Map<SQLCharExpr, SQLCharExpr> lBracketPropertiesMap) {
-        this.lBracketPropertiesMap = lBracketPropertiesMap;
     }
 
     public void setStartEnd(boolean startEnd) {
@@ -125,11 +107,11 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         this.lessThanMap = lessThanMap;
     }
 
-    public SQLName getModelKey() {
+    public SQLIndexDefinition getModelKey() {
         return modelKey;
     }
 
-    public void setModelKey(SQLName modelKey) {
+    public void setModelKey(SQLIndexDefinition modelKey) {
         this.modelKey = modelKey;
     }
 
@@ -146,6 +128,23 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
 
     public SQLExpr getPartitionBy() {
         return partitionBy;
+    }
+
+    public List<SQLExpr> getStarRocksProperties() {
+        return starRocksProperties;
+    }
+
+    public void setStarRocksProperties(List<SQLExpr> starRocksProperties) {
+        this.starRocksProperties = starRocksProperties;
+    }
+
+    public void addStarRocksProperty(String key, String value) {
+        this.getStarRocksProperties().add(
+                new SQLAssignItem(
+                        new SQLCharExpr(key),
+                        new SQLCharExpr(value)
+                )
+        );
     }
 
     @Override
