@@ -119,7 +119,7 @@ public class PagerUtils {
     private static boolean limitUnion(SQLUnionQuery queryBlock, DbType dbType, int offset, int count, boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
-            if (offset > 0) {
+            if (offset >= 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
             }
 
@@ -163,6 +163,8 @@ public class PagerUtils {
             case clickhouse:
                 return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
             case postgresql:
+            case greenplum:
+            case edb:
             case hive:
             case odps:
             case presto:
@@ -182,7 +184,7 @@ public class PagerUtils {
                                               boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
-            if (offset > 0) {
+            if (offset >= 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
             }
 
@@ -445,7 +447,7 @@ public class PagerUtils {
                                                 boolean check) {
         SQLLimit limit = queryBlock.getLimit();
         if (limit != null) {
-            if (offset > 0) {
+            if (offset >= 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
             }
 
@@ -550,6 +552,8 @@ public class PagerUtils {
             case oracle:
                 return new OracleSelectQueryBlock();
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGSelectQueryBlock();
             case sqlserver:
             case jtds:

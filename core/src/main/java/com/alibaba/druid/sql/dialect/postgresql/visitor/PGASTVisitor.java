@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
@@ -163,6 +164,11 @@ public interface PGASTVisitor extends SQLASTVisitor {
     default boolean visit(PGStartTransactionStatement x) {
         return true;
     }
+    default void endVisit(PGEndTransactionStatement x) {
+    }
+    default boolean visit(PGEndTransactionStatement x) {
+        return true;
+    }
 
     default void endVisit(PGConnectToStatement x) {
     }
@@ -189,6 +195,35 @@ public interface PGASTVisitor extends SQLASTVisitor {
     }
 
     default boolean visit(PGAlterSchemaStatement x) {
+        return true;
+    }
+
+    default void endVisit(PGCharExpr x) {
+        endVisit((SQLCharExpr) x);
+    }
+
+    default boolean visit(PGCharExpr x) {
+        return visit((SQLCharExpr) x);
+    }
+
+    default void endVisit(PGAnalyzeStatement x) {
+    }
+
+    default boolean visit(PGAnalyzeStatement x) {
+        return true;
+    }
+
+    default void endVisit(PGVacuumStatement x) {
+    }
+
+    default boolean visit(PGVacuumStatement x) {
+        return true;
+    }
+
+    default void endVisit(PGAlterDatabaseStatement x) {
+    }
+
+    default boolean visit(PGAlterDatabaseStatement x) {
         return true;
     }
 

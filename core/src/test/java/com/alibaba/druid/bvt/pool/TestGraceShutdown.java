@@ -19,15 +19,15 @@ import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
-import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class TestGraceShutdown extends TestCase {
+public class TestGraceShutdown extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
@@ -42,6 +42,7 @@ public class TestGraceShutdown extends TestCase {
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(2);
         dataSource.setMaxIdle(2);
+        dataSource.setMaxWait(5);
         dataSource.setMinIdle(1);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
@@ -49,10 +50,6 @@ public class TestGraceShutdown extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-    }
-
-    protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_close() throws Exception {
@@ -81,14 +78,18 @@ public class TestGraceShutdown extends TestCase {
         for (int i = 0; i < threadCount; ++i) {
             threads[i].start();
         }
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
+        final CountDownLatch closeLatch = new CountDownLatch(1);
         new Thread("close thread") {
             public void run() {
+                System.out.println("执行close start");
                 dataSource.close();
+                closeLatch.countDown();
             }
         }.start();
 
+        closeLatch.await();
         Assert.assertTrue(endLatch.await(60, TimeUnit.SECONDS));
     }
 }

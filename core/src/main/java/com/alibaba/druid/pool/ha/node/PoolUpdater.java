@@ -49,6 +49,10 @@ public class PoolUpdater implements Observer {
     private volatile boolean inited;
     private boolean allowEmptyPool;
 
+    public boolean isInited() {
+        return inited;
+    }
+
     public PoolUpdater(HighAvailableDataSource highAvailableDataSource) {
         setHighAvailableDataSource(highAvailableDataSource);
     }
@@ -75,7 +79,9 @@ public class PoolUpdater implements Observer {
             executor.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    LOG.debug("Purging the DataSource Pool every " + intervalSeconds + "s.");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Purging the DataSource Pool every " + intervalSeconds + "s.");
+                    }
                     try {
                         removeDataSources();
                     } catch (Exception e) {
@@ -83,6 +89,8 @@ public class PoolUpdater implements Observer {
                     }
                 }
             }, intervalSeconds, intervalSeconds, TimeUnit.SECONDS);
+
+            inited = true;
         }
     }
 
@@ -114,9 +122,9 @@ public class PoolUpdater implements Observer {
             return;
         }
 
+        LOG.info("Waiting for Lock to start processing NodeEvents.");
+        lock.lock();
         try {
-            LOG.info("Waiting for Lock to start processing NodeEvents.");
-            lock.lock();
             LOG.info("Start processing the NodeEvent[" + events.length + "].");
             for (NodeEvent e : events) {
                 if (e.getType() == NodeEventTypeEnum.ADD) {
@@ -139,8 +147,9 @@ public class PoolUpdater implements Observer {
         if (nodesToDel == null || nodesToDel.isEmpty()) {
             return;
         }
+
+        lock.lock();
         try {
-            lock.lock();
             Map<String, DataSource> map = highAvailableDataSource.getDataSourceMap();
             Set<String> copySet = new HashSet<String>(nodesToDel);
             for (String nodeName : copySet) {

@@ -65,7 +65,7 @@ public class PGSelectTest51 extends TestCase {
 
         assertEquals("SELECT TMP_PAGE.*, ROWNUM AS ROW_ID\n" +
                 "FROM (\n" +
-                "\t(SELECT M.*, A.*\n" +
+                "\tSELECT M.*, A.*\n" +
                 "\tFROM T_EW_MERCHANT M\n" +
                 "\t\tLEFT JOIN LP_ADDRESS A ON M.ADDRESS_KEY = A.KEY\n" +
                 "\tWHERE M.MERCHANT_CODE LIKE ('%' || ? || '%')\n" +
@@ -79,13 +79,13 @@ public class PGSelectTest51 extends TestCase {
                 "\t\tOR A.COUNTY LIKE ('%' || ? || '%')\n" +
                 "\t\tOR A.STREET_AREA LIKE ('%' || ? || '%')\n" +
                 "\t\tOR A.DETAILE LIKE ('%' || ? || '%')\n" +
-                "\t\tOR A.ZIPCODE LIKE ('%' || ? || '%'))\n" +
+                "\t\tOR A.ZIPCODE LIKE ('%' || ? || '%')\n" +
                 ") TMP_PAGE\n" +
                 "WHERE ROWNUM <= 10", SQLUtils.toPGString(stmt));
 
         assertEquals("select TMP_PAGE.*, ROWNUM as ROW_ID\n" +
                 "from (\n" +
-                "\t(select M.*, A.*\n" +
+                "\tselect M.*, A.*\n" +
                 "\tfrom T_EW_MERCHANT M\n" +
                 "\t\tleft join LP_ADDRESS A on M.ADDRESS_KEY = A.KEY\n" +
                 "\twhere M.MERCHANT_CODE like ('%' || ? || '%')\n" +
@@ -99,7 +99,7 @@ public class PGSelectTest51 extends TestCase {
                 "\t\tor A.COUNTY like ('%' || ? || '%')\n" +
                 "\t\tor A.STREET_AREA like ('%' || ? || '%')\n" +
                 "\t\tor A.DETAILE like ('%' || ? || '%')\n" +
-                "\t\tor A.ZIPCODE like ('%' || ? || '%'))\n" +
+                "\t\tor A.ZIPCODE like ('%' || ? || '%')\n" +
                 ") TMP_PAGE\n" +
                 "where ROWNUM <= 10", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

@@ -38,6 +38,8 @@ public class PoolUpdaterTest {
 
     @Test
     public void testUpdate() {
+        updater.init();
+        assertTrue(updater.isInited());
         haDataSource.getDataSourceMap().put("foo", new MockDataSource("foo"));
         haDataSource.getDataSourceMap().put("bar", new MockDataSource("bar"));
 

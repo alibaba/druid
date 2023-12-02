@@ -266,22 +266,22 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     public void incrementExecuteQueryCount() {
-        final DruidPooledConnection conn = this.getPoolableConnection();
+        final DruidPooledConnection conn = this.conn;
         if (conn == null) {
             return;
         }
 
-        final DruidConnectionHolder holder = conn.getConnectionHolder();
+        final DruidConnectionHolder holder = conn.holder;
         if (holder == null) {
             return;
         }
 
-        final DruidAbstractDataSource dataSource = holder.getDataSource();
+        final DruidAbstractDataSource dataSource = holder.dataSource;
         if (dataSource == null) {
             return;
         }
 
-        dataSource.incrementExecuteQueryCount();
+        dataSource.executeQueryCount++;
     }
 
     protected void transactionRecord(String sql) throws SQLException {

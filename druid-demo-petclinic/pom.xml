@@ -9,6 +9,7 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.7.3</version>
+    <relativePath/>
   </parent>
   <name>druid-demo-petclinic</name>
 
@@ -33,7 +34,7 @@
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>druid-spring-boot-starter</artifactId>
-      <version>1.2.15</version>
+      <version>1.2.21-SNAPSHOT</version>
     </dependency>
     <!-- Spring and Spring Boot dependencies -->
     <dependency>
@@ -131,6 +132,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <lineSeparator>LF</lineSeparator>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -1,32 +1,12 @@
-SELECT level, sum(cnt) OVER (PARTITION BY NULL ORDER BY level DESC) AS cnt
-FROM (
-	SELECT level, count() AS cnt
-	FROM (
-		SELECT `user_id`, windowFunnel(86400, 'strict_increase')(__event_time, __event_name = 'login', __event_name = 'chat') AS level
-		FROM (
-		select user_id,__event_time,__event_name from db.table
-
-		)
-		GROUP BY `user_id`
-		HAVING level >= 1
-	)
-	GROUP BY level
-)
-ORDER BY level
-
+WITH '2019-08-01 15:23:00' as ts_upper_bound
+SELECT *
+FROM hits
+WHERE
+    EventDate = toDate(ts_upper_bound) AND
+    EventTime <= ts_upper_bound;
 ---------------------------
-SELECT level, sum(cnt) OVER (PARTITION BY NULL ORDER BY level DESC) AS cnt
-FROM (
-	SELECT level, count() AS cnt
-	FROM (
-		SELECT `user_id`, windowFunnel(86400, 'strict_increase')(__event_time, __event_name = 'login', __event_name = 'chat') AS level
-		FROM (
-			SELECT user_id, __event_time, __event_name
-			FROM db.table
-		)
-		GROUP BY `user_id`
-		HAVING level >= 1
-	)
-	GROUP BY level
-)
-ORDER BY level
+WITH '2019-08-01 15:23:00' AS ts_upper_bound
+SELECT *
+FROM hits
+WHERE EventDate = toDate(ts_upper_bound)
+	AND EventTime <= ts_upper_bound;

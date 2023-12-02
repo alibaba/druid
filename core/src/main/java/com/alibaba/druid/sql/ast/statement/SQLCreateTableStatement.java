@@ -50,6 +50,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     protected SQLName tablespace;
     protected SQLPartitionBy partitioning;
+    protected SQLPartitionOf partitionOf;
     protected SQLPartitionBy localPartitioning;
     protected SQLExpr storedAs;
     protected SQLExpr location;
@@ -191,7 +192,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public static enum Type {
-        GLOBAL_TEMPORARY, LOCAL_TEMPORARY, TEMPORARY, SHADOW
+        GLOBAL_TEMPORARY, LOCAL_TEMPORARY, TEMPORARY, SHADOW, TRANSACTIONAL
     }
 
     public List<SQLTableElement> getTableElementList() {
@@ -362,6 +363,16 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.partitioning = partitioning;
     }
 
+    public SQLPartitionOf getPartitionOf() {
+        return partitionOf;
+    }
+
+    public void setPartitionOf(SQLPartitionOf partitionOf) {
+        if (partitionOf != null) {
+            partitionOf.setParent(this);
+        }
+        this.partitionOf = partitionOf;
+    }
     public void setLocalPartitioning(SQLPartitionBy localPartitioning) {
         if (localPartitioning != null) {
             localPartitioning.setParent(this);
@@ -851,7 +862,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             SQLTableElement e = tableElementList.get(i);
             if (e instanceof SQLUniqueConstraint) {
                 SQLUniqueConstraint unique = (SQLUniqueConstraint) e;
-                if (unique.getName().nameHashCode64() == indexNameHashCode64) {
+                if (unique.getName() != null && unique.getName().nameHashCode64() == indexNameHashCode64) {
                     tableElementList.remove(i);
                     return true;
                 }

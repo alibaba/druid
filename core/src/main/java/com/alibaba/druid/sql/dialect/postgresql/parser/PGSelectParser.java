@@ -180,7 +180,7 @@ public class PGSelectParser extends SQLSelectParser {
             } else {
                 throw new ParserException("expect 'FIRST' or 'NEXT'. " + lexer.info());
             }
-
+            lexer.nextToken();
             SQLExpr count = expr();
             fetch.setCount(count);
 

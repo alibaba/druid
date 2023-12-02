@@ -1,0 +1,3 @@
+comment on index DATA_OPS_TEMPLATE_TEST_1672663574919_idx_date is '日期索引xx';
+---------------------------
+COMMENT ON INDEX DATA_OPS_TEMPLATE_TEST_1672663574919_idx_date IS '日期索引xx';

@@ -1,0 +1,6 @@
+ALTER TABLE pt_test
+   ADD PARTITION (ds = '20230912') PARTITION (ds = '20230911') ;
+---------------------------
+ALTER TABLE pt_test
+	ADD PARTITION (ds = '20230912')
+		PARTITION (ds = '20230911');

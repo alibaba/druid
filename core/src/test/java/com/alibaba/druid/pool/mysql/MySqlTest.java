@@ -16,7 +16,7 @@ public class MySqlTest extends TestCase {
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://raspberrypi_mysql:3306/druid_test_db?allowMultiQueries=true");
+        dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/druid_test_db?allowMultiQueries=true");
         dataSource.setUsername("druid_test");
         dataSource.setPassword("druid_test");
         dataSource.setFilters("log4j");

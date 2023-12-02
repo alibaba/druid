@@ -299,6 +299,10 @@ public enum Token {
 
     UPSERT("UPSERT"), // Phoenix
 
+    // StarRocks
+    BIGINT("BIGINT"),
+    BITMAP("BITMAP"),
+
     LPAREN("("),
     RPAREN(")"),
     LBRACE("{"),

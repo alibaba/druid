@@ -1843,8 +1843,13 @@ class SchemaResolveVisitorFactory {
                 if (context != null && alias_hash != 0) {
                     context.addTableSource(alias_hash, entry);
                 }
+            } else if (entry.getExpr() != null) {
+                entry.getExpr().accept(visitor);
             } else {
-                entry.getReturningStatement().accept(visitor);
+                SQLStatement returningStatement = entry.getReturningStatement();
+                if (returningStatement != null) {
+                    returningStatement.accept(visitor);
+                }
             }
         }
     }

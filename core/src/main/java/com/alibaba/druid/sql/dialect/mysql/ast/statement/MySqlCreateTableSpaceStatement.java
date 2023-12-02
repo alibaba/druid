@@ -66,11 +66,11 @@ public class MySqlCreateTableSpaceStatement extends MySqlStatementImpl implement
         return addDataFile;
     }
 
-    public void setAddDataFile(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
+    public void setAddDataFile(SQLExpr addDataFile) {
+        if (addDataFile != null) {
+            addDataFile.setParent(this);
         }
-        this.addDataFile = x;
+        this.addDataFile = addDataFile;
     }
 
     public SQLExpr getInitialSize() {
@@ -107,9 +107,9 @@ public class MySqlCreateTableSpaceStatement extends MySqlStatementImpl implement
         return engine;
     }
 
-    public void setEngine(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
+    public void setEngine(SQLExpr engine) {
+        if (engine != null) {
+            engine.setParent(this);
         }
         this.engine = engine;
     }

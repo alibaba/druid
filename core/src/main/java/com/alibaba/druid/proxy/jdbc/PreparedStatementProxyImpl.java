@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
+import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
 
 import java.io.InputStream;
@@ -128,12 +129,16 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void addBatch() throws SQLException {
-        createChain().preparedStatement_addBatch(this);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_addBatch(this);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void clearParameters() throws SQLException {
-        createChain().preparedStatement_clearParameters(this);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_clearParameters(this);
+        recycleFilterChain(chain);
     }
 
     @Override
@@ -149,7 +154,9 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         lastExecuteStartNano = -1L;
         lastExecuteTimeNano = -1L;
 
-        firstResultSet = createChain().preparedStatement_execute(this);
+        FilterChainImpl chain = createChain();
+        firstResultSet = chain.preparedStatement_execute(this);
+        recycleFilterChain(chain);
         return firstResultSet;
     }
 
@@ -163,7 +170,12 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         lastExecuteStartNano = -1L;
         lastExecuteTimeNano = -1L;
 
-        return createChain().preparedStatement_executeQuery(this);
+        FilterChainImpl chain = createChain();
+        try {
+            return chain.preparedStatement_executeQuery(this);
+        } finally {
+            recycleFilterChain(chain);
+        }
     }
 
     @Override
@@ -176,155 +188,208 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         lastExecuteStartNano = -1L;
         lastExecuteTimeNano = -1L;
 
-        updateCount = createChain().preparedStatement_executeUpdate(this);
+        FilterChainImpl chain = createChain();
+        updateCount = chain.preparedStatement_executeUpdate(this);
+        recycleFilterChain(chain);
         return updateCount;
     }
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
-        return createChain().preparedStatement_getMetaData(this);
+        FilterChainImpl chain = createChain();
+        try {
+            return chain.preparedStatement_getMetaData(this);
+        } finally {
+            recycleFilterChain(chain);
+        }
     }
 
     @Override
     public ParameterMetaData getParameterMetaData() throws SQLException {
-        return createChain().preparedStatement_getParameterMetaData(this);
+        FilterChainImpl chain = createChain();
+        try {
+            return chain.preparedStatement_getParameterMetaData(this);
+        } finally {
+            recycleFilterChain(chain);
+        }
     }
 
     @Override
     public void setArray(int parameterIndex, Array x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.ARRAY, x));
 
-        createChain().preparedStatement_setArray(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setArray(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
         setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.AsciiInputStream, x));
 
-        createChain().preparedStatement_setAsciiStream(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setAsciiStream(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
         setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.AsciiInputStream, x, length));
 
-        createChain().preparedStatement_setAsciiStream(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setAsciiStream(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
         setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.AsciiInputStream, x, length));
 
-        createChain().preparedStatement_setAsciiStream(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setAsciiStream(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
         setParameter(parameterIndex, createParameter(x));
-        createChain().preparedStatement_setBigDecimal(this, parameterIndex, x);
+
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setBigDecimal(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
         setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.BinaryInputStream, x));
 
-        createChain().preparedStatement_setBinaryStream(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setBinaryStream(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
         setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.BinaryInputStream, x, length));
 
-        createChain().preparedStatement_setBinaryStream(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setBinaryStream(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
         setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.BinaryInputStream, x, length));
 
-        createChain().preparedStatement_setBinaryStream(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setBinaryStream(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setBlob(int parameterIndex, Blob x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.BLOB, x));
 
-        createChain().preparedStatement_setBlob(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setBlob(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.BLOB, x));
 
-        createChain().preparedStatement_setBlob(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setBlob(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream x, long length) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.BLOB, x, length));
-        createChain().preparedStatement_setBlob(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setBlob(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setBoolean(int parameterIndex, boolean x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.BOOLEAN, x));
-        createChain().preparedStatement_setBoolean(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setBoolean(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setByte(int parameterIndex, byte x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.TINYINT, x));
 
-        createChain().preparedStatement_setByte(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setByte(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setBytes(int parameterIndex, byte[] x) throws SQLException {
         setParameter(parameterIndex, createParameter(TYPE.BYTES, x));
 
-        createChain().preparedStatement_setBytes(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setBytes(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader x) throws SQLException {
         setParameter(parameterIndex, createParameter(TYPE.CharacterInputStream, x));
 
-        createChain().preparedStatement_setCharacterStream(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setCharacterStream(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader x, int length) throws SQLException {
         setParameter(parameterIndex, createParameter(TYPE.CharacterInputStream, x, length));
 
-        createChain().preparedStatement_setCharacterStream(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setCharacterStream(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader x, long length) throws SQLException {
         setParameter(parameterIndex, createParameter(TYPE.CharacterInputStream, x, length));
 
-        createChain().preparedStatement_setCharacterStream(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setCharacterStream(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setClob(int parameterIndex, Clob x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.CLOB, x));
 
-        createChain().preparedStatement_setClob(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setClob(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setClob(int parameterIndex, Reader x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.CLOB, x));
 
-        createChain().preparedStatement_setClob(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setClob(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setClob(int parameterIndex, Reader x, long length) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.CLOB, x, length));
 
-        createChain().preparedStatement_setClob(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setClob(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
@@ -334,8 +399,9 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
                 createParameter(x)
         );
 
-        createChain()
-                .preparedStatement_setDate(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setDate(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
@@ -345,8 +411,9 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
                 createParameter(Types.DATE, x, cal)
         );
 
-        createChain()
-                .preparedStatement_setDate(this, parameterIndex, x, cal);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setDate(this, parameterIndex, x, cal);
+        recycleFilterChain(chain);
     }
 
     @Override
@@ -356,8 +423,9 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
                 createParameter(Types.DOUBLE, x)
         );
 
-        createChain()
-                .preparedStatement_setDouble(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setDouble(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
@@ -367,7 +435,9 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
                 createParameter(Types.FLOAT, x)
         );
 
-        createChain().preparedStatement_setFloat(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setFloat(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
@@ -377,8 +447,9 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
                 createParemeter(x)
         );
 
-        createChain()
-                .preparedStatement_setInt(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setInt(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
@@ -388,8 +459,9 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
                 createParameter(x)
         );
 
-        createChain()
-                .preparedStatement_setLong(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setLong(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
@@ -399,64 +471,81 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
                 createParameter(TYPE.NCharacterInputStream, x)
         );
 
-        createChain()
-                .preparedStatement_setNCharacterStream(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setNCharacterStream(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader x, long length) throws SQLException {
         setParameter(parameterIndex, createParameter(TYPE.NCharacterInputStream, x, length));
 
-        createChain().preparedStatement_setNCharacterStream(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setNCharacterStream(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setNClob(int parameterIndex, NClob x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.NCLOB, x));
 
-        createChain().preparedStatement_setNClob(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setNClob(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.NCLOB, x));
 
-        createChain().preparedStatement_setNClob(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setNClob(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader x, long length) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.NCLOB, x, length));
 
-        createChain().preparedStatement_setNClob(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setNClob(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setNString(int parameterIndex, String x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.NVARCHAR, x));
 
-        createChain().preparedStatement_setNString(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setNString(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
         setParameter(parameterIndex, createParameterNull(sqlType));
 
-        createChain().preparedStatement_setNull(this, parameterIndex, sqlType);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setNull(this, parameterIndex, sqlType);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
         setParameter(parameterIndex, createParameterNull(sqlType));
 
-        createChain().preparedStatement_setNull(this, parameterIndex, sqlType, typeName);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setNull(this, parameterIndex, sqlType, typeName);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setObject(int parameterIndex, Object x) throws SQLException {
         setObjectParameter(parameterIndex, x);
 
-        createChain().preparedStatement_setObject(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setObject(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     private void setObjectParameter(int parameterIndex, Object x) {
@@ -541,13 +630,13 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
             return;
         }
 
-        if (x instanceof Clob) {
-            setParameter(parameterIndex, new JdbcParameterImpl(Types.CLOB, x));
+        if (x instanceof NClob) {
+            setParameter(parameterIndex, new JdbcParameterImpl(Types.NCLOB, x));
             return;
         }
 
-        if (x instanceof NClob) {
-            setParameter(parameterIndex, new JdbcParameterImpl(Types.NCLOB, x));
+        if (x instanceof Clob) {
+            setParameter(parameterIndex, new JdbcParameterImpl(Types.CLOB, x));
             return;
         }
 
@@ -585,42 +674,54 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException {
         setParameter(parameterIndex, createParameter(targetSqlType, x));
 
-        createChain().preparedStatement_setObject(this, parameterIndex, x, targetSqlType);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setObject(this, parameterIndex, x, targetSqlType);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException {
         setParameter(parameterIndex, createParameter(x, targetSqlType, scaleOrLength));
 
-        createChain().preparedStatement_setObject(this, parameterIndex, x, targetSqlType, scaleOrLength);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setObject(this, parameterIndex, x, targetSqlType, scaleOrLength);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setRef(int parameterIndex, Ref x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.REF, x));
 
-        createChain().preparedStatement_setRef(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setRef(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setRowId(int parameterIndex, RowId x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.ROWID, x));
 
-        createChain().preparedStatement_setRowId(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setRowId(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setSQLXML(int parameterIndex, SQLXML x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.SQLXML, x));
 
-        createChain().preparedStatement_setSQLXML(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setSQLXML(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setShort(int parameterIndex, short x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.SMALLINT, x));
 
-        createChain().preparedStatement_setShort(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setShort(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
@@ -630,50 +731,63 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
                 createParameter(x)
         );
 
-        createChain()
-                .preparedStatement_setString(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setString(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setTime(int parameterIndex, Time x) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.TIME, x));
 
-        createChain().preparedStatement_setTime(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setTime(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.TIME, x, cal));
 
-        createChain().preparedStatement_setTime(this, parameterIndex, x, cal);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setTime(this, parameterIndex, x, cal);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
         setParameter(parameterIndex, createParameter(x));
 
-        createChain().preparedStatement_setTimestamp(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setTimestamp(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
         setParameter(parameterIndex, createParameter(Types.TIMESTAMP, x));
 
-        createChain().preparedStatement_setTimestamp(this, parameterIndex, x, cal);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setTimestamp(this, parameterIndex, x, cal);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setURL(int parameterIndex, URL x) throws SQLException {
         setParameter(parameterIndex, createParameter(TYPE.URL, x));
 
-        createChain().preparedStatement_setURL(this, parameterIndex, x);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setURL(this, parameterIndex, x);
+        recycleFilterChain(chain);
     }
 
     @Override
     public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
         setParameter(parameterIndex, createParameter(TYPE.UnicodeStream, x, length));
 
-        createChain().preparedStatement_setUnicodeStream(this, parameterIndex, x, length);
+        FilterChainImpl chain = createChain();
+        chain.preparedStatement_setUnicodeStream(this, parameterIndex, x, length);
+        recycleFilterChain(chain);
     }
 
     @Override

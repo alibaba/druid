@@ -28,9 +28,9 @@ public class Demo0 extends TestCase {
     private String password;
     private String driverClass;
     private int initialSize = 10;
-    private int minPoolSize = 1;
-    private int maxPoolSize = 2;
-    private int maxActive = 2;
+    private int minIdle = 1;
+    private int maxIdle = 5;
+    private int maxActive = 12;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -46,8 +46,8 @@ public class Demo0 extends TestCase {
 
         dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
-        dataSource.setMinIdle(minPoolSize);
-        dataSource.setMaxIdle(maxPoolSize);
+        dataSource.setMinIdle(minIdle);
+        dataSource.setMaxIdle(maxIdle);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);

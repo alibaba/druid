@@ -64,6 +64,8 @@ public enum DbType {
 
     tydb(1L << 42),
 
+    starrocks(1L << 43),
+
     ingres(0),
     cloudscape(0),
     timesten(0),
@@ -78,7 +80,8 @@ public enum DbType {
     interbase(0),
     pointbase(0),
     edbc(0),
-    mimer(0);
+    mimer(0),
+    taosdata(0);
 
     public final long mask;
     public final long hashCode64;

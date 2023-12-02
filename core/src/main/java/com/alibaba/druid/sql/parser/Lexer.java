@@ -1159,7 +1159,7 @@ public class Lexer {
             return;
         }
 
-        if (isFirstIdentifierChar(first) || first == '{') {
+        if (isFirstIdentifierChar(first) || (first >= '0' && first <= '9') || first == '{') {
             stringVal = null;
             mark = pos;
             while (ch != ';' && ch != EOI) {
@@ -2571,6 +2571,58 @@ public class Lexer {
 
             return;
         }
+    }
+
+    public List<String> scanLineArgument() {
+        List<String> args = new ArrayList<>();
+        while (ch == ' ') {
+            scanChar();
+        }
+
+        int start = pos;
+        for (; ; ) {
+            if (ch == ' '
+                    || ch == '\r'
+                    || ch == '\n'
+                    || ch == EOI
+                    || (ch == ';' && (pos >= text.length() - 1 || isWhitespace(text.charAt(pos + 1))))
+            ) {
+                while (pos < text.length() - 1) {
+                    char c1 = text.charAt(pos);
+                    if (c1 == ' ' || c1 == '\r' || c1 == '\n' || c1 == '\t') {
+                        pos++;
+                        continue;
+                    }
+                    break;
+                }
+
+                String arg = text.substring(start, pos);
+                arg = arg.trim();
+                if (arg.length() > 0) {
+                    args.add(arg);
+                }
+                if (ch == ';') {
+                    break;
+                }
+                scanChar();
+                start = pos - 1;
+                if (ch == '\r' || ch == '\n' || ch == EOI) {
+                    break;
+                } else {
+                    continue;
+                }
+            }
+
+            scanChar();
+        }
+        if (ch == EOI) {
+            token = EOF;
+        } else if (ch == ';') {
+            token = COMMA;
+        } else {
+            nextToken();
+        }
+        return args;
     }
 
     private void scanMultiLineComment() {
