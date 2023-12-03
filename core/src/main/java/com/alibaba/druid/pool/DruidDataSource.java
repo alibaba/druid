@@ -2020,8 +2020,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         // holder.
         LOG.error("{conn-" + holder.getConnectionId() + "} discard", error);
 
-        if (!emptySignalCalled &&
-                onFatalError && hasHolderDataSource) {
+        if (!emptySignalCalled && onFatalError && hasHolderDataSource) {
             fatalErrorCountLock.lock();
             try {
                 emptySignal();
