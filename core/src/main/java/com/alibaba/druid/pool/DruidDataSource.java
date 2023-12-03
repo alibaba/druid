@@ -4047,12 +4047,20 @@ public class DruidDataSource extends DruidAbstractDataSource
         return fillCount;
     }
 
-    private String sanitizedUrl(String url) {
+    static String sanitizedUrl(String url) {
         if (url == null) {
             return null;
         }
-
-        return url.replaceAll("([?&;]password=)[^&#;]*(.*)", "$1<masked>$2");
+        for (String pwdKeyNamesInMysql : new String[]{
+            "password=", "password1=", "password2=", "password3=",
+            "trustCertificateKeyStorePassword=",
+            "clientCertificateKeyStorePassword=",
+        }) {
+            if (url.contains(pwdKeyNamesInMysql)) {
+                url = url.replaceAll("([?&;]" + pwdKeyNamesInMysql + ")[^&#;]*(.*)", "$1<masked>$2");
+            }
+        }
+        return url;
     }
 
     private boolean isFillable(int toCount) {
