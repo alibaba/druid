@@ -1978,6 +1978,8 @@ public class DruidDataSource extends DruidAbstractDataSource
             lastFatalErrorTimeMillis = lastErrorTimeMillis;
             fatalErrorCount++;
             if (fatalErrorCount - fatalErrorCountLastShrink > onFatalErrorMaxActive) {
+                // increase fatalErrorCountLastShrink to avoid that emptySignal would be called again by shrink.
+                fatalErrorCountLastShrink++;
                 onFatalError = true;
             } else {
                 onFatalError = false;
@@ -2000,7 +2002,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
 
-            // decrease activeCount by discardConnection to make sure following emptySignal calling successfully.
+            // decrease activeCount first to make sure the following emptySignal should be called successfully.
             this.discardConnection(holder);
         }
 
@@ -2011,8 +2013,6 @@ public class DruidDataSource extends DruidAbstractDataSource
             ReentrantLock dataSourceLock = holder.getDataSource().lock;
             dataSourceLock.lock();
             try {
-                // increase fatalErrorCountLastShrink otherwise emptySignal will be called again at shrink method.
-                fatalErrorCountLastShrink++;
                 emptySignal();
             } finally {
                 dataSourceLock.unlock();
