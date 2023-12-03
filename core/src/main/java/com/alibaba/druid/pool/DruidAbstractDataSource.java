@@ -2185,7 +2185,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public abstract boolean discardConnection(Connection realConnection);
 
     public boolean discardConnection(DruidConnectionHolder holder) {
-        discardConnection(holder.getConnection());
+        return discardConnection(holder.getConnection());
     }
 
     public boolean isAsyncCloseConnectionEnable() {
