@@ -1975,9 +1975,10 @@ public class DruidDataSource extends DruidAbstractDataSource
         }
 
         boolean requireDiscard = false;
-        // using dataSourceLock because shrink used it to access fatalErrorCount and fatalErrorCountLastShrink.
-        ReentrantLock dataSourceLock = holder.getDataSource().lock;
-        dataSourceLock.lock();
+        // using dataSourceLock when holder dataSource isn't null because shrink used it to access fatal error variables.
+        boolean hasHolderDataSource = (holder != null && holder.getDataSource() != null);
+        ReentrantLock fatalErrorCountLock = hasHolderDataSource ? holder.getDataSource().lock : conn.lock;
+        fatalErrorCountLock.lock();
         try {
             if ((!conn.closed) && !conn.disable) {
                 conn.disable(error);
@@ -1996,7 +1997,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             lastFatalError = error;
             lastFatalErrorSql = sql;
         } finally {
-            dataSourceLock.unlock();
+            fatalErrorCountLock.unlock();
         }
 
         boolean emptySignalCalled = false;
@@ -2020,12 +2021,12 @@ public class DruidDataSource extends DruidAbstractDataSource
         LOG.error("{conn-" + holder.getConnectionId() + "} discard", error);
 
         if (!emptySignalCalled &&
-                onFatalError && holder != null && holder.getDataSource() != null) {
-            dataSourceLock.lock();
+                onFatalError && hasHolderDataSource) {
+            fatalErrorCountLock.lock();
             try {
                 emptySignal();
             } finally {
-                dataSourceLock.unlock();
+                fatalErrorCountLock.unlock();
             }
         }
     }
