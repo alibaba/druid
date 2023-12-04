@@ -2,9 +2,13 @@ package com.alibaba.druid.bvt.sql.hive;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
+import org.junit.Assert;
 
 import java.util.List;
 
@@ -49,5 +53,56 @@ public class HiveCreateTableTest_0 extends TestCase {
         assertTrue(visitor.containsColumn("students", "name"));
         assertTrue(visitor.containsColumn("students", "age"));
         assertTrue(visitor.containsColumn("students", "gpa"));
+    }
+
+    public void test_create_table_without_as_1() throws Exception {
+        //https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-CreateTable
+        String sql = "CREATE TABLE new_key_value_store\n"
+            + "   ROW FORMAT SERDE \"org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe\"\n"
+            + "   STORED AS RCFile\n"
+            + "   AS\n"
+            + "SELECT (key % 1024) new_key, concat(key, value) key_value_pair\n"
+            + "FROM key_value_store\n"
+            + "SORT BY new_key, key_value_pair;";
+
+        HiveStatementParser parser = new HiveStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statement = statementList.get(0);
+        System.out.println(statement);
+
+        Assert.assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statement.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+    }
+
+    public void test_create_table_without_as_2() throws Exception {
+        //https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-CreateTable
+        String sql = "CREATE TABLE new_key_value_store\n"
+            + "   ROW FORMAT SERDE \"org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe\"\n"
+            + "   STORED AS RCFile\n"
+            + "SELECT (key % 1024) new_key, concat(key, value) key_value_pair\n"
+            + "FROM key_value_store\n"
+            + "SORT BY new_key, key_value_pair;";
+
+        HiveStatementParser parser = new HiveStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statement = statementList.get(0);
+        System.out.println(statement);
+
+        Assert.assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statement.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
     }
 }
