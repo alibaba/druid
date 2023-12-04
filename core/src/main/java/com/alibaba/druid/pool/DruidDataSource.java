@@ -2816,7 +2816,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                             return;
                         }
 
-                        this.errorCount = 0; // reset errorCount
+                        // reset errorCount
+                        this.errorCount = 0;
                         createSchedulerFutures.put(this,
                                 createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS));
                         return;
