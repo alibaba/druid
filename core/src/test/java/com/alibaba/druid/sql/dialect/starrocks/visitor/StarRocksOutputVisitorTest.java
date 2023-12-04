@@ -121,14 +121,35 @@ public class StarRocksOutputVisitorTest extends TestCase {
                 "\"enable_persistent_index\" = \"false\"\n" +
                 ");";
 
-        StarRocksCreateTableParser parser = (StarRocksCreateTableParser) new StarRocksStatementParser(o2).getSQLCreateTableParser();
+        String o3 =
+                "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
+                "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
+                "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
+                "\t`num_plate` SMALLINT COMMENT 'range [-32768, 32767] ',\n" +
+                "\t`tel` INT COMMENT 'range [-2147483648, 2147483647]',\n" +
+                "\t`id` BIGINT COMMENT 'range [-2^63 + 1 ~ 2^63 - 1]',\n" +
+                "\t`password` LARGEINT COMMENT 'range [-2^127 + 1 ~ 2^127 - 1]',\n" +
+                "\t`name` CHAR(20) NOT NULL COMMENT 'range char(m),m in (1-255)',\n" +
+                "\t`profile` VARCHAR(500) NOT NULL COMMENT 'upper limit value 1048576 bytes',\n" +
+                "\t`hobby` STRING NOT NULL COMMENT 'upper limit value 65533 bytes',\n" +
+                "\t`leave_time` DATETIME COMMENT 'YYYY-MM-DD HH:MM:SS',\n" +
+                "\t`channel` FLOAT COMMENT '4 bytes',\n" +
+                "\t`income` DOUBLE COMMENT '8 bytes',\n" +
+                "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
+                "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
+                ")\n" +
+                "COMMENT \"OLAP\"\n" +
+                "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n";
+
+        StarRocksCreateTableParser parser = (StarRocksCreateTableParser) new StarRocksStatementParser(o3).getSQLCreateTableParser();
 
         StarRocksCreateTableStatement stmt = (StarRocksCreateTableStatement)parser.parseCreateTable();
+        System.out.println(stmt.toString());
 
-        List<SQLExpr> primaryUniqueParameters = stmt.getPrimaryUniqueParameters();
-        List<SQLColumnDefinition> columnDefinitions = stmt.getColumnDefinitions();
-        for (SQLExpr primaryUniqueParameter : primaryUniqueParameters) {
-            System.out.println("primaryUnique==========="+ primaryUniqueParameter.toString());
-        }
+//        List<SQLExpr> primaryUniqueParameters = stmt.getPrimaryUniqueParameters();
+//        List<SQLColumnDefinition> columnDefinitions = stmt.getColumnDefinitions();
+//        for (SQLExpr primaryUniqueParameter : primaryUniqueParameters) {
+//            System.out.println("primaryUnique==========="+ primaryUniqueParameter.toString());
+//        }
     }
 }

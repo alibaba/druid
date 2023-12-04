@@ -18,18 +18,20 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     protected boolean primary;
     protected boolean unique;
     protected final List<SQLExpr> primaryUniqueParameters = new ArrayList<>();
-    protected final List<SQLExpr> AggDuplicateParameters  = new ArrayList<>();
+    protected final List<SQLExpr> AggDuplicateParameters = new ArrayList<>();
 
     protected SQLExpr partitionBy;
     protected SQLExpr start;
     protected SQLExpr end;
     protected SQLExpr every;
-    protected SQLExpr distributedBy;
+    protected SQLName distributedBy;
+    protected final List<SQLExpr> distributedByParameters = new ArrayList<>();
 
     protected boolean lessThan;
     protected boolean fixedRange;
     protected boolean startEnd;
 
+    protected final List<SQLExpr> orderBy = new ArrayList<>();;
 
     protected Map<SQLExpr, SQLExpr> lessThanMap = new LinkedHashMap<>();
     protected Map<SQLExpr, List<SQLExpr>> fixedRangeMap = new LinkedHashMap<>();
@@ -64,7 +66,7 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         return startEnd;
     }
 
-    public void setDistributedBy(SQLExpr distributedBy) {
+    public void setDistributedBy(SQLName distributedBy) {
         this.distributedBy = distributedBy;
     }
 
@@ -156,8 +158,16 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         return AggDuplicateParameters;
     }
 
+    public List<SQLExpr> getDistributedByParameters() {
+        return distributedByParameters;
+    }
+
     public List<SQLExpr> getPrimaryUniqueParameters() {
         return primaryUniqueParameters;
+    }
+
+    public List<SQLExpr> getOrderBy() {
+        return orderBy;
     }
 
     public void setPartitionBy(SQLExpr x) {

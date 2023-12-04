@@ -37,7 +37,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     public boolean visit(StarRocksCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
 
-        SQLName model = x.getModelKey();
+        SQLName model = x.getAggDuplicate();
         if (model != null) {
             println();
             String modelName = model.getSimpleName().toLowerCase();
@@ -48,25 +48,72 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 case "aggregate":
                     print0(ucase ? "AGGREGATE" : "aggregate");
                     break;
-                case "unique":
-                    print0(ucase ? "UNIQUE" : "unique");
-                    break;
-                case "primary":
-                    print0(ucase ? "PRIMARY" : "primary");
-                    break;
                 default:
                     break;
             }
             print(' ');
             print0(ucase ? "KEY" : "key");
-            if (x.getModelKeyParameters().size() > 0) {
-                for (int i = 0; i < x.getModelKeyParameters().size(); ++i) {
+            if (x.getAggDuplicateParameters().size() > 0) {
+                for (int i = 0; i < x.getAggDuplicateParameters().size(); ++i) {
                     if (i != 0) {
                         println(", ");
                     }
-                    x.getModelKeyParameters().get(i).accept(this);
+                    SQLExpr sqlExpr = x.getAggDuplicateParameters().get(i);
+                    if (!sqlExpr.toString().startsWith("(")) {
+                        print0("(");
+                        sqlExpr.accept(this);
+                        print0(")");
+                    } else {
+                        sqlExpr.accept(this);
+                    }
                 }
             }
+        } else if (x.isPrimary()) {
+            println();
+            print0(ucase ? "PRIMARY" : "primary");
+            print(' ');
+            print0(ucase ? "KEY" : "key");
+            if (x.getPrimaryUniqueParameters().size() > 0) {
+                for (int i = 0; i < x.getPrimaryUniqueParameters().size(); ++i) {
+                    if (i != 0) {
+                        println(", ");
+                    }
+                    SQLExpr sqlExpr = x.getPrimaryUniqueParameters().get(i);
+                    if (!sqlExpr.toString().startsWith("(")) {
+                        print0("(");
+                        sqlExpr.accept(this);
+                        print0(")");
+                    } else {
+                        sqlExpr.accept(this);
+                    }
+                }
+            }
+        } else if (x.isUnique()) {
+            println();
+            print0(ucase ? "UNIQUE" : "unique");
+            print(' ');
+            print0(ucase ? "KEY" : "key");
+            if (x.getPrimaryUniqueParameters().size() > 0) {
+                for (int i = 0; i < x.getPrimaryUniqueParameters().size(); ++i) {
+                    if (i != 0) {
+                        println(", ");
+                    }
+                    SQLExpr sqlExpr = x.getPrimaryUniqueParameters().get(i);
+                    if (!sqlExpr.toString().startsWith("(")) {
+                        print0("(");
+                        sqlExpr.accept(this);
+                        print0(")");
+                    } else {
+                        sqlExpr.accept(this);
+                    }
+                }
+            }
+        }
+
+        if (x.getComment() != null) {
+            println();
+            print0(ucase ? "COMMENT " : "comment ");
+            print0(x.getComment().toString());
         }
 
         SQLExpr partitionBy = x.getPartitionBy();
@@ -171,10 +218,56 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         println();
         if (x.getDistributedBy() != null) {
             print0(ucase ? "DISTRIBUTED BY " : "distributed by ");
-            x.getDistributedBy().accept(this);
+            switch (x.getDistributedBy().toString().toUpperCase()) {
+                case "HASH": {
+                    print0(ucase ? "HASH" : "hash");
+                    break;
+                }
+                case "RANDOM": {
+                    print0(ucase ? "RANDOM" : "random");
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+            if (x.getDistributedByParameters().size() > 0) {
+                for (int i = 0; i < x.getDistributedByParameters().size(); ++i) {
+                    if (i != 0) {
+                        println(", ");
+                    }
+                    SQLExpr sqlExpr = x.getDistributedByParameters().get(i);
+                    if (!sqlExpr.toString().startsWith("(")) {
+                        print0("(");
+                        sqlExpr.accept(this);
+                        print0(")");
+                    } else {
+                        sqlExpr.accept(this);
+                    }
+                }
+            }
             print0(ucase ? " BUCKETS " : "buckets ");
             int buckets = x.getBuckets();
             print0(String.valueOf(buckets));
+        }
+
+        if (x.getOrderBy() != null && x.getOrderBy().size() > 0) {
+            println();
+            print0(ucase ? "ORDER BY " : "order by ");
+            for (int i = 0; i < x.getOrderBy().size(); ++i) {
+                if (i != 0) {
+                    println(", ");
+                }
+                SQLExpr sqlExpr = x.getOrderBy().get(i);
+                if (!sqlExpr.toString().startsWith("(")) {
+                    print0("(");
+                    sqlExpr.accept(this);
+                    print0(")");
+                } else {
+                    sqlExpr.accept(this);
+                }
+            }
+
         }
 
         println();

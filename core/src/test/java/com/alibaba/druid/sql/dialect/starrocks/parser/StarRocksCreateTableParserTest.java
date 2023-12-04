@@ -1,7 +1,6 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import junit.framework.TestCase;
 
 public class StarRocksCreateTableParserTest extends TestCase {
@@ -185,17 +184,18 @@ public class StarRocksCreateTableParserTest extends TestCase {
                         ") ENGINE = olap\n" +
                         "AGGREGATE KEY(k1, k2)\n" +
                         "DISTRIBUTED BY HASH(k1) BUCKETS 10\n" +
+                        "ORDER BY (k1)\n" +
                         "PROPERTIES (\n" +
                         "  \"storage_type\" = \"column\"\n" +
-                        ")"
+                        ")",
 
         };
 
         for (int i = 0; i < caseList.length; i++) {
             final String sql = caseList[i];
             final StarRocksStatementParser starRocksStatementParser = new StarRocksStatementParser(sql);
-            final SQLCreateTableParser sqlCreateTableParser = starRocksStatementParser.getSQLCreateTableParser();
-            final SQLCreateTableStatement parsed = sqlCreateTableParser.parseCreateTable();
+            final StarRocksCreateTableParser sqlCreateTableParser = (StarRocksCreateTableParser)starRocksStatementParser.getSQLCreateTableParser();
+            final StarRocksCreateTableStatement parsed = (StarRocksCreateTableStatement)sqlCreateTableParser.parseCreateTable();
             final String result = parsed.toString();
             assertEquals("第 " + (i + 1) + "个用例验证失败", sql, result);
         }

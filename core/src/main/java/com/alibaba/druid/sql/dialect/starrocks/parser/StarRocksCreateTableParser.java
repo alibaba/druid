@@ -59,6 +59,12 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             this.exprParser.exprList(srStmt.getPrimaryUniqueParameters(), srStmt);
         }
 
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+            SQLExpr comment = this.exprParser.expr();
+            srStmt.setComment(comment);
+        }
+
         if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
             accept(Token.BY);
@@ -136,14 +142,24 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.DISTRIBUTED)) {
             lexer.nextToken();
             accept(Token.BY);
-            SQLExpr hash = this.exprParser.expr();
-            srStmt.setDistributedBy(hash);
+            if (lexer.identifierEquals(FnvHash.Constants.HASH) || lexer.identifierEquals(FnvHash.Constants.RANDOM)) {
+                SQLName type = this.exprParser.name();
+                srStmt.setDistributedBy(type);
+            }
+            this.exprParser.exprList(srStmt.getDistributedByParameters(), srStmt);
+
             if (lexer.identifierEquals(FnvHash.Constants.BUCKETS)) {
                 lexer.nextToken();
                 int bucket = lexer.integerValue().intValue();
                 stmt.setBuckets(bucket);
                 lexer.nextToken();
             }
+        }
+
+        if (lexer.token() == Token.ORDER) {
+            lexer.nextToken();
+            accept(Token.BY);
+            this.exprParser.exprList(srStmt.getOrderBy(), srStmt);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.PROPERTIES)) {
