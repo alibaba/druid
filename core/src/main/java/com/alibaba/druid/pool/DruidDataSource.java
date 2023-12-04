@@ -2806,7 +2806,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                             }
                         }
 
-                        if (breakAfterAcquireFailure) {
+                        if (breakAfterAcquireFailure || closing || closed) {
                             lock.lock();
                             try {
                                 clearCreateTask(taskId);
@@ -2817,16 +2817,6 @@ public class DruidDataSource extends DruidAbstractDataSource
                         }
 
                         this.errorCount = 0; // reset errorCount
-                        if (closing || closed) {
-                            lock.lock();
-                            try {
-                                clearCreateTask(taskId);
-                            } finally {
-                                lock.unlock();
-                            }
-                            return;
-                        }
-
                         createSchedulerFutures.put(this,
                                 createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS));
                         return;
@@ -2847,7 +2837,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                             }
                         }
 
-                        if (breakAfterAcquireFailure) {
+                        if (breakAfterAcquireFailure || closing || closed) {
                             lock.lock();
                             try {
                                 clearCreateTask(taskId);
@@ -2857,24 +2847,15 @@ public class DruidDataSource extends DruidAbstractDataSource
                             return;
                         }
 
-                        this.errorCount = 0; // reset errorCount
-                        if (closing || closed) {
-                            lock.lock();
-                            try {
-                                clearCreateTask(taskId);
-                            } finally {
-                                lock.unlock();
-                            }
-                            return;
-                        }
-
+                        // reset errorCount
+                        this.errorCount = 0;
                         createSchedulerFutures.put(this,
                                 createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS));
                         return;
                     }
                 } catch (RuntimeException e) {
                     LOG.error("create connection RuntimeException", e);
-                    // unknow fatal exception
+                    // unknown fatal exception
                     setFailContinuous(true);
                     continue;
                 } catch (Error e) {
@@ -2885,7 +2866,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                         lock.unlock();
                     }
                     LOG.error("create connection Error", e);
-                    // unknow fatal exception
+                    // unknown fatal exception
                     setFailContinuous(true);
                     break;
                 } catch (Throwable e) {
@@ -2926,7 +2907,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             long lastDiscardCount = 0;
             int errorCount = 0;
-            for (; ; ) {
+            while (!closing && !closed) {
                 // addLast
                 try {
                     lock.lockInterruptibly();
@@ -3000,7 +2981,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                             }
                         }
 
-                        if (breakAfterAcquireFailure) {
+                        if (breakAfterAcquireFailure || closing || closed) {
                             break;
                         }
 
@@ -3030,11 +3011,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                     LOG.info("put physical connection to pool failed.");
                 }
 
-                errorCount = 0; // reset errorCount
-
-                if (closing || closed) {
-                    break;
-                }
+                // reset errorCount
+                errorCount = 0;
             }
         }
     }
