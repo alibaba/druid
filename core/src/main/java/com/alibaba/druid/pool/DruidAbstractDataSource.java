@@ -17,7 +17,6 @@ package com.alibaba.druid.pool;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.DruidRuntimeException;
-import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
@@ -1511,6 +1510,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
         try {
             if (validConnectionChecker != null) {
+                // mysql-connector-java will throw Exception if the connection is broken.
                 boolean valid = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
                 long currentTimeMillis = System.currentTimeMillis();
                 if (holder != null) {
@@ -1519,21 +1519,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
                 if (conn instanceof ConnectionProxyImpl) {
                     ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(currentTimeMillis);
-                }
-                if (valid && isMySql) { // unexcepted branch
-                    long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
-                    if (lastPacketReceivedTimeMs > 0) {
-                        long mysqlIdleMillis = currentTimeMillis - lastPacketReceivedTimeMs;
-                        if (mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
-                            discardConnection(holder);
-                            String errorMsg = "discard long time none received connection. "
-                                    + ", jdbcUrl : " + jdbcUrl
-                                    + ", version : " + VERSION.getVersionNumber()
-                                    + ", lastPacketReceivedIdleMillis : " + mysqlIdleMillis;
-                            LOG.warn(errorMsg);
-                            return false;
-                        }
-                    }
                 }
 
                 if (valid && onFatalError) {
