@@ -85,10 +85,16 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
             query = validateQuery;
         }
 
+        // using internal connection for createStatement to avoid unnecessary operations.
+        Connection internalConn = conn;
+        while (internalConn instanceof javax.sql.PooledConnection) {
+            internalConn = ((javax.sql.PooledConnection) internalConn).getConnection();
+        }
+
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = conn.createStatement();
+            stmt = internalConn.createStatement();
             if (validationQueryTimeout > 0) {
                 stmt.setQueryTimeout(validationQueryTimeout);
             }
