@@ -1547,12 +1547,6 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                     long idleMillis = currentTimeMillis - lastActiveTimeMillis;
 
-                    long timeBetweenEvictionRunsMillis = this.timeBetweenEvictionRunsMillis;
-
-                    if (timeBetweenEvictionRunsMillis <= 0) {
-                        timeBetweenEvictionRunsMillis = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
-                    }
-
                     if (idleMillis >= timeBetweenEvictionRunsMillis
                             || idleMillis < 0 // unexcepted branch
                     ) {
