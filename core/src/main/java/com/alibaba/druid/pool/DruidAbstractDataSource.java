@@ -834,6 +834,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setTimeBetweenEvictionRunsMillis(long timeBetweenEvictionRunsMillis) {
+        if (timeBetweenEvictionRunsMillis <= 0) {
+            throw new IllegalArgumentException("timeBetweenEvictionRunsMillis must > 0");
+        }
+
         this.timeBetweenEvictionRunsMillis = timeBetweenEvictionRunsMillis;
     }
 
