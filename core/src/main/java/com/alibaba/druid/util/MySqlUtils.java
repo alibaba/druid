@@ -388,7 +388,7 @@ public class MySqlUtils {
      * does not be updated by method <b>pingInternal</b> running for connection validation if option <b>usePingMethod</b>
      * is true.<br>
      * More troublesome is that <b>lastQueryFinishedTime</b> will not be set if option <b>maintainTimeStats</b>
-     * is false, so does mysql5 <b>lastPacketReceivedTimeMs<b>.
+     * is false, so does mysql5 <b>lastPacketReceivedTimeMs</b>.
      */
     @Deprecated
     public static long getLastPacketReceivedTimeMs(Connection conn) throws SQLException {
