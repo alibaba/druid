@@ -20,7 +20,7 @@ public class MySQLValidConnectionCheckerTest extends PoolTestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDbType("mysql");
         dataSource.setValidationQuery("select 1");
-        dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker(false));
+        dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
         dataSource.setInitialSize(1);
         dataSource.setTestOnBorrow(true);
     }
