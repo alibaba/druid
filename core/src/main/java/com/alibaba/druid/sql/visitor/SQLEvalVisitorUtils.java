@@ -120,6 +120,7 @@ public class SQLEvalVisitorUtils {
             case oracle:
                 return new OracleEvalVisitor();
             case postgresql:
+            case greenplum:
             case edb:
                 return new PGEvalVisitor();
             case sqlserver:

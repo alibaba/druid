@@ -3599,6 +3599,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             sampling.accept(this);
         }
 
+        if (x.getPartitionSize() > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            printlnAndAccept(x.getPartitions(), ", ");
+            print(')');
+        }
+
         String alias = x.getAlias();
         List<SQLName> columns = x.getColumnsDirect();
         if (alias != null) {
@@ -3615,15 +3621,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(')');
         }
 
+        if (isPrettyFormat() && x.hasAfterComment()) {
+            print(' ');
+            printlnComment(x.getAfterCommentsDirect());
+        }
+
         for (int i = 0; i < x.getHintsSize(); ++i) {
             print(' ');
             x.getHints().get(i).accept(this);
-        }
-
-        if (x.getPartitionSize() > 0) {
-            print0(ucase ? " PARTITION (" : " partition (");
-            printlnAndAccept(x.getPartitions(), ", ");
-            print(')');
         }
 
         return false;
@@ -5433,6 +5438,55 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         decrementIndent();
         println();
         print(')');
+
+        return false;
+    }
+
+    public boolean visit(TidbSplitTableStatement x) {
+        print0(ucase ? "SPLIT " : "split ");
+        if (x.isSplitSyntaxOptionRegionFor()) {
+            print0(ucase ? "REGION FOR " : "region for ");
+        }
+        if (x.isSplitSyntaxOptionPartition()) {
+            print0(ucase ? "PARTITION " : "partition ");
+        }
+        print0(ucase ? "TABLE " : "table ");
+        x.getTableName().accept(this);
+        print(' ');
+
+        if (!x.getPartitionNameListOptions().isEmpty()) {
+            print0(ucase ? "PARTITION (" : "partition (");
+            printAndAccept(x.getPartitionNameListOptions(), ",");
+            print(") ");
+        }
+        if (x.getIndexName() != null) {
+            print0(ucase ? "INDEX " : "index ");
+            x.getIndexName().accept(this);
+            print(' ');
+        }
+        if (!x.getSplitOptionBys().isEmpty()) {
+            print0(ucase ? "BY " : "by ");
+            boolean needCommon = false;
+            for (List<SQLExpr> list : x.getSplitOptionBys()) {
+                if (!needCommon) {
+                    needCommon = true;
+                } else {
+                    print0(", ");
+                }
+                print0("(");
+                printlnAndAccept(list, ", ");
+                print0(")");
+            }
+        }
+        if (x.getSplitOptionBetween() != null) {
+            print0(ucase ? "BETWEEN (" : " between (");
+            printAndAccept(x.getSplitOptionBetween(), ", ");
+            print0(ucase ? ") AND (" : ") and (");
+            printAndAccept(x.getSplitOptionAnd(), ", ");
+            print0(") ");
+            print0(ucase ? "REGIONS " : "regions ");
+            print(x.getSplitOptionRegions());
+        }
 
         return false;
     }

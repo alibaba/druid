@@ -47,8 +47,8 @@ public class OdpsFileTest extends TestCase {
         String input = Utils.read(reader);
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
-        String sql = items[0].trim();
-        String expect = items[1].trim();
+        String sql = items[0].trim().replaceAll("\\r\\n", "\n");
+        String expect = items[1].trim().replaceAll("\\r\\n", "\n");
 
         OdpsStatementParser parser = new OdpsStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

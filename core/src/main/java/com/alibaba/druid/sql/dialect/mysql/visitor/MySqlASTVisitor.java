@@ -1274,4 +1274,11 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     default void endVisit(MySqlXAStatement x) {
     }
+    default boolean visit(TidbSplitTableStatement x) {
+        return true;
+    }
+
+    default void endVisit(TidbSplitTableStatement x) {
+    }
+
 } //

@@ -21,6 +21,7 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.*;
+import dm.jdbc.driver.DmdbXAConnection;
 
 import javax.sql.XAConnection;
 import javax.sql.XADataSource;
@@ -80,6 +81,8 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
                 return H2Utils.createXAConnection(h2Factory, physicalConn);
             case jtds:
                 return new JtdsXAConnection(physicalConn);
+            case dm:
+                return new DmdbXAConnection(physicalConn);
             default:
                 throw new SQLException("xa not support dbType : " + this.dbTypeName);
 

@@ -102,6 +102,9 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         return config;
     }
 
+    public long getDataSourceId() {
+        return getId();
+    }
     public long getId() {
         return id;
     }

@@ -28,6 +28,7 @@ import java.util.Properties;
 public interface DataSourceProxy {
     JdbcDataSourceStat getDataSourceStat();
 
+    long getDataSourceId();
     String getName();
 
     String getDbType();

@@ -286,6 +286,7 @@ public class OdpsStatementParser extends SQLStatementParser {
         if (lexer.identifierEquals("WHOAMI")) {
             lexer.nextToken();
             SQLWhoamiStatement stmt = new SQLWhoamiStatement();
+            stmt.setDbType(DbType.odps);
             statementList.add(stmt);
             return true;
         }
@@ -602,6 +603,12 @@ public class OdpsStatementParser extends SQLStatementParser {
                 return true;
             }
             lexer.reset(mark);
+        }
+
+        if (identifierEquals("COST")) {
+            SQLStatement stmt = parseCost();
+            statementList.add(stmt);
+            return true;
         }
 
         return false;
@@ -1227,6 +1234,15 @@ public class OdpsStatementParser extends SQLStatementParser {
         }
 
         throw new ParserException("TODO " + lexer.info());
+    }
+
+    public SQLStatement parseCost() {
+        acceptIdentifier("COST");
+        acceptIdentifier("SQL");
+        SQLStatement stmt = parseStatement();
+        SQLCostStatement cost = new SQLCostStatement();
+        cost.setStatement(stmt);
+        return cost;
     }
 
     public SQLStatement parseSet() {

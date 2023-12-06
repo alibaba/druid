@@ -34,8 +34,8 @@ import java.util.Calendar;
 public class DruidPooledPreparedStatement extends DruidPooledStatement implements PreparedStatement {
     private static final Log LOG = LogFactory.getLog(DruidPooledPreparedStatement.class);
 
-    private final PreparedStatementHolder holder;
-    private final PreparedStatement stmt;
+    protected final PreparedStatementHolder holder;
+    protected final PreparedStatement stmt;
     private final String sql;
 
     private int defaultMaxFieldSize;
@@ -49,7 +49,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     private int currentFetchDirection;
     private int currentFetchSize;
 
-    private boolean pooled;
+    protected boolean pooled;
 
     public DruidPooledPreparedStatement(DruidPooledConnection conn,
                                         PreparedStatementHolder holder) throws SQLException {
@@ -151,11 +151,11 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
 
     @Override
     public void close() throws SQLException {
-        if (isClosed()) {
+        if (closed) {
             return;
         }
 
-        boolean connectionClosed = this.conn.isClosed();
+        boolean connectionClosed = conn.holder == null || conn.closed || conn.disable;
         // Reset the defaults
         if (pooled && !connectionClosed) {
             try {
@@ -491,15 +491,15 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     }
 
     protected void oracleSetRowPrefetch() throws SQLException {
-        if (!conn.isOracle()) {
+        if (!conn.holder.dataSource.isOracle) {
             return;
         }
 
-        if (holder.getHitCount() == 0) {
+        if (holder.hitCount == 0) {
             return;
         }
 
-        int fetchRowPeak = holder.getFetchRowPeak();
+        int fetchRowPeak = holder.fetchRowPeak;
 
         if (fetchRowPeak < 0) {
             return;
@@ -979,7 +979,12 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             return resultSetHoldability;
         }
 
+        @Override
         public boolean equals(Object object) {
+            if (!(object instanceof PreparedStatementKey)) {
+                return false;
+            }
+
             PreparedStatementKey that = (PreparedStatementKey) object;
 
             if (!this.sql.equals(that.sql)) {

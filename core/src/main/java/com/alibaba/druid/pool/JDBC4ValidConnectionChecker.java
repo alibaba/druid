@@ -21,9 +21,9 @@ import java.util.Properties;
 /**
  * Common ValidConnectionChecker for JDBC4 to use Connection.isValid.
  *
- * @Author : kimmking(kimmking@apache.org)
- * @create 2023/3/4 16:48
- * @Since 1.2.17
+ * Author : kimmking(kimmking@apache.org)
+ * create 2023/3/4 16:48
+ * Since 1.2.17
  */
 public class JDBC4ValidConnectionChecker implements ValidConnectionChecker {
     @Override

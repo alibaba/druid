@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.alibaba</groupId>
         <artifactId>druid-parent</artifactId>
-        <version>1.2.17-SNAPSHOT</version>
+        <version>1.2.21-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>druid-spring-boot-starter</artifactId>
@@ -13,10 +13,6 @@
     <name>druid-spring-boot-starter</name>
     <description>Spring Boot with Druid support,help you simplify Druid config in Spring Boot.</description>
     <url>https://github.com/alibaba/druid</url>
-
-    <properties>
-        <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
-    </properties>
 
     <developers>
         <developer>
@@ -33,7 +29,7 @@
                     management as the parent import style -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${springboot2.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -67,6 +63,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
@@ -95,6 +97,12 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>    
     </dependencies>
 
     <scm>
@@ -115,4 +123,16 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
+
+    <profiles>
+        <profile>
+            <id>enable-for-jdk17+</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+    </profiles>
 </project>

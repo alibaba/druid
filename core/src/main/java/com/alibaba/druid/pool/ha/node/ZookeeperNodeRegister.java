@@ -36,12 +36,12 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ZookeeperNodeRegister {
     private static final Log LOG = LogFactory.getLog(ZookeeperNodeRegister.class);
+    private final Lock lock = new ReentrantLock();
     private String zkConnectString;
     private String path = "/ha-druid-datasources";
     private CuratorFramework client;
     private GroupMember member;
     private boolean privateZkClient; // Should I close the client?
-    private Lock lock = new ReentrantLock();
 
     /**
      * Init a CuratorFramework if there's no CuratorFramework provided.
@@ -74,8 +74,8 @@ public class ZookeeperNodeRegister {
         if (payload == null || payload.isEmpty()) {
             return false;
         }
+        lock.lock();
         try {
-            lock.lock();
             createPathIfNotExisted();
             if (member != null) {
                 LOG.warn("GroupMember has already registered. Please deregister first.");

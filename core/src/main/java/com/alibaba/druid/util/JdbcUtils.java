@@ -38,6 +38,8 @@ public final class JdbcUtils implements JdbcConstants {
 
     private static Boolean mysql_driver_version_6;
 
+    private static Boolean clickhouse_driver_version_new;
+
     static {
         try {
             ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
@@ -509,7 +511,14 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:elastic:")) {
             return JdbcConstants.ELASTIC_SEARCH_DRIVER;
         } else if (rawUrl.startsWith("jdbc:clickhouse:")) {
-            return JdbcConstants.CLICKHOUSE_DRIVER;
+            if (clickhouse_driver_version_new == null) {
+                clickhouse_driver_version_new = Utils.loadClass(JdbcConstants.CLICKHOUSE_DRIVER_NEW) != null;
+            }
+            if (clickhouse_driver_version_new) {
+                return JdbcConstants.CLICKHOUSE_DRIVER_NEW;
+            } else {
+                return JdbcConstants.CLICKHOUSE_DRIVER;
+            }
         } else if (rawUrl.startsWith("jdbc:presto:")) {
             return JdbcConstants.PRESTO_DRIVER;
         } else if (rawUrl.startsWith("jdbc:trino:")) {
@@ -526,6 +535,10 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.TYDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:opengauss:")) {
             return "org.opengauss.Driver";
+        } else if (rawUrl.startsWith("jdbc:TAOS:")) {
+            return JdbcConstants.TAOS_DATA;
+        } else if (rawUrl.startsWith("jdbc:TAOS-RS:")) {
+            return JdbcConstants.TAOS_DATA_RS;
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
@@ -641,6 +654,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.greenplum;
         } else if (rawUrl.startsWith("jdbc:opengauss:") || rawUrl.startsWith("jdbc:gaussdb:") || rawUrl.startsWith("jdbc:dws:iam:")) {
             return DbType.gaussdb;
+        } else if (rawUrl.startsWith("jdbc:TAOS:") || rawUrl.startsWith("jdbc:TAOS-RS:")) {
+            return DbType.taosdata;
         } else {
             return null;
         }

@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement.Type;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.parser.*;
@@ -54,6 +55,10 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             stmt.setType(SQLCreateTableStatement.Type.TEMPORARY);
         }
 
+        if (lexer.stringVal().equalsIgnoreCase("TRANSACTIONAL")) {
+            lexer.nextToken();
+            stmt.setType(Type.TRANSACTIONAL);
+        }
         accept(Token.TABLE);
 
         if (lexer.token() == Token.IF || lexer.identifierEquals(FnvHash.Constants.IF)) {
@@ -249,6 +254,10 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             parseRowFormat(stmt);
         }
 
+        if (Token.LBRACKET.equals(lexer.token())) {
+            stmt.setLbracketUse(true);
+            lexer.nextToken();
+        }
         if (lexer.identifierEquals(FnvHash.Constants.STORED)) {
             lexer.nextToken();
             accept(Token.AS);
@@ -269,6 +278,10 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             }
         }
 
+        if (Token.RBRACKET.equals(lexer.token())) {
+            stmt.setRbracketUse(true);
+            lexer.nextToken();
+        }
         if (lexer.identifierEquals(FnvHash.Constants.LOCATION)) {
             lexer.nextToken();
             SQLExpr location = this.exprParser.primary();
@@ -289,8 +302,10 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             stmt.setMetaLifeCycle(this.exprParser.primary());
         }
 
-        if (lexer.token() == Token.AS) {
-            lexer.nextToken();
+        if (lexer.token() == Token.SELECT || lexer.token() == Token.AS) {
+            if (lexer.token() == Token.AS) {
+                lexer.nextToken();
+            }
             SQLSelect select = this.createSQLSelectParser().select();
             stmt.setSelect(select);
         }
