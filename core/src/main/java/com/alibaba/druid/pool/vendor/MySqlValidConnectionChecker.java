@@ -79,14 +79,10 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
         }
 
         String query;
-        if (usePingMethod) {
+        if (usePingMethod || validateQuery == null || validateQuery.isEmpty()) {
             query = DEFAULT_VALIDATION_QUERY;
         } else {
-            if (validateQuery == null || validateQuery.isEmpty()) {
-                query = DEFAULT_VALIDATION_QUERY;
-            } else {
-                query = validateQuery;
-            }
+            query = validateQuery;
         }
 
         Statement stmt = null;
