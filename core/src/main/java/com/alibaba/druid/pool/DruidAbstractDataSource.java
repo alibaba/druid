@@ -17,7 +17,6 @@ package com.alibaba.druid.pool;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.DruidRuntimeException;
-import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
