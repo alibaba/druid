@@ -100,6 +100,7 @@ public class DruidDataSourceTest6 extends TestCase {
                 JdbcUtils.close(rs);
                 JdbcUtils.close(stmt);
             }
+            conn.close();
         }
         Assert.assertNotNull(error);
         
