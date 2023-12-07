@@ -1673,7 +1673,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public Connection createPhysicalConnection(String url, Properties info) throws SQLException {
         Connection conn;
         if (getProxyFilters().isEmpty()) {
-            conn = getDriver().connect(url, info);
+            Connection rawConn = getDriver().connect(url, info);
+            Statement stmt = rawConn.createStatement();
+            conn = new DruidStatementConnection(rawConn, stmt);
         } else {
             FilterChainImpl filterChain = createChain();
             conn = filterChain.connection_connect(info);
@@ -1924,50 +1926,44 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         } else {
             rawConn = conn;
         }
-        Statement stmt = null;
-        try {
-            stmt = rawConn.createStatement();
-
-            for (String sql : initSqls) {
-                if (sql == null) {
-                    continue;
-                }
-
-                stmt.execute(sql);
+        Statement stmt = ((DruidStatementConnection) rawConn).getStatement();
+        for (String sql : initSqls) {
+            if (sql == null) {
+                continue;
             }
 
-            DbType dbType = DbType.of(this.dbTypeName);
-            if (JdbcUtils.isMysqlDbType(dbType)) {
-                if (variables != null) {
-                    ResultSet rs = null;
-                    try {
-                        rs = stmt.executeQuery("show variables");
-                        while (rs.next()) {
-                            String name = rs.getString(1);
-                            Object value = rs.getObject(2);
-                            variables.put(name, value);
-                        }
-                    } finally {
-                        JdbcUtils.close(rs);
-                    }
-                }
+            stmt.execute(sql);
+        }
 
-                if (globalVariables != null) {
-                    ResultSet rs = null;
-                    try {
-                        rs = stmt.executeQuery("show global variables");
-                        while (rs.next()) {
-                            String name = rs.getString(1);
-                            Object value = rs.getObject(2);
-                            globalVariables.put(name, value);
-                        }
-                    } finally {
-                        JdbcUtils.close(rs);
+        DbType dbType = DbType.of(this.dbTypeName);
+        if (JdbcUtils.isMysqlDbType(dbType)) {
+            if (variables != null) {
+                ResultSet rs = null;
+                try {
+                    rs = stmt.executeQuery("show variables");
+                    while (rs.next()) {
+                        String name = rs.getString(1);
+                        Object value = rs.getObject(2);
+                        variables.put(name, value);
                     }
+                } finally {
+                    JdbcUtils.close(rs);
                 }
             }
-        } finally {
-            JdbcUtils.close(stmt);
+
+            if (globalVariables != null) {
+                ResultSet rs = null;
+                try {
+                    rs = stmt.executeQuery("show global variables");
+                    while (rs.next()) {
+                        String name = rs.getString(1);
+                        Object value = rs.getObject(2);
+                        globalVariables.put(name, value);
+                    }
+                } finally {
+                    JdbcUtils.close(rs);
+                }
+            }
         }
     }
 
