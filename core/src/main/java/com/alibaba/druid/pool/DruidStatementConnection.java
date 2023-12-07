@@ -106,6 +106,7 @@ public class DruidStatementConnection implements Connection {
 
     @Override
     public void close() throws SQLException {
+        statement.close();
         conn.close();
     }
 
@@ -316,6 +317,7 @@ public class DruidStatementConnection implements Connection {
 
     @Override
     public void abort(Executor executor) throws SQLException {
+        statement.close();
         conn.abort(executor);
     }
 
