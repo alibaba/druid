@@ -15,7 +15,9 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -29,19 +31,30 @@ import java.util.Properties;
 public class ValidConnectionCheckerAdapter implements ValidConnectionChecker {
     @Override
     public boolean isValidConnection(Connection conn, String query, int validationQueryTimeout) throws Exception {
-        if (query == null || query.length() == 0) {
+        if (StringUtils.isEmpty(query)) {
             return true;
+        }
+        return execValidQuery(conn, query, validationQueryTimeout);
+    }
+
+    public static boolean execValidQuery(Connection conn, String query, int validationQueryTimeout) throws Exception {
+        // using raw connection for createStatement to speed up validation by skipping all filters.
+        Connection rawConn;
+        if (conn instanceof ConnectionProxyImpl) {
+            rawConn = ((ConnectionProxyImpl) conn).getConnectionRaw();
+        } else {
+            rawConn = conn;
         }
 
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = conn.createStatement();
+            stmt = rawConn.createStatement();
             if (validationQueryTimeout > 0) {
                 stmt.setQueryTimeout(validationQueryTimeout);
             }
             rs = stmt.executeQuery(query);
-            return true;
+            return rs.next();
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);

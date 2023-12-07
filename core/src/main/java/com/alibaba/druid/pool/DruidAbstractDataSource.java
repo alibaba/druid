@@ -1459,34 +1459,30 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         if (null != query) {
-            Statement stmt = null;
-            ResultSet rs = null;
+            boolean valid;
             try {
-                stmt = conn.createStatement();
-                if (getValidationQueryTimeout() > 0) {
-                    stmt.setQueryTimeout(getValidationQueryTimeout());
-                }
-                rs = stmt.executeQuery(query);
-                if (!rs.next()) {
-                    throw new SQLException("validationQuery didn't return a row");
-                }
-
-                if (onFatalError) {
-                    lock.lock();
-                    try {
-                        if (onFatalError) {
-                            onFatalError = false;
-                        }
-                    } finally {
-                        lock.unlock();
-                    }
-                }
+                valid = ValidConnectionCheckerAdapter.execValidQuery(conn, query, validationQueryTimeout);
+            } catch (Exception ex) {
+                throw new SQLException("validationQuery failed", ex);
             } finally {
                 if (conn instanceof ConnectionProxyImpl) {
                     ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
                 }
-                JdbcUtils.close(rs);
-                JdbcUtils.close(stmt);
+            }
+
+            if (!valid) {
+                throw new SQLException("validationQuery didn't return a row");
+            }
+
+            if (onFatalError) {
+                lock.lock();
+                try {
+                    if (onFatalError) {
+                        onFatalError = false;
+                    }
+                } finally {
+                    lock.unlock();
+                }
             }
         }
     }
@@ -1543,26 +1539,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 return true;
             }
 
-            Statement stmt = null;
-            ResultSet rset = null;
+            boolean valid;
             try {
-                stmt = conn.createStatement();
-                if (getValidationQueryTimeout() > 0) {
-                    stmt.setQueryTimeout(validationQueryTimeout);
-                }
-                rset = stmt.executeQuery(validationQuery);
-                if (!rset.next()) {
-                    return false;
-                }
+                valid = ValidConnectionCheckerAdapter.execValidQuery(conn, validationQuery, validationQueryTimeout);
             } finally {
                 if (conn instanceof ConnectionProxyImpl) {
                     ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
                 }
-                JdbcUtils.close(rset);
-                JdbcUtils.close(stmt);
             }
 
-            if (onFatalError) {
+            if (valid && onFatalError) {
                 lock.lock();
                 try {
                     if (onFatalError) {
@@ -1573,7 +1559,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
             }
 
-            return true;
+            return valid;
         } catch (Throwable ex) {
             // skip
             return false;
@@ -1805,6 +1791,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
             }
 
+            // call initSqls after completing socketTimeout setting.
+            initSqls(conn, variables, globalVariables);
+
             validateConnection(conn);
             validatedNanos = System.nanoTime();
 
@@ -1914,7 +1903,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (getDefaultCatalog() != null && getDefaultCatalog().length() != 0) {
             conn.setCatalog(getDefaultCatalog());
         }
+    }
 
+    private void initSqls(Connection conn,
+            Map<String, Object> variables,
+            Map<String, Object> globalVariables) throws SQLException {
         Collection<String> initSqls = getConnectionInitSqls();
         if (initSqls.isEmpty()
                 && variables == null
@@ -1922,9 +1915,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             return;
         }
 
+        // using raw connection to skip all filters.
+        Connection rawConn;
+        if (conn instanceof ConnectionProxyImpl) {
+            rawConn = ((ConnectionProxyImpl) conn).getConnectionRaw();
+        } else {
+            rawConn = conn;
+        }
         Statement stmt = null;
         try {
-            stmt = conn.createStatement();
+            stmt = rawConn.createStatement();
 
             for (String sql : initSqls) {
                 if (sql == null) {
