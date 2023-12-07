@@ -1462,6 +1462,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             boolean valid;
             try {
                 valid = ValidConnectionCheckerAdapter.execValidQuery(conn, query, validationQueryTimeout);
+            } catch (SQLException ex) {
+                throw ex;
             } catch (Exception ex) {
                 throw new SQLException("validationQuery failed", ex);
             } finally {
