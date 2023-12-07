@@ -19,12 +19,10 @@ import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Properties;
 
 public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
@@ -78,33 +76,11 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
             return false;
         }
 
-        String query;
-        if (usePingMethod || validateQuery == null || validateQuery.isEmpty()) {
-            query = DEFAULT_VALIDATION_QUERY;
-        } else {
-            query = validateQuery;
+        if (usePingMethod || StringUtils.isEmpty(validateQuery)) {
+            validateQuery = DEFAULT_VALIDATION_QUERY;
         }
 
-        // using internal connection for createStatement to avoid unnecessary operations.
-        Connection internalConn = conn;
-        while (internalConn instanceof javax.sql.PooledConnection) {
-            internalConn = ((javax.sql.PooledConnection) internalConn).getConnection();
-        }
-
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = internalConn.createStatement();
-            if (validationQueryTimeout > 0) {
-                stmt.setQueryTimeout(validationQueryTimeout);
-            }
-            rs = stmt.executeQuery(query);
-            return rs.next();
-        } finally {
-            JdbcUtils.close(rs);
-            JdbcUtils.close(stmt);
-        }
-
+        return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, validationQueryTimeout);
     }
 
 }
