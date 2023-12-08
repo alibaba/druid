@@ -24,6 +24,14 @@ import java.sql.Connection;
 
 public class OceanBaseValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker {
     private String commonValidateQuery = "SELECT 'x' FROM DUAL";
+    /**
+     * MySQL:
+     * specify a validation query in your connection pool that starts with {@literal /}* ping *{@literal /}.
+     * Note that the syntax must be exactly as specified. This will cause the driver send a ping to the server
+     * and return a dummy lightweight result set. When using a ReplicationConnection or LoadBalancedConnection,
+     * the ping will be sent across all active connections.
+     */
+    private String mysqlValidateQuery = "/* ping */ SELECT 1";
     private DbType dbType;
 
     public OceanBaseValidConnectionChecker() {
@@ -44,10 +52,11 @@ public class OceanBaseValidConnectionChecker extends ValidConnectionCheckerAdapt
         }
 
         if (StringUtils.isEmpty(validateQuery)) {
-            if (dbType == null) {
-                return true;
+            if (DbType.mysql.equals(dbType)) {
+                validateQuery = mysqlValidateQuery;
+            } else {
+                validateQuery = commonValidateQuery;
             }
-            validateQuery = commonValidateQuery;
         }
 
         return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, validationQueryTimeout);
