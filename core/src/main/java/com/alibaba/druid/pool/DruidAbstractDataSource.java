@@ -1796,9 +1796,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             }
 
             // call initSqls after completing socketTimeout setting.
-            initSqls(conn, variables, globalVariables);
-
-            validateConnection(conn);
+            if (!initSqls(conn, variables, globalVariables)) {
+                // if no SQL has been executed yet.
+                validateConnection(conn);
+            }
             validatedNanos = System.nanoTime();
 
             setFailContinuous(false);
@@ -1909,14 +1910,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
     }
 
-    private void initSqls(Connection conn,
+    private boolean initSqls(Connection conn,
             Map<String, Object> variables,
             Map<String, Object> globalVariables) throws SQLException {
+        boolean checked = false;
         Collection<String> initSqls = getConnectionInitSqls();
         if (initSqls.isEmpty()
                 && variables == null
                 && globalVariables == null) {
-            return;
+            return checked;
         }
 
         // using raw connection to skip all filters.
@@ -1928,11 +1930,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
         Statement stmt = ((DruidStatementConnection) rawConn).getStatement();
         for (String sql : initSqls) {
-            if (sql == null) {
+            if (StringUtils.isEmpty(sql)) {
                 continue;
             }
 
             stmt.execute(sql);
+            checked = true;
         }
 
         DbType dbType = DbType.of(this.dbTypeName);
@@ -1949,6 +1952,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 } finally {
                     JdbcUtils.close(rs);
                 }
+                checked = true;
             }
 
             if (globalVariables != null) {
@@ -1963,8 +1967,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 } finally {
                     JdbcUtils.close(rs);
                 }
+                checked = true;
             }
         }
+
+        return checked;
     }
 
     public abstract int getActivePeak();

@@ -59,9 +59,6 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
         }
 
         if (StringUtils.isEmpty(validateQuery)) {
-            if (StringUtils.isEmpty(this.defaultValidateQuery)) {
-                return true;
-            }
             validateQuery = this.defaultValidateQuery;
         }
 
