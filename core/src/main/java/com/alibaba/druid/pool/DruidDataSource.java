@@ -114,7 +114,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     //
     private DruidConnectionHolder[] evictConnections;
     private DruidConnectionHolder[] keepAliveConnections;
-    private volatile DruidConnectionHolder[] shrinkBuffer;
+    private boolean[] connectionsRemoveFlag;
 
     // threads
     private volatile ScheduledFuture<?> destroySchedulerFuture;
@@ -729,12 +729,12 @@ public class DruidDataSource extends DruidAbstractDataSource
                 this.connections = Arrays.copyOf(this.connections, maxActive);
                 evictConnections = new DruidConnectionHolder[maxActive];
                 keepAliveConnections = new DruidConnectionHolder[maxActive];
-                this.shrinkBuffer = new DruidConnectionHolder[maxActive];
+                connectionsRemoveFlag = new boolean[maxActive];
             } else {
                 this.connections = Arrays.copyOf(this.connections, allCount);
                 evictConnections = new DruidConnectionHolder[allCount];
                 keepAliveConnections = new DruidConnectionHolder[allCount];
-                this.shrinkBuffer = new DruidConnectionHolder[allCount];
+                connectionsRemoveFlag = new boolean[allCount];
             }
 
             this.maxActive = maxActive;
@@ -920,7 +920,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             connections = new DruidConnectionHolder[maxActive];
             evictConnections = new DruidConnectionHolder[maxActive];
             keepAliveConnections = new DruidConnectionHolder[maxActive];
-            shrinkBuffer = new DruidConnectionHolder[maxActive];
+            connectionsRemoveFlag = new boolean[maxActive];
 
             SQLException connectError = null;
 
@@ -3251,13 +3251,13 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             final int checkCount = poolingCount - minIdle;
             final long currentTimeMillis = System.currentTimeMillis();
-            int remaining = 0;
             int i = 0;
             for (; i < poolingCount; ++i) {
                 DruidConnectionHolder connection = connections[i];
 
                 if ((onFatalError || fatalErrorIncrement > 0) && (lastFatalErrorTimeMillis > connection.connectTimeMillis)) {
                     keepAliveConnections[keepAliveCount++] = connection;
+                    connectionsRemoveFlag[i] = true;
                     continue;
                 }
 
@@ -3266,6 +3266,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                         long phyConnectTimeMillis = currentTimeMillis - connection.connectTimeMillis;
                         if (phyConnectTimeMillis > phyTimeoutMillis) {
                             evictConnections[evictCount++] = connection;
+                            connectionsRemoveFlag[i] = true;
                             continue;
                         }
                     }
@@ -3280,9 +3281,11 @@ public class DruidDataSource extends DruidAbstractDataSource
                     if (idleMillis >= minEvictableIdleTimeMillis) {
                         if (i < checkCount) {
                             evictConnections[evictCount++] = connection;
+                            connectionsRemoveFlag[i] = true;
                             continue;
                         } else if (idleMillis > maxEvictableIdleTimeMillis) {
                             evictConnections[evictCount++] = connection;
+                            connectionsRemoveFlag[i] = true;
                             continue;
                         }
                     }
@@ -3290,12 +3293,12 @@ public class DruidDataSource extends DruidAbstractDataSource
                     if (keepAlive && idleMillis >= keepAliveBetweenTimeMillis
                             && currentTimeMillis - connection.lastKeepTimeMillis >= keepAliveBetweenTimeMillis) {
                         keepAliveConnections[keepAliveCount++] = connection;
-                    } else {
-                        shrinkBuffer[remaining++] = connection;
+                        connectionsRemoveFlag[i] = true;
                     }
                 } else {
                     if (i < checkCount) {
                         evictConnections[evictCount++] = connection;
+                        connectionsRemoveFlag[i] = true;
                     } else {
                         break;
                     }
@@ -3303,17 +3306,12 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             int removeCount = evictCount + keepAliveCount;
-            if (removeCount > 0) {
-                System.arraycopy(shrinkBuffer, 0, connections, 0, remaining);
-                int breakedCount = poolingCount - i;
-                if (breakedCount > 0) {
-                    // copy connections begin with the break position.
-                    System.arraycopy(connections, i, connections, remaining, breakedCount);
-                    remaining += breakedCount;
-                }
-                Arrays.fill(connections, remaining, poolingCount, null);
-                poolingCount -= removeCount;
+
+            boolean needCompact = removeCount > 0;
+            if (needCompact) {
+                compactConnections(removeCount);
             }
+
             keepAliveCheckCount += keepAliveCount;
 
             if (keepAlive && poolingCount + activeCount < minIdle) {
@@ -3419,6 +3417,24 @@ public class DruidDataSource extends DruidAbstractDataSource
                 lock.unlock();
             }
         }
+    }
+
+    private void compactConnections(int removeCount) {
+        int vacantPos = 0;
+        for (int i = 0; i < poolingCount; i++) {
+            if (connectionsRemoveFlag[i]) {
+                // reset flag
+                connectionsRemoveFlag[i] = false;
+                connections[i] = null;
+                continue;
+            }
+            if (i == vacantPos) {
+                continue;
+            }
+            connections[vacantPos] = connections[i];
+            vacantPos++;
+        }
+        poolingCount -= removeCount;
     }
 
     public int getWaitThreadCount() {
