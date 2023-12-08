@@ -31,7 +31,7 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     protected boolean fixedRange;
     protected boolean startEnd;
 
-    protected final List<SQLExpr> orderBy = new ArrayList<>();;
+    protected final List<SQLExpr> orderBy = new ArrayList<>();
 
     protected Map<SQLExpr, SQLExpr> lessThanMap = new LinkedHashMap<>();
     protected Map<SQLExpr, List<SQLExpr>> fixedRangeMap = new LinkedHashMap<>();

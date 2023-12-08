@@ -122,7 +122,7 @@ public class StarRocksOutputVisitorTest extends TestCase {
                 ");";
 
         String o3 =
-                "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
+                "CREATE EXTERNAL TABLE IF NOT EXISTS `detailDemo` (\n" +
                 "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
                 "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
                 "\t`num_plate` SMALLINT COMMENT 'range [-32768, 32767] ',\n" +
@@ -141,7 +141,22 @@ public class StarRocksOutputVisitorTest extends TestCase {
                 "COMMENT \"OLAP\"\n" +
                 "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n";
 
-        StarRocksCreateTableParser parser = (StarRocksCreateTableParser) new StarRocksStatementParser(o3).getSQLCreateTableParser();
+        String o4 =
+                "CREATE TABLE d0.table_hash (\n" +
+                "\tk1 TINYINT,\n" +
+                "\tk2 DECIMAL(10, 2) DEFAULT \"10.5\",\n" +
+                "\tv1 CHAR(10) REPLACE,\n" +
+                "\tv2 INT SUM,\n" +
+                "\tINDEX index_name(k1,k2) USING BITMAP COMMENT '22'\n" +
+                ") ENGINE = olap\n" +
+                "AGGREGATE KEY(k1, k2)\n" +
+                "DISTRIBUTED BY HASH(k1) BUCKETS 10\n" +
+                "ORDER BY (k1)\n" +
+                "PROPERTIES (\n" +
+                "  \"storage_type\" = \"column\"\n" +
+                ")";
+
+        StarRocksCreateTableParser parser = (StarRocksCreateTableParser) new StarRocksStatementParser(o4).getSQLCreateTableParser();
 
         StarRocksCreateTableStatement stmt = (StarRocksCreateTableStatement)parser.parseCreateTable();
         System.out.println(stmt.toString());

@@ -84,6 +84,11 @@ public class SQLCreateTableParser extends SQLDDLParser {
             createTable.setDimension(true);
         }
 
+        if (DbType.starrocks == dbType && lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
+            lexer.nextToken();
+            createTable.setExternal(true);
+        }
+
         accept(Token.TABLE);
 
         if (lexer.token() == Token.IF || lexer.identifierEquals("IF")) {
