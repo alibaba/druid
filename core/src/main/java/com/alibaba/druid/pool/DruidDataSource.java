@@ -114,6 +114,8 @@ public class DruidDataSource extends DruidAbstractDataSource
     //
     private DruidConnectionHolder[] evictConnections;
     private DruidConnectionHolder[] keepAliveConnections;
+    // for cleaning the old references of the retained connections that have been moved forward to the new positions.
+    private volatile DruidConnectionHolder[] nullConnections;
 
     // threads
     private volatile ScheduledFuture<?> destroySchedulerFuture;
@@ -728,10 +730,12 @@ public class DruidDataSource extends DruidAbstractDataSource
                 this.connections = Arrays.copyOf(this.connections, maxActive);
                 evictConnections = new DruidConnectionHolder[maxActive];
                 keepAliveConnections = new DruidConnectionHolder[maxActive];
+                nullConnections = new DruidConnectionHolder[maxActive];
             } else {
                 this.connections = Arrays.copyOf(this.connections, allCount);
                 evictConnections = new DruidConnectionHolder[allCount];
                 keepAliveConnections = new DruidConnectionHolder[allCount];
+                nullConnections = new DruidConnectionHolder[allCount];
             }
 
             this.maxActive = maxActive;
@@ -917,6 +921,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             connections = new DruidConnectionHolder[maxActive];
             evictConnections = new DruidConnectionHolder[maxActive];
             keepAliveConnections = new DruidConnectionHolder[maxActive];
+            nullConnections = new DruidConnectionHolder[maxActive];
 
             SQLException connectError = null;
 
@@ -3311,7 +3316,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                     System.arraycopy(connections, i, connections, remaining, breakedCount);
                     remaining += breakedCount;
                 }
-                Arrays.fill(connections, remaining, poolingCount, null);
+                // clean the old references of the connections that have been moved forward to the new positions.
+                System.arraycopy(nullConnections, 0, connections, remaining, removeCount);
                 poolingCount -= removeCount;
             }
             keepAliveCheckCount += keepAliveCount;
