@@ -114,7 +114,6 @@ public class DruidDataSource extends DruidAbstractDataSource
     //
     private DruidConnectionHolder[] evictConnections;
     private DruidConnectionHolder[] keepAliveConnections;
-    private volatile DruidConnectionHolder[] shrinkBuffer;
 
     // threads
     private volatile ScheduledFuture<?> destroySchedulerFuture;
@@ -729,12 +728,10 @@ public class DruidDataSource extends DruidAbstractDataSource
                 this.connections = Arrays.copyOf(this.connections, maxActive);
                 evictConnections = new DruidConnectionHolder[maxActive];
                 keepAliveConnections = new DruidConnectionHolder[maxActive];
-                this.shrinkBuffer = new DruidConnectionHolder[maxActive];
             } else {
                 this.connections = Arrays.copyOf(this.connections, allCount);
                 evictConnections = new DruidConnectionHolder[allCount];
                 keepAliveConnections = new DruidConnectionHolder[allCount];
-                this.shrinkBuffer = new DruidConnectionHolder[allCount];
             }
 
             this.maxActive = maxActive;
@@ -920,7 +917,6 @@ public class DruidDataSource extends DruidAbstractDataSource
             connections = new DruidConnectionHolder[maxActive];
             evictConnections = new DruidConnectionHolder[maxActive];
             keepAliveConnections = new DruidConnectionHolder[maxActive];
-            shrinkBuffer = new DruidConnectionHolder[maxActive];
 
             SQLException connectError = null;
 
@@ -3251,6 +3247,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             final int checkCount = poolingCount - minIdle;
             final long currentTimeMillis = System.currentTimeMillis();
+            // remaining is the position of the next connection should be retained in the pool.
             int remaining = 0;
             int i = 0;
             for (; i < poolingCount; ++i) {
@@ -3291,7 +3288,11 @@ public class DruidDataSource extends DruidAbstractDataSource
                             && currentTimeMillis - connection.lastKeepTimeMillis >= keepAliveBetweenTimeMillis) {
                         keepAliveConnections[keepAliveCount++] = connection;
                     } else {
-                        shrinkBuffer[remaining++] = connection;
+                        if (i != remaining) {
+                            // move the connection to the new position for retaining it in the pool.
+                            connections[remaining] = connection;
+                        }
+                        remaining++;
                     }
                 } else {
                     if (i < checkCount) {
@@ -3304,10 +3305,9 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             int removeCount = evictCount + keepAliveCount;
             if (removeCount > 0) {
-                System.arraycopy(shrinkBuffer, 0, connections, 0, remaining);
                 int breakedCount = poolingCount - i;
                 if (breakedCount > 0) {
-                    // copy connections begin with the break position.
+                    // retains the connections that start at the break position.
                     System.arraycopy(connections, i, connections, remaining, breakedCount);
                     remaining += breakedCount;
                 }
