@@ -176,6 +176,7 @@ public class SQLEvalVisitorUtils {
         functions.put("bit_count", OneParamFunctions.instance);
         functions.put("soundex", OneParamFunctions.instance);
         functions.put("space", OneParamFunctions.instance);
+        functions.put("replace", Replace.instance);
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
