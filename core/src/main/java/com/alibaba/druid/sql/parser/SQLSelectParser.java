@@ -1797,7 +1797,6 @@ public class SQLSelectParser extends SQLParser {
                     if (natural && join.getJoinType() == JoinType.INNER_JOIN) {
                         join.setJoinType(SQLJoinTableSource.JoinType.NATURAL_INNER_JOIN);
                     }
-                    System.out.println("走到这里吗？");
                 }
             }
             join.setNatural(natural);
