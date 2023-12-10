@@ -388,4 +388,25 @@ public class StringUtils {
         }
         return s;
     }
+
+    public static String replaceAll(String s, String src, String dest) {
+        if (s == null || src == null || dest == null || src.length() == 0) {
+            return s;
+        }
+        int pos = s.indexOf(src);
+        if (pos < 0) {
+            return s;
+        }
+        int capacity = dest.length() > src.length() ? s.length() * 2 : s.length();
+        StringBuilder sb = new StringBuilder(capacity);
+        int writen = 0;
+        for (; pos >= 0; ) {
+            sb.append(s, writen, pos);
+            sb.append(dest);
+            writen = pos + src.length();
+            pos = s.indexOf(src, writen);
+        }
+        sb.append(s, writen, s.length());
+        return sb.toString();
+    }
 }

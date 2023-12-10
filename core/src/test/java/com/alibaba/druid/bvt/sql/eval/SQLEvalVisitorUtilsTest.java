@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.eval;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
@@ -180,5 +181,30 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
     public void test_LessThanOrGreater() throws Exception {
         Assert.assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "1<>1"));
         Assert.assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "?<>?", Arrays.<Object>asList(1, 1)));
+    }
+
+    public void test_string_replace() throws Exception {
+        String sql = "replace('abcb','b','B')";
+        Object val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
+        System.out.println(sql + ": " + val);
+        assertEquals("aBcB", val);
+        sql = "replace('abc',null,'B')";
+        val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
+        System.out.println(sql + ": " + val);
+        assertEquals("abc", val);
+        sql = "replace('abc','b',null)";
+        val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
+        System.out.println(sql + ": " + val);
+        assertEquals("abc", val);
+
+        sql = "replace('abcbbccbc','bc','QWER')";
+        val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
+        System.out.println(sql + ": " + val);
+        assertEquals("aQWERbQWERcQWER", val);
+
+        sql = "replace('www.mysql.com','w','Ww')";
+        val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
+        System.out.println(sql + ": " + val);
+        assertEquals("WwWwWw.mysql.com", val);
     }
 }
