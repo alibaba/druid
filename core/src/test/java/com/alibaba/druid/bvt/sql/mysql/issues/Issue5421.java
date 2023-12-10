@@ -51,7 +51,7 @@ public class Issue5421 {
         }
     }
 
-    static String normalizeSql(String sql) {
+    public static String normalizeSql(String sql) {
         sql = StringUtils.replace(sql, " ( ", "(");
         sql = StringUtils.replace(sql, "( ", "(");
         sql = StringUtils.replace(sql, " )", ")");
