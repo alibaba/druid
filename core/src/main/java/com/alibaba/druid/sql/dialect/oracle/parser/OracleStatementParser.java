@@ -2057,6 +2057,14 @@ public class OracleStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.KEY) {
                     name = new SQLIdentifierExpr(lexer.stringVal());
                     lexer.nextToken();
+                } else if (lexer.identifierEquals("ENUM")) {
+                    name = this.exprParser.name();
+                    SQLListExpr enumList = (SQLListExpr) this.exprParser.expr();
+                    parameter.setName(name);
+                    dataType = new SQLDataTypeImpl("ENUM", enumList);
+                    parameter.setDataType(dataType);
+                    parameters.add(parameter);
+                    break;
                 } else {
                     name = this.exprParser.name();
                 }
