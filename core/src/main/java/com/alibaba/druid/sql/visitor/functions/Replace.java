@@ -25,14 +25,12 @@ import java.util.List;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
-
 /**
  * @auther lizongbo
  * @see <a href="https://github.com/alibaba/druid/issues/5477">Issue来源</a>
  * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_replace">mysql replace函数</a>
  */
 public class Replace implements Function {
-
     public static final Replace instance = new Replace();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
