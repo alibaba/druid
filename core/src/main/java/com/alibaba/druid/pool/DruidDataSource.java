@@ -1588,7 +1588,8 @@ public class DruidDataSource extends DruidAbstractDataSource
     /**
      * 抛弃连接，不进行回收，而是抛弃
      *
-     * @param conn sql connection
+     * @param conn the connection to be discarded
+     * @return a boolean indicating whether the empty signal was called
      * @deprecated
      */
     @Override

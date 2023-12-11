@@ -322,7 +322,7 @@ public class WallConfig implements WallConfigMBean {
     /**
      * allow mysql describe statement
      *
-     * @return true if allow describe
+     * @return true if the describe command is allowed, false otherwise
      * @since 0.2.10
      */
     public boolean isDescribeAllow() {
@@ -682,7 +682,7 @@ public class WallConfig implements WallConfigMBean {
 
         /**
          * 返回resultset隐藏列名
-         *
+
          * @param tableName tableName
          */
         String getHiddenColumn(String tableName);
