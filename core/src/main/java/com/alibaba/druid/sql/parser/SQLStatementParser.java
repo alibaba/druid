@@ -5108,9 +5108,10 @@ public class SQLStatementParser extends SQLParser {
     */
 
     /**
-     * parse cursor open statement
+     * Parses the SQL OPEN statement and returns the corresponding SQLOpenStatement object.
      *
-     * @return SQL open statement
+     * @return the parsed SQLOpenStatement object representing the SQL OPEN statement
+     * @throws ParserException if an error occurs during parsing
      */
     public SQLOpenStatement parseOpen() {
         SQLOpenStatement stmt = new SQLOpenStatement();

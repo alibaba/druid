@@ -33,10 +33,10 @@ public class StringUtils {
     /**
      * Example: subString("12345","1","4")=23
      *
-     * @param src src
-     * @param start start
-     * @param to to
-     * @return integer of substring
+     * @param src   the source string from which to extract the substring
+     * @param start the starting point of the substring
+     * @param to    the ending point of the substring
+     * @return the extracted substring converted to an Integer, or null if any of the input strings is null
      */
     public static Integer subStringToInteger(String src, String start, String to) {
         return stringToInteger(subString(src, start, to));
@@ -45,10 +45,10 @@ public class StringUtils {
     /**
      * Example: subString("abcd","a","c")="b"
      *
-     * @param src src
+     * @param src   the source string from which to extract the substring
      * @param start null while start from index=0
      * @param to    null while to index=src.length
-     * @return substring
+     * @return the extracted substring, or null if any of the input strings is null
      */
     public static String subString(String src, String start, String to) {
         return subString(src, start, to, false);
@@ -57,11 +57,11 @@ public class StringUtils {
     /**
      * Example: subString("abcdc","a","c",true)="bcd"
      *
-     * @param src src
+     * @param src    the source string from which to extract the substring
      * @param start  null while start from index=0
      * @param to     null while to index=src.length
      * @param toLast true while to index=src.lastIndexOf(to)
-     * @return subString
+     * @return the extracted substring, or null if any of the input strings is null, or if the start/end points are invalid
      */
     public static String subString(String src, String start, String to, boolean toLast) {
         int indexFrom = start == null ? 0 : src.indexOf(start);
@@ -83,8 +83,10 @@ public class StringUtils {
     }
 
     /**
-     * @param in in
-     * @return integer of string
+     * Converts a string representation of an integer to an Integer object.
+     *
+     * @param in the input string to be converted (can be null)
+     * @return the Integer object parsed from the input string, or null if the input is null, empty, or not a valid integer
      */
     public static Integer stringToInteger(String in) {
         if (in == null) {

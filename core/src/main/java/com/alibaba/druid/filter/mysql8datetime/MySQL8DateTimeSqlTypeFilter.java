@@ -20,11 +20,11 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
     /**
      * 针对mysql jdbc 8.0.23及以上版本，通过该方法控制将对象类型转换成原来的类型
      *
-     * @param chain chain
-     * @param result result
-     * @param columnIndex column index
-     * @return MySQL 5.x object
-     * @throws SQLException SQLException
+     * @param chain  chain the FilterChain object that represents the filter chain
+     * @param result the ResultSetProxy object that represents the result set
+     * @param columnIndex the index of the column to retrieve
+     * @return an Object holding the column value, or {@code null} if the value is SQL NULL
+     * @throws SQLException if a database access error occurs or the columnIndex is invalid
      * @see java.sql.ResultSet#getObject(int)
      */
     @Override
@@ -35,11 +35,11 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
     /**
      * 针对mysql jdbc 8.0.23及以上版本，通过该方法控制将对象类型转换成原来的类型
      *
-     * @param chain chain
-     * @param result result
-     * @param columnLabel columnLabel
-     * @return MySQL 5.x object
-     * @throws SQLException SQLException
+     * @param chain   chain the FilterChain object that represents the filter chain
+     * @param result  the ResultSetProxy object that represents the result set
+     * @param columnLabel the label of the column to retrieve
+     * @return an Object holding the column value, or {@code null} if the value is SQL NULL
+     * @throws SQLException if a database access error occurs or the columnLabel is invalid
      * @see java.sql.ResultSet#getObject(String)
      */
     @Override
@@ -48,10 +48,13 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
     }
 
     /**
-     * 针对mysql jdbc 8.0.23及以上版本，通过该方法控制将对象类型转换成原来的类型
+     * Replaces a LocalDateTime object with its equivalent Timestamp object.
+     * If the input object is not an instance of LocalDateTime, it is returned as is.
+     * This method is specifically designed to handle cases where upgrading to MySQL JDBC 8.0.23 or above
+     * requires converting LocalDateTime objects back to the older compatible type.
      *
-     * @param obj obj
-     * @return timestamp value of obj if obj type is LocalDateTime, otherwise return obj
+     * @param obj the object to be checked and possibly replaced
+     * @return the replaced object if it is a LocalDateTime, or the original object otherwise
      */
     public static Object getObjectReplaceLocalDateTime(Object obj) {
         if (!(obj instanceof LocalDateTime)) {
@@ -62,11 +65,14 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
     }
 
     /**
-     * mybatis查询结果为map时， 会自动做类型映射。只有在自动映射前，更改 ResultSetMetaData 里映射的 java 类型，才会生效
-     * @param chain chain
-     * @param resultSet resultSet
-     * @return MySQL8 date time result set meta data
-     * @throws SQLException SQLException
+     * Retrieves the metadata for the result set, including information about the columns and their properties.
+     * This method wraps the original result set metadata with a custom implementation that handles MySQL 8.0.23 or above
+     * compatibility for LocalDateTime objects.
+     *
+     * @param chain the FilterChain object that represents the filter chain
+     * @param resultSet the ResultSetProxy object that represents the result set
+     * @return a ResultSetMetaData object containing the metadata for the result set
+     * @throws SQLException if a database access error occurs
      */
     @Override
     public ResultSetMetaData resultSet_getMetaData(FilterChain chain, ResultSetProxy resultSet) throws SQLException {

@@ -284,6 +284,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile Throwable lastFatalError;
     protected volatile Throwable keepAliveError;
 
+    /**
+     * Constructs a new DruidAbstractDataSource with a specified lock fairness setting.
+     *
+     * @param lockFair a boolean value indicating whether the lock should be fair or not
+     */
     public DruidAbstractDataSource(boolean lockFair) {
         lock = new ReentrantLock(lockFair);
         notEmpty = lock.newCondition();
