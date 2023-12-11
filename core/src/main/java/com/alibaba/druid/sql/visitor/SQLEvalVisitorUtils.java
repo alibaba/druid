@@ -147,6 +147,7 @@ public class SQLEvalVisitorUtils {
         functions.put("left", Left.instance);
         functions.put("locate", Locate.instance);
         functions.put("lpad", Lpad.instance);
+        functions.put("rpad", Rpad.instance);
         functions.put("ltrim", Ltrim.instance);
         functions.put("mid", Substring.instance);
         functions.put("substr", Substring.instance);
