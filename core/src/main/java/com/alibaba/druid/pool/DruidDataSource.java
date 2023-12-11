@@ -3227,6 +3227,10 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     public void shrink(boolean checkTime, boolean keepAlive) {
+        if (poolingCount == 0) {
+            return;
+        }
+
         final Lock lock = this.lock;
         try {
             lock.lockInterruptibly();
