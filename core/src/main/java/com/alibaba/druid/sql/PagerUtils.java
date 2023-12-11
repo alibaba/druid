@@ -596,8 +596,8 @@ public class PagerUtils {
     }
 
     /**
-     * @param sql
-     * @param dbType
+     * @param sql sql
+     * @param dbType dbType
      * @return if not exists limit, return -1;
      */
     public static int getLimit(String sql, DbType dbType) {

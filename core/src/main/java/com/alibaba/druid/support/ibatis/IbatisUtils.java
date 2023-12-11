@@ -69,7 +69,7 @@ public class IbatisUtils {
     /**
      * 通过反射的方式得到id，能够兼容2.3.0和2.3.4
      *
-     * @return
+     * @return id of statement
      */
     protected static String getId(Object statement) {
         try {
@@ -94,7 +94,7 @@ public class IbatisUtils {
     /**
      * 通过反射的方式得到resource，能够兼容2.3.0和2.3.4
      *
-     * @return
+     * @return resource of statement
      */
     protected static String getResource(Object statement) {
         try {

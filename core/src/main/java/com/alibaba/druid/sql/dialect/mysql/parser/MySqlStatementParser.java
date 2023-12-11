@@ -9272,7 +9272,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     /**
      * parse repeat statement with label
      *
-     * @param label
+     * @param label label
      */
     public MySqlRepeatStatement parseRepeat(String label) {
         MySqlRepeatStatement repeatStmt = new MySqlRepeatStatement();

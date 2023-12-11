@@ -691,9 +691,9 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     /**
      * only for parameterized output
      *
-     * @param v
-     * @param x
-     * @return
+     * @param v parameterized visitor
+     * @param x SQL binary operation expression
+     * @return merged SQL binary operation expression
      */
     public static SQLBinaryOpExpr merge(ParameterizedVisitor v, SQLBinaryOpExpr x) {
         SQLObject parent = x.parent;
@@ -774,7 +774,7 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     /**
      * only for parameterized output
      *
-     * @return
+     * @return merged list
      */
     public List<SQLObject> getMergedList() {
         return mergedList;

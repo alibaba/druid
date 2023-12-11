@@ -22,7 +22,7 @@ public interface ValidConnectionChecker {
     boolean isValidConnection(Connection c, String query, int validationQueryTimeout) throws Exception;
 
     /**
-     * @param properties
+     * @param properties properties
      * @since 0.2.21
      */
     void configFromProperties(Properties properties);

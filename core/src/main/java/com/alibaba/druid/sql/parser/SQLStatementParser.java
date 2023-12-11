@@ -5110,7 +5110,7 @@ public class SQLStatementParser extends SQLParser {
     /**
      * parse cursor open statement
      *
-     * @return
+     * @return SQL open statement
      */
     public SQLOpenStatement parseOpen() {
         SQLOpenStatement stmt = new SQLOpenStatement();

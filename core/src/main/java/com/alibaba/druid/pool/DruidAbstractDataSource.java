@@ -821,7 +821,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     * @param numTestsPerEvictionRun
+     * @param numTestsPerEvictionRun number of tests per eviction run
      */
     @Deprecated
     public void setNumTestsPerEvictionRun(int numTestsPerEvictionRun) {
