@@ -65,7 +65,7 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
      * mybatis查询结果为map时， 会自动做类型映射。只有在自动映射前，更改 ResultSetMetaData 里映射的 java 类型，才会生效
      * @param chain chain
      * @param resultSet resultSet
-     * @return MySQL8 date time result set meta data 
+     * @return MySQL8 date time result set meta data
      * @throws SQLException SQLException
      */
     @Override
