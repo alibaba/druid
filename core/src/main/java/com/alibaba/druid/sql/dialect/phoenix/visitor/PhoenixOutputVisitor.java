@@ -21,11 +21,11 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
  * Created by wenshao on 16/9/13.
  */
 public class PhoenixOutputVisitor extends SQLASTOutputVisitor implements PhoenixASTVisitor {
-    public PhoenixOutputVisitor(Appendable appender) {
+    public PhoenixOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 
-    public PhoenixOutputVisitor(Appendable appender, boolean parameterized) {
+    public PhoenixOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 }

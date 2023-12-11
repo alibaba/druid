@@ -25,12 +25,12 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
         this.config(VisitorFeature.OutputParameterized, true);
     }
 
-    public OracleParameterizedOutputVisitor(Appendable appender) {
+    public OracleParameterizedOutputVisitor(StringBuilder appender) {
         super(appender);
         this.config(VisitorFeature.OutputParameterized, true);
     }
 
-    public OracleParameterizedOutputVisitor(Appendable appender, boolean printPostSemi) {
+    public OracleParameterizedOutputVisitor(StringBuilder appender, boolean printPostSemi) {
         super(appender, printPostSemi);
         this.config(VisitorFeature.OutputParameterized, true);
     }

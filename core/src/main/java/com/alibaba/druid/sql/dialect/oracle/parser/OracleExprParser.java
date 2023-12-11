@@ -172,26 +172,27 @@ public class OracleExprParser extends SQLExprParser {
             }
         }
 
-        String typeName;
+        StringBuilder typeName = new StringBuilder();
         if (lexer.token() == Token.EXCEPTION) {
-            typeName = "EXCEPTION";
+            typeName.append("EXCEPTION");
             lexer.nextToken();
         } else if (lexer.identifierEquals(FnvHash.Constants.LONG)) {
             lexer.nextToken();
 
             if (lexer.identifierEquals(FnvHash.Constants.RAW)) {
                 lexer.nextToken();
-                typeName = "LONG RAW";
+                typeName.append("LONG RAW");
             } else {
-                typeName = "LONG";
+                typeName.append("LONG");
             }
         } else {
             SQLName typeExpr = name();
-            typeName = typeExpr.toString();
+            typeName.append(typeExpr.toString());
         }
 
-        if ("TIMESTAMP".equalsIgnoreCase(typeName)) {
-            SQLDataTypeImpl timestamp = new SQLDataTypeImpl(typeName);
+        String typeNameStr = typeName.toString();
+        if ("TIMESTAMP".equalsIgnoreCase(typeNameStr)) {
+            SQLDataTypeImpl timestamp = new SQLDataTypeImpl(typeNameStr);
             timestamp.setDbType(dbType);
 
             if (lexer.token() == Token.LPAREN) {
@@ -217,17 +218,17 @@ public class OracleExprParser extends SQLExprParser {
             return timestamp;
         }
 
-        if ("national".equalsIgnoreCase(typeName)
+        if ("national".equalsIgnoreCase(typeName.toString())
                 && isCharType(lexer.hashLCase())) {
-            typeName += ' ' + lexer.stringVal();
+            typeName.append(' ').append(lexer.stringVal());
             lexer.nextToken();
 
             if (lexer.identifierEquals("VARYING")) {
-                typeName += ' ' + lexer.stringVal();
+                typeName.append(' ').append(lexer.stringVal());
                 lexer.nextToken();
             }
 
-            SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
+            SQLCharacterDataType charType = new SQLCharacterDataType(typeName.toString());
 
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
@@ -247,13 +248,13 @@ public class OracleExprParser extends SQLExprParser {
             return charType;
         }
 
-        if (isCharType(typeName)) {
+        if (isCharType(typeName.toString())) {
             if (lexer.identifierEquals("VARYING")) {
-                typeName += ' ' + lexer.stringVal();
+                typeName.append(' ').append(lexer.stringVal());
                 lexer.nextToken();
             }
 
-            SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
+            SQLCharacterDataType charType = new SQLCharacterDataType(typeName.toString());
 
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
@@ -282,16 +283,16 @@ public class OracleExprParser extends SQLExprParser {
             lexer.nextToken();
             if (lexer.identifierEquals("TYPE")) {
                 lexer.nextToken();
-                typeName += "%TYPE";
+                typeName.append("%TYPE");
             } else if (lexer.identifierEquals("ROWTYPE")) {
                 lexer.nextToken();
-                typeName += "%ROWTYPE";
+                typeName.append("%ROWTYPE");
             } else {
                 throw new ParserException("syntax error : " + lexer.info());
             }
         }
 
-        SQLDataTypeImpl dataType = new SQLDataTypeImpl(typeName);
+        SQLDataTypeImpl dataType = new SQLDataTypeImpl(typeName.toString());
         dataType.setDbType(dbType);
         return parseDataTypeRest(dataType);
     }
@@ -1123,17 +1124,17 @@ public class OracleExprParser extends SQLExprParser {
             SQLDbLinkExpr dbLink = new SQLDbLinkExpr();
             dbLink.setExpr(name);
 
-            String link = lexer.stringVal();
+            StringBuilder link = new StringBuilder(lexer.stringVal());
             lexer.nextToken();
             while (lexer.token() == Token.DOT) {
                 lexer.nextToken();
 
                 String stringVal = lexer.stringVal();
                 accept(Token.IDENTIFIER);
-                link += "." + stringVal;
+                link.append(".").append(stringVal);
             }
 
-            dbLink.setDbLink(link);
+            dbLink.setDbLink(link.toString());
             return dbLink;
         }
 //

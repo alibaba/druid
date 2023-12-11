@@ -24,15 +24,15 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import java.util.List;
 
 public class BlinkOutputVisitor extends SQLASTOutputVisitor implements BlinkVisitor {
-    public BlinkOutputVisitor(Appendable appender) {
+    public BlinkOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 
-    public BlinkOutputVisitor(Appendable appender, DbType dbType) {
+    public BlinkOutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public BlinkOutputVisitor(Appendable appender, boolean parameterized) {
+    public BlinkOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 

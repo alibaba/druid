@@ -47,11 +47,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         this.dbType = DbType.oracle;
     }
 
-    public OracleOutputVisitor(Appendable appender) {
+    public OracleOutputVisitor(StringBuilder appender) {
         this(appender, true);
     }
 
-    public OracleOutputVisitor(Appendable appender, boolean printPostSemi) {
+    public OracleOutputVisitor(StringBuilder appender, boolean printPostSemi) {
         super(appender);
         this.printPostSemi = printPostSemi;
     }

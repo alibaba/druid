@@ -114,7 +114,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     //
     private DruidConnectionHolder[] evictConnections;
     private DruidConnectionHolder[] keepAliveConnections;
-    // for cleaning the old references of the retained connections that have been moved forward to the new positions.
+    // for clean connection old references.
     private volatile DruidConnectionHolder[] nullConnections;
 
     // threads
@@ -3154,8 +3154,9 @@ public class DruidDataSource extends DruidAbstractDataSource
                         buf.append("\n");
                     }
 
-                    buf.append("ownerThread current state is " + pooledConnection.getOwnerThread().getState()
-                            + ", current stackTrace\n");
+                    buf.append("ownerThread current state is ")
+                            .append(pooledConnection.getOwnerThread().getState())
+                            .append(", current stackTrace\n");
                     trace = pooledConnection.getOwnerThread().getStackTrace();
                     for (int i = 0; i < trace.length; i++) {
                         buf.append("\tat ");
@@ -3308,6 +3309,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
 
+            // shrink connections by HotSpot intrinsic function _arraycopy for performance optimization.
             int removeCount = evictCount + keepAliveCount;
             if (removeCount > 0) {
                 int breakedCount = poolingCount - i;
@@ -3336,7 +3338,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                 JdbcUtils.close(connection);
                 destroyCountUpdater.incrementAndGet(this);
             }
-            Arrays.fill(evictConnections, null);
+            // use HotSpot intrinsic function _arraycopy for performance optimization.
+            System.arraycopy(nullConnections, 0, evictConnections, 0, evictConnections.length);
         }
 
         if (keepAliveCount > 0) {
@@ -3404,7 +3407,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
             this.getDataSourceStat().addKeepAliveCheckCount(keepAliveCount);
-            Arrays.fill(keepAliveConnections, null);
+            // use HotSpot intrinsic function _arraycopy for performance optimization.
+            System.arraycopy(nullConnections, 0, keepAliveConnections, 0, keepAliveConnections.length);
         }
 
         if (needFill) {

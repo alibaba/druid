@@ -476,11 +476,11 @@ public class SQLUtils {
         return out.toString();
     }
 
-    public static SQLASTOutputVisitor createOutputVisitor(Appendable out, DbType dbType) {
+    public static SQLASTOutputVisitor createOutputVisitor(StringBuilder out, DbType dbType) {
         return createFormatOutputVisitor(out, null, dbType);
     }
 
-    public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out,
+    public static SQLASTOutputVisitor createFormatOutputVisitor(StringBuilder out,
                                                                 List<SQLStatement> statementList,
                                                                 DbType dbType) {
         if (dbType == null) {

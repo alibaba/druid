@@ -648,13 +648,13 @@ public class MySqlExprParser extends SQLExprParser {
                     return primaryRest(expr);
                 }
             } else if (expr instanceof SQLCharExpr) {
-                String text2 = ((SQLCharExpr) expr).getText();
+                StringBuilder text2 = new StringBuilder(((SQLCharExpr) expr).getText());
                 do {
                     String chars = lexer.stringVal();
-                    text2 += chars;
+                    text2.append(chars);
                     lexer.nextToken();
                 } while (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS);
-                expr = new SQLCharExpr(text2);
+                expr = new SQLCharExpr(text2.toString());
             } else if (expr instanceof SQLVariantRefExpr) {
                 SQLMethodInvokeExpr concat = new SQLMethodInvokeExpr("CONCAT");
                 concat.addArgument(expr);

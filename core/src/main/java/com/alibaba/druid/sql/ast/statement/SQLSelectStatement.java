@@ -56,7 +56,7 @@ public class SQLSelectStatement extends SQLStatementImpl {
         this.select = select;
     }
 
-    public void output(Appendable buf) {
+    public void output(StringBuilder buf) {
         this.select.output(buf);
     }
 

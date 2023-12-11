@@ -495,7 +495,7 @@ public class SQLParserUtils {
             return sql;
         }
         SQLStatementParser parser = createSQLStatementParser(sql, dbType);
-        StringBuffer buf = new StringBuffer(sql.length() + 20);
+        StringBuilder buf = new StringBuilder(sql.length() + 20);
         SQLASTOutputVisitor out = SQLUtils.createOutputVisitor(buf, DbType.mysql);
         out.config(VisitorFeature.OutputNameQuote, true);
 

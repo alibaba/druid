@@ -63,7 +63,7 @@ public class MySqlBigTableTest extends TestCase {
     }
 
     public void test_0() throws Exception {
-        StringBuffer ddl = new StringBuffer();
+        StringBuilder ddl = new StringBuilder();
         ddl.append("INSERT INTO t_big (");
         for (int i = 0; i < COUNT; ++i) {
             if (i != 0) {
@@ -106,7 +106,7 @@ public class MySqlBigTableTest extends TestCase {
     }
 
     private void createTable() throws SQLException {
-        StringBuffer ddl = new StringBuffer();
+        StringBuilder ddl = new StringBuilder();
         ddl.append("CREATE TABLE t_big (FID INT AUTO_INCREMENT PRIMARY KEY ");
         for (int i = 0; i < COUNT; ++i) {
             ddl.append(", ");

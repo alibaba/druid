@@ -25,15 +25,15 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         this.quote = '`';
     }
 
-    public StarRocksOutputVisitor(Appendable appender) {
+    public StarRocksOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 
-    public StarRocksOutputVisitor(Appendable appender, DbType dbType) {
+    public StarRocksOutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public StarRocksOutputVisitor(Appendable appender, boolean parameterized) {
+    public StarRocksOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 

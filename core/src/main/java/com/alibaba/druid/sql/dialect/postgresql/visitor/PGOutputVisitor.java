@@ -40,12 +40,12 @@ import java.util.List;
 import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor, OracleASTVisitor {
-    public PGOutputVisitor(Appendable appender) {
+    public PGOutputVisitor(StringBuilder appender) {
         super(appender);
         this.dbType = DbType.postgresql;
     }
 
-    public PGOutputVisitor(Appendable appender, boolean parameterized) {
+    public PGOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.postgresql;
     }

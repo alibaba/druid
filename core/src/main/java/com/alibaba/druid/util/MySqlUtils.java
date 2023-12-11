@@ -886,7 +886,7 @@ public class MySqlUtils {
             return null;
         }
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         for (int i = 0, len = fmt.length(); i < len; ++i) {
             char ch = fmt.charAt(i);

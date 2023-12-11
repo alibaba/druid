@@ -27,11 +27,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
  * Created by wenshao on 16/07/2017.
  */
 public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements OracleASTVisitor {
-    public OracleToMySqlOutputVisitor(Appendable appender) {
+    public OracleToMySqlOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 
-    public OracleToMySqlOutputVisitor(Appendable appender, boolean parameterized) {
+    public OracleToMySqlOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 

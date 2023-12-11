@@ -51,7 +51,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         groupItemSingleLine = true;
     }
 
-    public OdpsOutputVisitor(Appendable appender) {
+    public OdpsOutputVisitor(StringBuilder appender) {
         super(appender, DbType.odps);
     }
 

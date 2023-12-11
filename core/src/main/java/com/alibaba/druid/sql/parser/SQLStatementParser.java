@@ -4926,11 +4926,9 @@ public class SQLStatementParser extends SQLParser {
 
                 if (lexer.identifierEquals("FORMAT")) {
                     lexer.nextToken();
-                    String type = "FORMAT " + lexer.stringVal;
                     lexer.nextToken();
                 } else if (lexer.identifierEquals("TYPE")) {
                     lexer.nextToken();
-                    String type = "TYPE " + lexer.stringVal;
                     lexer.nextToken();
                 }
 

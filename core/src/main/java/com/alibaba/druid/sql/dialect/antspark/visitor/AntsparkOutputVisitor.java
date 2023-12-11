@@ -23,11 +23,11 @@ import java.util.Map.Entry;
  * @version $Id: AntsparkOutputVisitor.java, v 0.1 2018年09月17日 10:40 peiheng.qph Exp $
  */
 public class AntsparkOutputVisitor extends HiveOutputVisitor implements AntsparkVisitor {
-    public AntsparkOutputVisitor(Appendable appender, DbType dbType) {
+    public AntsparkOutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public AntsparkOutputVisitor(Appendable appender) {
+    public AntsparkOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 

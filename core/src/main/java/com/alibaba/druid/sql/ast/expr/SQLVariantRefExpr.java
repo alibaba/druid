@@ -15,12 +15,10 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -72,12 +70,8 @@ public class SQLVariantRefExpr extends SQLExprImpl {
         this.name = name;
     }
 
-    public void output(Appendable buf) {
-        try {
-            buf.append(this.name);
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        buf.append(this.name);
     }
 
     @Override
