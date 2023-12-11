@@ -23,8 +23,12 @@ import java.util.List;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
-public class Lpad implements Function {
-    public static final Lpad instance = new Lpad();
+/**
+ * @author lizongbo
+ * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_rpad">MySQL rapd</a>
+ */
+public class Rpad implements Function {
+    public static final Rpad instance = new Rpad();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         List<SQLExpr> params = x.getArguments();
@@ -58,15 +62,13 @@ public class Lpad implements Function {
         if (strValue0.length() == len) {
             return strValue0;
         }
-        int needLen = len - strValue0.length();
-        StringBuilder result = new StringBuilder(len);
-        while (result.length() < needLen) {
-            result.insert(0, strValue1);
+        StringBuilder result = new StringBuilder(strValue0);
+        while (result.length() < len) {
+            result.append(strValue1);
         }
-        if (result.length() > needLen) {
-            result.delete(needLen, result.length());
+        if (result.length() > len) {
+            result.delete(len, result.length());
         }
-        result.append(strValue0);
         return result.toString();
     }
 }
