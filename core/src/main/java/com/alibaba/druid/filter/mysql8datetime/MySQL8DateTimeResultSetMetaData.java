@@ -136,9 +136,9 @@ public class MySQL8DateTimeResultSetMetaData implements ResultSetMetaData {
      *  8.0.24及以上版本jdbc实现改为
      * DATETIME("DATETIME", Types.TIMESTAMP, LocalDateTime.class, 0, MysqlType.IS_NOT_DECIMAL, 26L, "[(fsp)]"),
      * @param column 列的索引位
-     * @return
+     * @return column class name
      * @see java.sql.ResultSetMetaData#getColumnClassName(int)
-     * @throws SQLException
+     * @throws SQLException SQLException
      */
     @Override
     public String getColumnClassName(int column) throws SQLException {

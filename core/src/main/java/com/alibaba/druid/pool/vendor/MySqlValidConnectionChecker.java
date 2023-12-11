@@ -28,7 +28,7 @@ import java.util.Properties;
 public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
     public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT = 1;
     /**
-     * https://dev.mysql.com/doc/connectors/en/connector-j-usagenotes-j2ee-concepts-connection-pooling.html
+     * @see <a href="https://dev.mysql.com/doc/connectors/en/connector-j-usagenotes-j2ee-concepts-connection-pooling.html">Connection Pooling with Connector/J</a>
      * <p>
      * specify a validation query in your connection pool that starts with {@literal /}* ping *{@literal /}.
      * Note that the syntax must be exactly as specified. This will cause the driver send a ping to the server

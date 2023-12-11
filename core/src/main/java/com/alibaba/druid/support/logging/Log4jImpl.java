@@ -29,7 +29,7 @@ public class Log4jImpl implements Log {
     private int debugCount;
 
     /**
-     * @param log
+     * @param log logger
      * @since 0.2.21
      */
     public Log4jImpl(Logger log) {

@@ -20,11 +20,11 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
     /**
      * 针对mysql jdbc 8.0.23及以上版本，通过该方法控制将对象类型转换成原来的类型
      *
-     * @param chain
-     * @param result
-     * @param columnIndex
-     * @return
-     * @throws SQLException
+     * @param chain chain
+     * @param result result
+     * @param columnIndex column index
+     * @return MySQL 5.x object
+     * @throws SQLException SQLException
      * @see java.sql.ResultSet#getObject(int)
      */
     @Override
@@ -35,11 +35,11 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
     /**
      * 针对mysql jdbc 8.0.23及以上版本，通过该方法控制将对象类型转换成原来的类型
      *
-     * @param chain
-     * @param result
-     * @param columnLabel
-     * @return
-     * @throws SQLException
+     * @param chain chain
+     * @param result result
+     * @param columnLabel columnLabel
+     * @return MySQL 5.x object
+     * @throws SQLException SQLException
      * @see java.sql.ResultSet#getObject(String)
      */
     @Override
@@ -50,8 +50,8 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
     /**
      * 针对mysql jdbc 8.0.23及以上版本，通过该方法控制将对象类型转换成原来的类型
      *
-     * @param obj
-     * @return
+     * @param obj obj
+     * @return timestamp value of obj if obj type is LocalDateTime, otherwise return obj
      */
     public static Object getObjectReplaceLocalDateTime(Object obj) {
         if (!(obj instanceof LocalDateTime)) {
@@ -63,10 +63,10 @@ public class MySQL8DateTimeSqlTypeFilter extends FilterAdapter {
 
     /**
      * mybatis查询结果为map时， 会自动做类型映射。只有在自动映射前，更改 ResultSetMetaData 里映射的 java 类型，才会生效
-     * @param chain
-     * @param resultSet
-     * @return
-     * @throws SQLException
+     * @param chain chain
+     * @param resultSet resultSet
+     * @return MySQL8 date time result set meta data 
+     * @throws SQLException SQLException
      */
     @Override
     public ResultSetMetaData resultSet_getMetaData(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
