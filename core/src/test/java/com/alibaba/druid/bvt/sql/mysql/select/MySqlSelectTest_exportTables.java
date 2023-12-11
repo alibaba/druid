@@ -40,7 +40,7 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(out, JdbcConstants.MYSQL);
         visitor.setExportTables(true);
 
@@ -70,7 +70,7 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(out, JdbcConstants.MYSQL);
         visitor.setExportTables(true);
 

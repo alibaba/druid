@@ -93,24 +93,6 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
         }
     }
 
-    public void output(StringBuffer buf) {
-        if (chars != null) {
-            buf.append(chars);
-        } else {
-            buf.append(this.number.toString());
-        }
-    }
-
-    public void output(Appendable buf) {
-        if (buf instanceof StringBuilder) {
-            output((StringBuilder) buf);
-        } else if (buf instanceof StringBuffer) {
-            output((StringBuffer) buf);
-        } else {
-            super.output(buf);
-        }
-    }
-
     protected void accept0(SQLASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);

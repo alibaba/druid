@@ -25,7 +25,7 @@ public class ExportParameterizedOutputVisitor extends SQLASTOutputVisitor implem
     private final boolean requireParameterizedOutput;
 
     public ExportParameterizedOutputVisitor(final List<Object> parameters,
-                                            final Appendable appender,
+                                            final StringBuilder appender,
                                             final boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
@@ -40,7 +40,7 @@ public class ExportParameterizedOutputVisitor extends SQLASTOutputVisitor implem
         this(parameters, new StringBuilder(), false);
     }
 
-    public ExportParameterizedOutputVisitor(final Appendable appender) {
+    public ExportParameterizedOutputVisitor(final StringBuilder appender) {
         this(new ArrayList<Object>(), appender, true);
     }
 

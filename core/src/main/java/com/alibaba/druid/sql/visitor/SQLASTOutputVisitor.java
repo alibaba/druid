@@ -42,7 +42,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcUtils;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -75,7 +74,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
     }
 
-    protected final Appendable appender;
+    protected final StringBuilder appender;
     protected int indentCount;
     protected boolean ucase = true;
     protected int selectListNumberOfLine = 5;
@@ -113,16 +112,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         features |= VisitorFeature.OutputPrettyFormat.mask;
     }
 
-    public SQLASTOutputVisitor(Appendable appender) {
+    public SQLASTOutputVisitor(StringBuilder appender) {
         this.appender = appender;
     }
 
-    public SQLASTOutputVisitor(Appendable appender, DbType dbType) {
+    public SQLASTOutputVisitor(StringBuilder appender, DbType dbType) {
         this.appender = appender;
         this.dbType = dbType;
     }
 
-    public SQLASTOutputVisitor(Appendable appender, boolean parameterized) {
+    public SQLASTOutputVisitor(StringBuilder appender, boolean parameterized) {
         this.appender = appender;
         this.config(VisitorFeature.OutputParameterized, parameterized);
     }
@@ -210,7 +209,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return indentCount;
     }
 
-    public Appendable getAppender() {
+    public StringBuilder getAppender() {
         return appender;
     }
 
@@ -267,11 +266,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        try {
-            this.appender.append(value);
-        } catch (IOException e) {
-            throw new RuntimeException("print error", e);
-        }
+        this.appender.append(value);
     }
 
     public void print(int value) {
@@ -279,13 +274,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        if (appender instanceof StringBuffer) {
-            ((StringBuffer) appender).append(value);
-        } else if (appender instanceof StringBuilder) {
-            ((StringBuilder) appender).append(value);
-        } else {
-            print0(Integer.toString(value));
-        }
+        appender.append(value);
     }
 
     public void print(long value) {
@@ -293,13 +282,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        if (appender instanceof StringBuilder) {
-            ((StringBuilder) appender).append(value);
-        } else if (appender instanceof StringBuffer) {
-            ((StringBuffer) appender).append(value);
-        } else {
-            print0(Long.toString(value));
-        }
+        appender.append(value);
     }
 
     public void print(float value) {
@@ -307,13 +290,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        if (appender instanceof StringBuilder) {
-            ((StringBuilder) appender).append(value);
-        } else if (appender instanceof StringBuffer) {
-            ((StringBuffer) appender).append(value);
-        } else {
-            print0(Float.toString(value));
-        }
+        appender.append(value);
     }
 
     public void print(double value) {
@@ -321,13 +298,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        if (appender instanceof StringBuilder) {
-            ((StringBuilder) appender).append(value);
-        } else if (appender instanceof StringBuffer) {
-            ((StringBuffer) appender).append(value);
-        } else {
-            print0(Double.toString(value));
-        }
+        appender.append(value);
     }
 
     public void print(Date date) {
@@ -366,11 +337,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        try {
-            this.appender.append(text);
-        } catch (IOException e) {
-            throw new RuntimeException("println error", e);
-        }
+        this.appender.append(text);
     }
 
     protected void printUcase(String text) {
@@ -382,29 +349,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        try {
-            if (printNameQuote) {
-                char c0 = text.charAt(0);
-                if (c0 == quote) {
-                    this.appender.append(text);
-                } else if (c0 == '"' && text.charAt(text.length() - 1) == '"') {
-                    this.appender.append(quote);
-                    this.appender.append(text.substring(1, text.length() - 1));
-                    this.appender.append(quote);
-                } else if (c0 == '`' && text.charAt(text.length() - 1) == '`') {
-                    this.appender.append(quote);
-                    this.appender.append(text.substring(1, text.length() - 1));
-                    this.appender.append(quote);
-                } else {
-                    this.appender.append(quote);
-                    this.appender.append(text);
-                    this.appender.append(quote);
-                }
-            } else {
+        if (printNameQuote) {
+            char c0 = text.charAt(0);
+            if (c0 == quote) {
                 this.appender.append(text);
+            } else if (c0 == '"' && text.charAt(text.length() - 1) == '"') {
+                this.appender.append(quote);
+                this.appender.append(text.substring(1, text.length() - 1));
+                this.appender.append(quote);
+            } else if (c0 == '`' && text.charAt(text.length() - 1) == '`') {
+                this.appender.append(quote);
+                this.appender.append(text.substring(1, text.length() - 1));
+                this.appender.append(quote);
+            } else {
+                this.appender.append(quote);
+                this.appender.append(text);
+                this.appender.append(quote);
             }
-        } catch (IOException e) {
-            throw new RuntimeException("println error", e);
+        } else {
+            this.appender.append(text);
         }
     }
 
@@ -415,11 +378,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print(' ');
 
-        try {
-            this.appender.append(alias);
-        } catch (IOException e) {
-            throw new RuntimeException("println error", e);
-        }
+        this.appender.append(alias);
     }
 
     protected void printAndAccept(List<? extends SQLObject> nodes, String seperator) {
@@ -546,12 +505,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        try {
-            for (int i = 0; i < this.indentCount; ++i) {
-                this.appender.append('\t');
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("print error", e);
+        for (int i = 0; i < this.indentCount; ++i) {
+            this.appender.append('\t');
         }
     }
 
@@ -2255,13 +2210,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return false;
         }
 
-        if (appender instanceof StringBuilder) {
-            x.output((StringBuilder) appender);
-        } else if (appender instanceof StringBuilder) {
-            x.output((StringBuilder) appender);
-        } else {
-            print0(x.getNumber().toString());
-        }
+        x.output(appender);
         return false;
     }
 
@@ -4301,7 +4250,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     static {
         for (int len = 0; len < variantValuesCache_1.length; ++len) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append('(');
             for (int i = 0; i < len; ++i) {
                 if (i != 0) {
@@ -4317,7 +4266,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         for (int len = 0; len < variantValuesCache.length; ++len) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append('(');
             for (int i = 0; i < len; ++i) {
                 if (i != 0) {

@@ -40,7 +40,7 @@ public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr, 
         this.parent = parent;
     }
 
-    public void output(Appendable buf) {
+    public void output(StringBuilder buf) {
         this.accept(new SQLASTOutputVisitor(buf));
     }
 

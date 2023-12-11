@@ -32,11 +32,11 @@ import java.util.List;
  * @since 2022-01-07
  */
 public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVisitor {
-    public PrestoOutputVisitor(Appendable appender) {
+    public PrestoOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 
-    public PrestoOutputVisitor(Appendable appender, boolean parameterized) {
+    public PrestoOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 

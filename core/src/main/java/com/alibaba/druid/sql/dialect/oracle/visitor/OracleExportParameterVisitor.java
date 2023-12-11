@@ -35,7 +35,7 @@ public class OracleExportParameterVisitor extends OracleParameterizedOutputVisit
     private final boolean requireParameterizedOutput;
 
     public OracleExportParameterVisitor(List<Object> parameters,
-                                        Appendable appender,
+                                        StringBuilder appender,
                                         final boolean wantParameterizedOutput) {
         super(appender, false);
         this.parameters = parameters;
@@ -50,7 +50,7 @@ public class OracleExportParameterVisitor extends OracleParameterizedOutputVisit
         this(parameters, new StringBuilder(), false);
     }
 
-    public OracleExportParameterVisitor(final Appendable appender) {
+    public OracleExportParameterVisitor(final StringBuilder appender) {
         this(new ArrayList<Object>(), appender, true);
     }
 

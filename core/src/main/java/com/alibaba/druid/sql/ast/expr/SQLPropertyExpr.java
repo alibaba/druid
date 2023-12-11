@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -158,14 +156,10 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
         }
     }
 
-    public void output(Appendable buf) {
-        try {
-            this.owner.output(buf);
-            buf.append(".");
-            buf.append(this.name);
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        this.owner.output(buf);
+        buf.append(".");
+        buf.append(this.name);
     }
 
     protected void accept0(SQLASTVisitor visitor) {

@@ -34,7 +34,7 @@ public class MSSQLServerExportParameterVisitor extends SQLServerOutputVisitor im
     private final boolean requireParameterizedOutput;
 
     public MSSQLServerExportParameterVisitor(final List<Object> parameters,
-                                             final Appendable appender,
+                                             final StringBuilder appender,
                                              final boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
@@ -49,7 +49,7 @@ public class MSSQLServerExportParameterVisitor extends SQLServerOutputVisitor im
         this(parameters, new StringBuilder(), false);
     }
 
-    public MSSQLServerExportParameterVisitor(final Appendable appender) {
+    public MSSQLServerExportParameterVisitor(final StringBuilder appender) {
         this(new ArrayList<Object>(), appender, true);
     }
 

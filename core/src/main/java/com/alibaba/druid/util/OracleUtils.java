@@ -257,20 +257,21 @@ public class OracleUtils {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            String sql = "select DBMS_METADATA.GET_DDL('TABLE', TABLE_NAME) FROM user_tables";
+            StringBuilder sql = new StringBuilder();
+            sql.append("select DBMS_METADATA.GET_DDL('TABLE', TABLE_NAME) FROM user_tables");
 
             if (tables.size() > 0) {
-                sql += "IN (";
+                sql.append("IN (");
                 for (int i = 0; i < tables.size(); ++i) {
                     if (i != 0) {
-                        sql += ", ?";
+                        sql.append(", ?");
                     } else {
-                        sql += "?";
+                        sql.append("?");
                     }
                 }
-                sql += ")";
+                sql.append(")");
             }
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sql.toString());
             for (int i = 0; i < tables.size(); ++i) {
                 pstmt.setString(i + 1, tables.get(i));
             }

@@ -15,13 +15,10 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
-import java.io.IOException;
 
 public class SQLNCharExpr extends SQLTextLiteralExpr {
     private static SQLDataType defaultDataType = new SQLCharacterDataType("nvarchar");
@@ -38,19 +35,15 @@ public class SQLNCharExpr extends SQLTextLiteralExpr {
         this.parent = parent;
     }
 
-    public void output(Appendable buf) {
-        try {
-            if ((this.text == null) || (this.text.length() == 0)) {
-                buf.append("NULL");
-                return;
-            }
-
-            buf.append("N'");
-            buf.append(this.text.replaceAll("'", "''"));
-            buf.append("'");
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
+    public void output(StringBuilder buf) {
+        if ((this.text == null) || (this.text.length() == 0)) {
+            buf.append("NULL");
+            return;
         }
+
+        buf.append("N'");
+        buf.append(this.text.replaceAll("'", "''"));
+        buf.append("'");
     }
 
     protected void accept0(SQLASTVisitor visitor) {
