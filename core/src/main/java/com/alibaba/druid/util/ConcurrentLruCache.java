@@ -20,9 +20,8 @@ import java.util.function.Function;
  * It is inspired from
  * <a href="https://github.com/spring-projects/spring-framework/blob/main/spring-core/src/main/java/org/springframework/util/ConcurrentLruCache.java">ConcurrentLruCache</a>.
  */
-@SuppressWarnings({"unchecked"})
+@SuppressWarnings("unchecked")
 public final class ConcurrentLruCache<K, V> {
-
     private final int capacity;
 
     private final AtomicInteger currentSize = new AtomicInteger();
@@ -43,7 +42,6 @@ public final class ConcurrentLruCache<K, V> {
 
     private final AtomicReference<DrainStatus> drainStatus = new AtomicReference<>(DrainStatus.IDLE);
 
-
     public ConcurrentLruCache(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Capacity must be > 0");
@@ -54,7 +52,6 @@ public final class ConcurrentLruCache<K, V> {
         this.writeOperations = new WriteOperations();
     }
 
-
     public V get(K key) {
         final Node<K, V> node = this.cache.get(key);
         if (node == null) {
@@ -63,7 +60,6 @@ public final class ConcurrentLruCache<K, V> {
         processRead(node);
         return node.getValue();
     }
-
 
     public V computeIfAbsent(K key, Function<K, V> generator) {
         final Node<K, V> node = this.cache.get(key);
@@ -97,7 +93,6 @@ public final class ConcurrentLruCache<K, V> {
         }
     }
 
-
     private void processRead(Node<K, V> node) {
         boolean drainRequested = this.readOperations.recordRead(node);
         final DrainStatus status = this.drainStatus.get();
@@ -124,7 +119,6 @@ public final class ConcurrentLruCache<K, V> {
             }
         }
     }
-
 
     public Set<K> keys() {
         return cache.keySet();
@@ -236,9 +230,7 @@ public final class ConcurrentLruCache<K, V> {
                 markAsRemoved(node);
             }
         }
-
     }
-
 
     /**
      * Write operation recorded when an entry is removed to the cache.
@@ -257,12 +249,10 @@ public final class ConcurrentLruCache<K, V> {
         }
     }
 
-
     /*
      * Draining status for the read/write buffers.
      */
     private enum DrainStatus {
-
         /*
          * No drain operation currently running.
          */
@@ -307,7 +297,6 @@ public final class ConcurrentLruCache<K, V> {
     }
 
     private static class CacheEntry<V> {
-
         private final V value;
         private final CacheEntryState state;
 
@@ -322,7 +311,6 @@ public final class ConcurrentLruCache<K, V> {
     }
 
     private static final class ReadOperations<K, V> {
-
         private static final int BUFFER_COUNT = detectNumberOfBuffers();
 
         private static int detectNumberOfBuffers() {
@@ -416,7 +404,6 @@ public final class ConcurrentLruCache<K, V> {
     }
 
     private static final class WriteOperations {
-
         private static final int DRAIN_THRESHOLD = 16;
 
         private final Queue<Runnable> operations = new ConcurrentLinkedQueue<>();
@@ -441,7 +428,6 @@ public final class ConcurrentLruCache<K, V> {
                 task.run();
             }
         }
-
     }
 
     private static final class Node<K, V> extends AtomicReference<CacheEntry<V>> {
@@ -476,7 +462,6 @@ public final class ConcurrentLruCache<K, V> {
             return get().value;
         }
     }
-
 
     private static final class EvictionQueue<K, V> {
         Node<K, V> first;
