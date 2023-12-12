@@ -37,7 +37,8 @@ jobs:
       - name: Build with Maven if test jdk17
         if: ${{ matrix.java == '17' }}
         run: ./mvnw -Penable-for-jdk17+,gen-code-cov clean package -B
-      - name: "Codecov"
+      - name: "Codecov if test jdk17"
+        if: ${{ matrix.java == '17' }}
         uses: codecov/codecov-action@v3.1.0
         with:
           files: ./core/target/site/jacoco/jacoco.xml,./druid-spring-boot-starter/target/site/jacoco/jacoco.xml,./druid-spring-boot-3-starter/target/site/jacoco/jacoco.xml
