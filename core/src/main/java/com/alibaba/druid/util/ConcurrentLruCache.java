@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 
 /**
- * Simple LRU (Least Recently Used) cache, bounded by a specified cache limit.
+ * Simple LRU (Least Recently Used.Non-standard implementation) cache, bounded by a specified cache limit.
  *
  * @author shenjianeng [ishenjianeng@qq.com]
  */
@@ -36,6 +36,7 @@ public class ConcurrentLruCache<K, V> {
         V cached = this.cache.get(key);
         if (cached != null) {
             if (this.size.get() < this.sizeLimit) {
+                // 非标准实现: 在 size 没有到达 sizeLimit 之前,不维护 key 的使用情况
                 return cached;
             }
             this.lock.readLock().lock();
@@ -62,6 +63,7 @@ public class ConcurrentLruCache<K, V> {
             cached = this.cache.get(key);
             if (cached != null) {
                 if (this.size.get() < this.sizeLimit) {
+                    // 非标准实现: 在 size 没有到达 sizeLimit 之前,不维护 key 的使用情况
                     return cached;
                 }
                 if (this.queue.removeLastOccurrence(key)) {
