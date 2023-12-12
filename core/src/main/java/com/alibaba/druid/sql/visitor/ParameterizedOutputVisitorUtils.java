@@ -116,8 +116,8 @@ public class ParameterizedOutputVisitorUtils {
 
     private static void configVisitorFeatures(ParameterizedVisitor visitor, VisitorFeature... features) {
         if (features != null) {
-            for (int i = 0; i < features.length; i++) {
-                visitor.config(features[i], true);
+            for (VisitorFeature feature : features) {
+                visitor.config(feature, true);
             }
         }
     }
@@ -181,10 +181,10 @@ public class ParameterizedOutputVisitorUtils {
                 SQLStatement preStmt = statementList.get(i - 1);
 
                 if (preStmt.getClass() == stmt.getClass()) {
-                    StringBuilder buf = new StringBuilder();
+                    StringBuilder buf = new StringBuilder(sql.length());
                     ParameterizedVisitor v1 = createParameterizedOutputVisitor(buf, dbType);
                     preStmt.accept(v1);
-                    if (out.toString().equals(buf.toString())) {
+                    if (out.length() == buf.length() && out.toString().contentEquals(buf)) {
                         continue;
                     }
                 }
@@ -218,6 +218,7 @@ public class ParameterizedOutputVisitorUtils {
                 for (VisitorFeature visitorFeature : visitorFeatures) {
                     if (visitorFeature == VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql) {
                         notUseOriginalSql = true;
+                        break;
                     }
                 }
             }
