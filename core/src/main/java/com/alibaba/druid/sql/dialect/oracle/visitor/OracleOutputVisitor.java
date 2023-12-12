@@ -344,11 +344,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             printlnComments(x.getBeforeCommentsDirect());
         }
 
-        final boolean bracket = x.isParenthesized();
-        if (bracket) {
-            print('(');
-        }
-
         print0(ucase ? "SELECT " : "select ");
 
         if (x.getHintsSize() > 0) {
@@ -421,10 +416,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print0(ucase ? " WAIT " : " wait ");
                 x.getWaitTime().accept(this);
             }
-        }
-
-        if (bracket) {
-            print(')');
         }
 
         return false;

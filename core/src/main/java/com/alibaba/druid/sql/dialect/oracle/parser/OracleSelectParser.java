@@ -248,9 +248,6 @@ public class OracleSelectParser extends SQLSelectParser {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
-            if (select instanceof SQLSelectQueryBlock) {
-                ((SQLSelectQueryBlock) select).setParenthesized(true);
-            }
             accept(Token.RPAREN);
 
             return queryRest(select, acceptUnion);
@@ -297,8 +294,6 @@ public class OracleSelectParser extends SQLSelectParser {
         parseGroupBy(queryBlock);
 
         parseModelClause(queryBlock);
-
-        parseSortBy(queryBlock);
 
         parseFetchClause(queryBlock);
 
@@ -621,10 +616,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             OracleSelectTableSource tableSource;
             if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
-                SQLSelect select = select();
-                SQLSelectQuery selectQuery = select.getQuery();
-                selectQuery.setParenthesized(true);
-                tableSource = new OracleSelectSubqueryTableSource(select);
+                tableSource = new OracleSelectSubqueryTableSource(select());
             } else if (lexer.token() == Token.LPAREN) {
                 tableSource = (OracleSelectTableSource) parseTableSource();
             } else if (lexer.token() == Token.IDENTIFIER
