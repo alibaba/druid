@@ -301,7 +301,6 @@ public abstract class WallProvider {
 
         String finalMergedSql = mergedSql;
         if (sql.length() < MAX_SQL_LENGTH) {
-            // 这里不使用 put 方法
             mergedSqlCache.computeIfAbsent(sql, key -> finalMergedSql);
         }
         return mergedSql;
@@ -310,7 +309,7 @@ public abstract class WallProvider {
     public Set<String> getWhiteList() {
         Set<String> hashSet = new HashSet<>();
         Set<String> whiteListKeys = whiteList.keys();
-        if (whiteListKeys != null && !whiteListKeys.isEmpty()) {
+        if (!whiteListKeys.isEmpty()) {
             hashSet.addAll(whiteListKeys);
         }
         return Collections.unmodifiableSet(hashSet);
@@ -319,12 +318,12 @@ public abstract class WallProvider {
     public Set<String> getSqlList() {
         Set<String> hashSet = new HashSet<>();
         Set<String> whiteListKeys = whiteList.keys();
-        if (whiteListKeys != null && !whiteListKeys.isEmpty()) {
+        if (!whiteListKeys.isEmpty()) {
             hashSet.addAll(whiteListKeys);
         }
 
         Set<String> blackMergedListKeys = blackList.keys();
-        if (blackMergedListKeys != null && !blackMergedListKeys.isEmpty()) {
+        if (!blackMergedListKeys.isEmpty()) {
             hashSet.addAll(blackMergedListKeys);
         }
 
@@ -334,7 +333,7 @@ public abstract class WallProvider {
     public Set<String> getBlackList() {
         Set<String> hashSet = new HashSet<>();
         Set<String> blackMergedListKeys = blackList.keys();
-        if (blackMergedListKeys != null && !blackMergedListKeys.isEmpty()) {
+        if (!blackMergedListKeys.isEmpty()) {
             hashSet.addAll(blackMergedListKeys);
         }
         return Collections.unmodifiableSet(hashSet);
@@ -829,13 +828,11 @@ public abstract class WallProvider {
             statValue.getFunctions().add(functionStatValue);
         }
 
-        for (Map.Entry<String, WallSqlStat> entry : whiteList.entrySet()) {
-            String sql = entry.getKey();
-            WallSqlStat sqlStat = entry.getValue();
+        whiteList.forEach((sql, sqlStat) -> {
             WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
 
             if (sqlStatValue.getExecuteCount() == 0) {
-                continue;
+                return;
             }
 
             sqlStatValue.setSql(sql);
@@ -848,20 +845,18 @@ public abstract class WallProvider {
             sqlStatValue.setSqlHash(sqlHash);
 
             statValue.getWhiteList().add(sqlStatValue);
-        }
+        });
 
-        for (Map.Entry<String, WallSqlStat> entry : blackList.entrySet()) {
-            String sql = entry.getKey();
-            WallSqlStat sqlStat = entry.getValue();
+        blackList.forEach((sql, sqlStat) -> {
             WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
 
             if (sqlStatValue.getExecuteCount() == 0) {
-                continue;
+                return;
             }
 
             sqlStatValue.setSql(sql);
             statValue.getBlackList().add(sqlStatValue);
-        }
+        });
 
         return statValue;
     }
