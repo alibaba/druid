@@ -23,18 +23,16 @@ import java.io.UnsupportedEncodingException;
  * @author xianmao.hexm 2007-3-5 09:51:33
  */
 public class CharsetConvert {
-    private String clientEncoding;
+    private final String clientEncoding;
 
-    private String serverEncoding;
+    private final String serverEncoding;
 
-    private boolean enable;
+    private final boolean enable;
 
     public CharsetConvert(String clientEncoding, String serverEncoding) {
         this.clientEncoding = clientEncoding;
         this.serverEncoding = serverEncoding;
-        if (clientEncoding != null && serverEncoding != null && !clientEncoding.equalsIgnoreCase(serverEncoding)) {
-            enable = true;
-        }
+        this.enable = clientEncoding != null && serverEncoding != null && !clientEncoding.equalsIgnoreCase(serverEncoding);
     }
 
     /**
@@ -72,7 +70,7 @@ public class CharsetConvert {
      * @return boolean
      */
     public boolean isEmpty(String s) {
-        return s == null || "".equals(s);
+        return s == null || s.isEmpty();
     }
 
 }
