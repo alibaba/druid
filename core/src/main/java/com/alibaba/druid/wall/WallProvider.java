@@ -259,9 +259,7 @@ public abstract class WallProvider {
             }
         }
 
-        String finalSql = !Objects.equals(mergedSql, sql) ? mergedSql : sql;
-
-        WallSqlStat wallSqlStat = whiteList.computeIfAbsent(finalSql, key -> {
+        WallSqlStat wallSqlStat = whiteList.computeIfAbsent(mergedSql, key -> {
             WallSqlStat newStat = new WallSqlStat(tableStats, functionStats, syntaxError);
             newStat.setSample(sql);
             return newStat;
