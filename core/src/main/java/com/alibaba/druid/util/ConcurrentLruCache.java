@@ -1,5 +1,6 @@
 package com.alibaba.druid.util;
 
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -307,6 +308,27 @@ public final class ConcurrentLruCache<K, V> {
 
         boolean isActive() {
             return this.state == CacheEntryState.ACTIVE;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            CacheEntry<?> that = (CacheEntry<?>) o;
+            return Objects.equals(value, that.value) && state == that.state;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(value, state);
+        }
+
+        @Override
+        public String toString() {
+            return "CacheEntry{" +
+                    "value=" + value +
+                    ", state=" + state +
+                    '}';
         }
     }
 
