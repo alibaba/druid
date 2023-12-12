@@ -12,7 +12,7 @@ public class Issue2015 extends TestCase {
         String sql = "update t set a=1,b=2 where a > 1";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         stmtList.get(0).output(buf);
         assertEquals("UPDATE t\n" +
                 "SET a = 1, b = 2\n" +

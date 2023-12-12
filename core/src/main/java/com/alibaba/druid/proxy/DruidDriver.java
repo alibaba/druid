@@ -26,6 +26,7 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
 
 import javax.management.MBeanServer;
@@ -201,49 +202,49 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     public static DataSourceProxyConfig parseConfig(String url, Properties info) throws SQLException {
         String restUrl = url.substring(DEFAULT_PREFIX.length());
-
         DataSourceProxyConfig config = new DataSourceProxyConfig();
-
-        if (restUrl.startsWith(DRIVER_PREFIX)) {
-            int pos = restUrl.indexOf(':', DRIVER_PREFIX.length());
-            String driverText = restUrl.substring(DRIVER_PREFIX.length(), pos);
-            if (driverText.length() > 0) {
-                config.setRawDriverClassName(driverText.trim());
+        int colonPos = -1;
+        while ((colonPos = restUrl.indexOf(":")) != -1)
+        {
+            if (restUrl.startsWith("jdbc:")) {
+                break;
             }
-            restUrl = restUrl.substring(pos + 1);
-        }
-
-        if (restUrl.startsWith(FILTERS_PREFIX)) {
-            int pos = restUrl.indexOf(':', FILTERS_PREFIX.length());
-            String filtersText = restUrl.substring(FILTERS_PREFIX.length(), pos);
-            for (String filterItem : filtersText.split(",")) {
-                FilterManager.loadFilter(config.getFilters(), filterItem);
+            if (restUrl.indexOf("=") == -1) {
+                break;
             }
-            restUrl = restUrl.substring(pos + 1);
+            String fragmentText = restUrl.substring(0, colonPos);
+            int equalPos = fragmentText.indexOf("=");
+            if (equalPos == -1)
+            {
+                continue;
+            }
+            String key = fragmentText.substring(0, equalPos + 1);
+            String value = fragmentText.substring(equalPos + 1);
+            if (StringUtils.equalsIgnoreCase(key, DRIVER_PREFIX))
+            {
+                config.setRawDriverClassName(value.trim());
+            }
+            else if (StringUtils.equalsIgnoreCase(key, FILTERS_PREFIX))
+            {
+                for (String filterItem : value.split(",")) {
+                    FilterManager.loadFilter(config.getFilters(), filterItem);
+                }
+            }
+            else if (StringUtils.equalsIgnoreCase(key, NAME_PREFIX))
+            {
+                config.setName(value);
+            }
+            else if (StringUtils.equalsIgnoreCase(key, JMX_PREFIX))
+            {
+                config.setJmxOption(value);
+            }
+            restUrl = restUrl.substring(colonPos + 1);
         }
-
-        if (restUrl.startsWith(NAME_PREFIX)) {
-            int pos = restUrl.indexOf(':', NAME_PREFIX.length());
-            String name = restUrl.substring(NAME_PREFIX.length(), pos);
-            config.setName(name);
-            restUrl = restUrl.substring(pos + 1);
-        }
-
-        if (restUrl.startsWith(JMX_PREFIX)) {
-            int pos = restUrl.indexOf(':', JMX_PREFIX.length());
-            String jmxOption = restUrl.substring(JMX_PREFIX.length(), pos);
-            config.setJmxOption(jmxOption);
-            restUrl = restUrl.substring(pos + 1);
-        }
-
-        String rawUrl = restUrl;
-        config.setRawUrl(rawUrl);
-
-        if (config.getRawDriverClassName() == null) {
-            String rawDriverClassname = JdbcUtils.getDriverClassName(rawUrl);
+        config.setRawUrl(restUrl);
+        if (config.getRawDriverClassName() == null || config.getRawDriverClassName().isEmpty()) {
+            String rawDriverClassname = JdbcUtils.getDriverClassName(restUrl);
             config.setRawDriverClassName(rawDriverClassname);
         }
-
         config.setUrl(url);
         return config;
     }

@@ -17,6 +17,7 @@ package com.alibaba.druid.pool;
 
 import com.alibaba.druid.proxy.jdbc.WrapperProxy;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Wrapper;
 
@@ -39,6 +40,12 @@ public class PoolableWrapper implements Wrapper {
 
         if (iface == null) {
             return false;
+        }
+
+        if (wrapper instanceof DruidStatementConnection) {
+            if (iface.isInstance(((DruidStatementConnection) wrapper).getConnection())) {
+                return true;
+            }
         }
 
         if (iface == wrapper.getClass()) {
@@ -68,6 +75,13 @@ public class PoolableWrapper implements Wrapper {
 
         if (iface == null) {
             return null;
+        }
+
+        if (wrapper instanceof DruidStatementConnection) {
+            Connection conn = ((DruidStatementConnection) wrapper).getConnection();
+            if (iface.isAssignableFrom(conn.getClass())) {
+                return (T) conn;
+            }
         }
 
         if (iface == wrapper.getClass()) {

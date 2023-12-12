@@ -660,20 +660,18 @@ public class MySqlSelectParser extends SQLSelectParser {
                 }
             }
         } else {
-            SQLExpr intoExpr = this.exprParser.name();
-            if (lexer.token() == Token.COMMA) {
-                SQLListExpr list = new SQLListExpr();
-                list.addItem(intoExpr);
-
-                while (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    SQLName name = this.exprParser.name();
-                    list.addItem(name);
-                }
-
-                intoExpr = list;
+            SQLExpr expr = this.expr();
+            if (lexer.token() != Token.COMMA) {
+                queryBlock.setInto(expr);
+                return;
             }
-            queryBlock.setInto(intoExpr);
+            SQLListExpr list = new SQLListExpr();
+            list.addItem(expr);
+            while (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                list.addItem(expr());
+            }
+            queryBlock.setInto(list);
         }
     }
 

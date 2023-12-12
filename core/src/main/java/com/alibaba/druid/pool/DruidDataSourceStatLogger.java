@@ -27,7 +27,7 @@ public interface DruidDataSourceStatLogger {
     void log(DruidDataSourceStatValue statValue);
 
     /**
-     * @param properties
+     * @param properties properties
      * @since 0.2.21
      */
     void configFromProperties(Properties properties);

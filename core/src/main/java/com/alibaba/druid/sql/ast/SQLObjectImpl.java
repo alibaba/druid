@@ -70,11 +70,7 @@ public abstract class SQLObjectImpl implements SQLObject {
         child.accept(visitor);
     }
 
-    public void output(StringBuffer buf) {
-        output((Appendable) buf);
-    }
-
-    public void output(Appendable buf) {
+    public void output(StringBuilder buf) {
         DbType dbType = null;
         if (this instanceof OracleSQLObject) {
             dbType = DbType.oracle;
@@ -92,7 +88,7 @@ public abstract class SQLObjectImpl implements SQLObject {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         output(buf);
         return buf.toString();
     }

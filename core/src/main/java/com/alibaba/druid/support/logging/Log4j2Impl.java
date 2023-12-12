@@ -28,7 +28,7 @@ public class Log4j2Impl implements Log {
     private int debugCount;
 
     /**
-     * @param log
+     * @param log logger
      * @since 0.2.21
      */
     public Log4j2Impl(Logger log) {

@@ -790,8 +790,8 @@ public class MySqlLexer extends Lexer {
     /**
      * employee.code=:employee.code 解析异常
      * 修复:变量名支持含符号.
-     * @param c
-     * @return
+     * @param c char
+     * @return is identifier char for variable
      */
     public static boolean isIdentifierCharForVariable(char c) {
         if (c == '.') {

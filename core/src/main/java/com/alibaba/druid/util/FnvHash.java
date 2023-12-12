@@ -106,8 +106,8 @@ public final class FnvHash {
     /**
      * lower and normalized and fnv_1a_64
      *
-     * @param name
-     * @return
+     * @param name name
+     * @return hashCode64
      */
     public static long hashCode64(String name) {
         if (name == null) {
@@ -282,9 +282,9 @@ public final class FnvHash {
     /**
      * normalized and lower and fnv1a_64_hash
      *
-     * @param owner
-     * @param name
-     * @return
+     * @param owner owner
+     * @param name name
+     * @return hashCode64
      */
     public static long hashCode64(String owner, String name) {
         long hashCode = BASIC;

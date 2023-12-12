@@ -36,7 +36,7 @@ public class MySqlExportParameterVisitor extends MySqlOutputVisitor implements E
      */
     private boolean requireParameterizedOutput;
 
-    public MySqlExportParameterVisitor(List<Object> parameters, Appendable appender, boolean wantParameterizedOutput) {
+    public MySqlExportParameterVisitor(List<Object> parameters, StringBuilder appender, boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
@@ -50,7 +50,7 @@ public class MySqlExportParameterVisitor extends MySqlOutputVisitor implements E
         this(parameters, null, false);
     }
 
-    public MySqlExportParameterVisitor(final Appendable appender) {
+    public MySqlExportParameterVisitor(final StringBuilder appender) {
         this(new ArrayList<Object>(), appender, true);
     }
 

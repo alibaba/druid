@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
@@ -27,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,18 +140,14 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         this.alias = alias;
     }
 
-    public void output(Appendable buf) {
-        try {
-            if (this.connectByRoot) {
-                buf.append(" CONNECT_BY_ROOT ");
-            }
-            this.expr.output(buf);
-            if ((this.alias != null) && (this.alias.length() != 0)) {
-                buf.append(" AS ");
-                buf.append(this.alias);
-            }
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
+    public void output(StringBuilder buf) {
+        if (this.connectByRoot) {
+            buf.append(" CONNECT_BY_ROOT ");
+        }
+        this.expr.output(buf);
+        if ((this.alias != null) && (this.alias.length() != 0)) {
+            buf.append(" AS ");
+            buf.append(this.alias);
         }
     }
 

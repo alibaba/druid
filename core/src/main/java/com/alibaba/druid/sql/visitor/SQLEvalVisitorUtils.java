@@ -147,6 +147,7 @@ public class SQLEvalVisitorUtils {
         functions.put("left", Left.instance);
         functions.put("locate", Locate.instance);
         functions.put("lpad", Lpad.instance);
+        functions.put("rpad", Rpad.instance);
         functions.put("ltrim", Ltrim.instance);
         functions.put("mid", Substring.instance);
         functions.put("substr", Substring.instance);
@@ -176,6 +177,7 @@ public class SQLEvalVisitorUtils {
         functions.put("bit_count", OneParamFunctions.instance);
         functions.put("soundex", OneParamFunctions.instance);
         functions.put("space", OneParamFunctions.instance);
+        functions.put("replace", Replace.instance);
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {

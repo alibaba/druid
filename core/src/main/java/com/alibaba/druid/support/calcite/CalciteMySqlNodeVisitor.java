@@ -1631,8 +1631,8 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
      * If there are multiple VALUES, and all values in VALUES CLAUSE are literal,
      * convert the value clauses to a single value clause.
      *
-     * @param valuesClauseList
-     * @return
+     * @param valuesClauseList values clause list
+     * @return convert to single values if need
      */
     public static List<SQLInsertStatement.ValuesClause> convertToSingleValuesIfNeed(List<SQLInsertStatement.ValuesClause> valuesClauseList) {
         if (valuesClauseList.size() <= 1) {

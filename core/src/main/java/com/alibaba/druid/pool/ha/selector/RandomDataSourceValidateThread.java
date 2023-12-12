@@ -60,13 +60,17 @@ public class RandomDataSourceValidateThread implements Runnable {
         if (dataSource != null && !StringUtils.isEmpty(dataSource.getName())) {
             String name = dataSource.getName();
             long time = System.currentTimeMillis();
-            LOG.debug("Log successTime [" + time + "] for " + name);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Log successTime [" + time + "] for " + name);
+            }
             successTimes.put(name, time);
         }
     }
 
     public RandomDataSourceValidateThread(RandomDataSourceSelector selector) {
-        LOG.debug("Create a RandomDataSourceValidateThread, hashCode=" + this.hashCode());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Create a RandomDataSourceValidateThread, hashCode=" + this.hashCode());
+        }
         this.selector = selector;
     }
 
@@ -98,8 +102,10 @@ public class RandomDataSourceValidateThread implements Runnable {
             newSleepSeconds = 1;
         }
         try {
-            LOG.debug("[RandomDataSourceValidateThread@" + hashCode() + "] Sleep " + newSleepSeconds
-                    + " second(s) until next checking.");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[RandomDataSourceValidateThread@" + hashCode() + "] Sleep " + newSleepSeconds
+                        + " second(s) until next checking.");
+            }
             Thread.sleep(newSleepSeconds * 1000L);
         } catch (InterruptedException e) {
             // ignore
@@ -164,7 +170,9 @@ public class RandomDataSourceValidateThread implements Runnable {
             }
 
             if (selector.containInBlacklist(e.getValue())) {
-                LOG.debug(e.getKey() + " is already in blacklist, skip.");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getKey() + " is already in blacklist, skip.");
+                }
                 continue;
             }
 
@@ -175,11 +183,15 @@ public class RandomDataSourceValidateThread implements Runnable {
                     String name = dataSource.getName();
 
                     if (isSkipChecking(dataSource)) {
-                        LOG.debug("Skip checking DataSource[" + name + "] this time.");
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Skip checking DataSource[" + name + "] this time.");
+                        }
                         return true;
                     }
 
-                    LOG.debug("Start checking " + name + ".");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Start checking " + name + ".");
+                    }
                     boolean flag = check(dataSource);
 
                     if (flag) {
@@ -210,8 +222,10 @@ public class RandomDataSourceValidateThread implements Runnable {
         Long lastSuccessTime = successTimes.get(dataSource.getName());
         Long lastCheckTime = lastCheckTimes.get(dataSource.getName());
         long currentTime = System.currentTimeMillis();
-        LOG.debug("DataSource=" + name + ", lastSuccessTime=" + lastSuccessTime
-                + ", lastCheckTime=" + lastCheckTime + ", currentTime=" + currentTime);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("DataSource=" + name + ", lastSuccessTime=" + lastSuccessTime
+                    + ", lastCheckTime=" + lastCheckTime + ", currentTime=" + currentTime);
+        }
         return lastSuccessTime != null && lastCheckTime != null
                 && (currentTime - lastSuccessTime) <= checkingIntervalSeconds * 1000L
                 && (currentTime - lastCheckTime) <= checkingIntervalSeconds * 1000L * 5
@@ -235,7 +249,9 @@ public class RandomDataSourceValidateThread implements Runnable {
             info.setProperty("password", password);
         }
         try {
-            LOG.debug("[RandomDataSourceValidateThread@" + this.hashCode() + "] Validating " + name + " every " + checkingIntervalSeconds + " seconds.");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("[RandomDataSourceValidateThread@" + this.hashCode() + "] Validating " + name + " every " + checkingIntervalSeconds + " seconds.");
+            }
             conn = driver.connect(url, info);
             sleepBeforeValidation();
             dataSource.validateConnection(conn);
@@ -255,7 +271,9 @@ public class RandomDataSourceValidateThread implements Runnable {
             return;
         }
         try {
-            LOG.debug("Sleep " + validationSleepSeconds + " second(s) before validation.");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Sleep " + validationSleepSeconds + " second(s) before validation.");
+            }
             Thread.sleep(validationSleepSeconds * 1000L);
         } catch (InterruptedException e) {
             // ignore

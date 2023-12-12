@@ -283,7 +283,7 @@ public class OdpsExprParser extends SQLExprParser {
             if (lexer.token() == Token.IDENTIFIER) { //.GSON
                 Lexer.SavePoint mark = lexer.mark();
 
-                String methodName = lexer.stringVal();
+                StringBuilder methodName = new StringBuilder(lexer.stringVal());
                 lexer.nextToken();
                 switch (lexer.token()) {
                     case ON:
@@ -307,11 +307,11 @@ public class OdpsExprParser extends SQLExprParser {
 
                 while (lexer.token() == Token.DOT) {
                     lexer.nextToken();
-                    methodName += '.' + lexer.stringVal();
+                    methodName.append('.').append(lexer.stringVal());
                     lexer.nextToken();
                 }
 
-                newExpr.setMethodName(methodName);
+                newExpr.setMethodName(methodName.toString());
 
                 if (lexer.token() == Token.LT) {
                     lexer.nextToken();
@@ -373,19 +373,20 @@ public class OdpsExprParser extends SQLExprParser {
                 }
             } else if (lexer.identifierEquals("java") || lexer.identifierEquals("com")) {
                 SQLName name = this.name();
-                String strName = ident.getName() + ' ' + name.toString();
+                StringBuilder strName = new StringBuilder();
+                strName.append(ident.getName()).append(' ').append(name.toString());
                 if (lexer.token() == Token.LT) {
                     lexer.nextToken();
                     for (int i = 0; lexer.token() != Token.GT; i++) {
                         if (i != 0) {
-                            strName += ", ";
+                            strName.append(", ");
                         }
                         SQLName arg = this.name();
-                        strName += arg.toString();
+                        strName.append(arg.toString());
                     }
                     lexer.nextToken();
                 }
-                ident.setName(strName);
+                ident.setName(strName.toString());
             }
         }
 

@@ -40,12 +40,12 @@ import java.util.List;
 import java.util.Set;
 
 public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTVisitor, OracleASTVisitor {
-    public OscarOutputVisitor(Appendable appender) {
+    public OscarOutputVisitor(StringBuilder appender) {
         super(appender);
         this.dbType = DbType.oscar;
     }
 
-    public OscarOutputVisitor(Appendable appender, boolean parameterized) {
+    public OscarOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.oscar;
     }

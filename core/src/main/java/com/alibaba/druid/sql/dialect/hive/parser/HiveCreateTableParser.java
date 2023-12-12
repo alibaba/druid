@@ -302,8 +302,10 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             stmt.setMetaLifeCycle(this.exprParser.primary());
         }
 
-        if (lexer.token() == Token.AS) {
-            lexer.nextToken();
+        if (lexer.token() == Token.SELECT || lexer.token() == Token.AS) {
+            if (lexer.token() == Token.AS) {
+                lexer.nextToken();
+            }
             SQLSelect select = this.createSQLSelectParser().select();
             stmt.setSelect(select);
         }

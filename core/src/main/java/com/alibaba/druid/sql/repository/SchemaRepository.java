@@ -464,7 +464,7 @@ public class SchemaRepository {
 
     public String console(String input) {
         try {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 
             List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType, SQLParserFeature.IgnoreNameQuotes);
 
@@ -487,7 +487,9 @@ public class SchemaRepository {
                     }
 
                     if (schemaObject == null) {
-                        buf.append("ERROR 1146 (42S02): Table '" + table + "' doesn't exist\n");
+                        buf.append("ERROR 1146 (42S02): Table '")
+                                .append(table)
+                                .append("' doesn't exist\n");
                     } else {
                         MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
                         createTableStmt.showCoumns(buf);
@@ -497,7 +499,9 @@ public class SchemaRepository {
                     SQLName table = showCreateTableStmt.getName();
                     SchemaObject schemaObject = findTable(table);
                     if (schemaObject == null) {
-                        buf.append("ERROR 1146 (42S02): Table '" + table + "' doesn't exist\n");
+                        buf.append("ERROR 1146 (42S02): Table '")
+                                .append(table)
+                                .append("' doesn't exist\n");
                     } else {
                         MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
                         createTableStmt.output(buf);

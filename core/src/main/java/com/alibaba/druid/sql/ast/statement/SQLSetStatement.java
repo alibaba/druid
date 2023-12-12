@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -26,7 +25,6 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,20 +97,16 @@ public class SQLSetStatement extends SQLStatementImpl {
         visitor.endVisit(this);
     }
 
-    public void output(Appendable buf) {
-        try {
-            buf.append("SET ");
+    public void output(StringBuilder buf) {
+        buf.append("SET ");
 
-            for (int i = 0; i < items.size(); ++i) {
-                if (i != 0) {
-                    buf.append(", ");
-                }
-
-                SQLAssignItem item = items.get(i);
-                item.output(buf);
+        for (int i = 0; i < items.size(); ++i) {
+            if (i != 0) {
+                buf.append(", ");
             }
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
+
+            SQLAssignItem item = items.get(i);
+            item.output(buf);
         }
     }
 

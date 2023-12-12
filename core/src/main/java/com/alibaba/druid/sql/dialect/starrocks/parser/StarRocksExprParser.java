@@ -90,7 +90,6 @@ public class StarRocksExprParser extends SQLExprParser {
             SQLCharExpr indexComment = new StarRocksCharExpr(lexer.stringVal());
             column.setIndexComment(indexComment);
             lexer.nextToken();
-
         }
 
         return super.parseColumnRest(column);

@@ -476,11 +476,11 @@ public class SQLUtils {
         return out.toString();
     }
 
-    public static SQLASTOutputVisitor createOutputVisitor(Appendable out, DbType dbType) {
+    public static SQLASTOutputVisitor createOutputVisitor(StringBuilder out, DbType dbType) {
         return createFormatOutputVisitor(out, null, dbType);
     }
 
-    public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out,
+    public static SQLASTOutputVisitor createFormatOutputVisitor(StringBuilder out,
                                                                 List<SQLStatement> statementList,
                                                                 DbType dbType) {
         if (dbType == null) {
@@ -661,8 +661,8 @@ public class SQLUtils {
     }
 
     /**
-     * @param columnName
-     * @param tableAlias
+     * @param columnName column name
+     * @param tableAlias table alias
      * @param pattern    if pattern is null,it will be set {%Y-%m-%d %H:%i:%s} as mysql default value and set {yyyy-mm-dd
      *                   hh24:mi:ss} as oracle default value
      * @param dbType     {@link DbType} if dbType is null ,it will be set the mysql as a default value
@@ -2049,8 +2049,9 @@ public class SQLUtils {
     /**
      * 重新排序建表语句，解决建表语句的依赖关系
      *
-     * @param sql
-     * @param dbType
+     * @param sql sql
+     * @param dbType dbType
+     * @return sorted sql
      */
     public static String sort(String sql, DbType dbType) {
         List stmtList = SQLUtils.parseStatements(sql, DbType.oracle);
@@ -2059,8 +2060,8 @@ public class SQLUtils {
     }
 
     /**
-     * @param query
-     * @param dbType
+     * @param query query
+     * @param dbType dbType
      * @return 0：sql.toString, 1:
      */
     public static Object[] clearLimit(String query, DbType dbType) {

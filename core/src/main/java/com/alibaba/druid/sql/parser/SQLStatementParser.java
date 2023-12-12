@@ -153,6 +153,12 @@ public class SQLStatementParser extends SQLParser {
                         SQLStatement stmt = statementList.get(statementList.size() - 1);
                         stmt.addAfterComment(lexer.readAndResetComments());
                     }
+                    if (END == lexer.token && dbType == DbType.postgresql) {
+                        SQLStatement stmt = parseEnd();
+                        stmt.setParent(parent);
+                        statementList.add(stmt);
+                        continue;
+                    }
                     return;
                 case SEMI: {
                     int line0 = lexer.getLine();
@@ -4920,11 +4926,9 @@ public class SQLStatementParser extends SQLParser {
 
                 if (lexer.identifierEquals("FORMAT")) {
                     lexer.nextToken();
-                    String type = "FORMAT " + lexer.stringVal;
                     lexer.nextToken();
                 } else if (lexer.identifierEquals("TYPE")) {
                     lexer.nextToken();
-                    String type = "TYPE " + lexer.stringVal;
                     lexer.nextToken();
                 }
 
@@ -5106,7 +5110,7 @@ public class SQLStatementParser extends SQLParser {
     /**
      * parse cursor open statement
      *
-     * @return
+     * @return SQL open statement
      */
     public SQLOpenStatement parseOpen() {
         SQLOpenStatement stmt = new SQLOpenStatement();
@@ -5604,6 +5608,9 @@ public class SQLStatementParser extends SQLParser {
         }
 
         return withQueryClause;
+    }
+    public SQLStatement parseEnd() {
+        throw new ParserException("TODO. " + lexer.info());
     }
 
     public SQLStatement parseWith() {

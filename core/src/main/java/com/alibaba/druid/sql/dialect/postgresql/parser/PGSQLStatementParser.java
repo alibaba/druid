@@ -372,6 +372,11 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 return true;
             }
+            case END: {
+                PGEndTransactionStatement stmt = parseEnd();
+                statementList.add(stmt);
+                return true;
+            }
             case WITH:
                 statementList.add(parseWith());
                 return true;
@@ -406,11 +411,18 @@ public class PGSQLStatementParser extends SQLStatementParser {
             acceptIdentifier("TRANSACTION");
         } else {
             accept(Token.BEGIN);
+            stmt.setUseBegin(true);
         }
 
         return stmt;
     }
 
+    @Override
+    public PGEndTransactionStatement parseEnd() {
+        PGEndTransactionStatement stmt = new PGEndTransactionStatement();
+        accept(Token.END);
+        return stmt;
+    }
     public SQLStatement parseAlter() {
         Lexer.SavePoint mark = lexer.mark();
         accept(Token.ALTER);

@@ -15,12 +15,10 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,12 +32,8 @@ public final class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr, SQ
         this.parent = parent;
     }
 
-    public void output(Appendable buf) {
-        try {
-            buf.append("NULL");
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        buf.append("NULL");
     }
 
     protected void accept0(SQLASTVisitor visitor) {

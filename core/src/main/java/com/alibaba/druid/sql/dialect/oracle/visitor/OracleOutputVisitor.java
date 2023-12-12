@@ -47,11 +47,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         this.dbType = DbType.oracle;
     }
 
-    public OracleOutputVisitor(Appendable appender) {
+    public OracleOutputVisitor(StringBuilder appender) {
         this(appender, true);
     }
 
-    public OracleOutputVisitor(Appendable appender, boolean printPostSemi) {
+    public OracleOutputVisitor(StringBuilder appender, boolean printPostSemi) {
         super(appender);
         this.printPostSemi = printPostSemi;
     }
@@ -2712,6 +2712,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (parameters.size() > 0) {
             if (x.isParen()) {
                 print(" (");
+            } else if (x.getParameters() != null && x.getParameters().size() > 0 && "ENUM".equals(x.getParameters().get(0).getDataType().getName())) {
+                print0(ucase ? " AS" : " as");
             } else {
                 print0(ucase ? " IS" : " is");
             }
@@ -2744,6 +2746,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
             if (x.isParen()) {
                 print0(")");
+            } else if (x.getParameters() != null && x.getParameters().size() > 0 && "ENUM".equals(x.getParameters().get(0).getDataType().getName())) {
+                //do nothing
             } else {
                 print0("END");
             }

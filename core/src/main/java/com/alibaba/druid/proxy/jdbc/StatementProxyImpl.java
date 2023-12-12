@@ -484,7 +484,7 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     @Override
     public String getBatchSql() {
         List<String> sqlList = getBatchSqlList();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (String item : sqlList) {
             if (buf.length() > 0) {
                 buf.append("\n;\n");

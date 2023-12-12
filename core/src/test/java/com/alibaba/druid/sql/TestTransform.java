@@ -185,7 +185,7 @@ public class TestTransform extends OracleTest {
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("Tables : " + visitor.getTables().toString());
         buf.append("\nColumns : " + visitor.getColumns().toString());
         buf.append("\nCoditions : " + visitor.getConditions().toString());
@@ -316,7 +316,7 @@ public class TestTransform extends OracleTest {
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("Tables : " + visitor.getTables().toString());
         buf.append("\nColumns : " + visitor.getColumns().toString());
         buf.append("\nCoditions : " + visitor.getConditions().toString());
@@ -364,7 +364,7 @@ public class TestTransform extends OracleTest {
         private Date snapshotDate;
         private String dbName;
         private String sqlId;
-        private StringBuffer sqlText = new StringBuffer();
+        private StringBuilder sqlText = new StringBuilder();
         private Integer piece;
         private Integer commandType;
         private Date lastSnapshotDate;
@@ -411,7 +411,7 @@ public class TestTransform extends OracleTest {
             if (sqlText == null) {
                 sqlText = "";
             }
-            this.sqlText = new StringBuffer(sqlText);
+            this.sqlText = new StringBuilder(sqlText);
         }
 
         public void appendSqlText(String sqlText) {

@@ -52,15 +52,21 @@ public class Lpad implements Function {
         int len = ((Number) param1Value).intValue();
         String strValue1 = param2Value.toString();
 
-        String result = strValue0;
-        if (result.length() > len) {
-            return result.substring(0, len);
+        if (strValue0.length() > len) {
+            return strValue0.substring(0, len);
         }
-
-        while (result.length() < len) {
-            result = strValue1 + result;
+        if (strValue0.length() == len) {
+            return strValue0;
         }
-
-        return result;
+        int needLen = len - strValue0.length();
+        StringBuilder result = new StringBuilder(len);
+        while (result.length() < needLen) {
+            result.insert(0, strValue1);
+        }
+        if (result.length() > needLen) {
+            result.delete(needLen, result.length());
+        }
+        result.append(strValue0);
+        return result.toString();
     }
 }

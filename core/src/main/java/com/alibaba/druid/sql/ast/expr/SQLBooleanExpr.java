@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,12 +55,8 @@ public final class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLit
         visitor.endVisit(this);
     }
 
-    public void output(Appendable buf) {
-        try {
-            buf.append(value ? "true" : "false");
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        buf.append(value ? "true" : "false");
     }
 
     @Override

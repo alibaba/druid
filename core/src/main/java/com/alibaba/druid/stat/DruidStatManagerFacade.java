@@ -196,7 +196,7 @@ public final class DruidStatManagerFacade {
     }
 
     /**
-     * @return
+     * @return merged wall states
      * @deprecated
      */
     public static Map mergWallStat(Map mapA, Map mapB) {

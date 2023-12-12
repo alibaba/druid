@@ -42,7 +42,7 @@ public class CharsetConvert {
      *
      * @param s String
      * @return String
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
     public String encode(String s) throws UnsupportedEncodingException {
         if (enable && !isEmpty(s)) {
@@ -56,7 +56,7 @@ public class CharsetConvert {
      *
      * @param s String
      * @return String
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
     public String decode(String s) throws UnsupportedEncodingException {
         if (enable && !isEmpty(s)) {

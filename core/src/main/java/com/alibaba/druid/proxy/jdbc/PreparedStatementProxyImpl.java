@@ -630,13 +630,13 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
             return;
         }
 
-        if (x instanceof Clob) {
-            setParameter(parameterIndex, new JdbcParameterImpl(Types.CLOB, x));
+        if (x instanceof NClob) {
+            setParameter(parameterIndex, new JdbcParameterImpl(Types.NCLOB, x));
             return;
         }
 
-        if (x instanceof NClob) {
-            setParameter(parameterIndex, new JdbcParameterImpl(Types.NCLOB, x));
+        if (x instanceof Clob) {
+            setParameter(parameterIndex, new JdbcParameterImpl(Types.CLOB, x));
             return;
         }
 

@@ -396,7 +396,7 @@ public class ParameterizedOutputVisitorUtils {
         }
     }
 
-    public static ParameterizedVisitor createParameterizedOutputVisitor(Appendable out, DbType dbType) {
+    public static ParameterizedVisitor createParameterizedOutputVisitor(StringBuilder out, DbType dbType) {
         if (dbType == null) {
             dbType = DbType.other;
         }

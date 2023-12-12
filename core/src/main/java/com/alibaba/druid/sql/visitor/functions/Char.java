@@ -31,7 +31,7 @@ public class Char implements Function {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        StringBuffer buf = new StringBuffer(x.getArguments().size());
+        StringBuilder buf = new StringBuilder(x.getArguments().size());
         for (SQLExpr param : x.getArguments()) {
             param.accept(visitor);
 
