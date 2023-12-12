@@ -3090,6 +3090,10 @@ public class DruidDataSource extends DruidAbstractDataSource
     public int removeAbandoned() {
         int removeCount = 0;
 
+        if (activeConnections.size() == 0) {
+            return removeCount;
+        }
+
         long currrentNanos = System.nanoTime();
 
         List<DruidPooledConnection> abandonedList = new ArrayList<DruidPooledConnection>();
