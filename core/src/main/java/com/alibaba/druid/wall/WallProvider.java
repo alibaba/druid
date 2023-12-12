@@ -627,7 +627,7 @@ public abstract class WallProvider {
             return null;
         }
 
-        // 先校验白名单,缓存命中率更高
+        // check white list first
         if (whiteListEnable) {
             WallSqlStat sqlStat = getWhiteSql(sql);
             if (sqlStat != null) {
