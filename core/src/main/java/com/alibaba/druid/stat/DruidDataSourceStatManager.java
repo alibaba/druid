@@ -114,7 +114,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
         if (instances == null) {
             synchronized (properties) {
-                instances = (IdentityHashMap<Object, ObjectName>) properties.get(SYS_PROP_INSTANCES);
+                instances = (Map<Object, ObjectName>) properties.get(SYS_PROP_INSTANCES);
 
                 if (instances == null) {
                     instances = Collections.synchronizedMap(new IdentityHashMap<Object, ObjectName>());
