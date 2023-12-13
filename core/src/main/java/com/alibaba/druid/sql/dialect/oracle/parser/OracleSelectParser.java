@@ -1074,7 +1074,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             accept(Token.IN);
             accept(Token.LPAREN);
-            
+
             for (; ; ) {
                 item = new SQLSelectItem(this.expr(), new ArrayList<>(), false);
                 if (lexer.token() == (Token.AS)) {

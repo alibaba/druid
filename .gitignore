@@ -1,8 +1,7 @@
-target
-.settings
-.project
-.classpath
-.factorypath
+/target
+/.settings
+/.project
+/.classpath
 .DS_Store
 /1
 /derby.log
