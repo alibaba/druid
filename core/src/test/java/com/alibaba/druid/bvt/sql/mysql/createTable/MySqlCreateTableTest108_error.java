@@ -22,6 +22,6 @@ public class MySqlCreateTableTest108_error extends MysqlTest {
             error = ex;
         }
         assertNotNull(error);
-        assertEquals("illegal name, pos 31, line 3, column 2, token DELETE", error.getMessage());
+        assertEquals("illegal name, pos 31, line 3, column 1, token DELETE", error.getMessage());
     }
 }
