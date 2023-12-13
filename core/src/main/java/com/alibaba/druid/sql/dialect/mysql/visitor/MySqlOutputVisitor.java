@@ -32,7 +32,6 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.FnvHash;
 
-import java.io.IOException;
 import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +44,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         this.quote = '`';
     }
 
-    public MySqlOutputVisitor(Appendable appender) {
+    public MySqlOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 
-    public MySqlOutputVisitor(Appendable appender, boolean parameterized) {
+    public MySqlOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
 
         try {
@@ -721,75 +720,66 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             return false;
         }
 
-        try {
-            if (parameterized) {
-                this.appender.append('?');
-                incrementReplaceCunt();
-                if (this.parameters != null) {
-                    ExportParameterVisitorUtils.exportParameter(this.parameters, x);
-                }
-                return false;
+        if (parameterized) {
+            this.appender.append('?');
+            incrementReplaceCunt();
+            if (this.parameters != null) {
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
+        }
+
+        this.appender.append('\'');
+
+        String text = x.getText();
+
+        boolean hasSpecial = false;
+        for (int i = 0; i < text.length(); ++i) {
+            char ch = text.charAt(i);
+            if (ch == '\'' || ch == '\\' || ch == '\0') {
+                hasSpecial = true;
+                break;
+            }
+        }
+
+        if (hasSpecial) {
+            boolean regForPresto = false;
+            if (isEnabled(VisitorFeature.OutputRegForPresto) && x.getParent() instanceof SQLMethodInvokeExpr) {
+                SQLMethodInvokeExpr regCall = (SQLMethodInvokeExpr) x.getParent();
+                long nameHash = regCall.methodNameHashCode64();
+                regForPresto = (x == regCall.getArguments().get(1)) && (nameHash == FnvHash.Constants.REGEXP_SUBSTR
+                        || nameHash == FnvHash.Constants.REGEXP_COUNT || nameHash == FnvHash.Constants.REGEXP_EXTRACT
+                        || nameHash == FnvHash.Constants.REGEXP_EXTRACT_ALL || nameHash == FnvHash.Constants.REGEXP_LIKE
+                        || nameHash == FnvHash.Constants.REGEXP_REPLACE || nameHash == FnvHash.Constants.REGEXP_SPLIT);
             }
 
-            this.appender.append('\'');
-
-            String text = x.getText();
-
-            boolean hasSpecial = false;
             for (int i = 0; i < text.length(); ++i) {
                 char ch = text.charAt(i);
-                if (ch == '\'' || ch == '\\' || ch == '\0') {
-                    hasSpecial = true;
-                    break;
-                }
-            }
-
-            if (hasSpecial) {
-                boolean regForPresto = false;
-                if (isEnabled(VisitorFeature.OutputRegForPresto)
-                        && x.getParent() instanceof SQLMethodInvokeExpr) {
-                    SQLMethodInvokeExpr regCall = (SQLMethodInvokeExpr) x.getParent();
-                    long nameHash = regCall.methodNameHashCode64();
-                    regForPresto = (x == regCall.getArguments().get(1))
-                            && (nameHash == FnvHash.Constants.REGEXP_SUBSTR
-                            || nameHash == FnvHash.Constants.REGEXP_COUNT
-                            || nameHash == FnvHash.Constants.REGEXP_EXTRACT
-                            || nameHash == FnvHash.Constants.REGEXP_EXTRACT_ALL
-                            || nameHash == FnvHash.Constants.REGEXP_LIKE
-                            || nameHash == FnvHash.Constants.REGEXP_REPLACE
-                            || nameHash == FnvHash.Constants.REGEXP_SPLIT);
-                }
-
-                for (int i = 0; i < text.length(); ++i) {
-                    char ch = text.charAt(i);
-                    if (ch == '\'') {
-                        appender.append('\'');
-                        appender.append('\'');
-                    } else if (ch == '\\') {
-                        appender.append('\\');
-                        if (regForPresto) {
-                            continue;
-                        }
-                        if (i < text.length() - 1 && text.charAt(i + 1) == '_') {
-                            continue;
-                        }
-                        appender.append('\\');
-                    } else if (ch == '\0') {
-                        appender.append('\\');
-                        appender.append('0');
-                    } else {
-                        appender.append(ch);
+                if (ch == '\'') {
+                    appender.append('\'');
+                    appender.append('\'');
+                } else if (ch == '\\') {
+                    appender.append('\\');
+                    if (regForPresto) {
+                        continue;
                     }
+                    if (i < text.length() - 1 && text.charAt(i + 1) == '_') {
+                        continue;
+                    }
+                    appender.append('\\');
+                } else if (ch == '\0') {
+                    appender.append('\\');
+                    appender.append('0');
+                } else {
+                    appender.append(ch);
                 }
-            } else {
-                appender.append(text);
             }
-
-            appender.append('\'');
-            return false;
-        } catch (IOException e) {
-            throw new RuntimeException("println error", e);
+        } else {
+            appender.append(text);
         }
+
+        appender.append('\'');
+        return false;
     }
 
     public boolean visit(SQLVariantRefExpr x) {
@@ -3599,6 +3589,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             sampling.accept(this);
         }
 
+        if (x.getPartitionSize() > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            printlnAndAccept(x.getPartitions(), ", ");
+            print(')');
+        }
+
         String alias = x.getAlias();
         List<SQLName> columns = x.getColumnsDirect();
         if (alias != null) {
@@ -3615,15 +3611,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(')');
         }
 
+        if (isPrettyFormat() && x.hasAfterComment()) {
+            print(' ');
+            printlnComment(x.getAfterCommentsDirect());
+        }
+
         for (int i = 0; i < x.getHintsSize(); ++i) {
             print(' ');
             x.getHints().get(i).accept(this);
-        }
-
-        if (x.getPartitionSize() > 0) {
-            print0(ucase ? " PARTITION (" : " partition (");
-            printlnAndAccept(x.getPartitions(), ", ");
-            print(')');
         }
 
         return false;
@@ -5433,6 +5428,55 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         decrementIndent();
         println();
         print(')');
+
+        return false;
+    }
+
+    public boolean visit(TidbSplitTableStatement x) {
+        print0(ucase ? "SPLIT " : "split ");
+        if (x.isSplitSyntaxOptionRegionFor()) {
+            print0(ucase ? "REGION FOR " : "region for ");
+        }
+        if (x.isSplitSyntaxOptionPartition()) {
+            print0(ucase ? "PARTITION " : "partition ");
+        }
+        print0(ucase ? "TABLE " : "table ");
+        x.getTableName().accept(this);
+        print(' ');
+
+        if (!x.getPartitionNameListOptions().isEmpty()) {
+            print0(ucase ? "PARTITION (" : "partition (");
+            printAndAccept(x.getPartitionNameListOptions(), ",");
+            print(") ");
+        }
+        if (x.getIndexName() != null) {
+            print0(ucase ? "INDEX " : "index ");
+            x.getIndexName().accept(this);
+            print(' ');
+        }
+        if (!x.getSplitOptionBys().isEmpty()) {
+            print0(ucase ? "BY " : "by ");
+            boolean needCommon = false;
+            for (List<SQLExpr> list : x.getSplitOptionBys()) {
+                if (!needCommon) {
+                    needCommon = true;
+                } else {
+                    print0(", ");
+                }
+                print0("(");
+                printlnAndAccept(list, ", ");
+                print0(")");
+            }
+        }
+        if (x.getSplitOptionBetween() != null) {
+            print0(ucase ? "BETWEEN (" : " between (");
+            printAndAccept(x.getSplitOptionBetween(), ", ");
+            print0(ucase ? ") AND (" : ") and (");
+            printAndAccept(x.getSplitOptionAnd(), ", ");
+            print0(") ");
+            print0(ucase ? "REGIONS " : "regions ");
+            print(x.getSplitOptionRegions());
+        }
 
         return false;
     }

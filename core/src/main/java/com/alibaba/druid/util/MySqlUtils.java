@@ -383,6 +383,14 @@ public class MySqlUtils {
         return null;
     }
 
+    /**
+     * The <b>lastQueryFinishedTime</b>, returned from mysql8 <b>com.mysql.cj.jdbc.JdbcConnection#getIdleFor</b>,
+     * does not be updated by method <b>pingInternal</b> running for connection validation if option <b>usePingMethod</b>
+     * is true.<br>
+     * More troublesome is that <b>lastQueryFinishedTime</b> will not be set if option <b>maintainTimeStats</b>
+     * is false, so does mysql5 <b>lastPacketReceivedTimeMs</b>.
+     */
+    @Deprecated
     public static long getLastPacketReceivedTimeMs(Connection conn) throws SQLException {
         if (class_connectionImpl == null && !class_connectionImpl_Error) {
             try {
@@ -878,7 +886,7 @@ public class MySqlUtils {
             return null;
         }
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         for (int i = 0, len = fmt.length(); i < len; ++i) {
             char ch = fmt.charAt(i);

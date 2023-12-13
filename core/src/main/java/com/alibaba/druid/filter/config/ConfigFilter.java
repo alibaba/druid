@@ -91,7 +91,7 @@ import java.util.Properties;
  * @author Jonas Yang
  */
 public class ConfigFilter extends FilterAdapter {
-    private static Log LOG = LogFactory.getLog(ConfigFilter.class);
+    private static final Log LOG = LogFactory.getLog(ConfigFilter.class);
 
     public static final String CONFIG_FILE = "config.file";
     public static final String CONFIG_DECRYPT = "config.decrypt";
@@ -106,7 +106,7 @@ public class ConfigFilter extends FilterAdapter {
 
     public void init(DataSourceProxy dataSourceProxy) {
         if (!(dataSourceProxy instanceof DruidDataSource)) {
-            LOG.error("ConfigLoader only support DruidDataSource");
+            throw new IllegalArgumentException("ConfigLoader only support DruidDataSource");
         }
 
         DruidDataSource dataSource = (DruidDataSource) dataSourceProxy;
@@ -165,8 +165,8 @@ public class ConfigFilter extends FilterAdapter {
             Properties info = loadConfig(configFile);
 
             if (info == null) {
-                throw new IllegalArgumentException("Cannot load remote config file from the [config.file=" + configFile
-                        + "].");
+                throw new IllegalArgumentException(
+                        "Cannot load remote config file from the [config.file=" + configFile + "].");
             }
 
             return info;

@@ -15,16 +15,12 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Properties;
 
 public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
@@ -58,38 +54,16 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
     public boolean isValidConnection(Connection conn,
                                      String validateQuery,
                                      int validationQueryTimeout) throws Exception {
-        if (validateQuery == null || validateQuery.isEmpty()) {
-            validateQuery = this.defaultValidateQuery;
-        }
-
         if (conn.isClosed()) {
             return false;
         }
 
-        if (conn instanceof DruidPooledConnection) {
-            conn = ((DruidPooledConnection) conn).getConnection();
-        }
-
-        if (conn instanceof ConnectionProxy) {
-            conn = ((ConnectionProxy) conn).getRawObject();
-        }
-
-        if (validateQuery == null || validateQuery.isEmpty()) {
-            return true;
+        if (StringUtils.isEmpty(validateQuery)) {
+            validateQuery = this.defaultValidateQuery;
         }
 
         int queryTimeout = validationQueryTimeout <= 0 ? timeout : validationQueryTimeout;
 
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = conn.createStatement();
-            stmt.setQueryTimeout(queryTimeout);
-            rs = stmt.executeQuery(validateQuery);
-            return true;
-        } finally {
-            JdbcUtils.close(rs);
-            JdbcUtils.close(stmt);
-        }
+        return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, queryTimeout);
     }
 }

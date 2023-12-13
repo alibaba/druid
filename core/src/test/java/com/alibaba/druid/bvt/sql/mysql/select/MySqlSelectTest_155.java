@@ -25,7 +25,7 @@ public class MySqlSelectTest_155 extends MysqlTest {
                 "\tLEFT JOIN corona_select_one_db_one_tb layer_0_right_tb ON layer_0_right_tb.decimal_test = layer_0_left_tb.varchar_test\n" +
                 "WHERE '18015376320243458' = 18015376320243458 NOT BETWEEN layer_0_right_tb.tinyint_1bit_test AND 'x-3'", stmt.toString());
 
-        assertEquals("SELECT SQL_NO_CACHE layer_0_right_tb.integer_test IS true\n" +
+        assertEquals("SELECT SQL_NO_CACHE layer_0_right_tb.integer_test IS ?\n" +
                         "FROM corona_select_multi_db_multi_tb layer_0_left_tb\n" +
                         "\tLEFT JOIN corona_select_one_db_one_tb layer_0_right_tb ON layer_0_right_tb.decimal_test = layer_0_left_tb.varchar_test\n" +
                         "WHERE ? = ? NOT BETWEEN layer_0_right_tb.tinyint_1bit_test AND ?"

@@ -39,9 +39,7 @@ public interface SQLObject {
 
     Map<String, Object> getAttributesDirect();
 
-    void output(StringBuffer buf);
-
-    void output(Appendable buf);
+    void output(StringBuilder buf);
 
     void addBeforeComment(String comment);
 

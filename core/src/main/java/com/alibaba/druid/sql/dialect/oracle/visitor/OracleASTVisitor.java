@@ -496,6 +496,13 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     default void endVisit(OracleAlterTableShrinkSpace x) {
     }
 
+    default boolean visit(OracleAlterSummaryStatement x) {
+        return true;
+    }
+
+    default void endVisit(OracleAlterSummaryStatement x) {
+    }
+
     default boolean visit(OracleFileSpecification x) {
         return true;
     }

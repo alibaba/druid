@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement.Type;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
@@ -151,6 +152,12 @@ public class SQLStatementParser extends SQLParser {
                     if (lexer.isKeepComments() && lexer.hasComment() && statementList.size() > 0) {
                         SQLStatement stmt = statementList.get(statementList.size() - 1);
                         stmt.addAfterComment(lexer.readAndResetComments());
+                    }
+                    if (END == lexer.token && dbType == DbType.postgresql) {
+                        SQLStatement stmt = parseEnd();
+                        stmt.setParent(parent);
+                        statementList.add(stmt);
+                        continue;
                     }
                     return;
                 case SEMI: {
@@ -926,9 +933,29 @@ public class SQLStatementParser extends SQLParser {
 
         acceptIdentifier("MATERIALIZED");
 
+        if (lexer.identifierEquals("CONCURRENTLY")) {
+            lexer.nextToken();
+            stmt.setConcurrently(true);
+        }
         accept(Token.VIEW);
 
         stmt.setName(this.exprParser.name());
+
+        if (lexer.token() == WITH) {
+            lexer.nextToken();
+
+            if (lexer.token() == IDENTIFIER && "NO".equalsIgnoreCase(lexer.stringVal())) {
+                lexer.nextToken();
+                stmt.setWithNoData(true);
+            }
+
+            if (lexer.token() == IDENTIFIER && "DATA".equalsIgnoreCase(lexer.stringVal())) {
+                lexer.nextToken();
+                stmt.setWithData(true);
+            } else {
+                throw new ParserException("syntax error, expect DATA, actual " + lexer.token() + ", pos " + lexer.pos());
+            }
+        }
         return stmt;
     }
 
@@ -3415,9 +3442,14 @@ public class SQLStatementParser extends SQLParser {
         }
 
         boolean temporary = false;
+        boolean transactional = false;
         if (lexer.identifierEquals(FnvHash.Constants.TEMPORARY) || lexer.token == Token.TEMPORARY) {
             lexer.nextToken();
             temporary = true;
+        }
+        if ("TRANSACTIONAL".equalsIgnoreCase(lexer.stringVal())) {
+            lexer.nextToken();
+            transactional = true;
         }
 
         boolean nonclustered = false;
@@ -3441,6 +3473,9 @@ public class SQLStatementParser extends SQLParser {
                     }
                 }
 
+                if (transactional) {
+                    stmt.setType(Type.TRANSACTIONAL);
+                }
                 if (comments != null) {
                     stmt.addBeforeComment(comments);
                 }
@@ -3801,6 +3836,20 @@ public class SQLStatementParser extends SQLParser {
                         }
                         accept(Token.RPAREN);
                         stmt.setDistributedByType(new SQLIdentifierExpr("HASH"));
+                    } else if (lexer.identifierEquals(Constants.DUPLICATE)) {
+                        lexer.nextToken();
+                        accept(Token.LPAREN);
+                        for (; ; ) {
+                            SQLName name = this.exprParser.name();
+                            stmt.getDistributedBy().add(name);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
+                        }
+                        accept(Token.RPAREN);
+                        stmt.setDistributedByType(new SQLIdentifierExpr("DUPLICATE"));
                     } else if (lexer.identifierEquals(FnvHash.Constants.BROADCAST)) {
                         lexer.nextToken();
                         stmt.setDistributedByType(new SQLIdentifierExpr("BROADCAST"));
@@ -4123,8 +4172,19 @@ public class SQLStatementParser extends SQLParser {
             stmt.setWhen(condition);
         }
 
-        List<SQLStatement> body = this.parseStatementList();
-        if (body == null || body.isEmpty()) {
+        //for postgresql https://www.postgresql.org/docs/current/sql-createtrigger.html
+        if (lexer.identifierEquals("EXECUTE")) {
+            lexer.nextToken();
+            String executeType = lexer.stringVal();
+            stmt.setExecuteType(executeType);
+            lexer.nextToken();
+            SQLExpr executeFunc = this.exprParser.expr();
+            stmt.setExecuteFunc(executeFunc);
+            return stmt;
+        }
+        List<SQLStatement> body = new ArrayList<>();
+        this.parseStatementList(body, 1);
+        if (body.isEmpty()) {
             throw new ParserException("syntax error");
         }
         stmt.setBody(body.get(0));
@@ -4406,29 +4466,29 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
-        SQLUpdateStatement udpateStatement = createUpdateStatement();
+        SQLUpdateStatement updateStatement = createUpdateStatement();
 
         if (lexer.token == Token.UPDATE) {
             lexer.nextToken();
 
             SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
-            udpateStatement.setTableSource(tableSource);
+            updateStatement.setTableSource(tableSource);
         }
 
         if (dbType == DbType.odps && lexer.token == PARTITION) {
             lexer.nextToken();
-            udpateStatement.setPartitions(new ArrayList<>());
-            this.exprParser.parseAssignItem(udpateStatement.getPartitions(), udpateStatement);
+            updateStatement.setPartitions(new ArrayList<>());
+            this.exprParser.parseAssignItem(updateStatement.getPartitions(), updateStatement);
         }
 
-        parseUpdateSet(udpateStatement);
+        parseUpdateSet(updateStatement);
 
         if (lexer.token == (Token.WHERE)) {
             lexer.nextToken();
-            udpateStatement.setWhere(this.exprParser.expr());
+            updateStatement.setWhere(this.exprParser.expr());
         }
 
-        return udpateStatement;
+        return updateStatement;
     }
 
     protected void parseUpdateSet(SQLUpdateStatement update) {
@@ -4866,11 +4926,9 @@ public class SQLStatementParser extends SQLParser {
 
                 if (lexer.identifierEquals("FORMAT")) {
                     lexer.nextToken();
-                    String type = "FORMAT " + lexer.stringVal;
                     lexer.nextToken();
                 } else if (lexer.identifierEquals("TYPE")) {
                     lexer.nextToken();
-                    String type = "TYPE " + lexer.stringVal;
                     lexer.nextToken();
                 }
 
@@ -5050,9 +5108,10 @@ public class SQLStatementParser extends SQLParser {
     */
 
     /**
-     * parse cursor open statement
+     * Parses the SQL OPEN statement and returns the corresponding SQLOpenStatement object.
      *
-     * @return
+     * @return the parsed SQLOpenStatement object representing the SQL OPEN statement
+     * @throws ParserException if an error occurs during parsing
      */
     public SQLOpenStatement parseOpen() {
         SQLOpenStatement stmt = new SQLOpenStatement();
@@ -5550,6 +5609,9 @@ public class SQLStatementParser extends SQLParser {
         }
 
         return withQueryClause;
+    }
+    public SQLStatement parseEnd() {
+        throw new ParserException("TODO. " + lexer.info());
     }
 
     public SQLStatement parseWith() {
@@ -6328,7 +6390,7 @@ public class SQLStatementParser extends SQLParser {
                             expr = new SQLVariantRefExpr("?", values);
                             values.incrementReplaceCount();
                         } else {
-                            SQLNumberExpr numberExpr = lexer.numberExpr(parent);
+                            SQLNumberExpr numberExpr = lexer.numberExpr(values);
 
                             if (dataType != null
                                     && dataType.nameHashCode64() == FnvHash.Constants.DECIMAL) {

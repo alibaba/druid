@@ -47,11 +47,13 @@ public class MySqlCreateTableUnitTest extends MysqlTest {
         List<SQLAssignItem> list = new ArrayList<SQLAssignItem>();
         assertTrue(parser.parseTableOptions(list, null));
 
-        MySqlOutputVisitor visitor = new MySqlOutputVisitor(System.out);
+        StringBuilder strBuilder = new StringBuilder();
+        MySqlOutputVisitor visitor = new MySqlOutputVisitor(strBuilder);
         for (SQLAssignItem item : list) {
             visitor.visit(item);
             visitor.println();
         }
+        System.out.println(strBuilder.toString());
     }
 
 }

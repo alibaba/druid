@@ -689,11 +689,11 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     }
 
     /**
-     * only for parameterized output
+     * Merges the given SQLBinaryOpExpr with its parent using a parameterized visitor.
      *
-     * @param v
-     * @param x
-     * @return
+     * @param v the parameterized visitor used for merging
+     * @param x the SQLBinaryOpExpr to be merged
+     * @return the merged SQLBinaryOpExpr
      */
     public static SQLBinaryOpExpr merge(ParameterizedVisitor v, SQLBinaryOpExpr x) {
         SQLObject parent = x.parent;
@@ -759,10 +759,9 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     }
 
     /**
-     * only for parameterized output
+     * Adds the given SQLBinaryOpExpr to the merged list.
      *
-     * @param item
-     * @return
+     * @param item the SQLBinaryOpExpr to be added
      */
     private void addMergedItem(SQLBinaryOpExpr item) {
         if (mergedList == null) {
@@ -772,20 +771,20 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     }
 
     /**
-     * only for parameterized output
+     * Retrieves the merged list of SQLObjects.
      *
-     * @return
+     * @return the merged list of SQLObjects
      */
     public List<SQLObject> getMergedList() {
         return mergedList;
     }
 
     /**
-     * only for parameterized output
+     * Determines whether two SQL expressions can be merged based on equality.
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a the first SQL expression to compare
+     * @param b the second SQL expression to compare
+     * @return true if the two expressions are equal and can be merged; otherwise false
      */
     private static boolean mergeEqual(SQLExpr a, SQLExpr b) {
         if (!(a instanceof SQLBinaryOpExpr)) {

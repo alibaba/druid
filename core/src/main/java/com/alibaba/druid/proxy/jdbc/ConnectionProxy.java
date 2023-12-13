@@ -34,4 +34,6 @@ public interface ConnectionProxy extends Connection, WrapperProxy {
     TransactionInfo getTransactionInfo();
 
     int getCloseCount();
+
+    long getLastValidateTimeMillis();
 }

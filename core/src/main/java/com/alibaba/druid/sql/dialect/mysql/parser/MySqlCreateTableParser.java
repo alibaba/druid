@@ -954,6 +954,20 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     accept(Token.RPAREN);
                     stmt.setDistributeByType(new SQLIdentifierExpr("HASH"));
+                } else if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE)) {
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    for (; ; ) {
+                        SQLName name = this.exprParser.name();
+                        stmt.getDistributeBy().add(name);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.RPAREN);
+                    stmt.setDistributeByType(new SQLIdentifierExpr("DUPLICATE"));
                 } else if (lexer.identifierEquals(FnvHash.Constants.BROADCAST)) {
                     lexer.nextToken();
                     stmt.setDistributeByType(new SQLIdentifierExpr("BROADCAST"));
@@ -1121,6 +1135,9 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 SQLSelect query = new MySqlSelectParser(this.exprParser).select();
                 stmt.setSelect(query);
                 accept(Token.RPAREN);
+            }
+            if (lexer.token() == Token.WITH) {
+                stmt.setWithSelect(this.parseWith());
             }
         }
 

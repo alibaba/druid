@@ -15,11 +15,9 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,13 +51,9 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl implements SQLReplaceabl
     }
 
     @Override
-    public void output(Appendable buf) {
-        try {
-            buf.append("CURRENT OF ");
-            cursorName.output(buf);
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        buf.append("CURRENT OF ");
+        cursorName.output(buf);
     }
 
     @Override

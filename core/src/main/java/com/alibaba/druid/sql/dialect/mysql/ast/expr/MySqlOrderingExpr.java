@@ -16,16 +16,14 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;
 import java.util.List;
 
-public class MySqlOrderingExpr extends SQLExprImpl implements MySqlExpr, SQLReplaceable {
+public class MySqlOrderingExpr extends MySqlExprImpl implements MySqlExpr, SQLReplaceable {
     protected SQLExpr expr;
     protected SQLOrderingSpecification type;
 
@@ -58,11 +56,10 @@ public class MySqlOrderingExpr extends SQLExprImpl implements MySqlExpr, SQLRepl
     }
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        MySqlASTVisitor mysqlVisitor = (MySqlASTVisitor) visitor;
+    public void accept0(MySqlASTVisitor mysqlVisitor) {
         if (mysqlVisitor.visit(this)) {
             if (expr != null) {
-                expr.accept(visitor);
+                expr.accept(mysqlVisitor);
             }
         }
 

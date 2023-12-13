@@ -93,7 +93,7 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
         }
     }
 
-    public void output(Appendable buf) {
+    public void output(StringBuilder buf) {
         this.accept(
                 new DB2OutputVisitor(buf)
         );

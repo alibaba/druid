@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import com.alibaba.druid.util.LRUCache;
+import com.alibaba.druid.util.ConcurrentLruCache;
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.violation.ErrorCode;
@@ -37,8 +37,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
@@ -51,21 +49,26 @@ public abstract class WallProvider {
             1);
 
     private boolean whiteListEnable = true;
-    private LRUCache<String, WallSqlStat> whiteList;
 
-    private int MAX_SQL_LENGTH = 8192;                                              // 8k
+    /**
+     * 8k
+     */
+    private static final int MAX_SQL_LENGTH = 8192;
 
-    private int whiteSqlMaxSize = 1000;
+    private static final int WHITE_SQL_MAX_SIZE = 1024;
+
+    // public for testing
+    public static final int BLACK_SQL_MAX_SIZE = 256;
+
+    private static final int MERGED_SQL_CACHE_SIZE = 256;
 
     private boolean blackListEnable = true;
-    private LRUCache<String, WallSqlStat> blackList;
-    private LRUCache<String, WallSqlStat> blackMergedList;
 
-    private int blackSqlMaxSize = 200;
+    private final ConcurrentLruCache<String, WallSqlStat> whiteList = new ConcurrentLruCache<>(WHITE_SQL_MAX_SIZE);
+    private final ConcurrentLruCache<String, WallSqlStat> blackList = new ConcurrentLruCache<>(BLACK_SQL_MAX_SIZE);
+    private final ConcurrentLruCache<String, String> mergedSqlCache = new ConcurrentLruCache<>(MERGED_SQL_CACHE_SIZE);
 
     protected final WallConfig config;
-
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private static final ThreadLocal<Boolean> privileged = new ThreadLocal<Boolean>();
 
@@ -245,68 +248,25 @@ public abstract class WallProvider {
             return stat;
         }
 
-        String mergedSql;
-        try {
-            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
-        } catch (Exception ex) {
-            WallSqlStat stat = new WallSqlStat(tableStats, functionStats, syntaxError);
-            stat.incrementAndGetExecuteCount();
-            return stat;
-        }
-
-        if (mergedSql != sql) {
-            WallSqlStat mergedStat;
-            lock.readLock().lock();
+        String mergedSql = mergedSqlCache.get(sql);
+        if (mergedSql == null) {
             try {
-                if (whiteList == null) {
-                    whiteList = new LRUCache<String, WallSqlStat>(whiteSqlMaxSize);
-                }
-
-                mergedStat = whiteList.get(mergedSql);
-            } finally {
-                lock.readLock().unlock();
+                mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+            } catch (Exception ex) {
+                WallSqlStat stat = new WallSqlStat(tableStats, functionStats, syntaxError);
+                stat.incrementAndGetExecuteCount();
+                return stat;
             }
-
-            if (mergedStat == null) {
-                WallSqlStat newStat = new WallSqlStat(tableStats, functionStats, syntaxError);
-                newStat.setSample(sql);
-
-                lock.writeLock().lock();
-                try {
-                    mergedStat = whiteList.get(mergedSql);
-                    if (mergedStat == null) {
-                        whiteList.put(mergedSql, newStat);
-                        mergedStat = newStat;
-                    }
-                } finally {
-                    lock.writeLock().unlock();
-                }
-            }
-
-            mergedStat.incrementAndGetExecuteCount();
-
-            return mergedStat;
         }
 
-        lock.writeLock().lock();
-        try {
-            if (whiteList == null) {
-                whiteList = new LRUCache<String, WallSqlStat>(whiteSqlMaxSize);
-            }
+        WallSqlStat wallSqlStat = whiteList.computeIfAbsent(mergedSql, key -> {
+            WallSqlStat newStat = new WallSqlStat(tableStats, functionStats, syntaxError);
+            newStat.setSample(sql);
+            return newStat;
+        });
 
-            WallSqlStat wallStat = whiteList.get(sql);
-            if (wallStat == null) {
-                wallStat = new WallSqlStat(tableStats, functionStats, syntaxError);
-                whiteList.put(sql, wallStat);
-                wallStat.setSample(sql);
-
-                wallStat.incrementAndGetExecuteCount();
-            }
-
-            return wallStat;
-        } finally {
-            lock.writeLock().unlock();
-        }
+        wallSqlStat.incrementAndGetExecuteCount();
+        return wallSqlStat;
     }
 
     public WallSqlStat addBlackSql(String sql, Map<String, WallSqlTableStat> tableStats,
@@ -316,173 +276,89 @@ public abstract class WallProvider {
             return new WallSqlStat(tableStats, functionStats, violations, syntaxError);
         }
 
-        String mergedSql;
+        WallSqlStat wallSqlStat = blackList.computeIfAbsent(getMergedSql(sql),
+                key -> {
+                    WallSqlStat wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
+                    wallStat.setSample(sql);
+                    return wallStat;
+                });
+
+        wallSqlStat.incrementAndGetExecuteCount();
+        return wallSqlStat;
+    }
+
+    private String getMergedSql(String sql) {
+        String mergedSql = mergedSqlCache.get(sql);
+        if (mergedSql != null) {
+            return mergedSql;
+        }
         try {
             mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
         } catch (Exception ex) {
             // skip
-            mergedSql = sql;
+            return sql;
         }
 
-        lock.writeLock().lock();
-        try {
-            if (blackList == null) {
-                blackList = new LRUCache<String, WallSqlStat>(blackSqlMaxSize);
-            }
-
-            if (blackMergedList == null) {
-                blackMergedList = new LRUCache<String, WallSqlStat>(blackSqlMaxSize);
-            }
-
-            WallSqlStat wallStat = blackList.get(sql);
-            if (wallStat == null) {
-                wallStat = blackMergedList.get(mergedSql);
-                if (wallStat == null) {
-                    wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
-                    blackMergedList.put(mergedSql, wallStat);
-                    wallStat.setSample(sql);
-                }
-
-                wallStat.incrementAndGetExecuteCount();
-                blackList.put(sql, wallStat);
-            }
-
-            return wallStat;
-        } finally {
-            lock.writeLock().unlock();
+        String finalMergedSql = mergedSql;
+        if (sql.length() < MAX_SQL_LENGTH) {
+            mergedSqlCache.computeIfAbsent(sql, key -> finalMergedSql);
         }
+        return mergedSql;
     }
 
     public Set<String> getWhiteList() {
-        Set<String> hashSet = new HashSet<String>();
-        lock.readLock().lock();
-        try {
-            if (whiteList != null) {
-                hashSet.addAll(whiteList.keySet());
-            }
-        } finally {
-            lock.readLock().unlock();
+        Set<String> hashSet = new HashSet<>();
+        Set<String> whiteListKeys = whiteList.keys();
+        if (!whiteListKeys.isEmpty()) {
+            hashSet.addAll(whiteListKeys);
         }
-
-        return Collections.<String>unmodifiableSet(hashSet);
+        return Collections.unmodifiableSet(hashSet);
     }
 
     public Set<String> getSqlList() {
-        Set<String> hashSet = new HashSet<String>();
-        lock.readLock().lock();
-        try {
-            if (whiteList != null) {
-                hashSet.addAll(whiteList.keySet());
-            }
-
-            if (blackMergedList != null) {
-                hashSet.addAll(blackMergedList.keySet());
-            }
-        } finally {
-            lock.readLock().unlock();
+        Set<String> hashSet = new HashSet<>();
+        Set<String> whiteListKeys = whiteList.keys();
+        if (!whiteListKeys.isEmpty()) {
+            hashSet.addAll(whiteListKeys);
         }
 
-        return Collections.<String>unmodifiableSet(hashSet);
+        Set<String> blackMergedListKeys = blackList.keys();
+        if (!blackMergedListKeys.isEmpty()) {
+            hashSet.addAll(blackMergedListKeys);
+        }
+
+        return Collections.unmodifiableSet(hashSet);
     }
 
     public Set<String> getBlackList() {
-        Set<String> hashSet = new HashSet<String>();
-        lock.readLock().lock();
-        try {
-            if (blackList != null) {
-                hashSet.addAll(blackList.keySet());
-            }
-        } finally {
-            lock.readLock().unlock();
+        Set<String> hashSet = new HashSet<>();
+        Set<String> blackMergedListKeys = blackList.keys();
+        if (!blackMergedListKeys.isEmpty()) {
+            hashSet.addAll(blackMergedListKeys);
         }
-
-        return Collections.<String>unmodifiableSet(hashSet);
+        return Collections.unmodifiableSet(hashSet);
     }
 
     public void clearCache() {
-        lock.writeLock().lock();
-        try {
-            if (whiteList != null) {
-                whiteList = null;
-            }
-
-            if (blackList != null) {
-                blackList = null;
-            }
-            if (blackMergedList != null) {
-                blackMergedList = null;
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
+        whiteList.clear();
+        blackList.clear();
+        mergedSqlCache.clear();
     }
 
     public void clearWhiteList() {
-        lock.writeLock().lock();
-        try {
-            if (whiteList != null) {
-                whiteList = null;
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
+        whiteList.clear();
     }
 
     public void clearBlackList() {
-        lock.writeLock().lock();
-        try {
-            if (blackList != null) {
-                blackList = null;
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
+        blackList.clear();
     }
 
     public WallSqlStat getWhiteSql(String sql) {
-        WallSqlStat stat = null;
-        lock.readLock().lock();
-        try {
-            if (whiteList == null) {
-                return null;
-            }
-            stat = whiteList.get(sql);
-        } finally {
-            lock.readLock().unlock();
-        }
-
-        if (stat != null) {
-            return stat;
-        }
-
-        String mergedSql;
-        try {
-            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType, (List<Object>) null);
-        } catch (Exception ex) {
-            // skip
-            return null;
-        }
-
-        lock.readLock().lock();
-        try {
-            stat = whiteList.get(mergedSql);
-        } finally {
-            lock.readLock().unlock();
-        }
-        return stat;
+        return whiteList.get(getMergedSql(sql));
     }
 
     public WallSqlStat getBlackSql(String sql) {
-        lock.readLock().lock();
-        try {
-            if (blackList == null) {
-                return null;
-            }
-
-            return blackList.get(sql);
-        } finally {
-            lock.readLock().unlock();
-        }
+        return blackList.get(getMergedSql(sql));
     }
 
     public boolean whiteContains(String sql) {
@@ -751,24 +627,7 @@ public abstract class WallProvider {
             return null;
         }
 
-        // check black list
-        if (blackListEnable) {
-            WallSqlStat sqlStat = getBlackSql(sql);
-            if (sqlStat != null) {
-                blackListHitCount.incrementAndGet();
-                violationCount.incrementAndGet();
-
-                if (sqlStat.isSyntaxError()) {
-                    syntaxErrorCount.incrementAndGet();
-                }
-
-                sqlStat.incrementAndGetExecuteCount();
-                recordStats(sqlStat.getTableStats(), sqlStat.getFunctionStats());
-
-                return new WallCheckResult(sqlStat);
-            }
-        }
-
+        // check white list first
         if (whiteListEnable) {
             WallSqlStat sqlStat = getWhiteSql(sql);
             if (sqlStat != null) {
@@ -784,6 +643,24 @@ public abstract class WallProvider {
                 if (context != null) {
                     context.setSqlStat(sqlStat);
                 }
+                return new WallCheckResult(sqlStat);
+            }
+        }
+
+        // check black list
+        if (blackListEnable) {
+            WallSqlStat sqlStat = getBlackSql(sql);
+            if (sqlStat != null) {
+                blackListHitCount.incrementAndGet();
+                violationCount.incrementAndGet();
+
+                if (sqlStat.isSyntaxError()) {
+                    syntaxErrorCount.incrementAndGet();
+                }
+
+                sqlStat.incrementAndGetExecuteCount();
+                recordStats(sqlStat.getTableStats(), sqlStat.getFunctionStats());
+
                 return new WallCheckResult(sqlStat);
             }
         }
@@ -951,49 +828,35 @@ public abstract class WallProvider {
             statValue.getFunctions().add(functionStatValue);
         }
 
-        final Lock lock = reset ? this.lock.writeLock() : this.lock.readLock();
-        lock.lock();
-        try {
-            if (this.whiteList != null) {
-                for (Map.Entry<String, WallSqlStat> entry : whiteList.entrySet()) {
-                    String sql = entry.getKey();
-                    WallSqlStat sqlStat = entry.getValue();
-                    WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
+        whiteList.forEach((sql, sqlStat) -> {
+            WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
 
-                    if (sqlStatValue.getExecuteCount() == 0) {
-                        continue;
-                    }
-
-                    sqlStatValue.setSql(sql);
-
-                    long sqlHash = sqlStat.getSqlHash();
-                    if (sqlHash == 0) {
-                        sqlHash = Utils.fnv_64(sql);
-                        sqlStat.setSqlHash(sqlHash);
-                    }
-                    sqlStatValue.setSqlHash(sqlHash);
-
-                    statValue.getWhiteList().add(sqlStatValue);
-                }
+            if (sqlStatValue.getExecuteCount() == 0) {
+                return;
             }
 
-            if (this.blackMergedList != null) {
-                for (Map.Entry<String, WallSqlStat> entry : blackMergedList.entrySet()) {
-                    String sql = entry.getKey();
-                    WallSqlStat sqlStat = entry.getValue();
-                    WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
+            sqlStatValue.setSql(sql);
 
-                    if (sqlStatValue.getExecuteCount() == 0) {
-                        continue;
-                    }
-
-                    sqlStatValue.setSql(sql);
-                    statValue.getBlackList().add(sqlStatValue);
-                }
+            long sqlHash = sqlStat.getSqlHash();
+            if (sqlHash == 0) {
+                sqlHash = Utils.fnv_64(sql);
+                sqlStat.setSqlHash(sqlHash);
             }
-        } finally {
-            lock.unlock();
-        }
+            sqlStatValue.setSqlHash(sqlHash);
+
+            statValue.getWhiteList().add(sqlStatValue);
+        });
+
+        blackList.forEach((sql, sqlStat) -> {
+            WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
+
+            if (sqlStatValue.getExecuteCount() == 0) {
+                return;
+            }
+
+            sqlStatValue.setSql(sql);
+            statValue.getBlackList().add(sqlStatValue);
+        });
 
         return statValue;
     }

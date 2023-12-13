@@ -29,7 +29,7 @@ import java.util.List;
  * Created by wenshao on 27/07/2017.
  */
 public class MySqlShowColumnOutpuVisitor extends MySqlOutputVisitor {
-    public MySqlShowColumnOutpuVisitor(Appendable appender) {
+    public MySqlShowColumnOutpuVisitor(StringBuilder appender) {
         super(appender);
     }
 
@@ -49,23 +49,23 @@ public class MySqlShowColumnOutpuVisitor extends MySqlOutputVisitor {
                     name_len = name.length();
                 }
 
-                String dataType = column.getDataType().getName();
+                StringBuilder dataType = new StringBuilder(column.getDataType().getName());
                 if (column.getDataType().getArguments().size() > 0) {
-                    dataType += "(";
+                    dataType.append("(");
                     for (int i = 0; i < column.getDataType().getArguments().size(); i++) {
                         if (i != 0) {
-                            dataType += ",";
+                            dataType.append(",");
                         }
                         SQLExpr arg = column.getDataType().getArguments().get(i);
-                        dataType += arg.toString();
+                        dataType.append(arg.toString());
                     }
-                    dataType += ")";
+                    dataType.append(")");
                 }
 
                 if (dataType_len < dataType.length()) {
                     dataType_len = dataType.length();
                 }
-                dataTypes.add(dataType);
+                dataTypes.add(dataType.toString());
 
                 if (column.getDefaultExpr() == null) {
                     defaultValues.add(null);

@@ -58,7 +58,7 @@ public class PGSelectTest21 extends PGTest {
 
         assertTrue(statemen instanceof PGSelectStatement);
         assertEquals(1, ((PGSelectStatement) statemen).getSelect().getWithSubQuery().getEntries().size());
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String alias = ((PGSelectStatement) statemen).getSelect().getWithSubQuery().getEntries().get(0).getAlias();
         assertEquals("a", alias);
         assertEquals(2, ((PGSelectStatement) statemen).getSelect().getWithSubQuery().getEntries().get(0).getColumns().size());

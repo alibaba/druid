@@ -38,15 +38,15 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         super.quote = '`';
     }
 
-    public HiveOutputVisitor(Appendable appender) {
+    public HiveOutputVisitor(StringBuilder appender) {
         super(appender, DbType.hive);
     }
 
-    public HiveOutputVisitor(Appendable appender, DbType dbType) {
+    public HiveOutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public HiveOutputVisitor(Appendable appender, boolean parameterized) {
+    public HiveOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         dbType = DbType.hive;
     }

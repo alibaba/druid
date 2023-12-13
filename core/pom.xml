@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.alibaba</groupId>
 		<artifactId>druid-parent</artifactId>
-		<version>1.2.17-SNAPSHOT</version>
+		<version>1.2.21-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>druid</artifactId>
@@ -118,6 +118,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>5.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
@@ -224,6 +231,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.dameng</groupId>
+			<artifactId>DmJdbcDriver18</artifactId>
+			<version>8.1.3.62</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.kylin</groupId>
 			<artifactId>kylin-jdbc</artifactId>
 			<version>2.0.0</version>
@@ -275,7 +289,7 @@
 		<dependency>
 			<groupId>com.aliyun.odps</groupId>
 			<artifactId>odps-sdk-udf</artifactId>
-			<version>0.37.10-public</version>
+			<version>0.43.3-public</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 			<exclusions>
@@ -313,15 +327,9 @@
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
 			<artifactId>fastjson2</artifactId>
-			<version>2.0.26</version>
+			<version>2.0.29</version>
 			<scope>provided</scope>
 			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hive</groupId>
-			<artifactId>hive-jdbc</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>ru.yandex.clickhouse</groupId>
@@ -343,7 +351,7 @@
 		<dependency>
 			<groupId>com.aliyun.odps</groupId>
 			<artifactId>odps-jdbc</artifactId>
-			<version>1.6</version>
+			<version>3.4.2</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -443,7 +451,7 @@
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4</artifactId>
-			<version>4.7</version>
+			<version>4.11.1</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
 
@@ -39,12 +40,12 @@ import java.util.List;
 import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor, OracleASTVisitor {
-    public PGOutputVisitor(Appendable appender) {
+    public PGOutputVisitor(StringBuilder appender) {
         super(appender);
         this.dbType = DbType.postgresql;
     }
 
-    public PGOutputVisitor(Appendable appender, boolean parameterized) {
+    public PGOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.postgresql;
     }
@@ -95,7 +96,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             printlnComments(x.getBeforeCommentsDirect());
         }
 
-        final boolean bracket = x.isParenthesized();
+        boolean bracket = x.isParenthesized();
+        if (bracket) {
+            if (x.getParent() instanceof SQLSelect && x.getParent().getParent() instanceof SQLSubqueryTableSource) {
+                bracket = false;
+            }
+        }
         if (bracket) {
             print('(');
         }
@@ -524,12 +530,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(SQLLimit x) {
-        print0(ucase ? "LIMIT " : "limit ");
-
-        x.getRowCount().accept(this);
-
+        if (x.getRowCount() != null) {
+            print0(ucase ? "LIMIT " : "limit ");
+            x.getRowCount().accept(this);
+        }
         if (x.getOffset() != null) {
-            print0(ucase ? " OFFSET " : " offset ");
+            if (x.getRowCount() != null) {
+                print0(ucase ? " OFFSET " : " offset ");
+            } else {
+                print0(ucase ? "OFFSET " : "offset ");
+            }
             x.getOffset().accept(this);
         }
         return false;
@@ -537,7 +547,17 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(PGStartTransactionStatement x) {
+        if (x.isUseBegin()) {
+            print0(ucase ? "BFGIN" : "begin");
+            return false;
+        }
         print0(ucase ? "START TRANSACTION" : "start transaction");
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGEndTransactionStatement x) {
+        print0(ucase ? "END" : "end");
         return false;
     }
 
@@ -2486,6 +2506,106 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print('[');
         printAndAccept(x.getArguments(), ", ");
         print(']');
+        return false;
+    }
+
+    public boolean visit(SQLCharExpr x, boolean parameterized) {
+        if (parameterized) {
+            print('?');
+            incrementReplaceCunt();
+            if (this.parameters != null) {
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
+        }
+
+        if (x instanceof PGCharExpr && ((PGCharExpr) x).isCSytle()) {
+            print('E');
+        }
+        printChars(x.getText());
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGAnalyzeStatement x) {
+        print0(ucase ? "ANALYZE " : "analyze");
+        if (x.isVerbose()) {
+            print0(ucase ? "VERBOSE " : "verbose ");
+        }
+        if (x.isSkipLocked()) {
+            print0(ucase ? "SKIP_LOCKED " : "skip_locked ");
+        }
+        printAndAccept(x.getTableSources(), ", ");
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGVacuumStatement x) {
+        print0(ucase ? "VACUUM " : "vacuum");
+        if (x.isFull()) {
+            print0(ucase ? "FULL " : "full ");
+        }
+        if (x.isFreeze()) {
+            print0(ucase ? "FREEZE " : "freeze ");
+        }
+        if (x.isVerbose()) {
+            print0(ucase ? "VERBOSE " : "verbose ");
+        }
+        if (x.isAnalyze()) {
+            print0(ucase ? "ANALYZE " : "analyze ");
+        }
+        if (x.isDisablePageSkipping()) {
+            print0(ucase ? "DISABLE_PAGE_SKIPPING " : "disable_page_skipping ");
+        }
+        if (x.isSkipLocked()) {
+            print0(ucase ? "SKIP_LOCKED " : "skip_locked ");
+        }
+        if (x.isProcessToast()) {
+            print0(ucase ? "PROCESS_TOAST " : "process_toast ");
+        }
+        if (x.isTruncate()) {
+            print0(ucase ? "TRUNCATE " : "truncate ");
+        }
+        printAndAccept(x.getTableSources(), ", ");
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGAlterDatabaseStatement x) {
+        print0(ucase ? "ALTER DATABASE " : "alter database ");
+        x.getDatabaseName().accept(this);
+        print(' ');
+        if (x.getRenameToName() != null) {
+            print0(ucase ? "RENAME TO " : "rename to ");
+            x.getRenameToName().accept(this);
+        }
+        if (x.getOwnerToName() != null) {
+            print0(ucase ? "OWNER TO " : "owner to ");
+            x.getOwnerToName().accept(this);
+        }
+
+        if (x.getSetTableSpaceName() != null) {
+            print0(ucase ? "SET TABLESPACE " : "set tablespace ");
+            x.getSetTableSpaceName().accept(this);
+        }
+        if (x.isRefreshCollationVersion()) {
+            print0(ucase ? "REFRESH COLLATION VERSION " : "refresh collation version ");
+        }
+        if (x.getSetParameterName() != null) {
+            print0(ucase ? "SET " : "set ");
+            x.getSetParameterName().accept(this);
+            if (x.isUseEquals()) {
+                print(" = ");
+            } else {
+                print0(ucase ? " TO " : " to ");
+            }
+            x.getSetParameterValue().accept(this);
+        }
+        if (x.getResetParameterName() != null) {
+            print0(ucase ? "RESET " : "reset ");
+            x.getResetParameterName().accept(this);
+        }
         return false;
     }
 }

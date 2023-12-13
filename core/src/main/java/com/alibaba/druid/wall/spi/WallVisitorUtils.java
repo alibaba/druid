@@ -115,7 +115,7 @@ public class WallVisitorUtils {
     }
 
     public static void check(WallVisitor visitor, SQLCreateTableStatement x) {
-        String tableName = ((SQLName) x.getName()).getSimpleName();
+        String tableName = x.getName().getSimpleName();
         WallContext context = WallContext.current();
         if (context != null) {
             WallSqlTableStat tableStat = context.getTableStat(tableName);
@@ -126,7 +126,7 @@ public class WallVisitorUtils {
     }
 
     public static void check(WallVisitor visitor, SQLAlterTableStatement x) {
-        String tableName = ((SQLName) x.getName()).getSimpleName();
+        String tableName = x.getName().getSimpleName();
         WallContext context = WallContext.current();
         if (context != null) {
             WallSqlTableStat tableStat = context.getTableStat(tableName);
@@ -137,16 +137,14 @@ public class WallVisitorUtils {
     }
 
     public static void check(WallVisitor visitor, SQLDropTableStatement x) {
-        for (SQLTableSource item : x.getTableSources()) {
-            if (item instanceof SQLExprTableSource) {
-                SQLExpr expr = ((SQLExprTableSource) item).getExpr();
-                String tableName = ((SQLName) expr).getSimpleName();
-                WallContext context = WallContext.current();
-                if (context != null) {
-                    WallSqlTableStat tableStat = context.getTableStat(tableName);
-                    if (tableStat != null) {
-                        tableStat.incrementDropCount();
-                    }
+        for (SQLExprTableSource item : x.getTableSources()) {
+            SQLExpr expr = item.getExpr();
+            String tableName = ((SQLName) expr).getSimpleName();
+            WallContext context = WallContext.current();
+            if (context != null) {
+                WallSqlTableStat tableStat = context.getTableStat(tableName);
+                if (tableStat != null) {
+                    tableStat.incrementDropCount();
                 }
             }
         }
@@ -258,7 +256,7 @@ public class WallVisitorUtils {
         boolean hasUsing = false;
 
         if (x instanceof MySqlDeleteStatement) {
-            hasUsing = ((MySqlDeleteStatement) x).getUsing() != null;
+            hasUsing = x.getUsing() != null;
         }
 
         boolean isJoinTableSource = x.getTableSource() instanceof SQLJoinTableSource;
@@ -413,7 +411,7 @@ public class WallVisitorUtils {
             return false;
         }
 
-        parent = ((SQLSelect) parent).getParent();
+        parent = parent.getParent();
         if (parent instanceof SQLSelectStatement) {
             return true;
         }
@@ -613,9 +611,9 @@ public class WallVisitorUtils {
         List<ValuesClause> valuesClauses = null;
         ValuesClause valuesClause = null;
         if (x instanceof MySqlInsertStatement) {
-            valuesClauses = ((MySqlInsertStatement) x).getValuesList();
+            valuesClauses = x.getValuesList();
         } else if (x instanceof SQLServerInsertStatement) {
-            valuesClauses = ((MySqlInsertStatement) x).getValuesList();
+            valuesClauses = x.getValuesList();
         } else {
             valuesClause = x.getValues();
         }

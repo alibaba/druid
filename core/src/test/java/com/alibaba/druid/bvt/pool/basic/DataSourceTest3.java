@@ -238,7 +238,7 @@ public class DataSourceTest3 extends PoolTestCase {
 
     public void test_ValidConnectionChecker() throws Exception {
         dataSource.getValidConnectionCheckerClassName();
-        dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker(false));
+        dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
         Assert.assertEquals(MySqlValidConnectionChecker.class.getName(),
                 dataSource.getValidConnectionCheckerClassName());
     }
@@ -324,7 +324,7 @@ public class DataSourceTest3 extends PoolTestCase {
 
     public void test_error_validateConnection_3() throws Exception {
         dataSource.setValidationQuery(null);
-        dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker(false));
+        dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
 
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         dataSource.validateConnection(conn);

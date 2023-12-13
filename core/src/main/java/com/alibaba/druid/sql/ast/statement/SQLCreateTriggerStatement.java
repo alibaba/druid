@@ -42,6 +42,10 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
     private SQLExpr when;
     private SQLStatement body;
 
+    private String executeType;
+
+    private SQLExpr executeFunc;
+
     public SQLCreateTriggerStatement() {
     }
 
@@ -142,6 +146,22 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
 
     public void setForEachRow(boolean forEachRow) {
         this.forEachRow = forEachRow;
+    }
+
+    public String getExecuteType() {
+        return executeType;
+    }
+
+    public void setExecuteType(String executeType) {
+        this.executeType = executeType;
+    }
+
+    public SQLExpr getExecuteFunc() {
+        return executeFunc;
+    }
+
+    public void setExecuteFunc(SQLExpr executeFunc) {
+        this.executeFunc = executeFunc;
     }
 
     public List<SQLName> getUpdateOfColumns() {

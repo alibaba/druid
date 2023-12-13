@@ -15,12 +15,10 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,14 +52,10 @@ public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
         visitor.endVisit(this);
     }
 
-    public void output(Appendable buf) {
-        try {
-            buf.append("(");
-            this.union.output(buf);
-            buf.append(")");
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        buf.append("(");
+        this.union.output(buf);
+        buf.append(")");
     }
 
     public SQLUnionQuery getUnion() {

@@ -29,7 +29,7 @@ public class MySqlRepCheckTest {
     public Map<String, String> snapshot() {
         Map<String, String> schemaDdls = new HashMap<String, String>();
         for (Schema schema : repository.getSchemas()) {
-            StringBuffer data = new StringBuffer(4 * 1024);
+            StringBuilder data = new StringBuilder(4 * 1024);
             for (String table : schema.showTables()) {
                 SchemaObject schemaObject = schema.findTable(table);
                 schemaObject.getStatement().output(data);

@@ -27,7 +27,7 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     private int debugCount;
 
     /**
-     * @param log
+     * @param log the Log instance to be used for logging
      * @since 0.2.1
      */
     public JakartaCommonsLoggingImpl(Log log) {

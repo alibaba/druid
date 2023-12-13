@@ -106,8 +106,8 @@ public final class FnvHash {
     /**
      * lower and normalized and fnv_1a_64
      *
-     * @param name
-     * @return
+     * @param name the string to calculate the hash code for
+     * @return the 64-bit hash code of the string
      */
     public static long hashCode64(String name) {
         if (name == null) {
@@ -282,9 +282,9 @@ public final class FnvHash {
     /**
      * normalized and lower and fnv1a_64_hash
      *
-     * @param owner
-     * @param name
-     * @return
+     * @param owner the owner string to include in the hash code calculation (can be null)
+     * @param name  the name string to include in the hash code calculation (can be null)
+     * @return the 64-bit hash code calculated from the owner and name strings
      */
     public static long hashCode64(String owner, String name) {
         long hashCode = BASIC;
@@ -385,6 +385,7 @@ public final class FnvHash {
         long START = fnv1a_64_lower("START");
         long BTREE = fnv1a_64_lower("BTREE");
         long HASH = fnv1a_64_lower("HASH");
+        long DUPLICATE = fnv1a_64_lower("DUPLICATE");
         long LIST = fnv1a_64_lower("LIST");
         long NO_WAIT = fnv1a_64_lower("NO_WAIT");
         long WAIT = fnv1a_64_lower("WAIT");
@@ -490,6 +491,7 @@ public final class FnvHash {
         long CIRCLE = fnv1a_64_lower("CIRCLE");
         long LSEG = fnv1a_64_lower("LSEG");
         long POINT = fnv1a_64_lower("POINT");
+        long E = fnv1a_64_lower("E");
         long BOX = fnv1a_64_lower("BOX");
         long MACADDR = fnv1a_64_lower("MACADDR");
         long INET = fnv1a_64_lower("INET");
@@ -1139,7 +1141,6 @@ public final class FnvHash {
         long INSTALL = fnv1a_64_lower("INSTALL");
         long UNLOAD = fnv1a_64_lower("UNLOAD");
 
-        long DUPLICATE = fnv1a_64_lower("DUPLICATE");
         long AGGREGATE = fnv1a_64_lower("AGGREGATE");
         long UNIQUE = fnv1a_64_lower("UNIQUE");
         long PRIMARY = fnv1a_64_lower("PRIMARY");

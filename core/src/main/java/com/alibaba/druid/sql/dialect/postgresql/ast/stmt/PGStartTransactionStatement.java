@@ -25,6 +25,16 @@ public class PGStartTransactionStatement extends SQLStatementImpl implements PGS
         super(DbType.postgresql);
     }
 
+    private boolean useBegin;
+
+    public boolean isUseBegin() {
+        return useBegin;
+    }
+
+    public void setUseBegin(boolean useBegin) {
+        this.useBegin = useBegin;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof PGASTVisitor) {

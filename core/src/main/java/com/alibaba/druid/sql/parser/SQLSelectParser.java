@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveCreateTableParser;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
@@ -1387,6 +1388,11 @@ public class SQLSelectParser extends SQLParser {
                             }
                             tableSource.setAlias(alias);
 
+                            if (lexer.token == Token.HINT) {
+                                tableSource.addAfterComment("/*" + lexer.stringVal + "*/");
+                                lexer.nextToken();
+                            }
+
                             if ((tableSource instanceof SQLValuesTableSource)
                                     && ((SQLValuesTableSource) tableSource).getColumns().isEmpty()) {
                                 SQLValuesTableSource values = (SQLValuesTableSource) tableSource;
@@ -1476,9 +1482,9 @@ public class SQLSelectParser extends SQLParser {
                     joinType = SQLJoinTableSource.JoinType.LEFT_ANTI_JOIN;
                 } else if (lexer.token == Token.OUTER) {
                     lexer.nextToken();
-                    joinType = SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;
+                    joinType = natural ? SQLJoinTableSource.JoinType.NATURAL_LEFT_JOIN : SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;
                 } else {
-                    joinType = SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;
+                    joinType = natural ? SQLJoinTableSource.JoinType.NATURAL_LEFT_JOIN : SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;
                 }
 
                 if (dbType == DbType.odps && lexer.token == Token.IDENTIFIER && lexer.stringVal().startsWith("join@")) {
@@ -1782,6 +1788,15 @@ public class SQLSelectParser extends SQLParser {
                         && tableSource.aliasHashCode64() == FnvHash.Constants.NATURAL && DbType.mysql == dbType) {
                     tableSource.setAlias(null);
                     natural = true;
+                    if (natural && join.getJoinType() == SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN) {
+                        join.setJoinType(SQLJoinTableSource.JoinType.NATURAL_LEFT_JOIN);
+                    }
+                    if (natural && join.getJoinType() == JoinType.RIGHT_OUTER_JOIN) {
+                        join.setJoinType(SQLJoinTableSource.JoinType.NATURAL_RIGHT_JOIN);
+                    }
+                    if (natural && join.getJoinType() == JoinType.INNER_JOIN) {
+                        join.setJoinType(SQLJoinTableSource.JoinType.NATURAL_INNER_JOIN);
+                    }
                 }
             }
             join.setNatural(natural);
@@ -1791,7 +1806,8 @@ public class SQLSelectParser extends SQLParser {
                 SQLExpr joinOn = expr();
                 join.setCondition(joinOn);
 
-                while (lexer.token == Token.ON) {
+                while (lexer.token == Token.ON
+                        && dbType == DbType.mysql) {
                     lexer.nextToken();
 
                     SQLExpr joinOn2 = expr();

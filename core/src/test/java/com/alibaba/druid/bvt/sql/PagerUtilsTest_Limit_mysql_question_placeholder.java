@@ -15,15 +15,17 @@ import java.util.List;
 public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
     public void testQuestionLimitPlaceholder1() {
         String sql = "select * from test_table limit ?";
-        testQuestionLimitPlaceholderInternal(sql);
+        String expected = "select * from test_table limit 0, ?";
+        testQuestionLimitPlaceholderInternal(expected, sql);
     }
 
     public void testQuestionLimitPlaceholder2() {
         String sql = "select * from test_table limit 0, ?";
-        testQuestionLimitPlaceholderInternal(sql);
+        String expected = "select * from test_table limit 0, ?";
+        testQuestionLimitPlaceholderInternal(expected, sql);
     }
 
-    private void testQuestionLimitPlaceholderInternal(String sql) {
+    private void testQuestionLimitPlaceholderInternal(String expected, String sql) {
         List<SQLStatement> statements;
         try {
             statements = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
@@ -49,7 +51,7 @@ public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
         SQLUtils.FormatOption options = new SQLUtils.FormatOption();
         options.setPrettyFormat(false);
         options.setUppCase(false);
-        assertEquals(sql, SQLUtils.toSQLString(select, JdbcConstants.MYSQL, options));
+        assertEquals(expected, SQLUtils.toSQLString(select, JdbcConstants.MYSQL, options));
     }
 
 }

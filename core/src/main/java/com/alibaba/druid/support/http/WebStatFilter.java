@@ -57,7 +57,7 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
     /**
      * PatternMatcher used in determining which paths to react to for a given request.
      */
-    protected PatternMatcher pathMatcher = new ServletPathMatcher();
+    protected final PatternMatcher pathMatcher = ServletPathMatcher.getInstance();
 
     private Set<String> excludesPattern;
 

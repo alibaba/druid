@@ -212,7 +212,7 @@ public class MySqlLexer extends Lexer {
             for (; ; ) {
                 ch = charAt(++pos);
 
-                if (!isIdentifierChar(ch)) {
+                if (!isIdentifierCharForVariable(ch)) {
                     break;
                 }
 
@@ -785,5 +785,19 @@ public class MySqlLexer extends Lexer {
             return identifierFlags[c];
         }
         return c != '　' && c != '，';
+    }
+
+    /**
+     * employee.code=:employee.code 解析异常
+     * 修复:变量名支持含符号.
+     *
+     * @param c the character to check
+     * @return true if the character is a valid identifier character for variables; otherwise false
+     */
+    public static boolean isIdentifierCharForVariable(char c) {
+        if (c == '.') {
+            return true;
+        }
+        return isIdentifierChar(c);
     }
 }

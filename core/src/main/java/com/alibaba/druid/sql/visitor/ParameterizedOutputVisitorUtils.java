@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDDLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -115,8 +116,8 @@ public class ParameterizedOutputVisitorUtils {
 
     private static void configVisitorFeatures(ParameterizedVisitor visitor, VisitorFeature... features) {
         if (features != null) {
-            for (int i = 0; i < features.length; i++) {
-                visitor.config(features[i], true);
+            for (VisitorFeature feature : features) {
+                visitor.config(feature, true);
             }
         }
     }
@@ -180,10 +181,10 @@ public class ParameterizedOutputVisitorUtils {
                 SQLStatement preStmt = statementList.get(i - 1);
 
                 if (preStmt.getClass() == stmt.getClass()) {
-                    StringBuilder buf = new StringBuilder();
+                    StringBuilder buf = new StringBuilder(sql.length());
                     ParameterizedVisitor v1 = createParameterizedOutputVisitor(buf, dbType);
                     preStmt.accept(v1);
-                    if (out.toString().equals(buf.toString())) {
+                    if (out.length() == buf.length() && out.toString().contentEquals(buf)) {
                         continue;
                     }
                 }
@@ -217,6 +218,7 @@ public class ParameterizedOutputVisitorUtils {
                 for (VisitorFeature visitorFeature : visitorFeatures) {
                     if (visitorFeature == VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql) {
                         notUseOriginalSql = true;
+                        break;
                     }
                 }
             }
@@ -395,7 +397,7 @@ public class ParameterizedOutputVisitorUtils {
         }
     }
 
-    public static ParameterizedVisitor createParameterizedOutputVisitor(Appendable out, DbType dbType) {
+    public static ParameterizedVisitor createParameterizedOutputVisitor(StringBuilder out, DbType dbType) {
         if (dbType == null) {
             dbType = DbType.other;
         }
@@ -405,12 +407,14 @@ public class ParameterizedOutputVisitorUtils {
             case oceanbase_oracle:
                 return new OracleParameterizedOutputVisitor(out);
             case mysql:
+            case tidb:
             case mariadb:
             case elastic_search:
                 return new MySqlOutputVisitor(out, true);
             case h2:
                 return new H2OutputVisitor(out, true);
             case postgresql:
+            case greenplum:
             case edb:
                 return new PGOutputVisitor(out, true);
             case sqlserver:
@@ -422,6 +426,8 @@ public class ParameterizedOutputVisitorUtils {
                 return new PhoenixOutputVisitor(out, true);
             case presto:
                 return new PrestoOutputVisitor(out, true);
+            case clickhouse:
+                return new ClickhouseOutputVisitor(out, true);
             default:
                 return new SQLASTOutputVisitor(out, true);
         }

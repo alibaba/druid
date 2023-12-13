@@ -51,7 +51,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         groupItemSingleLine = true;
     }
 
-    public OdpsOutputVisitor(Appendable appender) {
+    public OdpsOutputVisitor(StringBuilder appender) {
         super(appender, DbType.odps);
     }
 
@@ -287,6 +287,18 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         println();
         print(')');
 
+        SQLPivot pivot = x.getPivot();
+        if (pivot != null) {
+            println();
+            pivot.accept(this);
+        }
+
+        SQLUnpivot unpivot = x.getUnpivot();
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
+        }
+
         if (x.getAlias() != null) {
             print(' ');
             print0(x.getAlias());
@@ -299,11 +311,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     public boolean visit(SQLJoinTableSource x) {
         SQLTableSource left = x.getLeft();
         left.accept(this);
-
-        if (left.hasAfterComment() && isPrettyFormat()) {
-            println();
-            printlnComment(left.getAfterCommentsDirect());
-        }
 
         if (x.getJoinType() == JoinType.COMMA) {
             print(',');

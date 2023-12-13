@@ -33,11 +33,11 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.List;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
-    public SQLServerOutputVisitor(Appendable appender) {
+    public SQLServerOutputVisitor(StringBuilder appender) {
         super(appender, DbType.sqlserver);
     }
 
-    public SQLServerOutputVisitor(Appendable appender, boolean parameterized) {
+    public SQLServerOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.sqlserver;
     }
@@ -230,6 +230,11 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         if (alias != null) {
             print(' ');
             print0(alias);
+        }
+
+        if (isPrettyFormat() && x.hasAfterComment()) {
+            print(' ');
+            printlnComment(x.getAfterCommentsDirect());
         }
 
         if (x.getHints() != null && x.getHints().size() > 0) {

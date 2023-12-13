@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  * Created by wenshao on 13/08/2017.
  */
 public class ShardingUnwrapTest extends TestCase {
-    SQLASTOutputVisitor visitor = new SQLASTOutputVisitor(new StringBuffer());
+    SQLASTOutputVisitor visitor = new SQLASTOutputVisitor(new StringBuilder());
 
     public void test_sharding_unwrap() throws Exception {
         assertEquals("t_like_count", visitor.unwrapShardingTable("t_like_count0057"));

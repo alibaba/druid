@@ -44,7 +44,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
 
         assertEquals("CREATE ALGORITHM = UNDEFINED\n" +
                         "\tDEFINER = 'root'@'localhost'\n" +
-                        "\tSQL SECURITY = DEFINER\n" +
+                        "\tSQL SECURITY DEFINER\n" +
                         "\tVIEW view_audit_enroll\n" +
                         "AS\n" +
                         "SELECT a.enroll_id AS \"enrollId\"\n" +
@@ -84,7 +84,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
 
         Assert.assertEquals("create algorithm = UNDEFINED\n" +
                         "\tdefiner = 'root'@'localhost'\n" +
-                        "\tsql security = DEFINER\n" +
+                        "\tsql security DEFINER\n" +
                         "\tview view_audit_enroll\n" +
                         "as\n" +
                         "select a.enroll_id as \"enrollId\"\n" +
