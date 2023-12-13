@@ -90,7 +90,7 @@ public class MonitorStatService implements DruidStatServiceMBean {
                 }
             }
         }
-        return serviceNodes.parallelStream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
+        return serviceNodes.stream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
                 Function.identity(), (v1, v2) -> v2));
     }
 
@@ -127,7 +127,7 @@ public class MonitorStatService implements DruidStatServiceMBean {
                 }
             }
         }
-        return serviceNodes.parallelStream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
+        return serviceNodes.stream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
                 Function.identity(), (v1, v2) -> v2));
     }
     @Override
