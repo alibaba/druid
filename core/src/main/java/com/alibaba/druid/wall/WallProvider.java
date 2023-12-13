@@ -66,7 +66,7 @@ public abstract class WallProvider {
 
     private final ConcurrentLruCache<String, WallSqlStat> whiteList = new ConcurrentLruCache<>(WHITE_SQL_MAX_SIZE);
     private final ConcurrentLruCache<String, WallSqlStat> blackList = new ConcurrentLruCache<>(BLACK_SQL_MAX_SIZE);
-    private final ConcurrentLruCache<String, String> mergedSqlCache = new ConcurrentLruCache<>(MERGED_SQL_CACHE_SIZE);
+    private final ConcurrentLruCache<String, MergedSqlResult> mergedSqlCache = new ConcurrentLruCache<>(MERGED_SQL_CACHE_SIZE);
 
     protected final WallConfig config;
 
@@ -248,15 +248,11 @@ public abstract class WallProvider {
             return stat;
         }
 
-        String mergedSql = mergedSqlCache.get(sql);
+        String mergedSql = getMergedSqlNullableIfParameterizeError(sql);
         if (mergedSql == null) {
-            try {
-                mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
-            } catch (Exception ex) {
-                WallSqlStat stat = new WallSqlStat(tableStats, functionStats, syntaxError);
-                stat.incrementAndGetExecuteCount();
-                return stat;
-            }
+            WallSqlStat stat = new WallSqlStat(tableStats, functionStats, syntaxError);
+            stat.incrementAndGetExecuteCount();
+            return stat;
         }
 
         WallSqlStat wallSqlStat = whiteList.computeIfAbsent(mergedSql, key -> {
@@ -276,7 +272,8 @@ public abstract class WallProvider {
             return new WallSqlStat(tableStats, functionStats, violations, syntaxError);
         }
 
-        WallSqlStat wallSqlStat = blackList.computeIfAbsent(getMergedSql(sql),
+        String mergedSql = getMergedSqlNullableIfParameterizeError(sql);
+        WallSqlStat wallSqlStat = blackList.computeIfAbsent(Utils.getIfNull(mergedSql, sql),
                 key -> {
                     WallSqlStat wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
                     wallStat.setSample(sql);
@@ -287,23 +284,22 @@ public abstract class WallProvider {
         return wallSqlStat;
     }
 
-    private String getMergedSql(String sql) {
-        String mergedSql = mergedSqlCache.get(sql);
-        if (mergedSql != null) {
-            return mergedSql;
+    private String getMergedSqlNullableIfParameterizeError(String sql) {
+        MergedSqlResult mergedSqlResult = mergedSqlCache.get(sql);
+        if (mergedSqlResult != null) {
+            return mergedSqlResult.mergedSql;
         }
         try {
-            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+            String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+            if (sql.length() < MAX_SQL_LENGTH) {
+                mergedSqlCache.computeIfAbsent(sql, key -> MergedSqlResult.success(mergedSql));
+            }
+            return mergedSql;
         } catch (Exception ex) {
             // skip
-            return sql;
+            mergedSqlCache.computeIfAbsent(sql, key -> MergedSqlResult.FAILED);
+            return null;
         }
-
-        String finalMergedSql = mergedSql;
-        if (sql.length() < MAX_SQL_LENGTH) {
-            mergedSqlCache.computeIfAbsent(sql, key -> finalMergedSql);
-        }
-        return mergedSql;
     }
 
     public Set<String> getWhiteList() {
@@ -354,11 +350,13 @@ public abstract class WallProvider {
     }
 
     public WallSqlStat getWhiteSql(String sql) {
-        return whiteList.get(getMergedSql(sql));
+        String cacheKey = Utils.getIfNull(getMergedSqlNullableIfParameterizeError(sql), sql);
+        return whiteList.get(cacheKey);
     }
 
     public WallSqlStat getBlackSql(String sql) {
-        return blackList.get(getMergedSql(sql));
+        String cacheKey = Utils.getIfNull(getMergedSqlNullableIfParameterizeError(sql), sql);
+        return blackList.get(cacheKey);
     }
 
     public boolean whiteContains(String sql) {
@@ -879,5 +877,19 @@ public abstract class WallProvider {
 
     public void setBlackListEnable(boolean blackListEnable) {
         this.blackListEnable = blackListEnable;
+    }
+
+    private static class MergedSqlResult {
+        public static final MergedSqlResult FAILED = new MergedSqlResult(null);
+
+        final String mergedSql;
+
+        MergedSqlResult(String mergedSql) {
+            this.mergedSql = mergedSql;
+        }
+
+        public static MergedSqlResult success(String mergedSql) {
+            return new MergedSqlResult(mergedSql);
+        }
     }
 }
