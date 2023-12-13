@@ -1083,6 +1083,11 @@ public class SQLSelectParser extends SQLParser {
                     && lexer.line == line + 1) {
                 selectItem.addAfterComment(lexer.readAndResetComments());
             }
+
+            // https://github.com/alibaba/druid/issues/5140
+            if (lexer.token == Token.FROM) {
+                throw new ParserException("syntax error, expect is not TOKEN:from " + lexer.info());
+            }
         }
     }
 

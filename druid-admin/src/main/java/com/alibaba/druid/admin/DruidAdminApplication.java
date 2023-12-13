@@ -1,6 +1,7 @@
 package com.alibaba.druid.admin;
 
 import com.alibaba.druid.admin.config.MonitorProperties;
+import com.alibaba.druid.admin.service.MonitorStatService;
 import com.alibaba.druid.admin.servlet.MonitorViewServlet;
 import com.alibaba.druid.util.StringUtils;
 import org.springframework.boot.SpringApplication;
@@ -18,9 +19,10 @@ public class DruidAdminApplication {
 
 
     @Bean
-    public ServletRegistrationBean statViewServletRegistrationBean(MonitorProperties properties) {
+    public ServletRegistrationBean statViewServletRegistrationBean(
+            MonitorProperties properties, MonitorStatService monitorStatService) {
         ServletRegistrationBean registrationBean = new ServletRegistrationBean();
-        registrationBean.setServlet(new MonitorViewServlet());
+        registrationBean.setServlet(new MonitorViewServlet(monitorStatService));
         registrationBean.addUrlMappings(getUrlMappings(properties));
         if (properties.getLoginUsername() != null) {
             registrationBean.addInitParameter("loginUsername", properties.getLoginUsername());

@@ -293,6 +293,9 @@ public class OracleSelectParser extends SQLSelectParser {
 
         parseGroupBy(queryBlock);
 
+        // connect by /  start 语法可能在group by之后，因此再次调用此函数
+        parseHierachical(queryBlock);
+
         parseModelClause(queryBlock);
 
         parseFetchClause(queryBlock);
