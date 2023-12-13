@@ -82,6 +82,6 @@ public class HiveCreateTableTest_24 extends OracleTest {
             error = ex;
         }
         assertNotNull(error);
-        assertEquals("syntax error, expect FIELDS, pos 131, line 2, column 88, token IDENTIFIER field", error.getMessage());
+        assertEquals("syntax error, expect FIELDS, pos 131, line 2, column 87, token IDENTIFIER field", error.getMessage());
     }
 }
