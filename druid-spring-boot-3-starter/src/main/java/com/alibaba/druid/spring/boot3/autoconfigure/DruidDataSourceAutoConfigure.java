@@ -49,7 +49,14 @@ import javax.sql.DataSource;
 public class DruidDataSourceAutoConfigure {
     private static final Logger LOGGER = LoggerFactory.getLogger(DruidDataSourceAutoConfigure.class);
 
-    @Bean(initMethod = "init")
+    /**
+     * Not setting initMethod of annotation {@code @Bean} is to avoid failure when inspecting
+     * the bean definition at the build time. The {@link DruidDataSource#init()} will be called
+     * at the end of {@link DruidDataSourceWrapper#afterPropertiesSet()}.
+     *
+     * @return druid data source wrapper
+     */
+    @Bean
     @ConditionalOnMissingBean
     public DataSource dataSource() {
         LOGGER.info("Init DruidDataSource");
