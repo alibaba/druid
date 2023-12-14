@@ -40,12 +40,12 @@ public class OracleSelectTest10 extends OracleTest {
         String result_lcase = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
         Assert.assertEquals("SELECT *\n" +
                 "FROM pivot_table\n" +
-                "UNPIVOT INCLUDE NULLS (yearly_total FOR order_mode IN (store AS \"direct\", internet AS \"online\"))\n" +
+                "UNPIVOT INCLUDE NULLS (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))\n" +
                 "ORDER BY year, order_mode;", result);
 
         Assert.assertEquals("select *\n" +
                 "from pivot_table\n" +
-                "unpivot include nulls (yearly_total for order_mode in (store as \"direct\", internet as \"online\"))\n" +
+                "unpivot include nulls (yearly_total for order_mode in (store as 'direct', internet as 'online'))\n" +
                 "order by year, order_mode;", result_lcase);
 
         Assert.assertEquals(1, statementList.size());
