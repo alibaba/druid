@@ -91,7 +91,6 @@ public final class ConcurrentLruCache<K, V> {
         this.cache.forEach((k, kvNode) -> action.accept(k, kvNode.getValue()));
     }
 
-
     private void processRead(Node<K, V> node) {
         boolean drainRequested = this.readOperations.recordRead(node);
         final DrainStatus status = this.drainStatus.get();
