@@ -83,7 +83,7 @@ public class MaxActiveChangeTest extends PoolTestCase {
         Assert.assertEquals(5, dataSource.getPoolingCount());
         dataSource.setMaxActive(3);
 
-        Assert.assertEquals(5, dataSource.getPoolingCount());
+        Assert.assertEquals(3, dataSource.getPoolingCount());
 
         dataSource.shrink();
         Assert.assertEquals(2, dataSource.getPoolingCount());

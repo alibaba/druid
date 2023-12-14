@@ -37,7 +37,7 @@ public class TestActiveTrace extends TestCase {
         dataSource.setTimeBetweenEvictionRunsMillis(10);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000);
         dataSource.setUrl("jdbc:mock:xxx");
-
+        dataSource.init();
     }
 
     protected void tearDown() throws Exception {
