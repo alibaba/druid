@@ -6,10 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLongArray;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.concurrent.atomic.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
@@ -63,13 +60,30 @@ public final class ConcurrentLruCache<K, V> {
     }
 
     public V computeIfAbsent(K key, Function<K, V> generator) {
-        final Node<K, V> node = this.cache.get(key);
-        if (node == null) {
-            V value = generator.apply(key);
-            put(key, value);
-            return value;
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
         }
-        processRead(node);
+
+        final AtomicBoolean write = new AtomicBoolean(false);
+
+        Node<K, V> node =
+                cache.computeIfAbsent(key, k -> {
+                    V value = generator.apply(k);
+                    if (value == null) {
+                        throw new IllegalArgumentException("value must not be null");
+                    }
+                    final CacheEntry<V> cacheEntry = new CacheEntry<>(value, CacheEntryState.ACTIVE);
+                    final Node<K, V> newNode = new Node<>(key, cacheEntry);
+                    write.set(true);
+                    return newNode;
+                });
+
+        if (write.get()) {
+            processWrite(new AddTask(node));
+        } else {
+            processRead(node);
+        }
+
         return node.getValue();
     }
 
@@ -77,22 +91,6 @@ public final class ConcurrentLruCache<K, V> {
         this.cache.forEach((k, kvNode) -> action.accept(k, kvNode.getValue()));
     }
 
-    private void put(K key, V value) {
-        if (key == null) {
-            throw new IllegalArgumentException("key must not be null");
-        }
-        if (value == null) {
-            throw new IllegalArgumentException("value must not be null");
-        }
-        final CacheEntry<V> cacheEntry = new CacheEntry<>(value, CacheEntryState.ACTIVE);
-        final Node<K, V> node = new Node<>(key, cacheEntry);
-        final Node<K, V> prior = this.cache.putIfAbsent(node.key, node);
-        if (prior == null) {
-            processWrite(new AddTask(node));
-        } else {
-            processRead(prior);
-        }
-    }
 
     private void processRead(Node<K, V> node) {
         boolean drainRequested = this.readOperations.recordRead(node);
