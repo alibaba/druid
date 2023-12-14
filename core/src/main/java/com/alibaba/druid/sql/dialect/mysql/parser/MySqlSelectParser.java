@@ -330,6 +330,10 @@ public class MySqlSelectParser extends SQLSelectParser {
             queryBlock.setHints(hints);
         }
 
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            queryBlock.addAfterComment(lexer.readAndResetComments());
+        }
+
         return queryRest(queryBlock, acceptUnion);
     }
 
