@@ -61,8 +61,8 @@ public class TestIdel3 extends TestCase {
 
             conn.close();
             Assert.assertEquals(0, dataSource.getDestroyCount());
-            Assert.assertEquals(2, driver.getConnections().size());
-            Assert.assertEquals(2, dataSource.getCreateCount());
+            Assert.assertEquals(1, driver.getConnections().size());
+            Assert.assertEquals(1, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
         }
 
