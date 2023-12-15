@@ -17,6 +17,8 @@ package com.alibaba.druid.spring.boot.autoconfigure;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DruidDataSource;
+
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -28,7 +30,7 @@ import java.util.List;
  * @author lihengming [89921218@qq.com]
  */
 @ConfigurationProperties("spring.datasource.druid")
-public class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean {
+public class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean, DisposableBean {
     @Autowired
     private DataSourceProperties basicProperties;
 
@@ -47,6 +49,8 @@ public class DruidDataSourceWrapper extends DruidDataSource implements Initializ
         if (super.getDriverClassName() == null) {
             super.setDriverClassName(basicProperties.getDriverClassName());
         }
+
+        init();
     }
 
     @Autowired(required = false)
@@ -69,5 +73,10 @@ public class DruidDataSourceWrapper extends DruidDataSource implements Initializ
         } catch (IllegalArgumentException ignore) {
             super.maxEvictableIdleTimeMillis = maxEvictableIdleTimeMillis;
         }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        close();
     }
 }
