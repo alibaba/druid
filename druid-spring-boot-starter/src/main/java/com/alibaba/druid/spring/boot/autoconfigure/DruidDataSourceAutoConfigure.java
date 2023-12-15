@@ -49,7 +49,7 @@ import javax.sql.DataSource;
 public class DruidDataSourceAutoConfigure {
     private static final Logger LOGGER = LoggerFactory.getLogger(DruidDataSourceAutoConfigure.class);
 
-    @Bean(initMethod = "init")
+    @Bean
     @ConditionalOnMissingBean
     public DataSource dataSource() {
         LOGGER.info("Init DruidDataSource");
