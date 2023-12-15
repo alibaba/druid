@@ -43,10 +43,11 @@ public class CharTypes {
     private static final boolean[] firstIdentifierFlags = new boolean[256];
 
     static {
+        // the Latin letter decimal values range between 192('À') and 255('ÿ') but exclude 215('×') and 247('÷').
         for (char c = 0; c < firstIdentifierFlags.length; ++c) {
-            if (c >= 'A' && c <= 'Z') {
-                firstIdentifierFlags[c] = true;
-            } else if (c >= 'a' && c <= 'z') {
+            if ((c >= 'A' && c <= 'Z')
+                    || (c >= 'a' && c <= 'z')
+                    || (c >= 'À' && c <= 'ÿ' && c != '×' && c != '÷')) {
                 firstIdentifierFlags[c] = true;
             }
         }
