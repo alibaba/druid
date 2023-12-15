@@ -228,6 +228,13 @@ public class SQLExprParser extends SQLParser {
                 expr = bitXorRest(expr);
                 break;
             }
+            case QUESQUESBAR: {
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesQuesBar, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
             case QUESAMP: {
                 lexer.nextToken();
                 SQLExpr rightExp = primary();
