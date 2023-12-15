@@ -100,6 +100,10 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
 
     @Override
     public boolean equals(Object obj) {
+        if (obj instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) obj).equals(this);
+        }
+
         if (!(obj instanceof SQLIdentifierExpr)) {
             return false;
         }

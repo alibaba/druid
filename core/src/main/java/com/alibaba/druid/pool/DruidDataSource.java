@@ -1503,7 +1503,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             try {
                 poolableConnection = getConnectionInternal(maxWaitMillis);
             } catch (GetConnectionTimeoutException ex) {
-                if (notFullTimeoutRetryCnt <= this.notFullTimeoutRetryCount && !isFull()) {
+                if (notFullTimeoutRetryCnt < this.notFullTimeoutRetryCount && !isFull()) {
                     notFullTimeoutRetryCnt++;
                     if (LOG.isWarnEnabled()) {
                         LOG.warn("get connection timeout retry : " + notFullTimeoutRetryCnt);
@@ -2904,7 +2904,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             long lastDiscardCount = 0;
             int errorCount = 0;
-            while (!closing && !closed) {
+            while (!closing && !closed && !Thread.currentThread().isInterrupted()) {
                 // addLast
                 try {
                     lock.lockInterruptibly();
@@ -3023,7 +3023,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         public void run() {
             initedLatch.countDown();
 
-            for (; ; ) {
+            for (; !Thread.currentThread().isInterrupted(); ) {
                 // 从前面开始删除
                 try {
                     if (closed || closing) {

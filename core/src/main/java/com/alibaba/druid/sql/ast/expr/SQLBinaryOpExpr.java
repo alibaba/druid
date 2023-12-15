@@ -197,11 +197,8 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         if (!(obj instanceof SQLBinaryOpExpr)) {
             return false;
         }
-        SQLBinaryOpExpr other = (SQLBinaryOpExpr) obj;
 
-        return operator == other.operator
-                && SQLExprUtils.equals(left, other.left)
-                && SQLExprUtils.equals(right, other.right);
+        return equals((SQLBinaryOpExpr) obj);
     }
 
     public boolean equals(SQLBinaryOpExpr other) {

@@ -258,6 +258,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "LOCK IN SHARE MODE" : "lock in share mode");
         }
 
+        if ((!isParameterized()) && isPrettyFormat() && x.hasAfterComment()) {
+            printAfterComments(x.getAfterCommentsDirect());
+        }
+
         if (bracket) {
             print(')');
         }

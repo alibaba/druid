@@ -29,7 +29,7 @@ public class OraclePivotClauseTest extends TestCase {
 
         String expected = "SELECT *\n" +
                 "FROM pivot_table\n" +
-                "UNPIVOT (yearly_total FOR order_mode IN (store AS \"direct\", internet AS \"online\"))\n" +
+                "UNPIVOT (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))\n" +
                 "ORDER BY year, order_mode;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

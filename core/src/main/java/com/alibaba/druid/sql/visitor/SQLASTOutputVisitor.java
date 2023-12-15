@@ -6684,10 +6684,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (comment.startsWith("--")
                 && comment.length() > 2
                 && comment.charAt(2) != ' '
-                && comment.charAt(2) != '-'
-        ) {
+                && comment.charAt(2) != '-') {
             print0("-- ");
             print0(comment.substring(2));
+        } else if (comment.startsWith("#")
+                && comment.length() > 1
+                && comment.charAt(1) != ' '
+                && comment.charAt(1) != '#') {
+            print0("# ");
+            print0(comment.substring(1));
         } else {
             print0(comment);
         }
@@ -6699,6 +6704,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 String comment = comments.get(i);
                 printComment(comment);
                 println();
+            }
+        }
+    }
+
+    protected void printAfterComments(List<String> comments) {
+        if (comments != null) {
+            print0(" ");
+            int i = 0;
+            String comment = comments.get(i);
+            printComment(comment);
+            i++;
+            for (; i < comments.size(); ++i) {
+                println();
+                comment = comments.get(i);
+                printComment(comment);
             }
         }
     }
