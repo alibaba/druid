@@ -51,6 +51,10 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
             println();
             print0(ucase ? "WITH " : "with ");
             print0(x.getIsolation().name());
+            if (x.getLockRequest() != null) {
+                println();
+                print0(ucase ? "USE AND KEEP " + x.getLockRequest().name() + " LOCKS" : "use and keep " + x.getLockRequest().name().toLowerCase() + " locks");
+            }
         }
 
         if (x.getOptimizeFor() != null) {
