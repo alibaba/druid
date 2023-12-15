@@ -27,6 +27,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Object {
     private Isolation isolation;
 
+    private LockRequest lockRequest;
+
     private boolean forReadOnly;
 
     private SQLExpr optimizeFor;
@@ -65,6 +67,14 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
         this.isolation = isolation;
     }
 
+    public LockRequest getLockRequest() {
+        return lockRequest;
+    }
+
+    public void setLockRequest(LockRequest lockRequest) {
+        this.lockRequest = lockRequest;
+    }
+
     public boolean isForReadOnly() {
         return forReadOnly;
     }
@@ -83,6 +93,10 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
 
     public static enum Isolation {
         RR, RS, CS, UR
+    }
+
+    public static enum LockRequest {
+        SHARE, UPDATE, EXCLUSIVE;
     }
 
     public void limit(int rowCount, int offset) {
