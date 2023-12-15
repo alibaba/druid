@@ -50,7 +50,7 @@ public class PGSelectTest58 extends TestCase {
         assertEquals("SELECT id, sum(uv[1]) AS uv1, sum(uv[2]) AS uv2\n" +
                 "FROM xxxxx\n" +
                 "WHERE a IN (?)\n" +
-                "\tAND ta -> 'taAge' ?| '{  \n" +
+                "\tAND ta -> 'taAge' ??| '{  \n" +
                 "                            1\n" +
                 "                         , \n" +
                 "                            2\n" +
@@ -62,7 +62,7 @@ public class PGSelectTest58 extends TestCase {
         assertEquals("select id, sum(uv[1]) as uv1, sum(uv[2]) as uv2\n" +
                 "from xxxxx\n" +
                 "where a in (?)\n" +
-                "\tand ta -> 'taAge' ?| '{  \n" +
+                "\tand ta -> 'taAge' ??| '{  \n" +
                 "                            1\n" +
                 "                         , \n" +
                 "                            2\n" +
