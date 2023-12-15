@@ -31,6 +31,7 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.pool.DruidStatementConnection;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
@@ -78,7 +79,9 @@ public class ConnectionTest4 extends PoolTestCase {
 
         Assert.assertEquals(null, conn.unwrap(Date.class));
         Assert.assertEquals(null, conn.unwrap(null));
-        Assert.assertEquals(((ConnectionProxy) conn.getConnection()).getRawObject(), conn.unwrap(Connection.class));
+        Connection statementConn = ((ConnectionProxy) conn.getConnection()).getRawObject();
+        Assert.assertTrue(statementConn instanceof DruidStatementConnection);
+        Assert.assertEquals(((DruidStatementConnection) statementConn).getConnection(), conn.unwrap(Connection.class));
 
         Assert.assertEquals(false, conn.isWrapperFor(null));
         Assert.assertEquals(true, conn.isWrapperFor(DruidPooledConnection.class));

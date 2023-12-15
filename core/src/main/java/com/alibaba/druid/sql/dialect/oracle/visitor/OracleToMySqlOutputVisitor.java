@@ -25,11 +25,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.util.FnvHash;
 
 public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
-    public OracleToMySqlOutputVisitor(Appendable appender, boolean printPostSemi) {
+    public OracleToMySqlOutputVisitor(StringBuilder appender, boolean printPostSemi) {
         super(appender, printPostSemi);
     }
 
-    public OracleToMySqlOutputVisitor(Appendable appender) {
+    public OracleToMySqlOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 

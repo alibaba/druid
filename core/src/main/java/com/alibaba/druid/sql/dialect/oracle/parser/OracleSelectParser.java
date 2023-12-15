@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
-import java.util.List;
+import java.util.*;
 
 public class OracleSelectParser extends SQLSelectParser {
     public OracleSelectParser(String sql) {
@@ -292,6 +292,9 @@ public class OracleSelectParser extends SQLSelectParser {
         parseHierachical(queryBlock);
 
         parseGroupBy(queryBlock);
+
+        // connect by /  start 语法可能在group by之后，因此再次调用此函数
+        parseHierachical(queryBlock);
 
         parseModelClause(queryBlock);
 
@@ -623,7 +626,7 @@ public class OracleSelectParser extends SQLSelectParser {
                     || lexer.token() == Token.LITERAL_ALIAS) {
                 SQLTableSource identTable = parseTableSource();
                 accept(Token.RPAREN);
-                parsePivot((OracleSelectTableSource) identTable);
+                parsePivot(identTable);
                 return identTable;
             } else {
                 throw new ParserException("TODO :" + lexer.info());
@@ -923,12 +926,39 @@ public class OracleSelectParser extends SQLSelectParser {
         return tableSource;
     }
 
-    private void parsePivot(OracleSelectTableSource tableSource) {
-        OracleSelectPivot.Item item;
+    protected void parseInto(OracleSelectQueryBlock x) {
+        if (lexer.token() == Token.INTO) {
+            lexer.nextToken();
+
+            if (lexer.token() == Token.FROM) {
+                return;
+            }
+
+            SQLExpr expr = expr();
+            if (lexer.token() != Token.COMMA) {
+                x.setInto(expr);
+                return;
+            }
+            SQLListExpr list = new SQLListExpr();
+            list.addItem(expr);
+            while (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                list.addItem(expr());
+            }
+            x.setInto(list);
+        }
+    }
+
+    private void parseHints(OracleSelectQueryBlock queryBlock) {
+        this.exprParser.parseHints(queryBlock.getHints());
+    }
+
+    protected void parsePivot(SQLTableSource tableSource) {
+        SQLSelectItem item;
         if (lexer.identifierEquals(FnvHash.Constants.PIVOT)) {
             lexer.nextToken();
 
-            OracleSelectPivot pivot = new OracleSelectPivot();
+            SQLPivot pivot = new SQLPivot();
 
             if (lexer.identifierEquals("XML")) {
                 lexer.nextToken();
@@ -937,7 +967,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             accept(Token.LPAREN);
             while (true) {
-                item = new OracleSelectPivot.Item();
+                item = new SQLSelectItem();
                 item.setExpr((SQLAggregateExpr) this.exprParser.expr());
                 item.setAlias(as());
                 pivot.addItem(item);
@@ -976,14 +1006,16 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if (lexer.token() == (Token.SELECT)) {
                 SQLExpr expr = this.exprParser.expr();
-                item = new OracleSelectPivot.Item();
+                item = new SQLSelectItem();
                 item.setExpr(expr);
+                item.setParent(pivot);
                 pivot.getPivotIn().add(item);
             } else {
                 for (; ; ) {
-                    item = new OracleSelectPivot.Item();
+                    item = new SQLSelectItem();
                     item.setExpr(this.exprParser.expr());
                     item.setAlias(as());
+                    item.setParent(pivot);
                     pivot.getPivotIn().add(item);
 
                     if (lexer.token() != Token.COMMA) {
@@ -1002,15 +1034,15 @@ public class OracleSelectParser extends SQLSelectParser {
         } else if (lexer.identifierEquals("UNPIVOT")) {
             lexer.nextToken();
 
-            OracleSelectUnPivot unPivot = new OracleSelectUnPivot();
+            SQLUnpivot unPivot = new SQLUnpivot();
             if (lexer.identifierEquals("INCLUDE")) {
                 lexer.nextToken();
                 acceptIdentifier("NULLS");
-                unPivot.setNullsIncludeType(OracleSelectUnPivot.NullsIncludeType.INCLUDE_NULLS);
+                unPivot.setNullsIncludeType(SQLUnpivot.NullsIncludeType.INCLUDE_NULLS);
             } else if (lexer.identifierEquals("EXCLUDE")) {
                 lexer.nextToken();
                 acceptIdentifier("NULLS");
-                unPivot.setNullsIncludeType(OracleSelectUnPivot.NullsIncludeType.EXCLUDE_NULLS);
+                unPivot.setNullsIncludeType(SQLUnpivot.NullsIncludeType.EXCLUDE_NULLS);
             }
 
             accept(Token.LPAREN);
@@ -1045,18 +1077,27 @@ public class OracleSelectParser extends SQLSelectParser {
 
             accept(Token.IN);
             accept(Token.LPAREN);
-            if (lexer.token() == (Token.LPAREN)) {
-                throw new ParserException("TODO. " + lexer.info());
-            }
-
-            if (lexer.token() == (Token.SELECT)) {
-                throw new ParserException("TODO. " + lexer.info());
-            }
 
             for (; ; ) {
-                item = new OracleSelectPivot.Item();
-                item.setExpr(this.exprParser.expr());
-                item.setAlias(as());
+                item = new SQLSelectItem(this.expr(), new ArrayList<>(), false);
+                if (lexer.token() == (Token.AS)) {
+                    lexer.nextToken();
+                    if (lexer.token() == (Token.LPAREN)) {
+                        lexer.nextToken();
+                        for (; ; ) {
+                            item.getAliasList().add(alias());
+                            if (lexer.token() != Token.COMMA) {
+                                break;
+                            }
+
+                            lexer.nextToken();
+                        }
+                        accept(Token.RPAREN);
+                    } else {
+                        lexer.setToken(Token.LITERAL_ALIAS);
+                        item.setAlias(alias());
+                    }
+                }
                 unPivot.getPivotIn().add(item);
 
                 if (lexer.token() != Token.COMMA) {
@@ -1070,34 +1111,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             accept(Token.RPAREN);
 
-            tableSource.setPivot(unPivot);
+            tableSource.setUnpivot(unPivot);
         }
-    }
-
-    protected void parseInto(OracleSelectQueryBlock x) {
-        if (lexer.token() == Token.INTO) {
-            lexer.nextToken();
-
-            if (lexer.token() == Token.FROM) {
-                return;
-            }
-
-            SQLExpr expr = expr();
-            if (lexer.token() != Token.COMMA) {
-                x.setInto(expr);
-                return;
-            }
-            SQLListExpr list = new SQLListExpr();
-            list.addItem(expr);
-            while (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                list.addItem(expr());
-            }
-            x.setInto(list);
-        }
-    }
-
-    private void parseHints(OracleSelectQueryBlock queryBlock) {
-        this.exprParser.parseHints(queryBlock.getHints());
     }
 }

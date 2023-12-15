@@ -18,14 +18,20 @@ package com.alibaba.druid.pool.vendor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class OceanBaseValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker {
     private String commonValidateQuery = "SELECT 'x' FROM DUAL";
+    /**
+     * MySQL:
+     * specify a validation query in your connection pool that starts with {@literal /}* ping *{@literal /}.
+     * Note that the syntax must be exactly as specified. This will cause the driver send a ping to the server
+     * and return a dummy lightweight result set. When using a ReplicationConnection or LoadBalancedConnection,
+     * the ping will be sent across all active connections.
+     */
+    private String mysqlValidateQuery = "/* ping */ SELECT 1";
     private DbType dbType;
 
     public OceanBaseValidConnectionChecker() {
@@ -38,31 +44,21 @@ public class OceanBaseValidConnectionChecker extends ValidConnectionCheckerAdapt
         configFromProperties(System.getProperties());
     }
 
-    public boolean isValidConnection(final Connection c,
+    public boolean isValidConnection(final Connection conn,
                                      String validateQuery,
                                      int validationQueryTimeout) throws Exception {
-        if (c.isClosed()) {
+        if (conn.isClosed()) {
             return false;
         }
-        if (validateQuery == null || validateQuery.isEmpty()) {
-            if (dbType != null) {
+
+        if (StringUtils.isEmpty(validateQuery)) {
+            if (DbType.mysql.equals(dbType)) {
+                validateQuery = mysqlValidateQuery;
+            } else {
                 validateQuery = commonValidateQuery;
             }
         }
 
-        Statement stmt = null;
-
-        try {
-            stmt = c.createStatement();
-            if (validationQueryTimeout > 0) {
-                stmt.setQueryTimeout(validationQueryTimeout);
-            }
-            stmt.execute(validateQuery);
-            return true;
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            JdbcUtils.close(stmt);
-        }
+        return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, validationQueryTimeout);
     }
 }

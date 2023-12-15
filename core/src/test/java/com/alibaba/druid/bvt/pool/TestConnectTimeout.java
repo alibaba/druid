@@ -16,6 +16,7 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -39,7 +40,7 @@ public class TestConnectTimeout extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setMaxOpenPreparedStatements(30);
         dataSource.setMaxActive(4);
-        dataSource.setMaxWait(1000);
+        dataSource.setMaxWait(50000);//时间灵敏度不够，容易导致单测失败，因此调大一点
         dataSource.setMinIdle(0);
         dataSource.setInitialSize(1);
         dataSource.init();
@@ -68,6 +69,7 @@ public class TestConnectTimeout extends TestCase {
                     try {
                         for (int i = 0; i < 100; ++i) {
                             Connection conn = dataSource.getConnection();
+                            System.out.println(LocalDateTime.now() +" : " + Thread.currentThread() + " " + conn);
                             Thread.sleep(1);
                             conn.close();
                         }

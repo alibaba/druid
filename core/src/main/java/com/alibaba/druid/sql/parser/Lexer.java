@@ -292,27 +292,15 @@ public class Lexer {
     }
 
     public String info() {
-        int line = 1;
-        int column = 1;
-        for (int i = 0; i < startPos; ++i, column++) {
-            char ch = text.charAt(i);
-            if (ch == '\n') {
-                column = 1;
-                line++;
-            }
-        }
-
-        this.posLine = line;
-        this.posColumn = column;
+        computeRowAndColumn();
 
         StringBuilder buf = new StringBuilder();
-        buf
-                .append("pos ")
+        buf.append("pos ")
                 .append(pos)
                 .append(", line ")
-                .append(line)
+                .append(this.getPosLine())
                 .append(", column ")
-                .append(column);
+                .append(this.getPosColumn());
         if (token != null) {
             if (token.name != null) {
                 buf.append(", token ").append(token.name);
@@ -2580,15 +2568,32 @@ public class Lexer {
         }
 
         int start = pos;
-        for (;;) {
-            if (ch == ' ' || ch == '\r' || ch == '\n' || ch == EOI) {
+        for (; ; ) {
+            if (ch == ' '
+                    || ch == '\r'
+                    || ch == '\n'
+                    || ch == EOI
+                    || (ch == ';' && (pos >= text.length() - 1 || isWhitespace(text.charAt(pos + 1))))
+            ) {
+                while (pos < text.length() - 1) {
+                    char c1 = text.charAt(pos);
+                    if (c1 == ' ' || c1 == '\r' || c1 == '\n' || c1 == '\t') {
+                        pos++;
+                        continue;
+                    }
+                    break;
+                }
+
                 String arg = text.substring(start, pos);
                 arg = arg.trim();
                 if (arg.length() > 0) {
                     args.add(arg);
                 }
+                if (ch == ';') {
+                    break;
+                }
                 scanChar();
-                start = pos;
+                start = pos - 1;
                 if (ch == '\r' || ch == '\n' || ch == EOI) {
                     break;
                 } else {
@@ -2600,6 +2605,8 @@ public class Lexer {
         }
         if (ch == EOI) {
             token = EOF;
+        } else if (ch == ';') {
+            token = COMMA;
         } else {
             nextToken();
         }
@@ -3045,7 +3052,7 @@ public class Lexer {
         return stringVal;
     }
 
-    private final void stringVal(StringBuffer out) {
+    private final void stringVal(StringBuilder out) {
         if (stringVal != null) {
             out.append(stringVal);
             return;
@@ -3345,7 +3352,7 @@ public class Lexer {
         for (int i = 0; i < startPos; ++i) {
             char ch = text.charAt(i);
             if (ch == '\n') {
-                column = 0;
+                column = 1;
                 line++;
             } else {
                 column++;
@@ -3396,7 +3403,7 @@ public class Lexer {
 
         lexer.nextToken();
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         for_:
         for (; ; ) {

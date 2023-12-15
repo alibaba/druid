@@ -473,4 +473,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Returns a default value if the object passed is {@code null}.
+     */
+    public static <T> T getIfNull(final T object, final T defaultValue) {
+        return object != null ? object : defaultValue;
+    }
+
 }

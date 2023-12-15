@@ -37,6 +37,6 @@ public class MySqlCreateTableSpaceTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLESPACE tblsp1 ADD DATAFILE 'tblsp_work1' FILE_BLOCK_SIZE = lg_1 INITIAL_SIZE = 4G;", output);
+        Assert.assertEquals("CREATE TABLESPACE tblsp1 ADD DATAFILE 'tblsp_work1' FILE_BLOCK_SIZE = lg_1 INITIAL_SIZE = 4G ENGINE MYISAM;", output);
     }
 }

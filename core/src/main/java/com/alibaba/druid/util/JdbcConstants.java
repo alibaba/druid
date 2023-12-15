@@ -50,6 +50,7 @@ public interface JdbcConstants {
     DbType MYSQL = DbType.mysql;
     String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
     String MYSQL_DRIVER_6 = "com.mysql.cj.jdbc.Driver";
+    String MYSQL_DRIVER_603 = "com.mysql.cj.api.MysqlConnection";
     String MYSQL_DRIVER_REPLICATE = "com.mysql.jdbc.";
 
     String MARIADB = "mariadb";
@@ -130,6 +131,8 @@ public interface JdbcConstants {
     DbType CLICKHOUSE = DbType.clickhouse;
     String CLICKHOUSE_DRIVER = "ru.yandex.clickhouse.ClickHouseDriver";
 
+    String CLICKHOUSE_DRIVER_NEW = "com.clickhouse.jdbc.ClickHouseDriver";
+
     String KDB = "kdb";
     String KDB_DRIVER = "com.inspur.jdbc.KdDriver";
 
@@ -152,4 +155,7 @@ public interface JdbcConstants {
 
     DbType TYDB = DbType.tydb;
     String TYDB_DRIVER = "com.dbcp.jdbc.Driver";
+
+    String TAOS_DATA = "com.taosdata.jdbc.TSDBDriver";
+    String TAOS_DATA_RS = "com.taosdata.jdbc.rs.RestfulDriver";
 }

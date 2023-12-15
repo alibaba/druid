@@ -38,7 +38,7 @@ public class ExportColumns extends UDF {
                 stmt.accept(visitor);
             }
 
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 
             for (TableStat.Column column : visitor.getColumns()) {
                 if (buf.length() != 0) {

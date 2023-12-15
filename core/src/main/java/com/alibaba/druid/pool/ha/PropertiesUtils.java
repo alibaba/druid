@@ -42,10 +42,14 @@ public class PropertiesUtils {
 
         InputStream is = null;
         try {
-            LOG.debug("Trying to load " + file + " from FileSystem.");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Trying to load " + file + " from FileSystem.");
+            }
             is = new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            LOG.debug("Trying to load " + file + " from Classpath.");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Trying to load " + file + " from Classpath.");
+            }
             try {
                 is = PropertiesUtils.class.getResourceAsStream(file);
             } catch (Exception ex) {
@@ -58,12 +62,10 @@ public class PropertiesUtils {
             } catch (Exception e) {
                 LOG.error("Exception occurred while loading " + file, e);
             } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (Exception e) {
-                        LOG.debug("Can not close Inputstream.", e);
-                    }
+                try {
+                    is.close();
+                } catch (Exception e) {
+                    LOG.debug("Can not close Inputstream.", e);
                 }
             }
         } else {

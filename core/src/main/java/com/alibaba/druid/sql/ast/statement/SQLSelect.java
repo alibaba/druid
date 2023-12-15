@@ -182,7 +182,7 @@ public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
 
         if (this.hints != null) {
             for (SQLHint hint : this.hints) {
-                x.hints.add(hint);
+                x.getHints().add(hint);
             }
         }
 

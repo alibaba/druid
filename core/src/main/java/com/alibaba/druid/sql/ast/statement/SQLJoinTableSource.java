@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.FastsqlColumnAmbiguousException;
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -26,7 +25,6 @@ import com.alibaba.druid.sql.repository.SchemaResolveVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -222,20 +220,16 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         this.natural = natural;
     }
 
-    public void output(Appendable buf) {
-        try {
-            this.left.output(buf);
-            buf.append(' ');
-            buf.append(JoinType.toString(this.joinType));
-            buf.append(' ');
-            this.right.output(buf);
+    public void output(StringBuilder buf) {
+        this.left.output(buf);
+        buf.append(' ');
+        buf.append(JoinType.toString(this.joinType));
+        buf.append(' ');
+        this.right.output(buf);
 
-            if (this.condition != null) {
-                buf.append(" ON ");
-                this.condition.output(buf);
-            }
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
+        if (this.condition != null) {
+            buf.append(" ON ");
+            this.condition.output(buf);
         }
     }
 

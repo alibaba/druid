@@ -196,7 +196,11 @@ public final class DruidStatManagerFacade {
     }
 
     /**
-     * @return
+     * Merges two wall stat maps into a single map.
+     *
+     * @param mapA the first wall stat map to be merged
+     * @param mapB the second wall stat map to be merged
+     * @return a new map that contains the merged wall stats from mapA and mapB
      * @deprecated
      */
     public static Map mergWallStat(Map mapA, Map mapB) {

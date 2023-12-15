@@ -49,7 +49,9 @@ public class StickyRandomDataSourceSelector extends RandomDataSourceSelector {
     public DataSource get() {
         StickyDataSourceHolder holder = holders.get();
         if (holder != null && isAvailable(holder)) {
-            LOG.debug("Return the sticky DataSource " + holder.getDataSource().toString() + " directly.");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Return the sticky DataSource " + holder.getDataSource().toString() + " directly.");
+            }
             return holder.getDataSource();
         }
         LOG.debug("Return a random DataSource.");
@@ -78,7 +80,7 @@ public class StickyRandomDataSourceSelector extends RandomDataSourceSelector {
     }
 
     private boolean isExpired(StickyDataSourceHolder holder) {
-        return System.currentTimeMillis() - holder.getRetrievingTime() > expireSeconds * 1000;
+        return System.currentTimeMillis() - holder.getRetrievingTime() > expireSeconds * 1000L;
     }
 
     public int getExpireSeconds() {

@@ -27,7 +27,7 @@ public class KeepAliveTest extends TestCase {
 
         Properties properties = new Properties();
         properties.put("druid.keepAlive", "true");
-        dataSource.configFromPropety(properties);
+        dataSource.configFromPropeties(properties);
     }
 
     protected void tearDown() throws Exception {

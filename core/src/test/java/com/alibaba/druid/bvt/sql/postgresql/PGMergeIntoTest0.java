@@ -40,8 +40,8 @@ public class PGMergeIntoTest0 extends PGTest {
 
         assertEquals("MERGE INTO CustomerAccount CA\n" +
                 "USING (\n" +
-                "\t(SELECT CustomerId, TransactionValue\n" +
-                "\tFROM RecentTransactions)\n" +
+                "\tSELECT CustomerId, TransactionValue\n" +
+                "\tFROM RecentTransactions\n" +
                 ") T ON (CA.CustomerId = T.CustomerId) \n" +
                 "WHEN MATCHED THEN UPDATE SET Balance = Balance + TransactionValue\n" +
                 "WHEN NOT MATCHED THEN INSERT (CustomerId, Balance) VALUES (T.CustomerId, T.TransactionValue);", stmt.toString());

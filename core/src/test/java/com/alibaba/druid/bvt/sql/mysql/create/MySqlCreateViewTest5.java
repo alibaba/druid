@@ -29,7 +29,7 @@ import java.util.List;
 public class MySqlCreateViewTest5 extends TestCase {
     public void test_0() throws Exception {
         String sql = "create or replace definer = current_user sql security invoker view my_view4(c1, 1c, _, c1_2) \n" +
-                "\tas select * from  (t1 as tt1, t2 as tt2) inner join t1 on t1.col1 = tt1.col1;";
+            "\tas select * from  (t1 as tt1, t2 as tt2) inner join t1 on t1.col1 = tt1.col1;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -42,32 +42,32 @@ public class MySqlCreateViewTest5 extends TestCase {
         stmt.accept(visitor);
 
         assertEquals("CREATE OR REPLACE DEFINER = current_user\n" +
-                        "\tSQL SECURITY = invoker\n" +
-                        "\tVIEW my_view4 (\n" +
-                        "\tc1, \n" +
-                        "\t1c, \n" +
-                        "\t_, \n" +
-                        "\tc1_2\n" +
-                        ")\n" +
-                        "AS\n" +
-                        "SELECT *\n" +
-                        "FROM (t1 tt1, t2 tt2)\n" +
-                        "\tINNER JOIN t1 ON t1.col1 = tt1.col1;", //
-                SQLUtils.toMySqlString(stmt));
+                "\tSQL SECURITY invoker\n" +
+                "\tVIEW my_view4 (\n" +
+                "\tc1, \n" +
+                "\t1c, \n" +
+                "\t_, \n" +
+                "\tc1_2\n" +
+                ")\n" +
+                "AS\n" +
+                "SELECT *\n" +
+                "FROM (t1 tt1, t2 tt2)\n" +
+                "\tINNER JOIN t1 ON t1.col1 = tt1.col1;", //
+            SQLUtils.toMySqlString(stmt));
 
         assertEquals("create or replace definer = current_user\n" +
-                        "\tsql security = invoker\n" +
-                        "\tview my_view4 (\n" +
-                        "\tc1, \n" +
-                        "\t1c, \n" +
-                        "\t_, \n" +
-                        "\tc1_2\n" +
-                        ")\n" +
-                        "as\n" +
-                        "select *\n" +
-                        "from (t1 tt1, t2 tt2)\n" +
-                        "\tinner join t1 on t1.col1 = tt1.col1;", //
-                SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "\tsql security invoker\n" +
+                "\tview my_view4 (\n" +
+                "\tc1, \n" +
+                "\t1c, \n" +
+                "\t_, \n" +
+                "\tc1_2\n" +
+                ")\n" +
+                "as\n" +
+                "select *\n" +
+                "from (t1 tt1, t2 tt2)\n" +
+                "\tinner join t1 on t1.col1 = tt1.col1;", //
+            SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
 //        System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -85,4 +85,52 @@ public class MySqlCreateViewTest5 extends TestCase {
         assertTrue(visitor.getColumns().contains(new Column("t2", "*")));
 //        assertTrue(visitor.getColumns().contains(new Column("t2", "l_suppkey")));
     }
+    public void test_1() throws Exception {
+        String sql="CREATE ALGORITHM=UNDEFINED " +
+            "DEFINER=`root`@`%` " +
+            "SQL SECURITY DEFINER VIEW `test_view` AS \n" +
+            "select  `t1`.`US_USERID` AS `US_USERID`,  `t1`.`US_USERNAME` AS `US_USERNAME` from `test_userinfo` `t1`";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLCreateViewStatement stmt = (SQLCreateViewStatement) statementList.get(0);
+//        print(statementList);
+
+        assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        assertEquals("CREATE ALGORITHM = UNDEFINED\n"
+                + "\tDEFINER = '`root`'@'`%`'\n"
+                + "\tSQL SECURITY DEFINER\n"
+                + "\tVIEW `test_view`\n"
+                + "AS\n"
+                + "SELECT `t1`.`US_USERID` AS `US_USERID`, `t1`.`US_USERNAME` AS `US_USERNAME`\n"
+                + "FROM `test_userinfo` `t1`", //
+            SQLUtils.toMySqlString(stmt));
+
+        assertEquals("create algorithm = UNDEFINED\n"
+                + "\tdefiner = '`root`'@'`%`'\n"
+                + "\tsql security DEFINER\n"
+                + "\tview `test_view`\n"
+                + "as\n"
+                + "select `t1`.`US_USERID` as `US_USERID`, `t1`.`US_USERNAME` as `US_USERNAME`\n"
+                + "from `test_userinfo` `t1`", //
+            SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+
+//        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("test_userinfo")));
+
+        assertTrue(visitor.getColumns().contains(new Column("test_userinfo", "US_USERID")));
+        assertTrue(visitor.getColumns().contains(new Column("test_userinfo", "US_USERNAME")));
+    }
+
 }

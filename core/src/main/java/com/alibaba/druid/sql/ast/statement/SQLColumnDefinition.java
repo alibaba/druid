@@ -34,6 +34,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     protected SQLDataType dataType;
     protected SQLExpr defaultExpr;
     protected final List<SQLColumnConstraint> constraints = new ArrayList<SQLColumnConstraint>(0);
+    protected boolean disableNovalidate;
     protected SQLExpr comment;
 
     protected Boolean enable;
@@ -70,10 +71,37 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     private SQLExpr step;
     private SQLCharExpr encode;
     private SQLCharExpr compression;
+    protected SQLCharExpr aggType; // for starrocks
+    protected SQLCharExpr bitmap; // for starrocks
+    protected SQLCharExpr indexComment; // for starrocks
 
     // for aliyun data lake anlytics
     private List<SQLAssignItem> mappedBy;
     private List<SQLAssignItem> colProperties;
+
+    public SQLCharExpr getIndexComment() {
+        return indexComment;
+    }
+
+    public void setIndexComment(SQLCharExpr indexComment) {
+        this.indexComment = indexComment;
+    }
+
+    public SQLCharExpr getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(SQLCharExpr bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    public SQLCharExpr getAggType() {
+        return aggType;
+    }
+
+    public void setAggType(SQLCharExpr aggType) {
+        this.aggType = aggType;
+    }
 
     public SQLColumnDefinition() {
     }
@@ -240,6 +268,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             constraint.setParent(this);
         }
         this.constraints.add(constraint);
+    }
+
+    public boolean isDisableNovalidate() {
+        return disableNovalidate;
+    }
+
+    public void setDisableNovalidate(boolean disableNovalidate) {
+        this.disableNovalidate = disableNovalidate;
     }
 
     @Override

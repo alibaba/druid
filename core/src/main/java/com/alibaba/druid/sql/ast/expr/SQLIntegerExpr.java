@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -52,12 +51,8 @@ public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuable
         this.number = number;
     }
 
-    public void output(Appendable buf) {
-        try {
-            buf.append(this.number.toString());
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        buf.append(this.number.toString());
     }
 
     protected void accept0(SQLASTVisitor visitor) {

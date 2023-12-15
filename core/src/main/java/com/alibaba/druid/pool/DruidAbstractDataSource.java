@@ -17,11 +17,11 @@ package com.alibaba.druid.pool;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.DruidRuntimeException;
-import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
@@ -45,11 +45,15 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
+
+import static com.alibaba.druid.util.JdbcConstants.POSTGRESQL_DRIVER;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -182,6 +186,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long cachedPreparedStatementDeleteCount;
     protected volatile long cachedPreparedStatementMissCount;
 
+    private volatile FilterChainImpl filterChain;
+
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> errorCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "errorCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> dupCloseCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "dupCloseCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> startTransactionCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "startTransactionCount");
@@ -193,6 +199,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> cachedPreparedStatementCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "cachedPreparedStatementCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> cachedPreparedStatementDeleteCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "cachedPreparedStatementDeleteCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> cachedPreparedStatementMissCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "cachedPreparedStatementMissCount");
+    protected static final AtomicReferenceFieldUpdater<DruidAbstractDataSource, FilterChainImpl> filterChainUpdater
+            = AtomicReferenceFieldUpdater.newUpdater(DruidAbstractDataSource.class, FilterChainImpl.class, "filterChain");
 
     protected final Histogram transactionHistogram = new Histogram(1,
             10,
@@ -252,7 +260,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected long timeBetweenLogStatsMillis;
     protected DruidDataSourceStatLogger statLogger = new DruidDataSourceStatLoggerImpl();
 
-    private boolean asyncCloseConnectionEnable;
+    protected boolean asyncCloseConnectionEnable;
     protected int maxCreateTaskCount = 3;
     protected boolean failFast;
     protected volatile int failContinuous;
@@ -276,11 +284,28 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile Throwable lastFatalError;
     protected volatile Throwable keepAliveError;
 
+    /**
+     * Constructs a new DruidAbstractDataSource with a specified lock fairness setting.
+     *
+     * @param lockFair a boolean value indicating whether the lock should be fair or not
+     */
     public DruidAbstractDataSource(boolean lockFair) {
         lock = new ReentrantLock(lockFair);
-
         notEmpty = lock.newCondition();
         empty = lock.newCondition();
+    }
+
+    protected FilterChainImpl createChain() {
+        FilterChainImpl chain = filterChainUpdater.getAndSet(this, null);
+        if (chain == null) {
+            chain = new FilterChainImpl(this);
+        }
+        return chain;
+    }
+
+    protected void recycleFilterChain(FilterChainImpl chain) {
+        chain.reset();
+        filterChainUpdater.lazySet(this, chain);
     }
 
     public boolean isUseLocalSessionState() {
@@ -385,11 +410,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public java.util.Date getLastErrorTime() {
-        if (lastErrorTimeMillis <= 0) {
-            return null;
-        }
-
-        return new java.util.Date(lastErrorTimeMillis);
+        return lastErrorTimeMillis <= 0 ? null : new java.util.Date(lastErrorTimeMillis);
     }
 
     public long getLastCreateErrorTimeMillis() {
@@ -397,19 +418,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public java.util.Date getLastCreateErrorTime() {
-        if (lastCreateErrorTimeMillis <= 0) {
-            return null;
-        }
-
-        return new java.util.Date(lastCreateErrorTimeMillis);
+        return lastCreateErrorTimeMillis <= 0 ? null : new java.util.Date(lastCreateErrorTimeMillis);
     }
 
     public int getTransactionQueryTimeout() {
-        if (transactionQueryTimeout <= 0) {
-            return queryTimeout;
-        }
-
-        return transactionQueryTimeout;
+        return transactionQueryTimeout <= 0 ? queryTimeout : transactionQueryTimeout;
     }
 
     public void setTransactionQueryTimeout(int transactionQueryTimeout) {
@@ -602,12 +615,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize) {
-        if (maxPoolPreparedStatementPerConnectionSize > 0) {
-            this.poolPreparedStatements = true;
-        } else {
-            this.poolPreparedStatements = false;
-        }
-
+        this.poolPreparedStatements = maxPoolPreparedStatementPerConnectionSize > 0;
         this.maxPoolPreparedStatementPerConnectionSize = maxPoolPreparedStatementPerConnectionSize;
     }
 
@@ -640,11 +648,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public String getValidConnectionCheckerClassName() {
-        if (validConnectionChecker == null) {
-            return null;
-        }
-
-        return validConnectionChecker.getClass().getName();
+        return validConnectionChecker == null ? null : validConnectionChecker.getClass().getName();
     }
 
     public void setValidConnectionCheckerClassName(String validConnectionCheckerClass) throws Exception {
@@ -654,7 +658,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
             this.validConnectionChecker = validConnectionChecker;
         } else {
-            LOG.error("load validConnectionCheckerClass error : " + validConnectionCheckerClass);
+            if (LOG.isErrorEnabled()) {
+                LOG.error("load validConnectionCheckerClass["
+                        + validConnectionCheckerClass + "] error, and use JDBC4ValidConnectionChecker.");
+            }
+            this.validConnectionChecker = new JDBC4ValidConnectionChecker();
         }
     }
 
@@ -663,11 +671,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setDbType(DbType dbType) {
-        if (dbType == null) {
-            this.dbTypeName = null;
-        } else {
-            this.dbTypeName = dbType.name();
-        }
+        this.dbTypeName = dbType == null ? null : dbType.name();
     }
 
     public void setDbType(String dbType) {
@@ -687,11 +691,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public Collection<String> getConnectionInitSqls() {
-        Collection<String> result = connectionInitSqls;
-        if (result == null) {
-            return Collections.emptyList();
-        }
-        return result;
+        return connectionInitSqls == null ? Collections.emptyList() : connectionInitSqls;
     }
 
     public void setConnectionInitSqls(Collection<? extends Object> connectionInitSqls) {
@@ -775,7 +775,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (minEvictableIdleTimeMillis < 1000 * 30) {
             LOG.error("minEvictableIdleTimeMillis should be greater than 30000");
         }
-
         this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
     }
 
@@ -827,7 +826,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     * @param numTestsPerEvictionRun
+     * @param numTestsPerEvictionRun number of tests per eviction run
      */
     @Deprecated
     public void setNumTestsPerEvictionRun(int numTestsPerEvictionRun) {
@@ -839,6 +838,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setTimeBetweenEvictionRunsMillis(long timeBetweenEvictionRunsMillis) {
+        if (timeBetweenEvictionRunsMillis <= 0) {
+            throw new IllegalArgumentException("timeBetweenEvictionRunsMillis must > 0");
+        }
+
         this.timeBetweenEvictionRunsMillis = timeBetweenEvictionRunsMillis;
     }
 
@@ -1002,7 +1005,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     *
      * @since 1.2.12
      */
     public int getConnectTimeout() {
@@ -1010,7 +1012,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     *
      * @since 1.2.12
      */
     public void setConnectTimeout(int milliSeconds) {
@@ -1028,7 +1029,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     *
      * @since 1.2.12
      */
     public int getSocketTimeout() {
@@ -1036,7 +1036,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     /**
-     *
      * @since 1.2.12
      */
     public void setSocketTimeout(int milliSeconds) {
@@ -1118,11 +1117,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         if (inited && value > this.maxActive) {
-            throw new IllegalArgumentException("minIdle greater than maxActive, " + maxActive + " < " + this.minIdle);
+            throw new IllegalArgumentException("minIdle greater than maxActive, " + maxActive + " must >= " + this.minIdle);
         }
 
         if (minIdle < 0) {
-            throw new IllegalArgumentException("minIdle must > 0");
+            throw new IllegalArgumentException("minIdle must >= 0");
         }
 
         this.minIdle = value;
@@ -1135,7 +1134,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     @Deprecated
     public void setMaxIdle(int maxIdle) {
         LOG.error("maxIdle is deprecated");
-
         this.maxIdle = maxIdle;
     }
 
@@ -1440,6 +1438,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             try {
                 result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
 
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
+                }
                 if (result && onFatalError) {
                     lock.lock();
                     try {
@@ -1467,31 +1468,32 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         if (null != query) {
-            Statement stmt = null;
-            ResultSet rs = null;
+            boolean valid;
             try {
-                stmt = conn.createStatement();
-                if (getValidationQueryTimeout() > 0) {
-                    stmt.setQueryTimeout(getValidationQueryTimeout());
-                }
-                rs = stmt.executeQuery(query);
-                if (!rs.next()) {
-                    throw new SQLException("validationQuery didn't return a row");
-                }
-
-                if (onFatalError) {
-                    lock.lock();
-                    try {
-                        if (onFatalError) {
-                            onFatalError = false;
-                        }
-                    } finally {
-                        lock.unlock();
-                    }
-                }
+                valid = ValidConnectionCheckerAdapter.execValidQuery(conn, query, validationQueryTimeout);
+            } catch (SQLException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new SQLException("validationQuery failed", ex);
             } finally {
-                JdbcUtils.close(rs);
-                JdbcUtils.close(stmt);
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
+                }
+            }
+
+            if (!valid) {
+                throw new SQLException("validationQuery didn't return a row");
+            }
+
+            if (onFatalError) {
+                lock.lock();
+                try {
+                    if (onFatalError) {
+                        onFatalError = false;
+                    }
+                } finally {
+                    lock.unlock();
+                }
             }
         }
     }
@@ -1515,28 +1517,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
         try {
             if (validConnectionChecker != null) {
+                // mysql-connector-java will throw Exception if the connection is broken.
                 boolean valid = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
                 long currentTimeMillis = System.currentTimeMillis();
                 if (holder != null) {
                     holder.lastValidTimeMillis = currentTimeMillis;
                     holder.lastExecTimeMillis = currentTimeMillis;
                 }
-
-                if (valid && isMySql) { // unexcepted branch
-                    long lastPacketReceivedTimeMs = MySqlUtils.getLastPacketReceivedTimeMs(conn);
-                    if (lastPacketReceivedTimeMs > 0) {
-                        long mysqlIdleMillis = currentTimeMillis - lastPacketReceivedTimeMs;
-                        if (lastPacketReceivedTimeMs > 0 //
-                                && mysqlIdleMillis >= timeBetweenEvictionRunsMillis) {
-                            discardConnection(holder);
-                            String errorMsg = "discard long time none received connection. "
-                                    + ", jdbcUrl : " + jdbcUrl
-                                    + ", version : " + VERSION.getVersionNumber()
-                                    + ", lastPacketReceivedIdleMillis : " + mysqlIdleMillis;
-                            LOG.warn(errorMsg);
-                            return false;
-                        }
-                    }
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(currentTimeMillis);
                 }
 
                 if (valid && onFatalError) {
@@ -1561,23 +1550,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 return true;
             }
 
-            Statement stmt = null;
-            ResultSet rset = null;
+            boolean valid;
             try {
-                stmt = conn.createStatement();
-                if (getValidationQueryTimeout() > 0) {
-                    stmt.setQueryTimeout(validationQueryTimeout);
-                }
-                rset = stmt.executeQuery(validationQuery);
-                if (!rset.next()) {
-                    return false;
-                }
+                valid = ValidConnectionCheckerAdapter.execValidQuery(conn, validationQuery, validationQueryTimeout);
             } finally {
-                JdbcUtils.close(rset);
-                JdbcUtils.close(stmt);
+                if (conn instanceof ConnectionProxyImpl) {
+                    ((ConnectionProxyImpl) conn).setLastValidateTimeMillis(System.currentTimeMillis());
+                }
             }
 
-            if (onFatalError) {
+            if (valid && onFatalError) {
                 lock.lock();
                 try {
                     if (onFatalError) {
@@ -1588,7 +1570,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
             }
 
-            return true;
+            return valid;
         } catch (Throwable ex) {
             // skip
             return false;
@@ -1689,18 +1671,24 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         handleConnectionException(conn, t, null);
     }
 
-    public abstract void handleConnectionException(DruidPooledConnection conn,
-                                                   Throwable t,
-                                                   String sql) throws SQLException;
+    public abstract void handleConnectionException(
+            DruidPooledConnection conn,
+            Throwable t,
+            String sql
+    ) throws SQLException;
 
     protected abstract void recycle(DruidPooledConnection pooledConnection) throws SQLException;
 
     public Connection createPhysicalConnection(String url, Properties info) throws SQLException {
         Connection conn;
         if (getProxyFilters().isEmpty()) {
-            conn = getDriver().connect(url, info);
+            Connection rawConn = getDriver().connect(url, info);
+            Statement stmt = rawConn.createStatement();
+            conn = new DruidStatementConnection(rawConn, stmt);
         } else {
-            conn = new FilterChainImpl(this).connection_connect(info);
+            FilterChainImpl filterChain = createChain();
+            conn = filterChain.connection_connect(info);
+            recycleFilterChain(filterChain);
         }
 
         createCountUpdater.incrementAndGet(this);
@@ -1762,16 +1750,20 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
 
                 physicalConnectProperties.put("oracle.net.CONNECT_TIMEOUT", connectTimeoutStr);
-            } else if (driver != null && "org.postgresql.Driver".equals(driver.getClass().getName())) {
-                if (connectTimeoutStr == null) {
-                    connectTimeoutStr = Integer.toString(connectTimeout);
+            } else if (driver != null && POSTGRESQL_DRIVER.equals(driver.getClass().getName())) {
+                // see https://github.com/pgjdbc/pgjdbc/blob/2b90ad04696324d107b65b085df4b1db8f6c162d/README.md
+                physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
+                physicalConnectProperties.put("connectTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
+                if (socketTimeout > 0) {
+                    physicalConnectProperties.put("socketTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(socketTimeout)));
                 }
-                physicalConnectProperties.put("loginTimeout", connectTimeoutStr);
-
-                if (socketTimeoutSr == null) {
-                    socketTimeoutSr = Integer.toString(socketTimeout);
+            } else if (dbTypeName != null && DbType.sqlserver.name().equals(dbTypeName)) {
+                // see https://learn.microsoft.com/en-us/sql/connect/jdbc/setting-the-connection-properties?view=sql-server-ver16
+                physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
+                if (socketTimeout > 0) {
+                    // As SQLServer-jdbc-driver 6.1.2 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
+                    physicalConnectProperties.put("socketTimeout", Integer.toString(socketTimeout));
                 }
-                physicalConnectProperties.put("socketTimeout", socketTimeoutSr);
             }
         }
 
@@ -1800,9 +1792,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             initPhysicalConnection(conn, variables, globalVariables);
             initedNanos = System.nanoTime();
 
-            if (socketTimeout > 0 && !netTimeoutError) {
+            boolean skipSocketTimeout = "odps".equals(dbTypeName);
+            if (socketTimeout > 0 && !netTimeoutError && !skipSocketTimeout) {
                 try {
-                    conn.setNetworkTimeout(netTimeoutExecutor, socketTimeout);
+                    // As SQLServer-jdbc-driver 6.1.7 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
+                    conn.setNetworkTimeout(netTimeoutExecutor, socketTimeout); // here is milliseconds defined by JDBC
                 } catch (SQLFeatureNotSupportedException | AbstractMethodError e) {
                     netTimeoutError = true;
                 } catch (Exception ignored) {
@@ -1810,7 +1804,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
             }
 
-            validateConnection(conn);
+            // call initSqls after completing socketTimeout setting.
+            if (!initSqls(conn, variables, globalVariables)) {
+                // if no SQL has been executed yet.
+                validateConnection(conn);
+            }
             validatedNanos = System.nanoTime();
 
             setFailContinuous(false);
@@ -1898,7 +1896,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public void initPhysicalConnection(Connection conn,
                                        Map<String, Object> variables,
                                        Map<String, Object> globalVariables) throws SQLException {
-        if (conn.getAutoCommit() != defaultAutoCommit) {
+        boolean skipAutoCommit = "odps".equals(dbTypeName);
+
+        if ((!skipAutoCommit) && conn.getAutoCommit() != defaultAutoCommit) {
             conn.setAutoCommit(defaultAutoCommit);
         }
 
@@ -1917,59 +1917,70 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (getDefaultCatalog() != null && getDefaultCatalog().length() != 0) {
             conn.setCatalog(getDefaultCatalog());
         }
+    }
 
+    private boolean initSqls(Connection conn,
+            Map<String, Object> variables,
+            Map<String, Object> globalVariables) throws SQLException {
+        boolean checked = false;
         Collection<String> initSqls = getConnectionInitSqls();
         if (initSqls.isEmpty()
                 && variables == null
                 && globalVariables == null) {
-            return;
+            return checked;
         }
 
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
-
-            for (String sql : initSqls) {
-                if (sql == null) {
-                    continue;
-                }
-
-                stmt.execute(sql);
-            }
-
-            DbType dbType = DbType.of(this.dbTypeName);
-            if (JdbcUtils.isMysqlDbType(dbType)) {
-                if (variables != null) {
-                    ResultSet rs = null;
-                    try {
-                        rs = stmt.executeQuery("show variables");
-                        while (rs.next()) {
-                            String name = rs.getString(1);
-                            Object value = rs.getObject(2);
-                            variables.put(name, value);
-                        }
-                    } finally {
-                        JdbcUtils.close(rs);
-                    }
-                }
-
-                if (globalVariables != null) {
-                    ResultSet rs = null;
-                    try {
-                        rs = stmt.executeQuery("show global variables");
-                        while (rs.next()) {
-                            String name = rs.getString(1);
-                            Object value = rs.getObject(2);
-                            globalVariables.put(name, value);
-                        }
-                    } finally {
-                        JdbcUtils.close(rs);
-                    }
-                }
-            }
-        } finally {
-            JdbcUtils.close(stmt);
+        // using raw connection to skip all filters.
+        Connection rawConn;
+        if (conn instanceof ConnectionProxyImpl) {
+            rawConn = ((ConnectionProxyImpl) conn).getConnectionRaw();
+        } else {
+            rawConn = conn;
         }
+        Statement stmt = ((DruidStatementConnection) rawConn).getStatement();
+        for (String sql : initSqls) {
+            if (StringUtils.isEmpty(sql)) {
+                continue;
+            }
+
+            stmt.execute(sql);
+            checked = true;
+        }
+
+        DbType dbType = DbType.of(this.dbTypeName);
+        if (JdbcUtils.isMysqlDbType(dbType)) {
+            if (variables != null) {
+                ResultSet rs = null;
+                try {
+                    rs = stmt.executeQuery("show variables");
+                    while (rs.next()) {
+                        String name = rs.getString(1);
+                        Object value = rs.getObject(2);
+                        variables.put(name, value);
+                    }
+                } finally {
+                    JdbcUtils.close(rs);
+                }
+                checked = true;
+            }
+
+            if (globalVariables != null) {
+                ResultSet rs = null;
+                try {
+                    rs = stmt.executeQuery("show global variables");
+                    while (rs.next()) {
+                        String name = rs.getString(1);
+                        Object value = rs.getObject(2);
+                        globalVariables.put(name, value);
+                    }
+                } finally {
+                    JdbcUtils.close(rs);
+                }
+                checked = true;
+            }
+        }
+
+        return checked;
     }
 
     public abstract int getActivePeak();
@@ -2074,6 +2085,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return this.id;
     }
 
+    @Override
+    public long getDataSourceId() {
+        return getID();
+    }
     public java.util.Date getCreatedTime() {
         return createdTime;
     }
@@ -2162,10 +2177,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         to.connectTimeoutStr = this.connectTimeoutStr;
     }
 
-    public abstract void discardConnection(Connection realConnection);
+    /**
+     * @param realConnection
+     * @return true if new connection has been requested during the execution.
+     */
+    public abstract boolean discardConnection(Connection realConnection);
 
-    public void discardConnection(DruidConnectionHolder holder) {
-        discardConnection(holder.getConnection());
+    public boolean discardConnection(DruidConnectionHolder holder) {
+        return discardConnection(holder.getConnection());
     }
 
     public boolean isAsyncCloseConnectionEnable() {

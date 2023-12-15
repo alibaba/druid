@@ -245,6 +245,10 @@ public class OdpsSelectParser extends SQLSelectParser {
         }
         SQLTableSource tableSource = super.parseTableSource();
 
+        if (lexer.token() == Token.HINT) {
+            this.exprParser.parseHints(tableSource.getHints());
+        }
+
         if (lexer.token() == Token.TABLE && tableSource.getAlias() == null) {
             tableSource.setAlias(
                     lexer.stringVal()

@@ -42,6 +42,8 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private FilterChainImpl filterChain;
 
+    private long lastValidateTimeMillis;
+
     public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id) {
         super(connection, id);
         this.dataSource = dataSource;
@@ -529,5 +531,23 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public int getCloseCount() {
         return closeCount;
+    }
+
+    @Override
+    public long getLastValidateTimeMillis() {
+        return lastValidateTimeMillis;
+    }
+
+    public void setLastValidateTimeMillis(long lastValidateTimeMillis) {
+        this.lastValidateTimeMillis = lastValidateTimeMillis;
+    }
+
+    @Override
+    public String toString() {
+        return "ConnectionProxyImpl{" +
+            "connectedTime=" + new java.sql.Timestamp(connectedTime) +
+            ", closeCount=" + closeCount +
+            ", lastValidateTimeMillis=" + new java.sql.Timestamp(lastValidateTimeMillis) +
+            '}';
     }
 }

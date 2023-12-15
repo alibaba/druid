@@ -1737,6 +1737,15 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.BEGIN) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (lexer.token() == Token.SEMI || lexer.token() == Token.EOF || lexer.token() == Token.IDENTIFIER) {
+                lexer.reset(mark);
+                statementList.add(this.parseTiDBBeginStatment());
+                return true;
+            } else {
+                lexer.reset(mark);
+            }
             statementList.add(this.parseBlock());
             return true;
         }
@@ -1796,10 +1805,89 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             return true;
         }
+        String strVal = lexer.stringVal();
+        if (strVal.equalsIgnoreCase("SPLIT")) {
+            TidbSplitTableStatement stmt = this.parseTiDBSplitTableStatement();
+            statementList.add(stmt);
+            return true;
+        }
 
         return false;
     }
 
+    private TidbSplitTableStatement parseTiDBSplitTableStatement() {
+        TidbSplitTableStatement stmt = new TidbSplitTableStatement();
+        lexer.nextToken();
+        Lexer.SavePoint mark = lexer.mark();
+        String strVal = lexer.stringVal();
+        if (lexer.token() == PARTITION) {
+            accept(PARTITION);
+            stmt.setSplitSyntaxOptionPartition(true);
+        } else if (strVal.equalsIgnoreCase("REGION")) {
+            acceptIdentifier("REGION");
+            accept(FOR);
+            stmt.setSplitSyntaxOptionRegionFor(true);
+        } else {
+            lexer.reset(mark);
+        }
+        strVal = lexer.stringVal();
+        accept(TABLE);
+        SQLName tableNameTmp = this.exprParser.name();
+        SQLExprTableSource sqlExprTableSource = new SQLExprTableSource(tableNameTmp);
+        stmt.setTableName(sqlExprTableSource);
+        strVal = lexer.stringVal();
+        if (lexer.token() == INDEX) {
+            accept(INDEX);
+            SQLName indexName = this.exprParser.name();
+            stmt.setIndexName(indexName);
+        } else if (lexer.token() == PARTITION) {
+            accept(PARTITION);
+            accept(LPAREN);
+            this.exprParser.exprList(stmt.getPartitionNameListOptions(), stmt);
+            accept(RPAREN);
+            if (lexer.token() == INDEX) {
+                accept(INDEX);
+                SQLName indexName = this.exprParser.name();
+                stmt.setIndexName(indexName);
+            }
+        }
+        if (lexer.token() == BETWEEN) {
+            accept(BETWEEN);
+            accept(LPAREN);
+            List<SQLExpr> sqlExprBetweens = new ArrayList<>();
+            this.exprParser.exprList(sqlExprBetweens, stmt);
+            stmt.setSplitOptionBetween(sqlExprBetweens);
+            accept(RPAREN);
+            accept(AND);
+            accept(LPAREN);
+            List<SQLExpr> sqlExprAnds = new ArrayList<>();
+            this.exprParser.exprList(sqlExprAnds, stmt);
+            stmt.setSplitOptionAnd(sqlExprAnds);
+            accept(RPAREN);
+            acceptIdentifier("REGIONS");
+            SQLIntegerExpr num = this.exprParser.integerExpr();
+            stmt.setSplitOptionRegions(num.getNumber().longValue());
+        } else if (lexer.token() == BY) {
+            accept(BY);
+            accept(LPAREN);
+            List<SQLExpr> byItems = new ArrayList<>();
+            this.exprParser.exprList(byItems, stmt);
+            accept(RPAREN);
+            stmt.getSplitOptionBys().add(byItems);
+            while (lexer.token() == COMMA) {
+                accept(COMMA);
+                accept(LPAREN);
+                byItems = new ArrayList<>();
+                this.exprParser.exprList(byItems, stmt);
+                accept(RPAREN);
+                stmt.getSplitOptionBys().add(byItems);
+            }
+
+        } else if (lexer.token() == PARTITION) {
+            accept(PARTITION);
+        }
+        return stmt;
+    }
     private SQLStatement parseArchive() {
         lexer.nextToken();
         accept(Token.TABLE);
@@ -2354,6 +2442,16 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+
+    public SQLBeginStatement parseTiDBBeginStatment() {
+        SQLBeginStatement tidbBegin = new SQLBeginStatement();
+        tidbBegin.setDbType(dbType);
+        accept(Token.BEGIN);
+        if (lexer.token() == Token.IDENTIFIER) {
+            tidbBegin.setTidbTxnMode(this.exprParser.name());
+        }
+        return tidbBegin;
     }
 
     public SQLBlockStatement parseBlock() {
@@ -9172,9 +9270,10 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     /**
-     * parse repeat statement with label
+     * Parses a REPEAT statement and returns a MySqlRepeatStatement object representing the parsed statement.
      *
-     * @param label
+     * @param label the label associated with the REPEAT statement
+     * @return a MySqlRepeatStatement object representing the parsed REPEAT statement
      */
     public MySqlRepeatStatement parseRepeat(String label) {
         MySqlRepeatStatement repeatStmt = new MySqlRepeatStatement();

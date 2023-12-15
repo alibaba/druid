@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2EvalVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
 import com.alibaba.druid.sql.visitor.functions.*;
 import com.alibaba.druid.util.HexBin;
 import com.alibaba.druid.util.Utils;
@@ -119,11 +120,12 @@ public class SQLEvalVisitorUtils {
             case oracle:
                 return new OracleEvalVisitor();
             case postgresql:
+            case greenplum:
             case edb:
                 return new PGEvalVisitor();
             case sqlserver:
             case jtds:
-                return new PGEvalVisitor();
+                return new SQLServerEvalVisitor();
             case db2:
                 return new DB2EvalVisitor();
             default:
@@ -145,6 +147,7 @@ public class SQLEvalVisitorUtils {
         functions.put("left", Left.instance);
         functions.put("locate", Locate.instance);
         functions.put("lpad", Lpad.instance);
+        functions.put("rpad", Rpad.instance);
         functions.put("ltrim", Ltrim.instance);
         functions.put("mid", Substring.instance);
         functions.put("substr", Substring.instance);
@@ -174,6 +177,7 @@ public class SQLEvalVisitorUtils {
         functions.put("bit_count", OneParamFunctions.instance);
         functions.put("soundex", OneParamFunctions.instance);
         functions.put("space", OneParamFunctions.instance);
+        functions.put("replace", Replace.instance);
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {

@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
@@ -61,6 +62,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     // for ads
     protected Map<String, SQLName> with = new HashMap<String, SQLName>(3);
 
+    protected SQLStatement withSelect;
     // adb
     protected SQLName archiveBy;
     protected Boolean withData;
@@ -75,6 +77,14 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
+    }
+
+    public SQLStatement getWithSelect() {
+        return withSelect;
+    }
+
+    public void setWithSelect(SQLStatement withSelect) {
+        this.withSelect = withSelect;
     }
 
     @Deprecated
@@ -155,6 +165,9 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
             if (select != null) {
                 select.accept(visitor);
+            }
+            if (withSelect != null) {
+                withSelect.accept(visitor);
             }
         }
         visitor.endVisit(this);
@@ -247,7 +260,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         super.simplify();
     }
 
-    public void showCoumns(Appendable out) throws IOException {
+    public void showCoumns(StringBuilder out) throws IOException {
         this.accept(new MySqlShowColumnOutpuVisitor(out));
     }
 

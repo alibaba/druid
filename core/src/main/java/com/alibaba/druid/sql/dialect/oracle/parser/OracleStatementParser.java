@@ -31,6 +31,8 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.alibaba.druid.sql.parser.Token.TABLE;
+
 public class OracleStatementParser extends SQLStatementParser {
     public OracleStatementParser(String sql) {
         super(new OracleExprParser(sql));
@@ -297,6 +299,16 @@ public class OracleStatementParser extends SQLStatementParser {
                     stmt.setParent(parent);
                     statementList.add(stmt);
                     continue;
+                }
+
+                if (strVal.equalsIgnoreCase("ANALYZE")) {
+                    acceptIdentifier("ANALYZE");
+                    if (lexer.token() == TABLE) {
+                        SQLAnalyzeTableStatement stmt = this.parseAnalyzeTable();
+                        stmt.setParent(parent);
+                        statementList.add(stmt);
+                        continue;
+                    }
                 }
 
                 if (strVal.equalsIgnoreCase("PIPE")) {
@@ -1426,6 +1438,18 @@ public class OracleStatementParser extends SQLStatementParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.TYPE)) {
             lexer.reset(savePoint);
             return parseAlterType();
+        } else if (lexer.identifierEquals("SUMMARY")) {
+            lexer.nextToken();
+
+            OracleAlterSummaryStatement stmt = new OracleAlterSummaryStatement();
+            stmt.setName(this.exprParser.name());
+
+            if (lexer.identifierEquals("COMPILE")) {
+                lexer.nextToken();
+                stmt.setCompile(true);
+            }
+
+            return stmt;
         }
 
         throw new ParserException("TODO : " + lexer.info());
@@ -1600,6 +1624,12 @@ public class OracleStatementParser extends SQLStatementParser {
                     SQLAlterTableDisableConstraint item = new SQLAlterTableDisableConstraint();
                     item.setConstraintName(this.exprParser.name());
                     stmt.addItem(item);
+                } else if (lexer.token() == Token.ROW) {
+                    lexer.nextToken();
+                    OracleAlterTableRowMovement item = new OracleAlterTableRowMovement();
+                    acceptIdentifier("MOVEMENT");
+                    item.setEnable(false);
+                    stmt.addItem(item);
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
                 }
@@ -1610,8 +1640,26 @@ public class OracleStatementParser extends SQLStatementParser {
                     SQLAlterTableEnableConstraint item = new SQLAlterTableEnableConstraint();
                     item.setConstraintName(this.exprParser.name());
                     stmt.addItem(item);
+                } else if (lexer.token() == Token.ROW) {
+                    lexer.nextToken();
+                    OracleAlterTableRowMovement item = new OracleAlterTableRowMovement();
+                    acceptIdentifier("MOVEMENT");
+                    item.setEnable(true);
+                    stmt.addItem(item);
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
+                }
+            } else if (lexer.identifierEquals("SHRINK")) {
+                lexer.nextToken();
+                if (lexer.identifierEquals("SPACE")) {
+                    lexer.nextToken();
+
+                    OracleAlterTableShrinkSpace item = new OracleAlterTableShrinkSpace();
+                    fillShrinkSpace(item);
+                    fillShrinkSpace(item);
+                    fillShrinkSpace(item);
+
+                    stmt.addItem(item);
                 }
             }
 
@@ -1633,12 +1681,30 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    public void fillShrinkSpace(OracleAlterTableShrinkSpace item) {
+        if (lexer.identifierEquals("COMPACT")) {
+            item.setCompact(true);
+            lexer.nextToken();
+        } else if (lexer.token() == Token.CASCADE) {
+            item.setCascade(true);
+            lexer.nextToken();
+        } else if (lexer.token() == Token.CHECK) {
+            item.setCheck(true);
+            lexer.nextToken();
+        }
+    }
+
     public void parseAlterDrop(SQLAlterTableStatement stmt) {
         lexer.nextToken();
         if (lexer.token() == Token.CONSTRAINT) {
             lexer.nextToken();
             SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
             item.setConstraintName(this.exprParser.name());
+            if (lexer.token() == Token.CASCADE) {
+                lexer.nextToken();
+                item.setCascade(true);
+            }
+
             stmt.addItem(item);
         } else if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
@@ -1991,6 +2057,14 @@ public class OracleStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.KEY) {
                     name = new SQLIdentifierExpr(lexer.stringVal());
                     lexer.nextToken();
+                } else if (lexer.identifierEquals("ENUM")) {
+                    name = this.exprParser.name();
+                    SQLListExpr enumList = (SQLListExpr) this.exprParser.expr();
+                    parameter.setName(name);
+                    dataType = new SQLDataTypeImpl("ENUM", enumList);
+                    parameter.setDataType(dataType);
+                    parameters.add(parameter);
+                    break;
                 } else {
                     name = this.exprParser.name();
                 }
@@ -2278,6 +2352,32 @@ public class OracleStatementParser extends SQLStatementParser {
 
         accept(Token.FOR);
         stmt.setStatement(parseStatement());
+
+        return stmt;
+    }
+
+    public SQLAnalyzeTableStatement parseAnalyzeTable() {
+        accept(Token.TABLE);
+        SQLAnalyzeTableStatement stmt = new SQLAnalyzeTableStatement();
+
+        List<SQLName> names = new ArrayList<SQLName>();
+        this.exprParser.names(names, stmt);
+
+        for (SQLName name : names) {
+            stmt.setTable(new SQLExprTableSource(name));
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            stmt.setPartition(
+                    parsePartitionRef()
+            );
+        }
+
+        if (lexer.token() == Token.COMPUTE) {
+            lexer.nextToken();
+            acceptIdentifier("STATISTICS");
+            stmt.setComputeStatistics(true);
+        }
 
         return stmt;
     }

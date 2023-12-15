@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,6 +20,7 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.DruidPasswordCallback;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class DruidDataSourceTest6 extends TestCase {
     private DruidDataSource dataSource;
@@ -78,8 +80,30 @@ public class DruidDataSourceTest6 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        // 'SELECT 1' for connection validation will skip all filters, so error is null.
+        Assert.assertNull(error);
 
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = null;
+            ResultSet rs = null;
+            try {
+                stmt = conn.createStatement();
+                rs = stmt.executeQuery("select 1");
+                // rs.next() should return false as result set is empty.
+                if (!rs.next()) {
+                    throw new SQLException("result is empty");
+                }
+            } catch (SQLException e) {
+                error = e;
+            } finally {
+                JdbcUtils.close(rs);
+                JdbcUtils.close(stmt);
+            }
+            conn.close();
+        }
+        Assert.assertNotNull(error);
+        
         {
             returnEmptyCount.set(1);
             Connection conn = dataSource.getConnection();

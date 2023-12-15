@@ -78,7 +78,7 @@ public class DMLDeleteParserTest extends TestCase {
         Assert.assertEquals("DELETE FROM id\n" + //
                 "WHERE col1 = 'adf'\n" + //
                 "ORDER BY d\n" + //
-                "LIMIT 2, ?", output);
+                "LIMIT ? OFFSET 2", output);
     }
 
     public void testDelete_5() throws Exception {

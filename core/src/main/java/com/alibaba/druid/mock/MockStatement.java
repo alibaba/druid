@@ -21,6 +21,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MockStatement extends StatementBase implements MockStatementBase, Statement {
     public static final String ERROR_SQL = "THROW ERROR";
@@ -62,7 +64,9 @@ public class MockStatement extends StatementBase implements MockStatementBase, S
             return mockConnection.getDriver().executeQuery(this, sql);
         }
 
-        return new MockResultSet(this);
+        List<Object[]> mockRows = new ArrayList<>();
+        mockRows.add(new Object[1]);
+        return new MockResultSet(this, mockRows);
     }
 
     @Override

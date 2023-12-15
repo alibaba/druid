@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
 import com.alibaba.druid.proxy.jdbc.WrapperProxy;
 import com.alibaba.druid.support.logging.Log;
@@ -85,6 +86,8 @@ public final class DruidConnectionHolder {
     protected String initSchema;
     protected Socket socket;
 
+    volatile FilterChainImpl filterChain;
+
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
             throws SQLException {
         this(
@@ -130,15 +133,16 @@ public final class DruidConnectionHolder {
         String connClassName = conClass.getName();
         if ((!ORACLE_SOCKET_FIELD_ERROR) && connClassName.equals("oracle.jdbc.driver.T4CConnection")) {
             try {
-                if (ORACLE_FIELD_NT == null) {
+                if (ORACLE_FIELD_NET == null) {
                     Field field = conClass.getDeclaredField("net");
                     field.setAccessible(true);
-                    ORACLE_FIELD_NT = field;
+                    ORACLE_FIELD_NET = field;
                 }
-                Object net = ORACLE_FIELD_NT.get(conn);
+                Object net = ORACLE_FIELD_NET.get(conn);
 
                 if (ORACLE_FIELD_S_ATTS == null) {
-                    Field field = net.getClass().getDeclaredField("sAtts");
+                    // NSProtocol
+                    Field field = net.getClass().getSuperclass().getDeclaredField("sAtts");
                     field.setAccessible(true);
                     ORACLE_FIELD_S_ATTS = field;
                 }
@@ -212,6 +216,22 @@ public final class DruidConnectionHolder {
         this.defaultTransactionIsolation = underlyingTransactionIsolation;
         this.defaultAutoCommit = underlyingAutoCommit;
         this.defaultReadOnly = underlyingReadOnly;
+    }
+
+    protected FilterChainImpl createChain() {
+        FilterChainImpl chain = this.filterChain;
+        if (chain == null) {
+            chain = new FilterChainImpl(dataSource);
+        } else {
+            this.filterChain = null;
+        }
+
+        return chain;
+    }
+
+    protected void recycleFilterChain(FilterChainImpl chain) {
+        chain.reset();
+        this.filterChain = chain;
     }
 
     public long getConnectTimeMillis() {
@@ -368,17 +388,25 @@ public final class DruidConnectionHolder {
             underlyingAutoCommit = defaultAutoCommit;
         }
 
-        connectionEventListeners.clear();
-        statementEventListeners.clear();
+        if (!connectionEventListeners.isEmpty()) {
+            connectionEventListeners.clear();
+        }
+        if (!statementEventListeners.isEmpty()) {
+            statementEventListeners.clear();
+        }
 
         lock.lock();
         try {
-            for (Object item : statementTrace.toArray()) {
-                Statement stmt = (Statement) item;
-                JdbcUtils.close(stmt);
-            }
+            if (!statementTrace.isEmpty()) {
+                Object[] items = statementTrace.toArray();
+                for (int i = 0; i < items.length; i++) {
+                    Object item = items[i];
+                    Statement stmt = (Statement) item;
+                    JdbcUtils.close(stmt);
+                }
 
-            statementTrace.clear();
+                statementTrace.clear();
+            }
         } finally {
             lock.unlock();
         }

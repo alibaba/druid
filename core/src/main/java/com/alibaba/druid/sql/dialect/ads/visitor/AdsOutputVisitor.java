@@ -12,15 +12,15 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import java.util.List;
 
 public class AdsOutputVisitor extends SQLASTOutputVisitor implements AdsVisitor {
-    public AdsOutputVisitor(Appendable appender) {
+    public AdsOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 
-    public AdsOutputVisitor(Appendable appender, DbType dbType) {
+    public AdsOutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public AdsOutputVisitor(Appendable appender, boolean parameterized) {
+    public AdsOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 

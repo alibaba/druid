@@ -39,7 +39,7 @@ public class ExportConditionColumns extends UDF {
                 stmt.accept(visitor);
             }
 
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
 
             for (TableStat.Column column : visitor.getColumns()) {
                 if ((!column.isWhere()) && !column.isJoin()) {
