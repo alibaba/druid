@@ -115,8 +115,10 @@ public class DB2SelectParser extends SQLSelectParser {
                 lexer.nextToken();
                 if (lexer.identifierEquals("RR")) {
                     queryBlock.setIsolation(Isolation.RR);
+                    parseLockRequest(queryBlock);
                 } else if (lexer.identifierEquals("RS")) {
                     queryBlock.setIsolation(Isolation.RS);
+                    parseLockRequest(queryBlock);
                 } else if (lexer.identifierEquals("CS")) {
                     queryBlock.setIsolation(Isolation.CS);
                 } else if (lexer.identifierEquals("UR")) {
@@ -139,6 +141,7 @@ public class DB2SelectParser extends SQLSelectParser {
                     accept(Token.ONLY);
                     queryBlock.setForReadOnly(true);
                 }
+                continue;
             }
 
             if (lexer.token() == Token.OPTIMIZE) {
@@ -157,5 +160,38 @@ public class DB2SelectParser extends SQLSelectParser {
         }
 
         return queryRest(queryBlock, acceptUnion);
+    }
+
+    private void parseLockRequest(DB2SelectQueryBlock queryBlock) {
+        lexer.nextToken();
+        accept(Token.USE);
+        accept(Token.AND);
+        if (!lexer.identifierEquals("KEEP")) {
+            throw new ParserException("TODO. " + lexer.info());
+        }
+        lexer.nextToken();
+        DB2SelectQueryBlock.LockRequest lockRequest = null;
+        switch (lexer.token()) {
+            case SHARE: {
+                lockRequest = DB2SelectQueryBlock.LockRequest.SHARE;
+                break;
+            }
+            case UPDATE: {
+                lockRequest = DB2SelectQueryBlock.LockRequest.UPDATE;
+                break;
+            }
+            case EXCLUSIVE: {
+                lockRequest = DB2SelectQueryBlock.LockRequest.EXCLUSIVE;
+                break;
+            }
+            default:
+                throw new ParserException("TODO. " + lexer.info());
+        }
+        lexer.nextToken();
+        if (lexer.identifierEquals("LOCKS")) {
+            queryBlock.setLockRequest(lockRequest);
+        } else {
+            throw new ParserException("TODO. " + lexer.info());
+        }
     }
 }
