@@ -3494,11 +3494,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             if (i != 0) {
                 print(' ');
             }
-            final String keyString = key.toString();
-            final String keyStringLowerCase = keyString.toLowerCase();
-            final String keyStringUpperCase = keyString.toUpperCase();
-            print0(ucase ? keyStringUpperCase : keyStringLowerCase);
-            print0(" = ");
+            final String keyStringCase = ucase ? key.toString().toUpperCase() : key.toString().toLowerCase();
+            print0(keyStringCase);
+            if ("TABLESPACE".equalsIgnoreCase(keyStringCase)) {
+                print(' ');
+            } else {
+                print0(" = ");
+            }
             item.getValue().accept(this);
             i++;
         }
