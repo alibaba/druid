@@ -40,7 +40,7 @@ public class MySqlAlterTableTest51_table_options extends TestCase {
         parser.match(Token.EOF);
 
         Assert.assertEquals("ALTER TABLE test001\n" +
-                "\tAUTO_INCREMENT = 1 AVG_ROW_LENGTH = 1 CHARACTER SET = utf8 CHECKSUM = 0 COLLATE = utf8_unicode_ci COMMENT = 'hehe' COMPRESSION = 'LZ4' CONNECTION = 'conn' COLLATE = 'path' DELAY_KEY_WRITE = 1 ENCRYPTION = 'N' ENGINE = innodb INSERT_METHOD = no KEY_BLOCK_SIZE = 32 MAX_ROWS = 999 MIN_ROWS = 1 PACK_KEYS = DEFAULT PASSWORD = 'psw' ROW_FORMAT = dynamic STATS_AUTO_RECALC = DEFAULT STATS_PERSISTENT = DEFAULT STATS_SAMPLE_PAGES = 10 TABLESPACE = `tbs_name` STORAGE memory UNION = (tb1, tb2, tb3) AUTO_INCREMENT = 1", SQLUtils.toMySqlString(stmt));
+                "\tAUTO_INCREMENT = 1 AVG_ROW_LENGTH = 1 CHARACTER SET = utf8 CHECKSUM = 0 COLLATE = utf8_unicode_ci COMMENT = 'hehe' COMPRESSION = 'LZ4' CONNECTION = 'conn' COLLATE = 'path' DELAY_KEY_WRITE = 1 ENCRYPTION = 'N' ENGINE = innodb INSERT_METHOD = no KEY_BLOCK_SIZE = 32 MAX_ROWS = 999 MIN_ROWS = 1 PACK_KEYS = DEFAULT PASSWORD = 'psw' ROW_FORMAT = dynamic STATS_AUTO_RECALC = DEFAULT STATS_PERSISTENT = DEFAULT STATS_SAMPLE_PAGES = 10 TABLESPACE `tbs_name` STORAGE memory UNION = (tb1, tb2, tb3) AUTO_INCREMENT = 1", SQLUtils.toMySqlString(stmt));
 
     }
 
@@ -75,7 +75,7 @@ public class MySqlAlterTableTest51_table_options extends TestCase {
         parser.match(Token.EOF);
 
         Assert.assertEquals("ALTER TABLE test001\n" +
-                "\tAUTO_INCREMENT = 2 AVG_ROW_LENGTH = 2 CHARACTER SET = utf8 CHECKSUM = 1 COLLATE = utf8_unicode_ci COMMENT = 'hehe' COMPRESSION = 'NONE' CONNECTION = 'conn' COLLATE = 'path' DELAY_KEY_WRITE = 0 ENCRYPTION = 'Y' ENGINE = innodb INSERT_METHOD = first KEY_BLOCK_SIZE = 64 MAX_ROWS = 999 MIN_ROWS = 1 PACK_KEYS = 0 PASSWORD = 'psw' ROW_FORMAT = fixed STATS_AUTO_RECALC = 1 STATS_PERSISTENT = 0 STATS_SAMPLE_PAGES = 2 TABLESPACE = `tbs_name` UNION = (tb1, tb2, tb3);", SQLUtils.toMySqlString(stmt));
+                "\tAUTO_INCREMENT = 2 AVG_ROW_LENGTH = 2 CHARACTER SET = utf8 CHECKSUM = 1 COLLATE = utf8_unicode_ci COMMENT = 'hehe' COMPRESSION = 'NONE' CONNECTION = 'conn' COLLATE = 'path' DELAY_KEY_WRITE = 0 ENCRYPTION = 'Y' ENGINE = innodb INSERT_METHOD = first KEY_BLOCK_SIZE = 64 MAX_ROWS = 999 MIN_ROWS = 1 PACK_KEYS = 0 PASSWORD = 'psw' ROW_FORMAT = fixed STATS_AUTO_RECALC = 1 STATS_PERSISTENT = 0 STATS_SAMPLE_PAGES = 2 TABLESPACE `tbs_name` UNION = (tb1, tb2, tb3);", SQLUtils.toMySqlString(stmt));
 
     }
 
