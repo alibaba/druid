@@ -15,23 +15,23 @@ public class TestBoundedCircularArrayDeque extends TestCase {
     }
 
     @Test
-    public void testAddFirstAndRemoveLast() {
-        deque.addFirst(1);
-        deque.addFirst(2);
-        deque.addFirst(3);
-        Assert.assertEquals(1, (int) deque.removeLast());
-        Assert.assertEquals(2, (int) deque.removeLast());
-        Assert.assertEquals(3, (int) deque.removeLast());
+    public void testofferFirstAndpollLast() {
+        deque.offerFirst(1);
+        deque.offerFirst(2);
+        deque.offerFirst(3);
+        Assert.assertEquals(1, (int) deque.pollLast());
+        Assert.assertEquals(2, (int) deque.pollLast());
+        Assert.assertEquals(3, (int) deque.pollLast());
     }
 
     @Test
-    public void testAddLastAndRemoveFirst() {
-        deque.addLast(1);
-        deque.addLast(2);
-        deque.addLast(3);
-        Assert.assertEquals(1, (int) deque.removeFirst());
-        Assert.assertEquals(2, (int) deque.removeFirst());
-        Assert.assertEquals(3, (int) deque.removeFirst());
+    public void testofferLastAndpollFirst() {
+        deque.offerLast(1);
+        deque.offerLast(2);
+        deque.offerLast(3);
+        Assert.assertEquals(1, (int) deque.pollFirst());
+        Assert.assertEquals(2, (int) deque.pollFirst());
+        Assert.assertEquals(3, (int) deque.pollFirst());
     }
 
     @Test
@@ -39,11 +39,11 @@ public class TestBoundedCircularArrayDeque extends TestCase {
         Assert.assertTrue(deque.isEmpty());
         Assert.assertFalse(deque.isFull());
 
-        deque.addLast(1);
-        deque.addLast(2);
-        deque.addLast(3);
-        deque.addLast(4);
-        deque.addLast(5);
+        deque.offerLast(1);
+        deque.offerLast(2);
+        deque.offerLast(3);
+        deque.offerLast(4);
+        deque.offerLast(5);
 
         Assert.assertFalse(deque.isEmpty());
         Assert.assertTrue(deque.isFull());
@@ -53,22 +53,22 @@ public class TestBoundedCircularArrayDeque extends TestCase {
     public void testSize() {
         Assert.assertEquals(0, deque.size());
 
-        deque.addLast(1);
-        deque.addLast(2);
-        deque.addLast(3);
+        deque.offerLast(1);
+        deque.offerLast(2);
+        deque.offerLast(3);
 
         Assert.assertEquals(3, deque.size());
 
-        deque.removeFirst();
+        deque.pollFirst();
 
         Assert.assertEquals(2, deque.size());
     }
 
     @Test
     public void testIterator() {
-        deque.addLast(1);
-        deque.addLast(2);
-        deque.addLast(3);
+        deque.offerLast(1);
+        deque.offerLast(2);
+        deque.offerLast(3);
 
         StringBuilder sb = new StringBuilder();
         for (Integer i : deque) {
@@ -78,13 +78,12 @@ public class TestBoundedCircularArrayDeque extends TestCase {
     }
 
     @Test
-    public void testRemoveFirstOnEmptyDequeWithNoSuchElementException() {
-        Assert.assertThrows(NoSuchElementException.class, () -> deque.removeFirst());
+    public void testpollFirstOnEmptyDequeWithNoSuchElementException() {
+        Assert.assertThrows(NoSuchElementException.class, () -> deque.pollFirst());
     }
-
     @Test
-    public void testRemoveLastOnEmptyDequeWithNoSuchElementException() {
-        Assert.assertThrows(NoSuchElementException.class, () -> deque.removeLast());
+    public void testpollLastOnEmptyDequeWithNoSuchElementException() {
+        Assert.assertThrows(NoSuchElementException.class, () -> deque.pollLast());
     }
 }
 

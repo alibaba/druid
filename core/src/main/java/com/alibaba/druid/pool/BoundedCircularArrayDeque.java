@@ -24,60 +24,60 @@ import java.util.NoSuchElementException;
  * elements from both ends, and has a maximum capacity set at creation time.
  */
 public class BoundedCircularArrayDeque<E> implements Iterable<E> {
-    private Object[] elementData;
-    private int front;
-    private int rear;
+    private Object[] elements;
+    private int head;
+    private int tail;
     private int capacity;
     private int size;
 
     public BoundedCircularArrayDeque(int capacity) {
-        this.front = 0;
-        this.rear = 0;
+        this.head = 0;
+        this.tail = 0;
         this.size = 0;
         this.capacity = capacity;
-        elementData = new Object[capacity];
+        elements = new Object[capacity];
     }
 
-    public boolean addFirst(E element) {
+    public boolean offerFirst(E element) {
         if (isFull()) {
             return false;
         }
-        front = (front - 1 + capacity) % capacity;
-        elementData[front] = element;
+        head = (head - 1 + capacity) % capacity;
+        elements[head] = element;
         size++;
         return true;
     }
 
-    public boolean addLast(E element) {
+    public boolean offerLast(E element) {
         if (isFull()) {
             return false;
         }
-        elementData[rear] = element;
-        rear = (rear + 1) % capacity;
+        elements[tail] = element;
+        tail = (tail + 1) % capacity;
         size++;
         return true;
     }
 
-    public E removeFirst() {
+    public E pollFirst() {
         if (isEmpty()) {
             // Impossible path to execute
-            throw new NoSuchElementException("a serious bug occurred, returning a null connection");
+            throw new NoSuchElementException();
         }
-        E element = (E) elementData[front];
-        elementData[front] = null;
-        front = (front + 1) % capacity;
+        E element = (E) elements[head];
+        elements[head] = null;
+        head = (head + 1) % capacity;
         size--;
         return element;
     }
 
-    public E removeLast() {
+    public E pollLast() {
         if (isEmpty()) {
             // Impossible path to execute
-            throw new NoSuchElementException("a serious bug occurred, returning a null connection");
+            throw new NoSuchElementException();
         }
-        rear = (rear - 1 + capacity) % capacity;
-        Object element = elementData[rear];
-        elementData[rear] = null;
+        tail = (tail - 1 + capacity) % capacity;
+        Object element = elements[tail];
+        elements[tail] = null;
         size--;
         return (E) element;
     }
@@ -99,8 +99,14 @@ public class BoundedCircularArrayDeque<E> implements Iterable<E> {
         return new CycleQueueIterator();
     }
 
+    /**
+     * Returns an iterator over the elements in this deque.  The elements
+     * will be ordered from first (head) to last (tail).
+     *
+     * @return an iterator over the elements in this deque
+     */
     class CycleQueueIterator implements Iterator<E> {
-        private int cur = front;
+        private int cur = head;
         private int remainSize = size();
 
         @Override
@@ -111,7 +117,7 @@ public class BoundedCircularArrayDeque<E> implements Iterable<E> {
         @Override
         public E next() {
             remainSize--;
-            Object ret = elementData[cur];
+            Object ret = elements[cur];
             cur = (cur + 1) % capacity;
             return (E) ret;
         }
