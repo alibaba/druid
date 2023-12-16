@@ -97,12 +97,6 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>    
     </dependencies>
 
     <scm>
@@ -123,16 +117,4 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
-
-    <profiles>
-        <profile>
-            <id>enable-for-jdk17+</id>
-            <activation>
-                <jdk>[17,)</jdk>
-            </activation>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-            </properties>
-        </profile>
-    </profiles>
 </project>

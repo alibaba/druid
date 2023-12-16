@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -39,6 +40,9 @@ import javax.sql.DataSource;
  * @author lihengming [89921218@qq.com]
  */
 @Configuration
+@ConditionalOnProperty(name = "spring.datasource.type",
+        havingValue = "com.alibaba.druid.pool.DruidDataSource",
+        matchIfMissing = true)
 @ConditionalOnClass(DruidDataSource.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties({DruidStatProperties.class, DataSourceProperties.class})
