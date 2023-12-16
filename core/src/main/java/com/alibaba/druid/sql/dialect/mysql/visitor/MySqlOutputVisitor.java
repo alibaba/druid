@@ -4139,7 +4139,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(SQLSetStatement x) {
-        boolean printSet = x.getAttribute("parser.set") == Boolean.TRUE || DbType.oracle != dbType;
+        boolean printSet = Boolean.TRUE.equals(x.getAttribute("parser.set")) || DbType.oracle != dbType;
         if (printSet) {
             print0(ucase ? "SET " : "set ");
         }
