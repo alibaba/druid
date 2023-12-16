@@ -1122,7 +1122,7 @@ public class WallVisitorUtils {
                 allTrue = Boolean.FALSE;
                 dalConst++;
             } else {
-                if (allTrue != Boolean.FALSE) {
+                if (!Boolean.FALSE.equals(allTrue)) {
                     allTrue = null;
                 }
                 dalConst = 0;
