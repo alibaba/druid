@@ -469,7 +469,7 @@ public class OracleRowNumToLimit extends OracleASTVisitorAdapter {
                 return;
             }
 
-            if (limit.getAttribute("oracle.isFixLimit") == Boolean.TRUE) {
+            if (Boolean.TRUE.equals(limit.getAttribute("oracle.isFixLimit"))) {
                 return;
             }
 

@@ -1846,7 +1846,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLStatement returningStatement = x.getReturningStatement();
         SQLExpr expr = x.getExpr();
 
-        if (Boolean.TRUE == with.getRecursive()) {
+        if (Boolean.TRUE.equals(with.getRecursive())) {
             SQLSelect select = x.getSubQuery();
             if (select != null) {
                 select.accept(this);
