@@ -10,7 +10,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 
-public class DruidPooledConnectionTest1 extends TestCase {
+public class DruidPooledConnectionTest2 extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -19,7 +19,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setFilters("stat");
         dataSource.setPoolPreparedStatements(true);
-
+        dataSource.setKeepConnectionUnderlyingTransactionIsolation(true);
     }
 
     protected void tearDown() throws Exception {
@@ -97,7 +97,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         Assert.assertEquals(0, dataSource.getActiveCount());
 
         conn = (DruidPooledConnection) dataSource.getConnection();
-        Assert.assertEquals(defaultIsolation, conn.getTransactionIsolation());
+        Assert.assertEquals(defaultIsolation + 1, conn.getTransactionIsolation());
         conn.close();
     }
 
@@ -116,7 +116,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         Assert.assertEquals(0, dataSource.getActiveCount());
 
         conn = (DruidPooledConnection) dataSource.getConnection();
-        Assert.assertEquals(defaultIsolation, conn.getTransactionIsolation());
+        Assert.assertEquals(defaultIsolation + 1, conn.getTransactionIsolation());
         conn.close();
     }
 }
