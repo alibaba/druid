@@ -17,10 +17,8 @@ package com.alibaba.druid.spring.boot.testcase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.demo.DemoApplication;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 
@@ -29,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author lihengming [89921218@qq.com]
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = DemoApplication.class)
 public class DruidDataSourceTestCase {
     @Resource
@@ -42,7 +39,7 @@ public class DruidDataSourceTestCase {
 
     @Test
     public void testDataSourcePropertiesOverridden() throws Exception {
-        assertThat(dataSource.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
+        assertThat(dataSource.getUrl()).isEqualTo("jdbc:h2:file:./demo-db;NON_KEYWORDS=user");
         assertThat(dataSource.getInitialSize()).isEqualTo(2);
         assertThat(dataSource.getMaxActive()).isEqualTo(30);
         assertThat(dataSource.getMinIdle()).isEqualTo(2);
