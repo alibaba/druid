@@ -256,6 +256,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private Boolean useUnfairLock;
     private boolean useLocalSessionState = true;
+    private boolean keepConnectionUnderlyingTransactionIsolation;
 
     protected long timeBetweenLogStatsMillis;
     protected DruidDataSourceStatLogger statLogger = new DruidDataSourceStatLoggerImpl();
@@ -314,6 +315,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void setUseLocalSessionState(boolean useLocalSessionState) {
         this.useLocalSessionState = useLocalSessionState;
+    }
+
+    public boolean isKeepConnectionUnderlyingTransactionIsolation() {
+        return keepConnectionUnderlyingTransactionIsolation;
+    }
+
+    public void setKeepConnectionUnderlyingTransactionIsolation(boolean keepConnectionUnderlyingTransactionIsolation) {
+        this.keepConnectionUnderlyingTransactionIsolation = keepConnectionUnderlyingTransactionIsolation;
     }
 
     public DruidDataSourceStatLogger getStatLogger() {
