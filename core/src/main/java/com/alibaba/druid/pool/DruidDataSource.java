@@ -3252,7 +3252,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             final long currentTimeMillis = System.currentTimeMillis();
             int size = connections.size();
             for (int i = 0; i < size; ++i) {
-                DruidConnectionHolder connection = connections.pollLast();
+                DruidConnectionHolder connection = connections.pollFirst();
 
                 if ((onFatalError || fatalErrorIncrement > 0) && (lastFatalErrorTimeMillis
                         > connection.connectTimeMillis)) {
