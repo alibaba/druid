@@ -726,7 +726,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         try {
             BoundedCircularArrayDeque<DruidConnectionHolder> newConnections = new BoundedCircularArrayDeque<>(maxActive);
             for (DruidConnectionHolder connection : connections) {
-                if (!newConnections.offerLast(connection)) {
+                if (!newConnections.addLast(connection)) {
                     closeConnections.add(connection);
                 }
             }
@@ -938,7 +938,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     try {
                         PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
                         DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
-                        connections.offerLast(holder);
+                        connections.addLast(holder);
                     } catch (SQLException ex) {
                         LOG.error("init datasource error, url: " + this.getUrl(), ex);
                         if (initExceptionThrow) {
@@ -2248,7 +2248,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             if (connections != null) {
                 int size = connections.size();
                 for (int i = 0; i < size; ++i) {
-                    DruidConnectionHolder connHolder = connections.pollFirst();
+                    DruidConnectionHolder connHolder = connections.removeFirst();
 
                     for (PreparedStatementHolder stmtHolder : connHolder.getStatementPool().getMap().values()) {
                         connHolder.getStatementPool().closeRemovedStatement(stmtHolder);
@@ -2329,7 +2329,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         }
 
         e.lastActiveTimeMillis = lastActiveTimeMillis;
-        connections.offerLast(e);
+        connections.addLast(e);
 
         if (connections.size() > poolingPeak) {
             poolingPeak = connections.size();
@@ -2377,7 +2377,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             throw ie;
         }
 
-        return connections.pollLast();
+        return connections.removeLast();
     }
 
     private DruidConnectionHolder pollLast(long maxWaitNanos) throws InterruptedException, SQLException {
@@ -2433,7 +2433,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
 
-            DruidConnectionHolder last = connections.pollLast();
+            DruidConnectionHolder last = connections.removeLast();
 
             long waitNanos = maxWaitNanos - estimate;
             last.setLastNotEmptyWaitNanos(waitNanos);
@@ -2693,7 +2693,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
 
-            connections.offerLast(holder);
+            connections.addLast(holder);
 
             if (connections.size() > poolingPeak) {
                 poolingPeak = connections.size();
@@ -3252,7 +3252,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             final long currentTimeMillis = System.currentTimeMillis();
             int size = connections.size();
             for (int i = 0; i < size; ++i) {
-                DruidConnectionHolder connection = connections.pollLast();
+                DruidConnectionHolder connection = connections.removeFirst();
 
                 if ((onFatalError || fatalErrorIncrement > 0) && (lastFatalErrorTimeMillis
                         > connection.connectTimeMillis)) {
@@ -3287,13 +3287,13 @@ public class DruidDataSource extends DruidAbstractDataSource
                         continue;
                     }
 
-                    connections.offerFirst(connection);
+                    connections.addFirst(connection);
                     break;
                 } else {
                     if (i < checkCount) {
                         evictConnections[evictCount++] = connection;
                     } else {
-                        connections.offerFirst(connection);
+                        connections.addFirst(connection);
                         break;
                     }
                 }
