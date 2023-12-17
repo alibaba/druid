@@ -3222,10 +3222,6 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     public void shrink(boolean checkTime, boolean keepAlive) {
-        if (!inited) {
-            return;
-        }
-
         if (connections.isEmpty()) {
             return;
         }
