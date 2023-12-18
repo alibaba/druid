@@ -49,6 +49,15 @@ import java.util.UUID;
 import static com.alibaba.druid.sql.parser.Token.*;
 
 public class SQLStatementParser extends SQLParser {
+
+    /**
+     * 标识变量，默认SQL解析结束后核对输入SQL是否解析结束了，预防程序BUG导致SQL被意外截断，
+     * 造成如数据库表被全删除了此类严重安全事故.默认启用此特，如要禁用则需要设置jvm参数:
+     * `-Ddruid_sql_parser_end_assert_off=true`
+     */
+    private static final boolean PARSER_END_ASSERT = 
+        !Boolean.getBoolean("druid_sql_parser_end_assert_off");
+
     protected SchemaRepository repository;
     protected SQLExprParser exprParser;
     protected boolean parseCompleteValues = true;
@@ -4839,41 +4848,45 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseStatement() {
+        final SQLStatement ret;
         if (lexer.token == Token.SELECT) {
-            return this.parseSelect();
-        }
-
-        if (lexer.token == Token.INSERT) {
-            return this.parseInsert();
-        }
-
-        if (lexer.token == Token.UPDATE) {
-            return this.parseUpdateStatement();
-        }
-
-        if (lexer.token == Token.DELETE) {
+            ret = this.parseSelect();
+        } else if (lexer.token == Token.INSERT) {
+            ret = this.parseInsert();
+        } else if (lexer.token == Token.UPDATE) {
+            ret = this.parseUpdateStatement();
+        } else if (lexer.token == Token.DELETE) {
             return this.parseDeleteStatement();
+        } else {
+            final List<SQLStatement> list = new ArrayList<SQLStatement>(1);
+            this.parseStatementList(list, 1, null);
+            ret = list.get(0);
         }
-
-        List<SQLStatement> list = new ArrayList<SQLStatement>(1);
-        this.parseStatementList(list, 1, null);
-        return list.get(0);
+        if (PARSER_END_ASSERT && lexer.token != Token.EOF) {
+            throw createParseNotEndException();
+        }
+        return ret;
     }
 
     /**
-     * @param tryBest - 为true去解析并忽略之后的错误
-     *                强制建议除非明确知道可以忽略才传tryBest=true,
-     *                不然会忽略语法错误，且截断sql,导致update和delete无where条件下执行！！！
-     */
-    public SQLStatement parseStatement(final boolean tryBest) {
-        List<SQLStatement> list = new ArrayList<SQLStatement>();
-        this.parseStatementList(list, 1, null);
-        if (tryBest) {
+     * 强制建议除非明确知道可以忽略才传failIfSyntaxError=false.
+    *  不然会忽略语法错误，且截断sql,导致update和delete无where条件下执行！！！
+    *
+    * @param failIfSyntaxError  - 为false去解析并忽略之后的错误
+    */
+    public SQLStatement parseStatement(final boolean failIfSyntaxError) {
+        final List<SQLStatement> list = new ArrayList<SQLStatement>();
+        parseStatementList(list, 1, null);
+        if (failIfSyntaxError) {
             if (lexer.token != Token.EOF) {
-                throw new ParserException("sql syntax error, no terminated. " + lexer.info());
+                throw createParseNotEndException();
             }
         }
         return list.get(0);
+    }
+ 
+    private ParserException createParseNotEndException() {
+        return new ParserException("sql syntax error, no terminated. " + lexer.info());
     }
 
     public SQLExplainStatement parseExplain() {
