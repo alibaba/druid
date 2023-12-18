@@ -51,7 +51,7 @@ public class MySqlResourceTest extends TestCase {
 
 
     public void test_14() throws Exception {
-        exec_test("bvt/parser/mysql-16.txt");
+        exec_test("bvt/parser/mysql-14.txt");
     }
 
     public void test_16() throws Exception {
