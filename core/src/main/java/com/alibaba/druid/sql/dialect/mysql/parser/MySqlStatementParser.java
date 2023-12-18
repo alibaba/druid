@@ -8126,8 +8126,14 @@ public class MySqlStatementParser extends SQLStatementParser {
             List<SQLCommentHint> hints = this.exprParser.parseHints();
             if (hints.size() == 1) {
                 String text = hints.get(0).getText();
-                if (text.endsWith(" IF NOT EXISTS") && text.charAt(0) == '!') {
-                    stmt.setIfNotExists(true);
+                if (text.charAt(0) == '!') {
+                    String[] words = text.trim().split("\\s+");
+                    if (words.length > 2
+                            && words[words.length - 3].equalsIgnoreCase("IF")
+                            && words[words.length - 2].equalsIgnoreCase("NOT")
+                            && words[words.length - 1].equalsIgnoreCase("EXISTS")) {
+                            stmt.setIfNotExists(true);
+                    }
                 }
             }
         }
@@ -8146,7 +8152,25 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.HINT) {
-            stmt.setHints(this.exprParser.parseHints());
+            List<SQLCommentHint> hints = this.exprParser.parseHints();
+            if (hints.size() == 1) {
+                String text = hints.get(0).getText();
+                if (text.charAt(0) == '!') {
+                    String[] words = text.trim().split("\\s+");
+                    int idx = 0;
+                    for (; idx < words.length; idx++) {
+                        if (words[idx].equalsIgnoreCase("CHARACTER")
+                                && idx < words.length - 2 && words[idx + 1].equalsIgnoreCase("SET")) {
+                            stmt.setCharacterSet(words[idx + 2]);
+                            idx += 2;
+                        } else if (words[idx].equalsIgnoreCase("COLLATE")
+                                && idx < words.length - 1) {
+                            stmt.setCollate(words[idx + 1]);
+                            idx += 1;
+                        }
+                    }
+                }
+            }
         }
 
         if (lexer.token() == Token.DEFAULT) {
