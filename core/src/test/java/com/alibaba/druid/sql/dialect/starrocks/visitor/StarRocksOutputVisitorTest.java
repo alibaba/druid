@@ -156,7 +156,24 @@ public class StarRocksOutputVisitorTest extends TestCase {
                 "  \"storage_type\" = \"column\"\n" +
                 ")";
 
-        StarRocksCreateTableParser parser = (StarRocksCreateTableParser) new StarRocksStatementParser(o4).getSQLCreateTableParser();
+        String o5 = "CREATE TABLE `table_name6` (\n" +
+                "`column_name` bigint(20) NOT NULL AUTO_INCREMENT COMMENT \"\",\n" +
+                "`column_name_1` int(11) NULL COMMENT \"\",\n" +
+                "`column_name_2` int(11) NULL COMMENT \"\",\n" +
+                "INDEX index_name (`column_name`) USING BITMAP\n" +
+                ") ENGINE=OLAP\n" +
+                "DUPLICATE KEY(`column_name`, `column_name_1`, `column_name_2`)\n" +
+                "DISTRIBUTED BY HASH(`column_name`)\n" +
+                "PROPERTIES (\n" +
+                "\"replication_num\" = \"1\",\n" +
+                "\"in_memory\" = \"false\",\n" +
+                "\"storage_format\" = \"DEFAULT\",\n" +
+                "\"enable_persistent_index\" = \"true\",\n" +
+                "\"replicated_storage\" = \"true\",\n" +
+                "\"compression\" = \"LZ4\"\n" +
+                ");";
+
+        StarRocksCreateTableParser parser = (StarRocksCreateTableParser) new StarRocksStatementParser(o5).getSQLCreateTableParser();
 
         StarRocksCreateTableStatement stmt = (StarRocksCreateTableStatement)parser.parseCreateTable();
         System.out.println(stmt.toString());
