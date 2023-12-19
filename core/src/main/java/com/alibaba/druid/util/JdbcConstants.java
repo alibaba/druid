@@ -63,6 +63,9 @@ public interface JdbcConstants {
 
     String HBASE = "hbase";
 
+    DbType HALO = DbType.halo;
+    String HALO_DRIVER = "com.halo.driver";
+
     DbType HIVE = DbType.hive;
     String HIVE_DRIVER = "org.apache.hive.jdbc.HiveDriver";
 
@@ -71,9 +74,6 @@ public interface JdbcConstants {
 
     DbType DM = DbType.dm;
     String DM_DRIVER = "dm.jdbc.driver.DmDriver";
-
-    DbType HALO = DbType.halo;
-    String HALO_DRIVER = "com.halo.driver";
 
     DbType KINGBASE = DbType.kingbase;
     String KINGBASE_DRIVER = "com.kingbase.Driver";

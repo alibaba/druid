@@ -65,9 +65,7 @@ public enum DbType {
     tydb(1L << 42),
 
     starrocks(1L << 43),
-
     halo(1L << 44),
-
     ingres(0),
     cloudscape(0),
     timesten(0),
