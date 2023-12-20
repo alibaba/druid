@@ -19,7 +19,7 @@ public class Issue1576 extends TestCase {
 
         Exception error = null;
         try {
-            parser.parseStatement(true);
+            parser.parseStatement();
         } catch (Exception ex) {
             error = ex;
         }

@@ -1,9 +1,9 @@
 #begin
 -- Mysql spec comment
 select 1 /*!, ' hello' */, 2 /*! union select 5, ' world', 10 */;
-select * from t /*! where col = somefunc(col2) order by sortcol */; insert into mytable /*!(col2, col3, col1) */ values (load_file('sompath'), 'str1', 2);
-insert into tbl values ('a', 1, 'b'), ('c', 2, 'd'), ('e', 3, 'f') /*! on duplicate key update notsecret_col = secret_col */;
-select clientname, email from users where clientname='Petrov'/*! UNION SELECT 1,load_file('/etc/passwd')*/;#
+select * from t /*! SQL_CACHE */; insert into mytable /*! LOW_PRIORITY */ values (load_file('sompath'), 'str1', 2);
+insert into tbl values ('a', 1, 'b'), ('c', 2, 'd'), ('e', 3, 'f') /*! LOW_PRIORITY */;
+select clientname, email from users where clientname='Petrov'/*! SQL_CACHE */;#
 #end
 #begin
 -- Duplicate query with ordinal comment

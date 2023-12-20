@@ -3127,6 +3127,7 @@ public class Lexer {
 
     private static final long MULTMIN_RADIX_TEN = Long.MIN_VALUE / 10;
     private static final long N_MULTMAX_RADIX_TEN = -Long.MAX_VALUE / 10;
+
     public final boolean isNegativeIntegerValue() {
         return charAt(mark) == '-';
     }

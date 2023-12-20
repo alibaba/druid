@@ -98,6 +98,7 @@ public enum Token {
     THEN("THEN"),
     ELSE("ELSE"),
     ELSIF("ELSIF"),
+    ELSEIF("ELSEIF"),
     END("END"),
     EXISTS("EXISTS"),
     IN("IN"),

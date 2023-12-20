@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 public class MySqlWallTest extends TestCase {
@@ -49,6 +50,10 @@ public class MySqlWallTest extends TestCase {
         Assert.assertFalse(WallUtils.isValidateMySql("select c1 from t where id =1 or 1=1"));
         Assert.assertFalse(WallUtils.isValidateMySql("select c1 from t where id =1 || 1=1"));
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select * from person where id = '3'/**/union select v,b,a from (select 1,2,4/*! ,database() as b,user() as a,version() as v*/) a where '1'<>''"));
+        WallConfig config = new WallConfig();
+        config.setHintAllow(false);
+        Assert.assertFalse(WallUtils.isValidateMySql(
+                "select * from person where id = '3'/**/union select v,b,a from (select 1,2,4/*! ,database() as b,user() as a,version() as v*/) a where '1'<>''",
+                config));
     }
 }

@@ -2667,7 +2667,7 @@ public class WallVisitorUtils {
         String text = x.getText();
         text = text.trim();
         if (text.startsWith("!")) {
-            text = text.substring(1);
+            text = text.substring(1).trim();
         }
 
         if (text.length() == 0) {

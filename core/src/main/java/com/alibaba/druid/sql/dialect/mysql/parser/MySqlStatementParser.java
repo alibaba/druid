@@ -695,8 +695,13 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.ON);
 
-        SQLStatement on = this.parseStatement();
-        stmt.setOn(on);
+        expectedNextToken = Token.TO;
+        try {
+            SQLStatement on = this.parseStatement();
+            stmt.setOn(on);
+        } finally {
+            expectedNextToken = null;
+        }
 
         accept(Token.TO);
 
@@ -8978,6 +8983,20 @@ public class MySqlStatementParser extends SQLStatementParser {
         accept(Token.THEN);
 
         this.parseStatementList(stmt.getStatements(), -1, stmt);
+
+        while (lexer.token() == Token.ELSEIF) {
+            lexer.nextToken();
+
+            SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
+
+            elseIf.setCondition(this.exprParser.expr());
+            elseIf.setParent(stmt);
+
+            accept(Token.THEN);
+            this.parseStatementList(elseIf.getStatements(), -1, stmt);
+
+            stmt.getElseIfList().add(elseIf);
+        }
 
         while (lexer.token() == Token.ELSE) {
             lexer.nextToken();

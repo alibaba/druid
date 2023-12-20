@@ -38,7 +38,7 @@ public class MySqlCreateEventTest1 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DEFINER = EVENT testevent1 ON SCHEDULE EVERY 1 HOUR ENDS '2016-11-05 23:59:00'\n" +
+        Assert.assertEquals("CREATE DEFINER = 'ivan'@'%' EVENT testevent1 ON SCHEDULE EVERY 1 HOUR ENDS '2016-11-05 23:59:00'\n" +
                 "DO\n" +
                 "BEGIN\n" +
                 "\tSELECT *\n" +
