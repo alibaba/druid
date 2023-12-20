@@ -150,7 +150,7 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
         return new SpringMethodInfo(clazz, method);
     }
 
-    class SpringMethodContextListener extends StatFilterContextListenerAdapter {
+    static class SpringMethodContextListener extends StatFilterContextListenerAdapter {
         @Override
         public void addUpdateCount(int updateCount) {
             SpringMethodStat springMethodStat = SpringMethodStat.current();
