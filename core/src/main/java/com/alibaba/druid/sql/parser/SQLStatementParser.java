@@ -59,6 +59,10 @@ public class SQLStatementParser extends SQLParser {
     protected java.sql.Timestamp now;
     protected java.sql.Date currentDate;
 
+    protected Token expectedNextToken;
+    private static final boolean END_TOKEN_CHECKING_ENABLED = !Boolean.getBoolean("druid_sql_parser_end_token_checking_disabled");
+    private static final String UNSUPPORT_TOKEN_MSG_PREFIX = "not supported.";
+
     public SQLStatementParser(String sql) {
         this(sql, null);
     }
@@ -118,18 +122,22 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public void parseStatementList(List<SQLStatement> statementList, int max, SQLObject parent) {
-        if ("select @@session.tx_read_only".equals(lexer.text)
-                && lexer.token == Token.SELECT) {
-            SQLSelect select = new SQLSelect();
-            MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
-            queryBlock.addSelectItem(new SQLPropertyExpr(new SQLVariantRefExpr("@@session"), "tx_read_only"));
-            select.setQuery(queryBlock);
+        if (lexer.token == Token.SELECT) {
+            String[] words = lexer.text.split("\\s+");
+            if (words.length == 2
+                    && "select".equalsIgnoreCase(words[0])
+                    && "@@session.tx_read_only".equalsIgnoreCase(words[1])) {
+                SQLSelect select = new SQLSelect();
+                MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
+                queryBlock.addSelectItem(new SQLPropertyExpr(new SQLVariantRefExpr("@@session"), "tx_read_only"));
+                select.setQuery(queryBlock);
 
-            SQLSelectStatement stmt = new SQLSelectStatement(select);
-            statementList.add(stmt);
+                SQLSelectStatement stmt = new SQLSelectStatement(select);
+                statementList.add(stmt);
 
-            lexer.reset(29, '\u001A', Token.EOF);
-            return;
+                lexer.reset(29, '\u001A', Token.EOF);
+                return;
+            }
         }
 
         boolean semi = false;
@@ -160,6 +168,11 @@ public class SQLStatementParser extends SQLParser {
                         continue;
                     }
                     return;
+                case ELSEIF:
+                    if (parent instanceof SQLIfStatement) {
+                        return;
+                    }
+                    break;
                 case SEMI: {
                     int line0 = lexer.getLine();
                     char ch = lexer.ch;
@@ -619,7 +632,7 @@ public class SQLStatementParser extends SQLParser {
             // throw new ParserException("syntax error, " + lexer.token + " "
             // + lexer.stringVal() + ", pos "
             // + lexer.pos());
-            throw new ParserException("not supported." + lexer.info());
+            throw new ParserException(UNSUPPORT_TOKEN_MSG_PREFIX + lexer.info());
         }
 
     }
@@ -4839,41 +4852,34 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseStatement() {
+        final SQLStatement ret;
         if (lexer.token == Token.SELECT) {
-            return this.parseSelect();
+            ret = this.parseSelect();
+        } else if (lexer.token == Token.INSERT) {
+            ret = this.parseInsert();
+        } else if (lexer.token == Token.UPDATE) {
+            ret = this.parseUpdateStatement();
+        } else if (lexer.token == Token.DELETE) {
+            ret = this.parseDeleteStatement();
+        } else {
+            final List<SQLStatement> list = new ArrayList<SQLStatement>(1);
+            this.parseStatementList(list, 1, null);
+            ret = list.get(0);
         }
 
-        if (lexer.token == Token.INSERT) {
-            return this.parseInsert();
+        if (END_TOKEN_CHECKING_ENABLED) {
+            checkEndToken();
         }
-
-        if (lexer.token == Token.UPDATE) {
-            return this.parseUpdateStatement();
-        }
-
-        if (lexer.token == Token.DELETE) {
-            return this.parseDeleteStatement();
-        }
-
-        List<SQLStatement> list = new ArrayList<SQLStatement>(1);
-        this.parseStatementList(list, 1, null);
-        return list.get(0);
+        return ret;
     }
 
-    /**
-     * @param tryBest - 为true去解析并忽略之后的错误
-     *                强制建议除非明确知道可以忽略才传tryBest=true,
-     *                不然会忽略语法错误，且截断sql,导致update和delete无where条件下执行！！！
-     */
-    public SQLStatement parseStatement(final boolean tryBest) {
-        List<SQLStatement> list = new ArrayList<SQLStatement>();
-        this.parseStatementList(list, 1, null);
-        if (tryBest) {
-            if (lexer.token != Token.EOF) {
-                throw new ParserException("sql syntax error, no terminated. " + lexer.info());
-            }
+    private void checkEndToken() {
+        if (lexer.token != Token.EOF
+                && lexer.token != Token.SEMI
+                && lexer.token != expectedNextToken) {
+            // keep exception format consistent with parseStatementList method.
+            throw new ParserException(UNSUPPORT_TOKEN_MSG_PREFIX + lexer.info());
         }
-        return list.get(0);
     }
 
     public SQLExplainStatement parseExplain() {
@@ -5970,6 +5976,9 @@ public class SQLStatementParser extends SQLParser {
             }
 
             lexer.nextTokenComma();
+            while (lexer.token == Token.HINT) {
+                this.exprParser.parseHints();
+            }
             if (lexer.token == Token.COMMA) {
                 lexer.nextTokenLParen();
                 if (values != null) {
@@ -6251,6 +6260,9 @@ public class SQLStatementParser extends SQLParser {
             }
 
             lexer.nextTokenComma();
+            while (lexer.token == Token.HINT) {
+                this.exprParser.parseHints();
+            }
             if (lexer.token == Token.COMMA) {
                 lexer.nextTokenLParen();
                 continue;
@@ -6518,6 +6530,9 @@ public class SQLStatementParser extends SQLParser {
             }
 
             lexer.nextTokenComma();
+            while (lexer.token == Token.HINT) {
+                this.exprParser.parseHints();
+            }
             if (lexer.token == Token.COMMA) {
                 lexer.nextTokenLParen();
                 if (values != null) {

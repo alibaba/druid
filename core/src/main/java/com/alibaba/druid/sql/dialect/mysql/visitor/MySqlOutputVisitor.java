@@ -4278,7 +4278,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(SQLIfStatement.ElseIf x) {
-        print0(ucase ? "ELSE IF " : "else if ");
+        print0(ucase ? "ELSEIF " : "elseif ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
         this.indentCount++;
@@ -4951,9 +4951,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLName definer = x.getDefiner();
         if (definer != null) {
             print0(ucase ? "DEFINER = " : "definer = ");
+            definer.accept(this);
+            print(' ');
         }
 
-        print0(ucase ? "EVENT " : "evnet ");
+        print0(ucase ? "EVENT " : "event ");
 
         if (x.isIfNotExists()) {
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
@@ -4979,7 +4981,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         SQLExpr comment = x.getComment();
         if (comment != null) {
-            print0(ucase ? "COMMENT " : "comment ");
+            print0(ucase ? " COMMENT " : " comment ");
             comment.accept(this);
         }
 
@@ -5198,9 +5200,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLName definer = x.getDefiner();
         if (definer != null) {
             print0(ucase ? "DEFINER = " : "definer = ");
+            definer.accept(this);
+            print(' ');
         }
 
-        print0(ucase ? "EVENT " : "evnet ");
+        print0(ucase ? "EVENT " : "event ");
         printExpr(x.getName());
 
         MySqlEventSchedule schedule = x.getSchedule();
@@ -5223,7 +5227,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         SQLExpr comment = x.getComment();
         if (comment != null) {
-            print0(ucase ? "COMMENT " : "comment ");
+            print0(ucase ? " COMMENT " : " comment ");
             comment.accept(this);
         }
 

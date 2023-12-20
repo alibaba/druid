@@ -46,11 +46,13 @@ public class TestActiveTrace extends TestCase {
     }
 
     public void test_activeTrace() throws Exception {
-        for (int i = 0; i < 1000 * 10; ++i) {
+        for (int i = 0; i < 1000; ++i) {
             dataSource.shrink();
 
             Connection conn = dataSource.getConnection();
             conn.close();
+            // sleep 10ms for checking stability, see https://github.com/alibaba/druid/issues/5620
+            Thread.sleep(10);
             // Assert.assertEquals(1, dataSource.getPoolingCount());
             dataSource.shrink();
             Assert.assertEquals("createCount : " + dataSource.getCreateCount(), 0, dataSource.getPoolingCount());

@@ -488,7 +488,9 @@ public abstract class WallProvider {
                 parser.setParseCompleteValues(false);
                 parser.setParseValuesSize(config.getInsertValuesCheckSize());
             }
-
+            if (config.isHintAllow()) {
+                parser.config(SQLParserFeature.StrictForWall, false);
+            }
             parser.parseStatementList(statementList);
 
             final Token lastToken = parser.getLexer().token();
