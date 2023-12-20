@@ -15,10 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.HexBin;
+
+import java.nio.charset.StandardCharsets;
 
 public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
     private final String hex;
@@ -94,7 +95,7 @@ public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuab
         if (bytes == null) {
             return null;
         }
-        String str = new String(bytes, SQLUtils.UTF8);
+        String str = new String(bytes, StandardCharsets.UTF_8);
         return new SQLCharExpr(str);
     }
 }
