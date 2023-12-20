@@ -503,7 +503,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
                 String lastExecSql = statement.getLastExecuteSql();
                 if (logSlowSql) {
-                    String msg = "slow sql " + millis + " millis. " + lastExecSql + "" + slowParameters;
+                    String msg = "slow sql " + millis + " millis. " + lastExecSql + " " + slowParameters;
                     switch (slowSqlLogLevel) {
                         case "WARN":
                             LOG.warn(msg);
