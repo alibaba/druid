@@ -33,6 +33,9 @@ import com.alibaba.druid.support.profile.Profiler;
 import java.io.InputStream;
 import java.io.Reader;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
@@ -575,6 +578,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             } else if (value instanceof java.util.Date) {
                 out.writeObject(value);
             } else if (value instanceof Boolean) {
+                out.writeObject(value);
+            } else if (value instanceof LocalDate) {
+                out.writeObject(value);
+            } else if (value instanceof LocalTime) {
+                out.writeObject(value);
+            } else if (value instanceof LocalDateTime) {
                 out.writeObject(value);
             } else if (value instanceof InputStream) {
                 out.writeString("<InputStream>");
