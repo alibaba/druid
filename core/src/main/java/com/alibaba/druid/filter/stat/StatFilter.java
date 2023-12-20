@@ -93,18 +93,22 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         this.dbType = DbType.of(dbType);
     }
 
+    @Override
     public long getSlowSqlMillis() {
         return slowSqlMillis;
     }
 
+    @Override
     public void setSlowSqlMillis(long slowSqlMillis) {
         this.slowSqlMillis = slowSqlMillis;
     }
 
+    @Override
     public boolean isLogSlowSql() {
         return logSlowSql;
     }
 
+    @Override
     public void setLogSlowSql(boolean logSlowSql) {
         this.logSlowSql = logSlowSql;
     }
@@ -117,10 +121,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         this.connectionStackTraceEnable = connectionStackTraceEnable;
     }
 
+    @Override
     public boolean isMergeSql() {
         return mergeSql;
     }
 
+    @Override
     public void setMergeSql(boolean mergeSql) {
         this.mergeSql = mergeSql;
     }
@@ -138,6 +144,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return this.mergeSql(sql, dbType);
     }
 
+    @Override
     public String mergeSql(String sql, String dbType) {
         return mergeSql(sql, DbType.of(dbType));
     }
@@ -171,6 +178,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
     }
 
+    @Override
     public void configFromProperties(Properties properties) {
         if (properties == null) {
             return;
@@ -220,6 +228,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
     }
 
+    @Override
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
         ConnectionProxy connection = null;
 
