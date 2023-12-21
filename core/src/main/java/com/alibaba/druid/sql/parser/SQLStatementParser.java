@@ -5402,6 +5402,7 @@ public class SQLStatementParser extends SQLParser {
                 }
 
                 stmt.setInsertClause(insertClause);
+                stmt.setInsertClauseFirst(stmt.getUpdateClause() == null);
             }
 
             if (lexer.token == Token.WHEN) {
