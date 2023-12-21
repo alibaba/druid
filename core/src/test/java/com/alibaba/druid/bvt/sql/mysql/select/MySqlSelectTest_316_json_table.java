@@ -86,7 +86,7 @@ public class MySqlSelectTest_316_json_table
         assertEquals("SELECT *\n" +
                 "FROM JSON_TABLE('[{\"a\":\"3\"},{\"a\":2},{\"b\":1},{\"a\":0},{\"a\":[1,2]}]','$[*]'\n" +
                 "\tCOLUMNS (\n" +
-                "\t\trowid,\n" +
+                "\t\trowid FOR ORDINALITY,\n" +
                 "\t\tac VARCHAR(100) PATH '$.a' DEFAULT '111' ON EMPTY DEFAULT '999' ON ERROR,\n" +
                 "\t\taj JSON PATH '$.a' DEFAULT '{\"x\": 333}' ON EMPTY,\n" +
                 "\t\tbx INT EXISTS PATH '$.b'\n" +
@@ -96,7 +96,7 @@ public class MySqlSelectTest_316_json_table
         assertEquals("select *\n" +
                 "from json_table('[{\"a\":\"3\"},{\"a\":2},{\"b\":1},{\"a\":0},{\"a\":[1,2]}]','$[*]'\n" +
                 "\tcolumns (\n" +
-                "\t\trowid,\n" +
+                "\t\trowid for ordinality,\n" +
                 "\t\tac VARCHAR(100) path '$.a' default '111' on empty default '999' on error,\n" +
                 "\t\taj JSON path '$.a' default '{\"x\": 333}' on empty,\n" +
                 "\t\tbx INT exists path '$.b'\n" +
@@ -196,9 +196,9 @@ public class MySqlSelectTest_316_json_table
                 "    {\"a\": \"a_val\",\n" +
                 "      \"b\": [{\"c\": \"c_val\",\"l\": [11]}, {\"c\": \"c_val\", \"l\": [22]}]}]','$[*]'\n" +
                 "\tCOLUMNS (\n" +
-                "\t\ttop_ord,\n" +
+                "\t\ttop_ord FOR ORDINALITY,\n" +
                 "\t\tapath VARCHAR(10) PATH '$.a',\n" +
-                "\t\tNESTED PATH '$.b[*]' COLUMNS (bpath VARCHAR(10) PATH '$.c', ord, NESTED PATH '$.l[*]' COLUMNS (lpath varchar(10) PATH '$'))\n" +
+                "\t\tNESTED PATH '$.b[*]' COLUMNS (bpath VARCHAR(10) PATH '$.c', ord FOR ORDINALITY, NESTED PATH '$.l[*]' COLUMNS (lpath varchar(10) PATH '$'))\n" +
                 "\t)\n" +
                 ") jt;", stmt.toString());
 
@@ -208,9 +208,9 @@ public class MySqlSelectTest_316_json_table
                 "    {\"a\": \"a_val\",\n" +
                 "      \"b\": [{\"c\": \"c_val\",\"l\": [11]}, {\"c\": \"c_val\", \"l\": [22]}]}]','$[*]'\n" +
                 "\tcolumns (\n" +
-                "\t\ttop_ord,\n" +
+                "\t\ttop_ord for ordinality,\n" +
                 "\t\tapath VARCHAR(10) path '$.a',\n" +
-                "\t\tNESTED path '$.b[*]' columns (bpath VARCHAR(10) path '$.c', ord, NESTED path '$.l[*]' columns (lpath varchar(10) path '$'))\n" +
+                "\t\tNESTED path '$.b[*]' columns (bpath VARCHAR(10) path '$.c', ord for ordinality, NESTED path '$.l[*]' columns (lpath varchar(10) path '$'))\n" +
                 "\t)\n" +
                 ") jt;", stmt.toLowerCaseString());
 
