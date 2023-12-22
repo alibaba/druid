@@ -86,10 +86,13 @@ public class StarRocksExprParser extends SQLExprParser {
             SQLCharExpr bitmap = new StarRocksCharExpr(lexer.stringVal());
             column.setBitmap(bitmap);
             lexer.nextToken();
-            accept(Token.COMMENT);
-            SQLCharExpr indexComment = new StarRocksCharExpr(lexer.stringVal());
-            column.setIndexComment(indexComment);
-            lexer.nextToken();
+
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+                SQLCharExpr indexComment = new StarRocksCharExpr(lexer.stringVal());
+                column.setIndexComment(indexComment);
+                lexer.nextToken();
+            }
 
         }
 

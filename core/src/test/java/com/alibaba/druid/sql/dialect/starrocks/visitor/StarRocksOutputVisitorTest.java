@@ -1,11 +1,19 @@
 package com.alibaba.druid.sql.dialect.starrocks.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
+import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksCreateTableParser;
+import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import junit.framework.TestCase;
 import org.junit.Assert;
+
+import java.util.List;
 
 public class StarRocksOutputVisitorTest extends TestCase {
 
@@ -59,5 +67,121 @@ public class StarRocksOutputVisitorTest extends TestCase {
         stmt.accept(visitor);
         String result = builder.toString();
         Assert.assertEquals(message, expected, result);
+    }
+
+    public void testStarRocksOutputVisitor2() {
+        String o1 =
+                "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
+                        "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
+                        "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
+                        "\t`num_plate` SMALLINT COMMENT 'range [-32768, 32767] ',\n" +
+                        "\t`tel` INT COMMENT 'range [-2147483648, 2147483647]',\n" +
+                        "\t`id` BIGINT COMMENT 'range [-2^63 + 1 ~ 2^63 - 1]',\n" +
+                        "\t`password` LARGEINT COMMENT 'range [-2^127 + 1 ~ 2^127 - 1]',\n" +
+                        "\t`name` CHAR(20) NOT NULL COMMENT 'range char(m),m in (1-255)',\n" +
+                        "\t`profile` VARCHAR(500) NOT NULL COMMENT 'upper limit value 1048576 bytes',\n" +
+                        "\t`hobby` STRING NOT NULL COMMENT 'upper limit value 65533 bytes',\n" +
+                        "\t`leave_time` DATETIME COMMENT 'YYYY-MM-DD HH:MM:SS',\n" +
+                        "\t`channel` FLOAT COMMENT '4 bytes',\n" +
+                        "\t`income` DOUBLE COMMENT '8 bytes',\n" +
+                        "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
+                        "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
+                        ") ENGINE = OLAP\n" +
+                        "DUPLICATE KEY(`recruit_date`, `region_num`)\n" +
+                        "PARTITION BY RANGE(`recruit_date`)\n" +
+                        "(\n" +
+                        "  PARTITION p202101 VALUES [(\"20210101\"),(\"20210201\")),\n" +
+                        "  PARTITION p202102 VALUES [(\"20210201\"),(\"20210301\")),\n" +
+                        "  PARTITION p202103 VALUES [(\"20210301\"),(MAXVALUE))\n" +
+                        ")\n" +
+                        "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n" +
+                        "PROPERTIES (\n" +
+                        "  \"storage_medium\" = \"[SSD|HDD]\",\n" +
+                        "  \"dynamic_partition.enable\" = \"true|false\",\n" +
+                        "  \"dynamic_partition.time_unit\" = \"DAY|WEEK|MONTH\",\n" +
+                        "  \"dynamic_partition.start\" = \"${integer_value}\",\n" +
+                        "  [\"storage_cooldown_time\" = \"yyyy-MM-dd HH:mm:ss\",]\n" +
+                        "  [\"replication_num\" = \"3\"]\n" +
+                        ")";
+
+        String o2 = "CREATE TABLE `pika_test2` (\n" +
+                "  `id` int(11) NOT NULL COMMENT \"\",\n" +
+                "  `gmt_create` datetime NULL DEFAULT \"1970-01-01 00:00:00\" COMMENT \"\",\n" +
+                "  `test_id` int(11) NULL COMMENT \"\",\n" +
+                "  `mydatetime2` datetime NULL DEFAULT \"1970-01-01 00:00:00\" COMMENT \"\",\n" +
+                "  `mydatetime` datetime NULL DEFAULT \"1970-01-01 00:00:00\" COMMENT \"\"\n" +
+                ") ENGINE=OLAP \n" +
+                "PRIMARY KEY(`id`)\n" +
+                "COMMENT \"OLAP\"\n" +
+                "DISTRIBUTED BY HASH(`id`) BUCKETS 4 \n" +
+                "PROPERTIES (\n" +
+                "\"replication_num\" = \"1\",\n" +
+                "\"in_memory\" = \"false\",\n" +
+                "\"storage_format\" = \"DEFAULT\",\n" +
+                "\"enable_persistent_index\" = \"false\"\n" +
+                ");";
+
+        String o3 =
+                "CREATE EXTERNAL TABLE IF NOT EXISTS `detailDemo` (\n" +
+                "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
+                "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
+                "\t`num_plate` SMALLINT COMMENT 'range [-32768, 32767] ',\n" +
+                "\t`tel` INT COMMENT 'range [-2147483648, 2147483647]',\n" +
+                "\t`id` BIGINT COMMENT 'range [-2^63 + 1 ~ 2^63 - 1]',\n" +
+                "\t`password` LARGEINT COMMENT 'range [-2^127 + 1 ~ 2^127 - 1]',\n" +
+                "\t`name` CHAR(20) NOT NULL COMMENT 'range char(m),m in (1-255)',\n" +
+                "\t`profile` VARCHAR(500) NOT NULL COMMENT 'upper limit value 1048576 bytes',\n" +
+                "\t`hobby` STRING NOT NULL COMMENT 'upper limit value 65533 bytes',\n" +
+                "\t`leave_time` DATETIME COMMENT 'YYYY-MM-DD HH:MM:SS',\n" +
+                "\t`channel` FLOAT COMMENT '4 bytes',\n" +
+                "\t`income` DOUBLE COMMENT '8 bytes',\n" +
+                "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
+                "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
+                ")\n" +
+                "COMMENT \"OLAP\"\n" +
+                "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n";
+
+        String o4 =
+                "CREATE TABLE d0.table_hash (\n" +
+                "\tk1 TINYINT,\n" +
+                "\tk2 DECIMAL(10, 2) DEFAULT \"10.5\",\n" +
+                "\tv1 CHAR(10) REPLACE,\n" +
+                "\tv2 INT SUM,\n" +
+                "\tINDEX index_name(k1,k2) USING BITMAP COMMENT '22'\n" +
+                ") ENGINE = olap\n" +
+                "AGGREGATE KEY(k1, k2)\n" +
+                "DISTRIBUTED BY HASH(k1) BUCKETS 10\n" +
+                "ORDER BY (k1)\n" +
+                "PROPERTIES (\n" +
+                "  \"storage_type\" = \"column\"\n" +
+                ")";
+
+        String o5 = "CREATE TABLE `table_name6` (\n" +
+                "`column_name` bigint(20) NOT NULL AUTO_INCREMENT COMMENT \"\",\n" +
+                "`column_name_1` int(11) NULL COMMENT \"\",\n" +
+                "`column_name_2` int(11) NULL COMMENT \"\",\n" +
+                "INDEX index_name (`column_name`) USING BITMAP\n" +
+                ") ENGINE=OLAP\n" +
+                "DUPLICATE KEY(`column_name`, `column_name_1`, `column_name_2`)\n" +
+                "DISTRIBUTED BY HASH(`column_name`)\n" +
+                "PROPERTIES (\n" +
+                "\"replication_num\" = \"1\",\n" +
+                "\"in_memory\" = \"false\",\n" +
+                "\"storage_format\" = \"DEFAULT\",\n" +
+                "\"enable_persistent_index\" = \"true\",\n" +
+                "\"replicated_storage\" = \"true\",\n" +
+                "\"compression\" = \"LZ4\"\n" +
+                ");";
+
+        StarRocksCreateTableParser parser = (StarRocksCreateTableParser) new StarRocksStatementParser(o5).getSQLCreateTableParser();
+
+        StarRocksCreateTableStatement stmt = (StarRocksCreateTableStatement)parser.parseCreateTable();
+        System.out.println(stmt.toString());
+
+//        List<SQLExpr> primaryUniqueParameters = stmt.getPrimaryUniqueParameters();
+//        List<SQLColumnDefinition> columnDefinitions = stmt.getColumnDefinitions();
+//        for (SQLExpr primaryUniqueParameter : primaryUniqueParameters) {
+//            System.out.println("primaryUnique==========="+ primaryUniqueParameter.toString());
+//        }
     }
 }

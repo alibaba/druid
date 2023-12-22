@@ -42,12 +42,27 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             );
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE) || lexer.identifierEquals(FnvHash.Constants.AGGREGATE)
-                || lexer.identifierEquals(FnvHash.Constants.UNIQUE) || lexer.identifierEquals(FnvHash.Constants.PRIMARY)) {
+        if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE) || lexer.identifierEquals(FnvHash.Constants.AGGREGATE)) {
             SQLName model = this.exprParser.name();
-            srStmt.setModelKey(model);
+            srStmt.setAggDuplicate(model);
             accept(Token.KEY);
-            this.exprParser.exprList(srStmt.getModelKeyParameters(), srStmt);
+            this.exprParser.exprList(srStmt.getAggDuplicateParameters(), srStmt);
+        } else if (lexer.token() == Token.PRIMARY) {
+            srStmt.setPrimary(true);
+            lexer.nextToken();
+            accept(Token.KEY);
+            this.exprParser.exprList(srStmt.getPrimaryUniqueParameters(), srStmt);
+        } else if (lexer.token() == Token.UNIQUE) {
+            srStmt.setUnique(true);
+            lexer.nextToken();
+            accept(Token.KEY);
+            this.exprParser.exprList(srStmt.getPrimaryUniqueParameters(), srStmt);
+        }
+
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+            SQLExpr comment = this.exprParser.expr();
+            srStmt.setComment(comment);
         }
 
         if (lexer.token() == Token.PARTITION) {
@@ -127,14 +142,24 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.DISTRIBUTED)) {
             lexer.nextToken();
             accept(Token.BY);
-            SQLExpr hash = this.exprParser.expr();
-            srStmt.setDistributedBy(hash);
+            if (lexer.identifierEquals(FnvHash.Constants.HASH) || lexer.identifierEquals(FnvHash.Constants.RANDOM)) {
+                SQLName type = this.exprParser.name();
+                srStmt.setDistributedBy(type);
+            }
+            this.exprParser.exprList(srStmt.getDistributedByParameters(), srStmt);
+
             if (lexer.identifierEquals(FnvHash.Constants.BUCKETS)) {
                 lexer.nextToken();
                 int bucket = lexer.integerValue().intValue();
                 stmt.setBuckets(bucket);
                 lexer.nextToken();
             }
+        }
+
+        if (lexer.token() == Token.ORDER) {
+            lexer.nextToken();
+            accept(Token.BY);
+            this.exprParser.exprList(srStmt.getOrderBy(), srStmt);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.PROPERTIES)) {
