@@ -23,9 +23,12 @@ import java.util.Set;
 /**
  * Implementation of ExceptionSorter for Oracle.
  */
-public class OracleExceptionSorter extends AbstractExceptionSorter implements Serializable {
-
+public class OracleExceptionSorter extends AbstractOracleExceptionSorter implements Serializable {
     private static final long serialVersionUID = -9146226891418913174L;
+
+    public OracleExceptionSorter() {
+        configFromProperties(System.getProperties());
+    }
 
     public Set<Integer> getFatalErrorCodes() {
         return fatalErrorCodes;
