@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Set;
 
-public class OceanBaseOracleExceptionSorter extends AbstractExceptionSorter implements Serializable {
-    private static final long serialVersionUID = -9146226891418913174L;
+public class OceanBaseOracleExceptionSorter extends AbstractOracleExceptionSorter implements Serializable {
+    private static final long serialVersionUID = -9146226891418913175L;
 
     public OceanBaseOracleExceptionSorter() {
         configFromProperties(System.getProperties());

@@ -11,8 +11,8 @@ import java.util.Set;
 /**
  * oracle exception sorter abstract
  */
-public abstract class AbstractExceptionSorter implements ExceptionSorter {
-    private static final Log LOG = LogFactory.getLog(AbstractExceptionSorter.class);
+public abstract class AbstractOracleExceptionSorter implements ExceptionSorter {
+    private static final Log LOG = LogFactory.getLog(AbstractOracleExceptionSorter.class);
     protected Set<Integer> fatalErrorCodes = new HashSet<Integer>();
 
     @Override
@@ -20,7 +20,6 @@ public abstract class AbstractExceptionSorter implements ExceptionSorter {
         if (properties == null) {
             return;
         }
-
         String property = properties.getProperty("druid.oracle.fatalErrorCodes");
         if (property != null) {
             String[] items = property.split("\\,");
