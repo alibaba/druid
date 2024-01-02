@@ -130,8 +130,6 @@ public class DruidDataSource extends DruidAbstractDataSource
     private volatile long createTaskIdSeed = 1L;
     private long[] createTasks;
 
-    private final CountDownLatch initedLatch = new CountDownLatch(2);
-
     private volatile boolean enable = true;
 
     private boolean resetStatEnable = true;
@@ -957,7 +955,14 @@ public class DruidDataSource extends DruidAbstractDataSource
             createAndStartCreatorThread();
             createAndStartDestroyThread();
 
-            initedLatch.await();
+            // await threads initedLatch to support dataSource restart.
+            if (createConnectionThread != null) {
+                createConnectionThread.getInitedLatch().await();
+            }
+            if (destroyConnectionThread != null) {
+                destroyConnectionThread.getInitedLatch().await();
+            }
+
             init = true;
 
             initedTime = new Date();
@@ -1133,7 +1138,6 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
             destroySchedulerFuture = destroyScheduler.scheduleAtFixedRate(destroyTask, period, period,
                     TimeUnit.MILLISECONDS);
-            initedLatch.countDown();
             return;
         }
 
@@ -1149,8 +1153,6 @@ public class DruidDataSource extends DruidAbstractDataSource
             createConnectionThread.start();
             return;
         }
-
-        initedLatch.countDown();
     }
 
     /**
@@ -2896,11 +2898,16 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     public class CreateConnectionThread extends Thread {
+        private final CountDownLatch initedLatch = new CountDownLatch(1);
         private boolean initTask = true;
 
         public CreateConnectionThread(String name) {
             super(name);
             this.setDaemon(true);
+        }
+
+        public CountDownLatch getInitedLatch() {
+            return initedLatch;
         }
 
         public void run() {
@@ -3022,9 +3029,15 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     public class DestroyConnectionThread extends Thread {
+        private final CountDownLatch initedLatch = new CountDownLatch(1);
+
         public DestroyConnectionThread(String name) {
             super(name);
             this.setDaemon(true);
+        }
+
+        public CountDownLatch getInitedLatch() {
+            return initedLatch;
         }
 
         public void run() {

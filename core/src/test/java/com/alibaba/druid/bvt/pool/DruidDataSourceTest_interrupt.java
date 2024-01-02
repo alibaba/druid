@@ -36,7 +36,9 @@ public class DruidDataSourceTest_interrupt extends TestCase {
             public void run() {
                 try {
                     startLatch.countDown();
+                    // not wait createConnectionThread latch as it is null: createAndStartCreatorThread method is mocked.
                     dataSource.init();
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     errorCount.incrementAndGet();
                 } finally {
