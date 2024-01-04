@@ -173,6 +173,38 @@ public class StarRocksOutputVisitorTest extends TestCase {
                 "\"compression\" = \"LZ4\"\n" +
                 ");";
 
+        String o6 = "CREATE TABLE `table_name2` (\n" +
+                "  `column_name_2` int(11) NOT NULL COMMENT \"\",\n" +
+                "  `column_name` tinyint(4) NULL COMMENT \"\",\n" +
+                "  `column_name_1` smallint(6) NULL COMMENT \"\",\n" +
+                "  `column_name_3` bigint(20) NULL COMMENT \"\",\n" +
+                "  `column_name_4` largeint(40) NULL COMMENT \"\",\n" +
+                "  `column_name_5` decimal64(10, 0) NULL COMMENT \"\",\n" +
+                "  `column_name_6` double NULL COMMENT \"\",\n" +
+                "  `column_name_7` float NULL COMMENT \"\",\n" +
+                "  `column_name_8` boolean NULL COMMENT \"\",\n" +
+                "  `column_name_9` char(1) NULL COMMENT \"\",\n" +
+                "  `column_name_10` varchar(255) NULL COMMENT \"\",\n" +
+                "  `column_name_11` varchar(65533) NULL COMMENT \"\",\n" +
+                "  `column_name_14` date NULL COMMENT \"\",\n" +
+                "  `column_name_15` datetime NULL COMMENT \"\",\n" +
+                "  `column_name_19` varbinary(-1) NULL COMMENT \"\",\n" +
+                "  `column_name_20` ARRAY<int(11)> NOT NULL COMMENT \"\",\n" +
+                "  `j` json NULL COMMENT \"\",\n" +
+                "  `bitm` bitmap NULL COMMENT \"\",\n" +
+                "  `hll` hll NULL COMMENT \"\"\n" +
+                ") ENGINE=OLAP \n" +
+                "UNIQUE KEY(`column_name_2`)\n" +
+                "DISTRIBUTED BY HASH(`column_name_2`) BUCKETS 2 \n" +
+                "PROPERTIES (\n" +
+                "\"replication_num\" = \"1\",\n" +
+                "\"in_memory\" = \"false\",\n" +
+                "\"storage_format\" = \"DEFAULT\",\n" +
+                "\"enable_persistent_index\" = \"true\",\n" +
+                "\"replicated_storage\" = \"true\",\n" +
+                "\"compression\" = \"LZ4\"\n" +
+                ");";
+
         StarRocksCreateTableParser parser = (StarRocksCreateTableParser) new StarRocksStatementParser(o5).getSQLCreateTableParser();
 
         StarRocksCreateTableStatement stmt = (StarRocksCreateTableStatement)parser.parseCreateTable();

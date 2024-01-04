@@ -301,7 +301,7 @@ public enum Token {
 
     // StarRocks
     BIGINT("BIGINT"),
-    BITMAP("BITMAP"),
+//    BITMAP("BITMAP"),
 
     LPAREN("("),
     RPAREN(")"),

@@ -14,7 +14,7 @@ public class StarRocksLexer extends Lexer {
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
-        map.put("BITMAP", Token.BITMAP);
+//        map.put("BITMAP", Token.BITMAP);
         map.put("USING", Token.USING);
         map.put("PARTITION", Token.PARTITION);
 
