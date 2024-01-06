@@ -6465,7 +6465,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterTableAlterIndex x) {
-        print0(ucase ? "ALTER " : "alter ");
+        print0(ucase ? "ALTER INDEX " : "alter index ");
 
         visit(x.getIndexDefinition());
 
