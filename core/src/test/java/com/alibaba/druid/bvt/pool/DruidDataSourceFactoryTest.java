@@ -43,11 +43,17 @@ public class DruidDataSourceFactoryTest extends TestCase {
         ref.add(new StringRefAddr(DruidDataSourceFactory.PROP_REMOVEABANDONED, "true"));
         ref.add(new StringRefAddr(DruidDataSourceFactory.PROP_MAXACTIVE, "20"));
 
+        ref.add(new StringRefAddr(DruidDataSourceFactory.PROP_SOCKET_TIMEOUT, "30000"));
+
+        ref.add(new StringRefAddr(DruidDataSourceFactory.PROP_CONNECT_TIMEOUT, "15000"));
+
         Hashtable<String, String> env = new Hashtable<String, String>();
 
         dataSource = (DruidDataSource) factory.getObjectInstance(ref, null, null, env);
 
         Assert.assertTrue(dataSource.isRemoveAbandoned());
         Assert.assertEquals(20, dataSource.getMaxActive());
+        Assert.assertEquals(30000, dataSource.getSocketTimeout());
+        Assert.assertEquals(15000, dataSource.getConnectTimeout());
     }
 }
