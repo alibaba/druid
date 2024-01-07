@@ -4500,7 +4500,7 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             updateStatement.setWhere(this.exprParser.expr());
         }
-
+        updateStatement.setLimit(this.exprParser.parseLimit());
         return updateStatement;
     }
 
