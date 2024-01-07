@@ -31,6 +31,7 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     protected final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
     protected SQLExpr where;
+    protected SQLLimit limit;
     protected SQLTableSource from;
 
     protected SQLTableSource tableSource;
@@ -43,7 +44,16 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     public SQLUpdateStatement() {
     }
+    public SQLLimit getLimit() {
+        return limit;
+    }
 
+    public void setLimit(SQLLimit limit) {
+        if (limit != null) {
+            limit.setParent(this);
+        }
+        this.limit = limit;
+    }
     public void cloneTo(SQLUpdateStatement x) {
         x.dbType = dbType;
         x.afterSemi = afterSemi;

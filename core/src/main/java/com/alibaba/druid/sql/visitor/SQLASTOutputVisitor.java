@@ -3625,6 +3625,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printExpr(where, parameterized);
             indentCount--;
         }
+        if (x.getLimit() != null) {
+            println();
+            x.getLimit().accept(this);
+        }
 
         return false;
     }
