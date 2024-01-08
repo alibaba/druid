@@ -6613,11 +6613,12 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                     SQLName indexName = this.exprParser.name();
 
-                    if (lexer.identifierEquals("VISIBLE")) {
+                    if (lexer.identifierEquals("VISIBLE") || lexer.identifierEquals("INVISIBLE")) {
                         SQLAlterTableAlterIndex alterIndex = new SQLAlterTableAlterIndex();
                         alterIndex.setName(indexName);
+                        alterIndex.getIndexDefinition().getOptions().setVisible(lexer.identifierEquals("VISIBLE"));
+                        alterIndex.getIndexDefinition().getOptions().setInvisible(lexer.identifierEquals("INVISIBLE"));
                         lexer.nextToken();
-                        alterIndex.getIndexDefinition().getOptions().setVisible(true);
                         stmt.addItem(alterIndex);
                         break;
                     }

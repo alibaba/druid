@@ -71,6 +71,8 @@ public class DruidDataSourceFactory implements ObjectFactory {
     public static final String PROP_NAME = "name";
     public static final String PROP_INIT = "init";
 
+    public static final String PROP_CONNECT_TIMEOUT = "connectTimeout";
+    public static final String PROP_SOCKET_TIMEOUT = "socketTimeout";
     private static final String[] ALL_PROPERTIES = {
             PROP_DEFAULTAUTOCOMMIT,
             PROP_DEFAULTREADONLY,
@@ -107,6 +109,8 @@ public class DruidDataSourceFactory implements ObjectFactory {
             PROP_EXCEPTION_SORTER_CLASS_NAME,
             PROP_INIT,
             PROP_NAME,
+            PROP_CONNECT_TIMEOUT,
+            PROP_SOCKET_TIMEOUT,
 
             "druid.timeBetweenLogStatsMillis",
             "druid.stat.sql.MaxSize",
@@ -373,6 +377,14 @@ public class DruidDataSourceFactory implements ObjectFactory {
         value = (String) properties.get(PROP_CONNECTIONPROPERTIES);
         if (value != null) {
             dataSource.setConnectionProperties(value);
+        }
+        value = (String) properties.get(PROP_SOCKET_TIMEOUT);
+        if (value != null) {
+            dataSource.setSocketTimeout(Integer.parseInt(value));
+        }
+        value = (String) properties.get(PROP_CONNECT_TIMEOUT);
+        if (value != null) {
+            dataSource.setConnectTimeout(Integer.parseInt(value));
         }
 
         {

@@ -34,8 +34,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import javax.sql.DataSource;
-
 /**
  * @author lihengming [89921218@qq.com]
  */
@@ -62,7 +60,7 @@ public class DruidDataSourceAutoConfigure {
      */
     @Bean
     @ConditionalOnMissingBean
-    public DataSource dataSource() {
+    public DruidDataSourceWrapper dataSource() {
         LOGGER.info("Init DruidDataSource");
         return new DruidDataSourceWrapper();
     }
