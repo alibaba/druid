@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlStatement {
-
     private boolean lowPriority;
     private boolean ignore;
     private boolean commitOnSuccess;
@@ -45,7 +44,6 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
     public MySqlUpdateStatement() {
         super(DbType.mysql);
     }
-
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
