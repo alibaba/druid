@@ -2915,4 +2915,22 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         decrementIndent();
         return false;
     }
+
+    @Override
+    public void endVisit(SQLDropUserStatement x) {
+        super.endVisit(x);
+    }
+
+    @Override
+    public boolean visit(SQLDropUserStatement x) {
+        print0(ucase ? "DROP USER " : "drop user ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+        printAndAccept(x.getUsers(), ", ");
+        if (x.isCascade()) {
+            print0(ucase ? " CASCADE" : " cascade");
+        }
+        return false;
+    }
 }

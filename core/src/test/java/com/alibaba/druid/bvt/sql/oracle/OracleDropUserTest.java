@@ -46,5 +46,24 @@ public class OracleDropUserTest extends OracleTest {
         Assert.assertEquals(0, visitor.getTables().size());
     }
 
+    public void test_1() throws Exception {
+        String sql = //
+            "DROP USER sidney CASCADE; ";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("DROP USER sidney CASCADE;",
+            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        Assert.assertEquals(0, visitor.getTables().size());
+    }
+
 
 }
