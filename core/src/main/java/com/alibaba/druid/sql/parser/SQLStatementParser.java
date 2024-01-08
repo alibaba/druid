@@ -3302,6 +3302,11 @@ public class SQLStatementParser extends SQLParser {
             break;
         }
 
+        if (lexer.token == CASCADE) {
+            lexer.nextToken();
+            stmt.setCascade(true);
+        }
+
         return stmt;
     }
 
