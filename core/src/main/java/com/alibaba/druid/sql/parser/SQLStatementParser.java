@@ -162,6 +162,17 @@ public class SQLStatementParser extends SQLParser {
                         stmt.addAfterComment(lexer.readAndResetComments());
                     }
                     if (END == lexer.token && dbType == DbType.postgresql) {
+                        Lexer.SavePoint savePoint = lexer.mark();
+                        lexer.nextToken();
+                        if (lexer.token == Token.IF) {
+                            lexer.reset(savePoint);
+                            return;
+                        }
+                        if (statementList.size() > 0 && statementList.get(statementList.size() - 1) instanceof SQLIfStatement) {
+                            lexer.reset(savePoint);
+                            return;
+                        }
+                        lexer.reset(savePoint);
                         SQLStatement stmt = parseEnd();
                         stmt.setParent(parent);
                         statementList.add(stmt);
