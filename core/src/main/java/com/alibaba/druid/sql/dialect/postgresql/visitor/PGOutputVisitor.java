@@ -554,6 +554,42 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print0(ucase ? "START TRANSACTION" : "start transaction");
         return false;
     }
+    @Override
+    public void endVisit(PGDoStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(PGDoStatement x) {
+        print0(ucase ? "DO " : "do ");
+        x.getFuncName().accept(this);
+        println();
+        print0(ucase ? "BEGIN" : "begin");
+        x.getBlock().accept(this);
+        print0(ucase ? "END " : "end ");
+        x.getFuncName().accept(this);
+        return false;
+    }
+
+//    @Override
+//    public boolean visit(SQLBlockStatement x) {
+//        this.indentCount++;
+//
+//        for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
+//            println();
+//            SQLStatement stmt = x.getStatementList().get(i);
+//            stmt.accept(this);
+//        }
+//        this.indentCount--;
+//
+//        SQLStatement exception = x.getException();
+//        if (exception != null) {
+//            println();
+//            exception.accept(this);
+//        }
+//        println();
+//        return false;
+//    }
 
     @Override
     public boolean visit(PGEndTransactionStatement x) {

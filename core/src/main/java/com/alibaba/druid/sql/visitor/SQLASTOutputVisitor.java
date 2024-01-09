@@ -9199,7 +9199,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount--;
             println();
         }
-        print0(ucase ? "BEGIN" : "begin");
+        if (x.isHaveBeginEnd()) {
+            print0(ucase ? "BEGIN" : "begin");
+        }
         this.indentCount++;
 
         for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
@@ -9216,7 +9218,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         println();
-        print0(ucase ? "END;" : "end;");
+        if (x.isHaveBeginEnd()) {
+            print0(ucase ? "END;" : "end;");
+        }
         return false;
     }
 

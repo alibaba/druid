@@ -164,6 +164,13 @@ public interface PGASTVisitor extends SQLASTVisitor {
     default boolean visit(PGStartTransactionStatement x) {
         return true;
     }
+
+    default void endVisit(PGDoStatement x) {
+    }
+
+    default boolean visit(PGDoStatement x) {
+        return true;
+    }
     default void endVisit(PGEndTransactionStatement x) {
     }
     default boolean visit(PGEndTransactionStatement x) {
