@@ -39,13 +39,8 @@ public class DruidDataSourceTest_createError extends TestCase {
     }
 
     public void test_error() throws Exception {
-        Exception error = null;
-        try {
-            dataSource.init();
-        } catch (Exception e) {
-            error = e;
-        }
-
-        Assert.assertNotNull(error);
+        dataSource.init();
+        Thread.sleep(100);
+        Assert.assertTrue(dataSource.getCreateErrorCount() > 0);
     }
 }

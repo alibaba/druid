@@ -67,6 +67,7 @@ public class FailFastTest extends PoolTestCase {
                 try {
                     dataSource.getConnection();
                 } catch (SQLException e) {
+                    e.printStackTrace();
                     errorHolder.set(e);
                 } finally {
                     connectEndLatch.countDown();

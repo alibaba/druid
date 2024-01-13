@@ -64,7 +64,7 @@ public class Case0 extends PoolTestCase {
         t.start();
 
         startLatch.await();
-        Assert.assertFalse(completeLatch.await(1, TimeUnit.SECONDS));
+        Assert.assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
         conn1.close();
         Assert.assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
         conn2.close();

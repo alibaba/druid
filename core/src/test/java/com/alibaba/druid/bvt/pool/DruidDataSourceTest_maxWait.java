@@ -22,7 +22,7 @@ public class DruidDataSourceTest_maxWait extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setMaxActive(1);
-        dataSource.setMaxWait(30);
+        dataSource.setMaxWait(100);
         dataSource.setInitialSize(1);
         dataSource.init();
     }

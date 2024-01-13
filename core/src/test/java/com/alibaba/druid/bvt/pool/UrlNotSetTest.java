@@ -11,7 +11,7 @@ public class UrlNotSetTest extends TestCase {
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        dataSource.setMaxWait(10);
+        dataSource.setMaxWait(100);
     }
 
     protected void tearDown() throws Exception {

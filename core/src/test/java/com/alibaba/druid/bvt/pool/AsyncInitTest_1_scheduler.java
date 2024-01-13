@@ -3,12 +3,8 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.DruidDataSource;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 public class AsyncInitTest_1_scheduler extends PoolTestCase {
     private DruidDataSource dataSource;
-    private ScheduledExecutorService scheduler;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -18,9 +14,6 @@ public class AsyncInitTest_1_scheduler extends PoolTestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setInitialSize(10);
         dataSource.setMaxActive(10);
-
-        scheduler = Executors.newScheduledThreadPool(2);
-        dataSource.setCreateScheduler(scheduler);
     }
 
     protected void tearDown() throws Exception {

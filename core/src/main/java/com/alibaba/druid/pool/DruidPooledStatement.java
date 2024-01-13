@@ -281,7 +281,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             return;
         }
 
-        dataSource.executeQueryCount++;
+        DruidAbstractDataSource.executeQueryCountUpdater.incrementAndGet(dataSource);
     }
 
     protected void transactionRecord(String sql) throws SQLException {

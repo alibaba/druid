@@ -51,7 +51,7 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
         };
         connectFailedThread.start();
 
-        OracleMockDriverConnectFailed.CONNECT_BARIER.await(100, TimeUnit.MILLISECONDS);
+        OracleMockDriverConnectFailed.CONNECT_BARIER.await(200, TimeUnit.MILLISECONDS);
         dataSource.close();
         
         // waiting for createConnectionThread terminated.

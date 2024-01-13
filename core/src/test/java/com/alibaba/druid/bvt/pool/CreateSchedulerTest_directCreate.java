@@ -5,33 +5,23 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import org.junit.Assert;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class CreateSchedulerTest_directCreate extends PoolTestCase {
     private DruidDataSource[] dataSources;
-    private ScheduledExecutorService createScheduler;
-    private ScheduledExecutorService destroyScheduler;
 
     protected void setUp() throws Exception {
         super.setUp();
-
-        createScheduler = Executors.newScheduledThreadPool(1);
-        destroyScheduler = Executors.newScheduledThreadPool(1);
 
         dataSources = new DruidDataSource[8];
         for (int i = 0; i < dataSources.length; ++i) {
             DruidDataSource dataSource = new DruidDataSource();
             dataSource.setUrl("jdbc:mock:xxx");
             dataSource.setDriver(new SlowDriver());
-            dataSource.setCreateScheduler(createScheduler);
-            dataSource.setDestroyScheduler(destroyScheduler);
             dataSource.setMinEvictableIdleTimeMillis(10);
             dataSource.setTimeBetweenEvictionRunsMillis(10);
             dataSource.setFilters("log4j");
@@ -45,8 +35,6 @@ public class CreateSchedulerTest_directCreate extends PoolTestCase {
         for (int i = 0; i < dataSources.length; ++i) {
             JdbcUtils.close(dataSources[i]);
         }
-
-        createScheduler.shutdown();
 
         super.tearDown();
     }

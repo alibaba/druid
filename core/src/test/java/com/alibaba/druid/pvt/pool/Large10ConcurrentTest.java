@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.sql.DataSource;
@@ -20,7 +19,6 @@ import junit.framework.TestCase;
 
 public class Large10ConcurrentTest extends TestCase {
     private DruidDataSource[] dataSources;
-    private ScheduledExecutorService scheduler;
 
     private ExecutorService executor;
 
@@ -44,14 +42,11 @@ public class Large10ConcurrentTest extends TestCase {
         dataSources = new DruidDataSource[dataSourceCount];
 
         executor = Executors.newFixedThreadPool(100);
-        scheduler = Executors.newScheduledThreadPool(10);
         for (int i = 0; i < dataSources.length; ++i) {
             DruidDataSource dataSource = new DruidDataSource();
             dataSource.setMaxActive(8);
             dataSource.setMinIdle(0);
             dataSource.setUrl("jdbc:mock:xxx");
-            dataSource.setCreateScheduler(scheduler);
-            dataSource.setDestroyScheduler(scheduler);
             dataSource.setTestOnBorrow(false);
             dataSource.setTestWhileIdle(false);
             dataSource.setAsyncCloseConnectionEnable(true);
@@ -65,7 +60,6 @@ public class Large10ConcurrentTest extends TestCase {
             JdbcUtils.close(dataSources[i]);
         }
         executor.shutdown();
-        scheduler.shutdown();
     }
 
     public void test_large() throws Exception {

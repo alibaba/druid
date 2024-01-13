@@ -33,7 +33,7 @@ public class DruidDataSourceTest_interrupt2 extends TestCase {
             conn.close();
         }
 
-        dataSource.getLock().lock();
+        dataSource.getLock().readLock().lock();
 
         try {
             final CountDownLatch startLatch = new CountDownLatch(1);
@@ -43,6 +43,7 @@ public class DruidDataSourceTest_interrupt2 extends TestCase {
                 public void run() {
                     try {
                         startLatch.countDown();
+                        Thread.sleep(10);
                         dataSource.getConnection();
                     } catch (Exception e) {
                         errorCount.incrementAndGet();
@@ -56,8 +57,6 @@ public class DruidDataSourceTest_interrupt2 extends TestCase {
 
             startLatch.await();
 
-            Thread.sleep(10);
-
             Assert.assertEquals(0, errorCount.get());
 
             thread.interrupt();
@@ -65,7 +64,7 @@ public class DruidDataSourceTest_interrupt2 extends TestCase {
             endLatch.await();
             Assert.assertEquals(1, errorCount.get());
         } finally {
-            dataSource.getLock().unlock();
+            dataSource.getLock().readLock().unlock();
         }
     }
 }

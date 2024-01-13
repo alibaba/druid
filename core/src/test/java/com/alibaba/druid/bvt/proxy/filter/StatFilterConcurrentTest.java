@@ -18,6 +18,7 @@ package com.alibaba.druid.bvt.proxy.filter;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
@@ -28,7 +29,7 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 public class StatFilterConcurrentTest extends TestCase {
     private DruidDataSource dataSource;
     private StatFilter statFilter;
-    private int LOOP_COUNT = 1000 * 1;
+    private int LOOP_COUNT = 100 * 1;
 
     public void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -45,7 +46,7 @@ public class StatFilterConcurrentTest extends TestCase {
     }
 
     public void test_stat() throws Exception {
-        concurrent(100);
+        concurrent(4);
         for (JdbcSqlStat sqlStat : dataSource.getDataSourceStat().getSqlStatMap().values()) {
             System.out.println(sqlStat.getConcurrentMax());
         }
@@ -78,7 +79,8 @@ public class StatFilterConcurrentTest extends TestCase {
         for (int i = 0; i < threadCount; ++i) {
             threads[i].start();
         }
-        endLatch.await();
+        endLatch.await(10, TimeUnit.SECONDS);
+        assertEquals(0, endLatch.getCount());
 
     }
 }

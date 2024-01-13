@@ -27,7 +27,8 @@ public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setTestWhileIdle(true);
-        dataSource.setTimeBetweenEvictionRunsMillis(20);
+        // the shrink interval is at least 1000ms.
+        dataSource.setTimeBetweenEvictionRunsMillis(1000);
         dataSource.setValidationQuery("select 'x'");
         dataSource.setValidConnectionChecker(new ValidConnectionCheckerAdapter() {
             @Override
@@ -65,7 +66,7 @@ public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
         Assert.assertEquals(1, dataSource.getConnectCount());
         Assert.assertEquals(1, dataSource.getCloseCount());
 
-        Thread.sleep(21);
+        Thread.sleep(1200);
 
         {
             PooledConnection conn = dataSource.getPooledConnection();

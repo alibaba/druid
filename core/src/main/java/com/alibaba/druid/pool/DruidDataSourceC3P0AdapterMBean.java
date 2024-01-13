@@ -62,8 +62,6 @@ public interface DruidDataSourceC3P0AdapterMBean {
 
     String toString();
 
-    int getWaitThreadCount();
-
     int getLockQueueLength();
 
     void close();

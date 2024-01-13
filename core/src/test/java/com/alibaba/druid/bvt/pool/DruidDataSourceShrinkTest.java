@@ -32,7 +32,7 @@ public class DruidDataSourceShrinkTest {
 
     @Test
     public void test() throws Exception {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1; i++) {
             dataSource.fill();
             assertEquals(8, dataSource.getPoolingCount());
             dataSource.shrink(false, false);

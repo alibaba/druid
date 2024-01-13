@@ -118,7 +118,7 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
 
         Assert.assertTrue(closeBeforeLatch.await(1, TimeUnit.SECONDS));
 
-        dataSource.getLock().lock();
+        dataSource.getLock().readLock().lock();
         lockLatch.countDown();
 
         Thread.sleep(10);

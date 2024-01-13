@@ -4,12 +4,11 @@ import java.sql.SQLException;
 
 import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
-import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.pool.DataSourceClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.GetConnectionTimeoutException;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
 public class DruidConnectionHolderTest3 extends PoolTestCase {
@@ -39,13 +38,9 @@ public class DruidConnectionHolderTest3 extends PoolTestCase {
 
     public void test_mysqlSyntaxError() throws Exception {
         {
-            Exception error = null;
-            try {
-                dataSource.init();
-            } catch (MySQLException e) {
-                error = e;
-            }
-            Assert.assertNotNull(error);
+            dataSource.init();
+            Thread.sleep(100);
+            Assert.assertTrue(dataSource.isClosed());
         }
 
         Assert.assertEquals(0, dataSource.getPoolingCount());
@@ -53,7 +48,7 @@ public class DruidConnectionHolderTest3 extends PoolTestCase {
         Exception error = null;
         try {
             dataSource.getConnection(100);
-        } catch (GetConnectionTimeoutException e) {
+        } catch (DataSourceClosedException e) {
             error = e;
         }
         Assert.assertNotNull(error);

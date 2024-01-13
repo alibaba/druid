@@ -90,7 +90,6 @@ public class DumpTest extends TestCase {
     public void test_getPoolingConnectionInfo() throws Exception {
         String sql = "select ?, ?";
         Connection conn = dataSource.getConnection();
-        Connection conn1 = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, "xxx");
@@ -100,16 +99,14 @@ public class DumpTest extends TestCase {
         rs.close();
 
         conn.close();
-        conn1.close();
 
         List<Map<String, Object>> poolingList = dataSource.getPoolingConnectionInfo();
-        Assert.assertEquals(2, poolingList.size());
+        Assert.assertEquals(1, poolingList.size());
     }
 
     public void test_getStatData() throws Exception {
         String sql = "select ?, ?";
         Connection conn = dataSource.getConnection();
-        Connection conn1 = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, "xxx");
@@ -119,13 +116,12 @@ public class DumpTest extends TestCase {
         rs.close();
 
         conn.close();
-        conn1.close();
 
         Map<String, Object> statData = dataSource.getStatData();
-        Assert.assertEquals(2, statData.get("PoolingCount"));
-        Assert.assertEquals(2, statData.get("PoolingPeak"));
-        Assert.assertEquals(2L, statData.get("LogicConnectCount"));
-        Assert.assertEquals(2L, statData.get("LogicCloseCount"));
+        Assert.assertEquals(1, statData.get("PoolingCount"));
+        Assert.assertEquals(1, statData.get("PoolingPeak"));
+        Assert.assertEquals(1L, statData.get("LogicConnectCount"));
+        Assert.assertEquals(1L, statData.get("LogicCloseCount"));
         Assert.assertEquals(0L, statData.get("LogicConnectErrorCount"));
 
         Assert.assertEquals(1, dataSource.getSqlStatMap().size());

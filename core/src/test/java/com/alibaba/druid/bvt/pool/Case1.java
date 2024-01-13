@@ -33,18 +33,10 @@ public class Case1 extends PoolTestCase {
     public void test_f() throws Exception {
         final DruidDataSource dataSource = new DruidDataSource();
         dataSource.setTimeBetweenConnectErrorMillis(100);
-
-        final long startTime = System.currentTimeMillis();
-        final long okTime = startTime + 1000 * 1;
-
         dataSource.setDriver(new MockDriver() {
             @Override
             public Connection connect(String url, Properties info) throws SQLException {
-                if (System.currentTimeMillis() < okTime) {
-                    throw new SQLException();
-                }
-
-                return super.connect(url, info);
+                throw new SQLException();
             }
         });
         dataSource.setUrl("jdbc:mock:");
@@ -58,6 +50,7 @@ public class Case1 extends PoolTestCase {
             Connection conn = dataSource.getConnection();
             conn.close();
         } catch (Exception e) {
+            e.printStackTrace();
             error = e;
         }
 

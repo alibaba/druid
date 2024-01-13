@@ -33,7 +33,7 @@ jobs:
           cache: 'maven'
       - name: Build with Maven if test jdk8
         if: ${{ matrix.java == '8' }}
-        run: ./mvnw -Pgen-javadoc -DskipTests clean package -B
+        run: ./mvnw -Penable-for-jmh,gen-javadoc -DskipTests clean package -B
       - name: Build with Maven if test jdk17
         if: ${{ matrix.java == '17' }}
         run: ./mvnw -Penable-for-jdk17+,gen-code-cov clean package -B

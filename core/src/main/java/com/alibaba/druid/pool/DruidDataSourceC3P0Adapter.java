@@ -338,11 +338,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     @Override
-    public int getWaitThreadCount() {
-        return dataSource.getWaitThreadCount();
-    }
-
-    @Override
     public int getLockQueueLength() {
         return dataSource.getLockQueueLength();
     }

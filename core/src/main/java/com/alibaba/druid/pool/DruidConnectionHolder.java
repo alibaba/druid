@@ -38,7 +38,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -82,11 +83,16 @@ public final class DruidConnectionHolder {
     protected volatile boolean active;
     protected final Map<String, Object> variables;
     protected final Map<String, Object> globalVariables;
-    final ReentrantLock lock = new ReentrantLock();
+    final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     protected String initSchema;
     protected Socket socket;
 
     volatile FilterChainImpl filterChain;
+
+    private volatile AtomicReference<Object> activeFlag = new AtomicReference<>(IDLE);
+    public static final Object IDLE = new Object();
+    public static final Object ACTIVE = new Object();
+    public static final Object PROCESSING = new Object();
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
             throws SQLException {
@@ -287,20 +293,20 @@ public final class DruidConnectionHolder {
     }
 
     public void addTrace(DruidPooledStatement stmt) {
-        lock.lock();
+        lock.writeLock().lock();
         try {
             statementTrace.add(stmt);
         } finally {
-            lock.unlock();
+            lock.writeLock().unlock();
         }
     }
 
     public void removeTrace(DruidPooledStatement stmt) {
-        lock.lock();
+        lock.writeLock().lock();
         try {
             statementTrace.remove(stmt);
         } finally {
-            lock.unlock();
+            lock.writeLock().unlock();
         }
     }
 
@@ -396,7 +402,7 @@ public final class DruidConnectionHolder {
             statementEventListeners.clear();
         }
 
-        lock.lock();
+        lock.writeLock().lock();
         try {
             if (!statementTrace.isEmpty()) {
                 Object[] items = statementTrace.toArray();
@@ -409,7 +415,7 @@ public final class DruidConnectionHolder {
                 statementTrace.clear();
             }
         } finally {
-            lock.unlock();
+            lock.writeLock().unlock();
         }
 
         conn.clearWarnings();
@@ -468,4 +474,7 @@ public final class DruidConnectionHolder {
         return buf.toString();
     }
 
+    public AtomicReference<Object> getActiveFlag() {
+        return activeFlag;
+    }
 }

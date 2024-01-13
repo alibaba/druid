@@ -87,6 +87,7 @@ public class TestConnectError extends TestCase {
             connections[i].close();
         }
 
-        Assert.assertEquals(9, dataSource.getCreateErrorCount());
+        // now one thread could get only one connection.
+        Assert.assertEquals(0, dataSource.getCreateErrorCount());
     }
 }

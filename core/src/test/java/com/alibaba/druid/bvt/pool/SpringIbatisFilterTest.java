@@ -87,7 +87,7 @@ public class SpringIbatisFilterTest extends TestCase {
         service.addUser(user);
 
         TestFilter filter = (TestFilter) context.getBean("test-filter");
-        Assert.assertEquals(2, filter.getConnectCount());
+        Assert.assertEquals(1, filter.getConnectCount());
 
         {
             Connection conn = dataSource.getConnection();

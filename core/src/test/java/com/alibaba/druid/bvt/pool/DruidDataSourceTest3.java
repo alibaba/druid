@@ -3,6 +3,7 @@ package com.alibaba.druid.bvt.pool;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
@@ -21,7 +22,6 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 public class DruidDataSourceTest3 extends TestCase {
     private DruidDataSource dataSource;
     private volatile Exception error;
-    private volatile Exception errorB;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -53,8 +53,8 @@ public class DruidDataSourceTest3 extends TestCase {
         Thread threadA = new Thread("A") {
             public void run() {
                 try {
-                    startedLatch.countDown();
                     dataSource.init();
+                    startedLatch.countDown();
                 } catch (SQLException e) {
                     error = e;
                 } finally {
@@ -64,42 +64,16 @@ public class DruidDataSourceTest3 extends TestCase {
         };
         threadA.start();
 
-        startedLatch.await();
-
-        Thread.sleep(10);
-
-        Assert.assertFalse(dataSource.isInited());
-
-        final CountDownLatch startedLatchB = new CountDownLatch(1);
-        final CountDownLatch endLatchB = new CountDownLatch(1);
-        Thread threadB = new Thread("B") {
-            public void run() {
-                try {
-                    startedLatchB.countDown();
-                    dataSource.init();
-                } catch (SQLException e) {
-                    errorB = e;
-                } finally {
-                    endLatchB.countDown();
-                }
-            }
-        };
-        threadB.start();
-        startedLatchB.await();
-
-        threadB.interrupt();
-        endLatchB.await();
-
-        Assert.assertNotNull(errorB);
-        Assert.assertTrue(errorB.getCause() instanceof InterruptedException);
+        startedLatch.await(1000, TimeUnit.MILLISECONDS);
+        // assert wating timeout as threadA hangs by waiting createConnectionThread finish initialization.
+        Assert.assertEquals(1, startedLatch.getCount());
+        // Now, all physical connections are created by createConntectionTread.
+        Assert.assertTrue(dataSource.isInited());
 
         threadA.interrupt();
+        endLatch.await(100, TimeUnit.MILLISECONDS);
 
-        endLatch.await();
-        endLatchB.await();
-        Assert.assertNotNull(error);
-
-        Assert.assertEquals(1, dataSource.getCreateErrorCount());
+        Assert.assertEquals(0, dataSource.getCreateErrorCount());
 
     }
 }

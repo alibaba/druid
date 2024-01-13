@@ -99,7 +99,7 @@ public class DataSourceTest3 extends PoolTestCase {
     public void test_change_maxWait() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         conn.close();
-        dataSource.setMaxWait(1);
+        dataSource.setMaxWait(100);
     }
 
     public void test_change_minIdle() throws Exception {

@@ -17,7 +17,7 @@
 	<properties>
 		<spring.version>4.3.20.RELEASE</spring.version>
 		<junit.version>4.13.1</junit.version>
-		<jmh.version>1.19</jmh.version>
+		<jmh.version>1.37</jmh.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
@@ -88,6 +88,12 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<artifactId>jctools-core</artifactId>
+			<groupId>org.jctools</groupId>
+			<version>4.0.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>simple-jndi</groupId>
 			<artifactId>simple-jndi</artifactId>

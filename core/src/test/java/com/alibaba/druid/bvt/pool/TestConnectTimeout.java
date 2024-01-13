@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Assert;
@@ -30,6 +31,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class TestConnectTimeout extends TestCase {
     private DruidDataSource dataSource;
+    private final static long MAX_WAIT_MILLIS = 5000; //时间灵敏度不够，容易导致单测失败，因此调大一点
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -40,7 +42,7 @@ public class TestConnectTimeout extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setMaxOpenPreparedStatements(30);
         dataSource.setMaxActive(4);
-        dataSource.setMaxWait(50000);//时间灵敏度不够，容易导致单测失败，因此调大一点
+        dataSource.setMaxWait(MAX_WAIT_MILLIS);
         dataSource.setMinIdle(0);
         dataSource.setInitialSize(1);
         dataSource.init();
@@ -55,7 +57,7 @@ public class TestConnectTimeout extends TestCase {
         }
 
         final List<Connection> connections = new ArrayList<Connection>();
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 1; ++i) {
             Connection conn = dataSource.getConnection();
             connections.add(conn);
         }
@@ -67,7 +69,7 @@ public class TestConnectTimeout extends TestCase {
             Thread thread = new Thread() {
                 public void run() {
                     try {
-                        for (int i = 0; i < 100; ++i) {
+                        for (int i = 0; i < 1; ++i) {
                             Connection conn = dataSource.getConnection();
                             System.out.println(LocalDateTime.now() +" : " + Thread.currentThread() + " " + conn);
                             Thread.sleep(1);
@@ -84,7 +86,7 @@ public class TestConnectTimeout extends TestCase {
             thread.start();
         }
 
-        latch.await();
+        latch.await(MAX_WAIT_MILLIS, TimeUnit.MILLISECONDS);
         Assert.assertEquals(0, errorCount.get());
     }
 

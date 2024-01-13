@@ -73,13 +73,13 @@ public class TestIdle2 extends TestCase {
             Connection[] connections = new Connection[count];
             for (int i = 0; i < count; ++i) {
                 connections[i] = dataSource.getConnection();
-                Assert.assertEquals(i + 1, dataSource.getActiveCount());
+                Assert.assertEquals(1, dataSource.getActiveCount());
             }
             Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
             Assert.assertEquals(count, driver.getConnections().size());
             for (int i = 0; i < count; ++i) {
                 connections[i].close();
-                Assert.assertEquals(count - i - 1, dataSource.getActiveCount());
+                Assert.assertEquals(0, dataSource.getActiveCount());
             }
             Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());

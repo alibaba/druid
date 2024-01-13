@@ -2,8 +2,6 @@ package com.alibaba.druid.pvt.pool;
 
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import junit.framework.TestCase;
 
@@ -12,7 +10,6 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class Large10KTest extends TestCase {
     private DruidDataSource[] dataSources;
-    private ScheduledExecutorService scheduler;
 
     protected void setUp() throws Exception {
         long xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m
@@ -33,12 +30,9 @@ public class Large10KTest extends TestCase {
 
         dataSources = new DruidDataSource[dataSourceCount];
 
-        scheduler = Executors.newScheduledThreadPool(10);
         for (int i = 0; i < dataSources.length; ++i) {
             DruidDataSource dataSource = new DruidDataSource();
             dataSource.setUrl("jdbc:mock:xxx");
-            dataSource.setCreateScheduler(scheduler);
-            dataSource.setDestroyScheduler(scheduler);
             dataSource.setTestOnBorrow(false);
             dataSource.setTestWhileIdle(false);
 
@@ -50,7 +44,6 @@ public class Large10KTest extends TestCase {
         for (int i = 0; i < dataSources.length; ++i) {
             JdbcUtils.close(dataSources[i]);
         }
-        scheduler.shutdown();
     }
 
     public void test_large() throws Exception {

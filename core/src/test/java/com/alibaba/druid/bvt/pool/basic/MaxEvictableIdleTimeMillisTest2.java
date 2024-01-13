@@ -27,7 +27,7 @@ public class MaxEvictableIdleTimeMillisTest2 extends TestCase {
             dataSource.setMinEvictableIdleTimeMillis(20);
             dataSource.setMaxEvictableIdleTimeMillis(30);
             dataSource.setMinEvictableIdleTimeMillis(100);
-            dataSource.setMaxWait(20);
+            dataSource.setMaxWait(100);
             dataSource.init();
         } catch (Exception ex) {
             error = ex;

@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -58,7 +58,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     private volatile boolean abandoned;
     protected StackTraceElement[] connectStackTrace;
     protected Throwable disableError;
-    final ReentrantLock lock;
+    final ReentrantReadWriteLock lock;
     protected volatile int closing;
     protected FilterChain filterChain;
 
@@ -288,7 +288,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     }
 
     public void syncClose() throws SQLException {
-        lock.lock();
+        lock.writeLock().lock();
         try {
             if (this.disable || CLOSING_UPDATER.get(this) != 0) {
                 return;
@@ -322,7 +322,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             this.disable = true;
         } finally {
             CLOSING_UPDATER.set(this, 0);
-            lock.unlock();
+            lock.writeLock().unlock();
         }
     }
 
@@ -1159,11 +1159,11 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         }
 
         if (asyncCloseEnabled) {
-            lock.lock();
+            lock.readLock().lock();
             try {
                 checkStateInternal();
             } finally {
-                lock.unlock();
+                lock.readLock().unlock();
             }
         } else {
             checkStateInternal();

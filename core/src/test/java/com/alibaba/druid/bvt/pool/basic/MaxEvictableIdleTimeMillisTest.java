@@ -21,7 +21,7 @@ public class MaxEvictableIdleTimeMillisTest extends TestCase {
         dataSource.setMinIdle(5);
         dataSource.setMinEvictableIdleTimeMillis(10);
         dataSource.setMaxEvictableIdleTimeMillis(100);
-        dataSource.setMaxWait(20);
+        dataSource.setMaxWait(100);
         dataSource.init();
     }
 
@@ -54,10 +54,11 @@ public class MaxEvictableIdleTimeMillisTest extends TestCase {
     public void test_max() throws Exception {
         connect(10);
 
-        Assert.assertEquals(10, dataSource.getPoolingCount());
+        // now one thread only one connection.
+        Assert.assertEquals(1, dataSource.getPoolingCount());
         Thread.sleep(20);
         dataSource.shrink(true);
-        Assert.assertEquals(5, dataSource.getPoolingCount());
+        Assert.assertEquals(1, dataSource.getPoolingCount());
 
         Thread.sleep(100);
         dataSource.shrink(true);

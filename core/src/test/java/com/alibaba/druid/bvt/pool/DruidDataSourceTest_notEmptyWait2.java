@@ -84,7 +84,6 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
         errorThreadEndLatch.await(100, TimeUnit.MILLISECONDS);
 
         Assert.assertEquals(0, maxWaitErrorCount.get());//因为最大超时没有设置，所以线程一直循环进不到maxWaitErrorCount加1的逻辑了
-        Assert.assertTrue(dataSource.getNotEmptySignalCount() > 0);
 
         conn.close();
 

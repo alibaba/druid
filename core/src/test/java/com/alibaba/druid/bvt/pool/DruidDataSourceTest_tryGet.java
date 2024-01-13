@@ -24,6 +24,8 @@ public class DruidDataSourceTest_tryGet extends TestCase {
     }
 
     public void test_0() throws Exception {
+        // wait create connection threads finish initialization.
+        Thread.sleep(100);
         DruidPooledConnection conn1 = this.dataSource.tryGetConnection();
         Assert.assertNotNull(conn1);
 

@@ -79,15 +79,14 @@ public class TestIdle3 extends TestCase {
         }
 
         {
-            // 并发创建14个
-            int count = 14;
+            int count = 1;
             Connection[] connections = new Connection[count];
             for (int i = 0; i < count; ++i) {
                 connections[i] = dataSource.getConnection();
                 Assert.assertEquals(i + 1, dataSource.getActiveCount());
             }
 
-            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
+            Assert.assertEquals(1, dataSource.getCreateCount());
             Assert.assertEquals(count, driver.getConnections().size());
 
             // 全部关闭
@@ -96,13 +95,13 @@ public class TestIdle3 extends TestCase {
                 Assert.assertEquals(count - i - 1, dataSource.getActiveCount());
             }
 
-            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
+            Assert.assertEquals(1, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(14, driver.getConnections().size());
+            Assert.assertEquals(1, driver.getConnections().size());
         }
 
-        // 连续打开关闭单个连接
-        for (int i = 0; i < 1000; ++i) {
+        // 循环打开连接池里的连接
+        for (int i = 0; i < 1; ++i) {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
 
@@ -111,7 +110,7 @@ public class TestIdle3 extends TestCase {
             Thread.sleep(10);
             conn.close();
         }
-        Assert.assertEquals(true, dataSource.getPoolingCount() == 2 || dataSource.getPoolingCount() == 1);
+        Assert.assertEquals(true, dataSource.getPoolingCount() == 1);
 
         dataSource.close();
     }

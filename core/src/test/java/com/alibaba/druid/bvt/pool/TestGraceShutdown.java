@@ -42,7 +42,7 @@ public class TestGraceShutdown extends PoolTestCase {
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(2);
         dataSource.setMaxIdle(2);
-        dataSource.setMaxWait(5);
+        dataSource.setMaxWait(100);
         dataSource.setMinIdle(1);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10

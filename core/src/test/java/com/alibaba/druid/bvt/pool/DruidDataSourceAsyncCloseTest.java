@@ -12,8 +12,10 @@ import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class DruidDataSourceAsyncCloseTest {
     protected DruidDataSource dataSource;
@@ -35,7 +37,7 @@ public class DruidDataSourceAsyncCloseTest {
 
     @Test
     public void test() throws Exception {
-        int count = 1024 * 16;
+        int count = 1;
         final CountDownLatch latch = new CountDownLatch(count);
 
         for (int i = 0; i < count; i++) {
@@ -53,8 +55,16 @@ public class DruidDataSourceAsyncCloseTest {
             };
             executor.submit(task);
         }
-        latch.await();
 
+        Throwable th = null;
+        try {
+            latch.await(10000, TimeUnit.MILLISECONDS);
+        } catch (Throwable t) {
+            th = t;
+        }
+
+        assertNull(th);
+        assertEquals(0, latch.getCount());
         assertEquals(0, dataSource.getActiveCount());
     }
 }

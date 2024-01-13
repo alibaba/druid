@@ -1,7 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.junit.Assert;
 import junit.framework.TestCase;
@@ -22,17 +22,17 @@ public class LockFairTest extends TestCase {
     }
 
     public void test_fair() throws Exception {
-        Assert.assertEquals(false, ((ReentrantLock) dataSource.getLock()).isFair());
+        Assert.assertEquals(false, ((ReentrantReadWriteLock) dataSource.getLock()).isFair());
         dataSource.setMaxWait(100);
 
-        Assert.assertEquals(true, ((ReentrantLock) dataSource.getLock()).isFair());
+        Assert.assertEquals(true, ((ReentrantReadWriteLock) dataSource.getLock()).isFair());
         {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
         dataSource.setMaxWait(110);
 
-        Assert.assertEquals(true, ((ReentrantLock) dataSource.getLock()).isFair());
+        Assert.assertEquals(true, ((ReentrantReadWriteLock) dataSource.getLock()).isFair());
         {
             Connection conn = dataSource.getConnection();
             conn.close();
@@ -40,7 +40,7 @@ public class LockFairTest extends TestCase {
 
         dataSource.setMaxWait(0);
 
-        Assert.assertEquals(true, ((ReentrantLock) dataSource.getLock()).isFair());
+        Assert.assertEquals(true, ((ReentrantReadWriteLock) dataSource.getLock()).isFair());
         {
             Connection conn = dataSource.getConnection();
             conn.close();
@@ -51,9 +51,9 @@ public class LockFairTest extends TestCase {
         Connection conn = dataSource.getConnection();
         conn.close();
 
-        Assert.assertEquals(false, ((ReentrantLock) dataSource.getLock()).isFair());
+        Assert.assertEquals(false, ((ReentrantReadWriteLock) dataSource.getLock()).isFair());
         dataSource.setMaxWait(100);
 
-        Assert.assertEquals(false, ((ReentrantLock) dataSource.getLock()).isFair());
+        Assert.assertEquals(false, ((ReentrantReadWriteLock) dataSource.getLock()).isFair());
     }
 }

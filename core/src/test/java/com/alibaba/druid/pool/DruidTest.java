@@ -70,7 +70,7 @@ public class DruidTest {
     }
 
     public static void initDS(String connectURI) {
-        initDS(connectURI, "root", "12345", "com.mysql.jdbc.Driver", 40, 40, 40, 10, 5);
+        initDS(connectURI, "root", "12345", "com.mysql.jdbc.Driver", 40, 40, 40, 10, 100);
     }
 
     public static void main(String[] args) throws IOException, SQLException {

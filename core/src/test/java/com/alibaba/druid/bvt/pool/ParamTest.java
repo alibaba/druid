@@ -121,6 +121,8 @@ public class ParamTest extends TestCase {
         JdbcStatManager.getInstance().reset();
 
         dataSource.init();
+        // wait create connection threads complete initialization.
+        Thread.sleep(100);
         JdbcDataSourceStat stat = dataSource.getDataSourceStat();
 
         Assert.assertEquals(10, stat.getConnectionStat().getConnectCount());

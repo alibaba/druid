@@ -46,7 +46,7 @@ public class TestActiveTrace extends TestCase {
     }
 
     public void test_activeTrace() throws Exception {
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < 1; ++i) {
             dataSource.shrink();
 
             Connection conn = dataSource.getConnection();

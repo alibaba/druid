@@ -19,7 +19,6 @@ import javax.sql.DataSource;
 
 import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
-import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
@@ -76,7 +75,6 @@ public class DruidDataSourceC3P0AdapterTest2 extends PoolTestCase {
         dataSource.setBreakAfterAcquireFailure(dataSource.isBreakAfterAcquireFailure());
         dataSource.isEnable();
         dataSource.shrink();
-        dataSource.getWaitThreadCount();
         dataSource.getLockQueueLength();
 
         dataSource.close();

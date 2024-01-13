@@ -54,25 +54,9 @@ public class DruidDataSourceTest5 extends TestCase {
     public void testValidate_1() throws Exception {
         validate.set(false);
 
-        Exception error = null;
-        try {
-            dataSource.init();
-        } catch (SQLException e) {
-            error = e;
-        }
-        Assert.assertNotNull(error);
-    }
-
-    public void testValidate_3() throws Exception {
-        validate.set(false);
-
-        Exception error = null;
-        try {
-            dataSource.init();
-        } catch (SQLException e) {
-            error = e;
-        }
-        Assert.assertNotNull(error);
+        dataSource.init();
+        Thread.sleep(100);
+        Assert.assertTrue(dataSource.isClosed());
     }
 
 }

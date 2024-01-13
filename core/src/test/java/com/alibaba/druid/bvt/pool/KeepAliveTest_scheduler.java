@@ -6,19 +6,14 @@ import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.util.Properties;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by wenshao on 21/01/2017.
  */
 public class KeepAliveTest_scheduler extends TestCase {
     private DruidDataSource dataSource;
-    private ScheduledExecutorService scheduler;
 
     protected void setUp() throws Exception {
-        scheduler = Executors.newScheduledThreadPool(10);
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:x1");
         dataSource.setPoolPreparedStatements(true);
@@ -33,7 +28,6 @@ public class KeepAliveTest_scheduler extends TestCase {
         Properties properties = new Properties();
         properties.put("druid.keepAlive", "true");
         dataSource.configFromPropeties(properties);
-        dataSource.setCreateScheduler(scheduler);
     }
 
     protected void tearDown() throws Exception {
