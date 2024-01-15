@@ -25,14 +25,14 @@ public class LockFairTest extends TestCase {
         Assert.assertEquals(false, ((ReentrantLock) dataSource.getLock()).isFair());
         dataSource.setMaxWait(100);
 
-        Assert.assertEquals(true, ((ReentrantLock) dataSource.getLock()).isFair());
+        Assert.assertEquals(false, ((ReentrantLock) dataSource.getLock()).isFair());
         {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
         dataSource.setMaxWait(110);
 
-        Assert.assertEquals(true, ((ReentrantLock) dataSource.getLock()).isFair());
+        Assert.assertEquals(false, ((ReentrantLock) dataSource.getLock()).isFair());
         {
             Connection conn = dataSource.getConnection();
             conn.close();
@@ -40,7 +40,7 @@ public class LockFairTest extends TestCase {
 
         dataSource.setMaxWait(0);
 
-        Assert.assertEquals(true, ((ReentrantLock) dataSource.getLock()).isFair());
+        Assert.assertEquals(false, ((ReentrantLock) dataSource.getLock()).isFair());
         {
             Connection conn = dataSource.getConnection();
             conn.close();

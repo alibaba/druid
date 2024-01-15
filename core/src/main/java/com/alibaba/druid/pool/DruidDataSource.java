@@ -1688,12 +1688,12 @@ public class DruidDataSource extends DruidAbstractDataSource
             throw new DataSourceDisableException();
         }
 
-        final long nanos = TimeUnit.MILLISECONDS.toNanos(maxWait);
         final int maxWaitThreadCount = this.maxWaitThreadCount;
 
         DruidConnectionHolder holder;
 
         long startTime = System.currentTimeMillis();  //进入循环等待之前，先记录开始尝试获取连接的时间
+        final long expiredTime = startTime + maxWait;
         for (boolean createDirect = false; ; ) {
             if (createDirect) {
                 try {
@@ -1803,21 +1803,20 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
 
                 if (maxWait > 0) {
-                    long maxWaitNanos = nanos - TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis() - startTime);
-                    if (maxWaitNanos > 0) {
-                        holder = pollLast(maxWaitNanos);
+                    if (System.currentTimeMillis() < expiredTime) {
+                        holder = pollLast(startTime, expiredTime);
                     } else {
                         holder = null;
                         break;
                     }
                 } else {
-                    holder = takeLast();
+                    holder = takeLast(startTime);
                 }
 
                 if (holder != null) {
                     if (holder.discard) {
                         holder = null;
-                        if (maxWait > 0 && System.currentTimeMillis() - startTime >= maxWait) {
+                        if (maxWait > 0 && System.currentTimeMillis() >= expiredTime) {
                             break;
                         }
                         continue;
@@ -2342,13 +2341,28 @@ public class DruidDataSource extends DruidAbstractDataSource
         return true;
     }
 
-    DruidConnectionHolder takeLast() throws InterruptedException, SQLException {
+    private DruidConnectionHolder takeLast(long startTime) throws InterruptedException, SQLException {
+        return pollLast(startTime, 0);
+    }
+
+    private DruidConnectionHolder pollLast(long startTime, long expiredTime) throws InterruptedException, SQLException {
         try {
+            long awaitStartTime;
+            long estimate = 0;
             while (poolingCount == 0) {
-                emptySignal(); // send signal to CreateThread create connection
+                // send signal to CreateThread create connection
+                emptySignal();
 
                 if (failFast && isFailContinuous()) {
                     throw new DataSourceNotAvailableException(createError);
+                }
+
+                awaitStartTime = System.currentTimeMillis();
+                if (expiredTime != 0) {
+                    estimate = expiredTime - awaitStartTime;
+                    if (estimate <= 0) {
+                        return null;
+                    }
                 }
 
                 notEmptyWaitThreadCount++;
@@ -2356,11 +2370,17 @@ public class DruidDataSource extends DruidAbstractDataSource
                     notEmptyWaitThreadPeak = notEmptyWaitThreadCount;
                 }
                 try {
-                    notEmpty.await(); // signal by recycle or creator
+                    // signal by recycle or creator
+                    if (estimate == 0) {
+                        notEmpty.await();
+                    } else {
+                        notEmpty.await(estimate, TimeUnit.MILLISECONDS);
+                    }
                 } finally {
                     notEmptyWaitThreadCount--;
+                    notEmptyWaitCount++;
+                    notEmptyWaitNanos += TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis() - awaitStartTime);
                 }
-                notEmptyWaitCount++;
 
                 if (!enable) {
                     connectErrorCountUpdater.incrementAndGet(this);
@@ -2369,6 +2389,10 @@ public class DruidDataSource extends DruidAbstractDataSource
                     }
 
                     throw new DataSourceDisableException();
+                }
+
+                if (poolingCount == 0) {
+                    continue;
                 }
             }
         } catch (InterruptedException ie) {
@@ -2381,71 +2405,10 @@ public class DruidDataSource extends DruidAbstractDataSource
         DruidConnectionHolder last = connections[poolingCount];
         connections[poolingCount] = null;
 
+        long waitNanos = System.currentTimeMillis() - startTime;
+        last.setLastNotEmptyWaitNanos(waitNanos);
+
         return last;
-    }
-
-    private DruidConnectionHolder pollLast(long maxWaitNanos) throws InterruptedException, SQLException {
-        long estimate = maxWaitNanos;
-
-        for (; ; ) {
-            if (poolingCount == 0) {
-                emptySignal(); // send signal to CreateThread create connection
-
-                if (failFast && isFailContinuous()) {
-                    throw new DataSourceNotAvailableException(createError);
-                }
-
-                if (estimate <= 0) {
-                    return null;
-                }
-
-                notEmptyWaitThreadCount++;
-                if (notEmptyWaitThreadCount > notEmptyWaitThreadPeak) {
-                    notEmptyWaitThreadPeak = notEmptyWaitThreadCount;
-                }
-
-                try {
-                    long startEstimate = estimate;
-                    estimate = notEmpty.awaitNanos(estimate); // signal by
-                    // recycle or
-                    // creator
-                    notEmptyWaitCount++;
-                    notEmptyWaitNanos += (startEstimate - estimate);
-
-                    if (!enable) {
-                        connectErrorCountUpdater.incrementAndGet(this);
-
-                        if (disableException != null) {
-                            throw disableException;
-                        }
-
-                        throw new DataSourceDisableException();
-                    }
-                } catch (InterruptedException ie) {
-                    notEmpty.signal(); // propagate to non-interrupted thread
-                    notEmptySignalCount++;
-                    throw ie;
-                } finally {
-                    notEmptyWaitThreadCount--;
-                }
-
-                if (poolingCount == 0) {
-                    if (estimate > 0) {
-                        continue;
-                    }
-                    return null;
-                }
-            }
-
-            decrementPoolingCount();
-            DruidConnectionHolder last = connections[poolingCount];
-            connections[poolingCount] = null;
-
-            long waitNanos = maxWaitNanos - estimate;
-            last.setLastNotEmptyWaitNanos(waitNanos);
-
-            return last;
-        }
     }
 
     private final void decrementPoolingCount() {
