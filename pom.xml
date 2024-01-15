@@ -39,7 +39,7 @@
 		<springboot3.version>3.0.6</springboot3.version>
 
 		<junit.version>4.13.1</junit.version>
-		<jmh.version>1.19</jmh.version>
+		<jmh.version>1.37</jmh.version>
 
 		<gpg.skip>false</gpg.skip>
 		<javadoc.skip>false</javadoc.skip>
@@ -110,6 +110,13 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.openjdk.jmh</groupId>
+							<artifactId>jmh-generator-annprocess</artifactId>
+							<version>${jmh.version}</version>
+						</path>
+					</annotationProcessorPaths>
 					<parameters>true</parameters>
 				</configuration>
 				<executions>
@@ -486,9 +493,6 @@
 				<jdk>[17,)</jdk>
 			</activation>
 			<modules>
-				<!--
-                <module>example-graalvm-native</module>
-                -->
 				<module>druid-spring-boot-3-starter</module>
 			</modules>
 		</profile>
