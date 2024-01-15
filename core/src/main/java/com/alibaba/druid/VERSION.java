@@ -18,7 +18,7 @@ package com.alibaba.druid;
 public final class VERSION {
     public static final int MajorVersion = 1;
     public static final int MinorVersion = 2;
-    public static final int RevisionVersion = 21;
+    public static final int RevisionVersion = 22;
 
     public static String getVersionNumber() {
         return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
