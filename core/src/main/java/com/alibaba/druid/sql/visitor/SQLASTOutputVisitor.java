@@ -10790,6 +10790,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLCurrentTimeExpr x) {
         final SQLCurrentTimeExpr.Type type = x.getType();
         print(ucase ? type.name : type.nameLCase);
+
+        String timeZone = x.getTimeZone();
+        if (timeZone != null) {
+            print(ucase ? " AT TIME ZONE" : " at time zone");
+            print0(timeZone);
+        }
         return false;
     }
 
