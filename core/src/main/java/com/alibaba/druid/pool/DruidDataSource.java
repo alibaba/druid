@@ -1621,9 +1621,10 @@ public class DruidDataSource extends DruidAbstractDataSource
             activeCount--;
             discardCount++;
 
-            if (activeCount + poolingCount + createTaskCount < minIdle) {
+            int fillCount = minIdle - (activeCount + poolingCount + createTaskCount);
+            if (fillCount > 0) {
                 emptySignalCalled = true;
-                emptySignal();
+                emptySignal(fillCount);
             }
         } finally {
             lock.unlock();
@@ -1662,9 +1663,10 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             holder.discard = true;
 
-            if (activeCount + poolingCount + createTaskCount < minIdle) {
+            int fillCount = minIdle - (activeCount + poolingCount + createTaskCount);
+            if (fillCount > 0) {
                 emptySignalCalled = true;
-                emptySignal();
+                emptySignal(fillCount);
             }
         } finally {
             lock.unlock();
@@ -3422,7 +3424,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                         discardCount++;
 
                         if (activeCount + poolingCount + createTaskCount < minIdle) {
-                            emptySignal();
+                            needFill = true;
                         }
                     } finally {
                         lock.unlock();
@@ -3438,9 +3440,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             lock.lock();
             try {
                 int fillCount = minIdle - (activeCount + poolingCount + createTaskCount);
-                for (int i = 0; i < fillCount; ++i) {
-                    emptySignal();
-                }
+                emptySignal(fillCount);
             } finally {
                 lock.unlock();
             }
@@ -4094,20 +4094,29 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     private void emptySignal() {
-        if (activeCount + poolingCount + createTaskCount >= maxActive) {
-            return;
-        }
+        emptySignal(1);
+    }
 
+    private void emptySignal(int fillCount) {
         if (createScheduler == null) {
+            if (activeCount + poolingCount >= maxActive) {
+                return;
+            }
             empty.signal();
             return;
         }
 
-        if (createTaskCount >= maxCreateTaskCount) {
-            return;
-        }
+        for (int i = 0; i < fillCount; i++) {
+            if (activeCount + poolingCount + createTaskCount >= maxActive) {
+                return;
+            }
 
-        submitCreateTask(false);
+            if (createTaskCount >= maxCreateTaskCount) {
+                return;
+            }
+
+            submitCreateTask(false);
+        }
     }
 
     @Override
