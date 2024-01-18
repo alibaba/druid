@@ -1211,10 +1211,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                     }
 
                     SQLExpr column = columns.get(i);
+                    if (column.hasBeforeComment()) {
+                        print(' ');
+                        printlnComment(column.getBeforeCommentsDirect());
+                        println();
+                    }
                     if (column instanceof SQLIdentifierExpr) {
                         printName0(((SQLIdentifierExpr) column).getName());
                     } else {
                         printExpr(column, parameterized);
+                    }
+                    if (column.hasAfterComment()) {
+                        print(' ');
+                        printlnComment(column.getAfterCommentsDirect());
+                        println();
                     }
                 }
                 print(')');
