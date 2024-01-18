@@ -4927,15 +4927,20 @@ public class MySqlStatementParser extends SQLStatementParser {
                                 identName = lexer.stringVal();
                                 hash = 0;
                             }
-                            lexer.nextTokenComma();
                             SQLExpr expr = new SQLIdentifierExpr(identName, hash);
+                            if (lexer.hasComment()) {
+                                expr.addBeforeComment(lexer.readAndResetComments());
+                            }
+                            lexer.nextTokenComma();
                             while (lexer.token() == Token.DOT) {
                                 lexer.nextToken();
                                 String propertyName = lexer.stringVal();
                                 lexer.nextToken();
                                 expr = new SQLPropertyExpr(expr, propertyName);
                             }
-
+                            if (lexer.hasComment()) {
+                                expr.addAfterComment(lexer.readAndResetComments());
+                            }
                             expr.setParent(stmt);
                             columns.add(expr);
                             columnSize++;
