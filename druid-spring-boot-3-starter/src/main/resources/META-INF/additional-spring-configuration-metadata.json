@@ -15,7 +15,7 @@
       "type": "java.lang.Boolean",
       "sourceType": "com.mmtrix.base.druid.spring.boot3.autoconfigure.stat.DruidFilterConfiguration",
       "description": "Enable StatFilter.",
-      "defaultValue": true
+      "defaultValue": false
     },
     {
       "name": "spring.datasource.druid.filter.config.enabled",
