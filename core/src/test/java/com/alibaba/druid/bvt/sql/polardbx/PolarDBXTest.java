@@ -106,6 +106,25 @@ public class PolarDBXTest extends TestCase {
         System.out.println(table.getStatement());
     }
 
+
+    public void test_polardb_x_5_1() throws Throwable {
+        SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
+        String sql5 = "CREATE TABLE `test` (\t`id` varchar(32) NOT NULL DEFAULT '' COMMENT 'id',\n"
+            + "\tKEY `idx_createTime` USING BTREE (`create_time`)\n"
+            + ") ENGINE = InnoDB DEFAULT CHARSET = utf8\n"
+            + "SINGLE\n"
+            + "LOCAL PARTITION BY RANGE (create_time)\n"
+            + "INTERVAL 1 MONTH\n"
+            + "EXPIRE AFTER 27\n"
+            + "PRE ALLOCATE 2\n"
+            + "PIVOTDATE NOW()";
+        repository.console(sql5);
+//        repository.setDefaultSchema("test4");
+        SchemaObject table = repository.findTable("test");
+        Assert.assertTrue(table != null);
+        System.out.println(table.getStatement());
+    }
+
     public void test_polardb_x_6(){
         // test for global index with partition by
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);

@@ -1109,6 +1109,11 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
+            if (lexer.identifierEquals(FnvHash.Constants.SINGLE)) {
+                lexer.nextToken();
+                stmt.setSingle(true);
+                continue;
+            }
             break;
         }
 
