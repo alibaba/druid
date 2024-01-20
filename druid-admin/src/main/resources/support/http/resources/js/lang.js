@@ -175,6 +175,7 @@ druid.lang = function() {
 		'ExecRsHisto':['ExecRsHisto','执行+RS时分布'],
 		'FetchRowHisto':['FetchRowHisto','读取行分布'],
 		'UpdateHisto':['UpdateHisto','更新行分布'],
+		'DeleteHisto': ['DeleteHisto', '删除行分布'],
 		'InTransactionCount' : ['Txn','事务执行'],
 		'MaxTimespanDesc' : ['Execute Time Millis Max','最慢的执行耗时'],
 		'InTransactionCountDesc' : ['Execute In Transaction Count','在事务中运行的次数'],
