@@ -1117,6 +1117,9 @@ public class WebAppStat {
         val.jdbcExecuteTimeNano = get(jdbcExecuteTimeNano, reset);
         val.jdbcCommitCount = get(jdbcCommitCount, reset);
         val.jdbcRollbackCount = get(jdbcRollbackCount, reset);
+        if (val.sessionCount < 1) {
+            return val;
+        }
 
         val.osMacOSXCount = get(osMacOSXCount, reset);
         val.osWindowsCount = get(osWindowsCount, reset);
