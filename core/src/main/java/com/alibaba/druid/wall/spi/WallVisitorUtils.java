@@ -221,7 +221,7 @@ public class WallVisitorUtils {
             if (Boolean.TRUE.equals(whereValue)) {
                 if (visitor.getConfig().isSelectWhereAlwayTrueCheck()
                         && visitor.isSqlEndOfComment()
-                        && !isSimpleConstExpr(where)) {
+                        && isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "select alway true condition not allow", x);
                 }
             }
@@ -238,7 +238,7 @@ public class WallVisitorUtils {
         if (Boolean.TRUE.equals(getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck()))) {
             if (visitor.getConfig().isSelectHavingAlwayTrueCheck()
                     && visitor.isSqlEndOfComment()
-                    && !isSimpleConstExpr(x)) {
+                    && isSimpleConstExpr(x)) {
                 addViolation(visitor, ErrorCode.ALWAYS_TRUE, "having alway true condition not allow", x);
             }
         }
@@ -277,7 +277,7 @@ public class WallVisitorUtils {
             checkCondition(visitor, where);
 
             if (Boolean.TRUE.equals(getConditionValue(visitor, where, config.isDeleteWhereAlwayTrueCheck()))) {
-                if (config.isDeleteWhereAlwayTrueCheck() && visitor.isSqlEndOfComment() && !isSimpleConstExpr(where)) {
+                if (config.isDeleteWhereAlwayTrueCheck() && visitor.isSqlEndOfComment() && isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "delete alway true condition not allow", x);
                 }
             }
@@ -867,7 +867,7 @@ public class WallVisitorUtils {
             checkCondition(visitor, where);
 
             if (Boolean.TRUE.equals(getConditionValue(visitor, where, config.isUpdateWhereAlayTrueCheck()))) {
-                if (config.isUpdateWhereAlayTrueCheck() && visitor.isSqlEndOfComment() && !isSimpleConstExpr(where)) {
+                if (config.isUpdateWhereAlayTrueCheck() && visitor.isSqlEndOfComment() && isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "update alway true condition not allow", x);
                 }
             }
@@ -1074,7 +1074,7 @@ public class WallVisitorUtils {
     }
 
     private static Object getValue_or(WallVisitor visitor, List<SQLExpr> groupList) {
-        boolean allFalse = true;
+        int falseCount = 0;
         for (int i = groupList.size() - 1; i >= 0; --i) {
             SQLExpr item = groupList.get(i);
             Object result = getValue(visitor, item);
@@ -1088,12 +1088,11 @@ public class WallVisitorUtils {
             }
 
             if (booleanVal == null) {
-                allFalse = false;
-                break;
+                falseCount ++;
             }
         }
 
-        if (allFalse) {
+        if (falseCount == groupList.size()) {
             return false;
         }
 
