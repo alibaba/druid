@@ -24,6 +24,7 @@ import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
+import com.alibaba.druid.stat.DataSourceStatable;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -59,7 +60,8 @@ import static com.alibaba.druid.util.JdbcConstants.POSTGRESQL_DRIVER;
  * @author wenshao [szujobs@hotmail.com]
  * @author ljw [ljw2083@alibaba-inc.com]
  */
-public abstract class DruidAbstractDataSource extends WrapperAdapter implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable {
+public abstract class DruidAbstractDataSource extends WrapperAdapter implements DruidAbstractDataSourceMBean, DataSource,
+    DataSourceProxy, Serializable, DataSourceStatable {
     private static final long serialVersionUID = 1L;
     private static final Log LOG = LogFactory.getLog(DruidAbstractDataSource.class);
 
@@ -1994,11 +1996,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public abstract int getActivePeak();
 
+    @Override
     public CompositeDataSupport getCompositeData() throws JMException {
-        JdbcDataSourceStat stat = this.getDataSourceStat();
-
         Map<String, Object> map = new HashMap<String, Object>();
-
         map.put("ID", getID());
         map.put("URL", this.getUrl());
         map.put("Name", this.getName());
@@ -2019,7 +2019,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         map.put("ConnectionRollbackCount", getRollbackCount());
 
         // 5 - 9
-        map.put("ConnectionConnectLastTime", stat.getConnectionStat().getConnectLastTime());
         map.put("ConnectionConnectErrorCount", this.getCreateCount());
         if (createError != null) {
             map.put("ConnectionConnectErrorLastTime", getLastCreateErrorTime());
@@ -2031,6 +2030,22 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             map.put("ConnectionConnectErrorLastStackTrace", null);
         }
 
+        // 35 - 39
+        map.put("ConnectionConnectCount", this.getConnectCount());
+        if (createError != null) {
+            map.put("ConnectionErrorLastMessage", createError.getMessage());
+            map.put("ConnectionErrorLastStackTrace", Utils.getStackTrace(createError));
+        } else {
+            map.put("ConnectionErrorLastMessage", null);
+            map.put("ConnectionErrorLastStackTrace", null);
+        }
+
+        fillStatDataToMap(getDataSourceStat(), map);
+        return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);
+    }
+
+    public static void fillStatDataToMap(final JdbcDataSourceStat stat, final Map<String, Object> map) {
+        map.put("ConnectionConnectLastTime", stat.getConnectionStat().getConnectLastTime());
         // 10 - 14
         map.put("StatementCreateCount", stat.getStatementStat().getCreateCount());
         map.put("StatementPrepareCount", stat.getStatementStat().getPrepareCount());
@@ -2066,15 +2081,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         map.put("ResultSetLastErrorMessage", null);
         map.put("ResultSetLastErrorStackTrace", null);
 
-        // 35 - 39
-        map.put("ConnectionConnectCount", this.getConnectCount());
-        if (createError != null) {
-            map.put("ConnectionErrorLastMessage", createError.getMessage());
-            map.put("ConnectionErrorLastStackTrace", Utils.getStackTrace(createError));
-        } else {
-            map.put("ConnectionErrorLastMessage", null);
-            map.put("ConnectionErrorLastStackTrace", null);
-        }
         map.put("ConnectionConnectMillisTotal", stat.getConnectionStat().getConnectMillis());
         map.put("ConnectionConnectingCountMax", stat.getConnectionStat().getConnectingMax());
 
@@ -2086,8 +2092,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         map.put("ConnectionHistogram", stat.getConnectionHistogramValues());
         map.put("StatementHistogram", stat.getStatementStat().getHistogramValues());
-
-        return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);
     }
 
     public long getID() {
