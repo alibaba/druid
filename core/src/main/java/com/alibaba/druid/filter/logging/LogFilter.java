@@ -79,7 +79,11 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected DataSourceProxy dataSource;
 
     public LogFilter() {
-        configFromProperties(System.getProperties());
+        this(System.getProperties());
+    }
+
+    public LogFilter(final Properties properties) {
+        configFromProperties(properties);
     }
 
     public void configFromProperties(Properties properties) {
@@ -145,11 +149,13 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         }
     }
 
+    private DbType dbType;
     @Override
     public void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
+        dbType = DbType.of(dataSource.getDbType());
         configFromProperties(dataSource.getConnectProperties());
-        configFromProperties(System.getProperties());
+        //configFromProperties(System.getProperties());
     }
 
     public boolean isConnectionLogErrorEnabled() {
@@ -397,7 +403,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                     .append(connection.getId());
 
             Connection impl = connection.getRawObject();
-            if (DbType.mysql == DbType.of(dataSource.getDbType())) {
+            if (DbType.mysql.equals(dbType)) {
                 Long procId = MySqlUtils.getId(impl);
                 if (procId != null) {
                     msg.append(",procId-").append(procId);
