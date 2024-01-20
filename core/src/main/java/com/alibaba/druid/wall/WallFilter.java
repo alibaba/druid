@@ -59,7 +59,13 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     public static final String ATTR_UPDATE_CHECK_ITEMS = "wall.updateCheckItems";
 
     public WallFilter() {
-        configFromProperties(System.getProperties());
+        this(System.getProperties());
+    }
+
+    public WallFilter(final Properties properties) {
+        if (properties != null) {
+            configFromProperties(properties);
+        }
     }
 
     @Override
