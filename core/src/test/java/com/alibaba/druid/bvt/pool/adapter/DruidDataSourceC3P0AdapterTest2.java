@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool.adapter;
 
+import java.io.Closeable;
 import javax.sql.DataSource;
 
 import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
@@ -83,7 +82,7 @@ public class DruidDataSourceC3P0AdapterTest2 extends PoolTestCase {
     }
 
     protected void tearDown() throws Exception {
-        for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (Closeable dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             dataSource.close();
         }
 
