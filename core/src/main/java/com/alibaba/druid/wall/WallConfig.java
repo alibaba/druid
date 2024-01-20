@@ -47,7 +47,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean startTransactionAllow = true;
     private boolean blockAllow = true;
 
-    private boolean conditionAndAlwayTrueAllow;
+    private boolean conditionAndAlwayTrueAllow = true;
     private boolean conditionAndAlwayFalseAllow;
     private boolean conditionDoubleConstAllow;
     private boolean conditionLikeTrueAllow = true;
