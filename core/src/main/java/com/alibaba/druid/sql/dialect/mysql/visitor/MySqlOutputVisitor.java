@@ -4121,6 +4121,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 SQLCharExpr authString = alterUser.getAuthOption().getAuthString();
                 authString.accept(this);
             }
+            if (alterUser.getAccountLockOption() != null) {
+                print0(ucase ? " ACCOUNT " : " account ");
+                print0(ucase ? alterUser.getAccountLockOption().toUpperCase() : alterUser.getAccountLockOption().toLowerCase());
+            }
         }
 
         MySqlAlterUserStatement.PasswordOption passwordOption = x.getPasswordOption();

@@ -87,6 +87,7 @@ public class MySqlAlterUserStatement extends MySqlStatementImpl implements SQLAl
         private SQLExpr user;
         private AuthOption authOption;
 
+        private String accountLockOption;
         public SQLExpr getUser() {
             return user;
         }
@@ -101,6 +102,14 @@ public class MySqlAlterUserStatement extends MySqlStatementImpl implements SQLAl
 
         public void setAuthOption(AuthOption authOption) {
             this.authOption = authOption;
+        }
+
+        public String getAccountLockOption() {
+            return accountLockOption;
+        }
+
+        public void setAccountLockOption(String accountLockOption) {
+            this.accountLockOption = accountLockOption;
         }
     }
 
