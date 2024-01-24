@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 import org.junit.After;
@@ -146,6 +147,15 @@ public class DruidDataSourceTest10 {
     public void test3() throws Exception {
         ds.setConnectionProperties("connectTimeout=3000;socketTimeout=6000");
         ds.setUrl("jdbc:mysql://127.0.0.1:3306/xxx");
+        ds.init();
+        assertEquals(3000, ds.getConnectTimeout());
+        assertEquals(6000, ds.getSocketTimeout());
+    }
+
+    @Test
+    public void test4() throws Exception {
+        ds.setConnectionProperties("connectTimeout=3000;socketTimeout=6000");
+        ds.setDriver(MockDriver.instance);
         ds.init();
         assertEquals(3000, ds.getConnectTimeout());
         assertEquals(6000, ds.getSocketTimeout());

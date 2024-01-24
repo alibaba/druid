@@ -838,8 +838,8 @@ public class DruidDataSource extends DruidAbstractDataSource
             if (this.jdbcUrl != null) {
                 this.jdbcUrl = this.jdbcUrl.trim();
                 initFromWrapDriverUrl();
-                initFromUrlOrProperties();
             }
+            initTimeoutsFromUrlOrProperties();
 
             for (Filter filter : filters) {
                 filter.init(this);
@@ -1014,35 +1014,34 @@ public class DruidDataSource extends DruidAbstractDataSource
         }
     }
 
-    private void initFromUrlOrProperties() {
-        if (isMysqlOrMariaDBUrl(jdbcUrl)) {
-            if (jdbcUrl.indexOf("connectTimeout=") != -1 || jdbcUrl.indexOf("socketTimeout=") != -1) {
-                String[] items = jdbcUrl.split("(\\?|&)");
-                for (int i = 0; i < items.length; i++) {
-                    String item = items[i];
-                    if (item.startsWith("connectTimeout=")) {
-                        String strVal = item.substring("connectTimeout=".length());
-                        setConnectTimeout(strVal);
-                    } else if (item.startsWith("socketTimeout=")) {
-                        String strVal = item.substring("socketTimeout=".length());
-                        setSocketTimeout(strVal);
-                    }
+    private void initTimeoutsFromUrlOrProperties() {
+        // createPhysicalConnection will set the corresponding parameters based on dbType.
+        if (jdbcUrl != null && (jdbcUrl.indexOf("connectTimeout=") != -1 || jdbcUrl.indexOf("socketTimeout=") != -1)) {
+            String[] items = jdbcUrl.split("(\\?|&)");
+            for (int i = 0; i < items.length; i++) {
+                String item = items[i];
+                if (item.startsWith("connectTimeout=")) {
+                    String strVal = item.substring("connectTimeout=".length());
+                    setConnectTimeout(strVal);
+                } else if (item.startsWith("socketTimeout=")) {
+                    String strVal = item.substring("socketTimeout=".length());
+                    setSocketTimeout(strVal);
                 }
             }
+        }
 
-            Object propertyConnectTimeout = connectProperties.get("connectTimeout");
-            if (propertyConnectTimeout instanceof String) {
-                setConnectTimeout((String) propertyConnectTimeout);
-            } else if (propertyConnectTimeout instanceof Number) {
-                setConnectTimeout(((Number) propertyConnectTimeout).intValue());
-            }
+        Object propertyConnectTimeout = connectProperties.get("connectTimeout");
+        if (propertyConnectTimeout instanceof String) {
+            setConnectTimeout((String) propertyConnectTimeout);
+        } else if (propertyConnectTimeout instanceof Number) {
+            setConnectTimeout(((Number) propertyConnectTimeout).intValue());
+        }
 
-            Object propertySocketTimeout = connectProperties.get("socketTimeout");
-            if (propertySocketTimeout instanceof String) {
-                setSocketTimeout((String) propertySocketTimeout);
-            } else if (propertySocketTimeout instanceof Number) {
-                setSocketTimeout(((Number) propertySocketTimeout).intValue());
-            }
+        Object propertySocketTimeout = connectProperties.get("socketTimeout");
+        if (propertySocketTimeout instanceof String) {
+            setSocketTimeout((String) propertySocketTimeout);
+        } else if (propertySocketTimeout instanceof Number) {
+            setSocketTimeout(((Number) propertySocketTimeout).intValue());
         }
     }
 
