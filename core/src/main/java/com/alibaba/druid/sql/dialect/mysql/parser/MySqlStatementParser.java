@@ -8447,7 +8447,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             SQLExpr user = this.exprParser.expr();
             alterUser.setUser(user);
-
+            if (lexer.identifierEquals("ACCOUNT")) {
+                lexer.nextToken();
+                alterUser.setAccountLockOption(lexer.stringVal());
+                lexer.nextToken();
+            }
             if (lexer.identifierEquals("IDENTIFIED")) {
                 lexer.nextToken();
                 accept(Token.BY);
