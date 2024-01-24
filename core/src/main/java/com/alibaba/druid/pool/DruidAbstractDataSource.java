@@ -1737,38 +1737,49 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 if (connectTimeoutStr == null) {
                     connectTimeoutStr = Integer.toString(connectTimeout);
                 }
-
                 physicalConnectProperties.put("connectTimeout", connectTimeoutStr);
             } else if (isOracle) {
                 if (connectTimeoutStr == null) {
                     connectTimeoutStr = Integer.toString(connectTimeout);
                 }
-
                 physicalConnectProperties.put("oracle.net.CONNECT_TIMEOUT", connectTimeoutStr);
-                // https://docs.oracle.com/cd/E21454_01/html/821-2594/cnfg_oracle-env_r.html
-                if (socketTimeout > 0) {
-                    if (socketTimeoutStr == null) {
-                        socketTimeoutStr = Integer.toString(socketTimeout);
-                    }
-                    // oracle.jdbc.ReadTimeout for jdbc versions >=10.1.0.5
-                    physicalConnectProperties.put("oracle.jdbc.ReadTimeout", socketTimeoutStr);
-                    // oracle.net.READ_TIMEOUT for jdbc versions < 10.1.0.5
-                    physicalConnectProperties.put("oracle.net.READ_TIMEOUT", socketTimeoutStr);
-                }
             } else if (driver != null && POSTGRESQL_DRIVER.equals(driver.getClass().getName())) {
                 // see https://github.com/pgjdbc/pgjdbc/blob/2b90ad04696324d107b65b085df4b1db8f6c162d/README.md
-                physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
-                physicalConnectProperties.put("connectTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
-                if (socketTimeout > 0) {
-                    physicalConnectProperties.put("socketTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(socketTimeout)));
+                if (connectTimeoutStr == null) {
+                    connectTimeoutStr = Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout));
                 }
+                physicalConnectProperties.put("loginTimeout", connectTimeoutStr);
+                physicalConnectProperties.put("connectTimeout", connectTimeoutStr);
             } else if (dbTypeName != null && DbType.sqlserver.name().equals(dbTypeName)) {
                 // see https://learn.microsoft.com/en-us/sql/connect/jdbc/setting-the-connection-properties?view=sql-server-ver16
-                physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
-                if (socketTimeout > 0) {
-                    // As SQLServer-jdbc-driver 6.1.2 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
-                    physicalConnectProperties.put("socketTimeout", Integer.toString(socketTimeout));
+                if (connectTimeoutStr == null) {
+                    connectTimeoutStr = Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout));
                 }
+                physicalConnectProperties.put("loginTimeout", connectTimeoutStr);
+            }
+        }
+
+        if (socketTimeout > 0) {
+            if (isOracle) {
+                // https://docs.oracle.com/cd/E21454_01/html/821-2594/cnfg_oracle-env_r.html
+                if (socketTimeoutStr == null) {
+                    socketTimeoutStr = Integer.toString(socketTimeout);
+                }
+                // oracle.jdbc.ReadTimeout for jdbc versions >=10.1.0.5
+                physicalConnectProperties.put("oracle.jdbc.ReadTimeout", socketTimeoutStr);
+                // oracle.net.READ_TIMEOUT for jdbc versions < 10.1.0.5
+                physicalConnectProperties.put("oracle.net.READ_TIMEOUT", socketTimeoutStr);
+            } else if (driver != null && POSTGRESQL_DRIVER.equals(driver.getClass().getName())) {
+                if (socketTimeoutStr == null) {
+                    socketTimeoutStr = Long.toString(TimeUnit.MILLISECONDS.toSeconds(socketTimeout));
+                }
+                physicalConnectProperties.put("socketTimeout", socketTimeoutStr);
+            } else if (dbTypeName != null && DbType.sqlserver.name().equals(dbTypeName)) {
+                // As SQLServer-jdbc-driver 6.1.2 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
+                if (socketTimeoutStr == null) {
+                    socketTimeoutStr = Integer.toString(socketTimeout);
+                }
+                physicalConnectProperties.put("socketTimeout", socketTimeoutStr);
             }
         }
 
