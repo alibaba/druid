@@ -169,4 +169,20 @@ public class DruidDataSourceTest10 {
         assertEquals(3000, ds.getConnectTimeout());
         assertEquals(6000, ds.getSocketTimeout());
     }
+
+    @Test
+    public void test6() throws Exception {
+        ds.setConnectionProperties("socketTimeout=6000");
+        ds.setDriver(MockDriver.instance);
+        ds.init();
+        assertEquals(6000, ds.getSocketTimeout());
+    }
+
+    @Test
+    public void test7() throws Exception {
+        ds.setDriver(MockDriver.instance);
+        ds.setUrl("jdbc:mock:xxx?socketTimeout=6000");
+        ds.init();
+        assertEquals(6000, ds.getSocketTimeout());
+    }
 }
