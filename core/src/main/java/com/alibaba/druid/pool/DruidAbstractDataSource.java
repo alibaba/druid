@@ -129,7 +129,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int connectTimeout; // milliSeconds
     protected volatile int socketTimeout; // milliSeconds
     private volatile String connectTimeoutStr;
-    private volatile String socketTimeoutSr;
+    private volatile String socketTimeoutStr;
 
     protected volatile int queryTimeout; // seconds
     protected volatile int transactionQueryTimeout; // seconds
@@ -1049,7 +1049,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
      */
     public void setSocketTimeout(int milliSeconds) {
         this.socketTimeout = milliSeconds;
-        this.socketTimeoutSr = null;
+        this.socketTimeoutStr = null;
     }
 
     protected void setSocketTimeout(String milliSeconds) {
@@ -1058,7 +1058,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         } catch (Exception ignored) {
             // ignored
         }
-        this.socketTimeoutSr = null;
+        this.socketTimeoutStr = null;
     }
 
     public String getName() {
@@ -1745,6 +1745,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
 
                 physicalConnectProperties.put("oracle.net.CONNECT_TIMEOUT", connectTimeoutStr);
+                // https://docs.oracle.com/cd/E21454_01/html/821-2594/cnfg_oracle-env_r.html
+                if (socketTimeout > 0) {
+                    if (socketTimeoutStr == null) {
+                        socketTimeoutStr = Integer.toString(socketTimeout);
+                    }
+                    // oracle.jdbc.ReadTimeout for jdbc versions >=10.1.0.5
+                    physicalConnectProperties.put("oracle.jdbc.ReadTimeout", socketTimeoutStr);
+                    // oracle.net.READ_TIMEOUT for jdbc versions < 10.1.0.5
+                    physicalConnectProperties.put("oracle.net.READ_TIMEOUT", socketTimeoutStr);
+                }
             } else if (driver != null && POSTGRESQL_DRIVER.equals(driver.getClass().getName())) {
                 // see https://github.com/pgjdbc/pgjdbc/blob/2b90ad04696324d107b65b085df4b1db8f6c162d/README.md
                 physicalConnectProperties.put("loginTimeout", Long.toString(TimeUnit.MILLISECONDS.toSeconds(connectTimeout)));
@@ -2168,7 +2178,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         to.destroyScheduler = this.destroyScheduler;
         to.socketTimeout = this.socketTimeout;
         to.connectTimeout = this.connectTimeout;
-        to.socketTimeoutSr = this.socketTimeoutSr;
+        to.socketTimeoutStr = this.socketTimeoutStr;
         to.connectTimeoutStr = this.connectTimeoutStr;
     }
 
