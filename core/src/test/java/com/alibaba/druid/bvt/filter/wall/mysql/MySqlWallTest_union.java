@@ -27,7 +27,7 @@ public class MySqlWallTest_union extends TestCase {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2", config)); // not end of comment
+        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2", config)); // not end of comment
         Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2 --", config));
 
         Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t union select 1, 2", config)); // no where

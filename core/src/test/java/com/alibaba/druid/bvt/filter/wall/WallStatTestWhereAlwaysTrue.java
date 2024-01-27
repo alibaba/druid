@@ -10,6 +10,9 @@ import org.junit.Assert;
 
 public class WallStatTestWhereAlwaysTrue extends TestCase {
     private String[] sqls = new String[]{
+            "select * from T where a=1 or 1=1",
+            "update T set name='N' where a=1 or 1=1",
+            "delete from T where a=1 or 1=1",
             "update T set name='N' where 1=1",
             "delete from T where 1=1",
             "select * from T where 1=1",

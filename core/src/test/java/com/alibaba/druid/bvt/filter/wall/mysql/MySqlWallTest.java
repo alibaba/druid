@@ -46,7 +46,7 @@ public class MySqlWallTest extends TestCase {
 
         //Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where c1=1 union select 1, 2"));
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select c1 from t where 1=1 or id =1"));
+        Assert.assertFalse(WallUtils.isValidateMySql("select c1 from t where 1=1 or id =1"));
         Assert.assertFalse(WallUtils.isValidateMySql("select c1 from t where id =1 or 1=1"));
         Assert.assertFalse(WallUtils.isValidateMySql("select c1 from t where id =1 || 1=1"));
 

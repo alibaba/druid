@@ -20,6 +20,8 @@ public class AntlrMySqlTest extends TestCase {
         config.setConditionDoubleConstAllow(true);
         config.setConditionAndAlwayTrueAllow(true);
         config.setSelectIntoOutfileAllow(true);
+        config.setSelectWhereAlwayTrueCheck(false); //FIXME 此处是否要禁用审核h
+        config.setSelectUnionCheck(false); //FIXME 此处是否要禁用审核
         config.setCommentAllow(true);
         config.setHintAllow(true);
         MySqlWallProvider provider = new MySqlWallProvider(config);
@@ -36,7 +38,7 @@ public class AntlrMySqlTest extends TestCase {
                 String stmtSql = stmt.toString();
 
                 stmt.accept(schemaStatVisitor);
-                assertTrue(provider.checkValid(stmtSql));
+                assertTrue(stmtSql, provider.checkValid(stmtSql));
             }
             
             // test different style newline.

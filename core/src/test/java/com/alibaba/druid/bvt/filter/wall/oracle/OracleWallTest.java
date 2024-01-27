@@ -26,8 +26,15 @@ public class OracleWallTest extends TestCase {
     public void testWall() throws Exception {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
-        assertTrue(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2", config));
+        config.setCommentAllow(false);
+        assertFalse(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2", config));
         assertFalse(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2 --", config));
+
+        config.setSelectUnionCheck(false);
+        config.setCommentAllow(true);
+        assertTrue(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2", config));
+        assertTrue(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2 --", config));
+
 
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from TAB"));
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from ALL_TABLES where (1=1 or (1+1)=2) and (4=8 or 1=1)"));
