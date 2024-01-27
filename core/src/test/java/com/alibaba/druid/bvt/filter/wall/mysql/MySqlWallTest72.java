@@ -35,10 +35,16 @@ public class MySqlWallTest72 extends TestCase {
 
         provider.getConfig().setCommentAllow(true);
 
-        Assert.assertFalse(provider.checkValid(//
+        Assert.assertTrue(provider.checkValid(//
                 "select * from t /**/ where fid = 123 AND 1=1"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
+
+        provider.reset();
+        provider.getConfig().setCommentAllow(false);
+        Assert.assertFalse(provider.checkValid(//
+                "select * from t /**/ where fid = 123 AND 1=1 --")); //FIXME /**/
+
     }
 
 }

@@ -38,6 +38,9 @@ public class WallSelectWhereTest6 extends TestCase {
 
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
         Assert.assertFalse(WallUtils.isValidateMySql(sql1, config));
+
+        config.setSelectWhereAlwayTrueCheck(false);
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test_check_false() throws Exception {

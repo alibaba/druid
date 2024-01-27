@@ -193,7 +193,8 @@ public class WallVisitorUtils {
             checkReadOnly(visitor, x.getInto());
         }
 
-        if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
+        final WallConfig config = visitor.getConfig();
+        if (!config.isSelectIntoAllow() && x.getInto() != null) {
             addViolation(visitor, ErrorCode.SELECT_INTO_NOT_ALLOW, "select into not allow", x);
             return;
         }
@@ -216,12 +217,10 @@ public class WallVisitorUtils {
         if (where != null) {
             checkCondition(visitor, x.getWhere());
 
-            Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck());
+            Object whereValue = getConditionValue(visitor, where, config.isSelectWhereAlwayTrueCheck());
 
             if (Boolean.TRUE.equals(whereValue)) {
-                if (visitor.getConfig().isSelectWhereAlwayTrueCheck()
-                        && visitor.isSqlEndOfComment()
-                        && isSimpleConstExpr(where)) {
+                if (config.isSelectWhereAlwayTrueCheck() && visitor.isSqlEndOfComment() && isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "select alway true condition not allow", x);
                 }
             }
@@ -320,18 +319,15 @@ public class WallVisitorUtils {
                 if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
                         || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual
                         || binaryOpExpr.getOperator() == SQLBinaryOperator.GreaterThan) {
-                    if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
-                            && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
                         isSimpleConstExpr = true;
-                    }
                 }
             }
 
-            if (!isSimpleConstExpr) {
-                return false;
+            if (isSimpleConstExpr) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private static void checkCondition(WallVisitor visitor, SQLExpr x) {
@@ -1063,7 +1059,9 @@ public class WallVisitorUtils {
                 }
             }
         }
-
+        if (false && leftResult == null && rightResult == null) {
+            return null;
+        }
         DbType dbType = null;
         WallContext wallContext = WallContext.current();
         if (wallContext != null) {
@@ -1078,7 +1076,7 @@ public class WallVisitorUtils {
         for (int i = groupList.size() - 1; i >= 0; --i) {
             SQLExpr item = groupList.get(i);
             Object result = getValue(visitor, item);
-            Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
+            final Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
             if (booleanVal != null && booleanVal.booleanValue()) {
                 final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
                 if (wallContext != null && !isFirst(item)) {
@@ -1087,8 +1085,8 @@ public class WallVisitorUtils {
                 return true;
             }
 
-            if (booleanVal == null) {
-                falseCount ++;
+            if (Boolean.FALSE.equals(booleanVal)) {
+                falseCount++;
             }
         }
 
@@ -1101,7 +1099,8 @@ public class WallVisitorUtils {
 
     private static Object getValue_and(WallVisitor visitor, List<SQLExpr> groupList) {
         int dalConst = 0;
-        Boolean allTrue = Boolean.TRUE;
+        int trueCount = 0;
+        int falseCount = 0;
         for (int i = groupList.size() - 1; i >= 0; --i) {
             SQLExpr item = groupList.get(i);
             Object result = getValue(visitor, item);
@@ -1113,17 +1112,15 @@ public class WallVisitorUtils {
                     wallContext.setPartAlwayTrue(true);
                 }
                 dalConst++;
+                trueCount++;
             } else if (Boolean.FALSE.equals(booleanVal)) {
                 final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
                 if (wallContext != null && !isFirst(item)) {
                     wallContext.setPartAlwayFalse(true);
                 }
-                allTrue = Boolean.FALSE;
+                falseCount++;
                 dalConst++;
             } else {
-                if (!Boolean.FALSE.equals(allTrue)) {
-                    allTrue = null;
-                }
                 dalConst = 0;
             }
 
@@ -1132,10 +1129,10 @@ public class WallVisitorUtils {
             }
         }
 
-        if (Boolean.TRUE.equals(allTrue)) {
-            return true;
-        } else if (Boolean.FALSE.equals(allTrue)) {
+        if (falseCount > 0) {
             return false;
+        } else if (trueCount == groupList.size()) {
+            return true;
         }
         return null;
     }
@@ -1447,7 +1444,7 @@ public class WallVisitorUtils {
             }
 
             if (current.hasXor() && !visitor.getConfig().isConditionOpXorAllow()) {
-                addViolation(visitor, ErrorCode.XOR, "xor not allow", x);
+                addViolation(visitor, ErrorCode.XOR, " allow", x);
             }
 
             if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {

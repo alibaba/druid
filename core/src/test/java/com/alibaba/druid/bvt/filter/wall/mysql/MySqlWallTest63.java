@@ -33,17 +33,24 @@ public class MySqlWallTest63 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
-        provider.getConfig().setSelectUnionCheck(true);
+        provider.getConfig().setSelectUnionCheck(false);
         provider.setBlackListEnable(false);
         provider.setWhiteListEnable(false);
 
-        Assert.assertTrue(provider.checkValid(//
-                "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA'"));
-
-        Assert.assertFalse(provider.checkValid(//
-                "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA' --"));
+        final String sql1 = "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA'";
+        Assert.assertTrue(provider.checkValid(sql1));
+        final String sql2 = "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA' --";
+        Assert.assertFalse(provider.checkValid(sql2));
 
         Assert.assertEquals(1, provider.getTableStats().size());
+
+        provider.reset();
+        provider.getConfig().setCommentAllow(true);
+        provider.getConfig().setSelectUnionCheck(false);
+
+        Assert.assertTrue(provider.checkValid(sql2));
+
+        Assert.assertTrue(provider.checkValid(sql2));
     }
 
 }
