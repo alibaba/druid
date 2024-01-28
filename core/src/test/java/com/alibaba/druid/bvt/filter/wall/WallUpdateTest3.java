@@ -38,26 +38,26 @@ public class WallUpdateTest3 extends TestCase {
     }
 
     public void testMySql() throws Exception {
-        config.setUpdateWhereAlayTrueCheck(true);
+        config.setUpdateWhereAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(false);
 
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
         Assert.assertFalse(WallUtils.isValidateMySql(sql2, config));
 
-        config.setUpdateWhereAlayTrueCheck(false);
+        config.setUpdateWhereAlwayTrueCheck(false);
         config.setConditionAndAlwayTrueAllow(true);
         Assert.assertTrue(WallUtils.isValidateMySql(sql2, config));
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void testORACLE() throws Exception {
-        config.setUpdateWhereAlayTrueCheck(true);
+        config.setUpdateWhereAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(false);
 
         Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
         Assert.assertFalse(WallUtils.isValidateOracle(sql2, config));
 
-        config.setUpdateWhereAlayTrueCheck(false);
+        config.setUpdateWhereAlwayTrueCheck(false);
         config.setConditionAndAlwayTrueAllow(true);
         Assert.assertTrue(WallUtils.isValidateOracle(sql2, config));
         Assert.assertTrue(WallUtils.isValidateOracle(sql, config));

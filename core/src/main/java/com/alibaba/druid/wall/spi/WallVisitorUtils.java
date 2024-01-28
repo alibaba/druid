@@ -862,8 +862,8 @@ public class WallVisitorUtils {
         } else {
             checkCondition(visitor, where);
 
-            if (Boolean.TRUE.equals(getConditionValue(visitor, where, config.isUpdateWhereAlayTrueCheck()))) {
-                if (config.isUpdateWhereAlayTrueCheck() && visitor.isSqlEndOfComment() && isSimpleConstExpr(where)) {
+            if (Boolean.TRUE.equals(getConditionValue(visitor, where, config.isUpdateWhereAlwayTrueCheck()))) {
+                if (config.isUpdateWhereAlwayTrueCheck() && visitor.isSqlEndOfComment() && isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "update alway true condition not allow", x);
                 }
             }

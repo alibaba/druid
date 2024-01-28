@@ -59,7 +59,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean deleteWhereNoneCheck;
 
     private boolean updateAllow = true;
-    private boolean updateWhereAlayTrueCheck = true;
+    private boolean updateWhereAlwayTrueCheck = true;
     private boolean updateWhereNoneCheck;
 
     private boolean insertAllow = true;
@@ -758,13 +758,22 @@ public class WallConfig implements WallConfigMBean {
     }
 
     public boolean isUpdateWhereAlayTrueCheck() {
-        return updateWhereAlayTrueCheck;
+        return updateWhereAlwayTrueCheck;
     }
 
-    public void setUpdateWhereAlayTrueCheck(boolean updateWhereAlayTrueCheck) {
-        this.updateWhereAlayTrueCheck = updateWhereAlayTrueCheck;
+    @Deprecated
+    public void setUpdateWhereAlayTrueCheck(boolean updateWhereAlwayTrueCheck) {
+        this.updateWhereAlwayTrueCheck = updateWhereAlwayTrueCheck;
     }
 
+    public boolean isUpdateWhereAlwayTrueCheck() {
+        return updateWhereAlwayTrueCheck;
+    }
+    public void setUpdateWhereAlwayTrueCheck(boolean updateWhereAlwayTrueCheck) {
+        this.updateWhereAlwayTrueCheck = updateWhereAlwayTrueCheck;
+    }
+
+    @Deprecated
     public boolean isConditionOpBitwseAllow() {
         return conditionOpBitwseAllow;
     }
