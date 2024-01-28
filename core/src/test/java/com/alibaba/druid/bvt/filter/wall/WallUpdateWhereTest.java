@@ -36,12 +36,12 @@ public class WallUpdateWhereTest extends TestCase {
         Assert.assertTrue(WallUtils.isValidateMySql(sql2));
         final WallConfig config = new WallConfig();
         config.setConditionAndAlwayTrueAllow(true);
-        config.setUpdateWhereAlayTrueCheck(true);
+        config.setUpdateWhereAlwayTrueCheck(true);
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
         Assert.assertTrue(WallUtils.isValidateMySql(sql2, config));
 
         config.setConditionAndAlwayTrueAllow(false);
-        config.setUpdateWhereAlayTrueCheck(false);
+        config.setUpdateWhereAlwayTrueCheck(false);
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
         Assert.assertFalse(WallUtils.isValidateMySql(sql2, config));
     }
@@ -51,12 +51,12 @@ public class WallUpdateWhereTest extends TestCase {
         Assert.assertTrue(WallUtils.isValidateOracle(sql2));
         final WallConfig config = new WallConfig();
         config.setConditionAndAlwayTrueAllow(true);
-        config.setUpdateWhereAlayTrueCheck(true);
+        config.setUpdateWhereAlwayTrueCheck(true);
         Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
         Assert.assertTrue(WallUtils.isValidateOracle(sql2, config));
 
         config.setConditionAndAlwayTrueAllow(false);
-        config.setUpdateWhereAlayTrueCheck(false);
+        config.setUpdateWhereAlwayTrueCheck(false);
         Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
         Assert.assertFalse(WallUtils.isValidateOracle(sql2, config));
     }
