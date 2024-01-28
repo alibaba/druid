@@ -24,7 +24,7 @@ import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
-import com.alibaba.druid.stat.DataSourceStatable;
+import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -61,7 +61,7 @@ import static com.alibaba.druid.util.JdbcConstants.POSTGRESQL_DRIVER;
  * @author ljw [ljw2083@alibaba-inc.com]
  */
 public abstract class DruidAbstractDataSource extends WrapperAdapter implements DruidAbstractDataSourceMBean, DataSource,
-    DataSourceProxy, Serializable, DataSourceStatable {
+    DataSourceProxy, Serializable, DataSourceMonitorable {
     private static final long serialVersionUID = 1L;
     private static final Log LOG = LogFactory.getLog(DruidAbstractDataSource.class);
 

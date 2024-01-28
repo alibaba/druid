@@ -26,7 +26,7 @@ import org.junit.Assert;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockConnectionClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DataSourceStatable;
+import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Bug_for_dupCloseStmtError extends PoolTestCase {
@@ -43,7 +43,7 @@ public class Bug_for_dupCloseStmtError extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        for (DataSourceStatable dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DataSourceMonitorable dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             JdbcUtils.close(dataSource);
         }
 
