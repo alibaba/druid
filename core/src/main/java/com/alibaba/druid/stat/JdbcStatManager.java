@@ -267,8 +267,8 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
             }
         }
 
-        final Set<DataSourceStatable> dataSources = DruidDataSourceStatManager.getDruidDataSourceInstances();
-        for (DataSourceStatable dataSource : dataSources) {
+        final Set<DataSourceMonitorable> dataSources = DruidDataSourceStatManager.getDruidDataSourceInstances();
+        for (DataSourceMonitorable dataSource : dataSources) {
             data.put(dataSource.getCompositeData());
         }
 
@@ -316,7 +316,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
             }
         }
 
-        for (DataSourceStatable dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DataSourceMonitorable dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             JdbcDataSourceStat druidDataSourceStat = dataSource.getDataSourceStat();
 
             if (druidDataSourceStat == globalStat) {
@@ -354,7 +354,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
             }
         }
 
-        for (DataSourceStatable instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DataSourceMonitorable instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             JdbcDataSourceStat dataSourceStat = instance.getDataSourceStat();
             ConcurrentMap<Long, JdbcConnectionStat.Entry> connections = dataSourceStat.getConnections();
             for (Map.Entry<Long, JdbcConnectionStat.Entry> entry : connections.entrySet()) {
@@ -378,7 +378,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
             dataSource.getDataSourceStat().reset();
         }
 
-        for (DataSourceStatable instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DataSourceMonitorable instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             instance.getDataSourceStat().reset();
         }
     }

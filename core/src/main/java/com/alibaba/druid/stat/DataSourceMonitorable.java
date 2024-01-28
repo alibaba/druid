@@ -31,7 +31,7 @@ import java.util.Map;
  *
  * 并在初始化调用DruidDataSourceStatManager.addDataSource，close 时调用DruidDataSourceStatManager.removeDataSource
  */
-public interface DataSourceStatable extends DataSourceProxy, Closeable {
+public interface DataSourceMonitorable extends DataSourceProxy, Closeable {
     void resetStat();
 
     String getInitStackTrace();
