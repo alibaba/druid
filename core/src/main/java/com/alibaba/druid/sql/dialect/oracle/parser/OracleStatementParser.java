@@ -2016,7 +2016,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     accept(Token.OF);
 
-                    name = this.exprParser.name();
+                    SQLName sqlName = this.exprParser.name();
 
                     if (lexer.token() == Token.PERCENT) {
                         lexer.nextToken();
@@ -2024,16 +2024,16 @@ public class OracleStatementParser extends SQLStatementParser {
                         String typeName;
                         if (lexer.identifierEquals(FnvHash.Constants.ROWTYPE)) {
                             lexer.nextToken();
-                            typeName = "TABLE OF " + name.toString() + "%ROWTYPE";
+                            typeName = "TABLE OF " + sqlName.toString() + "%ROWTYPE";
                         } else {
                             acceptIdentifier("TYPE");
-                            typeName = "TABLE OF " + name.toString() + "%TYPE";
+                            typeName = "TABLE OF " + sqlName.toString() + "%TYPE";
                         }
 
                         dataType = new SQLDataTypeImpl(typeName);
                     } else if (lexer.token() == Token.LPAREN) {
                         lexer.nextToken();
-                        String typeName = name.toString();
+                        String typeName = "TABLE OF " + sqlName.toString();
 
                         SQLIntegerExpr lenExpr = (SQLIntegerExpr) this.exprParser.expr();
                         int len = lenExpr.getNumber().intValue();
