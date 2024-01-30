@@ -21,7 +21,6 @@ public class OracleParameterParserTest {
 			"		DBMS_OUTPUT.PUT_LINE(i || '.' || team(i));\n" +
 			"	END LOOP;\n" +
 			"END;\n";
-
 		String expectedSql = "[DECLARE\n" +
 			"	TYPE Foursome IS TABLE OF VARCHAR2(15);\n" +
 			"	team Foursome := Foursome('John', 'Mary', 'Alberto', 'Juanita');\n" +
