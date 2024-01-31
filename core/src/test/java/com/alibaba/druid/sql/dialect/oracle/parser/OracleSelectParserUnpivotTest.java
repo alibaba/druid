@@ -1,7 +1,6 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
