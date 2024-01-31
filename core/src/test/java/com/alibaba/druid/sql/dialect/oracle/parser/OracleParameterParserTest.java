@@ -8,18 +8,8 @@ import org.junit.Test;
 
 public class OracleParameterParserTest {
 	@Test
-	public void testTableOfParameter() {
+	public void testNestedParameter() {
 		String sql = "DECLARE\n" +
-			"	TYPE Foursome IS TABLE OF VARCHAR2(15);\n" +
-			"	team Foursome := Foursome('John', 'Mary', 'Alberto', 'Juanita');\n" +
-			"BEGIN\n" +
-			"	DBMS_OUTPUT.PUT_LINE('2001 Team:');\n" +
-			"	FOR i IN 1..4\n" +
-			"	LOOP\n" +
-			"		DBMS_OUTPUT.PUT_LINE(i || '.' || team(i));\n" +
-			"	END LOOP;\n" +
-			"END;\n";
-		String expectedSql = "DECLARE\n" +
 			"	TYPE Foursome IS TABLE OF VARCHAR2(15);\n" +
 			"	team Foursome := Foursome('John', 'Mary', 'Alberto', 'Juanita');\n" +
 			"BEGIN\n" +
@@ -31,7 +21,7 @@ public class OracleParameterParserTest {
 			"END;";
 		SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
 		System.out.println(stat);
-		Assert.assertEquals(expectedSql, stat.toString());
+		Assert.assertEquals(sql, stat.toString());
 		System.out.println("=============");
 	}
 }
