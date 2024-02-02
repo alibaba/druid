@@ -1070,6 +1070,14 @@ public class SQLSelectParser extends SQLParser {
             selectList.add(selectItem);
             selectItem.setParent(queryBlock);
 
+            //https://github.com/alibaba/druid/issues/5708
+            if (lexer.hasComment()
+                    && lexer.isKeepComments()
+                    && lexer.getComments().size() == 1
+                    && lexer.getComments().get(0).startsWith("--")) {
+                selectItem.addAfterComment(lexer.readAndResetComments());
+            }
+
             if (lexer.token != Token.COMMA) {
                 break;
             }
