@@ -3563,12 +3563,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 }
 
                 SQLExpr column = columns.get(i);
+                // 打印 前注释
+                if (column.hasBeforeComment()) {
+                    printlnComments(column.getBeforeCommentsDirect());
+                }
                 if (column instanceof SQLIdentifierExpr) {
                     visit((SQLIdentifierExpr) column);
                 } else {
                     printExpr(column, parameterized);
                 }
-
+                // 打印 后注释
+                if (isPrettyFormat() && column.hasAfterComment()) {
+                    print(' ');
+                    printlnComment(column.getAfterCommentsDirect());
+                    println();
+                }
                 String dataType = (String) column.getAttribute("dataType");
                 if (dataType != null) {
                     print(' ');
