@@ -2264,7 +2264,8 @@ public class SQLStatementParser extends SQLParser {
                     }
 
                     stmt.addItem(item);
-                } else if (lexer.identifierEquals("CHANGEOWNER")) {
+                } else if (lexer.identifierEquals("CHANGEOWNER")
+                        || DbType.postgresql == dbType && lexer.identifierEquals("OWNER")) {
                     lexer.nextToken();
                     accept(TO);
                     SQLName name = this.exprParser.name();
