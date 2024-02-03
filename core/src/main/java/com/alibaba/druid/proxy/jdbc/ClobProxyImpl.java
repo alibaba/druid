@@ -16,7 +16,6 @@
 package com.alibaba.druid.proxy.jdbc;
 
 import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.filter.FilterChainImpl;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,7 +44,7 @@ public class ClobProxyImpl implements ClobProxy {
     }
 
     public FilterChain createChain() {
-        return new FilterChainImpl(dataSource);
+        return connection.createFilterChain(this);
     }
 
     public ConnectionProxy getConnectionWrapper() {

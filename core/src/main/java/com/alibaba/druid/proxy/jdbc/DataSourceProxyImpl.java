@@ -17,7 +17,7 @@ package com.alibaba.druid.proxy.jdbc;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.FilterChainFactory;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
@@ -94,8 +94,12 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             info.put("user", user);
         }
 
-        FilterChain chain = new FilterChainImpl(this);
+        FilterChain chain = createFilterChain(this);
         return chain.connection_connect(info);
+    }
+
+    public FilterChain createFilterChain(Object fromObj) {
+        return FilterChainFactory.ME.createFilterChain(this, null, fromObj);
     }
 
     public DataSourceProxyConfig getConfig() {

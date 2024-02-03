@@ -35,6 +35,8 @@ import java.util.concurrent.Executor;
 public interface FilterChain {
     DataSourceProxy getDataSource();
 
+    void reset();
+
     int getFilterSize();
 
     int getPos();

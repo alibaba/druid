@@ -17,7 +17,6 @@ package com.alibaba.druid.pool;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
@@ -271,7 +270,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             List<Filter> filters = dataSource.filters;
             int filtersSize = filters.size();
             if (filtersSize > 0) {
-                FilterChainImpl filterChain = holder.createChain();
+                FilterChain filterChain = holder.createChain();
                 try {
                     filterChain.dataSource_recycle(this);
                 } finally {
@@ -313,7 +312,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             DruidAbstractDataSource dataSource = holder.getDataSource();
             List<Filter> filters = dataSource.getProxyFilters();
             if (filters.size() > 0) {
-                FilterChainImpl filterChain = new FilterChainImpl(dataSource);
+                FilterChain filterChain = holder.createChain();
                 filterChain.dataSource_recycle(this);
             } else {
                 recycle();

@@ -16,7 +16,7 @@
 
 package com.alibaba.druid.proxy.jdbc;
 
-import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.FilterChain;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -28,7 +28,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
     private final ResultSetMetaData metaData;
     private final ResultSetProxy resultSet;
 
-    private FilterChainImpl filterChain;
+    private FilterChain filterChain;
 
     public ResultSetMetaDataProxyImpl(ResultSetMetaData metaData, long id, ResultSetProxy resultSet) {
         super(metaData, id);
@@ -38,7 +38,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public int getColumnCount() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         int value = chain.resultSetMetaData_getColumnCount(this);
         recycleFilterChain(chain);
         return value;
@@ -46,7 +46,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public boolean isAutoIncrement(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.resultSetMetaData_isAutoIncrement(this, column);
         recycleFilterChain(chain);
         return value;
@@ -54,7 +54,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public boolean isCaseSensitive(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.resultSetMetaData_isCaseSensitive(this, column);
         recycleFilterChain(chain);
         return value;
@@ -62,7 +62,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public boolean isSearchable(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.resultSetMetaData_isSearchable(this, column);
         recycleFilterChain(chain);
         return value;
@@ -70,7 +70,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public boolean isCurrency(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.resultSetMetaData_isCurrency(this, column);
         recycleFilterChain(chain);
         return value;
@@ -78,7 +78,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public int isNullable(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         int value = chain.resultSetMetaData_isNullable(this, column);
         recycleFilterChain(chain);
         return value;
@@ -86,7 +86,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public boolean isSigned(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.resultSetMetaData_isSigned(this, column);
         recycleFilterChain(chain);
         return value;
@@ -94,7 +94,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public int getColumnDisplaySize(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         int value = chain.resultSetMetaData_getColumnDisplaySize(this, column);
         recycleFilterChain(chain);
         return value;
@@ -102,7 +102,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public String getColumnLabel(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.resultSetMetaData_getColumnLabel(this, column);
         recycleFilterChain(chain);
         return value;
@@ -110,7 +110,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public String getColumnName(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.resultSetMetaData_getColumnName(this, column);
         recycleFilterChain(chain);
         return value;
@@ -118,7 +118,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public String getSchemaName(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.resultSetMetaData_getSchemaName(this, column);
         recycleFilterChain(chain);
         return value;
@@ -126,7 +126,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public int getPrecision(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         int value = chain.resultSetMetaData_getPrecision(this, column);
         recycleFilterChain(chain);
         return value;
@@ -134,7 +134,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public int getScale(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         int value = chain.resultSetMetaData_getScale(this, column);
         recycleFilterChain(chain);
         return value;
@@ -142,7 +142,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public String getTableName(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.resultSetMetaData_getTableName(this, column);
         recycleFilterChain(chain);
         return value;
@@ -150,7 +150,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public String getCatalogName(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.resultSetMetaData_getCatalogName(this, column);
         recycleFilterChain(chain);
         return value;
@@ -158,7 +158,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public int getColumnType(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         int value = chain.resultSetMetaData_getColumnType(this, column);
         recycleFilterChain(chain);
         return value;
@@ -166,7 +166,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public String getColumnTypeName(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.resultSetMetaData_getColumnTypeName(this, column);
         recycleFilterChain(chain);
         return value;
@@ -174,7 +174,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public boolean isReadOnly(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.resultSetMetaData_isReadOnly(this, column);
         recycleFilterChain(chain);
         return value;
@@ -182,7 +182,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public boolean isWritable(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.resultSetMetaData_isWritable(this, column);
         recycleFilterChain(chain);
         return value;
@@ -190,7 +190,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public boolean isDefinitelyWritable(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.resultSetMetaData_isDefinitelyWritable(this, column);
         recycleFilterChain(chain);
         return value;
@@ -198,16 +198,16 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
 
     @Override
     public String getColumnClassName(int column) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.resultSetMetaData_getColumnClassName(this, column);
         recycleFilterChain(chain);
         return value;
     }
 
-    public FilterChainImpl createChain() {
-        FilterChainImpl chain = this.filterChain;
+    public FilterChain createChain() {
+        FilterChain chain = this.filterChain;
         if (chain == null) {
-            chain = new FilterChainImpl(this.resultSet.getStatementProxy().getConnectionProxy().getDirectDataSource());
+            chain = this.resultSet.getStatementProxy().getConnectionProxy().createFilterChain(this);
         } else {
             this.filterChain = null;
         }
@@ -215,7 +215,7 @@ public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements Resu
         return chain;
     }
 
-    public void recycleFilterChain(FilterChainImpl chain) {
+    public void recycleFilterChain(FilterChain chain) {
         chain.reset();
         this.filterChain = chain;
     }

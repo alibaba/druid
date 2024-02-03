@@ -16,6 +16,7 @@
 package com.alibaba.druid.proxy.jdbc;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 
 import java.sql.Driver;
@@ -26,6 +27,7 @@ import java.util.Properties;
  * @author wenshao [szujobs@hotmail.com]
  */
 public interface DataSourceProxy {
+    FilterChain createFilterChain(Object fromObj);
     JdbcDataSourceStat getDataSourceStat();
 
     long getDataSourceId();

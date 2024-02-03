@@ -21,7 +21,7 @@ import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.AutoLoad;
 import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.vendor.*;
@@ -1473,7 +1473,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         final int filtersSize = filters.size();
         if (filtersSize > 0) {
-            FilterChainImpl filterChain = createChain();
+            FilterChain filterChain = createChain();
             try {
                 return filterChain.dataSource_connect(this, maxWaitMillis);
             } finally {

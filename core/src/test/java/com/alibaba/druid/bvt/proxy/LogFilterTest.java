@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.logging.CommonsLogFilter;
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
@@ -207,7 +207,7 @@ public class LogFilterTest extends TestCase {
                 }
             };
 
-            FilterChainImpl chain = new FilterChainImpl(dataSource);
+            FilterChain chain = dataSource.createFilterChain(stmt);
             chain.resultSet_next(new ResultSetProxyImpl(stmt, rs, 1001, null));
         }
         {
@@ -224,7 +224,7 @@ public class LogFilterTest extends TestCase {
                 }
             }, 0);
 
-            FilterChainImpl chain = new FilterChainImpl(dataSource);
+            FilterChain chain = dataSource.createFilterChain(stmt);
             chain.statement_getResultSet(stmt);
         }
         {
@@ -251,12 +251,12 @@ public class LogFilterTest extends TestCase {
 
             {
                 logFilter.setResultSetLogEnabled(false);
-                FilterChainImpl chain = new FilterChainImpl(dataSource);
+                FilterChain chain = dataSource.createFilterChain(stmt);
                 chain.resultSet_next(new ResultSetProxyImpl(stmt, rs, 1001, null));
             }
             {
                 logFilter.setResultSetNextAfterLogEnabled(false);
-                FilterChainImpl chain = new FilterChainImpl(dataSource);
+                FilterChain chain = dataSource.createFilterChain(stmt);
                 chain.resultSet_next(new ResultSetProxyImpl(stmt, rs, 1001, null));
             }
         }

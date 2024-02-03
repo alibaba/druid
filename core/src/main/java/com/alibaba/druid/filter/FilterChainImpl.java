@@ -40,15 +40,28 @@ public class FilterChainImpl implements FilterChain {
 
     private final int filterSize;
 
+    private final Filter[] filters;
+
     public FilterChainImpl(DataSourceProxy dataSource) {
-        this.dataSource = dataSource;
-        this.filterSize = getFilters().size();
+        this(dataSource, 0);
     }
 
     public FilterChainImpl(DataSourceProxy dataSource, int pos) {
+        this(dataSource, pos, null);
+    }
+
+    public FilterChainImpl(DataSourceProxy dataSource, List<Filter> filterList) {
+        this(dataSource, 0, filterList);
+    }
+
+    public FilterChainImpl(DataSourceProxy dataSource, int pos, List<Filter> filterList) {
         this.dataSource = dataSource;
         this.pos = pos;
-        this.filterSize = getFilters().size();
+        if (filterList == null) {
+            filterList = dataSource.getProxyFilters();
+        }
+        this.filterSize = filterList.size();
+        this.filters = filterList.toArray(new Filter[filterSize]);
     }
 
     public int getFilterSize() {
@@ -467,8 +480,7 @@ public class FilterChainImpl implements FilterChain {
     }
 
     private Filter nextFilter() {
-        return getFilters()
-                .get(pos++);
+        return this.filters[pos++];
     }
 
     @Override

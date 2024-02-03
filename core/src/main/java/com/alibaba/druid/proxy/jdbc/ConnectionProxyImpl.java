@@ -15,11 +15,14 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.filter.FilterChainFactory;
 import com.alibaba.druid.filter.stat.StatFilter;
 
 import java.sql.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -40,16 +43,24 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private int closeCount;
 
-    private FilterChainImpl filterChain;
+    private FilterChain filterChain;
 
     private long lastValidateTimeMillis;
 
+    private final List<Filter> filterList;
+
     public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id) {
+        this(dataSource, connection, properties, id, null);
+    }
+
+    public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id,
+        final List<Filter> filterList) {
         super(connection, id);
         this.dataSource = dataSource;
         this.connection = connection;
         this.properties = properties;
         this.connectedTime = System.currentTimeMillis();
+        this.filterList = filterList;
     }
 
     public Date getConnectedTime() {
@@ -72,10 +83,10 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         return this.dataSource;
     }
 
-    public FilterChainImpl createChain() {
-        FilterChainImpl chain = this.filterChain;
+    public FilterChain createChain() {
+        FilterChain chain = this.filterChain;
         if (chain == null) {
-            chain = new FilterChainImpl(dataSource);
+            chain = createFilterChain(this);
         } else {
             this.filterChain = null;
         }
@@ -83,21 +94,25 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         return chain;
     }
 
-    public void recycleFilterChain(FilterChainImpl chain) {
+    public FilterChain createFilterChain(Object fromObj) {
+        return FilterChainFactory.ME.createFilterChain(dataSource, null, fromObj);
+    }
+
+    public void recycleFilterChain(FilterChain chain) {
         chain.reset();
         this.filterChain = chain;
     }
 
     @Override
     public void clearWarnings() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_clearWarnings(this);
         recycleFilterChain(chain);
     }
 
     @Override
     public void close() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_close(this);
         closeCount++;
         recycleFilterChain(chain);
@@ -105,7 +120,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public void commit() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_commit(this);
 
         if (transactionInfo != null) {
@@ -116,7 +131,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Array value = chain.connection_createArrayOf(this, typeName, elements);
         recycleFilterChain(chain);
         return value;
@@ -124,7 +139,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public Blob createBlob() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Blob value = chain.connection_createBlob(this);
         recycleFilterChain(chain);
         return value;
@@ -132,7 +147,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public Clob createClob() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Clob value = chain.connection_createClob(this);
         recycleFilterChain(chain);
         return value;
@@ -140,7 +155,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public NClob createNClob() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         NClob value = chain.connection_createNClob(this);
         recycleFilterChain(chain);
         return value;
@@ -148,7 +163,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public SQLXML createSQLXML() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         SQLXML value = chain.connection_createSQLXML(this);
         recycleFilterChain(chain);
         return value;
@@ -156,7 +171,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public Statement createStatement() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Statement stmt = chain.connection_createStatement(this);
         recycleFilterChain(chain);
         return stmt;
@@ -166,7 +181,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     public Statement createStatement(int resultSetType, //
                                      int resultSetConcurrency //
     ) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Statement stmt = chain.connection_createStatement(this, resultSetType, resultSetConcurrency);
         recycleFilterChain(chain);
         return stmt;
@@ -177,7 +192,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
                                      int resultSetConcurrency, //
                                      int resultSetHoldability //
     ) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Statement stmt = chain.connection_createStatement(this, resultSetType, resultSetConcurrency,
                 resultSetHoldability);
         recycleFilterChain(chain);
@@ -186,7 +201,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Struct value = chain.connection_createStruct(this, typeName, attributes);
         recycleFilterChain(chain);
         return value;
@@ -194,7 +209,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public boolean getAutoCommit() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.connection_getAutoCommit(this);
         recycleFilterChain(chain);
         return value;
@@ -202,7 +217,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public String getCatalog() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.connection_getCatalog(this);
         recycleFilterChain(chain);
         return value;
@@ -210,7 +225,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public Properties getClientInfo() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Properties value = chain.connection_getClientInfo(this);
         recycleFilterChain(chain);
         return value;
@@ -218,7 +233,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public String getClientInfo(String name) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.connection_getClientInfo(this, name);
         recycleFilterChain(chain);
         return value;
@@ -226,7 +241,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public int getHoldability() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         int value = chain.connection_getHoldability(this);
         recycleFilterChain(chain);
         return value;
@@ -234,7 +249,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         DatabaseMetaData value = chain.connection_getMetaData(this);
         recycleFilterChain(chain);
         return value;
@@ -242,7 +257,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public int getTransactionIsolation() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         int value = chain.connection_getTransactionIsolation(this);
         recycleFilterChain(chain);
         return value;
@@ -250,7 +265,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public Map<String, Class<?>> getTypeMap() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Map<String, Class<?>> value = chain.connection_getTypeMap(this);
         recycleFilterChain(chain);
         return value;
@@ -258,7 +273,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public SQLWarning getWarnings() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         SQLWarning value = chain.connection_getWarnings(this);
         recycleFilterChain(chain);
         return value;
@@ -266,7 +281,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public boolean isClosed() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.connection_isClosed(this);
         recycleFilterChain(chain);
         return value;
@@ -274,7 +289,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public boolean isReadOnly() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.connection_isReadOnly(this);
         recycleFilterChain(chain);
         return value;
@@ -282,7 +297,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public boolean isValid(int timeout) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         boolean value = chain.connection_isValid(this, timeout);
         recycleFilterChain(chain);
         return value;
@@ -290,7 +305,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public String nativeSQL(String sql) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String value = chain.connection_nativeSQL(this, sql);
         recycleFilterChain(chain);
         return value;
@@ -298,7 +313,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public CallableStatement prepareCall(String sql) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         CallableStatement stmt = chain.connection_prepareCall(this, sql);
         recycleFilterChain(chain);
         return stmt;
@@ -306,7 +321,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         CallableStatement stmt = chain.connection_prepareCall(this, sql, resultSetType, resultSetConcurrency);
         recycleFilterChain(chain);
         return stmt;
@@ -315,7 +330,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
                                          int resultSetHoldability) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         CallableStatement stmt = chain.connection_prepareCall(this, sql, resultSetType, resultSetConcurrency,
                 resultSetHoldability);
         recycleFilterChain(chain);
@@ -324,7 +339,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         PreparedStatement stmt = chain.connection_prepareStatement(this, sql);
         recycleFilterChain(chain);
         return stmt;
@@ -332,7 +347,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         PreparedStatement stmt = chain.connection_prepareStatement(this, sql, autoGeneratedKeys);
         recycleFilterChain(chain);
         return stmt;
@@ -340,7 +355,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         PreparedStatement stmt = chain.connection_prepareStatement(this, sql, columnIndexes);
         recycleFilterChain(chain);
         return stmt;
@@ -348,7 +363,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         PreparedStatement stmt = chain.connection_prepareStatement(this, sql, columnNames);
         recycleFilterChain(chain);
         return stmt;
@@ -357,7 +372,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
             throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         PreparedStatement stmt = chain.connection_prepareStatement(this, sql, resultSetType, resultSetConcurrency);
         recycleFilterChain(chain);
         return stmt;
@@ -366,7 +381,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
                                               int resultSetHoldability) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         PreparedStatement stmt = chain.connection_prepareStatement(this, sql, resultSetType, resultSetConcurrency,
                 resultSetHoldability);
         recycleFilterChain(chain);
@@ -375,14 +390,14 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_releaseSavepoint(this, savepoint);
         recycleFilterChain(chain);
     }
 
     @Override
     public void rollback() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_rollback(this);
         recycleFilterChain(chain);
         if (transactionInfo != null) {
@@ -392,7 +407,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_rollback(this, savepoint);
         recycleFilterChain(chain);
         if (transactionInfo != null) {
@@ -412,49 +427,49 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
             transactionInfo = null;
         }
 
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setAutoCommit(this, autoCommit);
         recycleFilterChain(chain);
     }
 
     @Override
     public void setCatalog(String catalog) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setCatalog(this, catalog);
         recycleFilterChain(chain);
     }
 
     @Override
     public void setClientInfo(Properties properties) throws SQLClientInfoException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setClientInfo(this, properties);
         recycleFilterChain(chain);
     }
 
     @Override
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setClientInfo(this, name, value);
         recycleFilterChain(chain);
     }
 
     @Override
     public void setHoldability(int holdability) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setHoldability(this, holdability);
         recycleFilterChain(chain);
     }
 
     @Override
     public void setReadOnly(boolean readOnly) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setReadOnly(this, readOnly);
         recycleFilterChain(chain);
     }
 
     @Override
     public Savepoint setSavepoint() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Savepoint savepoint = chain.connection_setSavepoint(this);
         recycleFilterChain(chain);
         return savepoint;
@@ -462,7 +477,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public Savepoint setSavepoint(String name) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         Savepoint savepoint = chain.connection_setSavepoint(this, name);
         recycleFilterChain(chain);
         return savepoint;
@@ -470,45 +485,45 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public void setTransactionIsolation(int level) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setTransactionIsolation(this, level);
         recycleFilterChain(chain);
     }
 
     @Override
     public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setTypeMap(this, map);
         recycleFilterChain(chain);
     }
 
     public void setSchema(String schema) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setSchema(this, schema);
         recycleFilterChain(chain);
     }
 
     public String getSchema() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         String schema = chain.connection_getSchema(this);
         recycleFilterChain(chain);
         return schema;
     }
 
     public void abort(Executor executor) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_abort(this, executor);
         recycleFilterChain(chain);
     }
 
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         chain.connection_setNetworkTimeout(this, executor, milliseconds);
         recycleFilterChain(chain);
     }
 
     public int getNetworkTimeout() throws SQLException {
-        FilterChainImpl chain = createChain();
+        FilterChain chain = createChain();
         int networkTimeout = chain.connection_getNetworkTimeout(this);
         recycleFilterChain(chain);
         return networkTimeout;
