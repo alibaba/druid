@@ -702,6 +702,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             valueExpr = listExpr;
         }
         SQLSetStatement stmt = new SQLSetStatement(paramExpr, valueExpr, dbType);
+        stmt.setUseSet(true);
         stmt.setOption(option);
         return stmt;
     }
