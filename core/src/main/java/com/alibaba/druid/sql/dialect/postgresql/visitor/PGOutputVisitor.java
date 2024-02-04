@@ -645,13 +645,20 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(SQLAssignItem x) {
+        if (!(x.getParent() instanceof SQLSetStatement)) {
+            return super.visit(x);
+        }
+
         x.getTarget().accept(this);
         SQLExpr value = x.getValue();
         if (x.getTarget() instanceof SQLIdentifierExpr
             && ((SQLIdentifierExpr) x.getTarget()).getName().equalsIgnoreCase("TIME ZONE")) {
             print(' ');
         } else {
-            if (x.getParent() instanceof SQLSetStatement && !((SQLSetStatement) x.getParent()).isUseSet()) {
+            if (!((SQLSetStatement) x.getParent()).isUseSet()) {
+                print0(" := ");
+            } else if (value instanceof SQLPropertyExpr
+                && ((SQLPropertyExpr) value).getOwner() instanceof SQLVariantRefExpr) {
                 print0(" := ");
             } else {
                 print0(" TO ");
@@ -664,6 +671,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         } else {
             value.accept(this);
         }
+
         return false;
     }
 
