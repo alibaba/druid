@@ -2235,10 +2235,10 @@ public class SQLExprParser extends SQLParser {
                 expr.setParent(parent);
                 exprCol.add(expr);
                 // https://github.com/alibaba/druid/issues/5709
-                if(lexer.hasComment()
+                if (lexer.hasComment()
                         && lexer.isKeepComments()
                         && lexer.getComments().size() == 1
-                        && lexer.getComments().get(0).startsWith("--")){
+                        && lexer.getComments().get(0).startsWith("--")) {
                     expr.addAfterComment(lexer.readAndResetComments());
                 }
             }
