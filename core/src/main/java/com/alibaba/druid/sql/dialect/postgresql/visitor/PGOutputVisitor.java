@@ -2009,9 +2009,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(SQLParameter x) {
         SQLName name = x.getName();
         if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
-            print0(ucase ? "CURSOR " : "cursor ");
             x.getName().accept(this);
-            print0(ucase ? " IS" : " is");
+            print0(ucase ? "CURSOR " : "cursor ");
+            print0(ucase ? " FOR" : " for");
             this.indentCount++;
             println();
             SQLSelect select = ((SQLQueryExpr) x.getDefaultValue()).getSubQuery();
