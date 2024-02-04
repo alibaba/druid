@@ -940,6 +940,7 @@ public class OracleStatementParser extends SQLStatementParser {
         accept(Token.END);
         accept(Token.LOOP);
         accept(Token.SEMI);
+        stmt.setAfterSemi(true);
 
         return stmt;
     }

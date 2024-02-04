@@ -4407,6 +4407,34 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
+    public boolean visit(SQLWhileStatement x) {
+        String label = x.getLabelName();
+
+        if (label != null && !label.isEmpty()) {
+            print0(x.getLabelName());
+            print0(": ");
+        }
+        print0(ucase ? "WHILE " : "while ");
+        x.getCondition().accept(this);
+        print0(ucase ? " DO" : " do");
+        println();
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+        println();
+        print0(ucase ? "END WHILE" : "end while");
+        if (label != null && !label.isEmpty()) {
+            print(' ');
+            print0(label);
+        }
+        return false;
+    }
+
+    @Override
     public boolean visit(MySqlLeaveStatement x) {
         print0(ucase ? "LEAVE " : "leave ");
         print0(x.getLabelName());
