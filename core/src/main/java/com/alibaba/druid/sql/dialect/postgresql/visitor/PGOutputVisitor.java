@@ -628,7 +628,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(SQLSetStatement x) {
-        print0(ucase ? "SET " : "set ");
+        if (x.isUseSet()) {
+            print0(ucase ? "SET " : "set ");
+        }
 
         SQLSetStatement.Option option = x.getOption();
         if (option != null) {
