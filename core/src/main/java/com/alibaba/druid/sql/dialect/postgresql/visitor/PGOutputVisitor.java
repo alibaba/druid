@@ -636,38 +636,33 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print(' ');
         }
 
-        List<SQLAssignItem> items = x.getItems();
-        for (int i = 0; i < items.size(); i++) {
-            if (i != 0) {
-                print0(", ");
-            }
+        printAndAccept(x.getItems(), ", ");
 
-            SQLAssignItem item = x.getItems().get(i);
-            SQLExpr target = item.getTarget();
-            target.accept(this);
+        return false;
+    }
 
-            SQLExpr value = item.getValue();
-
-            if (target instanceof SQLIdentifierExpr
-                    && ((SQLIdentifierExpr) target).getName().equalsIgnoreCase("TIME ZONE")) {
-                print(' ');
+    @Override
+    public boolean visit(SQLAssignItem x) {
+        x.getTarget().accept(this);
+        SQLExpr value = x.getValue();
+        if (x.getTarget() instanceof SQLIdentifierExpr
+            && ((SQLIdentifierExpr) x.getTarget()).getName().equalsIgnoreCase("TIME ZONE")) {
+            print(' ');
+        } else {
+            if (value instanceof SQLPropertyExpr
+                && ((SQLPropertyExpr) value).getOwner() instanceof SQLVariantRefExpr) {
+                print0(" := ");
             } else {
-                if (value instanceof SQLPropertyExpr
-                        && ((SQLPropertyExpr) value).getOwner() instanceof SQLVariantRefExpr) {
-                    print0(" := ");
-                } else {
-                    print0(" TO ");
-                }
-            }
-
-            if (value instanceof SQLListExpr) {
-                SQLListExpr listExpr = (SQLListExpr) value;
-                printAndAccept(listExpr.getItems(), ", ");
-            } else {
-                value.accept(this);
+                print0(" TO ");
             }
         }
 
+        if (value instanceof SQLListExpr) {
+            SQLListExpr listExpr = (SQLListExpr) value;
+            printAndAccept(listExpr.getItems(), ", ");
+        } else {
+            value.accept(this);
+        }
         return false;
     }
 
