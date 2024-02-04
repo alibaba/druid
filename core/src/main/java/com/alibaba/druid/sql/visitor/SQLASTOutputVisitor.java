@@ -8531,13 +8531,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLWhileStatement x) {
         String label = x.getLabelName();
 
-        if (label != null && label.length() != 0) {
+        if (label != null && !label.isEmpty()) {
             print0(x.getLabelName());
             print0(": ");
         }
         print0(ucase ? "WHILE " : "while ");
         x.getCondition().accept(this);
-        print0(ucase ? " DO" : " do");
+        print0(ucase ? " LOOP" : " loop");
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
@@ -8547,8 +8547,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
         println();
-        print0(ucase ? "END WHILE" : "end while");
-        if (label != null && label.length() != 0) {
+        print0(ucase ? "END LOOP" : "end loop");
+        if (label != null && !label.isEmpty()) {
             print(' ');
             print0(label);
         }
