@@ -1342,9 +1342,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         println();
         print0(ucase ? "FROM " : "from ");
-        if (x.getFrom() == null) {
-            print0(ucase ? "DUAL" : "dual");
-        } else {
+        if (x.getFrom() != null) {
             x.getFrom().accept(this);
         }
 
