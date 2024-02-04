@@ -66,7 +66,7 @@ public class Oracle_pl_if_3 extends OracleTest {
             String output = SQLUtils.toOracleString(stmt);
             assertEquals("IF l_salary BETWEEN 10000 AND 20000 THEN\n" +
                             "\tgive_bonus(l_employee_id, 1000);\n" +
-                            "ELSE IF l_salary > 20000 THEN\n" +
+                            "ELSIF l_salary > 20000 THEN\n" +
                             "\tgive_bonus(l_employee_id, 500);\n" +
                             "ELSE\n" +
                             "\tgive_bonus(l_employee_id, 0);\n" +
@@ -77,7 +77,7 @@ public class Oracle_pl_if_3 extends OracleTest {
             String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("if l_salary between 10000 and 20000 then\n" +
                             "\tgive_bonus(l_employee_id, 1000);\n" +
-                            "else if l_salary > 20000 then\n" +
+                            "elsif l_salary > 20000 then\n" +
                             "\tgive_bonus(l_employee_id, 500);\n" +
                             "else\n" +
                             "\tgive_bonus(l_employee_id, 0);\n" +
