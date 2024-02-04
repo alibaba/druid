@@ -18,11 +18,20 @@ package com.alibaba.druid.filter.logging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Properties;
+
 public class Slf4jLogFilter extends LogFilter {
     private Logger dataSourceLogger = LoggerFactory.getLogger(dataSourceLoggerName);
     private Logger connectionLogger = LoggerFactory.getLogger(connectionLoggerName);
     private Logger statementLogger = LoggerFactory.getLogger(statementLoggerName);
     private Logger resultSetLogger = LoggerFactory.getLogger(resultSetLoggerName);
+
+    public Slf4jLogFilter(final Properties properties) {
+        super(properties);
+    }
+
+    public Slf4jLogFilter() {
+    }
 
     @Override
     public String getDataSourceLoggerName() {

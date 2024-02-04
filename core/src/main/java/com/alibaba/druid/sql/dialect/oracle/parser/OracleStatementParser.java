@@ -3038,6 +3038,13 @@ public class OracleStatementParser extends SQLStatementParser {
             accept(Token.OF);
             SQLDataType dataType = this.exprParser.parseDataType();
             stmt.setTableOf(dataType);
+
+            if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+                accept(Token.BY);
+                SQLDataType indexByDataType = this.exprParser.parseDataType();
+                stmt.setIndexBy(indexByDataType);
+            }
         } else if (lexer.identifierEquals(FnvHash.Constants.VARRAY)) {
             lexer.nextToken();
             accept(Token.LPAREN);

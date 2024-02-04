@@ -2754,6 +2754,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         } else if (tableOf != null) {
             print0(ucase ? " AS TABLE OF " : " as table of ");
             tableOf.accept(this);
+
+            SQLDataType indexBy = x.getIndexBy();
+            if (indexBy != null) {
+                print0(ucase ? " INDEX BY " : " index by ");
+                indexBy.accept(this);
+            }
         } else if (x.getVarraySizeLimit() != null) {
             print0(ucase ? " VARRAY (" : " varray (");
             x.getVarraySizeLimit().accept(this);
