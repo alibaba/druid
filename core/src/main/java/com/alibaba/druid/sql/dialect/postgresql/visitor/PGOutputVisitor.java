@@ -651,8 +651,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             && ((SQLIdentifierExpr) x.getTarget()).getName().equalsIgnoreCase("TIME ZONE")) {
             print(' ');
         } else {
-            if (value instanceof SQLPropertyExpr
-                && ((SQLPropertyExpr) value).getOwner() instanceof SQLVariantRefExpr) {
+            if (x.getParent() instanceof SQLSetStatement && !((SQLSetStatement) x.getParent()).isUseSet()) {
                 print0(" := ");
             } else {
                 print0(" TO ");
