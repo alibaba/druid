@@ -2349,7 +2349,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(SQLIfStatement.ElseIf x) {
-        print0(ucase ? "ELSE IF " : "else if ");
+        print0(ucase ? "ELSIF " : "elsif ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
         this.indentCount++;
