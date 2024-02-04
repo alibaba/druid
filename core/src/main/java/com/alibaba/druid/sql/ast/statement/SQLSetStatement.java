@@ -35,6 +35,8 @@ public class SQLSetStatement extends SQLStatementImpl {
 
     private List<SQLCommentHint> hints;
 
+    private boolean useSet;
+
     public SQLSetStatement() {
     }
 
@@ -80,6 +82,14 @@ public class SQLSetStatement extends SQLStatementImpl {
 
     public void setOption(Option option) {
         this.option = option;
+    }
+
+    public boolean isUseSet() {
+        return useSet;
+    }
+
+    public void setUseSet(boolean useSet) {
+        this.useSet = useSet;
     }
 
     public void set(SQLExpr target, SQLExpr value) {
