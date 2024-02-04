@@ -350,7 +350,6 @@ public class OracleStatementParser extends SQLStatementParser {
                     if (binaryOpExpr.getOperator() == SQLBinaryOperator.Assignment) {
                         SQLSetStatement stmt = new SQLSetStatement();
                         stmt.setDbType(DbType.oracle);
-                        stmt.setUseSet(true); // now only effective for PG
                         stmt.setParent(parent);
 
                         SQLAssignItem assignItem = new SQLAssignItem(binaryOpExpr.getLeft(), binaryOpExpr.getRight());

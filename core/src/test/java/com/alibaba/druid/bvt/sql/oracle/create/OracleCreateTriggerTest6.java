@@ -120,8 +120,8 @@ public class OracleCreateTriggerTest6 extends OracleTest {
                         "\tvar_nRecordCount number;\n" +
                         "\tvar_sState varchar2(16);\n" +
                         "BEGIN\n" +
-                        "\tSET var_sState := :NEW.State;\n" +
-                        "\tSET var_dFirstCheckTime := :NEW.Commiteddate;\n" +
+                        "\tvar_sState := :NEW.State;\n" +
+                        "\tvar_dFirstCheckTime := :NEW.Commiteddate;\n" +
                         "\tIF var_sState = 'approved' THEN\n" +
                         "\t\t-- 鏌ヨ\uE1D7鍚堝悓 ID\n" +
                         "\t\tSELECT etfca_.contractid\n" +
