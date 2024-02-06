@@ -57,7 +57,7 @@ public class MySqlSelectTest_238 extends MysqlTest {
                 "\tEND, CASE \n" +
                 "\t\tWHEN leaf_cat_name IS NOT NULL THEN concat(leaf_cat_name)\n" +
                 "\t\tELSE ''\n" +
-                "\tEND) AS full_name_path\n" +
+                "\tEND) AS full_name_path -- select count(1)\n" +
                 "FROM (\n" +
                 "\tSELECT c1.cat_id AS cat_id1, c1.cat_name AS cat_name1, c2.cat_id AS cat_id2, c2.cat_name AS cat_name2, c3.cat_id AS cat_id3\n" +
                 "\t\t, c3.cat_name AS cat_name3, s.cat_id AS leaf_cat_id, s.cat_name AS leaf_cat_name\n" +
