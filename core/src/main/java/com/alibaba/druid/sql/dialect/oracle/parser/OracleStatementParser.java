@@ -2157,7 +2157,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     dataType = this.exprParser.parseDataType(false);
                 }
 
-                if(lexer.token() == Token.NOT) {
+                if (lexer.token() == Token.NOT) {
                     lexer.nextToken();
                     accept(Token.NULL);
                     parameter.setNotNull(true);
