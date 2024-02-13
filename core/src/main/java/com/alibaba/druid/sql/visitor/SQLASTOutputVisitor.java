@@ -7312,7 +7312,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
 
             dataType.accept(this);
-
+            if (x.isNotNull()) {
+                print0(ucase ? " NOT NULL" : " not null");
+            }
             printParamDefaultValue(x);
         }
 

@@ -2163,6 +2163,13 @@ public class OracleStatementParser extends SQLStatementParser {
                 } else {
                     dataType = this.exprParser.parseDataType(false);
                 }
+
+                if(lexer.token() == Token.NOT) {
+                    lexer.nextToken();
+                    accept(Token.NULL);
+                    parameter.setNotNull(true);
+                }
+
                 if (lexer.token() == Token.COLONEQ || lexer.token() == Token.DEFAULT) {
                     lexer.nextToken();
                     parameter.setDefaultValue(this.exprParser.expr());
