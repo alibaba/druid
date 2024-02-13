@@ -26,7 +26,7 @@ import org.junit.Assert;
 import java.util.List;
 
 public class PGDropFunctionTest extends PGTest {
-    public void test_types() throws Exception {
+    public void testDropFunction() {
         String sql = "DROP FUNCTION oe.SecondMax";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
