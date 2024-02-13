@@ -26,7 +26,7 @@ import org.junit.Assert;
 import java.util.List;
 
 public class OracleDropFunctionTest extends OracleTest {
-    public void test_types() throws Exception {
+    public void testDropFunction() {
         String sql = "DROP FUNCTION oe.SecondMax";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
