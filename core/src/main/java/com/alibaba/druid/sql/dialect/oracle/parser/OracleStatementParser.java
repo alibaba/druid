@@ -605,6 +605,13 @@ public class OracleStatementParser extends SQLStatementParser {
                     continue;
                 }
 
+                if (lexer.token() == Token.FUNCTION) {
+                    SQLDropFunctionStatement stmt = parseDropFunction(false);
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+
                 if (lexer.identifierEquals(FnvHash.Constants.SYNONYM)) {
                     lexer.reset(savePoint);
 
