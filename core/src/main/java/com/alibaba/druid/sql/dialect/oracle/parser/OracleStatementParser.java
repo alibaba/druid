@@ -1205,7 +1205,12 @@ public class OracleStatementParser extends SQLStatementParser {
 
         stmt.setIndex(this.exprParser.name());
         accept(Token.IN);
+        if (lexer.token() == Token.REVERSE) {
+            lexer.nextToken();
+            stmt.setReverse(true);
+        }
         stmt.setRange(this.exprParser.expr());
+
 
         if (stmt.isAll()) {
             SQLStatement itemStmt = this.parseStatement();

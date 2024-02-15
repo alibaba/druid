@@ -1433,6 +1433,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getIndex().accept(this);
         print0(ucase ? " IN " : " in ");
 
+        if (x.isReverse()) {
+            print0(ucase ? "REVERSE " : "reverse ");
+        }
+
         SQLExpr range = x.getRange();
         range.accept(this);
 
