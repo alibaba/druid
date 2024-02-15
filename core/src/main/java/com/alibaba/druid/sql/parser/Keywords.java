@@ -108,6 +108,7 @@ public class Keywords {
 
         map.put("PRIMARY", Token.PRIMARY);
         map.put("REFERENCES", Token.REFERENCES);
+        map.put("REVERSE", Token.REVERSE);
         map.put("RIGHT", Token.RIGHT);
         map.put("SCHEMA", Token.SCHEMA);
         map.put("SELECT", Token.SELECT);
