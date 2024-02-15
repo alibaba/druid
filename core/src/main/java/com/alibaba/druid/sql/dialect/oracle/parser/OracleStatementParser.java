@@ -1185,7 +1185,6 @@ public class OracleStatementParser extends SQLStatementParser {
         }
         stmt.setRange(this.exprParser.expr());
 
-
         if (stmt.isAll()) {
             SQLStatement itemStmt = this.parseStatement();
             itemStmt.setParent(stmt);
