@@ -26,12 +26,10 @@ import java.util.Map;
  */
 public class Keywords {
     private final Map<String, Token> keywords;
-
-    private long[] hashArray;
-    private Token[] tokens;
+    private final long[] hashArray;
+    private final Token[] tokens;
 
     public static final Keywords DEFAULT_KEYWORDS;
-
     public static final Keywords SQLITE_KEYWORDS;
     public static final Keywords DM_KEYWORDS;
 
