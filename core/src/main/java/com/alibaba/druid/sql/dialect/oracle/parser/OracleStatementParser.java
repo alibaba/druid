@@ -126,6 +126,13 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 continue;
             }
+            
+            if (lexer.token() == (Token.GET)) {
+                SQLStatement stmt = parseGetDiagnosticsStatement();
+                stmt.setParent(parent);
+                statementList.add(stmt);
+                continue;
+            }
 
             if (lexer.token() == (Token.SLASH)) {
                 lexer.nextToken();
@@ -737,6 +744,17 @@ public class OracleStatementParser extends SQLStatementParser {
 
             throw new ParserException("TODO : " + lexer.info());
         }
+    }
+
+    private SQLStatement parseGetDiagnosticsStatement() {
+        accept(Token.GET);
+        accept(Token.DIAGNOSTICS);
+        
+        SQLGetDiagnosticsStatement stmt = new SQLGetDiagnosticsStatement();
+        stmt.setDbType(dbType);
+        
+        stmt.setExpr(this.exprParser.expr());
+        return stmt;
     }
 
     public SQLStatement parseDropType() {
