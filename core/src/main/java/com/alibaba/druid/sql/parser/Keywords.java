@@ -36,7 +36,7 @@ public class Keywords {
     public static final Keywords DM_KEYWORDS;
 
     static {
-        Map<String, Token> map = new HashMap<String, Token>();
+        Map<String, Token> map = new HashMap<>();
 
         map.put("ALL", Token.ALL);
         map.put("ALTER", Token.ALTER);
@@ -108,7 +108,6 @@ public class Keywords {
 
         map.put("PRIMARY", Token.PRIMARY);
         map.put("REFERENCES", Token.REFERENCES);
-        map.put("REVERSE", Token.REVERSE);
         map.put("RIGHT", Token.RIGHT);
         map.put("SCHEMA", Token.SCHEMA);
         map.put("SELECT", Token.SELECT);
@@ -165,18 +164,14 @@ public class Keywords {
         DEFAULT_KEYWORDS = new Keywords(map);
 
         {
-            Map<String, Token> sqlitemap = new HashMap<String, Token>();
-
-            sqlitemap.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+            Map<String, Token> sqlitemap = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
             sqlitemap.put("LIMIT", Token.LIMIT);
             SQLITE_KEYWORDS = new Keywords(sqlitemap);
         }
 
         {
-            Map<String, Token> sqlitemap = new HashMap<String, Token>();
-
-            sqlitemap.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+            Map<String, Token> sqlitemap = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
             sqlitemap.put("MERGE", Token.MERGE);
             sqlitemap.put("MATCHED", Token.MATCHED);
