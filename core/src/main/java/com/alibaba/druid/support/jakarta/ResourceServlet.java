@@ -196,6 +196,8 @@ public abstract class ResourceServlet extends HttpServlet {
                 return;
             }
 
+            // 设置http响应头，以便在浏览器端缓存静态资源,
+            response.setHeader("Cache-Control", "max-age=36000");
             if (fileName.endsWith(".css")) {
                 response.setContentType("text/css;charset=utf-8");
             } else if (fileName.endsWith(".js")) {
