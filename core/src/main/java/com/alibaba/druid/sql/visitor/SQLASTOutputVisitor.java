@@ -3045,7 +3045,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-
     public boolean visit(SQLVariantRefExpr x) {
         int index = x.getIndex();
 
