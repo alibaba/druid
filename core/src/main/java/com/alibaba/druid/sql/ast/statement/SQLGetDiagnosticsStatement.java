@@ -23,24 +23,21 @@ public class SQLGetDiagnosticsStatement extends SQLStatementImpl implements SQLR
 		visitor.endVisit(this);
 
 	}
-	
+
 	public SQLExpr getExpr() {
 		return expr;
 	}
-	
+
 	public void setExpr(SQLExpr x) {
 		if (x != null) {
 			x.setParent(this);
 		}
 		this.expr = x;
 	}
-	
+
 	@Override
 	public boolean replace(SQLExpr expr, SQLExpr target) {
-		if (this.expr == expr) {
-			// setExpr(target);
-			return true;
-		}
-		return false;
+		setExpr(target);
+		return this.expr == expr;
 	}
 }
