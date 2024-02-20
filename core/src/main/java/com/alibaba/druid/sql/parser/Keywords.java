@@ -58,6 +58,7 @@ public class Keywords {
         map.put("CREATE", Token.CREATE);
         map.put("DATABASE", Token.DATABASE);
         map.put("DEFAULT", Token.DEFAULT);
+        map.put("DIAGNOSTICS", Token.DIAGNOSTICS);
         map.put("COLUMN", Token.COLUMN);
         map.put("TABLESPACE", Token.TABLESPACE);
         map.put("PROCEDURE", Token.PROCEDURE);
@@ -79,6 +80,7 @@ public class Keywords {
 
         map.put("FROM", Token.FROM);
         map.put("FULL", Token.FULL);
+        map.put("GET", Token.GET);
         map.put("GROUP", Token.GROUP);
         map.put("HAVING", Token.HAVING);
         map.put("IN", Token.IN);
