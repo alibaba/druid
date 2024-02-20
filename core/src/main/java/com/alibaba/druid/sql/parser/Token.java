@@ -153,6 +153,8 @@ public enum Token {
     DIV("DIV"),
 
     //postgresql
+    GET("GET"),
+    DIAGNOSTICS("DIAGNOSTICS"),
     WINDOW("WINDOW"),
     OFFSET("OFFSET"),
     ROW("ROW"),
