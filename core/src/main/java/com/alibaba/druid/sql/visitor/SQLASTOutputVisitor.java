@@ -5057,7 +5057,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterSystemSetConfigStatement x) {
-        print0(ucase ? "ALTER SYSTEM SET COFNIG " : "alter system set config ");
+        print0(ucase ? "ALTER SYSTEM SET CONFIG " : "alter system set config ");
 
         printAndAccept(x.getOptions(), " ");
 
