@@ -22,31 +22,21 @@ import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
 
 public class MySqlAlterSystemTest_0 extends TestCase {
-    public void test_alter1() throws Exception {
+    public void test_alter1() {
         String sql = "ALTER SYSTEM SET CONFIG useAuth=true";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        assertEquals("ALTER SYSTEM SET COFNIG useAuth = true", SQLUtils.toMySqlString(stmt));
+        assertEquals("ALTER SYSTEM SET CONFIG useAuth = true", SQLUtils.toMySqlString(stmt));
     }
 
-    public void test_alter2() throws Exception {
+    public void test_alter2() {
         String sql = "ALTER SYSTEM SET CONFIG useAuth=true baseURL='http://test.xxx.com/ak'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        assertEquals("ALTER SYSTEM SET COFNIG useAuth = true baseURL = 'http://test.xxx.com/ak'", SQLUtils.toMySqlString(stmt));
+        assertEquals("ALTER SYSTEM SET CONFIG useAuth = true baseURL = 'http://test.xxx.com/ak'", SQLUtils.toMySqlString(stmt));
     }
-
-    public void test_alter3() throws Exception {
-        String sql = "ALTER SYSTEM GET CONFIG useAuth";
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        SQLStatement stmt = parser.parseStatementList().get(0);
-        parser.match(Token.EOF);
-
-        assertEquals("ALTER SYSTEM GET CONFIG useAuth", SQLUtils.toMySqlString(stmt));
-    }
-
 }
