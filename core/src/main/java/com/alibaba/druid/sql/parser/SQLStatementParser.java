@@ -157,7 +157,7 @@ public class SQLStatementParser extends SQLParser {
                 case UNTIL:
                 case ELSE:
                 case WHEN:
-                    if (lexer.isKeepComments() && lexer.hasComment() && statementList.size() > 0) {
+                    if (lexer.isKeepComments() && lexer.hasComment() && !statementList.isEmpty()) {
                         SQLStatement stmt = statementList.get(statementList.size() - 1);
                         stmt.addAfterComment(lexer.readAndResetComments());
                     }
@@ -168,10 +168,12 @@ public class SQLStatementParser extends SQLParser {
                             lexer.reset(savePoint);
                             return;
                         }
-                        if (statementList.size() > 0 && statementList.get(statementList.size() - 1) instanceof SQLIfStatement) {
+                        
+                        if (parent instanceof SQLBlockStatement) {
                             lexer.reset(savePoint);
                             return;
                         }
+                        
                         lexer.reset(savePoint);
                         SQLStatement stmt = parseEnd();
                         stmt.setParent(parent);
@@ -286,6 +288,12 @@ public class SQLStatementParser extends SQLParser {
                 }
                 case DELETE: {
                     SQLStatement stmt = parseDeleteStatement();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+                case GET: {
+                    SQLStatement stmt = parseGetDiagnosticsStatement();
                     stmt.setParent(parent);
                     statementList.add(stmt);
                     continue;
@@ -646,6 +654,17 @@ public class SQLStatementParser extends SQLParser {
             throw new ParserException(UNSUPPORT_TOKEN_MSG_PREFIX + lexer.info());
         }
 
+    }
+
+    private SQLStatement parseGetDiagnosticsStatement() {
+        accept(Token.GET);
+        accept(Token.DIAGNOSTICS);
+
+        SQLGetDiagnosticsStatement stmt = new SQLGetDiagnosticsStatement();
+        stmt.setDbType(dbType);
+
+        stmt.setExpr(this.exprParser.expr());
+        return stmt;
     }
 
     public SQLStatement parseOptimize() {
