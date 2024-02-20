@@ -168,12 +168,12 @@ public class SQLStatementParser extends SQLParser {
                             lexer.reset(savePoint);
                             return;
                         }
-                        
+
                         if (parent instanceof SQLBlockStatement) {
                             lexer.reset(savePoint);
                             return;
                         }
-                        
+
                         lexer.reset(savePoint);
                         SQLStatement stmt = parseEnd();
                         stmt.setParent(parent);

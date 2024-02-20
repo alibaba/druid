@@ -370,7 +370,7 @@ public interface SQLASTVisitor {
 
     default void endVisit(SQLUpdateStatement x) {
     }
-    
+
     default boolean visit(SQLGetDiagnosticsStatement x) {
         return true;
     }

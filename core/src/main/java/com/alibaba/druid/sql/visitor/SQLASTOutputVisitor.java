@@ -1328,7 +1328,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLGetDiagnosticsStatement x) {
         print(ucase ? "GET DIAGNOSTICS " : "get diagnostics ");
-        
+
         x.getExpr().accept(this);
         return false;
     }
@@ -3044,7 +3044,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         return false;
     }
-    
+
 
     public boolean visit(SQLVariantRefExpr x) {
         int index = x.getIndex();
