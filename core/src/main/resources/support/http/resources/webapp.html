@@ -63,8 +63,8 @@
                     type: 'POST',
                     url: "webapp.json",
                     success: function (data) {
+                        $(".nav-tabs,.tab-content").remove();
                         var datasourceList = data.Content;
-
 
                         var tmpl = $('#webapp-template').html();
                         var contents = {'content': datasourceList};
@@ -90,6 +90,8 @@
     $(document).ready(function () {
         druid.datasource.init();
     });
+    window.initPage = druid.datasource.ajaxRequestForBasicInfo;
+        
 </script>
 </body>
 </html>
