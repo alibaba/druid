@@ -82,7 +82,8 @@
                         $("#JavaVersion").text(data.Content.JavaVersion)
                         $("#JavaVMName").text(data.Content.JavaVMName)
                         var splittor = /^[a-zA-Z]:\\/g.test(data.Content.JavaClassPath) ? ";" : ":";
-                        $("#JavaClassPath").html(data.Content.JavaClassPath.split(splittor).join("<br/>"))
+                        var arr = data.Content.JavaClassPath.split(splittor);
+                        $("#JavaClassPath").html("<div>size:" +  arr.length +"</div>" + arr.join("<br/>"))
                         $("#StartTime").text(data.Content.StartTime)
 
                         druid.lang.trigger();
@@ -96,6 +97,8 @@
     $(document).ready(function () {
         druid.index.init();
     });
+    
+    window.initPage = druid.index.ajaxRequestForBasicInfo;
 </script>
 </body>
 </html>

@@ -5,6 +5,10 @@ body {
     padding-bottom: 40px;
 }
 
+.nav {
+    margin-bottom: 5px;
+}
+
 a {
     cursor: pointer;
 }

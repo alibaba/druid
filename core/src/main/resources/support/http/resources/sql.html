@@ -19,37 +19,37 @@
                 SQL Stat
                 <a href="sql.json" target="_blank">View JSON API</a>
                 <span class="pull-right" style="font-size: 16px; margin-right: 20px;">
-          						<label langkey="RefreshPeriod" class="lang" style="display: inline;"
-                                       for="refreshSecondsSelect">Refresh Period</label>
-          						<select id="refreshSecondsSelect" class="refresh-seconds-select btn" style="width:80px;"
-                                        onchange="javascript:druid.sql.refreshSeconds=parseInt(this.options[this.options.selectedIndex].value);">
-          							<option value="5" selected="selected">5s</option>
-          							<option value="10">10s</option>
-          							<option value="20">20s</option>
-          							<option value="30">30s</option>
-          							<option value="60">60s</option>
-          						</select>
-          						<a id="btnSuspendRefresh" langkey="SuspendRefresh" class="btn btn-primary lang"
-                                   href="javascript:druid.sql.switchSuspendRefresh();">Suspend Refresh</a>
-          					</span>
+                    <label langkey="RefreshPeriod" class="lang" style="display: inline;"
+                            for="refreshSecondsSelect">Refresh Period</label>
+                    <select id="refreshSecondsSelect" class="refresh-seconds-select btn" style="width:80px;"
+                            onchange="javascript:druid.sql.refreshSeconds=parseInt(this.options[this.options.selectedIndex].value);">
+                        <option value="5">5s</option>
+                        <option value="10" selected="selected">10s</option>
+                        <option value="20">20s</option>
+                        <option value="30">30s</option>
+                        <option value="60">60s</option>
+                    </select>
+                    <a id="btnSuspendRefresh" langkey="SuspendRefresh" class="btn btn-primary lang"
+                        href="javascript:druid.sql.switchSuspendRefresh();">Suspend Refresh</a>
+                </span>
             </h3>
             <table id="dataTable" class="table table-bordered table-striped responsive-utilities">
                 <thead>
                 <tr>
-                    <th>N</th>
+                    <th width="10">N</th>
                     <th><a id="th-SQL">SQL</a></th>
                     <th width="50"><a id="th-ExecuteCount" class="lang" langKey="ExecuteCount">ExecCount</a></th>
-                    <th width="50"><a id="th-TotalTime" class="lang" langKey="ExecuteTimeMillis">ExecTime</a></th>
+                    <th width="60"><a id="th-TotalTime" class="lang" langKey="ExecuteTimeMillis">ExecTime</a></th>
                     <th width="50" class="langTitle" langKey="MaxTimespanDesc" title="Execute Time Millis Max"><a
                             id="th-MaxTimespan" class="lang" langKey="MaxTimespan">ExecMax</a></th>
-                    <th width="50" class="langTitle" langKey="InTransactionCountDesc"
+                    <th width="60" class="langTitle" langKey="InTransactionCountDesc"
                         title="Execute In Transaction Count"><a id="th-InTransactionCount" class="lang"
                                                                 langKey="InTransactionCount">Txn</a></th>
                     <th width="50"><a id="th-ErrorCount" class="lang" langKey="ErrorCount">Error</a></th>
-                    <th width="50"><a id="th-EffectedRowCount" class="lang" langKey="JdbcUpdateCount">Update</a></th>
-                    <th width="50"><a id="th-FetchRowCount" class="lang" langKey="JdbcFetchRowCount">FetchRow</a></th>
+                    <th width="60"><a id="th-EffectedRowCount" class="lang" langKey="JdbcUpdateCount">Update</a></th>
+                    <th width="60"><a id="th-FetchRowCount" class="lang" langKey="JdbcFetchRowCount">FetchRow</a></th>
                     <th width="50"><a id="th-RunningCount" class="lang" langKey="RunningCount">Running</a></th>
-                    <th width="50"><a id="th-ConcurrentMax" class="lang" langKey="ConcurrentMax">Concurrent</a></th>
+                    <th width="60"><a id="th-ConcurrentMax" class="lang" langKey="ConcurrentMax">Concurrent</a></th>
                     <th align="left" width="100"><span class="lang" langKey="ExecHisto">ExecHisto</span> <br/>[
                         <a id="th-Histogram[0]" class="langTitle" langKey="count1ms" title="count of '0-1 ms'">-</a>
                         <a id="th-Histogram[1]" class="langTitle" langKey="count10ms" title="count of '1-10 ms'">-</a>
@@ -132,7 +132,7 @@
                 druid.sql.controlRefresh();
             },
             controlRefresh: function () {
-                var FIVE = 5;
+                var FIVE = 10;
                 if (!druid.sql.refreshSeconds) {
                     druid.sql.refreshSeconds = FIVE;
                 }
@@ -157,18 +157,16 @@
                 }
             },
             disableAutoRefresh: false,
-            refreshSeconds: 5,
+            refreshSeconds: 10,
             suspendedSeconds: 0,
 
             handleAjaxResult: function (data) {
                 var sqlStatList = data.Content;
-                if (sqlStatList == null) return;
-
                 var sqlStatTable = document.getElementById("dataTable");
                 while (sqlStatTable.rows.length > 1) {
                     sqlStatTable.deleteRow(1);
                 }
-
+                if (sqlStatList == null) return;
                 var html = "";
                 for (var i = 0; i < sqlStatList.length; i++) {
                     var stat = sqlStatList[i], statSQL = stat.SQL;
@@ -179,7 +177,7 @@
                     var newRow = sqlStatTable.insertRow(-1);
                     html += "<tr>";
                     html += "<td>" + (i + 1) + "</td>";
-                    html += "<td>" + '<a data-dismiss="alert"  title="' + newStatSQL + '" target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 25) + '</a>' + "</td>";
+                    html += "<td>" + '<a data-dismiss="alert"  title="' + newStatSQL + '" target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 60) + '</a>' + "</td>";
                     html += "<td>" + replace(stat.ExecuteCount) + "</td>";
                     html += "<td>" + replace(stat.TotalTime) + "</td>";
 
@@ -209,6 +207,7 @@
     $(document).ready(function () {
         druid.sql.init();
     });
+    window.initPage = druid.common.ajaxRequestForBasicInfo;
 </script>
 </body>
 </html>
