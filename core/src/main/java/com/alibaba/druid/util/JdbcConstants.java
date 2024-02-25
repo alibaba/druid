@@ -53,6 +53,8 @@ public interface JdbcConstants {
     String MYSQL_DRIVER_603 = "com.mysql.cj.api.MysqlConnection";
     String MYSQL_DRIVER_REPLICATE = "com.mysql.jdbc.";
 
+    String GOLDENDB_DRIVER = "com.goldendb.jdbc.Driver";
+
     String MARIADB = "mariadb";
     String MARIADB_DRIVER = "org.mariadb.jdbc.Driver";
 
