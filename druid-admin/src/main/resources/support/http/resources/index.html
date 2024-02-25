@@ -17,11 +17,15 @@
           					<a href="basic.json" target="_blank" class="lang" langKey="ViewJSONAPI">View JSON API</a>
           				</h3>
 						<table id="dataTable" style="background-color: #fff" class="table table-bordered responsive-utilities">
+							<tr>
+								<td valign="top" class="td_lable lang" langKey="StartTime" style="min-width:80px"> StartTime</td>
+								<td id="StartTime"></td>
+							</tr>
 							<tr >
 								<td valign="top" width="100" class="td_lable lang"  langKey="Version">
 									Version
 								</td>
-								<td id="DruidVersion" width="95%"></td>
+								<td id="DruidVersion" width="90%"></td>
 							</tr>
 							<tr >
 								<td valign="top" class="td_lable lang" langKey="Drivers"> Drivers </td>
@@ -46,10 +50,6 @@
 							<tr>
 								<td valign="top" class="td_lable lang" langKey="JavaClassPath"> JavaClassPath </td>
 								<td id="JavaClassPath"></td>
-							</tr>
-							<tr >
-								<td valign="top" class="td_lable lang" langKey="StartTime"> StartTime </td>
-								<td id="StartTime"></td>
 							</tr>
 						</table>
           			</div>
@@ -81,7 +81,8 @@
 								$("#ResetCount").text(data.Content.ResetCount)
 								$("#JavaVersion").text(data.Content.JavaVersion)
 								$("#JavaVMName").text(data.Content.JavaVMName)
-								$("#JavaClassPath").html(data.Content.JavaClassPath.split(/;|:/).join("<br/>"))
+								var splittor = /^[a-zA-Z]:\\/g.test(data.Content.JavaClassPath) ? ";" : ":";
+								$("#JavaClassPath").html(data.Content.JavaClassPath.split(splittor).join("<br/>"))
 								$("#StartTime").text(data.Content.StartTime)
 								
 								druid.lang.trigger();

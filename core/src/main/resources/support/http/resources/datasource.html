@@ -43,12 +43,11 @@
             </h4>
             <table class="table table-bordered" style="background-color: #fff">
                 <tbody>
-                <tr>
-                    <td valign="top" class="td_lable"> * <span class="lang" langKey="UserName">UserName</span></td>
-                    <td>{{=datasourceNow.UserName}}</td>
-                    <td class="lang" langKey="UserNameDesc">Specify the username used when creating a new connection.
-                    </td>
-                </tr>
+                    <tr>
+                        <td valign="top" class="td_lable" style="min-wdith:100px" > *  <span class="lang"  langKey="UserName">UserName</span></td>
+                        <td style="min-wdith:300px" width="60%">{{=datasourceNow.UserName}}</td>
+                        <td  class="lang"  langKey="UserNameDesc" style="min-wdith:150px">Specify the username used when creating a new connection.</td>
+                    </tr>
                 <tr>
                     <td valign="top" class="td_lable"> * <span class="lang" langKey="URL">URL</span></td>
                     <td>{{=datasourceNow.URL}}</td>
@@ -491,7 +490,7 @@
                         var contentHtml = doTtmpl(data);
 
                         $(".span12 h3").after(contentHtml);
-
+                        $(".tab-content tr:contains(undefined)").hide();
                         $('#datasourceTab a').click(function (e) {
                             e.preventDefault();
                             $(this).tab('show');
@@ -508,6 +507,7 @@
     $(document).ready(function () {
         druid.datasource.init();
     });
+    window.initPage = druid.datasource.ajaxRequestForBasicInfo;
 </script>
 </body>
 </html>

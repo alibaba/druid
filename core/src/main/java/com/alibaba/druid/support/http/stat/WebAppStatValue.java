@@ -694,7 +694,8 @@ public class WebAppStatValue {
         data.put("RunningCount", this.getRunningCount());
         data.put("ConcurrentMax", this.getConcurrentMax());
         data.put("RequestCount", this.getRequestCount());
-        data.put("SessionCount", this.getSessionCount());
+        final long sessions = this.getSessionCount();
+        data.put("SessionCount", sessions);
 
         data.put("JdbcCommitCount", this.getJdbcCommitCount());
         data.put("JdbcRollbackCount", this.getJdbcRollbackCount());
@@ -703,7 +704,9 @@ public class WebAppStatValue {
         data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
         data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
         data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
-
+        if (sessions < 1) {
+            return data;
+        }
         data.put("OSMacOSXCount", this.getOsMacOSXCount());
         data.put("OSWindowsCount", this.getOsWindowsCount());
         data.put("OSLinuxCount", this.getOsLinuxCount());

@@ -1,4 +1,4 @@
-<div style="float:right;margin-right:20px;">
+<div class="navbar-fixed-top" style="left:unset;right:0px;top:20px;margin-right:20px;z-index:1100;">
     <a class="langSelector" langNow="0">English</a> | <a class="langSelector" langNow="1">中文</a>
 </div>
 <div class="navbar navbar-fixed-top">
@@ -19,9 +19,9 @@
                     <li><a href="api.html" class="lang" langKey="JSON API">JSON API</a></li>
                 </ul>
                 <a langKey="ResetAll" class="btn btn-primary lang"
-                   href="javascript:druid.common.ajaxRequestForReset();">Reset All</a>
+                   href="javascript:return druid.common.ajaxRequestForReset();">Reset All</a>
                 <a langKey="LogAndReset" class="btn btn-primary lang"
-                   href="javascript:druid.common.ajaxRequestForLogAndReset();">Log And Reset</a>
+                   href="javascript:return druid.common.ajaxRequestForLogAndReset();">Log And Reset</a>
             </div>
         </div>
     </div>

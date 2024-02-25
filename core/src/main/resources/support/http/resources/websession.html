@@ -27,8 +27,8 @@
                                        for="refreshSecondsSelect">Refresh Period</label>
           						<select id="refreshSecondsSelect" class="refresh-seconds-select btn" style="width:80px;"
                                         onchange="javascript:druid.websession.refreshSeconds=parseInt(this.options[this.options.selectedIndex].value);">
-          							<option value="5" selected="selected">5s</option>
-          							<option value="10">10s</option>
+          							<option value="5">5s</option>
+          							<option value="10" selected="selected">10s</option>
           							<option value="20">20s</option>
           							<option value="30">30s</option>
           							<option value="60">60s</option>
@@ -159,6 +159,7 @@
     $(document).ready(function () {
         druid.websession.init();
     });
+    window.initPage = druid.common.ajaxRequestForBasicInfo;
 </script>
 </body>
 </html>

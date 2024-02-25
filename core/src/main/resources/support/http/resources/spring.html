@@ -76,7 +76,7 @@
                 druid.common.ajaxuri = 'spring.json?';
                 druid.common.handleAjaxResult = druid.spring.handleAjaxResult;
                 druid.common.ajaxRequestForBasicInfo();
-                setInterval("druid.common.ajaxRequestForBasicInfo();", 5000);
+                setInterval("druid.common.ajaxRequestForBasicInfo();", 10000);
             },
 
             handleAjaxResult: function (data) {
@@ -118,6 +118,7 @@
     $(document).ready(function () {
         druid.spring.init();
     });
+    window.initPage = druid.common.ajaxRequestForBasicInfo;
 </script>
 </body>
 </html>
