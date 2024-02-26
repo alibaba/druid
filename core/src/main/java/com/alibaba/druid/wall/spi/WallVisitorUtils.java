@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExecuteImmediateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
