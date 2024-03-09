@@ -855,69 +855,67 @@ public class PGSQLStatementParser extends SQLStatementParser {
         acceptIdentifier("VACUUM");
         Lexer.SavePoint mark = lexer.mark();
         String strVal = lexer.stringVal();
-        if (!lexer.isEOF()) {
-            for (; ; ) {
-                if (lexer.isEOF()) {
-                    throw new ParserException("EOF");
-                }
-                if (strVal.equalsIgnoreCase("FULL")) {
-                    stmt.setFull(true);
-                    lexer.nextToken();
-                    mark = lexer.mark();
-                    strVal = lexer.stringVal();
-                    continue;
-                } else if (strVal.equalsIgnoreCase("FREEZE")) {
-                    stmt.setFreeze(true);
-                    lexer.nextToken();
-                    mark = lexer.mark();
-                    strVal = lexer.stringVal();
-                    continue;
-                } else if (strVal.equalsIgnoreCase("VERBOSE")) {
-                    stmt.setVerbose(true);
-                    lexer.nextToken();
-                    mark = lexer.mark();
-                    strVal = lexer.stringVal();
-                    continue;
-                } else if (strVal.equalsIgnoreCase("ANALYZE")) {
-                    stmt.setAnalyze(true);
-                    lexer.nextToken();
-                    mark = lexer.mark();
-                    strVal = lexer.stringVal();
-                    continue;
-                } else if (strVal.equalsIgnoreCase("DISABLE_PAGE_SKIPPING")) {
-                    stmt.setDisablePageSkipping(true);
-                    lexer.nextToken();
-                    mark = lexer.mark();
-                    strVal = lexer.stringVal();
-                    continue;
-                } else if (strVal.equalsIgnoreCase("SKIP_LOCKED")) {
-                    stmt.setSkipLocked(true);
-                    lexer.nextToken();
-                    mark = lexer.mark();
-                    strVal = lexer.stringVal();
-                    continue;
-                } else if (strVal.equalsIgnoreCase("PROCESS_TOAST")) {
-                    stmt.setProcessToast(true);
-                    lexer.nextToken();
-                    mark = lexer.mark();
-                    strVal = lexer.stringVal();
-                    continue;
-                } else if (strVal.equalsIgnoreCase("TRUNCATE")) {
-                    stmt.setTruncate(true);
-                    lexer.nextToken();
-                    mark = lexer.mark();
-                    strVal = lexer.stringVal();
-                    continue;
-                } else {
-                    lexer.reset(mark);
-                    break;
-                }
+        for (; ; ) {
+            if (Token.SEMI.equals(lexer.token())) {
+                stmt.setAfterSemi(true);
+                return stmt;
             }
-        }
-        if (Token.SEMI.equals(lexer.token())) {
-            lexer.nextToken();
-            stmt.setAfterSemi(true);
-            return stmt;
+            if (lexer.isEOF()) {
+                lexer.nextToken();
+                return stmt;
+            }
+            if (strVal.equalsIgnoreCase("FULL")) {
+                stmt.setFull(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("FREEZE")) {
+                stmt.setFreeze(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("VERBOSE")) {
+                stmt.setVerbose(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("ANALYZE")) {
+                stmt.setAnalyze(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("DISABLE_PAGE_SKIPPING")) {
+                stmt.setDisablePageSkipping(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("SKIP_LOCKED")) {
+                stmt.setSkipLocked(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("PROCESS_TOAST")) {
+                stmt.setProcessToast(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("TRUNCATE")) {
+                stmt.setTruncate(true);
+                lexer.nextToken();
+                mark = lexer.mark();
+                strVal = lexer.stringVal();
+                continue;
+            } else {
+                lexer.reset(mark);
+                break;
+            }
         }
         List<SQLName> names = new ArrayList<SQLName>();
         this.exprParser.names(names, stmt);

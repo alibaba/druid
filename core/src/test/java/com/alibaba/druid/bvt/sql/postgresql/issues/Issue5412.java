@@ -76,6 +76,7 @@ public class Issue5412 {
 
             for (String sql : new String[]{
                 "vacuum ",
+                "vacuum   ;vacuum ",
                 "vacuum;vacuum;vacuum bb;",
             }) {
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
