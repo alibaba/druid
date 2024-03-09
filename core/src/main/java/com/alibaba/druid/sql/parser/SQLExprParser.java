@@ -4675,6 +4675,12 @@ public class SQLExprParser extends SQLParser {
 
     public SQLColumnDefinition parseColumn(SQLObject parent) {
         SQLColumnDefinition column = createColumnDefinition();
+        if (Token.IF == lexer.token) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            column.setIfNotExists(true);
+        }
         column.setName(
                 name());
 

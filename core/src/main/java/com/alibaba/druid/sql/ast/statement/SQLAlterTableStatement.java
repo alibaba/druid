@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLAlterStatement {
+    private boolean only;
     private SQLExprTableSource tableSource;
     private List<SQLAlterTableItem> items = new ArrayList<SQLAlterTableItem>();
 
@@ -60,6 +61,14 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public SQLAlterTableStatement(DbType dbType) {
         super(dbType);
+    }
+
+    public boolean isOnly() {
+        return only;
+    }
+
+    public void setOnly(boolean only) {
+        this.only = only;
     }
 
     public boolean isIgnore() {
