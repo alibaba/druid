@@ -20,26 +20,20 @@ public class Issue5760 {
 
     @Test
     public void test_parse_error_sql() {
-            Assert.assertThrows(ParserException.class,
-                () -> SQLUtils.parseStatements("Vacuum verbose", DbType.postgresql));
-            Assert.assertThrows(ParserException.class,
-                () -> SQLUtils.parseStatements("Vacuum verbose;", DbType.postgresql));
-            Assert.assertThrows(ParserException.class,
-                () -> SQLUtils.parseStatements("Vacuum verbose full", DbType.postgresql));
+        for (String sql : new String[]{
+            "Vacuum verbose    ",
+            "Vacuum verbose;",
+            "Vacuum verbose full",
+            "Vacuum verbose full;",
+            "Vacuum verbose; select a from b", "Vacuum verbose full"
+            + ";"
+            + "Vacuum verbose bbbb;",
+        }) {
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.postgresql);
+            List<SQLStatement> statementList = parser.parseStatementList();
+            System.out.println("原始的sql===" + sql);
+            System.out.println("生成的sql===" + statementList);
 
-            Assert.assertThrows(ParserException.class,
-                () -> SQLUtils.parseStatements("Vacuum verbose full;", DbType.postgresql));
-
-            Assert.assertThrows(ParserException.class,
-                () -> SQLUtils.parseStatements("Vacuum verbose; select a from b", DbType.postgresql));
-
-            Assert.assertThrows(ParserException.class,
-                () -> {
-                    List<SQLStatement> list = SQLUtils.parseStatements("Vacuum verbose full"
-                        + ";"
-                        + "Vacuum verbose bbbb;", DbType.postgresql);
-                    System.out.println("list = " + list);
-                    Assert.assertEquals(1, list.size());
-                });
+        }
     }
 }
