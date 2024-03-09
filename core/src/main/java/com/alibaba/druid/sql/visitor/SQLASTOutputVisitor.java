@@ -3332,7 +3332,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLColumnDefinition x) {
         boolean parameterized = this.parameterized;
         this.parameterized = false;
-
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
         x.getName().accept(this);
 
         final SQLDataType dataType = x.getDataType();
@@ -4747,6 +4749,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "DROP COLUMN " : "drop column ");
         this.printAndAccept(x.getColumns(), ", ");
 
+        if (x.isRestrict()) {
+            print0(ucase ? " RESTRICT" : " restrict");
+        }
         if (x.isCascade()) {
             print0(ucase ? " CASCADE" : " cascade");
         }
@@ -5698,6 +5703,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAlterTableStatement x) {
         print0(ucase ? "ALTER TABLE " : "alter table ");
 
+        if (x.isOnly()) {
+            print0(ucase ? "ONLY " : "only ");
+        }
         if (x.isIfExists()) {
             print0(ucase ? "IF EXISTS " : "if exists ");
         }
@@ -6501,6 +6509,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "ADD " : "add ");
 
         x.getConstraint().accept(this);
+        if (x.isNoInherit()) {
+            print0(ucase ? " NO  INHERIT" : " no inherit");
+        }
         return false;
     }
 
@@ -6907,6 +6918,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAlterTableSetComment x) {
         print0(ucase ? "SET COMMENT " : "set comment ");
         x.getComment().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableSetTableSpace x) {
+        print0(ucase ? "SET TABLESPACE " : "set tablespace ");
+        x.getTableSpaceName().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableSetSchema x) {
+        print0(ucase ? "SET SCHEMA " : "set schema ");
+        x.getSchemaName().accept(this);
         return false;
     }
 

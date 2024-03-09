@@ -25,6 +25,7 @@ import java.util.List;
 public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlterTableItem {
     private List<SQLName> columns = new ArrayList<SQLName>();
 
+    private boolean restrict;
     private boolean cascade;
 
     public SQLAlterTableDropColumnItem() {
@@ -47,6 +48,14 @@ public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlt
             column.setParent(this);
         }
         this.columns.add(column);
+    }
+
+    public boolean isRestrict() {
+        return restrict;
+    }
+
+    public void setRestrict(boolean restrict) {
+        this.restrict = restrict;
     }
 
     public boolean isCascade() {
