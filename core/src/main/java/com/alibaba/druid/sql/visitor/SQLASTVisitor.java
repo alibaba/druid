@@ -1036,7 +1036,6 @@ public interface SQLASTVisitor {
         return true;
     }
 
-
     default void endVisit(SQLAlterTableSetTableSpace x) {
     }
 
