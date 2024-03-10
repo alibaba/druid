@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableDetachPartition extends SQLObjectImpl implements SQLAlterTableItem {
-
     protected SQLName partitionName;
 
     protected boolean concurrently;
@@ -57,6 +56,4 @@ public class SQLAlterTableDetachPartition extends SQLObjectImpl implements SQLAl
         }
         visitor.endVisit(this);
     }
-
-
 }
