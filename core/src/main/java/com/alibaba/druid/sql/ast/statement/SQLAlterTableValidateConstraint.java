@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableValidateConstraint extends SQLObjectImpl implements SQLAlterTableItem {
     private SQLName constraintName;
-
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {

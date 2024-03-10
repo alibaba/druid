@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAttachPartition extends SQLObjectImpl implements SQLAlterTableItem {
-
     protected SQLName partitionName;
 
     protected boolean defaultFlag;
@@ -48,6 +47,4 @@ public class SQLAlterTableAttachPartition extends SQLObjectImpl implements SQLAl
         }
         visitor.endVisit(this);
     }
-
-
 }
