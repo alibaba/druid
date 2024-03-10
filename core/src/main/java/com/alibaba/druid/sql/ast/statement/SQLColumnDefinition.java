@@ -652,7 +652,11 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         }
     }
 
+    @Deprecated
     public boolean containsNotNullConstaint() {
+        return containsNotNullConstraint();
+    }
+    public boolean containsNotNullConstraint() {
         for (SQLColumnConstraint constraint : this.constraints) {
             if (constraint instanceof SQLNotNullConstraint) {
                 return true;
