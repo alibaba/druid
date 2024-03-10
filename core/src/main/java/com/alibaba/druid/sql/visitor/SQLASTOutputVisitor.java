@@ -4747,6 +4747,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAlterTableDropColumnItem x) {
         print0(ucase ? "DROP COLUMN " : "drop column ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
         this.printAndAccept(x.getColumns(), ", ");
 
         if (x.isRestrict()) {
@@ -5688,6 +5691,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAlterTableDropConstraint x) {
         print0(ucase ? "DROP CONSTRAINT " : "drop constraint ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
         x.getConstraintName().accept(this);
 
         if (x.isCascade()) {
@@ -5695,7 +5701,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else if (x.isRestrict()) {
             print0(ucase ? " RESTRICT" : " restrict");
         }
-
+        return false;
+    }
+    @Override
+    public boolean visit(SQLAlterTableValidateConstraint x) {
+        print0(ucase ? "VALIDATE CONSTRAINT " : "validate constraint ");
+        x.getConstraintName().accept(this);
         return false;
     }
 
@@ -6511,6 +6522,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         x.getConstraint().accept(this);
         if (x.isNoInherit()) {
             print0(ucase ? " NO  INHERIT" : " no inherit");
+        }
+        if (x.isNotValid()) {
+            print0(ucase ? " NOT VALID" : " not valid");
         }
         return false;
     }
@@ -11549,6 +11563,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLAlterTableAttachPartition x) {
+        print0(ucase ? "ATTACH PARTITION " : "attach partition ");
+        x.getPartitionName().accept(this);
+        if (x.isDefaultFlag()) {
+            print0(ucase ? " DEFAULT" : " default");
+        }
+        return false;
+    }
+
+    public boolean visit(SQLAlterTableDetachPartition x) {
+        print0(ucase ? "DETACH  PARTITION " : "detach partition ");
+        x.getPartitionName().accept(this);
+        if (x.isConcurrently()) {
+            print0(ucase ? " CONCURRENTLY" : " concurrently");
+        }
+        if (x.isFinalize()) {
+            print0(ucase ? " FINALIZE" : " finalize");
+        }
+        return false;
+    }
     public boolean visit(SQLOptimizeStatement x) {
         print0(ucase ? "OPTIMIZE TABLE " : "optimize table ");
 

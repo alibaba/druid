@@ -19,36 +19,9 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAlterTableDropConstraint extends SQLObjectImpl implements SQLAlterTableItem {
-    private boolean ifExists;
+public class SQLAlterTableValidateConstraint extends SQLObjectImpl implements SQLAlterTableItem {
     private SQLName constraintName;
 
-    protected boolean cascade;
-    protected boolean restrict;
-
-    public boolean isIfExists() {
-        return ifExists;
-    }
-
-    public void setIfExists(boolean ifExists) {
-        this.ifExists = ifExists;
-    }
-
-    public boolean isCascade() {
-        return cascade;
-    }
-
-    public void setCascade(boolean cascade) {
-        this.cascade = cascade;
-    }
-
-    public boolean isRestrict() {
-        return restrict;
-    }
-
-    public void setRestrict(boolean restrict) {
-        this.restrict = restrict;
-    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
