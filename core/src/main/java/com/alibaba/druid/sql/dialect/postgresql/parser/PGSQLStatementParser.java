@@ -608,7 +608,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     public SQLStatement parseShow() {
         accept(Token.SHOW);
-        PGShowStatement stmt = new PGShowStatement();
+        PGShowStatement stmt = new PGShowStatement(dbType);
         switch (lexer.token()) {
             case ALL:
                 stmt.setExpr(new SQLIdentifierExpr(Token.ALL.name()));
