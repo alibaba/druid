@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlterTableItem {
+    private boolean ifExists;
     private List<SQLName> columns = new ArrayList<SQLName>();
 
     private boolean restrict;
@@ -37,6 +38,14 @@ public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlt
             acceptChild(visitor, columns);
         }
         visitor.endVisit(this);
+    }
+
+    public boolean isIfExists() {
+        return ifExists;
+    }
+
+    public void setIfExists(boolean ifExists) {
+        this.ifExists = ifExists;
     }
 
     public List<SQLName> getColumns() {

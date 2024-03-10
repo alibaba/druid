@@ -1986,6 +1986,36 @@ public class SQLStatementParser extends SQLParser {
                         SQLAlterTableEnableKeys item = new SQLAlterTableEnableKeys();
                         stmt.addItem(item);
                     }
+                } else if (lexer.identifierEquals("VALIDATE")) {
+                    lexer.nextToken();
+                    accept(Token.CONSTRAINT);
+                    SQLAlterTableValidateConstraint item = new SQLAlterTableValidateConstraint();
+                    item.setConstraintName(this.exprParser.name());
+                    stmt.addItem(item);
+                } else if (lexer.identifierEquals("ATTACH")) {
+                    lexer.nextToken();
+                    accept(Token.PARTITION);
+                    SQLAlterTableAttachPartition item = new SQLAlterTableAttachPartition();
+                    item.setPartitionName(this.exprParser.name());
+                    if (lexer.token() == DEFAULT) {
+                        accept(Token.DEFAULT);
+                        item.setDefaultFlag(true);
+                    }
+                    stmt.addItem(item);
+                } else if (lexer.identifierEquals("DETACH")) {
+                    lexer.nextToken();
+                    accept(Token.PARTITION);
+                    SQLAlterTableDetachPartition item = new SQLAlterTableDetachPartition();
+                    item.setPartitionName(this.exprParser.name());
+                    if (lexer.identifierEquals("CONCURRENTLY")) {
+                        lexer.nextToken();
+                        item.setConcurrently(true);
+                    }
+                    if (lexer.identifierEquals("FINALIZE")) {
+                        lexer.nextToken();
+                        item.setFinalize(true);
+                    }
+                    stmt.addItem(item);
                 } else if (lexer.token == Token.ALTER) {
                     lexer.nextToken();
                     if (lexer.token == Token.COLUMN) {
@@ -2540,6 +2570,11 @@ public class SQLStatementParser extends SQLParser {
                 acceptIdentifier("INHERIT");
                 item.setNoInherit(true);
             }
+            if (lexer.token == Token.NOT) {
+                lexer.nextToken();
+                acceptIdentifier("VALID");
+                item.setNotValid(true);
+            }
             stmt.addItem(item);
         } else if (lexer.token == Token.FOREIGN) {
             SQLConstraint constraint = this.exprParser.parseForeignKey();
@@ -2652,6 +2687,11 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token == Token.CONSTRAINT) {
             lexer.nextToken();
             SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
+            if (lexer.token == Token.IF) {
+                lexer.nextToken();
+                accept(Token.EXISTS);
+                item.setIfExists(true);
+            }
             item.setConstraintName(this.exprParser.name());
             if (lexer.token == RESTRICT) {
                 lexer.nextToken();
@@ -2664,6 +2704,11 @@ public class SQLStatementParser extends SQLParser {
         } else if (lexer.token == Token.COLUMN || lexer.identifierEquals(Constants.COLUMNS)) {
             lexer.nextToken();
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
+            if (lexer.token == Token.IF) {
+                lexer.nextToken();
+                accept(Token.EXISTS);
+                item.setIfExists(true);
+            }
 
             if (DbType.isPostgreSQLDbStyle(dbType)) {
                 item.getColumns().add(
@@ -4859,7 +4904,7 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.token == Token.COMMA) {
                 lexer.nextToken();
-                if (lexer.identifierEquals("ADD")) {
+                if (lexer.identifierEquals("ADD") || lexer.token() == Token.ALTER) {
                     break;
                 }
                 continue;

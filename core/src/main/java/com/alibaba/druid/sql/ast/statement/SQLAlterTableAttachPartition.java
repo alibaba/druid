@@ -19,51 +19,35 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAlterTableDropConstraint extends SQLObjectImpl implements SQLAlterTableItem {
-    private boolean ifExists;
-    private SQLName constraintName;
+public class SQLAlterTableAttachPartition extends SQLObjectImpl implements SQLAlterTableItem {
 
-    protected boolean cascade;
-    protected boolean restrict;
+    protected SQLName partitionName;
 
-    public boolean isIfExists() {
-        return ifExists;
+    protected boolean defaultFlag;
+
+    public SQLName getPartitionName() {
+        return partitionName;
     }
 
-    public void setIfExists(boolean ifExists) {
-        this.ifExists = ifExists;
+    public void setPartitionName(SQLName partitionName) {
+        this.partitionName = partitionName;
     }
 
-    public boolean isCascade() {
-        return cascade;
+    public boolean isDefaultFlag() {
+        return defaultFlag;
     }
 
-    public void setCascade(boolean cascade) {
-        this.cascade = cascade;
-    }
-
-    public boolean isRestrict() {
-        return restrict;
-    }
-
-    public void setRestrict(boolean restrict) {
-        this.restrict = restrict;
+    public void setDefaultFlag(boolean defaultFlag) {
+        this.defaultFlag = defaultFlag;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.constraintName);
+            acceptChild(visitor, this.partitionName);
         }
         visitor.endVisit(this);
     }
 
-    public SQLName getConstraintName() {
-        return constraintName;
-    }
-
-    public void setConstraintName(SQLName constraintName) {
-        this.constraintName = constraintName;
-    }
 
 }
