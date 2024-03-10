@@ -247,6 +247,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     public String getTenantColumn() {
+        if (config == null) {
+            return null;
+        }
         return this.config.getTenantColumn();
     }
 
