@@ -107,9 +107,25 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             dbTypeName = JdbcUtils.getDbType(dataSource.getUrl(), null);
         }
 
-        DbType dbType = DbType.of(this.dbTypeName);
+        provider = initWallProvider(dataSource, dbTypeName, config);
+        this.config = provider.getConfig();
+        provider.setName(dataSource.getName());
+        this.inited = true;
+    }
+
+    protected WallProvider initWallProvider(DataSourceProxy dataSource, String dbTypeName, WallConfig config) {
+        return initWallProviderInternal(dataSource, dbTypeName, config);
+    }
+
+    static WallProvider initWallProviderInternal(DataSourceProxy dataSource, String dbTypeName, WallConfig config) {
+        WallProvider provider = null;
+        DbType dbType = DbType.of(dbTypeName);
         if (dbType == null) {
-            throw new IllegalStateException("dbType not support : " + this.dbTypeName + ", url " + dataSource.getUrl());
+            provider = initWallProviderWithSPI(dataSource, config, dbType);
+            if (provider == null) {
+                throw new IllegalStateException("dbType not support : " + dbTypeName + ", url " + dataSource.getUrl());
+            }
+            return provider;
         }
         switch (dbType) {
             case mysql:
@@ -176,13 +192,34 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 provider = new ClickhouseWallProvider(config);
                 break;
             default:
-                throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
+                provider = initWallProviderWithSPI(dataSource, config, dbType);
+                if (provider == null) {
+                    throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
+                }
         }
-
-        provider.setName(dataSource.getName());
-
-        this.inited = true;
+        return provider;
     }
+
+    static WallProvider initWallProviderWithSPI(DataSourceProxy dataSource, WallConfig config, DbType dbType) {
+        List<WallProviderCreator> wallProviderCreatorList = new ArrayList<>();
+        ServiceLoader<WallProviderCreator> providerCreators = ServiceLoader.load(WallProviderCreator.class);
+        providerCreators.forEach((wallProviderCreator) -> {
+            wallProviderCreatorList.add(wallProviderCreator);
+        });
+        //sort wallProviderCreatorList
+        Collections.sort(wallProviderCreatorList, (o1, o2) -> {
+            return Integer.compare(o1.getOrder(), o2.getOrder());
+        });
+        for (WallProviderCreator providerCreator : providerCreators) {
+            WallProvider wallProvider = providerCreator.createWallConfig(dataSource, config, dbType);
+            if (wallProvider != null) {
+                LOG.debug("use wallProvider " + wallProvider.getClass().getName() + " from " + providerCreator.getClass().getName());
+                return wallProvider;
+            }
+        }
+        return null;
+    }
+
 
     public String getDbType() {
         return dbTypeName;
