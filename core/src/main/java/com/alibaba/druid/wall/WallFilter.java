@@ -220,7 +220,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         return null;
     }
 
-
     public String getDbType() {
         return dbTypeName;
     }
