@@ -2777,16 +2777,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                                 createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS));
                         return;
                     }
-                } catch (SQLException | RuntimeException e) {
-                    LOG.error("create connection Exception, url: " + sanitizedUrl(jdbcUrl)
-                            + (e instanceof SQLException ? ", errorCode " + ((SQLException) e).getErrorCode()
-                                    + ", state " + ((SQLException) e).getSQLState() : ""), e);
-
-                    if (initTask) {
-                        LOG.error("initialize connection failure, the dataSource will be closed, please check configuration!", e);
-                        DruidDataSource.this.close();
-                        break;
-                    }
+                } catch (SQLException e) {
+                    LOG.error("create connection SQLException, url: " + sanitizedUrl(jdbcUrl), e);
 
                     errorCount++;
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
@@ -2817,6 +2809,11 @@ public class DruidDataSource extends DruidAbstractDataSource
                                 createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS));
                         return;
                     }
+                } catch (RuntimeException e) {
+                    LOG.error("create connection RuntimeException", e);
+                    // unknown fatal exception
+                    setFailContinuous(true);
+                    continue;
                 } catch (Error e) {
                     lock.lock();
                     try {
@@ -2826,6 +2823,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     }
                     LOG.error("create connection Error", e);
                     // unknown fatal exception
+                    setFailContinuous(true);
                     break;
                 } catch (Throwable e) {
                     lock.lock();
@@ -2856,7 +2854,6 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     public class CreateConnectionThread extends Thread {
         private final CountDownLatch initedLatch = new CountDownLatch(1);
-        private boolean initTask = true;
 
         public CreateConnectionThread(String name) {
             super(name);
@@ -2929,16 +2926,9 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                 try {
                     connection = createPhysicalConnection();
-                } catch (SQLException | RuntimeException e) {
-                    LOG.error("create connection Exception, url: " + sanitizedUrl(jdbcUrl)
-                            + (e instanceof SQLException ? ", errorCode " + ((SQLException) e).getErrorCode()
-                                    + ", state " + ((SQLException) e).getSQLState() : ""), e);
-
-                    if (initTask) {
-                        LOG.error("initialize connection failure, the dataSource will be closed, please check configuration!", e);
-                        DruidDataSource.this.close();
-                        break;
-                    }
+                } catch (SQLException e) {
+                    LOG.error("create connection SQLException, url: " + sanitizedUrl(jdbcUrl) + ", errorCode " + e.getErrorCode()
+                        + ", state " + e.getSQLState(), e);
 
                     errorCount++;
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
@@ -2963,6 +2953,10 @@ public class DruidDataSource extends DruidAbstractDataSource
                             break;
                         }
                     }
+                } catch (RuntimeException e) {
+                    LOG.error("create connection RuntimeException", e);
+                    setFailContinuous(true);
+                    continue;
                 } catch (Error e) {
                     LOG.error("create connection Error", e);
                     break;
@@ -2971,7 +2965,6 @@ public class DruidDataSource extends DruidAbstractDataSource
                 if (connection == null) {
                     continue;
                 }
-                initTask = false;
 
                 boolean result = put(connection);
                 if (!result) {
