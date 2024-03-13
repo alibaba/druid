@@ -27,19 +27,19 @@ public class SqlListResult {
         private Integer port;
 
         @JSONField(name = "ExecuteAndResultSetHoldTime")
-        private int ExecuteAndResultSetHoldTime;
+        private long ExecuteAndResultSetHoldTime;
         @JSONField(name = "LastErrorMessage")
         private Object LastErrorMessage;
         @JSONField(name = "InputStreamOpenCount")
-        private int InputStreamOpenCount;
+        private long InputStreamOpenCount;
         @JSONField(name = "BatchSizeTotal")
-        private int BatchSizeTotal;
+        private long BatchSizeTotal;
         @JSONField(name = "FetchRowCountMax")
-        private int FetchRowCountMax;
+        private long FetchRowCountMax;
         @JSONField(name = "ErrorCount")
-        private int ErrorCount;
+        private long ErrorCount;
         @JSONField(name = "BatchSizeMax")
-        private int BatchSizeMax;
+        private long BatchSizeMax;
         @JSONField(name = "URL")
         private Object URL;
         @JSONField(name = "Name")
@@ -47,33 +47,33 @@ public class SqlListResult {
         @JSONField(name = "LastErrorTime")
         private Object LastErrorTime;
         @JSONField(name = "ReaderOpenCount")
-        private int ReaderOpenCount;
+        private long ReaderOpenCount;
         @JSONField(name = "EffectedRowCountMax")
-        private int EffectedRowCountMax;
+        private long EffectedRowCountMax;
         @JSONField(name = "LastErrorClass")
         private Object LastErrorClass;
         @JSONField(name = "InTransactionCount")
-        private int InTransactionCount;
+        private long InTransactionCount;
         @JSONField(name = "LastErrorStackTrace")
         private Object LastErrorStackTrace;
         @JSONField(name = "ResultSetHoldTime")
-        private int ResultSetHoldTime;
+        private long ResultSetHoldTime;
         @JSONField(name = "TotalTime")
-        private int TotalTime;
+        private long TotalTime;
         @JSONField(name = "ID")
-        private int ID;
+        private long ID;
         @JSONField(name = "ConcurrentMax")
-        private int ConcurrentMax;
+        private long ConcurrentMax;
         @JSONField(name = "RunningCount")
-        private int RunningCount;
+        private long RunningCount;
         @JSONField(name = "FetchRowCount")
-        private int FetchRowCount;
+        private long FetchRowCount;
         @JSONField(name = "MaxTimespanOccurTime")
         private String MaxTimespanOccurTime;
         @JSONField(name = "LastSlowParameters")
         private Object LastSlowParameters;
         @JSONField(name = "ReadBytesLength")
-        private int ReadBytesLength;
+        private long ReadBytesLength;
         @JSONField(name = "DbType")
         private String DbType;
         @JSONField(name = "DataSource")
@@ -85,19 +85,19 @@ public class SqlListResult {
         @JSONField(name = "LastError")
         private Object LastError;
         @JSONField(name = "MaxTimespan")
-        private int MaxTimespan;
+        private long MaxTimespan;
         @JSONField(name = "BlobOpenCount")
-        private int BlobOpenCount;
+        private long BlobOpenCount;
         @JSONField(name = "ExecuteCount")
-        private int ExecuteCount;
+        private long ExecuteCount;
         @JSONField(name = "EffectedRowCount")
-        private int EffectedRowCount;
+        private long EffectedRowCount;
         @JSONField(name = "ReadStringLength")
-        private int ReadStringLength;
+        private long ReadStringLength;
         @JSONField(name = "File")
         private Object File;
         @JSONField(name = "ClobOpenCount")
-        private int ClobOpenCount;
+        private long ClobOpenCount;
         @JSONField(name = "LastTime")
         private String LastTime;
         @JSONField(name = "EffectedRowCountHistogram")

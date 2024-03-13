@@ -1,0 +1,4 @@
+select * from default.first_table
+---------------------------
+SELECT *
+FROM default.first_table

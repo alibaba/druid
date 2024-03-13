@@ -280,6 +280,14 @@ public interface SQLASTVisitor {
     default void endVisit(SQLZOrderBy x) {
     }
 
+    default boolean visit(SQLZOrderBy x) {
+        return true;
+    }
+
+    default void endVisit(SQLZOrderBy x) {
+
+    }
+
     default boolean visit(SQLSelectOrderByItem x) {
         return true;
     }
@@ -1078,6 +1086,14 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLAlterTableSetLocation x) {
+    }
+
+    default boolean visit(SQLAlterTableSetLocation x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableSetLocation x) {
+
     }
 
     default boolean visit(SQLAlterTableEnableLifecycle x) {
@@ -2078,6 +2094,14 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLPurgeTemporaryOutputStatement x) {
+    }
+
+    default boolean visit(SQLPurgeTemporaryOutputStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLPurgeTemporaryOutputStatement x) {
+
     }
 
     default boolean visit(SQLPurgeLogsStatement x) {

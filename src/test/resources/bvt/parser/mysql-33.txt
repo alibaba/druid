@@ -1,0 +1,31 @@
+with recursive tti as (
+    select t.task_id
+    from task_info t
+    where t.task_id in (?)
+    union
+    select t.task_id
+    from task_info t
+    inner join tti tt on t.pid = tt.task_id
+)
+update task_info t
+join (select now() as 'now') n
+inner join tti tt on tt.task_id = t.task_id
+set t.is_del = 1,
+t.delete_time = n.now,
+t.delete_clerk_id = ?
+---------------------------
+WITH RECURSIVE tti AS (
+		SELECT t.task_id
+		FROM task_info t
+		WHERE t.task_id IN (?)
+		UNION
+		SELECT t.task_id
+		FROM task_info t
+			INNER JOIN tti tt ON t.pid = tt.task_id
+	)
+UPDATE task_info t
+	JOIN (
+		SELECT now() AS "now"
+	) n
+	INNER JOIN tti tt ON tt.task_id = t.task_id
+SET t.is_del = 1, t.delete_time = n.now, t.delete_clerk_id = ?

@@ -1,0 +1,4 @@
+select v_date_desc::date - max(access_time)::date from table1;
+---------------------------
+SELECT v_date_desc::date - max(access_time)::date
+FROM table1;

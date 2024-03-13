@@ -1,0 +1,6 @@
+SELECT account_id FROM taobao_office.cloud_yunpan WHERE dt='2021-04-12' AND target='update'
+---------------------------
+SELECT account_id
+FROM taobao_office.cloud_yunpan
+WHERE dt = '2021-04-12'
+	AND target = 'update'

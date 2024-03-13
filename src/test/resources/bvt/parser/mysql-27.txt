@@ -1,0 +1,12 @@
+ALTER
+ALGORITHM=UNDEFINED
+SQL SECURITY DEFINER
+View `test2`.`v1` AS
+select `test_table1`.`id` AS `id`,`test_table1`.`value` AS `value` from `test_table1`
+---------------------------
+ALTER ALGORITHM = UNDEFINED
+	SQL SECURITY DEFINER
+	VIEW `test2`.`v1`
+AS
+SELECT `test_table1`.`id` AS `id`, `test_table1`.`value` AS `value`
+FROM `test_table1`

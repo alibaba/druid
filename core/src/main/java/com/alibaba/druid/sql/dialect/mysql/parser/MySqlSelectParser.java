@@ -177,6 +177,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                 }
             }
 
+
             while (true) {
                 Token token = lexer.token();
                 if (token == (Token.DISTINCT)) {
