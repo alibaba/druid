@@ -695,8 +695,13 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.ON);
 
-        SQLStatement on = this.parseStatement();
-        stmt.setOn(on);
+        expectedNextToken = Token.TO;
+        try {
+            SQLStatement on = this.parseStatement();
+            stmt.setOn(on);
+        } finally {
+            expectedNextToken = null;
+        }
 
         accept(Token.TO);
 
@@ -4922,15 +4927,20 @@ public class MySqlStatementParser extends SQLStatementParser {
                                 identName = lexer.stringVal();
                                 hash = 0;
                             }
-                            lexer.nextTokenComma();
                             SQLExpr expr = new SQLIdentifierExpr(identName, hash);
+                            if (lexer.hasComment()) {
+                                expr.addBeforeComment(lexer.readAndResetComments());
+                            }
+                            lexer.nextTokenComma();
                             while (lexer.token() == Token.DOT) {
                                 lexer.nextToken();
                                 String propertyName = lexer.stringVal();
                                 lexer.nextToken();
                                 expr = new SQLPropertyExpr(expr, propertyName);
                             }
-
+                            if (lexer.hasComment()) {
+                                expr.addAfterComment(lexer.readAndResetComments());
+                            }
                             expr.setParent(stmt);
                             columns.add(expr);
                             columnSize++;
@@ -6608,11 +6618,12 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                     SQLName indexName = this.exprParser.name();
 
-                    if (lexer.identifierEquals("VISIBLE")) {
+                    if (lexer.identifierEquals("VISIBLE") || lexer.identifierEquals("INVISIBLE")) {
                         SQLAlterTableAlterIndex alterIndex = new SQLAlterTableAlterIndex();
                         alterIndex.setName(indexName);
+                        alterIndex.getIndexDefinition().getOptions().setVisible(lexer.identifierEquals("VISIBLE"));
+                        alterIndex.getIndexDefinition().getOptions().setInvisible(lexer.identifierEquals("INVISIBLE"));
                         lexer.nextToken();
-                        alterIndex.getIndexDefinition().getOptions().setVisible(true);
                         stmt.addItem(alterIndex);
                         break;
                     }
@@ -8126,8 +8137,14 @@ public class MySqlStatementParser extends SQLStatementParser {
             List<SQLCommentHint> hints = this.exprParser.parseHints();
             if (hints.size() == 1) {
                 String text = hints.get(0).getText();
-                if (text.endsWith(" IF NOT EXISTS") && text.charAt(0) == '!') {
-                    stmt.setIfNotExists(true);
+                if (text.charAt(0) == '!') {
+                    String[] words = text.trim().split("\\s+");
+                    if (words.length > 2
+                            && words[words.length - 3].equalsIgnoreCase("IF")
+                            && words[words.length - 2].equalsIgnoreCase("NOT")
+                            && words[words.length - 1].equalsIgnoreCase("EXISTS")) {
+                            stmt.setIfNotExists(true);
+                    }
                 }
             }
         }
@@ -8146,7 +8163,25 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.HINT) {
-            stmt.setHints(this.exprParser.parseHints());
+            List<SQLCommentHint> hints = this.exprParser.parseHints();
+            if (hints.size() == 1) {
+                String text = hints.get(0).getText();
+                if (text.charAt(0) == '!') {
+                    String[] words = text.trim().split("\\s+");
+                    int idx = 0;
+                    for (; idx < words.length; idx++) {
+                        if (words[idx].equalsIgnoreCase("CHARACTER")
+                                && idx < words.length - 2 && words[idx + 1].equalsIgnoreCase("SET")) {
+                            stmt.setCharacterSet(words[idx + 2]);
+                            idx += 2;
+                        } else if (words[idx].equalsIgnoreCase("COLLATE")
+                                && idx < words.length - 1) {
+                            stmt.setCollate(words[idx + 1]);
+                            idx += 1;
+                        }
+                    }
+                }
+            }
         }
 
         if (lexer.token() == Token.DEFAULT) {
@@ -8412,7 +8447,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             SQLExpr user = this.exprParser.expr();
             alterUser.setUser(user);
-
+            if (lexer.identifierEquals("ACCOUNT")) {
+                lexer.nextToken();
+                alterUser.setAccountLockOption(lexer.stringVal());
+                lexer.nextToken();
+            }
             if (lexer.identifierEquals("IDENTIFIED")) {
                 lexer.nextToken();
                 accept(Token.BY);
@@ -8954,6 +8993,20 @@ public class MySqlStatementParser extends SQLStatementParser {
         accept(Token.THEN);
 
         this.parseStatementList(stmt.getStatements(), -1, stmt);
+
+        while (lexer.token() == Token.ELSEIF) {
+            lexer.nextToken();
+
+            SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
+
+            elseIf.setCondition(this.exprParser.expr());
+            elseIf.setParent(stmt);
+
+            accept(Token.THEN);
+            this.parseStatementList(elseIf.getStatements(), -1, stmt);
+
+            stmt.getElseIfList().add(elseIf);
+        }
 
         while (lexer.token() == Token.ELSE) {
             lexer.nextToken();

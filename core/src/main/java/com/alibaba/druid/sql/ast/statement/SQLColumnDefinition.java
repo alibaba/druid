@@ -30,6 +30,7 @@ import java.util.List;
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement, SQLObjectWithDataType, SQLReplaceable, SQLDbTypedObject {
     protected DbType dbType;
 
+    protected boolean ifNotExists;
     protected SQLName name;
     protected SQLDataType dataType;
     protected SQLExpr defaultExpr;
@@ -140,6 +141,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
     public void setRely(Boolean rely) {
         this.rely = rely;
+    }
+
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 
     public SQLName getName() {
@@ -643,7 +652,11 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         }
     }
 
+    @Deprecated
     public boolean containsNotNullConstaint() {
+        return containsNotNullConstraint();
+    }
+    public boolean containsNotNullConstraint() {
         for (SQLColumnConstraint constraint : this.constraints) {
             if (constraint instanceof SQLNotNullConstraint) {
                 return true;

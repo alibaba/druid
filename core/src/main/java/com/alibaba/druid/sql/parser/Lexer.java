@@ -1382,7 +1382,7 @@ public class Lexer {
                         scanChar();
                         if (ch == '|') {
                             scanChar();
-                            token = Token.QUESBAR;
+                            token = Token.QUESQUESBAR;
                         } else {
                             token = Token.QUESQUES;
                         }
@@ -3127,14 +3127,6 @@ public class Lexer {
 
     private static final long MULTMIN_RADIX_TEN = Long.MIN_VALUE / 10;
     private static final long N_MULTMAX_RADIX_TEN = -Long.MAX_VALUE / 10;
-
-    private static final int[] digits = new int[(int) '9' + 1];
-
-    static {
-        for (int i = '0'; i <= '9'; ++i) {
-            digits[i] = i - '0';
-        }
-    }
 
     public final boolean isNegativeIntegerValue() {
         return charAt(mark) == '-';

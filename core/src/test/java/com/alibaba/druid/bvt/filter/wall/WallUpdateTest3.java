@@ -29,7 +29,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class WallUpdateTest3 extends TestCase {
     private String sql = "UPDATE T_USER SET FNAME = ? WHERE 1 = 1";
-    private String sql2 = "UPDATE T_USER SET FNAME = ? WHERE id = 1 or1 = 1";
+    private String sql2 = "UPDATE T_USER SET FNAME = ? WHERE id = 1 or 1 = 1";
 
     private WallConfig config = new WallConfig();
 
@@ -38,12 +38,28 @@ public class WallUpdateTest3 extends TestCase {
     }
 
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        config.setUpdateWhereAlwayTrueCheck(true);
+        config.setConditionAndAlwayTrueAllow(false);
+
+        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
         Assert.assertFalse(WallUtils.isValidateMySql(sql2, config));
+
+        config.setUpdateWhereAlwayTrueCheck(false);
+        config.setConditionAndAlwayTrueAllow(true);
+        Assert.assertTrue(WallUtils.isValidateMySql(sql2, config));
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
+        config.setUpdateWhereAlwayTrueCheck(true);
+        config.setConditionAndAlwayTrueAllow(false);
+
+        Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
         Assert.assertFalse(WallUtils.isValidateOracle(sql2, config));
+
+        config.setUpdateWhereAlwayTrueCheck(false);
+        config.setConditionAndAlwayTrueAllow(true);
+        Assert.assertTrue(WallUtils.isValidateOracle(sql2, config));
+        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 }

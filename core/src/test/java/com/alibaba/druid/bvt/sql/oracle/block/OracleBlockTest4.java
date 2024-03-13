@@ -26,40 +26,78 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 public class OracleBlockTest4 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "DECLARE" + //
-                "  done  BOOLEAN;" + //
-                "BEGIN" + //
-                "  FOR i IN 1..50 LOOP" + //
-                "    IF done THEN" + //
-                "       GOTO end_loop;" + //
-                "    END IF;" + //
-                "  <<end_loop>>" + //
-                "  END LOOP;" + //
+        String sql = "DECLARE" +
+                "  done  BOOLEAN;" +
+                "BEGIN" +
+                "  FOR i IN 1..50 LOOP" +
+                "    IF done THEN" +
+                "       GOTO end_loop;" +
+                "    END IF;" +
+                "  <<end_loop>>" +
+                "  END LOOP;" +
                 "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement statement = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+        statement.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("conditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+
+        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
+    }
+
+    public void test_1() throws Exception {
+        String sql = "DECLARE" +
+                     "  done  BOOLEAN;" +
+                     "BEGIN" +
+                     "  FOR i IN REVERSE 1..50 LOOP" +
+                     "    IF done THEN" +
+                     "       GOTO end_loop;" +
+                     "    END IF;" +
+                     "  <<end_loop>>" +
+                     "  END LOOP;" +
+                     "END;";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statement = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+        assertEquals("DECLARE\n" +
+                     "\tdone BOOLEAN;\n" +
+                     "BEGIN\n" +
+                     "\tFOR i IN REVERSE 1..50\n" +
+                     "\tLOOP\n" +
+                     "\t\tIF done THEN\n" +
+                     "\t\t\tGOTO end_loop;\n" +
+                     "\t\tEND IF;\n" +
+                     "\t\t<<end_loop>>\n" +
+                     "\tEND LOOP;\n" +
+                     "END;", statement.toString());
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        statement.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("conditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-
         Assert.assertEquals(0, visitor.getColumns().size());
-
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));
     }
 }

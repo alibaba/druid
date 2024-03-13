@@ -632,6 +632,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             tablePartitions.accept(this);
         }
 
+        final SQLPartitionBy partitionBy = x.getPartitioning();
+        if (partitionBy != null) {
+            print0(ucase ? " PARTITION BY " : " partitions by ");
+            partitionBy.accept(this);
+        }
+
         /*
         final List<SQLAssignItem> options = x.getOptions();
         if (options.size() > 0) {
@@ -1205,10 +1211,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                     }
 
                     SQLExpr column = columns.get(i);
+                    if (column.hasBeforeComment()) {
+                        print(' ');
+                        printlnComment(column.getBeforeCommentsDirect());
+                        println();
+                    }
                     if (column instanceof SQLIdentifierExpr) {
                         printName0(((SQLIdentifierExpr) column).getName());
                     } else {
                         printExpr(column, parameterized);
+                    }
+                    if (column.hasAfterComment()) {
+                        print(' ');
+                        printlnComment(column.getAfterCommentsDirect());
+                        println();
                     }
                 }
                 print(')');
@@ -3488,21 +3504,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             if (i != 0) {
                 print(' ');
             }
-            print0(ucase ? key.toString().toUpperCase() : key.toString().toLowerCase());
-
-            if ("TABLESPACE".equals(key)) {
+            final String keyStringCase = ucase ? key.toString().toUpperCase() : key.toString().toLowerCase();
+            print0(keyStringCase);
+            if ("TABLESPACE".equalsIgnoreCase(keyStringCase)) {
                 print(' ');
-                item.getValue().accept(this);
-                continue;
-            } else if ("UNION".equals(key)) {
-                print0(" = (");
-                item.getValue().accept(this);
-                print(')');
-                continue;
+            } else {
+                print0(" = ");
             }
-
-            print0(" = ");
-
             item.getValue().accept(this);
             i++;
         }
@@ -4113,6 +4121,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 SQLCharExpr authString = alterUser.getAuthOption().getAuthString();
                 authString.accept(this);
             }
+            if (alterUser.getAccountLockOption() != null) {
+                print0(ucase ? " ACCOUNT " : " account ");
+                print0(ucase ? alterUser.getAccountLockOption().toUpperCase() : alterUser.getAccountLockOption().toLowerCase());
+            }
         }
 
         MySqlAlterUserStatement.PasswordOption passwordOption = x.getPasswordOption();
@@ -4141,7 +4153,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(SQLSetStatement x) {
-        boolean printSet = x.getAttribute("parser.set") == Boolean.TRUE || DbType.oracle != dbType;
+        boolean printSet = Boolean.TRUE.equals(x.getAttribute("parser.set")) || DbType.oracle != dbType;
         if (printSet) {
             print0(ucase ? "SET " : "set ");
         }
@@ -4280,7 +4292,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(SQLIfStatement.ElseIf x) {
-        print0(ucase ? "ELSE IF " : "else if ");
+        print0(ucase ? "ELSEIF " : "elseif ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
         this.indentCount++;
@@ -4390,6 +4402,34 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.getLabelName() != null && !x.getLabelName().equals("")) {
             print0(" ");
             print0(x.getLabelName());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLWhileStatement x) {
+        String label = x.getLabelName();
+
+        if (label != null && !label.isEmpty()) {
+            print0(x.getLabelName());
+            print0(": ");
+        }
+        print0(ucase ? "WHILE " : "while ");
+        x.getCondition().accept(this);
+        print0(ucase ? " DO" : " do");
+        println();
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+        println();
+        print0(ucase ? "END WHILE" : "end while");
+        if (label != null && !label.isEmpty()) {
+            print(' ');
+            print0(label);
         }
         return false;
     }
@@ -4953,9 +4993,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLName definer = x.getDefiner();
         if (definer != null) {
             print0(ucase ? "DEFINER = " : "definer = ");
+            definer.accept(this);
+            print(' ');
         }
 
-        print0(ucase ? "EVENT " : "evnet ");
+        print0(ucase ? "EVENT " : "event ");
 
         if (x.isIfNotExists()) {
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
@@ -4981,7 +5023,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         SQLExpr comment = x.getComment();
         if (comment != null) {
-            print0(ucase ? "COMMENT " : "comment ");
+            print0(ucase ? " COMMENT " : " comment ");
             comment.accept(this);
         }
 
@@ -5200,9 +5242,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLName definer = x.getDefiner();
         if (definer != null) {
             print0(ucase ? "DEFINER = " : "definer = ");
+            definer.accept(this);
+            print(' ');
         }
 
-        print0(ucase ? "EVENT " : "evnet ");
+        print0(ucase ? "EVENT " : "event ");
         printExpr(x.getName());
 
         MySqlEventSchedule schedule = x.getSchedule();
@@ -5225,7 +5269,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         SQLExpr comment = x.getComment();
         if (comment != null) {
-            print0(ucase ? "COMMENT " : "comment ");
+            print0(ucase ? " COMMENT " : " comment ");
             comment.accept(this);
         }
 

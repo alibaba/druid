@@ -29,6 +29,8 @@ public class SQLDropUserStatement extends SQLStatementImpl implements SQLDropSta
 
     protected boolean ifExists;
 
+    protected boolean cascade;
+
     public SQLDropUserStatement() {
     }
 
@@ -42,6 +44,14 @@ public class SQLDropUserStatement extends SQLStatementImpl implements SQLDropSta
 
     public void setIfExists(boolean ifExists) {
         this.ifExists = ifExists;
+    }
+
+    public boolean isCascade() {
+        return cascade;
+    }
+
+    public void setCascade(boolean cascade) {
+        this.cascade = cascade;
     }
 
     public List<SQLExpr> getUsers() {

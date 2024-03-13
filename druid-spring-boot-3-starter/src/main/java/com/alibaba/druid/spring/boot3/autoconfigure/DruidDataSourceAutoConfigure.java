@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -33,12 +34,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import javax.sql.DataSource;
-
 /**
  * @author lihengming [89921218@qq.com]
  */
 @Configuration
+@ConditionalOnProperty(name = "spring.datasource.type",
+        havingValue = "com.alibaba.druid.pool.DruidDataSource",
+        matchIfMissing = true)
 @ConditionalOnClass(DruidDataSource.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties({DruidStatProperties.class, DataSourceProperties.class})
@@ -49,9 +51,16 @@ import javax.sql.DataSource;
 public class DruidDataSourceAutoConfigure {
     private static final Logger LOGGER = LoggerFactory.getLogger(DruidDataSourceAutoConfigure.class);
 
-    @Bean(initMethod = "init")
+    /**
+     * Not setting initMethod of annotation {@code @Bean} is to avoid failure when inspecting
+     * the bean definition at the build time. The {@link DruidDataSource#init()} will be called
+     * at the end of {@link DruidDataSourceWrapper#afterPropertiesSet()}.
+     *
+     * @return druid data source wrapper
+     */
+    @Bean
     @ConditionalOnMissingBean
-    public DataSource dataSource() {
+    public DruidDataSourceWrapper dataSource() {
         LOGGER.info("Init DruidDataSource");
         return new DruidDataSourceWrapper();
     }

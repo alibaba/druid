@@ -27,7 +27,7 @@ public class Issue4253 extends TestCase {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(input, dbType);
         Exception error = null;
         try {
-            parser.parseStatement(true);
+            parser.parseStatement();
         } catch (Exception ex) {
             ex.printStackTrace();
             error = ex;

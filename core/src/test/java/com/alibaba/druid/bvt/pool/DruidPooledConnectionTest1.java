@@ -85,6 +85,8 @@ public class DruidPooledConnectionTest1 extends TestCase {
 
     public void test_recycle() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
+        int defaultIsolation = conn.getTransactionIsolation();
+        conn.setTransactionIsolation(defaultIsolation + 1);
 
         conn.close();
         conn.recycle();
@@ -93,10 +95,16 @@ public class DruidPooledConnectionTest1 extends TestCase {
         Assert.assertEquals(1, dataSource.getCloseCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
+
+        conn = (DruidPooledConnection) dataSource.getConnection();
+        Assert.assertEquals(defaultIsolation, conn.getTransactionIsolation());
+        conn.close();
     }
 
     public void test_recycle_2() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
+        int defaultIsolation = conn.getTransactionIsolation();
+        conn.setTransactionIsolation(defaultIsolation + 1);
 
         conn.recycle();
         conn.recycle();
@@ -106,5 +114,9 @@ public class DruidPooledConnectionTest1 extends TestCase {
         Assert.assertEquals(1, dataSource.getCloseCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
+
+        conn = (DruidPooledConnection) dataSource.getConnection();
+        Assert.assertEquals(defaultIsolation, conn.getTransactionIsolation());
+        conn.close();
     }
 }

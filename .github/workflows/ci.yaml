@@ -18,24 +18,24 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        java: [ 8, 17 ]
+        java: [ 8, 11, 17, 21 ]
       fail-fast: false
       max-parallel: 16
     name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           cache: 'maven'
       - name: Build with Maven if test jdk8
-        if: ${{ matrix.java == '8' }}
-        run: ./mvnw -Pgen-javadoc -DskipTests clean package -B
+        if: ${{ matrix.java == '8' || matrix.java == '11'}}
+        run: ./mvnw -Pgen-javadoc clean package -B
       - name: Build with Maven if test jdk17
-        if: ${{ matrix.java == '17' }}
+        if: ${{ matrix.java == '17' || matrix.java == '21' }}
         run: ./mvnw -Penable-for-jdk17+,gen-code-cov clean package -B
       - name: "Codecov if test jdk17"
         if: ${{ matrix.java == '17' }}

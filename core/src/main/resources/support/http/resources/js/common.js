@@ -48,6 +48,9 @@ druid.common = function () {
                     if (data.ResultCode == 1) {
                         alert("already reset all stat");
                     }
+                    if (window.initPage) {
+                        window.initPage();
+                    }
                 },
                 dataType: "json"
             });
@@ -64,6 +67,9 @@ druid.common = function () {
                 success: function (data) {
                     if (data.ResultCode == 1) {
                         alert("already reset all stat");
+                    }
+                    if (window.initPage) {
+                        window.initPage();
                     }
                 },
                 dataType: "json"

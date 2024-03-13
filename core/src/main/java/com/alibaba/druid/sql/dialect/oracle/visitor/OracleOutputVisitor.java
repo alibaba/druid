@@ -403,9 +403,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             print0(ucase ? "FOR UPDATE" : "for update");
             if (x.getForUpdateOfSize() > 0) {
-                print('(');
+                print(" OF ");
                 printAndAccept(x.getForUpdateOf(), ", ");
-                print(')');
             }
 
             if (x.isNoWait()) {
@@ -1434,6 +1433,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getIndex().accept(this);
         print0(ucase ? " IN " : " in ");
 
+        if (x.isReverse()) {
+            print0(ucase ? "REVERSE " : "reverse ");
+        }
+
         SQLExpr range = x.getRange();
         range.accept(this);
 
@@ -1487,7 +1490,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(SQLIfStatement.ElseIf x) {
-        print0(ucase ? "ELSE IF " : "else if ");
+        print0(ucase ? "ELSIF " : "elsif ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
         this.indentCount++;
@@ -1667,7 +1670,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "CURSOR_SPECIFIC_SEGMENT" : "cursor_specific_segment");
         }
 
-        if (x.getParallel() == Boolean.TRUE) {
+        if (Boolean.TRUE.equals(x.getParallel())) {
             println();
             print0(ucase ? "PARALLEL" : "parallel");
 
@@ -1676,15 +1679,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print(' ');
                 printExpr(parallelValue);
             }
-        } else if (x.getParallel() == Boolean.FALSE) {
+        } else if (Boolean.FALSE.equals(x.getParallel())) {
             println();
             print0(ucase ? "NOPARALLEL" : "noparallel");
         }
 
-        if (x.getCache() == Boolean.TRUE) {
+        if (Boolean.TRUE.equals(x.getCache())) {
             println();
             print0(ucase ? "CACHE" : "cache");
-        } else if (x.getCache() == Boolean.FALSE) {
+        } else if (Boolean.FALSE.equals(x.getCache())) {
             println();
             print0(ucase ? "NOCACHE" : "nocache");
         }
@@ -2754,6 +2757,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         } else if (tableOf != null) {
             print0(ucase ? " AS TABLE OF " : " as table of ");
             tableOf.accept(this);
+
+            SQLDataType indexBy = x.getIndexBy();
+            if (indexBy != null) {
+                print0(ucase ? " INDEX BY " : " index by ");
+                indexBy.accept(this);
+            }
         } else if (x.getVarraySizeLimit() != null) {
             print0(ucase ? " VARRAY (" : " varray (");
             x.getVarraySizeLimit().accept(this);
@@ -2807,7 +2816,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print0(", ");
             }
             SQLExpr type = types.get(i);
-            if (Boolean.TRUE == type.getAttribute("ONLY")) {
+            if (Boolean.TRUE.equals(type.getAttribute("ONLY"))) {
                 print0(ucase ? "ONLY " : "only ");
             }
             type.accept(this);
@@ -2913,6 +2922,24 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         incrementIndent();
         printOracleSegmentAttributes(x);
         decrementIndent();
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLDropUserStatement x) {
+        super.endVisit(x);
+    }
+
+    @Override
+    public boolean visit(SQLDropUserStatement x) {
+        print0(ucase ? "DROP USER " : "drop user ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+        printAndAccept(x.getUsers(), ", ");
+        if (x.isCascade()) {
+            print0(ucase ? " CASCADE" : " cascade");
+        }
         return false;
     }
 }

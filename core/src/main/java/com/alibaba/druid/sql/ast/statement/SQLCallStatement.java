@@ -85,6 +85,6 @@ public class SQLCallStatement extends SQLStatementImpl {
         children.add(outParameter);
         children.add(procedureName);
         children.addAll(parameters);
-        return null;
+        return children;
     }
 }

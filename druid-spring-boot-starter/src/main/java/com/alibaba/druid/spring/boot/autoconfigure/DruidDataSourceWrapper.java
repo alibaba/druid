@@ -47,6 +47,8 @@ public class DruidDataSourceWrapper extends DruidDataSource implements Initializ
         if (super.getDriverClassName() == null) {
             super.setDriverClassName(basicProperties.getDriverClassName());
         }
+
+        init();
     }
 
     @Autowired(required = false)

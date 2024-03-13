@@ -30,8 +30,10 @@ public class SQLBlockStatement extends SQLStatementImpl {
     private List<SQLStatement> statementList = new ArrayList<SQLStatement>();
     public SQLStatement exception;
     private boolean endOfCommit;
+    private boolean haveBeginEnd;
 
     public SQLBlockStatement() {
+        haveBeginEnd = true;
     }
 
     public List<SQLStatement> getStatementList() {
@@ -48,6 +50,14 @@ public class SQLBlockStatement extends SQLStatementImpl {
 
     public void setLabelName(String labelName) {
         this.labelName = labelName;
+    }
+
+    public boolean isHaveBeginEnd() {
+        return haveBeginEnd;
+    }
+
+    public void setHaveBeginEnd(boolean haveBeginEnd) {
+        this.haveBeginEnd = haveBeginEnd;
     }
 
     @Override

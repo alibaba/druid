@@ -32,11 +32,14 @@ public class WallDeleteWhereTest2 extends TestCase {
     public void test_check_true() throws Exception {
         WallConfig config = new WallConfig();
         config.setDeleteWhereAlwayTrueCheck(true);
-        config.setConditionAndAlwayTrueAllow(true);
         config.setCommentAllow(true);
 
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
         Assert.assertFalse(WallUtils.isValidateMySql(sql1, config));
+
+        config.setDeleteWhereAlwayTrueCheck(false);
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        Assert.assertTrue(WallUtils.isValidateMySql(sql1, config));
     }
 
     public void test_check_false() throws Exception {

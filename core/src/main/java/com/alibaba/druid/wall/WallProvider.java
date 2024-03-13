@@ -488,7 +488,9 @@ public abstract class WallProvider {
                 parser.setParseCompleteValues(false);
                 parser.setParseValuesSize(config.getInsertValuesCheckSize());
             }
-
+            if (config.isHintAllow()) {
+                parser.config(SQLParserFeature.StrictForWall, false);
+            }
             parser.parseStatementList(statementList);
 
             final Token lastToken = parser.getLexer().token();
@@ -496,7 +498,7 @@ public abstract class WallProvider {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.SYNTAX_ERROR, "not terminal sql, token "
                         + lastToken, sql));
             }
-            endOfComment = parser.getLexer().isEndOfComment();
+            endOfComment = parser.getLexer().isEOF();
         } catch (NotAllowCommentException e) {
             violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMENT_STATEMENT_NOT_ALLOW, "comment not allow", sql));
             incrementCommentDeniedCount();

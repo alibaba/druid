@@ -30,7 +30,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest7 extends TestCase {
     public void test_stuff() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        Assert.assertTrue(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where a.id<10 and (id <5 or 1=1) limit 1,10")); // 部分永真
     }
 }

@@ -539,6 +539,7 @@ public class MySqlExprParser extends SQLExprParser {
         if (lexer.token() == Token.FOR) {
             lexer.nextToken();
             acceptIdentifier("ORDINALITY");
+            column.setOrdinality(true);
         } else {
             boolean nested = name instanceof SQLIdentifierExpr
                     && name.nameHashCode64() == FnvHash.Constants.NESTED;

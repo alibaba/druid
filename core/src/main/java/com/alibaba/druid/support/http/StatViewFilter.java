@@ -121,6 +121,7 @@ public class StatViewFilter implements Filter {
         }
         if (requestURI.equals(servletPath)) {
             httpResp.sendRedirect(httpReq.getRequestURI() + '/');
+            return;
         }
 
         handler.service(httpReq, httpResp, servletPath, new ResourceServlet.ProcessCallback() {

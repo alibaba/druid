@@ -1,8 +1,12 @@
 
 body {
     font-size: 12px;
-    padding-top: 60px;
+    padding-top: 36px;
     padding-bottom: 40px;
+}
+
+.nav {
+    margin-bottom: 5px;
 }
 
 a {
@@ -29,7 +33,8 @@ a {
 
 .td_lable {
     font-weight: bold;
-    width: 220px;
+    width: 340px;
+    min-width: 25px;
     background-color: #E5E5E5;
 }
 

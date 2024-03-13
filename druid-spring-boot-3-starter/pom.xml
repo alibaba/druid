@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.alibaba</groupId>
         <artifactId>druid-parent</artifactId>
-        <version>1.2.21-SNAPSHOT</version>
+        <version>1.2.22-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>druid-spring-boot-3-starter</artifactId>

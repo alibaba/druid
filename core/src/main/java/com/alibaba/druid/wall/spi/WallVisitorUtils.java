@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExecuteImmediateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -193,7 +192,8 @@ public class WallVisitorUtils {
             checkReadOnly(visitor, x.getInto());
         }
 
-        if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
+        final WallConfig config = visitor.getConfig();
+        if (!config.isSelectIntoAllow() && x.getInto() != null) {
             addViolation(visitor, ErrorCode.SELECT_INTO_NOT_ALLOW, "select into not allow", x);
             return;
         }
@@ -216,12 +216,10 @@ public class WallVisitorUtils {
         if (where != null) {
             checkCondition(visitor, x.getWhere());
 
-            Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck());
+            Object whereValue = getConditionValue(visitor, where, config.isSelectWhereAlwayTrueCheck());
 
-            if (Boolean.TRUE == whereValue) {
-                if (visitor.getConfig().isSelectWhereAlwayTrueCheck()
-                        && visitor.isSqlEndOfComment()
-                        && !isSimpleConstExpr(where)) {
+            if (Boolean.TRUE.equals(whereValue)) {
+                if (config.isSelectWhereAlwayTrueCheck() && visitor.isSqlEndOfComment() && isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "select alway true condition not allow", x);
                 }
             }
@@ -235,10 +233,10 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck())) {
+        if (Boolean.TRUE.equals(getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck()))) {
             if (visitor.getConfig().isSelectHavingAlwayTrueCheck()
                     && visitor.isSqlEndOfComment()
-                    && !isSimpleConstExpr(x)) {
+                    && isSimpleConstExpr(x)) {
                 addViolation(visitor, ErrorCode.ALWAYS_TRUE, "having alway true condition not allow", x);
             }
         }
@@ -276,8 +274,8 @@ public class WallVisitorUtils {
         if (where != null) {
             checkCondition(visitor, where);
 
-            if (Boolean.TRUE == getConditionValue(visitor, where, config.isDeleteWhereAlwayTrueCheck())) {
-                if (config.isDeleteWhereAlwayTrueCheck() && visitor.isSqlEndOfComment() && !isSimpleConstExpr(where)) {
+            if (Boolean.TRUE.equals(getConditionValue(visitor, where, config.isDeleteWhereAlwayTrueCheck()))) {
+                if (config.isDeleteWhereAlwayTrueCheck() && visitor.isSqlEndOfComment() && isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "delete alway true condition not allow", x);
                 }
             }
@@ -320,18 +318,15 @@ public class WallVisitorUtils {
                 if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
                         || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual
                         || binaryOpExpr.getOperator() == SQLBinaryOperator.GreaterThan) {
-                    if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
-                            && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
                         isSimpleConstExpr = true;
-                    }
                 }
             }
 
-            if (!isSimpleConstExpr) {
-                return false;
+            if (isSimpleConstExpr) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private static void checkCondition(WallVisitor visitor, SQLExpr x) {
@@ -866,8 +861,8 @@ public class WallVisitorUtils {
         } else {
             checkCondition(visitor, where);
 
-            if (Boolean.TRUE == getConditionValue(visitor, where, config.isUpdateWhereAlayTrueCheck())) {
-                if (config.isUpdateWhereAlayTrueCheck() && visitor.isSqlEndOfComment() && !isSimpleConstExpr(where)) {
+            if (Boolean.TRUE.equals(getConditionValue(visitor, where, config.isUpdateWhereAlwayTrueCheck()))) {
+                if (config.isUpdateWhereAlwayTrueCheck() && visitor.isSqlEndOfComment() && isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "update alway true condition not allow", x);
                 }
             }
@@ -1063,7 +1058,9 @@ public class WallVisitorUtils {
                 }
             }
         }
-
+        if (false && leftResult == null && rightResult == null) {
+            return null;
+        }
         DbType dbType = null;
         WallContext wallContext = WallContext.current();
         if (wallContext != null) {
@@ -1074,11 +1071,11 @@ public class WallVisitorUtils {
     }
 
     private static Object getValue_or(WallVisitor visitor, List<SQLExpr> groupList) {
-        boolean allFalse = true;
+        int falseCount = 0;
         for (int i = groupList.size() - 1; i >= 0; --i) {
             SQLExpr item = groupList.get(i);
             Object result = getValue(visitor, item);
-            Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
+            final Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
             if (booleanVal != null && booleanVal.booleanValue()) {
                 final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
                 if (wallContext != null && !isFirst(item)) {
@@ -1087,13 +1084,12 @@ public class WallVisitorUtils {
                 return true;
             }
 
-            if (booleanVal == null) {
-                allFalse = false;
-                break;
+            if (Boolean.FALSE.equals(booleanVal)) {
+                falseCount++;
             }
         }
 
-        if (allFalse) {
+        if (falseCount == groupList.size()) {
             return false;
         }
 
@@ -1102,29 +1098,28 @@ public class WallVisitorUtils {
 
     private static Object getValue_and(WallVisitor visitor, List<SQLExpr> groupList) {
         int dalConst = 0;
-        Boolean allTrue = Boolean.TRUE;
+        int trueCount = 0;
+        int falseCount = 0;
         for (int i = groupList.size() - 1; i >= 0; --i) {
             SQLExpr item = groupList.get(i);
             Object result = getValue(visitor, item);
             Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
 
-            if (Boolean.TRUE == booleanVal) {
+            if (Boolean.TRUE.equals(booleanVal)) {
                 final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
                 if (wallContext != null && !isFirst(item)) {
                     wallContext.setPartAlwayTrue(true);
                 }
                 dalConst++;
-            } else if (Boolean.FALSE == booleanVal) {
+                trueCount++;
+            } else if (Boolean.FALSE.equals(booleanVal)) {
                 final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
                 if (wallContext != null && !isFirst(item)) {
                     wallContext.setPartAlwayFalse(true);
                 }
-                allTrue = Boolean.FALSE;
+                falseCount++;
                 dalConst++;
             } else {
-                if (allTrue != Boolean.FALSE) {
-                    allTrue = null;
-                }
                 dalConst = 0;
             }
 
@@ -1133,10 +1128,10 @@ public class WallVisitorUtils {
             }
         }
 
-        if (Boolean.TRUE == allTrue) {
-            return true;
-        } else if (Boolean.FALSE == allTrue) {
+        if (falseCount > 0) {
             return false;
+        } else if (trueCount == groupList.size()) {
+            return true;
         }
         return null;
     }
@@ -1425,7 +1420,7 @@ public class WallVisitorUtils {
             final WallConditionContext current = wallConditionContextLocal.get();
             WallContext context = WallContext.current();
             if (context != null) {
-                if (current.hasPartAlwayTrue() || Boolean.TRUE == value) {
+                if (current.hasPartAlwayTrue() || Boolean.TRUE.equals(value)) {
                     if (!isFirst(x)) {
                         context.incrementWarnings();
                     }
@@ -1448,7 +1443,7 @@ public class WallVisitorUtils {
             }
 
             if (current.hasXor() && !visitor.getConfig().isConditionOpXorAllow()) {
-                addViolation(visitor, ErrorCode.XOR, "xor not allow", x);
+                addViolation(visitor, ErrorCode.XOR, " allow", x);
             }
 
             if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {
@@ -2431,7 +2426,7 @@ public class WallVisitorUtils {
                 SQLExpr where = queryBlock.getWhere();
                 if (where != null) {
                     Object whereValue = getValue(visitor, where);
-                    if (Boolean.TRUE == whereValue) {
+                    if (Boolean.TRUE.equals(whereValue)) {
                         boolean allIsConst = true;
                         for (SQLSelectItem item : queryBlock.getSelectList()) {
                             if (getValue(visitor, item.getExpr()) == null) {
@@ -2628,10 +2623,6 @@ public class WallVisitorUtils {
             allow = config.isLockTableAllow();
             denyMessage = "lock table not allow";
             errorCode = ErrorCode.LOCK_TABLE_NOT_ALLOW;
-        } else if (x instanceof OracleLockTableStatement) {
-            allow = config.isLockTableAllow();
-            denyMessage = "lock table not allow";
-            errorCode = ErrorCode.LOCK_TABLE_NOT_ALLOW;
         } else if (x instanceof SQLStartTransactionStatement) {
             allow = config.isStartTransactionAllow();
             denyMessage = "start transaction not allow";
@@ -2667,7 +2658,7 @@ public class WallVisitorUtils {
         String text = x.getText();
         text = text.trim();
         if (text.startsWith("!")) {
-            text = text.substring(1);
+            text = text.substring(1).trim();
         }
 
         if (text.length() == 0) {

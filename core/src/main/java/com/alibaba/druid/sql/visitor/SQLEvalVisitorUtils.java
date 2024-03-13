@@ -664,7 +664,7 @@ public class SQLEvalVisitorUtils {
             Object conditionValue = item.getConditionExpr().getAttribute(EVAL_VALUE);
 
             if ((x.getValueExpr() != null && eq(value, conditionValue))
-                    || (x.getValueExpr() == null && conditionValue instanceof Boolean && (Boolean) conditionValue == Boolean.TRUE)) {
+                    || (x.getValueExpr() == null && conditionValue instanceof Boolean && Boolean.TRUE.equals((Boolean) conditionValue))) {
                 item.getValueExpr().accept(visitor);
 
                 if (item.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {
@@ -814,13 +814,13 @@ public class SQLEvalVisitorUtils {
         final WallConditionContext wallConditionContext = WallVisitorUtils.getWallConditionContext();
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
             if (wallConditionContext != null) {
-                if (left.getAttribute(EVAL_VALUE) == Boolean.TRUE || right.getAttribute(EVAL_VALUE) == Boolean.TRUE) {
+                if (Boolean.TRUE.equals(left.getAttribute(EVAL_VALUE)) || Boolean.TRUE.equals(right.getAttribute(EVAL_VALUE))) {
                     wallConditionContext.setPartAlwayTrue(true);
                 }
             }
         } else if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
             if (wallConditionContext != null) {
-                if (left.getAttribute(EVAL_VALUE) == Boolean.FALSE || right.getAttribute(EVAL_VALUE) == Boolean.FALSE) {
+                if (Boolean.FALSE.equals(left.getAttribute(EVAL_VALUE)) || Boolean.FALSE.equals(right.getAttribute(EVAL_VALUE))) {
                     wallConditionContext.setPartAlwayFalse(true);
                 }
             }
@@ -1111,8 +1111,10 @@ public class SQLEvalVisitorUtils {
             if ("1".equals(val) || "true".equalsIgnoreCase((String) val)) {
                 return true;
             }
-
-            return false;
+            if ("0".equals(val) || "false".equalsIgnoreCase((String) val)) {
+                return false;
+            }
+            return null;
         }
 
         throw new IllegalArgumentException(val.getClass() + " not supported.");

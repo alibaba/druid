@@ -351,9 +351,6 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         }
 
         SQLExpr expr = orderByItem.getExpr();
-        if (expr == null && expr instanceof SQLIntegerExpr) {
-            return false;
-        }
 
         int index = 0;
         for (int i = 0; i < selectList.size(); i++) {

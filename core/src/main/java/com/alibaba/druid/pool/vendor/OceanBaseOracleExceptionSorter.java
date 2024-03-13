@@ -1,42 +1,15 @@
 package com.alibaba.druid.pool.vendor;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
-import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
-public class OceanBaseOracleExceptionSorter extends OracleExceptionSorter {
-    private static final Log LOG = LogFactory.getLog(OracleExceptionSorter.class);
-    private static final long serialVersionUID = -9146226891418913174L;
-    private Set<Integer> fatalErrorCodes = new HashSet<Integer>();
+public class OceanBaseOracleExceptionSorter extends AbstractOracleExceptionSorter implements Serializable {
+    private static final long serialVersionUID = -9146226891418913175L;
 
     public OceanBaseOracleExceptionSorter() {
         configFromProperties(System.getProperties());
-    }
-
-    public void configFromProperties(Properties properties) {
-        if (properties == null) {
-            return;
-        }
-
-        String property = properties.getProperty("druid.oracle.fatalErrorCodes");
-        if (property != null) {
-            String[] items = property.split("\\,");
-            for (String item : items) {
-                if (item != null && item.length() > 0) {
-                    try {
-                        int code = Integer.parseInt(item);
-                        fatalErrorCodes.add(code);
-                    } catch (NumberFormatException e) {
-                        LOG.error("parse druid.oracle.fatalErrorCodes error", e);
-                    }
-                }
-            }
-        }
     }
 
     public Set<Integer> getFatalErrorCodes() {

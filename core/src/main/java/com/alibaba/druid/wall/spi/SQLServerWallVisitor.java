@@ -20,8 +20,11 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
@@ -113,4 +116,14 @@ public class SQLServerWallVisitor extends WallVisitorBase implements WallVisitor
     public boolean visit(SQLServerObjectReferenceExpr x) {
         return false;
     }
+
+    public boolean visit(SQLServerSelectQueryBlock x) {
+        WallVisitorUtils.checkSelelct(this, x);
+        return true;
+    }
+    @Override
+    public boolean visit(SQLServerUpdateStatement x) {
+        return visit((SQLUpdateStatement) x);
+    }
+
 }

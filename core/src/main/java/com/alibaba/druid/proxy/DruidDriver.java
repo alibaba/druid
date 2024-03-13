@@ -161,7 +161,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
      * @return
      * @throws SQLException
      */
-    private DataSourceProxyImpl getDataSource(String url, Properties info) throws SQLException {
+    public static DataSourceProxyImpl getDataSource(String url, Properties info) throws SQLException {
         DataSourceProxyImpl dataSource = proxyDataSources.get(url);
 
         if (dataSource == null) {
@@ -249,7 +249,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
         return config;
     }
 
-    public Driver createDriver(String className) throws SQLException {
+    public static Driver createDriver(final String className) throws SQLException {
         Class<?> rawDriverClass = Utils.loadClass(className);
 
         if (rawDriverClass == null) {

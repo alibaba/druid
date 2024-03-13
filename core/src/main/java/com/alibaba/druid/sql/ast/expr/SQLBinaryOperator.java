@@ -41,6 +41,7 @@ public enum SQLBinaryOperator {
     PoundGtGt("#>>", 20),
     QuesQues("??", 20),
     QuesBar("?|", 20),
+    QuesQuesBar("??|", 20),
     QuesAmp("?&", 20),
 
     LeftShift("<<", 80),

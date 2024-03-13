@@ -378,7 +378,8 @@ public final class DruidConnectionHolder {
             underlyingHoldability = defaultHoldability;
         }
 
-        if (underlyingTransactionIsolation != defaultTransactionIsolation) {
+        if (!dataSource.isKeepConnectionUnderlyingTransactionIsolation()
+                && underlyingTransactionIsolation != defaultTransactionIsolation) {
             conn.setTransactionIsolation(defaultTransactionIsolation);
             underlyingTransactionIsolation = defaultTransactionIsolation;
         }

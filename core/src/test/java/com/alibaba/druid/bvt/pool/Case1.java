@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
@@ -52,9 +53,14 @@ public class Case1 extends PoolTestCase {
         dataSource.setMaxActive(2);
         dataSource.setMaxIdle(2);
 
-        Connection conn = dataSource.getConnection();
-        conn.close();
+        Exception error = null;
+        try {
+            Connection conn = dataSource.getConnection();
+            conn.close();
+        } catch (Exception e) {
+            error = e;
+        }
 
-        dataSource.close();
+        Assert.assertTrue(error instanceof DataSourceDisableException);
     }
 }

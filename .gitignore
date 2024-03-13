@@ -1,7 +1,7 @@
-/target
-/.settings
-/.project
-/.classpath
+target
+.settings
+.project
+.classpath
 .DS_Store
 /1
 /derby.log
@@ -20,5 +20,6 @@ hs_err_pid*.log
 replay_pid*.log
 /core/derby.log
 /demo-db.mv.db
-/druid-spring-boot-3-starter/target/
 /demo-db.trace.db
+
+.vscode

@@ -8,11 +8,63 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlAlterTableAlterCheck;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.fastjson2.JSON;
+
 import org.junit.Assert;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MysqlCheckTest extends MysqlTest {
+    public void testEndTokenChecking() throws Exception {
+        Object[][] samples = {
+                    { "update test_tab1 set b= 1 swhere a=1", false, true },
+                    { "select * from test_tab1 swhere  a=1", false, true },
+                    { "delete from test_tab1 \n swhere  a=1", false, true },
+                    { "delete from test_tab1 where a=1", true, true },
+                    { "delete from test_tab1 \n where a=1     \n", true, true },
+                    { "IF age>20 THEN SET @count1=@count1+1/* a */;\n"
+                            + "    ELSEIF age=20 THEN SET @count2=@count2+1;/* b */\n"
+                            + "    ELSE SET @count3=@count3+1;\n"
+                            + "/* c */ END IF/*d*/;", true, false }
+                };
+
+        for (final Object[] arr : samples) {
+            String sql = (String) arr[0];
+            final boolean ok = Boolean.TRUE.equals(arr[1]);
+            final boolean hasWhere = Boolean.TRUE.equals(arr[2]);
+            try {
+                System.out.println("before sql:" + sql);
+                final StringBuilder out = new StringBuilder();
+                final MySqlExportParameterVisitor visitor = new MySqlExportParameterVisitor(out);
+                visitor.setParameterizedMergeInList(true);
+                SQLStatementParser parser = new MySqlStatementParser(sql);
+                final SQLStatement parseStatement = parser.parseStatement();
+                parseStatement.accept(visitor);
+                final List<Object> plist = visitor.getParameters();
+                sql = out.toString();
+                System.out.println("after sql:" + sql);
+                System.out.println("params: " + plist);
+                if (hasWhere) {
+                    assertEquals("[1]", JSON.toJSONString(plist));
+                    assertTrue(Pattern.compile("(?i)(^|\\s+)where(\\s+|$)").matcher(sql).find());
+                }
+                if (!ok) {
+                    fail();
+                }
+            } catch (ParserException ex) {
+                if (ok) {
+                    fail();
+                } else {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+    
     public void test_create1() {
         String sql = "CREATE TABLE `t12` (\n" +
                 "  `c1` int DEFAULT NULL,\n" +

@@ -16,6 +16,8 @@ import java.util.List;
  * Date 2019-06-04 11:27
  */
 public class SQLIndexDefinition extends SQLObjectImpl implements SQLIndex {
+    // for polardb-x partition manage
+    protected SQLPartitionBy partitioning;
     /**
      * [CONSTRAINT [symbol]] [GLOBAL|LOCAL] [FULLTEXT|SPATIAL|UNIQUE|PRIMARY] [INDEX|KEY]
      * [index_name] [index_type] (key_part,...) [COVERING (col_name,...)] [index_option] ...
@@ -294,6 +296,14 @@ public class SQLIndexDefinition extends SQLObjectImpl implements SQLIndex {
         this.withDicName = withDicName;
     }
 
+    public SQLPartitionBy getPartitioning() {
+        return partitioning;
+    }
+
+    public void setPartitioning(SQLPartitionBy partitioning) {
+        this.partitioning = partitioning;
+    }
+
     public List<SQLAssignItem> getCompatibleOptions() {
         return compatibleOptions;
     }
@@ -364,6 +374,10 @@ public class SQLIndexDefinition extends SQLObjectImpl implements SQLIndex {
         if (tbPartitions != null) {
             definition.tbPartitions = tbPartitions.clone();
             definition.tbPartitions.setParent(parent);
+        }
+        if (partitioning != null) {
+            definition.partitioning = partitioning.clone();
+            definition.partitioning.setParent(parent);
         }
         for (SQLName name : covering) {
             SQLName name1 = name.clone();

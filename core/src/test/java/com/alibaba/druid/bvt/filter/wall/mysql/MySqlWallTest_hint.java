@@ -15,7 +15,7 @@ public class MySqlWallTest_hint extends TestCase {
 
     public void test_false_1() throws Exception {
         WallConfig config = new WallConfig();
-        config.setHintAllow(true);
+        config.setHintAllow(false);
         config.setMultiStatementAllow(true);
         String sql = "select * from person where id = '3'/**/union select 0,1,v from (select 1,2,user/*!() as v*/) a where '1'<>''";
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config)); //

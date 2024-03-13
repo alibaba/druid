@@ -20,12 +20,10 @@ import java.util.Properties;
 
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.JDBC4ValidConnectionChecker;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ExceptionSorter;
+import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestDataSourceBasic2 extends PoolTestCase {
@@ -125,7 +123,7 @@ public class TestDataSourceBasic2 extends PoolTestCase {
     }
 
     protected void tearDown() throws Exception {
-        for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DataSourceMonitorable dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             dataSource.close();
         }
 

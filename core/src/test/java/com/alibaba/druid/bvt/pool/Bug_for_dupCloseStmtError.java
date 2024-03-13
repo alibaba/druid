@@ -20,13 +20,13 @@ import java.sql.PreparedStatement;
 
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
 
 import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockConnectionClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Bug_for_dupCloseStmtError extends PoolTestCase {
@@ -43,7 +43,7 @@ public class Bug_for_dupCloseStmtError extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DataSourceMonitorable dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             JdbcUtils.close(dataSource);
         }
 

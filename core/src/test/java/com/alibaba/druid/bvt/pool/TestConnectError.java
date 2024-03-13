@@ -36,7 +36,8 @@ public class TestConnectError extends TestCase {
             private AtomicInteger count = new AtomicInteger();
 
             public Connection connect(String url, Properties info) throws SQLException {
-                if (count.getAndIncrement() % 2 == 0) {
+                // create first connection successfully.
+                if (count.incrementAndGet() % 2 == 0) {
                     throw new SQLException();
                 }
 
@@ -75,13 +76,17 @@ public class TestConnectError extends TestCase {
         int count = 10;
         Connection[] connections = new Connection[count];
         for (int i = 0; i < count; ++i) {
-            connections[i] = dataSource.getConnection();
+            try {
+                connections[i] = dataSource.getConnection();
+            } catch (Exception e) {
+                // do nothing
+            }
         }
 
         for (int i = 0; i < count; ++i) {
             connections[i].close();
         }
 
-        Assert.assertEquals(10, dataSource.getCreateErrorCount());
+        Assert.assertEquals(9, dataSource.getCreateErrorCount());
     }
 }

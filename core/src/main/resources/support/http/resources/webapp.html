@@ -25,7 +25,7 @@
 </div>
 <script type="text/template" id="webapp-template">
     {{~ it.content :contextNow:i  }}
-    <ul class="nav nav-tabs" id="datasourceTab{{=i}}">
+    <ul class="nav nav-tabs" style="margin-bottom:3px;" id="datasourceTab{{=i}}">
         <li class="active">
             <a href="webapp.html#dstab/{{=contextNow.ContextPath}}">WebApp-{{=contextNow.ContextPath}}</a>
         </li>
@@ -34,12 +34,15 @@
         <div class="tab-pane active" id="dstab/{{=contextNow.ContextPath}}">
             <table class="table table-bordered" style="background-color: #fff">
                 <tbody>
-                {{ for(var key in contextNow ) { }}
                 <tr>
-                    <td valign="top" class="td_lable lang" langKey="{{=key}}">{{=key}}</td>
-                    <td>{{=contextNow[key]}}</td>
-                </tr>
+                {{ var i=0;for(var key in contextNow ) { }}
+                {{? (i++)%4 == 0 }}
+                </tr><tr>
+                {{?}}
+                    <td valign="top" class="td_lable lang" style="min-width:80px" langKey="{{=key}}">{{=key}}</td>
+                    <td style="min-width:80px">{{=contextNow[key]}}</td>
                 {{ } }}
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -60,8 +63,8 @@
                     type: 'POST',
                     url: "webapp.json",
                     success: function (data) {
+                        $(".nav-tabs,.tab-content").remove();
                         var datasourceList = data.Content;
-
 
                         var tmpl = $('#webapp-template').html();
                         var contents = {'content': datasourceList};
@@ -87,6 +90,8 @@
     $(document).ready(function () {
         druid.datasource.init();
     });
+    window.initPage = druid.datasource.ajaxRequestForBasicInfo;
+        
 </script>
 </body>
 </html>

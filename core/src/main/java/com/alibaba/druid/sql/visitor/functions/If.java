@@ -40,7 +40,7 @@ public class If implements Function {
         if (itemValue == null) {
             return null;
         }
-        if (Boolean.TRUE == itemValue || !SQLEvalVisitorUtils.eq(itemValue, 0)) {
+        if (Boolean.TRUE.equals(itemValue) || !SQLEvalVisitorUtils.eq(itemValue, 0)) {
             SQLExpr trueExpr = arguments.get(1);
             trueExpr.accept(visitor);
             return trueExpr.getAttributes().get(EVAL_VALUE);

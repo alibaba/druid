@@ -38,7 +38,7 @@ public class MySqlCreateEventTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DEFINER = EVENT IF NOT EXISTS someevent ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 30 MINUTE\n" +
+        Assert.assertEquals("CREATE DEFINER = current_user EVENT IF NOT EXISTS someevent ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 30 MINUTE\n" +
                 "DO\n" +
                 "BEGIN\n" +
                 "\tINSERT INTO test.t1\n" +

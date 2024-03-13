@@ -22,6 +22,8 @@ public class SQLAlterTableAddConstraint extends SQLObjectImpl implements SQLAlte
     private SQLConstraint constraint;
     private boolean withNoCheck;
 
+    private boolean noInherit;
+    private boolean notValid;
     public SQLAlterTableAddConstraint() {
     }
 
@@ -56,4 +58,19 @@ public class SQLAlterTableAddConstraint extends SQLObjectImpl implements SQLAlte
         this.withNoCheck = withNoCheck;
     }
 
+    public boolean isNoInherit() {
+        return noInherit;
+    }
+
+    public void setNoInherit(boolean noInherit) {
+        this.noInherit = noInherit;
+    }
+
+    public boolean isNotValid() {
+        return notValid;
+    }
+
+    public void setNotValid(boolean notValid) {
+        this.notValid = notValid;
+    }
 }
