@@ -17,7 +17,7 @@ public class DruidDataSourceTest5 extends TestCase {
 
     private final AtomicBoolean validate = new AtomicBoolean(true);
 
-    @Before
+
     protected void setUp() throws Exception {
         validate.set(true);
 
@@ -34,8 +34,8 @@ public class DruidDataSourceTest5 extends TestCase {
         });
     }
 
-    @After
-    protected void tearDown() throws Exception {
+
+    public void tearDown() throws Exception {
         dataSource.close();
     }
 
@@ -49,6 +49,11 @@ public class DruidDataSourceTest5 extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
+
+        validate.set(true);
+
+        Connection conn = dataSource.getConnection();
+        conn.close();
     }
 
     public void testValidate_1() throws Exception {
@@ -61,6 +66,11 @@ public class DruidDataSourceTest5 extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
+
+        validate.set(true);
+
+        Connection conn = dataSource.getConnection();
+        conn.close();
     }
 
     public void testValidate_3() throws Exception {
@@ -73,6 +83,11 @@ public class DruidDataSourceTest5 extends TestCase {
             error = e;
         }
         Assert.assertNotNull(error);
+
+        validate.set(true);
+
+        Connection conn = dataSource.getConnection();
+        conn.close();
     }
 
 }
