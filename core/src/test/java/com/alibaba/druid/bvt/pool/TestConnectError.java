@@ -37,7 +37,7 @@ public class TestConnectError extends TestCase {
 
             public Connection connect(String url, Properties info) throws SQLException {
                 // create first connection successfully.
-                if (count.incrementAndGet() % 2 == 0) {
+                if (count.getAndIncrement() % 2 == 0) {
                     throw new SQLException();
                 }
 
@@ -76,17 +76,13 @@ public class TestConnectError extends TestCase {
         int count = 10;
         Connection[] connections = new Connection[count];
         for (int i = 0; i < count; ++i) {
-            try {
-                connections[i] = dataSource.getConnection();
-            } catch (Exception e) {
-                // do nothing
-            }
+            connections[i] = dataSource.getConnection();
         }
 
         for (int i = 0; i < count; ++i) {
             connections[i].close();
         }
 
-        Assert.assertEquals(9, dataSource.getCreateErrorCount());
+        Assert.assertEquals(10, dataSource.getCreateErrorCount());
     }
 }

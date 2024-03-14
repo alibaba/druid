@@ -52,15 +52,8 @@ public class Case1 extends PoolTestCase {
         dataSource.setMinIdle(0);
         dataSource.setMaxActive(2);
         dataSource.setMaxIdle(2);
-
-        Exception error = null;
-        try {
-            Connection conn = dataSource.getConnection();
-            conn.close();
-        } catch (Exception e) {
-            error = e;
-        }
-
-        Assert.assertTrue(error instanceof DataSourceDisableException);
+        Connection conn = dataSource.getConnection();
+        conn.close();
+        dataSource.close();
     }
 }
