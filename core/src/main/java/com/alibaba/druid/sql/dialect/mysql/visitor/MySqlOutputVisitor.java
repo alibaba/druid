@@ -2012,6 +2012,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print0(ucase ? "PASSWORD " : "password ");
             }
             x.getPassword().accept(this);
+        } else {
+            if (x.isRandomPassword()) {
+                print0(ucase ? " IDENTIFIED BY " : " identified by ");
+                print0(ucase ? "RANDOM PASSWORD " : "random password ");
+            }
         }
         return false;
     }
