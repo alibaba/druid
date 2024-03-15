@@ -914,7 +914,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             MySqlUserName mySqlUserName = new MySqlUserName();
             mySqlUserName.setUserName(trimQuotesBeginAndEnd(lexer.stringVal()));
             lexer.nextToken();
-            String maybeHost=lexer.stringVal();
+            String maybeHost = lexer.stringVal();
             if ("@".equals(maybeHost)) {
                 lexer.nextToken();
                 mySqlUserName.setHost(trimQuotesBeginAndEnd(lexer.stringVal()));
