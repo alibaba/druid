@@ -59,6 +59,7 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLC
     public static class UserSpecification extends MySqlObjectImpl {
         private SQLExpr user;
         private boolean passwordHash;
+        private boolean randomPassword;
         private SQLExpr password;
         private SQLExpr authPlugin;
         private boolean pluginAs;
@@ -69,6 +70,14 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl implements SQLC
 
         public void setUser(SQLExpr user) {
             this.user = (SQLName) user;
+        }
+
+        public boolean isRandomPassword() {
+            return randomPassword;
+        }
+
+        public void setRandomPassword(boolean randomPassword) {
+            this.randomPassword = randomPassword;
         }
 
         public boolean isPasswordHash() {
