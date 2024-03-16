@@ -23,3 +23,4 @@ replay_pid*.log
 /demo-db.trace.db
 
 .vscode
+druid-spring-boot-3-starter/demo-db.mv.db
