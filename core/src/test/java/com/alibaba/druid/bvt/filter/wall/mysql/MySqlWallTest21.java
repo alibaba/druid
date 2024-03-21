@@ -36,6 +36,6 @@ public class MySqlWallTest21 extends TestCase {
 
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-                "select * from t where status = 1 AND 1=1")); //
+                "select * from t where status = 1 OR 1=1")); //
     }
 }

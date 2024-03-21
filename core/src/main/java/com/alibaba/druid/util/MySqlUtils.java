@@ -1417,7 +1417,7 @@ public class MySqlUtils {
 
     public static long parseMillis(byte[] str, TimeZone timeZone) {
         if (str == null) {
-            throw new IllegalArgumentException(new String(str, UTF8));
+            throw new IllegalArgumentException("str not be null");
         }
 
         return parseMillis(str, 0, str.length, timeZone);
@@ -1435,7 +1435,7 @@ public class MySqlUtils {
 
     public static ZonedDateTime parseDateTime(final byte[] str, final int off, final int len, ZoneId zoneId) {
         if (str == null) {
-            throw new IllegalArgumentException(new String(str, UTF8));
+            throw new IllegalArgumentException("str not be null");
         }
 
         if (len < 8) {

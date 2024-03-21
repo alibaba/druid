@@ -31,7 +31,7 @@ public class WallUpdateWhereTest1 extends TestCase {
 
     public void test_check_true() throws Exception {
         WallConfig config = new WallConfig();
-        config.setUpdateWhereAlayTrueCheck(true);
+        config.setUpdateWhereAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(true);
         config.setCommentAllow(true);
 
@@ -41,7 +41,7 @@ public class WallUpdateWhereTest1 extends TestCase {
 
     public void test_check_false() throws Exception {
         WallConfig config = new WallConfig();
-        config.setUpdateWhereAlayTrueCheck(false);
+        config.setUpdateWhereAlwayTrueCheck(false);
         config.setConditionAndAlwayTrueAllow(true);
         config.setCommentAllow(true);
 

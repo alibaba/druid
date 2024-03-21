@@ -66,6 +66,7 @@ public enum Token {
 
     EXPLAIN("EXPLAIN"),
     FOR("FOR"),
+    REVERSE("REVERSE"),
     IF("IF"),
 
     LOCAL("LOCAL"),
@@ -153,6 +154,8 @@ public enum Token {
     DIV("DIV"),
 
     //postgresql
+    GET("GET"),
+    DIAGNOSTICS("DIAGNOSTICS"),
     WINDOW("WINDOW"),
     OFFSET("OFFSET"),
     ROW("ROW"),

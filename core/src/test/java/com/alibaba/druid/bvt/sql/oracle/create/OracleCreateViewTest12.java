@@ -206,7 +206,8 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t, I.ITEM_DES, I.ITEM_TYPE, I.item_quantity, M.hard_param, M.soft_param\n" +
                         "\t, M.make_param, M.risk_param, M.soft_cost_param, M.prod_manager, I.COST_PRICE04\n" +
                         "\t, I.CONFIRM_ITEM_PARAM, I.CONFIRM_FLAG04, I.cost_price, I.COST_PRICE_PARAMETER, I.OLD_COST\n" +
-                        "\t, I.LIST_PRICE, I.ITEM_CODE, I.CONFIRM_COST_PRICE04, M.customize_sites_id, M.spare_flag\n" +
+                        "\t, I.LIST_PRICE, I.ITEM_CODE, I.CONFIRM_COST_PRICE04 -- ,I.PROD_ATTRIBUTE_ID,I.ITEM_CHIP\n" +
+                        "\t, M.customize_sites_id, M.spare_flag\n" +
                         "FROM TCP_CPR.DIFF_CON_CONFIG_MODULE_V M\n" +
                         "\tLEFT JOIN (\n" +
                         "\t\tSELECT 0 AS osg_type_id, v.contract_module_id, v.item_id, v.contract_item_id, v.item_des\n" +
@@ -221,7 +222,7 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t\t\t, 1 AS COST_PRICE_PARAMETER, 'Y' AS CONFIRM_FLAG, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04\n" +
                         "\t\t\t, 1 AS OLD_COST -- LINE.PRICE+nvl(REPLY.LIST_PRICE,0) LIST_PRICE,\n" +
                         "\t\t\t, HEADER.LIST_PRICE AS LIST_PRICE, '+Mn\u0016-�' AS ITEM_CODE\n" +
-                        "\t\t\t, LINE.COST + nvl(REPLY.RMBPRICE_WITHTAX, 0) AS CONFIRM_COST_PRICE04\n" +
+                        "\t\t\t, LINE.COST + nvl(REPLY.RMBPRICE_WITHTAX, 0) AS CONFIRM_COST_PRICE04 -- 0 PROD_ATTRIBUTE_ID,0 ITEM_CHIP\n" +
                         "\t\tFROM TCP_CPR.DIFF_CON_OSG3_HEADERS HEADER, ERP_ZTE.ZTE_KX_OSG3_SERIALS ser, ERP_ZTE.zte_kx_osg3_reply_headers REPLY, (\n" +
                         "\t\t\tSELECT LINE.OSG_HEADER_ID, SUM((LINE.QUANTITY - LINE.THEORETIC_QTY) * PART.rmbprice_withtax) AS COST\n" +
                         "\t\t\t\t, SUM((LINE.QUANTITY - LINE.THEORETIC_QTY) * PART.LIST_PRICE) AS PRICE\n" +
@@ -240,7 +241,7 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t\t\t, 'SINGLEOSG' AS item_type, ITEM.QUANTITY AS item_quantity, SYS_ITEM.MARKET_REFERENCE_PRICE AS COST_PRICE, 1 AS COST_PRICE_PARAMETER, SYS_ITEM.ENABLED_FLAG AS CONFIRM_FLAG\n" +
                         "\t\t\t, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04, 1 AS OLD_COST -- SYS_ITEM.LIST_PRICE LIST_PRICE,\n" +
                         "\t\t\t, ITEM.LIST_PRICE AS LIST_PRICE, SYS_ITEM.INVENTORY_ID || '\n" +
-                        "+Mn\u0016-�' AS ITEM_CODE, SYS_ITEM.PRICE AS CONFIRM_COST_PRICE04\n" +
+                        "+Mn\u0016-�' AS ITEM_CODE, SYS_ITEM.PRICE AS CONFIRM_COST_PRICE04 -- , 0 PROD_ATTRIBUTE_ID--,0 ITEM_CHIP\n" +
                         "\t\tFROM TCP_CPR.DIFF_CON_OSG3A_HEADERS ITEM, ERP_ZTE.ZTE_KX_OSG3_ITEMS SYS_ITEM\n" +
                         "\t\tWHERE ITEM.OSG_ITEM_ID = SYS_ITEM.OSG_ITEM_ID\n" +
                         "\t\t\tAND ITEM.ENABLED_FLAG = 'Y'\n" +

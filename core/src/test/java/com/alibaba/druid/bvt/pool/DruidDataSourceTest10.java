@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 import org.junit.After;
@@ -48,6 +49,14 @@ public class DruidDataSourceTest10 {
         assertEquals(0, ds.getConnectTimeout());
         assertEquals(0, ds.getSocketTimeout());
     }
+
+    @Test
+    public void test_timeout_is_zero_default() throws Exception {
+        ds.setUrl("jdbc:mysql://127.0.0.1:3306/xxx");
+        ds.init();
+        assertEquals(0, ds.getConnectTimeout());
+        assertEquals(0, ds.getSocketTimeout());
+    }
     @Test
     public void test_timeout_is_zero2() throws Exception {
         ds.setUrl("jdbc:mysql://127.0.0.1:3306/xxx");
@@ -60,17 +69,24 @@ public class DruidDataSourceTest10 {
 
     /**
      * @throws Exception
-     * @see https://github.com/alibaba/druid/issues/5396
+     * @see <a href="https://github.com/alibaba/druid/issues/5396">...</a>
      */
     @Test
     public void test_timeout_in_loadbalance() throws Exception {
+        ds.setUrl(
+            "jdbc:mysql:loadbalance://localhost:3306,localhost:3310/test?connectTimeout=98&socketTimeout=99&loadBalanceConnectionGroup=first&ha.enableJMX=true");
+        ds.init();
+        assertEquals(98, ds.getConnectTimeout());
+        assertEquals(99, ds.getSocketTimeout());
+    }
+    @Test
+    public void test_timeout_is_zero_in_loadbalance() throws Exception {
         ds.setUrl(
             "jdbc:mysql:loadbalance://localhost:3306,localhost:3310/test?connectTimeout=0&socketTimeout=0&loadBalanceConnectionGroup=first&ha.enableJMX=true");
         ds.init();
         assertEquals(0, ds.getConnectTimeout());
         assertEquals(0, ds.getSocketTimeout());
     }
-
     @Test
     public void test_timeout_in_replication() throws Exception {
         ds.setUrl(
@@ -148,6 +164,40 @@ public class DruidDataSourceTest10 {
         ds.setUrl("jdbc:mysql://127.0.0.1:3306/xxx");
         ds.init();
         assertEquals(3000, ds.getConnectTimeout());
+        assertEquals(6000, ds.getSocketTimeout());
+    }
+
+    @Test
+    public void test4() throws Exception {
+        ds.setConnectionProperties("connectTimeout=3000;socketTimeout=6000");
+        ds.setDriver(MockDriver.instance);
+        ds.init();
+        assertEquals(3000, ds.getConnectTimeout());
+        assertEquals(6000, ds.getSocketTimeout());
+    }
+
+    @Test
+    public void test5() throws Exception {
+        ds.setDriver(MockDriver.instance);
+        ds.setUrl("jdbc:mock:xxx?connectTimeout=3000&socketTimeout=6000");
+        ds.init();
+        assertEquals(3000, ds.getConnectTimeout());
+        assertEquals(6000, ds.getSocketTimeout());
+    }
+
+    @Test
+    public void test6() throws Exception {
+        ds.setConnectionProperties("socketTimeout=6000");
+        ds.setDriver(MockDriver.instance);
+        ds.init();
+        assertEquals(6000, ds.getSocketTimeout());
+    }
+
+    @Test
+    public void test7() throws Exception {
+        ds.setDriver(MockDriver.instance);
+        ds.setUrl("jdbc:mock:xxx?socketTimeout=6000");
+        ds.init();
         assertEquals(6000, ds.getSocketTimeout());
     }
 }

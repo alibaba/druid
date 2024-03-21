@@ -2012,6 +2012,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print0(ucase ? "PASSWORD " : "password ");
             }
             x.getPassword().accept(this);
+        } else {
+            if (x.isRandomPassword()) {
+                print0(ucase ? " IDENTIFIED BY " : " identified by ");
+                print0(ucase ? "RANDOM PASSWORD " : "random password ");
+            }
         }
         return false;
     }
@@ -4121,6 +4126,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 SQLCharExpr authString = alterUser.getAuthOption().getAuthString();
                 authString.accept(this);
             }
+            if (alterUser.getAccountLockOption() != null) {
+                print0(ucase ? " ACCOUNT " : " account ");
+                print0(ucase ? alterUser.getAccountLockOption().toUpperCase() : alterUser.getAccountLockOption().toLowerCase());
+            }
         }
 
         MySqlAlterUserStatement.PasswordOption passwordOption = x.getPasswordOption();
@@ -4398,6 +4407,34 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.getLabelName() != null && !x.getLabelName().equals("")) {
             print0(" ");
             print0(x.getLabelName());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLWhileStatement x) {
+        String label = x.getLabelName();
+
+        if (label != null && !label.isEmpty()) {
+            print0(x.getLabelName());
+            print0(": ");
+        }
+        print0(ucase ? "WHILE " : "while ");
+        x.getCondition().accept(this);
+        print0(ucase ? " DO" : " do");
+        println();
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+        println();
+        print0(ucase ? "END WHILE" : "end while");
+        if (label != null && !label.isEmpty()) {
+            print(' ');
+            print0(label);
         }
         return false;
     }

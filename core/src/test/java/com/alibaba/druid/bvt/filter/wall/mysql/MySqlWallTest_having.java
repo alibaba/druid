@@ -30,7 +30,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest_having extends TestCase {
     public void test_having() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        Assert.assertFalse(WallUtils.isValidateMySql(//
                 "select id, count(*) from t group by id having 1 = 1"));
     }
 

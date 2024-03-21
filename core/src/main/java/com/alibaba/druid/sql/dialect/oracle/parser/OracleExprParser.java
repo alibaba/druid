@@ -1212,8 +1212,7 @@ public class OracleExprParser extends SQLExprParser {
             } else if (lexer.token() == Token.ENABLE) {
                 lexer.nextToken();
                 using.setEnable(true);
-                continue;
-            } else if (lexer.identifierEquals("REVERSE")) {
+            } else if (lexer.token() == Token.REVERSE) {
                 lexer.nextToken();
                 using.setReverse(true);
                 continue;

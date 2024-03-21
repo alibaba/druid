@@ -911,40 +911,41 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setIfNotExists(true);
             }
 
-            SQLExpr expr = exprParser.primary();
-            if (expr instanceof SQLCharExpr) {
-                expr = new SQLIdentifierExpr(((SQLCharExpr) expr).getText());
-            }
-
-            if (expr instanceof SQLIdentifierExpr
-                    && lexer.token() == Token.VARIANT
-                    && lexer.stringVal().charAt(0) == '@'
-            ) {
-                String str = lexer.stringVal();
-                MySqlUserName mySqlUserName = new MySqlUserName();
-                mySqlUserName.setUserName(((SQLIdentifierExpr) expr).getName());
-                mySqlUserName.setHost(str.substring(1));
-                expr = mySqlUserName;
+            MySqlUserName mySqlUserName = new MySqlUserName();
+            mySqlUserName.setUserName(trimQuotesBeginAndEnd(lexer.stringVal()));
+            lexer.nextToken();
+            String maybeHost = lexer.stringVal();
+            if ("@".equals(maybeHost)) {
+                lexer.nextToken();
+                mySqlUserName.setHost(trimQuotesBeginAndEnd(lexer.stringVal()));
+                lexer.nextToken();
+            } else if (maybeHost.startsWith("@")) { // eg: @localhost
+                maybeHost = maybeHost.substring(1);
+                mySqlUserName.setHost(trimQuotesBeginAndEnd(maybeHost));
                 lexer.nextToken();
             }
 
-            userSpec.setUser(expr);
+            userSpec.setUser(mySqlUserName);
 
             if (lexer.identifierEquals(FnvHash.Constants.IDENTIFIED)) {
                 lexer.nextToken();
                 if (lexer.token() == Token.BY) {
                     lexer.nextToken();
-
-                    if (lexer.identifierEquals("PASSWORD")) {
+                    if (lexer.identifierEquals("RANDOM")) {
                         lexer.nextToken();
-                        userSpec.setPasswordHash(true);
-                    }
-
-                    SQLExpr password = this.exprParser.expr();
-                    if (password instanceof SQLIdentifierExpr || password instanceof SQLCharExpr) {
-                        userSpec.setPassword(password);
+                        acceptIdentifier("PASSWORD");
+                        userSpec.setRandomPassword(true);
                     } else {
-                        throw new ParserException("syntax error. invalid " + password + " expression.");
+                        if (lexer.identifierEquals("PASSWORD")) {
+                            lexer.nextToken();
+                            userSpec.setPasswordHash(true);
+                        }
+                        SQLExpr password = this.exprParser.expr();
+                        if (password instanceof SQLIdentifierExpr || password instanceof SQLCharExpr) {
+                            userSpec.setPassword(password);
+                        } else {
+                            throw new ParserException("syntax error. invalid " + password + " expression.");
+                        }
                     }
 
                 } else if (lexer.token() == Token.WITH) {
@@ -961,11 +962,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         if (userSpec.isPluginAs()) {
                             // Remove ' because lexer don't remove it when token after as.
                             String psw = lexer.stringVal();
-                            if (psw.length() >= 2 && '\'' == psw.charAt(0) && '\'' == psw.charAt(psw.length() - 1)) {
-                                userSpec.setPassword(new SQLCharExpr(psw.substring(1, psw.length() - 1)));
-                            } else {
-                                userSpec.setPassword(new SQLCharExpr(psw));
-                            }
+                            userSpec.setPassword(new SQLCharExpr(trimQuotesBeginAndEnd(psw)));
                             lexer.nextToken();
                         } else {
                             userSpec.setPassword(this.exprParser.charExpr());
@@ -987,6 +984,17 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    static String trimQuotesBeginAndEnd(String str) {
+        if (str == null || str.length() < 2) {
+            return str;
+        }
+        char beginChar = str.charAt(0);
+        char endChar = str.charAt(str.length() - 1);
+        if ((beginChar == '\'' && endChar == '\'') || (beginChar == '\"' && endChar == '\"')) {
+            return str.substring(1, str.length() - 1);
+        }
+        return str;
+    }
     public SQLStatement parseKill() {
         accept(Token.KILL);
 
@@ -8447,7 +8455,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             SQLExpr user = this.exprParser.expr();
             alterUser.setUser(user);
-
+            if (lexer.identifierEquals("ACCOUNT")) {
+                lexer.nextToken();
+                alterUser.setAccountLockOption(lexer.stringVal());
+                lexer.nextToken();
+            }
             if (lexer.identifierEquals("IDENTIFIED")) {
                 lexer.nextToken();
                 accept(Token.BY);

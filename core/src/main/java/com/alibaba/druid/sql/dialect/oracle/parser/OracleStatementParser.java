@@ -60,7 +60,7 @@ public class OracleStatementParser extends SQLStatementParser {
             OracleInsertStatement stmt = (OracleInsertStatement) insertStatement;
             this.getExprParser().parseHints(stmt.getHints());
         } else {
-            List<SQLHint> hints = new ArrayList<SQLHint>(1);
+            List<SQLHint> hints = new ArrayList<>(1);
             this.getExprParser().parseHints(hints);
         }
     }
@@ -85,7 +85,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
             if (lexer.token() == (Token.SEMI)) {
                 lexer.nextToken();
-                if (statementList.size() > 0) {
+                if (!statementList.isEmpty()) {
                     SQLStatement lastStmt = statementList.get(statementList.size() - 1);
                     lastStmt.setAfterSemi(true);
                 }
@@ -122,6 +122,13 @@ public class OracleStatementParser extends SQLStatementParser {
 
             if (lexer.token() == (Token.DELETE)) {
                 SQLStatement stmt = parseDeleteStatement();
+                stmt.setParent(parent);
+                statementList.add(stmt);
+                continue;
+            }
+
+            if (lexer.token() == (Token.GET)) {
+                SQLStatement stmt = parseGetDiagnosticsStatement();
                 stmt.setParent(parent);
                 statementList.add(stmt);
                 continue;
@@ -605,6 +612,13 @@ public class OracleStatementParser extends SQLStatementParser {
                     continue;
                 }
 
+                if (lexer.token() == Token.FUNCTION) {
+                    SQLDropFunctionStatement stmt = parseDropFunction(false);
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+
                 if (lexer.identifierEquals(FnvHash.Constants.SYNONYM)) {
                     lexer.reset(savePoint);
 
@@ -730,6 +744,17 @@ public class OracleStatementParser extends SQLStatementParser {
 
             throw new ParserException("TODO : " + lexer.info());
         }
+    }
+
+    private SQLStatement parseGetDiagnosticsStatement() {
+        accept(Token.GET);
+        accept(Token.DIAGNOSTICS);
+
+        SQLGetDiagnosticsStatement stmt = new SQLGetDiagnosticsStatement();
+        stmt.setDbType(dbType);
+
+        stmt.setExpr(this.exprParser.expr());
+        return stmt;
     }
 
     public SQLStatement parseDropType() {
@@ -915,6 +940,7 @@ public class OracleStatementParser extends SQLStatementParser {
         accept(Token.END);
         accept(Token.LOOP);
         accept(Token.SEMI);
+        stmt.setAfterSemi(true);
 
         return stmt;
     }
@@ -1179,6 +1205,10 @@ public class OracleStatementParser extends SQLStatementParser {
 
         stmt.setIndex(this.exprParser.name());
         accept(Token.IN);
+        if (lexer.token() == Token.REVERSE) {
+            stmt.setReverse(true);
+            lexer.nextToken();
+        }
         stmt.setRange(this.exprParser.expr());
 
         if (stmt.isAll()) {
@@ -1253,6 +1283,7 @@ public class OracleStatementParser extends SQLStatementParser {
         }
 
         SQLSetStatement stmt = new SQLSetStatement(dbType);
+        stmt.setUseSet(true);
         parseAssignItems(stmt.getItems(), stmt);
 
         stmt.putAttribute("parser.set", Boolean.TRUE);
@@ -1985,7 +2016,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     accept(Token.OF);
 
-                    name = this.exprParser.name();
+                    SQLName sqlName = this.exprParser.name();
 
                     if (lexer.token() == Token.PERCENT) {
                         lexer.nextToken();
@@ -1993,16 +2024,16 @@ public class OracleStatementParser extends SQLStatementParser {
                         String typeName;
                         if (lexer.identifierEquals(FnvHash.Constants.ROWTYPE)) {
                             lexer.nextToken();
-                            typeName = "TABLE OF " + name.toString() + "%ROWTYPE";
+                            typeName = "TABLE OF " + sqlName.toString() + "%ROWTYPE";
                         } else {
                             acceptIdentifier("TYPE");
-                            typeName = "TABLE OF " + name.toString() + "%TYPE";
+                            typeName = "TABLE OF " + sqlName.toString() + "%TYPE";
                         }
 
                         dataType = new SQLDataTypeImpl(typeName);
                     } else if (lexer.token() == Token.LPAREN) {
                         lexer.nextToken();
-                        String typeName = name.toString();
+                        String typeName = "TABLE OF " + sqlName.toString();
 
                         SQLIntegerExpr lenExpr = (SQLIntegerExpr) this.exprParser.expr();
                         int len = lenExpr.getNumber().intValue();
@@ -2156,6 +2187,13 @@ public class OracleStatementParser extends SQLStatementParser {
                 } else {
                     dataType = this.exprParser.parseDataType(false);
                 }
+
+                if (lexer.token() == Token.NOT) {
+                    lexer.nextToken();
+                    accept(Token.NULL);
+                    parameter.setNotNull(true);
+                }
+
                 if (lexer.token() == Token.COLONEQ || lexer.token() == Token.DEFAULT) {
                     lexer.nextToken();
                     parameter.setDefaultValue(this.exprParser.expr());
@@ -2585,7 +2623,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 stmt.setSort(Boolean.FALSE);
                 continue;
-            } else if (lexer.identifierEquals("REVERSE")) {
+            } else if (lexer.token() == Token.REVERSE) {
                 lexer.nextToken();
                 stmt.setReverse(true);
                 continue;
@@ -3038,6 +3076,13 @@ public class OracleStatementParser extends SQLStatementParser {
             accept(Token.OF);
             SQLDataType dataType = this.exprParser.parseDataType();
             stmt.setTableOf(dataType);
+
+            if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+                accept(Token.BY);
+                SQLDataType indexByDataType = this.exprParser.parseDataType();
+                stmt.setIndexBy(indexByDataType);
+            }
         } else if (lexer.identifierEquals(FnvHash.Constants.VARRAY)) {
             lexer.nextToken();
             accept(Token.LPAREN);

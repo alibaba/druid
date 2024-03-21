@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.DbType;
@@ -75,13 +76,15 @@ public class Issue5412 {
 
             for (String sql : new String[]{
                 "vacuum ",
+                "vacuum   ;vacuum ",
+                "vacuum;vacuum;vacuum bb;",
             }) {
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
-                SQLStatement statement = parser.parseStatement();
+                List<SQLStatement> statementList = parser.parseStatementList();
                 System.out.println(dbType + "原始的sql===" + sql);
-                System.out.println(dbType + "生成的sql===" + statement);
+                System.out.println(dbType + "生成的sql===" + statementList);
                 SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
-                statement.accept(visitor);
+                statementList.get(0).accept(visitor);
                 Map<TableStat.Name, TableStat> tableMap = visitor.getTables();
                 assertTrue(tableMap.isEmpty());
             }

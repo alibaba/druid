@@ -403,9 +403,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             print0(ucase ? "FOR UPDATE" : "for update");
             if (x.getForUpdateOfSize() > 0) {
-                print('(');
+                print(" OF ");
                 printAndAccept(x.getForUpdateOf(), ", ");
-                print(')');
             }
 
             if (x.isNoWait()) {
@@ -1434,6 +1433,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getIndex().accept(this);
         print0(ucase ? " IN " : " in ");
 
+        if (x.isReverse()) {
+            print0(ucase ? "REVERSE " : "reverse ");
+        }
+
         SQLExpr range = x.getRange();
         range.accept(this);
 
@@ -1487,7 +1490,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(SQLIfStatement.ElseIf x) {
-        print0(ucase ? "ELSE IF " : "else if ");
+        print0(ucase ? "ELSIF " : "elsif ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
         this.indentCount++;
@@ -2754,6 +2757,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         } else if (tableOf != null) {
             print0(ucase ? " AS TABLE OF " : " as table of ");
             tableOf.accept(this);
+
+            SQLDataType indexBy = x.getIndexBy();
+            if (indexBy != null) {
+                print0(ucase ? " INDEX BY " : " index by ");
+                indexBy.accept(this);
+            }
         } else if (x.getVarraySizeLimit() != null) {
             print0(ucase ? " VARRAY (" : " varray (");
             x.getVarraySizeLimit().accept(this);

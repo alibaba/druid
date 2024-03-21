@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class MySqlIndexHintImpl extends MySqlObjectImpl implements MySqlIndexHint {
     private Option option;
@@ -54,5 +55,22 @@ public abstract class MySqlIndexHintImpl extends MySqlObjectImpl implements MySq
             name2.setParent(x);
             x.indexList.add(name2);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MySqlIndexHintImpl)) {
+            return false;
+        }
+        MySqlIndexHintImpl that = (MySqlIndexHintImpl) o;
+        return getOption() == that.getOption() && Objects.equals(getIndexList(), that.getIndexList());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOption(), getIndexList());
     }
 }

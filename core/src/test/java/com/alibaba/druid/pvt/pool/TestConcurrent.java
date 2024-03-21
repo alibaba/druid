@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestConcurrent extends TestCase {
@@ -61,7 +62,7 @@ public class TestConcurrent extends TestCase {
 
         int size = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
         if (size > 0) {
-            for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+            for (DataSourceMonitorable dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
                 dataSource.close();
                 System.out.println("unclosed datasource : " + dataSource.getObjectName() + ", url : " + dataSource.getUrl());
             }

@@ -608,7 +608,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     public SQLStatement parseShow() {
         accept(Token.SHOW);
-        PGShowStatement stmt = new PGShowStatement();
+        PGShowStatement stmt = new PGShowStatement(dbType);
         switch (lexer.token()) {
             case ALL:
                 stmt.setExpr(new SQLIdentifierExpr(Token.ALL.name()));
@@ -702,6 +702,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             valueExpr = listExpr;
         }
         SQLSetStatement stmt = new SQLSetStatement(paramExpr, valueExpr, dbType);
+        stmt.setUseSet(true);
         stmt.setOption(option);
         return stmt;
     }
@@ -855,6 +856,14 @@ public class PGSQLStatementParser extends SQLStatementParser {
         Lexer.SavePoint mark = lexer.mark();
         String strVal = lexer.stringVal();
         for (; ; ) {
+            if (Token.SEMI.equals(lexer.token())) {
+                stmt.setAfterSemi(true);
+                return stmt;
+            }
+            if (lexer.isEOF()) {
+                lexer.nextToken();
+                return stmt;
+            }
             if (strVal.equalsIgnoreCase("FULL")) {
                 stmt.setFull(true);
                 lexer.nextToken();

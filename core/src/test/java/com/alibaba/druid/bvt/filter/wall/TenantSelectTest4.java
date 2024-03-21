@@ -49,19 +49,30 @@ public class TenantSelectTest4 extends TestCase {
     public void testMySql() throws Exception {
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
+        config.setSelectWhereAlwayTrueCheck(false);
         WallCheckResult checkResult = provider.check(sql);
         Assert.assertEquals(0, checkResult.getViolations().size());
-
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
         Assert.assertEquals(expect_sql, resultSql);
+
+        provider.reset();
+        config.setSelectWhereAlwayTrueCheck(true);
+        checkResult = provider.check(sql);
+        Assert.assertEquals(1, checkResult.getViolations().size());
     }
 
     public void testMySql2() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider(config_callback);
+        provider.getConfig().setSelectWhereAlwayTrueCheck(false);
         WallCheckResult checkResult = provider.check(sql);
         Assert.assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
         Assert.assertEquals(expect_sql, resultSql);
+
+        provider.reset();
+        provider.getConfig().setSelectWhereAlwayTrueCheck(true);
+        checkResult = provider.check(sql);
+        Assert.assertEquals(1, checkResult.getViolations().size());
     }
 }

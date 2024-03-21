@@ -42,6 +42,7 @@ public class OracleCreateTypeStatement extends OracleStatementImpl implements SQ
     private List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
     private SQLDataType tableOf;
+    private SQLDataType indexBy;
 
     private SQLExpr varraySizeLimit;
     private SQLDataType varrayDataType;
@@ -149,6 +150,17 @@ public class OracleCreateTypeStatement extends OracleStatementImpl implements SQ
             x.setParent(this);
         }
         this.tableOf = x;
+    }
+
+    public SQLDataType getIndexBy() {
+        return indexBy;
+    }
+
+    public void setIndexBy(SQLDataType x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.indexBy = x;
     }
 
     public SQLExpr getVarraySizeLimit() {

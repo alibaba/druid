@@ -1111,8 +1111,10 @@ public class SQLEvalVisitorUtils {
             if ("1".equals(val) || "true".equalsIgnoreCase((String) val)) {
                 return true;
             }
-
-            return false;
+            if ("0".equals(val) || "false".equalsIgnoreCase((String) val)) {
+                return false;
+            }
+            return null;
         }
 
         throw new IllegalArgumentException(val.getClass() + " not supported.");

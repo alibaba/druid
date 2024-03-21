@@ -35,19 +35,23 @@ public class MySqlWallTest74 extends TestCase {
 
         provider.getConfig().setCommentAllow(true);
 
-        Assert.assertTrue(provider.checkValid(//
-                "select _t0.`ownUser` as _c0, _t0.`showTime` as _c1, _t0.`showType` as _c2, " + //
-                        "   _t0.`itemId` as _c3, _t0.`queueId` as _c4 " + //
-                        "from `itemshow_queue` as _t0 " + //
-                        "where ( _t0.`isShowed` = 'F' and _t0.`showTime` <= ? ) " + //
-                        "   and _t0.`ownUser` in ( " + //
-                        "       select _t0.`userId` as _c0 from `users_top` as _t0 " + //
-                        "       where ( 1 = 1 ) " + //
-                        "       ) " + //
-                        "order by _t0.`showTime` asc " + //
-                        "limit 1000 offset 8000"));
+        final String sql = "select _t0.`ownUser` as _c0, _t0.`showTime` as _c1, _t0.`showType` as _c2, " + //
+                "   _t0.`itemId` as _c3, _t0.`queueId` as _c4 " + //
+                "from `itemshow_queue` as _t0 " + //
+                "where ( _t0.`isShowed` = 'F' and _t0.`showTime` <= ? ) " + //
+                "   and _t0.`ownUser` in ( " + //
+                "       select _t0.`userId` as _c0 from `users_top` as _t0 " + //
+                "       where ( 1 = 1 ) " + //
+                "       ) " + //
+                "order by _t0.`showTime` asc " + //
+                "limit 1000 offset 8000";
+        provider.getConfig().setSelectWhereAlwayTrueCheck(true);
+        Assert.assertFalse(provider.checkValid(sql));
 
         Assert.assertEquals(2, provider.getTableStats().size());
+
+        provider.getConfig().setSelectWhereAlwayTrueCheck(false);
+        Assert.assertFalse(provider.checkValid(sql));
     }
 
 }

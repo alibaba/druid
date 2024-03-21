@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.alibaba</groupId>
 		<artifactId>druid-parent</artifactId>
-		<version>1.2.22-SNAPSHOT</version>
+		<version>1.2.23-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>druid</artifactId>
@@ -17,7 +17,6 @@
 	<properties>
 		<spring.version>4.3.20.RELEASE</spring.version>
 		<junit.version>4.13.1</junit.version>
-		<jmh.version>1.19</jmh.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
@@ -205,9 +204,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.32</version>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.0.33</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

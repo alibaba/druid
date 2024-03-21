@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLArrayDataType;
+import com.alibaba.druid.sql.ast.SQLCurrentTimeExpr;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.*;
@@ -140,6 +141,18 @@ public class PGExprParser extends SQLExprParser {
                 break;
             }
             return values;
+        } else if (lexer.identifierEquals(FnvHash.Constants.CURRENT_TIMESTAMP)) {
+            SQLCurrentTimeExpr currentTimeExpr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.CURRENT_TIMESTAMP);
+            lexer.nextToken();
+            if (lexer.identifierEquals(FnvHash.Constants.AT)) {
+                lexer.nextToken();
+                acceptIdentifier("time");
+                acceptIdentifier("zone");
+                String timeZone = lexer.stringVal();
+                lexer.nextToken();
+                currentTimeExpr.setTimeZone(timeZone);
+            }
+            return primaryRest(currentTimeExpr);
         } else if (lexer.token() == Token.WITH) {
             SQLQueryExpr queryExpr = new SQLQueryExpr(
                     createSelectParser()
