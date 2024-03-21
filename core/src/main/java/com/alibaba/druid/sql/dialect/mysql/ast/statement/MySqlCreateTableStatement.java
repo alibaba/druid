@@ -67,6 +67,8 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     protected SQLName archiveBy;
     protected Boolean withData;
 
+    protected Boolean single;
+
     public MySqlCreateTableStatement() {
         super(DbType.mysql);
     }
@@ -553,6 +555,10 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             }
         }
 
+        if (single != null) {
+            x.setSingle(single);
+        }
+
     }
 
     public MySqlCreateTableStatement clone() {
@@ -672,7 +678,8 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     public SQLExpr getEngine() {
         for (SQLAssignItem option : tableOptions) {
             SQLExpr target = option.getTarget();
-            if (target instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) target).getName().equalsIgnoreCase("ENGINE")) {
+            if (target instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) target).getName()
+                .equalsIgnoreCase("ENGINE")) {
                 return option.getValue();
             }
         }
@@ -699,5 +706,13 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             x.setParent(this);
         }
         addOption("TRANSACTIONAL", x);
+    }
+
+    public Boolean getSingle() {
+        return single;
+    }
+
+    public void setSingle(Boolean single) {
+        this.single = single;
     }
 }
