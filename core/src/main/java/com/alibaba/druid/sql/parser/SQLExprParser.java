@@ -2987,8 +2987,17 @@ public class SQLExprParser extends SQLParser {
             String collate = lexer.stringVal();
             item.setCollate(collate);
             lexer.nextToken();
+            if (lexer.token == Token.DOT) {
+                lexer.nextToken();
+                String collateOther = lexer.stringVal();
+                item.setCollate(collate + "." + collateOther);
+                lexer.nextToken();
+            }
         }
-
+        if (lexer.token == Token.LITERAL_ALIAS) {
+            SQLExpr name = this.expr();
+            item.setOpclass(name);
+        }
         if (lexer.token == Token.ASC) {
             lexer.nextToken();
             item.setType(SQLOrderingSpecification.ASC);
