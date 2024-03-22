@@ -24,6 +24,8 @@ import java.util.List;
 public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceable {
     protected SQLExpr expr;
     protected String collate;
+    protected SQLExpr opclass;
+
     protected SQLOrderingSpecification type;
     protected NullsOrderType nullsOrderType;
 
@@ -58,6 +60,14 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
 
     public void setCollate(String collate) {
         this.collate = collate;
+    }
+
+    public SQLExpr getOpclass() {
+        return opclass;
+    }
+
+    public void setOpclass(SQLExpr opclass) {
+        this.opclass = opclass;
     }
 
     public SQLOrderingSpecification getType() {

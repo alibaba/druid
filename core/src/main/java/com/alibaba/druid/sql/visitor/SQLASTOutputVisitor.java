@@ -2804,18 +2804,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printExpr(expr, parameterized);
         }
 
-        SQLOrderingSpecification type = x.getType();
-        if (type != null) {
-            print(' ');
-            print0(ucase ? type.name : type.nameLCase);
-        }
-
         String collate = x.getCollate();
         if (collate != null) {
             print0(ucase ? " COLLATE " : " collate ");
             print0(collate);
         }
-
+        if (x.getOpclass() != null) {
+            print(' ');
+            x.getOpclass().accept(this);
+        }
+        SQLOrderingSpecification type = x.getType();
+        if (type != null) {
+            print(' ');
+            print0(ucase ? type.name : type.nameLCase);
+        }
         SQLSelectOrderByItem.NullsOrderType nullsOrderType = x.getNullsOrderType();
         if (nullsOrderType != null) {
             print(' ');
