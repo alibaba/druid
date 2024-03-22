@@ -1464,6 +1464,9 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     public DruidPooledConnection getConnection(long maxWaitMillis) throws SQLException {
+        if (jdbcUrl == null || jdbcUrl.isEmpty()) {
+            return null;
+        }
         init();
 
         final int filtersSize = filters.size();
