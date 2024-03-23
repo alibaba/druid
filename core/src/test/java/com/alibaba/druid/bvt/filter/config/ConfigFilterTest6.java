@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.filter.config;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
@@ -90,6 +91,11 @@ public class ConfigFilterTest6 extends TestCase {
 
         @Override
         public Properties getConnectProperties() {
+            return null;
+        }
+
+        @Override
+        public FilterChain createFilterChain(Object fromObj) {
             return null;
         }
     }

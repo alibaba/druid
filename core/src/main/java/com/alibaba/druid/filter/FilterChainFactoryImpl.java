@@ -13,31 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.proxy.jdbc;
+package com.alibaba.druid.filter;
 
-import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 
-import java.sql.Connection;
-import java.util.Date;
-import java.util.Properties;
+import java.util.List;
 
-/**
- * @author wenshao [szujobs@hotmail.com]
- */
-public interface ConnectionProxy extends Connection, WrapperProxy {
-    FilterChain createFilterChain(Object fromObj);
-
-    Connection getRawObject();
-
-    Properties getProperties();
-
-    DataSourceProxy getDirectDataSource();
-
-    Date getConnectedTime();
-
-    TransactionInfo getTransactionInfo();
-
-    int getCloseCount();
-
-    long getLastValidateTimeMillis();
+public class FilterChainFactoryImpl implements FilterChainFactory {
+    public FilterChain createFilterChain(final DataSourceProxy dataSource, final List<Filter> filterList, final Object fromObj) {
+        return new FilterChainImpl(dataSource, filterList);
+    }
 }

@@ -16,7 +16,7 @@
 package com.alibaba.druid.pool;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
 import com.alibaba.druid.proxy.jdbc.WrapperProxy;
 import com.alibaba.druid.support.logging.Log;
@@ -86,7 +86,7 @@ public final class DruidConnectionHolder {
     protected String initSchema;
     protected Socket socket;
 
-    volatile FilterChainImpl filterChain;
+    volatile FilterChain filterChain;
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
             throws SQLException {
@@ -218,10 +218,10 @@ public final class DruidConnectionHolder {
         this.defaultReadOnly = underlyingReadOnly;
     }
 
-    protected FilterChainImpl createChain() {
-        FilterChainImpl chain = this.filterChain;
+    protected FilterChain createChain() {
+        FilterChain chain = this.filterChain;
         if (chain == null) {
-            chain = new FilterChainImpl(dataSource);
+            chain = dataSource.createFilterChain(this);
         } else {
             this.filterChain = null;
         }
@@ -229,7 +229,7 @@ public final class DruidConnectionHolder {
         return chain;
     }
 
-    protected void recycleFilterChain(FilterChainImpl chain) {
+    protected void recycleFilterChain(FilterChain chain) {
         chain.reset();
         this.filterChain = chain;
     }
