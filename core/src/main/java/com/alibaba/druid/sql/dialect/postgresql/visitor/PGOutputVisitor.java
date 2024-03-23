@@ -2253,6 +2253,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
                 print0(ucase ? " ON " : " on ");
                 x.getCondition().accept(this);
                 print(' ');
+                if (x.getAfterCommentsDirect() != null) {
+                    printAfterComments(x.getAfterCommentsDirect());
+                    println();
+                }
             }
 
             if (x.getUsing().size() > 0) {

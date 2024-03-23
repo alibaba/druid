@@ -634,10 +634,7 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token != Token.WHERE) {
             return;
         }
-        System.out.println("where前面的注释==111=="+lexer.info()+"||"+lexer.comments);
-
         lexer.nextTokenIdent();
-
         List<String> beforeComments = null;
         if (lexer.hasComment() && lexer.isKeepComments()) {
             beforeComments = lexer.readAndResetComments();
@@ -1105,10 +1102,8 @@ public class SQLSelectParser extends SQLParser {
             return;
         }
 
-        System.out.println("这段啊倒萨打算阿斯顿==111=="+lexer.info()+"||"+lexer.comments);
         lexer.nextToken();
-        System.out.println("这段啊倒萨打算阿斯顿==222=="+lexer.info() +"||"+lexer.comments);
-        if(lexer.hasComment()){
+        if (lexer.hasComment()) {
             queryBlock.setCommentsAfaterFrom(lexer.readAndResetComments());
         }
         queryBlock.setFrom(
@@ -1235,7 +1230,6 @@ public class SQLSelectParser extends SQLParser {
 
         SQLTableSource tableSrc = parseTableSourceRest(tableReference);
 
-        System.out.println("看下这里受否还有煮熟--333333---" +lexer.info()+"|"+lexer.getComments());
         if (lexer.hasComment() && lexer.isKeepComments()) {
             tableSrc.addAfterComment(lexer.readAndResetComments());
         }
@@ -1361,18 +1355,10 @@ public class SQLSelectParser extends SQLParser {
     public SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         parseTableSourceSample(tableSource);
 
-        System.out.println("看下这里受否还有煮熟--2222222---" +lexer.info()+"|"+lexer.getComments());
-        System.out.println("看下这里受否还有煮熟--2222222---lexer.hasComment()=" +lexer.hasComment());
-        System.out.println("看下这里受否还有煮熟--2222222---lexer.isKeepComments()=" +lexer.isKeepComments());
-        System.out.println("看下这里受否还有煮熟--2222222---lexer.isKeepComments()=" +(!(tableSource instanceof SQLSubqueryTableSource)));
-
         if (lexer.hasComment()
                 && lexer.isKeepComments()
                 && !(tableSource instanceof SQLSubqueryTableSource)) {
-            System.out.println("看下这里受否还有煮熟--2222222---设置了注释的" +lexer.info()+"|"+lexer.getComments());
             tableSource.addAfterComment(lexer.readAndResetComments());
-
-            System.out.println("看下这里受否还有煮熟--2222222---设置了注释的" +tableSource.getClass()+"|"+tableSource);
         }
 
         if (tableSource.getAlias() == null || tableSource.getAlias().length() == 0) {
@@ -1886,7 +1872,6 @@ public class SQLSelectParser extends SQLParser {
                     lexer.reset(savePoint);
                 }
             }
-System.out.println("看下这里受否还有煮熟--1111111---" +lexer.info()+"|"+lexer.getComments());
             SQLTableSource tableSourceReturn = parseTableSourceRest(join);
 
             if (isBrace) {

@@ -288,6 +288,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 x.getCondition().accept(this);
                 decrementIndent();
                 print(' ');
+                if (x.getAfterCommentsDirect() != null) {
+                    printAfterComments(x.getAfterCommentsDirect());
+                    println();
+                }
             }
 
             if (x.getUsing().size() > 0) {
@@ -503,7 +507,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(' ');
             x.getSampleClause().accept(this);
         }
-
+        if (x.getAfterCommentsDirect() != null) {
+            printAfterComments(x.getAfterCommentsDirect());
+            println();
+        }
         if (x.getPivot() != null) {
             println();
             x.getPivot().accept(this);

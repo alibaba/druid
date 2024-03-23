@@ -4233,7 +4233,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount++;
             print0(ucase ? "ON " : "on ");
             printExpr(condition, parameterized);
-            if(x.getAfterCommentsDirect()!=null){
+            if (x.getAfterCommentsDirect() != null) {
                 printAfterComments(x.getAfterCommentsDirect());
                 println();
             }

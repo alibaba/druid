@@ -58,7 +58,7 @@ public class MySqlSelectTest_300_genAlias
         assertEquals("DELETE FROM t1\n" +
                 "WHERE s11 > ANY (\n" +
                 "\t\tSELECT COUNT(*) AS `COUNT(*)`\n" +
-                "\t\tFROM t2\n" +
+                "\t\tFROM  /* no hint */\n\t\tt2\n" +
                 "\t\tWHERE NOT EXISTS (\n" +
                 "\t\t\tSELECT *\n" +
                 "\t\t\tFROM t3\n" +

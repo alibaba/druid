@@ -56,7 +56,6 @@ public class OdpsSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.FROM) {
             parseFrom(queryBlock);
-            System.out.println("where前面的aaaaa注释==111=="+lexer.info()+"||"+lexer.getComments());
             parseWhere(queryBlock);
             parseGroupBy(queryBlock);
 

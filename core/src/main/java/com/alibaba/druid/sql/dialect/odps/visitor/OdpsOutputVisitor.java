@@ -327,7 +327,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             this.indentCount++;
             x.getCondition().accept(this);
             this.indentCount--;
-            if(x.getAfterCommentsDirect()!=null){
+            if (x.getAfterCommentsDirect() != null) {
                 printAfterComments(x.getAfterCommentsDirect());
                 println();
             }

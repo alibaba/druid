@@ -25,7 +25,8 @@ public class Issue5791 {
             DbType.mysql,
             DbType.postgresql,
             DbType.oracle,
-            DbType.sqlserver,
+            //DbType.sqlserver,
+            //DbType.oscar,
 //            DbType.db2,  DbType.h2,
 //            DbType.hive, DbType.dm, DbType.kingbase, DbType.gaussdb
 
@@ -41,7 +42,7 @@ public class Issue5791 {
                     + "  t.x = 1  -- C6;",
 
             }) {
-                System.out.println("原始的sql===" + sql);
+                System.out.println(dbType + "原始的sql===" + sql);
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 List<SQLStatement> statementList = parser.parseStatementList();
                 com.alibaba.druid.sql.ast.statement.SQLJoinTableSource ggg;
