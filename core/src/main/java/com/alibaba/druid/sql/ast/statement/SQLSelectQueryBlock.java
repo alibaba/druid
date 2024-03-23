@@ -488,9 +488,6 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         }
         this.from = from;
     }
-
-
-
     public void setFrom(SQLSelectQueryBlock queryBlock, String alias) {
         if (queryBlock == null) {
             this.from = null;
