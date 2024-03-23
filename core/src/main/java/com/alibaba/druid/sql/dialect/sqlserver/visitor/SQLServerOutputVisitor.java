@@ -72,6 +72,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         if (from != null) {
             println();
             print0(ucase ? "FROM " : "from ");
+            if (x.getCommentsAfaterFrom() != null) {
+                printAfterComments(x.getCommentsAfaterFrom());
+                println();
+            }
             printTableSource(from);
         }
 

@@ -2535,10 +2535,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     && ((SQLLateralViewTableSource) from).getTableSource() == null;
             if (!printFrom) {
                 print0(ucase ? "FROM " : "from ");
+                if (x.getCommentsAfaterFrom() != null) {
+                    printAfterComments(x.getCommentsAfaterFrom());
+                    println();
+                }
             }
             printTableSource(from);
         }
-
         SQLExpr where = x.getWhere();
         if (where != null) {
             printWhere(where);
@@ -4230,6 +4233,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount++;
             print0(ucase ? "ON " : "on ");
             printExpr(condition, parameterized);
+            if(x.getAfterCommentsDirect()!=null){
+                printAfterComments(x.getAfterCommentsDirect());
+                println();
+            }
             this.indentCount--;
         }
 

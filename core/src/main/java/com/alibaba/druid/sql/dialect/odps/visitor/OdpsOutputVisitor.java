@@ -327,6 +327,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             this.indentCount++;
             x.getCondition().accept(this);
             this.indentCount--;
+            if(x.getAfterCommentsDirect()!=null){
+                printAfterComments(x.getAfterCommentsDirect());
+                println();
+            }
         }
 
         if (x.getUsing().size() > 0) {
@@ -450,9 +454,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         if (from != null) {
             println();
             print0(ucase ? "FROM " : "from ");
+            if (x.getCommentsAfaterFrom() != null) {
+                printAfterComments(x.getCommentsAfaterFrom());
+                println();
+            }
             from.accept(this);
         }
-
         SQLExpr where = x.getWhere();
         if (where != null) {
             printWhere(where);

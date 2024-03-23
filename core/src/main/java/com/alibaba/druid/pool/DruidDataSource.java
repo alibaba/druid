@@ -1465,6 +1465,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     public DruidPooledConnection getConnection(long maxWaitMillis) throws SQLException {
         if (jdbcUrl == null || jdbcUrl.isEmpty()) {
+            LOG.warn("getConnection but jdbcUrl is not set,jdbcUrl=" + jdbcUrl + ",username=" + username);
             return null;
         }
         init();
