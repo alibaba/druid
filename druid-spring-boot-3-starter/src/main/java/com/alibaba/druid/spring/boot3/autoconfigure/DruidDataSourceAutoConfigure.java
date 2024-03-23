@@ -21,6 +21,7 @@ import com.alibaba.druid.spring.boot3.autoconfigure.stat.DruidFilterConfiguratio
 import com.alibaba.druid.spring.boot3.autoconfigure.stat.DruidSpringAopConfiguration;
 import com.alibaba.druid.spring.boot3.autoconfigure.stat.DruidStatViewServletConfiguration;
 import com.alibaba.druid.spring.boot3.autoconfigure.stat.DruidWebStatFilterConfiguration;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -59,7 +60,7 @@ public class DruidDataSourceAutoConfigure {
      * @return druid data source wrapper
      */
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean({DruidDataSourceWrapper.class, DruidDataSource.class, DataSource.class})
     public DruidDataSourceWrapper dataSource() {
         LOGGER.info("Init DruidDataSource");
         return new DruidDataSourceWrapper();
