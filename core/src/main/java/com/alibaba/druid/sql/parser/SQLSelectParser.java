@@ -634,9 +634,7 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token != Token.WHERE) {
             return;
         }
-
         lexer.nextTokenIdent();
-
         List<String> beforeComments = null;
         if (lexer.hasComment() && lexer.isKeepComments()) {
             beforeComments = lexer.readAndResetComments();
@@ -1105,9 +1103,12 @@ public class SQLSelectParser extends SQLParser {
         }
 
         lexer.nextToken();
-
+        if (lexer.hasComment()) {
+            queryBlock.setCommentsAfaterFrom(lexer.readAndResetComments());
+        }
         queryBlock.setFrom(
                 parseTableSource());
+
     }
 
     public SQLTableSource parseTableSource() {
@@ -1871,7 +1872,6 @@ public class SQLSelectParser extends SQLParser {
                     lexer.reset(savePoint);
                 }
             }
-
             SQLTableSource tableSourceReturn = parseTableSourceRest(join);
 
             if (isBrace) {

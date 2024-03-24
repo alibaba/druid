@@ -288,6 +288,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 x.getCondition().accept(this);
                 decrementIndent();
                 print(' ');
+                if (x.getAfterCommentsDirect() != null) {
+                    printAfterComments(x.getAfterCommentsDirect());
+                    println();
+                }
             }
 
             if (x.getUsing().size() > 0) {
@@ -369,6 +373,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         println();
         print0(ucase ? "FROM " : "from ");
+        if (x.getCommentsAfaterFrom() != null) {
+            printAfterComments(x.getCommentsAfaterFrom());
+            println();
+        }
         if (x.getFrom() == null) {
             print0(ucase ? "DUAL" : "dual");
         } else {
@@ -499,7 +507,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(' ');
             x.getSampleClause().accept(this);
         }
-
+        if (x.getAfterCommentsDirect() != null) {
+            printAfterComments(x.getAfterCommentsDirect());
+            println();
+        }
         if (x.getPivot() != null) {
             println();
             x.getPivot().accept(this);

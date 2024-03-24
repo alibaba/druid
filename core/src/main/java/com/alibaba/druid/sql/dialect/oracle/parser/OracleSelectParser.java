@@ -913,7 +913,9 @@ public class OracleSelectParser extends SQLSelectParser {
                 this.exprParser.exprList(join.getUsing(), join);
                 accept(Token.RPAREN);
             }
-
+            if (lexer.hasComment() && lexer.isKeepComments()) {
+                join.addAfterComment(lexer.readAndResetComments());
+            }
             parsePivot(join);
 
             return parseTableSourceRest(join);

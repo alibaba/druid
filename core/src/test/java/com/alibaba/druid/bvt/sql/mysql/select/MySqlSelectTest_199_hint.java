@@ -158,7 +158,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
                             "FROM customer\n" +
                             "\tINNER JOIN orders\n" +
                             "\tON customer.custkey = orders.custkey/*+ wefwe=true*/\n" +
-                            "\t\tAND customer.nationkey = orders.orderkey", //
+                            "\t\tAND customer.nationkey = orders.orderkey /* wef=false */\n\t\t", //
                     output);
         }
     }
