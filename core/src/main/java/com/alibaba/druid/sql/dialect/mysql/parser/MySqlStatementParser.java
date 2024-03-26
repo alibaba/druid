@@ -6679,8 +6679,13 @@ public class MySqlStatementParser extends SQLStatementParser {
                     alterColumn.setColumn(this.exprParser.name());
                     if (lexer.token() == Token.SET) {
                         lexer.nextToken();
-                        accept(Token.DEFAULT);
-                        alterColumn.setDefaultExpr(this.exprParser.expr());
+                        if (lexer.identifierEquals("VISIBLE") || lexer.identifierEquals("INVISIBLE")) {
+                            alterColumn.setVisibleType(lexer.stringVal());
+                            lexer.nextToken();
+                        } else {
+                            accept(Token.DEFAULT);
+                            alterColumn.setDefaultExpr(this.exprParser.expr());
+                        }
                     } else {
                         accept(Token.DROP);
                         accept(Token.DEFAULT);
