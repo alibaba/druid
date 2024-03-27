@@ -21,7 +21,6 @@ import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidSpringAopConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidStatViewServletConfiguration;
 import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidWebStatFilterConfiguration;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -34,6 +33,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import javax.sql.DataSource;
 
 /**
  * @author lihengming [89921218@qq.com]
