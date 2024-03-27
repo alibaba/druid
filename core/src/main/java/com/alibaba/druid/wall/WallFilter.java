@@ -161,10 +161,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 provider = new SQLServerWallProvider(config);
                 break;
             case postgresql:
-            case edb:
+            case halo:
             case polardb:
             case greenplum:
             case gaussdb:
+            case edb:
                 if (config == null) {
                     config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
                 }
