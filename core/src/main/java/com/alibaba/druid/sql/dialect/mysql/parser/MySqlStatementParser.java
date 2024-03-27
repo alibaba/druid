@@ -6679,8 +6679,13 @@ public class MySqlStatementParser extends SQLStatementParser {
                     alterColumn.setColumn(this.exprParser.name());
                     if (lexer.token() == Token.SET) {
                         lexer.nextToken();
-                        accept(Token.DEFAULT);
-                        alterColumn.setDefaultExpr(this.exprParser.expr());
+                        if (lexer.identifierEquals("VISIBLE") || lexer.identifierEquals("INVISIBLE")) {
+                            alterColumn.setVisibleType(lexer.stringVal());
+                            lexer.nextToken();
+                        } else {
+                            accept(Token.DEFAULT);
+                            alterColumn.setDefaultExpr(this.exprParser.expr());
+                        }
                     } else {
                         accept(Token.DROP);
                         accept(Token.DEFAULT);
@@ -8002,7 +8007,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         } else if (lexer.token() == Token.COLUMN) {
             lexer.nextToken();
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-
+            if (lexer.token() == Token.IF) {
+                lexer.nextToken();
+                accept(Token.EXISTS);
+                item.setIfExists(true);
+            }
             SQLName name = exprParser.name();
             name.setParent(item);
             item.addColumn(name);

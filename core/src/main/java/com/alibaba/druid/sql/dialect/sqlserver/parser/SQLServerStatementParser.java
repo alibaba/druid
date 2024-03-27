@@ -590,7 +590,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
         } else if (lexer.token() == Token.COLUMN) {
             lexer.nextToken();
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-
+            if (lexer.token() == Token.IF) {
+                lexer.nextToken();
+                accept(Token.EXISTS);
+                item.setIfExists(true);
+            }
             SQLName name = exprParser.name();
             name.setParent(item);
             item.addColumn(name);

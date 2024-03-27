@@ -186,7 +186,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (from != null) {
             println();
             print0(ucase ? "FROM " : "from ");
-
+            if (x.getCommentsAfaterFrom() != null) {
+                printAfterComments(x.getCommentsAfaterFrom());
+                println();
+            }
             printTableSource(from);
         }
 
@@ -4514,6 +4517,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getDefaultExpr().accept(this);
         } else if (x.isDropDefault()) {
             print0(ucase ? " DROP DEFAULT" : " drop default");
+        } else if (x.getVisibleType() != null) {
+            print0(ucase ? " SET " : " set ");
+            print0(ucase ? x.getVisibleType().toUpperCase() : x.getVisibleType().toLowerCase());
         }
         return false;
     }

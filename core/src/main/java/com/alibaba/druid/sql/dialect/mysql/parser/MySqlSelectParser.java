@@ -69,6 +69,9 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         lexer.nextTokenIdent();
 
+        if (lexer.hasComment()) {
+            queryBlock.setCommentsAfaterFrom(lexer.readAndResetComments());
+        }
         while (lexer.token() == Token.HINT) {
             lexer.nextToken();
         }

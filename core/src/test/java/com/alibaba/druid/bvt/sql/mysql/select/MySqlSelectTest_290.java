@@ -177,7 +177,7 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "   WHEN (IFNULL(tc.transaction_source ,'') NOT LIKE '%智美分销%' AND IFNULL(tc.transaction_source,'')  NOT LIKE '%智美置家%') AND tc.sort='1' THEN 3\n" +
                 "   END transaction_source_px,\n" +
                 "   DATE_FORMAT(tc.create_date,'%Y-%m-%d %H:%i') create_date /*/*创建日期 */\n" +
-                "   FROM midea_sd_transaction_customer tc \n" +
+                "   FROM /*/*创建日期 */\n\t\tmidea_sd_transaction_customer tc \n" +
                 "   LEFT JOIN( \n" +
                 "    /*/*粒度区分到分钟(只可能有一条,也肯定有一条)*/ \n" +
                 "   select tc1.id,tc1.transaction_id,DATE_FORMAT(MIN(tc1.create_date),'%Y-%m-%d %H:%i') create_date FROM midea_sd_transaction_customer tc1\n" +
@@ -422,7 +422,7 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\t\t\t\t\t\tAND tc.sort = '1'\n" +
                 "\t\t\t\t\t\tTHEN 3\n" +
                 "\t\t\t\t\tEND AS transaction_source_px, DATE_FORMAT(tc.create_date, '%Y-%m-%d %H:%i') AS create_date\n" +
-                "\t\t\t\tFROM midea_sd_transaction_customer tc\n" +
+                "\t\t\t\tFROM  /*/*创建日期 */\n\t\t\t\tmidea_sd_transaction_customer tc\n" +
                 "\t\t\t\t\tLEFT JOIN (\n" +
                 "\t\t\t\t\t\t/* /*粒度区分到分钟(只可能有一条,也肯定有一条) */\n" +
                 "\t\t\t\t\t\tSELECT tc1.id, tc1.transaction_id\n" +
@@ -452,7 +452,7 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\t\t\t\t\t\t\tAND tc.sort = '1'\n" +
                 "\t\t\t\t\t\t\tTHEN 3\n" +
                 "\t\t\t\t\t\tEND AS transaction_source_px, DATE_FORMAT(tc.create_date, '%Y-%m-%d %H:%i') AS create_date\n" +
-                "\t\t\t\t\tFROM midea_sd_transaction_customer tc\n" +
+                "\t\t\t\t\tFROM  /*/*创建日期 */\n\t\t\t\t\tmidea_sd_transaction_customer tc\n" +
                 "\t\t\t\t\t\tLEFT JOIN (\n" +
                 "\t\t\t\t\t\t\t/*/*粒度区分到分钟(只可能有一条,也肯定有一条)*/\n" +
                 "\t\t\t\t\t\t\tSELECT tc1.id, tc1.transaction_id\n" +
@@ -474,18 +474,18 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\tLEFT JOIN midea_sd_project_head projectHead ON tran.project_id = projectHead.id\n" +
                 "\tLEFT JOIN midea_sd_orgnazation org ON org.id = projectHead.orgnazation_id\n" +
                 "\tLEFT JOIN midea_sd_house_info houseInfo ON tran.house_id = houseInfo.id\n" +
-                "\tLEFT JOIN midea_sd_unit_info ui ON ui.id = houseInfo.unit_id\n" +
-                "\tLEFT JOIN midea_sd_floor_info fi ON fi.id = houseInfo.floor_id\n" +
+                "\tLEFT JOIN midea_sd_unit_info ui ON ui.id = houseInfo.unit_id /*/*add by zhangxiaojin 2019-05-21*/\n\t\t\n" +
+                "\tLEFT JOIN midea_sd_floor_info fi ON fi.id = houseInfo.floor_id /*/*add by zhangxiaojin 2019-05-21 */\n\t\t\n" +
                 "\tLEFT JOIN midea_sd_house_item hitem ON hitem.id = houseInfo.id\n" +
                 "\tLEFT JOIN midea_sd_wbs_item build ON build.id = houseInfo.building_id\n" +
                 "\tLEFT JOIN midea_sd_mdm_wbs_item mdmwbsitem ON mdmwbsitem.wbs_head_id = build.wbs_head_id\n" +
-                "\tLEFT JOIN midea_sd_mdm_bid_package mdmbidpck ON mdmbidpck.id = mdmwbsitem.bd_id\n" +
+                "\tLEFT JOIN midea_sd_mdm_bid_package mdmbidpck ON mdmbidpck.id = mdmwbsitem.bd_id /* LEFT JOIN midea_sd_product_type AS productType ON houseInfo.product_type_id = productType.id */\n\t\t\n" +
                 "\tLEFT JOIN midea_sd_mdm_product mp ON mp.id = hitem.product_id\n" +
                 "\tLEFT JOIN midea_sd_wbs_attribute_parameter_item pi ON pi.code = mp.decoration_type_code\n" +
                 "\tLEFT JOIN midea_sd_product_type productType ON mp.product_type_id = productType.id\n" +
                 "\tLEFT JOIN midea_sd_product_type ptt ON ptt.id = productType.parent_id\n" +
                 "\tLEFT JOIN midea_sd_wbs_item ON tran.wbs_id = midea_sd_wbs_item.wbs_head_id\n" +
-                "\tLEFT JOIN midea_sd_house_type houseType ON houseType.id = houseInfo.house_type_id\n" +
+                "\tLEFT JOIN midea_sd_house_type houseType ON houseType.id = houseInfo.house_type_id /*LEFT JOIN midea_sd_decoration_standard_config decoration ON tran.decoration_standard_config_id = decoration.id */\n\t\t\n" +
                 "\tLEFT JOIN midea_sd_after_sales aftersales ON contract.transaction_id = aftersales.transaction_id\n" +
                 "\tLEFT JOIN midea_sd_order_info orderinfo ON tran.id = orderinfo.transaction_id\n" +
                 "\tLEFT JOIN (\n" +

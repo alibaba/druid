@@ -144,6 +144,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getFrom() != null) {
             println();
             print0(ucase ? "FROM " : "from ");
+            if (x.getCommentsAfaterFrom() != null) {
+                printAfterComments(x.getCommentsAfaterFrom());
+                println();
+            }
             x.getFrom().accept(this);
         }
 
@@ -1347,6 +1351,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         println();
         print0(ucase ? "FROM " : "from ");
         if (x.getFrom() != null) {
+            if (x.getCommentsAfaterFrom() != null) {
+                printAfterComments(x.getCommentsAfaterFrom());
+                println();
+            }
             x.getFrom().accept(this);
         }
 
@@ -2245,6 +2253,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
                 print0(ucase ? " ON " : " on ");
                 x.getCondition().accept(this);
                 print(' ');
+                if (x.getAfterCommentsDirect() != null) {
+                    printAfterComments(x.getAfterCommentsDirect());
+                    println();
+                }
             }
 
             if (x.getUsing().size() > 0) {
