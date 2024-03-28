@@ -1421,6 +1421,9 @@ public class DruidDataSource extends DruidAbstractDataSource
                     || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_603)) {
                 this.exceptionSorter = new MySqlExceptionSorter();
                 this.isMySql = true;
+            }else if(realDriverClassName.equals(JdbcConstants.GOLDENDB_DRIVER)){
+                this.exceptionSorter = new MySqlExceptionSorter();
+                this.isMySql = true;
             } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
                 this.exceptionSorter = new OracleExceptionSorter();

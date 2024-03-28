@@ -409,6 +409,8 @@ public final class JdbcUtils implements JdbcConstants {
             } else {
                 return MYSQL_DRIVER;
             }
+        }else if(rawUrl.startsWith("jdbc:goldendb:")){
+            return MYSQL_DRIVER;
         } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
             return LOG4JDBC_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
@@ -553,6 +555,9 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.derby;
         } else if (rawUrl.startsWith("jdbc:mysql:") || rawUrl.startsWith("jdbc:cobar:")
                 || rawUrl.startsWith("jdbc:log4jdbc:mysql:")) {
+            return DbType.mysql;
+//      gdb
+        }else if(rawUrl.startsWith("jdbc:goldendb:")){
             return DbType.mysql;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return DbType.mariadb;
@@ -943,7 +948,8 @@ public final class JdbcUtils implements JdbcConstants {
         return driverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
                 || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)
                 || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_603)
-                || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_REPLICATE);
+                || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_REPLICATE)
+                || driverClassName.equals(JdbcConstants.GOLDENDB_DRIVER);
     }
 
     public static boolean isOracleDbType(String dbType) {
@@ -976,6 +982,7 @@ public final class JdbcUtils implements JdbcConstants {
             case mariadb:
             case tidb:
             case h2:
+            case goldendb:
                 return true;
             default:
                 return false;
