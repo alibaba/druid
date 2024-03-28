@@ -49,6 +49,7 @@ public final class ExportParameterVisitorUtils {
             case db2:
                 return new DB2ExportParameterVisitor(out);
             case h2:
+            case lealone:
                 return new MySqlExportParameterVisitor(out);
             case sqlserver:
             case jtds:
