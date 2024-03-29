@@ -459,12 +459,13 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
         long hashCode64 = nameHashCode64();
 
         return hashCode64 == FnvHash.Constants.BIGINT
-                || hashCode64 == FnvHash.Constants.INT
-                || hashCode64 == FnvHash.Constants.INT4
-                || hashCode64 == FnvHash.Constants.INT24
-                || hashCode64 == FnvHash.Constants.SMALLINT
-                || hashCode64 == FnvHash.Constants.TINYINT
-                || hashCode64 == FnvHash.Constants.INTEGER;
+            || hashCode64 == FnvHash.Constants.INT
+            || hashCode64 == FnvHash.Constants.INT4
+            || hashCode64 == FnvHash.Constants.INT24
+            || hashCode64 == FnvHash.Constants.SMALLINT
+            || hashCode64 == FnvHash.Constants.MEDIUMINT
+            || hashCode64 == FnvHash.Constants.TINYINT
+            || hashCode64 == FnvHash.Constants.INTEGER;
     }
 
     public boolean isNumberic() {
