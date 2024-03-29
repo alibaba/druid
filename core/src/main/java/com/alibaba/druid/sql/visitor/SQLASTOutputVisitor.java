@@ -9124,8 +9124,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         x.getMethod().accept(this);
-        print(' ');
-        print0(x.getAlias());
+        if (x.getAlias() != null) {
+            print(' ');
+            print0(x.getAlias());
+        }
 
         if (x.getColumns() != null && x.getColumns().size() > 0) {
             print0(ucase ? " AS " : " as ");

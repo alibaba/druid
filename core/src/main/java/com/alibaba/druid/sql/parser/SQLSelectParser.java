@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SQLSelectParser extends SQLParser {
@@ -2017,16 +2018,9 @@ public class SQLSelectParser extends SQLParser {
         SQLMethodInvokeExpr udtf = (SQLMethodInvokeExpr) this.exprParser.primary();
         lateralViewTabSrc.setMethod(udtf);
 
-        String alias;
-        if (lexer.token == Token.AS) {
-            lexer.nextToken();
-            if (lexer.token == Token.AS) {
-                lexer.nextToken();
-            }
-
+        String alias = null;
+        if (lexer.token != Token.AS) {
             alias = alias();
-        } else {
-            alias = as();
         }
         if (alias != null) {
             lateralViewTabSrc.setAlias(alias);
