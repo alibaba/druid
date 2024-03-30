@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SQLSelectParser extends SQLParser {
