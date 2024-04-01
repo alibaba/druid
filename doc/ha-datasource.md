@@ -19,7 +19,7 @@ HA DataSource提供了如下特性：
 
 ### 2.1 根据名称路由节点
 
-在Spring配置文件中加入如下DataSoruce配置：
+在Spring配置文件中加入如下DataSource配置：
 
 ```xml
 <bean id="dataSource" class="com.alibaba.druid.pool.ha.HighAvailableDataSource" 
@@ -66,7 +66,7 @@ hb.db1.password=password
 
 此处的`ha`是用于过滤配置项的，在一个配置文件中如存在多个不同前缀，可以通过前缀进行区分。
 
-在Spring配置文件中加入如下DataSoruce配置：
+在Spring配置文件中加入如下DataSource配置：
 
 ```xml
 <bean id="dataSource" class="com.alibaba.druid.pool.ha.HighAvailableDataSource" 
@@ -92,7 +92,7 @@ hb.db1.password=password
 
 HA DataSource默认基于文件创建随机节点列表，只需提供其他NodeListener的实现类，就可以监听不同的配置源，例如ZookeeperNodeListener就是基于ZooKeeper的。
 
-在Spring配置文件中加入如下DataSoruce配置：
+在Spring配置文件中加入如下DataSource配置：
 
 ```xml
 <bean id="dataSource" class="com.alibaba.druid.pool.ha.HighAvailableDataSource" 
