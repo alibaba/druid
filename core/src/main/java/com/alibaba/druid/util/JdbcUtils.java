@@ -554,6 +554,8 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:mysql:") || rawUrl.startsWith("jdbc:cobar:")
                 || rawUrl.startsWith("jdbc:log4jdbc:mysql:")) {
             return DbType.mysql;
+        } else if (rawUrl.startsWith("jdbc:goldendb:")) {
+            return DbType.mysql;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return DbType.mariadb;
         } else if (rawUrl.startsWith("jdbc:tidb:")) {
@@ -976,6 +978,7 @@ public final class JdbcUtils implements JdbcConstants {
             case mariadb:
             case tidb:
             case h2:
+            case goldendb:
                 return true;
             default:
                 return false;
