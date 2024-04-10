@@ -38,8 +38,13 @@ public class SQLMergeStatement extends SQLStatementImpl {
             acceptChild(visitor, into);
             acceptChild(visitor, using);
             acceptChild(visitor, on);
-            acceptChild(visitor, updateClause);
-            acceptChild(visitor, insertClause);
+            if (insertClauseFirst) {
+                acceptChild(visitor, insertClause);
+                acceptChild(visitor, updateClause);
+            } else {
+                acceptChild(visitor, updateClause);
+                acceptChild(visitor, insertClause);
+            }
             acceptChild(visitor, errorLoggingClause);
         }
         visitor.endVisit(this);
