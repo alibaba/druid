@@ -539,6 +539,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.TAOS_DATA;
         } else if (rawUrl.startsWith("jdbc:TAOS-RS:")) {
             return JdbcConstants.TAOS_DATA_RS;
+        } else if (rawUrl.startsWith("jdbc:gbasedbt-sqli:")) {
+            return JdbcConstants.GBASE8S_DRIVER;
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
