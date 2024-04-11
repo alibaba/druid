@@ -90,6 +90,9 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public void setUpdateClause(MergeUpdateClause updateClause) {
+        if (updateClause != null) {
+            updateClause.setParent(this);
+        }
         this.updateClause = updateClause;
     }
 
@@ -98,6 +101,9 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public void setInsertClause(MergeInsertClause insertClause) {
+        if (insertClause != null) {
+            insertClause.setParent(this);
+        }
         this.insertClause = insertClause;
     }
 
