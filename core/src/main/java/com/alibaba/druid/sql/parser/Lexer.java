@@ -1548,7 +1548,7 @@ public class Lexer {
                         if (charAt(pos + 1) == '*') {
                             token = Token.BARBAR;
                             break;
-                        }                        
+                        }
                         scanChar();
                         token = Token.BARBARSLASH;
                     } else {
