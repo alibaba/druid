@@ -2044,13 +2044,16 @@ public class OracleStatementParser extends SQLStatementParser {
                         int len = lenExpr.getNumber().intValue();
                         dataType = new SQLDataTypeImpl(typeName, len);
                         accept(Token.RPAREN);
+                    } else {
+                        String typeName = "TABLE OF " + sqlName.toString();
+                        dataType = new SQLDataTypeImpl(typeName);
+                    }
 
-                        if (lexer.token() == Token.INDEX) {
-                            lexer.nextToken();
-                            accept(Token.BY);
-                            SQLExpr indexBy = this.exprParser.primary();
-                            ((SQLDataTypeImpl) dataType).setIndexBy(indexBy);
-                        }
+                    if (lexer.token() == Token.INDEX) {
+                        lexer.nextToken();
+                        accept(Token.BY);
+                        SQLExpr indexBy = this.exprParser.primary();
+                        ((SQLDataTypeImpl) dataType).setIndexBy(indexBy);
                     }
                     dataType.setDbType(dbType);
                 } else if (lexer.identifierEquals("VARRAY")) {
