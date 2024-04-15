@@ -66,6 +66,8 @@ public enum DbType {
 
     starrocks(1L << 43),
 
+    goldendb(1L << 44),
+
     ingres(0),
     cloudscape(0),
     timesten(0),
