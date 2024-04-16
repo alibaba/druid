@@ -409,6 +409,9 @@ public class ParameterizedOutputVisitorUtils {
             case mysql:
             case tidb:
             case mariadb:
+            case goldendb:
+            case oceanbase:
+            case drds:
             case elastic_search:
                 return new MySqlOutputVisitor(out, true);
             case h2:
@@ -416,6 +419,7 @@ public class ParameterizedOutputVisitorUtils {
             case postgresql:
             case greenplum:
             case edb:
+            case gaussdb:
                 return new PGOutputVisitor(out, true);
             case sqlserver:
             case jtds:
