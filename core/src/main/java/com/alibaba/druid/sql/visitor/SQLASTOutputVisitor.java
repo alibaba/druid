@@ -5456,9 +5456,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             name.accept(this);
             print(' ');
         }
-        print0(ucase ? "CHECK (" : "check (");
+        print0(ucase ? "CHECK " : "check ");
         x.getExpr().accept(this);
-        print(')');
+        print("");
 
         Boolean enable = x.getEnable();
         if (enable != null) {
