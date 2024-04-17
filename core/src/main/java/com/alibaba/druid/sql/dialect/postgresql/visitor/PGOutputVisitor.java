@@ -433,9 +433,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (expr != null) {
             if (expr instanceof SQLBinaryOpExpr) {
-                print('(');
                 expr.accept(this);
-                print(')');
             } else if (expr instanceof PGTypeCastExpr && dataType.getArguments().isEmpty()) {
                 dataType.accept(this);
                 print('(');

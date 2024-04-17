@@ -24,6 +24,9 @@ public class Issue5847 extends TestCase {
 
         sql="select a.*, (a.swanav-lead(a.swanav,1,null::numeric) over w)/lead(a.swanav,1,null::numeric) over w as roe_lag\n";
         sql="select a.*, ((a.swanav-lead(a.swanav,1,null::numeric) over w)/lead(a.swanav,1,null::numeric) over w) as roe_lag\n";
+        sql="select * from aaa "
+
+       + "group by to_char((CreateDate || ' ' || cast(HourArgment as VARCHAR) || ':00:00')::TIMESTAMP, 'YYYY-MM-DD HH24')";
 
         for (DbType dbType : new DbType[]{
             //DbType.db2,
