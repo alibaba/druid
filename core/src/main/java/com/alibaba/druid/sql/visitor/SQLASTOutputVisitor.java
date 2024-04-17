@@ -544,7 +544,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     quote = true;
                     break;
                 default:
-                    quote = ((SQLBinaryOpExpr) testExpr).isParenthesized();
+                    quote = false;
                     break;
             }
         } else if (testExpr instanceof SQLInListExpr
@@ -576,8 +576,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (beginExpr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpBegin = (SQLBinaryOpExpr) beginExpr;
             incrementIndent();
-            if (binaryOpBegin.isParenthesized()
-                    || binaryOpBegin.getOperator().isLogical()
+            if (binaryOpBegin.getOperator().isLogical()
                     || binaryOpBegin.getOperator().isRelational()) {
                 print('(');
                 printExpr(beginExpr, parameterized);
@@ -609,8 +608,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (endExpr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpEnd = (SQLBinaryOpExpr) endExpr;
             incrementIndent();
-            if (binaryOpEnd.isParenthesized()
-                    || binaryOpEnd.getOperator().isLogical()
+            if (binaryOpEnd.getOperator().isLogical()
                     || binaryOpEnd.getOperator().isRelational()) {
                 print('(');
                 printExpr(endExpr, parameterized);
@@ -762,7 +760,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (itemOp.priority > operator.priority) {
                     bracket = true;
                 } else {
-                    bracket = binaryOpExpr.isParenthesized() & !parameterized;
+                    bracket = !parameterized;
                 }
                 if (bracket) {
                     print('(');
@@ -795,6 +793,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        if (x.isParenthesized()) {
+            print('(');
+        }
+        boolean rs = visitInternal(x);
+        if (x.isParenthesized()) {
+            print(')');
+        }
+        return rs;
+    }
+    public boolean visitInternal(SQLBinaryOpExpr x) {
         SQLBinaryOperator operator = x.getOperator();
         if (this.parameterized
                 && operator == SQLBinaryOperator.BooleanOr
@@ -980,8 +988,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     || rightOp == SQLBinaryOperator.BooleanOr;
 
             if (rightOp.priority >= op.priority
-                    || (binaryRight.isParenthesized()
-                    && rightOp != op
+                    || (rightOp != op
                     && rightOp.isLogical()
                     && op.isLogical()
             )) {
@@ -989,9 +996,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     this.indentCount++;
                 }
 
-                print('(');
+                //print('(');
                 printExpr(binaryRight, parameterized);
-                print(')');
+                //print(')');
 
                 if (rightRational) {
                     this.indentCount--;
@@ -1064,9 +1071,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (leftRational) {
                     this.indentCount++;
                 }
-                print('(');
+                //print('(');
                 printExpr(left, parameterized);
-                print(')');
+               // print(')');
 
                 if (leftRational) {
                     this.indentCount--;
@@ -1569,7 +1576,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     quote = true;
                     break;
                 default:
-                    quote = ((SQLBinaryOpExpr) expr).isParenthesized();
+                    quote = false;
                     break;
             }
         } else if (expr instanceof SQLNotExpr
@@ -8037,9 +8044,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "USING " : "using ");
         x.getUsing().accept(this);
 
-        print0(ucase ? " ON (" : " on (");
+        print0(ucase ? " ON " : " on ");
         x.getOn().accept(this);
-        print0(") ");
+        print0(" ");
 
         if (x.isInsertClauseFirst()) {
             if (x.getInsertClause() != null) {

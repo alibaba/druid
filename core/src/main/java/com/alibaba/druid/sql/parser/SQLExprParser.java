@@ -106,6 +106,7 @@ public class SQLExprParser extends SQLParser {
             return expr;
         }
 
+        boolean parenthesized = (lexer.token == Token.LPAREN);
         SQLExpr expr = primary();
 
         Lexer.SavePoint mark = lexer.mark();
@@ -128,7 +129,11 @@ public class SQLExprParser extends SQLParser {
                 return exprRest(expr);
             }
         } else {
-            return exprRest(expr);
+            SQLExpr sqlExpr = exprRest(expr);
+            if (parenthesized && sqlExpr instanceof SQLBinaryOpExpr) {
+                ((SQLBinaryOpExpr) sqlExpr).setParenthesized(true);
+            }
+            return sqlExpr;
         }
     }
 
