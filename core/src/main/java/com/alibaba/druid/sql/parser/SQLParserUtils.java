@@ -186,6 +186,7 @@ public class SQLParserUtils {
             case postgresql:
             case greenplum:
             case edb:
+            case gaussdb:
                 return new PGExprParser(sql, features);
             case sqlserver:
             case jtds:
