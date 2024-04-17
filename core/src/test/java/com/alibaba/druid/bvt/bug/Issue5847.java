@@ -22,9 +22,12 @@ public class Issue5847 extends TestCase {
             + "FROM tb_test\n"
             + "LIMIT 10 OFFSET ( (2 - 1) * 1 *( 3 + 5) )";
 
+        sql="select a.*, (a.swanav-lead(a.swanav,1,null::numeric) over w)/lead(a.swanav,1,null::numeric) over w as roe_lag\n";
+        sql="select a.*, ((a.swanav-lead(a.swanav,1,null::numeric) over w)/lead(a.swanav,1,null::numeric) over w) as roe_lag\n";
+
         for (DbType dbType : new DbType[]{
             //DbType.db2,
-//            DbType.postgresql,
+            DbType.postgresql,
 //            DbType.oracle,
 //            DbType.mysql,
 //            DbType.mariadb,
@@ -37,7 +40,9 @@ public class Issue5847 extends TestCase {
 //            DbType.gaussdb,
 //            DbType.tidb,
 //            DbType.goldendb,
-            DbType.dm,}) {
+            //DbType.dm,
+
+        }) {
             try {
                // String mergeSql = SQLUtils.format(sql, dbType);
                 List<SQLStatement> list = SQLUtils.parseStatements(sql, dbType);

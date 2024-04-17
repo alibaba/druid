@@ -32,7 +32,7 @@ public class PGSelectTest74 extends TestCase {
                 "\t\tELSE 0\n" +
                 "\tEND) AS FIRE_INCIDENT\n" +
                 "FROM dm.dm_ioc_event_type_h_sf\n" +
-                "WHERE CALCULATE_TIME >= CURRENT_DATE - INTERVAL '1' MONTH\n" +
+                "WHERE CALCULATE_TIME >= (CURRENT_DATE - INTERVAL '1' MONTH)\n" +
                 "\tAND PARK_CODE = '101001001083'\n" +
                 "GROUP BY COUNTRY_CODE, AREA_CODE, CITY_CODE, PARK_CODE, PARK_CN, PARK_EN;", stmt.toString());
 
@@ -47,7 +47,7 @@ public class PGSelectTest74 extends TestCase {
                 "\t\telse 0\n" +
                 "\tend) as FIRE_INCIDENT\n" +
                 "from dm.dm_ioc_event_type_h_sf\n" +
-                "where CALCULATE_TIME >= CURRENT_DATE - interval '1' month\n" +
+                "where CALCULATE_TIME >= (CURRENT_DATE - interval '1' month)\n" +
                 "\tand PARK_CODE = '101001001083'\n" +
                 "group by COUNTRY_CODE, AREA_CODE, CITY_CODE, PARK_CODE, PARK_CN, PARK_EN;", stmt.toLowerCaseString());
     }
