@@ -108,7 +108,11 @@ public class SQLExprParser extends SQLParser {
 
         boolean parenthesized = (lexer.token == Token.LPAREN);
         SQLExpr expr = primary();
-
+        if (expr instanceof SQLBinaryOpExpr) {
+            if (((SQLBinaryOpExpr) expr).isParenthesized()) {
+                parenthesized = false;
+            }
+        }
         Lexer.SavePoint mark = lexer.mark();
         Token token = lexer.token;
         if (token == Token.COMMA) {
