@@ -53,7 +53,7 @@ public class OracleSelectTest115 extends OracleTest {
                     "\t\t\t, CSRQ AS CSRQ, SSGAJGJGDM AS SSGAJGJGDM, AJLB AS AJLB, TBTSBJ AS TBTSBJ, LX AS LX\n" +
                     "\t\t\t, XP AS XP, NULL\n" +
                     "\t\tFROM QQFW_ZYK.GZDX\n" +
-                    "\t\tWHERE XM = '忘轻春'\n" +
+                    "\t\tWHERE (XM = '忘轻春')\n" +
                     "\t) row_\n" +
                     "\tWHERE rownum <= 5\n" +
                     ")", text);

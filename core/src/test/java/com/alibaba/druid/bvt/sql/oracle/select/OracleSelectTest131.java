@@ -102,7 +102,7 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t), bb.flyj) AS flyj\n" +
                 "\t\t\t\t, bb.aybh, bb.aymc\n" +
                 "\t\t\t\t, CASE \n" +
-                "\t\t\t\t\tWHEN bb.jg = '1'\n" +
+                "\t\t\t\t\tWHEN (bb.jg = '1'\n" +
                 "\t\t\t\t\t\tAND bb.fk IS NULL\n" +
                 "\t\t\t\t\t\tAND bb.jl IS NULL\n" +
                 "\t\t\t\t\t\tAND (bb.zltcty IS NULL\n" +
@@ -110,9 +110,9 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\tAND (bb.dxxkz IS NULL\n" +
                 "\t\t\t\t\t\t\tOR bb.dxxkz = '0')\n" +
                 "\t\t\t\t\t\tAND bb.qtcfyj IS NULL\n" +
-                "\t\t\t\t\t\tAND bb.jd IS NULL\n" +
+                "\t\t\t\t\t\tAND bb.jd IS NULL)\n" +
                 "\t\t\t\t\tTHEN '警告'\n" +
-                "\t\t\t\t\tWHEN bb.jg = '1'\n" +
+                "\t\t\t\t\tWHEN (bb.jg = '1'\n" +
                 "\t\t\t\t\t\tAND bb.fk IS NOT NULL\n" +
                 "\t\t\t\t\t\tAND bb.jl IS NULL\n" +
                 "\t\t\t\t\t\tAND (bb.zltcty IS NULL\n" +
@@ -120,7 +120,7 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\tAND (bb.dxxkz IS NULL\n" +
                 "\t\t\t\t\t\t\tOR bb.dxxkz = '0')\n" +
                 "\t\t\t\t\t\tAND bb.qtcfyj IS NULL\n" +
-                "\t\t\t\t\t\tAND bb.jd IS NULL\n" +
+                "\t\t\t\t\t\tAND bb.jd IS NULL)\n" +
                 "\t\t\t\t\tTHEN '警告并处罚款' || f_num_zi(bb.fk) || '元'\n" +
                 "\t\t\t\t\tWHEN bb.jg = '1'\n" +
                 "\t\t\t\t\t\tAND bb.jl IS NOT NULL\n" +
@@ -132,7 +132,7 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\tAND bb.qtcfyj IS NULL\n" +
                 "\t\t\t\t\t\tAND bb.jd IS NULL\n" +
                 "\t\t\t\t\tTHEN '行政拘留' || f_num_zi(bb.jl) || '日并警告'\n" +
-                "\t\t\t\t\tWHEN bb.jg = '1'\n" +
+                "\t\t\t\t\tWHEN (bb.jg = '1'\n" +
                 "\t\t\t\t\t\tAND bb.qtcfyj IS NOT NULL\n" +
                 "\t\t\t\t\t\tAND bb.fk IS NOT NULL\n" +
                 "\t\t\t\t\t\tAND bb.jl IS NULL\n" +
@@ -140,7 +140,7 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\t\tOR bb.zltcty = '0')\n" +
                 "\t\t\t\t\t\tAND (bb.dxxkz IS NULL\n" +
                 "\t\t\t\t\t\t\tOR bb.dxxkz = '0')\n" +
-                "\t\t\t\t\t\tAND bb.jd IS NULL\n" +
+                "\t\t\t\t\t\tAND bb.jd IS NULL)\n" +
                 "\t\t\t\t\tTHEN '警告并' || bb.qtcfyj\n" +
                 "\t\t\t\t\tWHEN bb.fk IS NOT NULL\n" +
                 "\t\t\t\t\t\tAND (bb.jg IS NULL\n" +
@@ -247,7 +247,7 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\tAND bb.jd IS NULL\n" +
                 "\t\t\t\t\t\tAND bb.qtcfyj IS NULL\n" +
                 "\t\t\t\t\tTHEN '吊销公安机关发放的许可证'\n" +
-                "\t\t\t\t\tWHEN bb.dxxkz = '1'\n" +
+                "\t\t\t\t\tWHEN (bb.dxxkz = '1'\n" +
                 "\t\t\t\t\t\tAND bb.qtcfyj IS NOT NULL\n" +
                 "\t\t\t\t\t\tAND (bb.jg IS NULL\n" +
                 "\t\t\t\t\t\t\tOR bb.jg = '0')\n" +
@@ -255,9 +255,9 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\tAND (bb.zltcty IS NULL\n" +
                 "\t\t\t\t\t\t\tOR bb.zltcty = '0')\n" +
                 "\t\t\t\t\t\tAND bb.jl IS NULL\n" +
-                "\t\t\t\t\t\tAND bb.jd IS NULL\n" +
+                "\t\t\t\t\t\tAND bb.jd IS NULL)\n" +
                 "\t\t\t\t\tTHEN '吊销公安机关发放的许可证并' || bb.qtcfyj\n" +
-                "\t\t\t\t\tWHEN bb.qtcfyj IS NOT NULL\n" +
+                "\t\t\t\t\tWHEN (bb.qtcfyj IS NOT NULL\n" +
                 "\t\t\t\t\t\tAND (bb.jg IS NULL\n" +
                 "\t\t\t\t\t\t\tOR bb.jg = '0')\n" +
                 "\t\t\t\t\t\tAND bb.fk IS NULL\n" +
@@ -266,7 +266,7 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\tAND bb.jl IS NULL\n" +
                 "\t\t\t\t\t\tAND bb.jd IS NULL\n" +
                 "\t\t\t\t\t\tAND (bb.dxxkz IS NULL\n" +
-                "\t\t\t\t\t\t\tOR bb.dxxkz = '0')\n" +
+                "\t\t\t\t\t\t\tOR bb.dxxkz = '0'))\n" +
                 "\t\t\t\t\tTHEN qtcfyj\n" +
                 "\t\t\t\t\tELSE NULL\n" +
                 "\t\t\t\tEND AS cfjgmx\n" +
@@ -808,7 +808,7 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\tSELECT a.rybh, a.ay_mc, a.ay_bh\n" +
                 "\t\t\t\t\t\t, trunc(MONTHS_BETWEEN(to_date(to_char(a.lrsj, 'yyyy-mm-dd'), 'yyyy-mm-dd'), to_date(to_char(a.csrq, 'yyyy-mm-dd'), 'yyyy-mm-dd')) / 12) AS nnl\n" +
                 "\t\t\t\t\tFROM case_gg_xyryxx a\n" +
-                "\t\t\t\t\tWHERE length(regexp_replace(a.sfzh, ?)) >= ?\n" +
+                "\t\t\t\t\tWHERE (length(regexp_replace(a.sfzh, ?)) >= ?)\n" +
                 "\t\t\t\t\t\tAND a.rybh NOT LIKE ?\n" +
                 "\t\t\t\t\t\tAND a.gj = ?\n" +
                 "\t\t\t\t\t\tAND a.ay_mc != ?\n" +
@@ -1042,7 +1042,7 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\tand bb.jd is null\n" +
                 "\t\t\t\t\t\tand bb.qtcfyj is null\n" +
                 "\t\t\t\t\tthen '吊销公安机关发放的许可证'\n" +
-                "\t\t\t\t\twhen bb.dxxkz = '1'\n" +
+                "\t\t\t\t\twhen (bb.dxxkz = '1'\n" +
                 "\t\t\t\t\t\tand bb.qtcfyj is not null\n" +
                 "\t\t\t\t\t\tand (bb.jg is null\n" +
                 "\t\t\t\t\t\t\tor bb.jg = '0')\n" +
@@ -1050,9 +1050,9 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\tand (bb.zltcty is null\n" +
                 "\t\t\t\t\t\t\tor bb.zltcty = '0')\n" +
                 "\t\t\t\t\t\tand bb.jl is null\n" +
-                "\t\t\t\t\t\tand bb.jd is null\n" +
+                "\t\t\t\t\t\tand bb.jd is null)\n" +
                 "\t\t\t\t\tthen '吊销公安机关发放的许可证并' || bb.qtcfyj\n" +
-                "\t\t\t\t\twhen bb.qtcfyj is not null\n" +
+                "\t\t\t\t\twhen (bb.qtcfyj is not null\n" +
                 "\t\t\t\t\t\tand (bb.jg is null\n" +
                 "\t\t\t\t\t\t\tor bb.jg = '0')\n" +
                 "\t\t\t\t\t\tand bb.fk is null\n" +
@@ -1061,7 +1061,7 @@ public class OracleSelectTest131 extends TestCase {
                 "\t\t\t\t\t\tand bb.jl is null\n" +
                 "\t\t\t\t\t\tand bb.jd is null\n" +
                 "\t\t\t\t\t\tand (bb.dxxkz is null\n" +
-                "\t\t\t\t\t\t\tor bb.dxxkz = '0')\n" +
+                "\t\t\t\t\t\t\tor bb.dxxkz = '0'))\n" +
                 "\t\t\t\t\tthen qtcfyj\n" +
                 "\t\t\t\t\telse null\n" +
                 "\t\t\t\tend as cfjgmx\n" +
