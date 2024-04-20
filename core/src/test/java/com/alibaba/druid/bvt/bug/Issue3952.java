@@ -35,7 +35,7 @@ public class Issue3952 extends TestCase {
                 "\t\twhere tc_order_record.contract_no = d.contract_no\n" +
                 "\t) as orderSumNum\n" +
                 "\t, (\n" +
-                "\t\tselect COALESCE(d.num, 0) - COALESCE(sum(num1), 0)\n" +
+                "\t\tselect (COALESCE(d.num, 0) - COALESCE(sum(num1), 0))\n" +
                 "\t\tfrom tc_order_record\n" +
                 "\t\twhere tc_order_record.contract_no = d.contract_no\n" +
                 "\t) as avai\n" +

@@ -86,8 +86,8 @@ public class OracleSelectTest135 extends TestCase {
                 "\t\tFROM bpm_department_t4 b\n" +
                 "\t\tWHERE 1 = 1\n" +
                 "\t\t\tAND b.ENABLED_FLAG = 'Y'\n" +
-                "\t\tSTART WITH b.flex_value = 'C019998'\n" +
-                "\t\t\tOR b.flex_value LIKE 'ZF%'\n" +
+                "\t\tSTART WITH (b.flex_value = 'C019998'\n" +
+                "\t\t\tOR b.flex_value LIKE 'ZF%')\n" +
                 "\t\tCONNECT BY PRIOR b.flex_value = b.parent_flex_value\n" +
                 "\t) c\n" +
                 "\tWHERE 1 = 1\n" +
@@ -108,8 +108,8 @@ public class OracleSelectTest135 extends TestCase {
                 "\t\tfrom bpm_department_t4 b\n" +
                 "\t\twhere 1 = 1\n" +
                 "\t\t\tand b.ENABLED_FLAG = 'Y'\n" +
-                "\t\tstart with b.flex_value = 'C019998'\n" +
-                "\t\t\tor b.flex_value like 'ZF%'\n" +
+                "\t\tstart with (b.flex_value = 'C019998'\n" +
+                "\t\t\tor b.flex_value like 'ZF%')\n" +
                 "\t\tconnect by prior b.flex_value = b.parent_flex_value\n" +
                 "\t) c\n" +
                 "\twhere 1 = 1\n" +
