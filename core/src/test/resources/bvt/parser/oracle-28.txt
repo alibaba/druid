@@ -17,6 +17,6 @@ WHERE 1 = 2
 	AND CREDIT_CMT_APPLY.GMT_CREATE <= ?
 	AND CREDIT_CMT_APPLY.ID = A_B_C.cmt_apply_id
 	AND Type = 'denounce'
-	AND SHEET_STATUS = 'assigned_unresolved'
+	AND (SHEET_STATUS = 'assigned_unresolved')
 
 

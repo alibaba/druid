@@ -11761,9 +11761,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getConstraintName().accept(this);
         }
         if (x.getCheckExpr() != null) {
-            print0(ucase ? " CHECK (" : " check (");
+            print0(ucase ? " CHECK " : " check ");
             x.getCheckExpr().accept(this);
-            print0(")");
+            print0("");
         }
         if (x.getDefaultExpr() != null) {
             print0(ucase ? " DEFAULT " : " default ");

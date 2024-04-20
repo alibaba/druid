@@ -73,8 +73,8 @@ public class OracleSelectTest110 extends OracleTest {
                     + "\t, in_ProdDiscount, in_CreditCardFee, in_ServiceFee, in_ActivityNo, in_ProductShelfNo\n"
                     + "\t, IN_PayOrganID, IN_CorrelationID\n"
                     + "INTO (:b0, :b1, :b2:b3, :b4:b5, :b6:b7, :b8:b9, :b10:b11, :b12:b13, :b14:b15, :b16:b17, :b18:b19, :b20:b21, :b22:b23, :b24:b25, :b26:b27, :b28:b29, :b30:b31, :b32:b33, :b34:b35, :b36:b37, :b38:b39, :b40:b41, :b42:b43, :b44:b45, :b46:b47, :b48:b49, :b50:b51, :b52:b53, :b54:b55, :b56:b57, :b58:b59, :b60:b61, :b62:b63, :b64:b65, :b66:b67, :b68:b69, :b70:b71, :b72:b73, :b74:b75, :b76:b77, :b78:b79, :b80:b81, :b82:b83, :b84:b85, :b86:b87, :b88:b89, :b90:b91, :b92:b93, :b94:b95, :b96:b97, :b98:b99, :b100:b101, :b102:b103, :b104:b105)\n"
-                    + "FROM b2b_payment_ReconDetail\n" + "WHERE Recon_seq_id = :b106\n"
-                    + "\tAND transaction_id = :b107", text);
+                    + "FROM b2b_payment_ReconDetail\n" + "WHERE (Recon_seq_id = :b106\n"
+                    + "\tAND transaction_id = :b107)", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());
@@ -110,8 +110,8 @@ public class OracleSelectTest110 extends OracleTest {
             String text = SQLUtils.toOracleString(stmt);
 
             assertEquals("SELECT max(Request_Seq)\n" + "INTO :b0:b1\n" + "FROM TrustBill\n"
-                    + "WHERE Acct_Home_City = :b2\n" + "\tAND (Acct_Home_County = :b3\n" + "\t\tOR :b3 = 0)\n"
-                    + "\tAND Accounting_Period = :b5\n" + "\tAND Trust_Method = :b6", text);
+                    + "WHERE (Acct_Home_City = :b2\n" + "\tAND (Acct_Home_County = :b3\n" + "\t\tOR :b3 = 0)\n"
+                    + "\tAND Accounting_Period = :b5\n" + "\tAND Trust_Method = :b6)", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());
