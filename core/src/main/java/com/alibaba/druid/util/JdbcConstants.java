@@ -160,4 +160,6 @@ public interface JdbcConstants {
     String TAOS_DATA_RS = "com.taosdata.jdbc.rs.RestfulDriver";
 
     String GOLDENDB_DRIVER = "com.goldendb.jdbc.Driver";
+
+    String GBASE8S_DRIVER = "com.gbasedbt.jdbc.Driver";
 }
