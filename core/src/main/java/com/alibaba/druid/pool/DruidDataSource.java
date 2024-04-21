@@ -753,10 +753,10 @@ public class DruidDataSource extends DruidAbstractDataSource
             equals = true;
             for (Map.Entry entry : properties.entrySet()) {
                 if (
-                    !Objects.equals(
-                        this.connectProperties.get(entry.getKey()),
-                        entry.getValue()
-                    )
+                        !Objects.equals(
+                                this.connectProperties.get(entry.getKey()),
+                                entry.getValue()
+                        )
                 ) {
                     equals = false;
                     break;
@@ -1037,15 +1037,16 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     /**
      * Issue 5192,Issue 5457
-     * @see <a href="https://dev.mysql.com/doc/connector-j/8.1/en/connector-j-reference-jdbc-url-format.html">MySQL Connection URL Syntax</a>
-     * @see <a href="https://mariadb.com/kb/en/about-mariadb-connector-j/">About MariaDB Connector/J</a>
+     *
      * @param jdbcUrl
      * @return
+     * @see <a href="https://dev.mysql.com/doc/connector-j/8.1/en/connector-j-reference-jdbc-url-format.html">MySQL Connection URL Syntax</a>
+     * @see <a href="https://mariadb.com/kb/en/about-mariadb-connector-j/">About MariaDB Connector/J</a>
      */
     private static boolean isMysqlOrMariaDBUrl(String jdbcUrl) {
         return jdbcUrl.startsWith("jdbc:mysql://") || jdbcUrl.startsWith("jdbc:mysql:loadbalance://")
-            || jdbcUrl.startsWith("jdbc:mysql:replication://") || jdbcUrl.startsWith("jdbc:mariadb://")
-            || jdbcUrl.startsWith("jdbc:mariadb:loadbalance://") || jdbcUrl.startsWith("jdbc:mariadb:replication://");
+                || jdbcUrl.startsWith("jdbc:mysql:replication://") || jdbcUrl.startsWith("jdbc:mariadb://")
+                || jdbcUrl.startsWith("jdbc:mariadb:loadbalance://") || jdbcUrl.startsWith("jdbc:mariadb:replication://");
     }
 
     private void submitCreateTask(boolean initTask) {
@@ -1403,6 +1404,8 @@ public class DruidDataSource extends DruidAbstractDataSource
         } else if (realDriverClassName.equals(JdbcConstants.HIVE)
                 || (realDriverClassName.equals(JdbcConstants.HIVE_DRIVER))) {
             this.validConnectionChecker = new HiveValidConnectionChecker();
+        } else if (realDriverClassName.equals(JdbcConstants.GOLDENDB_DRIVER)) {
+            this.validConnectionChecker = new MySqlValidConnectionChecker();
         }
 
     }
@@ -1448,6 +1451,9 @@ public class DruidDataSource extends DruidAbstractDataSource
             } else if (realDriverClassName.contains("DB2")) {
                 this.exceptionSorter = new DB2ExceptionSorter();
 
+            } else if (realDriverClassName.equals(JdbcConstants.GOLDENDB_DRIVER)) {
+                this.exceptionSorter = new MySqlExceptionSorter();
+                this.isMySql = true;
             } else {
                 Class<?> superClass = driverClass.getSuperclass();
                 if (superClass != null && superClass != Object.class) {
@@ -2934,7 +2940,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     connection = createPhysicalConnection();
                 } catch (SQLException e) {
                     LOG.error("create connection SQLException, url: " + sanitizedUrl(jdbcUrl) + ", errorCode " + e.getErrorCode()
-                        + ", state " + e.getSQLState(), e);
+                            + ", state " + e.getSQLState(), e);
 
                     errorCount++;
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
@@ -4018,9 +4024,9 @@ public class DruidDataSource extends DruidAbstractDataSource
             return null;
         }
         for (String pwdKeyNamesInMysql : new String[]{
-            "password=", "password1=", "password2=", "password3=",
-            "trustCertificateKeyStorePassword=",
-            "clientCertificateKeyStorePassword=",
+                "password=", "password1=", "password2=", "password3=",
+                "trustCertificateKeyStorePassword=",
+                "clientCertificateKeyStorePassword=",
         }) {
             if (url.contains(pwdKeyNamesInMysql)) {
                 url = url.replaceAll("([?&;]" + pwdKeyNamesInMysql + ")[^&#;]*(.*)", "$1<masked>$2");
