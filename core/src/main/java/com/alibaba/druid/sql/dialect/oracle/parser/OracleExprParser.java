@@ -422,9 +422,12 @@ public class OracleExprParser extends SQLExprParser {
                         sqlExpr = new OracleBinaryDoubleExpr(Double.parseDouble(lexer.numberString()) * -1);
                         lexer.nextToken();
                         break;
+                    case IDENTIFIER:
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, new SQLIdentifierExpr(lexer.stringVal()));
+                        lexer.nextToken();
+                        break;
                     case VARIANT:
                     case QUES:
-                    case IDENTIFIER:
                     case LITERAL_ALIAS:
                         sqlExpr = expr();
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
