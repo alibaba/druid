@@ -96,15 +96,17 @@ public class OracleSelectTest71 extends OracleTest {
     }
 
     public void testSelectWithJoin_UnderParen() {
-        String sql = "SELECT\n" +
-                     "\tA.ID, B.NAME, C.TYPE\n" +
-                     "\tFROM\n" +
-                     "\ttbl_name1 A\n" +
-                     "\tLEFT JOIN (tbl_name2 B)\n" +
-                     "\tON A.ID = B.ID\n" +
-                     "\tLEFT JOIN (tbl_name3 C)\n" +
-                     "\tON A.ID = C.ID\n" +
-                     "\tAND A.NAME = B.NAME";
+        String sql = "SELECT /* NUSQL.TEST */\n" +
+                     "    A.ID,\n" +
+                     "    B.NAME,\n" +
+                     "    C.TYPE\n" +
+                     "FROM\n" +
+                     "    TBL_NAME1 A\n" +
+                     "    LEFT JOIN (TBL_NAME2 B)\n" +
+                     "    ON A.ID = B.ID\n" +
+                     "    LEFT JOIN (TBL_NAME3 C)\n" +
+                     "    ON A.ID = C.ID\n" +
+                     "    AND A.NAME = B.NAME";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
