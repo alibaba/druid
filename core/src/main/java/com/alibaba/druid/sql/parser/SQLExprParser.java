@@ -1873,6 +1873,15 @@ public class SQLExprParser extends SQLParser {
             SQLExpr contentExpr = expr();
             methodInvokeExpr.setContent(contentExpr);
         }
+        if ("XMLELEMENT".equals(methodName) && lexer.identifierEquals("NAME")) {
+            Lexer.SavePoint mark = lexer.markOut();
+            lexer.nextToken(); // Skip NAME if it is a keyword
+            if (lexer.token != Token.IDENTIFIER) {
+                // No other identifier name comes after NAME, so NAME itself is
+                // the xml element name. Reset lexer to NAME
+                lexer.reset(mark);
+            }
+        }
         if (token != Token.RPAREN && token != Token.FROM) {
             exprList(methodInvokeExpr.getArguments(), methodInvokeExpr);
             if (lexer.token == Token.RPAREN) {
