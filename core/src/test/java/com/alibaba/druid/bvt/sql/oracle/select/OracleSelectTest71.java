@@ -94,4 +94,29 @@ public class OracleSelectTest71 extends OracleTest {
 
         // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
+
+    public void testSelectWithJoin_UnderParen() {
+        String sql = "SELECT\n" +
+                     "\tA.ID, B.NAME, C.TYPE\n" +
+                     "\tFROM\n" +
+                     "\ttbl_name1 A\n" +
+                     "\tLEFT JOIN (tbl_name2 B)\n" +
+                     "\tON A.ID = B.ID\n" +
+                     "\tLEFT JOIN (tbl_name3 C)\n" +
+                     "\tON A.ID = C.ID\n" +
+                     "\tAND A.NAME = B.NAME";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statement = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        statement.accept(visitor);
+
+        Assert.assertEquals(3, visitor.getTables().size());
+        Assert.assertEquals(6, visitor.getColumns().size());
+    }
 }
