@@ -101,10 +101,10 @@ public class OracleSelectTest71 extends OracleTest {
                      "    B.NAME,\n" +
                      "    C.TYPE\n" +
                      "FROM\n" +
-                     "    TBL_NAME1 A\n" +
-                     "    LEFT JOIN (TBL_NAME2 B)\n" +
+                     "    tbl_name1 A\n" +
+                     "    LEFT JOIN (tbl_name2 B)\n" +
                      "    ON A.ID = B.ID\n" +
-                     "    LEFT JOIN (TBL_NAME3 C)\n" +
+                     "    LEFT JOIN (tbl_name3 C)\n" +
                      "    ON A.ID = C.ID\n" +
                      "    AND A.NAME = B.NAME";
 
