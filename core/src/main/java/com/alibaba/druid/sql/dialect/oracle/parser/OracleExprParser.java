@@ -925,6 +925,10 @@ public class OracleExprParser extends SQLExprParser {
                             endExpr = relational();
                         }
 
+                        final SQLOver.WindowingBound endBound = parseWindowingBound();
+                        if (endBound != null) {
+                            over.setWindowingBetweenEndBound(endBound);
+                        }
                         SQLExpr expr = new SQLBetweenExpr(null, beginExpr, endExpr);
                         windowing.setExpr(expr);
                     } else {
