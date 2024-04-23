@@ -21,9 +21,9 @@ public class AdsDumpTest_0 extends TestCase {
                 "DUMP DATA SELECT amp.buyer_add_cart_info.buyer_id, amp.buyer_add_cart_info.pre_score, amp.buyer_add_cart_info.cart_price\n" +
                 "FROM amp.buyer_add_cart_info\n" +
                 "\tJOIN amp.crm_user_base_info ON amp.crm_user_base_info.user_id = amp.buyer_add_cart_info.buyer_id\n" +
-                "WHERE amp.buyer_add_cart_info.seller_id = 1921906956\n" +
-                "\tAND amp.buyer_add_cart_info.auction_id = 562769960283\n" +
-                "\tAND amp.buyer_add_cart_info.show_price >= 13300\n" +
+                "WHERE ((amp.buyer_add_cart_info.seller_id = 1921906956)\n" +
+                "\tAND (amp.buyer_add_cart_info.auction_id = 562769960283)\n" +
+                "\tAND (amp.buyer_add_cart_info.show_price >= 13300))\n" +
                 "LIMIT 144800", stmt.toString());
     }
 

@@ -80,7 +80,7 @@ public class AssignmentOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("UPDATE t1\nSET c1 = 2\nWHERE c1 = (@var1 := 1);", text);
+        Assert.assertEquals("UPDATE t1\nSET c1 = 2\nWHERE c1 = @var1 := 1;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

@@ -74,7 +74,7 @@ public class HiveSelectTest_42_cte extends TestCase {
                 "\t\tTHEN 1\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS tot_reach_game_process_cnt\n" +
-                "\t, round(1 - sum(CASE \n" +
+                "\t, round(1 - (sum(CASE \n" +
                 "\t\tWHEN current_step = 5 THEN 1\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) / sum(CASE \n" +
@@ -83,7 +83,7 @@ public class HiveSelectTest_42_cte extends TestCase {
                 "\t\t\tOR current_step = 7\n" +
                 "\t\tTHEN 1\n" +
                 "\t\tELSE 0\n" +
-                "\tEND), 4) AS reach_game_process_rate\n" +
+                "\tEND)), 4) AS reach_game_process_rate\n" +
                 "\t, from_unixtime(unix_timestamp(CAST(${dt_hour} AS string), 'yyyyMMddHH'), 'yyyy-MM-dd') AS dt\n" +
                 "\t, substring(${dt_hour}, 9, 2) AS `hour`\n" +
                 "FROM dycg_perform_startgametaketimelog\n" +

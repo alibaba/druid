@@ -4029,7 +4029,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             case Prior:
             case ConnectByRoot:
                 print(' ');
-                if (operator != SQLUnaryOperator.Prior && expr instanceof SQLBinaryOpExpr) {
+                if (operator != SQLUnaryOperator.Prior && expr instanceof SQLBinaryOpExpr && !((SQLBinaryOpExpr) expr).isParenthesized()) {
                     print('(');
                     expr.accept(this);
                     print(')');
@@ -4049,9 +4049,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 || expr instanceof SQLInListExpr
                 || expr instanceof SQLInSubQueryExpr) {
             incrementIndent();
-            print('(');
+            //print('(');
             expr.accept(this);
-            print(')');
+            //print(')');
             decrementIndent();
         } else {
             expr.accept(this);
