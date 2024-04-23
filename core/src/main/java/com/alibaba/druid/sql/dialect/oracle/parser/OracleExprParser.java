@@ -918,9 +918,9 @@ public class OracleExprParser extends SQLExprParser {
                             endExpr = new SQLIdentifierExpr("CURRENT ROW");
                         } else if (lexer.identifierEquals(FnvHash.Constants.UNBOUNDED)) {
                             lexer.nextToken();
-                            if (lexer.stringVal().equalsIgnoreCase("PRECEDING")) {
+                            if (lexer.stringVal().equalsIgnoreCase("FOLLOWING")) {
                                 lexer.nextToken();
-                                endExpr = new SQLIdentifierExpr("UNBOUNDED PRECEDING");
+                                endExpr = new SQLIdentifierExpr("UNBOUNDED FOLLOWING");
                             } else {
                                 throw new ParserException("syntax error. " + lexer.info());
                             }
