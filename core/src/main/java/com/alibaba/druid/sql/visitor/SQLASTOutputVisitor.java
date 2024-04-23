@@ -756,11 +756,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     indentCount++;
                 }
 
-                boolean bracket;
+                boolean bracket = false;
                 if (itemOp.priority > operator.priority) {
                     bracket = true;
                 } else {
-                    bracket = !parameterized;
+                    //bracket = !parameterized && !((SQLBinaryOpExpr) item).isParenthesized();
                 }
                 if (bracket) {
                     print('(');
@@ -5601,11 +5601,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(' ');
         }
 
-        print0(ucase ? "CHECK (" : "check (");
+        print0(ucase ? "CHECK " : "check ");
         this.indentCount++;
         x.getExpr().accept(this);
         this.indentCount--;
-        print(')');
+        print("");
 
         Boolean enforced = x.getEnforced();
         if (enforced != null) {

@@ -42,7 +42,7 @@ public class SQLUtilsTest extends TestCase {
         String sql = "begin\n"//
                 + " if (a=10) then\n" + " null;\n" + " else\n" + " null;\n" + " end if;\n" + "end;";
         Assert.assertEquals("BEGIN"
-                + "\n\tIF a = 10 THEN"
+                + "\n\tIF (a = 10) THEN"
                 + "\n\t\tNULL;"
                 + "\n\tELSE"
                 + "\n\t\tNULL;"

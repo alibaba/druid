@@ -161,8 +161,8 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM `base0`, `base1`\n" +
-                "WHERE `a` = `d`\n" +
-                "\tAND `c` <> `F`");
+                "WHERE ((`a` = `d`)\n" +
+                "\tAND (`c` <> `F`))");
     }
 
     public void test6() throws Exception {
@@ -222,8 +222,8 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM `base0`, `base1`\n" +
-                "WHERE `a` = `d`\n" +
-                "\tAND `c` <> `F`", unifySQL);
+                "WHERE ((`a` = `d`)\n" +
+                "\tAND (`c` <> `F`))", unifySQL);
     }
 
     public void ok(String sql, String expectedSql) {
