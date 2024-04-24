@@ -423,8 +423,8 @@ public class OracleExprParser extends SQLExprParser {
                         lexer.nextToken();
                         break;
                     case IDENTIFIER:
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, new SQLIdentifierExpr(lexer.stringVal()));
-                        lexer.nextToken();
+                        sqlExpr = primary();
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;
                     case VARIANT:
                     case QUES:
