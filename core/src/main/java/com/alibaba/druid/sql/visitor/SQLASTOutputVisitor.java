@@ -4021,6 +4021,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLUnaryExpr x) {
         SQLUnaryOperator operator = x.getOperator();
+        if(x.isParenthesized()){
+            print('(');
+        }
         print0(operator.name);
         SQLExpr expr = x.getExpr();
 
@@ -4055,6 +4058,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             decrementIndent();
         } else {
             expr.accept(this);
+        }
+        if(x.isParenthesized()){
+            print(')');
         }
         return false;
     }

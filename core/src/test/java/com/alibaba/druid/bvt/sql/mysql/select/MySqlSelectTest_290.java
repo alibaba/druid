@@ -373,7 +373,7 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t, sszx + sszxfy + sszxk + ss_sjzxf + ss_sjgzzxf AS 装修回款金额\n" +
                 "\t, ROUND((sszx + sszxfy + sszxk + ss_sjzxf + ss_sjgzzxf) / decoration_amount * 100, 2) AS 装修回款比例\n" +
                 "\t, str_to_date(act1_date.actual_received_date, '%Y-%m-%d') AS 最后回款时间\n" +
-                "\t, ROUND(CASE \n" +
+                "\t, ROUND((CASE \n" +
                 "\t\tWHEN tran.decoration_merge_flag = 1\n" +
                 "\t\t\tAND decoration_moneymanage = 1\n" +
                 "\t\tTHEN tran.deal_price_with_decoration / (tran.sta_price + IFNULL(tran.decoration_sta_price, 0))\n" +
@@ -381,7 +381,7 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\t\tAND decoration_moneymanage = 0\n" +
                 "\t\tTHEN (tran.deal_price - decoration_amount) / tran.sta_price\n" +
                 "\t\tWHEN tran.decoration_merge_flag = 0 THEN tran.deal_price / tran.sta_price\n" +
-                "\tEND * 100, 2) AS 最终折扣\n" +
+                "\tEND * 100), 2) AS 最终折扣\n" +
                 "\t, payment.name AS 付款方式, sdd_item.NAME AS 付款方式类型, depayment.name AS 装修付款方式, paymentplan.ysdj AS 应收定金, actualReceiMoney.ssdj AS 实收定金\n" +
                 "\t, paymentplan.yssq AS 应收首期, actualReceiMoney.sssq AS 实收首期, paymentplan.yslk AS 应收楼款, actualReceiMoney.sslk AS 实收楼款, paymentplan.ysaj AS 应收按揭\n" +
                 "\t, actualReceiMoney.ssaj AS 实收按揭, paymentplan.ysbc AS 应收面积差款, actualReceiMoney.ssbc AS 实收面积差款, paymentplan.ysdsfy AS 应收代收费用, actualReceiMoney.ssdsfy AS 实收代收费用\n" +
@@ -634,7 +634,7 @@ public class MySqlSelectTest_290 extends MysqlTest {
                 "\t\t\tEND) AS ysdsfy\n" +
                 "\t\t\t, SUM(plan_amount_total) AS ystotalMoney\n" +
                 "\t\t\t, SUM(CASE \n" +
-                "\t\t\t\tWHEN fund_type_code IN ('FIFT02', 'FIFT01') THEN plan_amount_total - received_amount_total\n" +
+                "\t\t\t\tWHEN fund_type_code IN ('FIFT02', 'FIFT01') THEN (plan_amount_total - received_amount_total)\n" +
                 "\t\t\t\tELSE 0\n" +
                 "\t\t\tEND) AS whkAmount\n" +
                 "\t\tFROM midea_sd_payment_plan pp\n" +

@@ -30,9 +30,9 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
         SQLStatement stmt = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);
 
-        assertEquals("SELECT ALL +(+(+col1))\n" +
+        assertEquals("SELECT ALL ++(+col1)\n" +
                 "FROM random_aggregates_23_tab2 cor0\n" +
-                "WHERE NOT +(+col2) + CAST(NULL AS SIGNED) IS NOT NULL", stmt.toString());
+                "WHERE NOT (++col2) + CAST(NULL AS SIGNED) IS NOT NULL", stmt.toString());
 
         System.out.println(stmt.toString());
     }
@@ -50,7 +50,8 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
     }
 
     public void test_2() throws Exception {
-        String sql = "SELECT + 81 * 58 + - 33 DIV + CASE 58 WHEN - 15 + + 31 THEN + 95 WHEN - CAST( - NULLIF ( + 49, - 18 ) AS SIGNED ) + + 33 THEN - - 23 + + 54 ELSE 53 END DIV - + 77 DIV 49 AS col1 ";
+        String sql = "SELECT + 81 * 58 + - 33 DIV + CASE 58 WHEN - 15 + + 31 THEN + 95 WHEN - CAST( - NULLIF ( + 49, - 18 ) AS SIGNED ) + + 33"
+            + " THEN - - 23 + + 54 ELSE 53 END DIV - + 77 DIV 49 AS col1 ";
 
         SQLStatement stmt = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);
@@ -59,7 +60,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
                 "\t\tWHEN -15 + +31 THEN +95\n" +
                 "\t\tWHEN -CAST(-NULLIF(+49, -18) AS SIGNED) + +33 THEN --23 + +54\n" +
                 "\t\tELSE 53\n" +
-                "\tEND) DIV (-(+77)) DIV 49 AS col1", stmt.toString());
+                "\tEND) DIV (-+77) DIV 49 AS col1", stmt.toString());
 
         System.out.println(stmt.toString());
     }
@@ -76,9 +77,9 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
                 .parseSingleStatement(sql, DbType.mysql);
 
         assertEquals("SELECT DISTINCT CASE +27\n" +
-                "\t\tWHEN (-MIN(+-75)) / -COUNT(*) * --52 - -COUNT(*) - -36 / +(+56) * -24 * -2 THEN 64\n" +
-                "\t\tWHEN +(+MIN(+9)) + -76 + COUNT(*) + -15 + +25 + (-(+(-(+79)))) * 28 THEN NULL\n" +
-                "\t\tWHEN -(+88) THEN +28\n" +
+                "\t\tWHEN (-MIN(+-75)) / -COUNT(*) * (--52) - -COUNT(*) - -36 / ++56 * -24 * -2 THEN 64\n" +
+                "\t\tWHEN ++MIN(+9) + -76 + COUNT(*) + -15 + +25 + (-+(-+79)) * 28 THEN NULL\n" +
+                "\t\tWHEN -+88 THEN +28\n" +
                 "\t\tELSE -89 + +-29\n" +
                 "\tEND", stmt.toString());
 
@@ -97,7 +98,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
                 "FROM (\n" +
                 "\tSELECT 1 AS col0, 2 AS col1, 3 AS col2\n" +
                 ") x\n" +
-                "WHERE NOT (-(+col2)) * +(+col0) = col0", stmt.toString());
+                "WHERE NOT (-(+col2) * ++col0) = col0", stmt.toString());
     }
 
     public void test_5() throws Exception {
