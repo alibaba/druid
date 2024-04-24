@@ -171,7 +171,7 @@ public class MysqlCheckTest extends MysqlTest {
             SQLCheck sqlCheck = (SQLCheck) element;
             Assert.assertEquals(false, sqlCheck.getEnforced());
             Assert.assertEquals("`c12_positive`", sqlCheck.getName().getSimpleName());
-            Assert.assertEquals("`c2` > 0", sqlCheck.getExpr().toString());
+            Assert.assertEquals("(`c2` > 0)", sqlCheck.getExpr().toString());
         }
         {
             SQLTableElement element = statement.getTableElementList().get(4);
@@ -179,7 +179,7 @@ public class MysqlCheckTest extends MysqlTest {
             SQLCheck sqlCheck = (SQLCheck) element;
             Assert.assertNull(sqlCheck.getEnforced());
             Assert.assertEquals("`c21_nonzero`", sqlCheck.getName().getSimpleName());
-            Assert.assertEquals("`c1` <> 0", sqlCheck.getExpr().toString());
+            Assert.assertEquals("(`c1` <> 0)", sqlCheck.getExpr().toString());
         }
         {
             SQLTableElement element = statement.getTableElementList().get(5);
@@ -187,7 +187,7 @@ public class MysqlCheckTest extends MysqlTest {
             SQLCheck sqlCheck = (SQLCheck) element;
             Assert.assertNull(sqlCheck.getEnforced());
             Assert.assertEquals("`t12_chk_1`", sqlCheck.getName().getSimpleName());
-            Assert.assertEquals("`c1` <> `c2`", sqlCheck.getExpr().toString());
+            Assert.assertEquals("(`c1` <> `c2`)", sqlCheck.getExpr().toString());
         }
         {
             SQLTableElement element = statement.getTableElementList().get(6);
@@ -195,7 +195,7 @@ public class MysqlCheckTest extends MysqlTest {
             SQLCheck sqlCheck = (SQLCheck) element;
             Assert.assertNull(sqlCheck.getEnforced());
             Assert.assertEquals("`t12_chk_2`", sqlCheck.getName().getSimpleName());
-            Assert.assertEquals("`c1` > 10", sqlCheck.getExpr().toString());
+            Assert.assertEquals("(`c1` > 10)", sqlCheck.getExpr().toString());
         }
         {
             SQLTableElement element = statement.getTableElementList().get(7);
@@ -214,7 +214,7 @@ public class MysqlCheckTest extends MysqlTest {
             SQLCheck sqlCheck = (SQLCheck) element;
             Assert.assertNull(sqlCheck.getEnforced());
             Assert.assertEquals("`t12_chk_4`", sqlCheck.getName().getSimpleName());
-            Assert.assertEquals("`c1` > `c3`", sqlCheck.getExpr().toString());
+            Assert.assertEquals("(`c1` > `c3`)", sqlCheck.getExpr().toString());
         }
     }
 
