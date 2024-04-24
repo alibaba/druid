@@ -77,11 +77,11 @@ public class MySqlSelectTest_221 extends MysqlTest {
 
         SQLStatement stmt = statementList.get(0);
 
-        assertEquals("SELECT CAST(`calcs`.`date0` AS TIMESTAMP) + CAST(TRUNCATE(-`calcs`.`num4`, 0) AS INTEGER) * INTERVAL '1' DAY + CAST(TRUNCATE((`calcs`.`num4` - CAST(TRUNCATE(`calcs`.`num4`, 0) AS INTEGER)) * -24, 0) AS INTEGER) * INTERVAL '1' HOUR + CAST(TRUNCATE((`calcs`.`num4` * 24 - CAST(TRUNCATE(`calcs`.`num4` * 24, 0) AS INTEGER)) * -60, 0) AS INTEGER) * INTERVAL '1' MINUTE + CAST(TRUNCATE((`calcs`.`num4` * 24 * 60 - CAST(TRUNCATE(`calcs`.`num4` * 24 * 60, 0) AS INTEGER)) * -60, 0) AS INTEGER) * INTERVAL '1' SECOND AS `TEMP(Test)(2923065813)(0)`\n" +
+        assertEquals("SELECT (CAST(`calcs`.`date0` AS TIMESTAMP) + CAST(TRUNCATE(-`calcs`.`num4`, 0) AS INTEGER) * INTERVAL '1' DAY + CAST(TRUNCATE((`calcs`.`num4` - CAST(TRUNCATE(`calcs`.`num4`, 0) AS INTEGER)) * -24, 0) AS INTEGER) * INTERVAL '1' HOUR + CAST(TRUNCATE((`calcs`.`num4` * 24 - CAST(TRUNCATE(`calcs`.`num4` * 24, 0) AS INTEGER)) * -60, 0) AS INTEGER) * INTERVAL '1' MINUTE + CAST(TRUNCATE((`calcs`.`num4` * 24 * 60 - CAST(TRUNCATE(`calcs`.`num4` * 24 * 60, 0) AS INTEGER)) * -60, 0) AS INTEGER) * INTERVAL '1' SECOND) AS `TEMP(Test)(2923065813)(0)`\n" +
                 "FROM `calcs`\n" +
                 "GROUP BY 1", stmt.toString());
 
-        assertEquals("select cast(`calcs`.`date0` as TIMESTAMP) + cast(TRUNCATE(-`calcs`.`num4`, 0) as INTEGER) * interval '1' day + cast(TRUNCATE((`calcs`.`num4` - cast(TRUNCATE(`calcs`.`num4`, 0) as INTEGER)) * -24, 0) as INTEGER) * interval '1' hour + cast(TRUNCATE((`calcs`.`num4` * 24 - cast(TRUNCATE(`calcs`.`num4` * 24, 0) as INTEGER)) * -60, 0) as INTEGER) * interval '1' minute + cast(TRUNCATE((`calcs`.`num4` * 24 * 60 - cast(TRUNCATE(`calcs`.`num4` * 24 * 60, 0) as INTEGER)) * -60, 0) as INTEGER) * interval '1' second as `TEMP(Test)(2923065813)(0)`\n" +
+        assertEquals("select (cast(`calcs`.`date0` as TIMESTAMP) + cast(TRUNCATE(-`calcs`.`num4`, 0) as INTEGER) * interval '1' day + cast(TRUNCATE((`calcs`.`num4` - cast(TRUNCATE(`calcs`.`num4`, 0) as INTEGER)) * -24, 0) as INTEGER) * interval '1' hour + cast(TRUNCATE((`calcs`.`num4` * 24 - cast(TRUNCATE(`calcs`.`num4` * 24, 0) as INTEGER)) * -60, 0) as INTEGER) * interval '1' minute + cast(TRUNCATE((`calcs`.`num4` * 24 * 60 - cast(TRUNCATE(`calcs`.`num4` * 24 * 60, 0) as INTEGER)) * -60, 0) as INTEGER) * interval '1' second) as `TEMP(Test)(2923065813)(0)`\n" +
                 "from `calcs`\n" +
                 "group by 1", stmt.clone().toLowerCaseString());
     }

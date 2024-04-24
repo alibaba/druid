@@ -113,6 +113,11 @@ public class SQLExprParser extends SQLParser {
                 parenthesized = false;
             }
         }
+        if (expr instanceof SQLUnaryExpr) {
+            if (((SQLUnaryExpr) expr).isParenthesized()) {
+                parenthesized = false;
+            }
+        }
         Lexer.SavePoint mark = lexer.mark();
         Token token = lexer.token;
         if (token == Token.COMMA) {
@@ -136,6 +141,9 @@ public class SQLExprParser extends SQLParser {
             SQLExpr sqlExpr = exprRest(expr);
             if (parenthesized && sqlExpr instanceof SQLBinaryOpExpr) {
                 ((SQLBinaryOpExpr) sqlExpr).setParenthesized(true);
+            }
+            if (parenthesized && sqlExpr instanceof SQLUnaryExpr) {
+                ((SQLUnaryExpr) sqlExpr).setParenthesized(true);
             }
             return sqlExpr;
         }
@@ -390,6 +398,9 @@ public class SQLExprParser extends SQLParser {
 
                 if (sqlExpr instanceof SQLBinaryOpExpr) {
                     ((SQLBinaryOpExpr) sqlExpr).setParenthesized(true);
+                }
+                if (sqlExpr instanceof SQLUnaryExpr) {
+                    ((SQLUnaryExpr) sqlExpr).setParenthesized(true);
                 }
 
                 if ((lexer.token == Token.UNION || lexer.token == Token.MINUS || lexer.token == Token.EXCEPT)
@@ -854,7 +865,12 @@ public class SQLExprParser extends SQLParser {
                     lexer.nextToken();
 
                     SQLExpr notTarget = expr();
-
+                    if (notTarget instanceof SQLBinaryOpExpr) {
+                        ((SQLBinaryOpExpr) notTarget).setParenthesized(true);
+                    }
+                    if (notTarget instanceof SQLUnaryExpr) {
+                        ((SQLUnaryExpr) notTarget).setParenthesized(true);
+                    }
                     accept(Token.RPAREN);
                     notTarget = bitXorRest(notTarget);
                     notTarget = multiplicativeRest(notTarget);
