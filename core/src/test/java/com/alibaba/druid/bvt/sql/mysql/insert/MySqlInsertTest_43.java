@@ -104,8 +104,8 @@ public class MySqlInsertTest_43 extends TestCase {
                 "\t\t\t\tON t2_1.wave_id = t2_2.id\n" +
                 "\t\t\t\t\tAND t2_1.warehouse_id = t2_2.warehouse_id\n" +
                 "\t\t\t\t\tAND t2_2.wave_status IN (5, 6)\n" +
-                "\t\t\t\t\tAND t2_1.ds >= 201901 - 1\n" +
-                "\t\t\t\t\tAND t2_2.ds >= 201901 - 1\n" +
+                "\t\t\t\t\tAND t2_1.ds >= (201901 - 1)\n" +
+                "\t\t\t\t\tAND t2_2.ds >= (201901 - 1)\n" +
                 "\t\t\t\t\tAND t2_1.gmt_create >= date_add(now(), INTERVAL -3 DAY)\n" +
                 "\t\t\t\t\tAND t2_1.gmt_create <= now()\n" +
                 "\t\t\t\t\tAND t2_2.gmt_create >= date_add(now(), INTERVAL -3 DAY)\n" +
