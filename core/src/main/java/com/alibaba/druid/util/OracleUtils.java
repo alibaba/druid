@@ -261,7 +261,7 @@ public class OracleUtils {
             sql.append("select DBMS_METADATA.GET_DDL('TABLE', TABLE_NAME) FROM user_tables");
 
             if (tables.size() > 0) {
-                sql.append("IN (");
+                sql.append(" WHERE TABLE_NAME IN (");
                 for (int i = 0; i < tables.size(); ++i) {
                     if (i != 0) {
                         sql.append(", ?");
