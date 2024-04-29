@@ -422,9 +422,12 @@ public class OracleExprParser extends SQLExprParser {
                         sqlExpr = new OracleBinaryDoubleExpr(Double.parseDouble(lexer.numberString()) * -1);
                         lexer.nextToken();
                         break;
+                    case IDENTIFIER:
+                        sqlExpr = primary();
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
+                        break;
                     case VARIANT:
                     case QUES:
-                    case IDENTIFIER:
                     case LITERAL_ALIAS:
                         sqlExpr = expr();
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
@@ -915,9 +918,9 @@ public class OracleExprParser extends SQLExprParser {
                             endExpr = new SQLIdentifierExpr("CURRENT ROW");
                         } else if (lexer.identifierEquals(FnvHash.Constants.UNBOUNDED)) {
                             lexer.nextToken();
-                            if (lexer.stringVal().equalsIgnoreCase("PRECEDING")) {
+                            if (lexer.stringVal().equalsIgnoreCase("FOLLOWING")) {
                                 lexer.nextToken();
-                                endExpr = new SQLIdentifierExpr("UNBOUNDED PRECEDING");
+                                endExpr = new SQLIdentifierExpr("UNBOUNDED FOLLOWING");
                             } else {
                                 throw new ParserException("syntax error. " + lexer.info());
                             }
@@ -925,6 +928,10 @@ public class OracleExprParser extends SQLExprParser {
                             endExpr = relational();
                         }
 
+                        final SQLOver.WindowingBound endBound = parseWindowingBound();
+                        if (endBound != null) {
+                            over.setWindowingBetweenEndBound(endBound);
+                        }
                         SQLExpr expr = new SQLBetweenExpr(null, beginExpr, endExpr);
                         windowing.setExpr(expr);
                     } else {

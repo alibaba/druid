@@ -892,8 +892,12 @@ public class OracleSelectParser extends SQLSelectParser {
 
             SQLTableSource right;
             right = parseTableSourcePrimary();
-            String tableAlias = tableAlias();
-            right.setAlias(tableAlias);
+            // Alias is already set for "... JOIN (tbl1 alias1) ON ..." syntax,
+            // so skip setting alias
+            if (right.getAlias() == null) {
+                String tableAlias = tableAlias();
+                right.setAlias(tableAlias);
+            }
             join.setRight(right);
 
             if (lexer.token() == Token.ON) {
