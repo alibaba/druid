@@ -532,6 +532,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         final SQLExpr testExpr = x.getTestExpr();
         final SQLExpr beginExpr = x.getBeginExpr();
         final SQLExpr endExpr = x.getEndExpr();
+        if (x.isParenthesized()) {
+            print('(');
+        }
 
         boolean quote = false;
         if (testExpr instanceof SQLBinaryOpExpr) {
@@ -633,7 +636,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.getHint() != null) {
             x.getHint().accept(this);
         }
-
+        if (x.isParenthesized()) {
+            print(')');
+        }
         return false;
     }
 
@@ -1018,7 +1023,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 indentCount--;
             }
         } else if (SQLBinaryOperator.Equality.priority >= op.priority
-                && (right instanceof SQLInListExpr || right instanceof SQLBetweenExpr || right instanceof SQLNotExpr)) {
+                && (right instanceof SQLInListExpr || right instanceof SQLNotExpr)) {
             indentCount++;
             print('(');
             printExpr(right, parameterized);
@@ -4021,7 +4026,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLUnaryExpr x) {
         SQLUnaryOperator operator = x.getOperator();
-        if(x.isParenthesized()){
+        if (x.isParenthesized()) {
             print('(');
         }
         print0(operator.name);
@@ -4059,7 +4064,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             expr.accept(this);
         }
-        if(x.isParenthesized()){
+        if (x.isParenthesized()) {
             print(')');
         }
         return false;

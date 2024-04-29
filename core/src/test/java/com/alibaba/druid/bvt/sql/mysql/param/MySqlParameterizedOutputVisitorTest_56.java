@@ -51,15 +51,15 @@ public class MySqlParameterizedOutputVisitorTest_56 extends TestCase {
                 "\t, `ktv_resource`.`CONSUME_ID`, `ktv_resource`.`GROUP_ID`, `ktv_resource`.`BUSINESS_ID`, `ktv_resource`.`rule`, `ktv_resource`.`market_place`\n" +
                 "\t, `ktv_resource`.`VERSION`\n" +
                 "FROM ktv_resource `ktv_resource`\n" +
-                "WHERE `ktv_resource`.`KTV_ID` = ?\n" +
-                "\tAND `ktv_resource`.`STATUS` = ?\n" +
-                "\tAND `ktv_resource`.`START_TIME` <= ?\n" +
-                "\tAND `ktv_resource`.`END_TIME` >= ?\n" +
-                "\tAND `ktv_resource`.`seller_id` IN (?)\n" +
-                "\tAND (`ktv_resource`.`AVAILABLE_COUNT` IS NULL\n" +
-                "\t\tOR `ktv_resource`.`AVAILABLE_COUNT` > ?\n" +
-                "\t\tOR `ktv_resource`.`AVAILABLE_COUNT` = ?)\n" +
-                "LIMIT ?, ?", psql);
+                "WHERE ((`ktv_resource`.`KTV_ID` = ?)\n"
+            + "\tAND (`ktv_resource`.`STATUS` = ?)\n"
+            + "\tAND (`ktv_resource`.`START_TIME` <= ?)\n"
+            + "\tAND (`ktv_resource`.`END_TIME` >= ?)\n"
+            + "\tAND `ktv_resource`.`seller_id` IN (?)\n"
+            + "\tAND (`ktv_resource`.`AVAILABLE_COUNT` IS NULL\n"
+            + "\t\tOR (`ktv_resource`.`AVAILABLE_COUNT` > ?)\n"
+            + "\t\tOR (`ktv_resource`.`AVAILABLE_COUNT` = ?)))\n"
+            + "LIMIT ?, ?", psql);
 
         String rsql = SQLUtils.format(psql, JdbcConstants.MYSQL, parameters);
         System.out.println(rsql);

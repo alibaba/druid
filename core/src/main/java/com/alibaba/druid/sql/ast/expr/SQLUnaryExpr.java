@@ -27,9 +27,6 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable, SQLReplac
     private SQLExpr expr;
     private SQLUnaryOperator operator;
 
-    private boolean parenthesized;
-
-
     public SQLUnaryExpr() {
     }
 
@@ -46,14 +43,6 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable, SQLReplac
         x.operator = operator;
         x.parenthesized = parenthesized;
         return x;
-    }
-
-    public boolean isParenthesized() {
-        return parenthesized;
-    }
-
-    public void setParenthesized(boolean parenthesized) {
-        this.parenthesized = parenthesized;
     }
 
     public SQLUnaryOperator getOperator() {
