@@ -395,12 +395,8 @@ public class SQLExprParser extends SQLParser {
 
                     sqlExpr = listExpr;
                 }
-
-                if (sqlExpr instanceof SQLBinaryOpExpr) {
-                    ((SQLBinaryOpExpr) sqlExpr).setParenthesized(true);
-                }
-                if (sqlExpr instanceof SQLUnaryExpr) {
-                    ((SQLUnaryExpr) sqlExpr).setParenthesized(true);
+                if (sqlExpr instanceof SQLExprImpl) {
+                    ((SQLExprImpl) sqlExpr).setParenthesized(true);
                 }
 
                 if ((lexer.token == Token.UNION || lexer.token == Token.MINUS || lexer.token == Token.EXCEPT)

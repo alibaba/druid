@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
@@ -25,7 +27,9 @@ public class MySqlParameterizedOutputVisitorTest_69 extends TestCase {
 
     public void test_between() throws Exception {
         String sql = "select ((0='x6') & 31) ^ (76 NOT BETWEEN 3 AND 4) ;";
-
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        statementList.toString();
         List<Object> params = new ArrayList<Object>();
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedUnMergeShardingTable);
         assertEquals("SELECT ((? = ?) & ?) ^ (? NOT BETWEEN ? AND ?);", psql);
