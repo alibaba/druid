@@ -108,15 +108,23 @@ public class SQLExprParser extends SQLParser {
 
         boolean parenthesized = (lexer.token == Token.LPAREN);
         SQLExpr expr = primary();
-        if (expr instanceof SQLBinaryOpExpr) {
+        if (parenthesized && expr instanceof SQLBinaryOpExpr) {
             if (((SQLBinaryOpExpr) expr).isParenthesized()) {
                 parenthesized = false;
             }
         }
-        if (expr instanceof SQLUnaryExpr) {
+        if (parenthesized && expr instanceof SQLCaseExpr) {
+            parenthesized = false;
+            ((SQLCaseExpr) expr).setParenthesized(true);
+        }
+        if (parenthesized && expr instanceof SQLUnaryExpr) {
             if (((SQLUnaryExpr) expr).isParenthesized()) {
                 parenthesized = false;
             }
+        }
+        if (parenthesized && expr instanceof SQLIdentifierExpr) {
+            parenthesized = false;
+            ((SQLIdentifierExpr) expr).setParenthesized(true);
         }
         Lexer.SavePoint mark = lexer.mark();
         Token token = lexer.token;

@@ -840,7 +840,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         boolean isRoot = parent instanceof SQLSelectQueryBlock;
         boolean relational = operator == SQLBinaryOperator.BooleanAnd
                 || operator == SQLBinaryOperator.BooleanOr;
-
         if (isRoot && relational) {
             this.indentCount++;
         }
@@ -995,10 +994,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     && rightOp.isLogical()
                     && op.isLogical()
             )) {
-                if (rightRational) {
+                if (rightRational) { //这里需要验证
                     this.indentCount++;
                 }
-
                 //print('(');
                 printExpr(binaryRight, parameterized);
                 //print(')');
@@ -1148,9 +1146,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 quote = false;
             }
             if (quote) {
-                print('(');
+                //print('(');
                 printExpr(left);
-                print(')');
+               //print(')');
             } else {
                 printExpr(left);
             }
@@ -1225,6 +1223,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLCaseExpr x) {
+        if (x.isParenthesized()) {
+            print('(');
+        }
         this.indentCount++;
         print0(ucase ? "CASE " : "case ");
 
@@ -1256,7 +1257,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.indentCount--;
         println();
         print0(ucase ? "END" : "end");
-
+        if (x.isParenthesized()) {
+            print(')');
+        }
         return false;
     }
 
@@ -1876,6 +1879,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLMethodInvokeExpr x) {
+        if (x.isParenthesized()) {
+            print('(');
+        }
         SQLExpr owner = x.getOwner();
         if (owner != null) {
             printMethodOwner(owner);
@@ -1903,6 +1909,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printFunctionName(function);
         }
         printMethodParameters(x);
+        if (x.isParenthesized()) {
+            print(')');
+        }
         return false;
     }
 
@@ -2624,7 +2633,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (beforeComments != null && !beforeComments.isEmpty() && isPrettyFormat()) {
             printlnComments(beforeComments);
         }
-
         printExpr(where, parameterized);
 
         List<String> afterComments = where.getAfterCommentsDirect();
