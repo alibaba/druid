@@ -535,38 +535,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isParenthesized()) {
             print('(');
         }
-
-        boolean quote = false;
-        if (testExpr instanceof SQLBinaryOpExpr) {
-            SQLBinaryOperator operator = ((SQLBinaryOpExpr) testExpr).getOperator();
-            switch (operator) {
-                case BooleanAnd:
-                case BooleanOr:
-                case BooleanXor:
-                case Assignment:
-                    quote = true;
-                    break;
-                default:
-                    quote = false;
-                    break;
-            }
-        } else if (testExpr instanceof SQLInListExpr
-                || testExpr instanceof SQLBetweenExpr
-                || testExpr instanceof SQLNotExpr
-                || testExpr instanceof SQLUnaryExpr
-                || testExpr instanceof SQLCaseExpr
-                || testExpr instanceof SQLBinaryOpExprGroup) {
-            quote = true;
-        }
-
         if (testExpr != null) {
-            if (quote) {
-                print('(');
-                printExpr(testExpr, parameterized);
-                print(')');
-            } else {
-                printExpr(testExpr, parameterized);
-            }
+            printExpr(testExpr, parameterized);
         }
 
         if (x.isNot()) {
@@ -620,11 +590,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 printExpr(endExpr, parameterized);
             }
             decrementIndent();
-        } else if (endExpr instanceof SQLInListExpr
-                || endExpr instanceof SQLBetweenExpr
-                || endExpr instanceof SQLNotExpr
-                || endExpr instanceof SQLUnaryExpr
-                || endExpr instanceof SQLCaseExpr
+        } else if (endExpr instanceof SQLNotExpr
                 || endExpr instanceof SQLBinaryOpExprGroup) {
             print('(');
             printExpr(endExpr, parameterized);
@@ -1019,7 +985,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 indentCount--;
             }
         } else if (SQLBinaryOperator.Equality.priority >= op.priority
-                && (right instanceof SQLInListExpr || right instanceof SQLNotExpr)) {
+                && (right instanceof SQLNotExpr)) {
             indentCount++;
             print('(');
             printExpr(right, parameterized);
@@ -1100,6 +1066,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 quote = op.priority <= SQLBinaryOperator.Equality.priority;
             } else {
                 quote = op.priority < SQLBinaryOperator.Equality.priority;
+            }
+            if (inListExpr.isParenthesized()) {
+                quote = false;
             }
             if (quote) {
                 print('(');
@@ -1367,6 +1336,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLCharExpr x, boolean parameterized) {
+        if (x.isParenthesized()) {
+            print('(');
+            print("TTTQQQQ");
+        }
         if (parameterized) {
             print('?');
             incrementReplaceCunt();
@@ -1377,7 +1350,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         printChars(x.getText());
-
+        if (x.isParenthesized()) {
+            print(')');
+            print("TTTQQQQ");
+        }
         return false;
     }
 
@@ -1478,7 +1454,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLIdentifierExpr x) {
+        if (x.isParenthesized()) {
+            print('(');
+        }
         printName0(x.getName());
+        if (x.isParenthesized()) {
+            print(')');
+        }
         return false;
     }
 
@@ -1571,6 +1553,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLInListExpr x) {
+        if (x.isParenthesized()) {
+            print('(');
+        }
         final SQLExpr expr = x.getExpr();
 
         boolean quote = false;
@@ -1696,18 +1681,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (x.getHint() != null) {
                     x.getHint().accept(this);
                 }
-
+                if (x.isParenthesized()) {
+                    print(')');
+                }
                 return false;
             }
         }
 
-        if (quote) {
-            print('(');
-        }
+        //if (quote) {
+            //print('(');
+        //}
         printExpr(expr, parameterized);
-        if (quote) {
-            print(')');
-        }
+        //if (quote) {
+            //print(')');
+        //}
 
         if (x.isNot()) {
             print0(ucase ? " NOT IN (" : " not in (");
@@ -1761,6 +1748,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.getHint() != null) {
             x.getHint().accept(this);
+        }
+        if (x.isParenthesized()) {
+            print(')');
         }
         return false;
     }

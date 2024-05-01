@@ -24,7 +24,7 @@ public class MySqlSelectTest_153 extends MysqlTest {
         System.out.println(stmt.toString());
         assertEquals(1, statementList.size());
 
-        assertEquals("SELECT (layer_1_column_0 | (NULLIF(NULL, NULL)))\n" +
+        assertEquals("SELECT ((layer_1_column_0) | (NULLIF(NULL, NULL)))\n" +
                 "FROM (\n" +
                 "\tSELECT NULL IS NULL AS layer_1_column_0\n" +
                 "\tFROM corona_select_multi_db_one_tb\n" +
@@ -33,7 +33,7 @@ public class MySqlSelectTest_153 extends MysqlTest {
                 ") layer_0_table\n" +
                 "WHERE !~25 IS NULL;", stmt.toString());
 
-        assertEquals("SELECT (layer_1_column_0 | (NULLIF(NULL, NULL)))\n" +
+        assertEquals("SELECT ((layer_1_column_0) | (NULLIF(NULL, NULL)))\n" +
                         "FROM (\n" +
                         "\tSELECT NULL IS NULL AS layer_1_column_0\n" +
                         "\tFROM corona_select_multi_db_one_tb\n" +

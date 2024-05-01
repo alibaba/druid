@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.fastjson2.JSON;
@@ -14,6 +15,10 @@ import java.util.List;
 public class MySqlParameterizedOutputVisitorTest_69 extends TestCase {
     public void test_in() throws Exception {
         String sql = "select ((0='x6') & 31) ^ (ROW(76, 4) NOT IN (ROW(1, 2 ),ROW(3, 4)) );";
+
+        List<SQLStatement> stmtList111 = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        SQLStatement stmt111 = stmtList111.get(0);
+        System.out.println(stmt111.toString());
 
         List<Object> params = new ArrayList<Object>();
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedUnMergeShardingTable);
