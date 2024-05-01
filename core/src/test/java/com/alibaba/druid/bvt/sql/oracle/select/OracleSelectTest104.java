@@ -71,11 +71,11 @@ public class OracleSelectTest104 extends OracleTest {
                     "\tSELECT /*+ qb_name(\"innerQuery\")  */ 1 AS C1\n" +
                     "\tFROM SYS.\"X$KZSPR\" \"X$KZSPR\"\n" +
                     "\tWHERE (\"X$KZSPR\".\"INST_ID\" = USERENV('INSTANCE'))\n" +
-                    "\t\tAND (-\"X$KZSPR\".\"KZSPRPRV\" = -45\n" +
-                    "\t\t\tOR -\"X$KZSPR\".\"KZSPRPRV\" = -47\n" +
-                    "\t\t\tOR -\"X$KZSPR\".\"KZSPRPRV\" = -48\n" +
-                    "\t\t\tOR -\"X$KZSPR\".\"KZSPRPRV\" = -49\n" +
-                    "\t\t\tOR -\"X$KZSPR\".\"KZSPRPRV\" = -50)\n" +
+                    "\t\tAND ((-\"X$KZSPR\".\"KZSPRPRV\") = -45\n" +
+                    "\t\t\tOR (-\"X$KZSPR\".\"KZSPRPRV\") = -47\n" +
+                    "\t\t\tOR (-\"X$KZSPR\".\"KZSPRPRV\") = -48\n" +
+                    "\t\t\tOR (-\"X$KZSPR\".\"KZSPRPRV\") = -49\n" +
+                    "\t\t\tOR (-\"X$KZSPR\".\"KZSPRPRV\") = -50)\n" +
                     ") innerQuery", text);
         }
 
