@@ -964,7 +964,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print(' ');
             }
         }
-
         visitorBinaryRight(x);
 
         if (isRoot && relational) {
@@ -984,7 +983,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (isPrettyFormat() && right.hasBeforeComment()) {
             printlnComments(right.getBeforeCommentsDirect());
         }
-
         if (right instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryRight = (SQLBinaryOpExpr) right;
             SQLBinaryOperator rightOp = binaryRight.getOperator();
@@ -1120,17 +1118,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             } else {
                 quote = op.priority < SQLBinaryOperator.Equality.priority;
             }
-            if (quote) {
-                print('(');
-            }
+//            if (quote) {
+//                print("(aaa");
+//            }
             visit(betweenExpr);
-            if (quote) {
-                print(')');
-            }
+//            if (quote) {
+//                print(')');
+//            }
         } else if (left instanceof SQLNotExpr) {
-            print('(');
+//            print('(');
             printExpr(left);
-            print(')');
+//            print(')');
         } else if (left instanceof SQLUnaryExpr) {
             SQLUnaryExpr unary = (SQLUnaryExpr) left;
 
@@ -1146,7 +1144,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 default:
                     break;
             }
-
+            if (((SQLUnaryExpr) left).isParenthesized()) {
+                quote = false;
+            }
             if (quote) {
                 print('(');
                 printExpr(left);
@@ -2184,6 +2184,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (expr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
             needQuote = binaryOpExpr.getOperator().isLogical();
+            if (binaryOpExpr.isParenthesized()) {
+                needQuote = false;
+            }
         } else if (expr instanceof SQLInListExpr || expr instanceof SQLNotExpr
                 || expr instanceof SQLBinaryOpExprGroup) {
             needQuote = true;
@@ -8736,7 +8739,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(x.getType().name());
         print(' ');
         SQLExpr expr = x.getExpr();
-        if (expr instanceof SQLBinaryOpExpr) {
+        if (expr instanceof SQLBinaryOpExpr && !((SQLBinaryOpExpr) expr).isParenthesized()) {
             print('(');
             expr.accept(this);
             print(')');
