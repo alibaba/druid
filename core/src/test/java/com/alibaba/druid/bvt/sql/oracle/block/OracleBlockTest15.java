@@ -54,7 +54,7 @@ public class OracleBlockTest15 extends OracleTest {
                 "\tbonus NUMBER(6, 2);\n" +
                 "\temp_id NUMBER(6) := 120;\n" +
                 "BEGIN\n" +
-                "\tIF sales > quota + 200 THEN\n" +
+                "\tIF sales > (quota + 200) THEN\n" +
                 "\t\tbonus := (sales - quota) / 4;\n" +
                 "\t\tUPDATE employees\n" +
                 "\t\tSET salary = salary + bonus\n" +

@@ -5769,8 +5769,8 @@ public class SQLExprParser extends SQLParser {
         SQLCheck check = createCheck();
         accept(Token.LPAREN);
         check.setExpr(this.expr());
-        if (check.getExpr() instanceof SQLBinaryOpExpr) {
-            ((SQLBinaryOpExpr) check.getExpr()).setParenthesized(true);
+        if (check.getExpr() instanceof SQLExprImpl) {
+            ((SQLExprImpl) check.getExpr()).setParenthesized(true);
         }
         accept(Token.RPAREN);
         return check;

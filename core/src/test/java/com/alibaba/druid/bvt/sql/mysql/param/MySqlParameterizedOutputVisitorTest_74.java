@@ -1,5 +1,9 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
@@ -26,6 +30,9 @@ public class MySqlParameterizedOutputVisitorTest_74 extends TestCase {
 
     public void test_between() throws Exception {
         String sql = "select 0 from corona_select_multi_db_one_tb where( 9 =( 3 not between 1 and 5 ) ) =bigint_test";
+
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
+        SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
         List<Object> outParameters = new ArrayList<Object>(0);
 
