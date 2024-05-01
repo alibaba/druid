@@ -41,7 +41,8 @@ public class MySqlSelectTest_130_ads extends MysqlTest {
                 "\t\t) a join dim_add_adx_slot  b on a.ad_slot_id=b.slot_id                                    \n" +
                 "\t\tgroup by comm_date\n" +
                 "\t)             \n" +
-                "\tselect comm_date, now_imp, ((now_imp - avg_imp) / cast(stddev_imp as DOUBLE )) as evaluate_imp, now_revenue, ((now_revenue -             avg_revenue) / cast(stddev_revenue as DOUBLE )) as evaluate_revenue             \n" +
+                "\tselect comm_date, now_imp, ((now_imp - avg_imp) / cast(stddev_imp as DOUBLE )) as evaluate_imp, now_revenue,"
+            + " ((now_revenue -             avg_revenue) / cast(stddev_revenue as DOUBLE )) as evaluate_revenue             \n" +
                 "\tfrom now_table,stat_table\n" +
                 ")         \n" +
                 "select comm_date \"date\", round(now_imp,2) now_imp, round(evaluate_imp,4) evaluate_imp, round(now_revenue,2) now_revenue\n" +
@@ -51,7 +52,7 @@ public class MySqlSelectTest_130_ads extends MysqlTest {
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
-
+        System.out.println(stmt.toString());
         assertEquals(1, statementList.size());
 
         assertEquals("/*+ engine= mpp*/\n" +
@@ -92,15 +93,15 @@ public class MySqlSelectTest_130_ads extends MysqlTest {
                 "\t\t\t\t\tJOIN dim_add_adx_slot b ON a.ad_slot_id = b.slot_id\n" +
                 "\t\t\t\tGROUP BY comm_date\n" +
                 "\t\t\t)\n" +
-                "\t\tSELECT comm_date, now_imp, (now_imp - avg_imp) / CAST(stddev_imp AS DOUBLE) AS evaluate_imp\n" +
-                "\t\t\t, now_revenue, (now_revenue - avg_revenue) / CAST(stddev_revenue AS DOUBLE) AS evaluate_revenue\n" +
+                "\t\tSELECT comm_date, now_imp, ((now_imp - avg_imp) / CAST(stddev_imp AS DOUBLE)) AS evaluate_imp\n" +
+                "\t\t\t, now_revenue, ((now_revenue - avg_revenue) / CAST(stddev_revenue AS DOUBLE)) AS evaluate_revenue\n" +
                 "\t\tFROM now_table, stat_table\n" +
                 "\t)\n" +
                 "SELECT comm_date AS \"date\", round(now_imp, 2) AS now_imp\n" +
                 "\t, round(evaluate_imp, 4) AS evaluate_imp\n" +
                 "\t, round(now_revenue, 2) AS now_revenue\n" +
                 "\t, round(evaluate_revenue, 4) AS evaluate_revenue\n" +
-                "\t, round(evaluate_revenue - evaluate_imp, 4) AS total_evaluate\n" +
+                "\t, round((evaluate_revenue - evaluate_imp), 4) AS total_evaluate\n" +
                 "FROM base_table\n" +
                 "ORDER BY comm_date", stmt.toString());
     }

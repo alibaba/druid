@@ -111,7 +111,7 @@ public class LogicalOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT (!1) + 1;", text);
+        Assert.assertEquals("SELECT !1 + 1;", text);
     }
 
     public void test_8() throws Exception {
