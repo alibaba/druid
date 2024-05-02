@@ -549,24 +549,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (beginExpr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpBegin = (SQLBinaryOpExpr) beginExpr;
             incrementIndent();
-            if (binaryOpBegin.getOperator().isLogical()
-                    || binaryOpBegin.getOperator().isRelational()) {
-                print('(');
-                printExpr(beginExpr, parameterized);
-                print(')');
-            } else {
-                printExpr(beginExpr, parameterized);
-            }
-            decrementIndent();
-        } else if (beginExpr instanceof SQLInListExpr
-                || beginExpr instanceof SQLBetweenExpr
-                || beginExpr instanceof SQLNotExpr
-                || beginExpr instanceof SQLUnaryExpr
-                || beginExpr instanceof SQLCaseExpr
-                || beginExpr instanceof SQLBinaryOpExprGroup) {
-            print('(');
             printExpr(beginExpr, parameterized);
-            print(')');
+            decrementIndent();
         } else {
             printExpr(beginExpr, parameterized);
         }
@@ -581,20 +565,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (endExpr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpEnd = (SQLBinaryOpExpr) endExpr;
             incrementIndent();
-            if (binaryOpEnd.getOperator().isLogical()
-                    || binaryOpEnd.getOperator().isRelational()) {
-                print('(');
-                printExpr(endExpr, parameterized);
-                print(')');
-            } else {
-                printExpr(endExpr, parameterized);
-            }
-            decrementIndent();
-        } else if (endExpr instanceof SQLNotExpr
-                || endExpr instanceof SQLBinaryOpExprGroup) {
-            print('(');
             printExpr(endExpr, parameterized);
-            print(')');
+            decrementIndent();
         } else {
             printExpr(endExpr, parameterized);
         }

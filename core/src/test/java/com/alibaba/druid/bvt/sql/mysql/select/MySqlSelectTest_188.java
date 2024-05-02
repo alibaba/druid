@@ -16,7 +16,7 @@ public class MySqlSelectTest_188 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
-
+        System.out.println(stmt.toString());
         assertEquals(1, statementList.size());
 
         assertEquals("((SELECT user_id\n" +
@@ -100,9 +100,9 @@ public class MySqlSelectTest_188 extends MysqlTest {
                 "\t\tWHERE user_id = 1953401122571952\n" +
                 "\t) b\n" +
                 "\tON a.user_id = b.user_id\n" +
-                "WHERE a.create_time > '2018-01-01 00:00:00'\n" +
+                "WHERE ((a.create_time > '2018-01-01 00:00:00')\n" +
                 "\tOR (a.create_time IS NULL\n" +
-                "\t\tAND b.create_time > '2018-01-01 00:00:00'))\n" +
+                "\t\tAND b.create_time > '2018-01-01 00:00:00')))\n" +
                 "INTERSECT\n" +
                 "(SELECT coalesce(a.user_id, b.user_id) AS user_id\n" +
                 "FROM (\n" +
@@ -143,8 +143,8 @@ public class MySqlSelectTest_188 extends MysqlTest {
                 "\t\tWHERE user_id = 1953401122571952\n" +
                 "\t) b\n" +
                 "\tON a.user_id = b.user_id\n" +
-                "WHERE a.account_certify_type = 'personal'\n" +
+                "WHERE ((a.account_certify_type = 'personal')\n" +
                 "\tOR (a.account_certify_type IS NULL\n" +
-                "\t\tAND b.account_certify_type = 'personal'))", stmt.toString());
+                "\t\tAND b.account_certify_type = 'personal')))", stmt.toString());
     }
 }
