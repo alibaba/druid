@@ -712,11 +712,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 } else {
                     visit(binaryOpExpr);
                 }
-
-                if (item.hasAfterComment() && !parameterized) {
-                    print(' ');
-                    printlnComment(item.getAfterCommentsDirect());
-                }
+//
+//                if (item.hasAfterComment() && !parameterized) {
+//                    print(' ');
+//                    printlnComment(item.getAfterCommentsDirect());
+//                }
 
                 if (isLogic) {
                     indentCount--;
@@ -728,6 +728,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             } else {
                 printExpr(item, parameterized);
             }
+        }
+        List<String> afterComments = x.getAfterCommentsDirect();
+        if (!parameterized) {
+            if (afterComments != null && !afterComments.isEmpty() && isPrettyFormat()) {
+                print(' ');
+            }
+            printlnComment(afterComments);
         }
         if (isRoot) {
             this.indentCount--;
@@ -742,6 +749,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         boolean rs = visitInternal(x);
         if (x.isParenthesized()) {
             print(')');
+        }
+        List<String> afterComments = x.getAfterCommentsDirect();
+        if (!parameterized) {
+            if (afterComments != null && !afterComments.isEmpty() && isPrettyFormat()) {
+                print(' ');
+            }
+            printlnComment(afterComments);
         }
         return rs;
     }
@@ -867,10 +881,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             visitBinaryLeft(item, operator);
 
-            if (isPrettyFormat() && item.hasAfterComment()) {
-                print(' ');
-                printlnComment(item.getAfterCommentsDirect());
-            }
+//            if (isPrettyFormat() && item.hasAfterComment()) {
+//                print(' ');
+//                printlnComment(item.getAfterCommentsDirect());
+//            }
 
             if (i != groupList.size() - 1
                     && isPrettyFormat()
@@ -1310,7 +1324,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLCharExpr x, boolean parameterized) {
         if (x.isParenthesized()) {
             print('(');
-            print("TTTQQQQ");
         }
         if (parameterized) {
             print('?');
@@ -1324,7 +1337,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printChars(x.getText());
         if (x.isParenthesized()) {
             print(')');
-            print("TTTQQQQ");
         }
         return false;
     }
@@ -2596,12 +2608,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printlnComments(beforeComments);
         }
         printExpr(where, parameterized);
-
-        List<String> afterComments = where.getAfterCommentsDirect();
-        if (afterComments != null && !afterComments.isEmpty() && isPrettyFormat()) {
-            print(' ');
-            printlnComment(afterComments);
-        }
+//
+//        List<String> afterComments = where.getAfterCommentsDirect();
+//        if (afterComments != null && !afterComments.isEmpty() && isPrettyFormat()) {
+//            print(' ');
+//            printlnComment(afterComments);
+//        }
     }
 
     protected void printFetchFirst(SQLSelectQueryBlock x) {
