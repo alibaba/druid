@@ -213,7 +213,7 @@ public class OracleCreateViewTest14 extends OracleTest {
                         "\t\tWHERE t.account = at.ouser_id\n" +
                         "\t) AS order_account\n" +
                         "FROM ticket_product_order pw_order_info, allot_track at\n" +
-                        "WHERE at.order_id LIKE ('%' || pw_order_info.id || '%')\n" +
+                        "WHERE at.order_id LIKE '%' || pw_order_info.id || '%'\n" +
                         "\tAND at.produce_id = 'PW'\n" +
                         "\tAND at.end_date = to_date('1900-01-01', 'yyyy-mm-dd') -- hn --766ߡh (\n" +
                         "\tAND pw_order_info.status = '4'\n" +

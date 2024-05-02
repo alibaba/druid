@@ -143,6 +143,7 @@ public class OracleResourceTest extends OracleTest {
             SQLStatement stmt = statementList.get(0);
             if (expect != null && !expect.isEmpty()) {
                 String actual = stmt.toString();
+                System.out.println("resource=========="+resource);
                 assertEquals(expect, actual.trim());
             }
         } else {
