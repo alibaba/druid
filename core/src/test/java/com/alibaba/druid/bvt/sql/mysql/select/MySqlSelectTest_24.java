@@ -32,7 +32,7 @@ public class MySqlSelectTest_24 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-//        print(statementList);
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -54,7 +54,7 @@ public class MySqlSelectTest_24 extends MysqlTest {
             Assert.assertEquals("SELECT *\n" +
                             "FROM company\n" +
                             "WHERE id = 1\n" +
-                            "\tAND (NOT name = 'e')\n" +
+                            "\tAND NOT (name = 'e')\n" +
                             "\tAND addr = 'a'", //
                     output);
         }
@@ -63,7 +63,7 @@ public class MySqlSelectTest_24 extends MysqlTest {
             Assert.assertEquals("select *\n" +
                             "from company\n" +
                             "where id = 1\n" +
-                            "\tand (not name = 'e')\n" +
+                            "\tand not (name = 'e')\n" +
                             "\tand addr = 'a'", //
                     output);
         }
