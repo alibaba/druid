@@ -172,7 +172,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleIntervalExpr x) {
         SQLExpr value = x.getValue();
-        if (x.getValue() instanceof SQLLiteralExpr) {
+        if (x.getValue() instanceof SQLLiteralExpr || x.getValue() instanceof SQLVariantRefExpr) {
             print0(ucase ? "INTERVAL " : "interval ");
         }
         x.getValue().accept(this);

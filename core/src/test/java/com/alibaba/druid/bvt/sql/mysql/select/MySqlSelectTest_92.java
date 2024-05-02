@@ -49,7 +49,7 @@ public class MySqlSelectTest_92 extends MysqlTest {
                 "\tAND cfgdatasou0_.module_name = ?\n" +
                 "\tAND cfgdatasou0_.node_type = ?\n" +
                 "\tOR cfgdatasou0_.typeccc = ?\n" +
-                "\tAND cfgdatasou0_.module_nameaaa = ?\n" +
-                "\tAND cfgdatasou0_.node_typebbb = ?", stmt.toString());
+                "\t\tAND cfgdatasou0_.module_nameaaa = ?\n" +
+                "\t\tAND cfgdatasou0_.node_typebbb = ?", stmt.toString());
     }
 }
