@@ -278,7 +278,6 @@ public class PGSelectParser extends SQLSelectParser {
     }
 
     public SQLTableSource parseTableSourceTableSample(SQLTableSource tableSource) {
-
         if (lexer.identifierEquals(FnvHash.Constants.TABLESAMPLE) && tableSource instanceof SQLExprTableSource) {
             Lexer.SavePoint mark = lexer.mark();
             lexer.nextToken();
