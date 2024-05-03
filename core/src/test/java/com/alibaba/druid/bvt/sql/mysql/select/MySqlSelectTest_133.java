@@ -19,7 +19,7 @@ public class MySqlSelectTest_133 extends MysqlTest {
         System.out.println(stmt.toString());
         assertEquals(1, statementList.size());
 
-        assertEquals("SELECT (~43), ((tinyint_1bit_test % integer_test % bigint_test) NOT IN (1, 2, 'a', (BINARY 'a' = 'a ')))\n" +
+        assertEquals("SELECT (~(43)), ((tinyint_1bit_test % integer_test % bigint_test) NOT IN (1, 2, 'a', (BINARY 'a' = 'a ')))\n" +
                 "FROM select_base_two_one_db_multi_tb", stmt.toString());
 
         assertEquals("SELECT (~?), ((tinyint_1bit_test % integer_test % bigint_test) NOT IN (?, ?, ?, (BINARY ? = ?)))\n" +

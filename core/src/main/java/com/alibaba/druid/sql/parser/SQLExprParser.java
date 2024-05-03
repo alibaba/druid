@@ -122,6 +122,10 @@ public class SQLExprParser extends SQLParser {
                 parenthesized = false;
             }
         }
+        if (parenthesized && expr instanceof SQLQueryExpr) {
+            parenthesized = false;
+            ((SQLQueryExpr) expr).setParenthesized(true);
+        }
         if (parenthesized && expr instanceof SQLIdentifierExpr) {
             parenthesized = false;
             ((SQLIdentifierExpr) expr).setParenthesized(true);
@@ -1385,7 +1389,10 @@ public class SQLExprParser extends SQLParser {
         if (beforeComments != null) {
             expr.addBeforeComment(beforeComments);
         }
-
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            // @todo 是否保留注释，暂时待定，因为保留的话，有20来个测试用例会失败 by lizongbo
+            // expr.addAfterComment(lexer.readAndResetComments());
+        }
         return expr;
     }
 

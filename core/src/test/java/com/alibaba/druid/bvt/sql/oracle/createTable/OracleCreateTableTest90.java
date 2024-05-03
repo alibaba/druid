@@ -67,8 +67,8 @@ public class OracleCreateTableTest90 extends OracleTest {
                 "\t\"SQFAS\" NUMBER,\n" +
                 "\t\"TQFAS\" NUMBER,\n" +
                 "\t\"TJSJ\" DATE DEFAULT SYSDATE,\n" +
-                "\t\"FATB\" NUMBER GENERATED ALWAYS AS ROUND((\"FAS\" - \"TQFAS\") / DECODE(\"TQFAS\", 0, 1, \"TQFAS\"), 2) * 100 VIRTUAL VISIBLE,\n" +
-                "\t\"FAHB\" NUMBER GENERATED ALWAYS AS ROUND((\"FAS\" - \"SQFAS\") / DECODE(\"SQFAS\", 0, 1, \"SQFAS\"), 2) * 100 VIRTUAL VISIBLE\n" +
+                "\t\"FATB\" NUMBER GENERATED ALWAYS AS (ROUND((\"FAS\" - \"TQFAS\") / DECODE(\"TQFAS\", 0, 1, \"TQFAS\"), 2) * 100) VIRTUAL VISIBLE,\n" +
+                "\t\"FAHB\" NUMBER GENERATED ALWAYS AS (ROUND((\"FAS\" - \"SQFAS\") / DECODE(\"SQFAS\", 0, 1, \"SQFAS\"), 2) * 100) VIRTUAL VISIBLE\n" +
                 ")\n" +
                 "PCTFREE 10\n" +
                 "PCTUSED 40\n" +
