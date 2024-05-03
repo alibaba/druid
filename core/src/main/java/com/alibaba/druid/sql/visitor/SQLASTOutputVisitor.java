@@ -10519,7 +10519,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (rows != null) {
             rows.accept(this);
 
-            if (dbType != DbType.mysql) {
+            if (!JdbcUtils.isMysqlDbType(dbType) && !JdbcUtils.isPgsqlDbType(dbType)) {
                 print0(ucase ? " ROWS" : " rows");
             }
         }
