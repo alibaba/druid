@@ -6162,6 +6162,9 @@ public class MySqlStatementParser extends SQLStatementParser {
                                     check.setName(constraintSymbol);
                                 }
                                 check.setExpr(this.exprParser.expr());
+                                if (check.getExpr() instanceof SQLExprImpl) {
+                                    ((SQLExprImpl) check.getExpr()).setParenthesized(true);
+                                }
                                 accept(Token.RPAREN);
                                 boolean enforce = true;
                                 if (lexer.token() == Token.NOT) {
@@ -6679,8 +6682,13 @@ public class MySqlStatementParser extends SQLStatementParser {
                     alterColumn.setColumn(this.exprParser.name());
                     if (lexer.token() == Token.SET) {
                         lexer.nextToken();
-                        accept(Token.DEFAULT);
-                        alterColumn.setDefaultExpr(this.exprParser.expr());
+                        if (lexer.identifierEquals("VISIBLE") || lexer.identifierEquals("INVISIBLE")) {
+                            alterColumn.setVisibleType(lexer.stringVal());
+                            lexer.nextToken();
+                        } else {
+                            accept(Token.DEFAULT);
+                            alterColumn.setDefaultExpr(this.exprParser.expr());
+                        }
                     } else {
                         accept(Token.DROP);
                         accept(Token.DEFAULT);

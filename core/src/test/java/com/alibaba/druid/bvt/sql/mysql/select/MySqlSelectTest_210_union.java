@@ -38,7 +38,7 @@ public class MySqlSelectTest_210_union extends MysqlTest {
                 "      UNION\n" +
                 "\n" +
                 "  SELECT coalesce(a.user_id, b.user_id) AS user_id\n" +
-                "      FROM user_info_online a LEFT JOIN user_info_offline b ON a.user_id = b.user_id\n" +
+                "      FROM user_info_online a LEFT JOIN user_info_offline b ON (a.user_id = b.user_id)\n" +
                 "      WHERE ((a.create_time > '2018-01-01 00:00:00') OR\n" +
                 "             (a.create_time IS NULL AND b.create_time > '2018-01-01 00:00:00')\n" +
                 "      )\n" +
@@ -62,10 +62,10 @@ public class MySqlSelectTest_210_union extends MysqlTest {
                         "\tUNION\n" +
                         "\tSELECT coalesce(a.user_id, b.user_id) AS user_id\n" +
                         "\tFROM user_info_online a\n" +
-                        "\t\tLEFT JOIN user_info_offline b ON a.user_id = b.user_id\n" +
-                        "\tWHERE a.create_time > '2018-01-01 00:00:00'\n" +
+                        "\t\tLEFT JOIN user_info_offline b ON (a.user_id = b.user_id)\n" +
+                        "\tWHERE ((a.create_time > '2018-01-01 00:00:00')\n" +
                         "\t\tOR (a.create_time IS NULL\n" +
-                        "\t\t\tAND b.create_time > '2018-01-01 00:00:00')\n" +
+                        "\t\t\tAND b.create_time > '2018-01-01 00:00:00'))\n" +
                         ")", //
                 stmt.toString());
 

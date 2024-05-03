@@ -539,6 +539,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.TAOS_DATA;
         } else if (rawUrl.startsWith("jdbc:TAOS-RS:")) {
             return JdbcConstants.TAOS_DATA_RS;
+        } else if (rawUrl.startsWith("jdbc:gbasedbt-sqli:")) {
+            return JdbcConstants.GBASE8S_DRIVER;
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
@@ -553,6 +555,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.derby;
         } else if (rawUrl.startsWith("jdbc:mysql:") || rawUrl.startsWith("jdbc:cobar:")
                 || rawUrl.startsWith("jdbc:log4jdbc:mysql:")) {
+            return DbType.mysql;
+        } else if (rawUrl.startsWith("jdbc:goldendb:")) {
             return DbType.mysql;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return DbType.mariadb;
@@ -976,6 +980,7 @@ public final class JdbcUtils implements JdbcConstants {
             case mariadb:
             case tidb:
             case h2:
+            case goldendb:
                 return true;
             default:
                 return false;

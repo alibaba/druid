@@ -433,9 +433,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (expr != null) {
             if (expr instanceof SQLBinaryOpExpr) {
-                print('(');
                 expr.accept(this);
-                print(')');
             } else if (expr instanceof PGTypeCastExpr && dataType.getArguments().isEmpty()) {
                 dataType.accept(this);
                 print('(');
@@ -953,7 +951,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(OracleIntervalExpr x) {
-        if (x.getValue() instanceof SQLLiteralExpr) {
+        if (x.getValue() instanceof SQLLiteralExpr || x.getValue() instanceof SQLVariantRefExpr) {
             print0(ucase ? "INTERVAL " : "interval ");
             x.getValue().accept(this);
             print(' ');

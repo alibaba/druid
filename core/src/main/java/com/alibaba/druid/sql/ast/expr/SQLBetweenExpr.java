@@ -28,7 +28,6 @@ public class SQLBetweenExpr extends SQLExprImpl implements SQLReplaceable, Seria
     private boolean not;
     public SQLExpr beginExpr;
     public SQLExpr endExpr;
-
     public SQLBetweenExpr() {
     }
 
@@ -44,6 +43,7 @@ public class SQLBetweenExpr extends SQLExprImpl implements SQLReplaceable, Seria
         if (endExpr != null) {
             x.setEndExpr(endExpr.clone());
         }
+        x.setParenthesized(parenthesized);
         return x;
     }
 

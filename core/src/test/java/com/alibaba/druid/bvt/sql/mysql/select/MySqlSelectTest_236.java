@@ -34,7 +34,7 @@ public class MySqlSelectTest_236 extends MysqlTest {
                 "\tFROM (\n" +
                 "\t\tSELECT dw.userid AS user_id\n" +
                 "\t\tFROM dw_user_property_wide_table_merged_v2 dw\n" +
-                "\t\tWHERE dw.is_sub = true\n" +
+                "\t\tWHERE (dw.is_sub = true)\n" +
                 "\t) t\n" +
                 "\t\tINNER JOIN dw_user_property_wide_table_merged_v2 dw ON t.user_id = dw.userid\n" +
                 ") t /*+META({\"s\": \"com.qunhe.logcomplex.userinformation.mapper.ads.UserPropertyMapper.countUser\"})*/", stmt.toString());

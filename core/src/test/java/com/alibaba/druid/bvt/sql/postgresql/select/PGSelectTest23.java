@@ -36,13 +36,13 @@ public class PGSelectTest23 extends PGTest {
         Assert.assertEquals("SELECT id, login_name, name, password, salt"
                 + "\n\t, roles, register_date"
                 + "\nFROM user"
-                + "\nWHERE name LIKE ?"
+                + "\nWHERE (name LIKE ?)"
                 + "\nLIMIT ? OFFSET ?", SQLUtils.toPGString(stmt));
 
         Assert.assertEquals("select id, login_name, name, password, salt"
                 + "\n\t, roles, register_date"
                 + "\nfrom user"
-                + "\nwhere name like ?"
+                + "\nwhere (name like ?)"
                 + "\nlimit ? offset ?", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());

@@ -465,44 +465,45 @@ public class MySqlSelectTest_mtr
 
         StringBuilder builder = new StringBuilder();
         for (SQLStatement stmt : stmts) {
+            System.out.println(stmt.toString());
             builder.append(stmt.toString()).append("\n\n");
         }
 
-        assertEquals("SELECT join_outer_t1_0.*, join_outer_t2_1.*\n" +
-                "FROM join_outer_t2_1\n" +
-                "\tLEFT JOIN join_outer_t1_0 ON join_outer_t1_0.a = join_outer_t2_1.a;\n" +
-                "\n" +
-                "SELECT join_outer_t1_0.*, join_outer_t2_1.*\n" +
-                "FROM (join_outer_t1_0 t0, join_outer_t2_1)\n" +
-                "\tLEFT JOIN join_outer_t1_0 ON join_outer_t1_0.a = join_outer_t2_1.a\n" +
-                "WHERE t0.a = 2;\n" +
-                "\n" +
-                "SELECT length('hello'), DATE '1997-10-20';\n" +
-                "\n" +
-                "SELECT parser_t1_58.*\n" +
-                "FROM (parser_t1_58 t0, parser_t2_59)\n" +
-                "\tINNER JOIN parser_t1_58 ON parser_t1_58.a1 = parser_t2_59.a1\n" +
-                "WHERE t0.a3 = 2;\n" +
-                "\n" +
-                "SELECT parser_t1_58.*, parser_t2_59.*\n" +
-                "FROM parser_t1_58\n" +
-                "\tINNER JOIN parser_t2_59 ON parser_t1_58.a1 = parser_t2_59.a2\n" +
-                "\tLEFT JOIN parser_t3_60 ON parser_t3_60.a3 = parser_t2_59.a1;\n" +
-                "\n" +
-                "SELECT parser_t1_58.*, parser_t2_59.*\n" +
-                "FROM parser_t1_58\n" +
-                "\tLEFT JOIN parser_t2_59 ON parser_t1_58.a3 = parser_t2_59.a2\n" +
-                "\tINNER JOIN parser_t3_60 ON parser_t3_60.a1 = parser_t2_59.a2;\n" +
-                "\n" +
-                "SELECT parser_t1_58.*, parser_t2_59.*\n" +
-                "FROM parser_t1_58\n" +
-                "\tLEFT JOIN parser_t2_59 ON parser_t1_58.a1 = parser_t2_59.a2\n" +
-                "\tCROSS JOIN parser_t3_60 ON parser_t3_60.a2 = parser_t2_59.a3;\n" +
-                "\n" +
-                "SELECT *\n" +
-                "FROM parser_t1_58\n" +
-                "\tLEFT JOIN parser_t2_59 ON parser_t1_58.a1 = parser_t2_59.a3\n" +
-                "WHERE parser_t1_58.a2 > 10;\n" +
+        assertEquals("SELECT join_outer_t1_0.*, join_outer_t2_1.*\n"
+            + "FROM join_outer_t2_1\n"
+            + "\tLEFT JOIN join_outer_t1_0 ON (join_outer_t1_0.a = join_outer_t2_1.a);\n"
+            + "\n"
+            + "SELECT join_outer_t1_0.*, join_outer_t2_1.*\n"
+            + "FROM (join_outer_t1_0 t0, join_outer_t2_1)\n"
+            + "\tLEFT JOIN join_outer_t1_0 ON (join_outer_t1_0.a = join_outer_t2_1.a)\n"
+            + "WHERE t0.a = 2;\n"
+            + "\n"
+            + "SELECT length('hello'), DATE '1997-10-20';\n"
+            + "\n"
+            + "SELECT parser_t1_58.*\n"
+            + "FROM (parser_t1_58 t0, parser_t2_59)\n"
+            + "\tINNER JOIN parser_t1_58 ON (parser_t1_58.a1 = parser_t2_59.a1)\n"
+            + "WHERE t0.a3 = 2;\n"
+            + "\n"
+            + "SELECT parser_t1_58.*, parser_t2_59.*\n"
+            + "FROM parser_t1_58\n"
+            + "\tINNER JOIN parser_t2_59 ON (parser_t1_58.a1 = parser_t2_59.a2)\n"
+            + "\tLEFT JOIN parser_t3_60 ON parser_t3_60.a3 = parser_t2_59.a1;\n"
+            + "\n"
+            + "SELECT parser_t1_58.*, parser_t2_59.*\n"
+            + "FROM parser_t1_58\n"
+            + "\tLEFT JOIN parser_t2_59 ON parser_t1_58.a3 = parser_t2_59.a2\n"
+            + "\tINNER JOIN parser_t3_60 ON (parser_t3_60.a1 = parser_t2_59.a2);\n"
+            + "\n"
+            + "SELECT parser_t1_58.*, parser_t2_59.*\n"
+            + "FROM parser_t1_58\n"
+            + "\tLEFT JOIN parser_t2_59 ON parser_t1_58.a1 = parser_t2_59.a2\n"
+            + "\tCROSS JOIN parser_t3_60 ON (parser_t3_60.a2 = parser_t2_59.a3);\n"
+            + "\n"
+            + "SELECT *\n"
+            + "FROM parser_t1_58\n"
+            + "\tLEFT JOIN parser_t2_59 ON parser_t1_58.a1 = parser_t2_59.a3\n"
+            + "WHERE parser_t1_58.a2 > 10;\n"+
                 "\n", builder.toString());
     }
 }

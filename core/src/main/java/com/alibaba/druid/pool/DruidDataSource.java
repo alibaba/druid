@@ -1305,6 +1305,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                 || JdbcUtils.MYSQL_DRIVER.equals(this.driverClass)
                 || JdbcUtils.MYSQL_DRIVER_6.equals(this.driverClass)
                 || JdbcUtils.MYSQL_DRIVER_603.equals(this.driverClass)
+                || JdbcUtils.GOLDENDB_DRIVER.equals(this.driverClass)
+                || JdbcUtils.GBASE8S_DRIVER.equals(this.driverClass)
         ) {
             isMySql = true;
         }

@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterTableAlterColumn extends MySqlObjectImpl implements SQLAlterTableItem {
     private SQLName column;
-
+    private String visibleType;
     private boolean dropDefault;
     private SQLExpr defaultExpr;
 
@@ -42,6 +42,14 @@ public class MySqlAlterTableAlterColumn extends MySqlObjectImpl implements SQLAl
 
     public void setDropDefault(boolean dropDefault) {
         this.dropDefault = dropDefault;
+    }
+
+    public String getVisibleType() {
+        return visibleType;
+    }
+
+    public void setVisibleType(String visibleType) {
+        this.visibleType = visibleType;
     }
 
     public SQLExpr getDefaultExpr() {

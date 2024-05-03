@@ -92,7 +92,7 @@ public class OracleSelectTest121 extends MysqlTest {
                 "\t\tSELECT ? AS DATE_TYPE, TO_NUMBER(TO_CHAR(ACCIDENT_TIME, ?)) AS HOUR\n" +
                 "\t\t\t, COUNT(*) AS CNT\n" +
                 "\t\tFROM ACCIDENT_INFO\n" +
-                "\t\tWHERE ACCIDENT_TIME BETWEEN TO_DATE(:3, ?) AND TO_DATE(:4, ?)\n" +
+                "\t\tWHERE (ACCIDENT_TIME BETWEEN TO_DATE(:3, ?) AND TO_DATE(:4, ?))\n" +
                 "\t\tGROUP BY TO_NUMBER(TO_CHAR(ACCIDENT_TIME, ?))\n" +
                 "\t) T1\n" +
                 "\tGROUP BY GROUPING SETS ((DATE_TYPE, HOUR), DATE_TYPE)\n" +

@@ -62,9 +62,9 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t\tFROM (\n" +
                     "\t\t\t\tSELECT xzqh, sglx\n" +
                     "\t\t\t\t\t, CASE \n" +
-                    "\t\t\t\t\t\tWHEN swrs7 < 3 THEN '1'\n" +
-                    "\t\t\t\t\t\tWHEN swrs7 < 5 THEN '2'\n" +
-                    "\t\t\t\t\t\tWHEN swrs7 <= 9 THEN '3'\n" +
+                    "\t\t\t\t\t\tWHEN (swrs7 < 3) THEN '1'\n" +
+                    "\t\t\t\t\t\tWHEN (swrs7 < 5) THEN '2'\n" +
+                    "\t\t\t\t\t\tWHEN (swrs7 <= 9) THEN '3'\n" +
                     "\t\t\t\t\t\tELSE '4'\n" +
                     "\t\t\t\t\tEND AS swrslx, 1 AS swrs_count\n" +
                     "\t\t\t\tFROM acduser.vw_acd_info\n" +
@@ -111,9 +111,9 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t\tfrom (\n" +
                     "\t\t\t\tselect xzqh, sglx\n" +
                     "\t\t\t\t\t, case \n" +
-                    "\t\t\t\t\t\twhen swrs7 < 3 then '1'\n" +
-                    "\t\t\t\t\t\twhen swrs7 < 5 then '2'\n" +
-                    "\t\t\t\t\t\twhen swrs7 <= 9 then '3'\n" +
+                    "\t\t\t\t\t\twhen (swrs7 < 3) then '1'\n" +
+                    "\t\t\t\t\t\twhen (swrs7 < 5) then '2'\n" +
+                    "\t\t\t\t\t\twhen (swrs7 <= 9) then '3'\n" +
                     "\t\t\t\t\t\telse '4'\n" +
                     "\t\t\t\t\tend as swrslx, 1 as swrs_count\n" +
                     "\t\t\t\tfrom acduser.vw_acd_info\n" +

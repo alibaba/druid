@@ -2017,16 +2017,9 @@ public class SQLSelectParser extends SQLParser {
         SQLMethodInvokeExpr udtf = (SQLMethodInvokeExpr) this.exprParser.primary();
         lateralViewTabSrc.setMethod(udtf);
 
-        String alias;
-        if (lexer.token == Token.AS) {
-            lexer.nextToken();
-            if (lexer.token == Token.AS) {
-                lexer.nextToken();
-            }
-
+        String alias = null;
+        if (lexer.token != Token.AS) {
             alias = alias();
-        } else {
-            alias = as();
         }
         if (alias != null) {
             lateralViewTabSrc.setAlias(alias);

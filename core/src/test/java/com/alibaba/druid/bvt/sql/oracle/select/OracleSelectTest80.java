@@ -42,7 +42,7 @@ public class OracleSelectTest80 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT o.STORE - o.LAST_STORE AS STORE\n" +
+            assertEquals("SELECT (o.STORE - o.LAST_STORE) AS STORE\n" +
                     "FROM t_order o;", text);
         }
 

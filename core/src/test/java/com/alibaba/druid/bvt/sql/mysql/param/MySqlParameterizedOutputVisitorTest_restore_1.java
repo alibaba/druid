@@ -38,7 +38,7 @@ public class MySqlParameterizedOutputVisitorTest_restore_1 extends TestCase {
                 "\tAND `buyer_resource`.`START_TIME` <= '2017-10-16 23:34:28.519'\n" +
                 "\tAND `buyer_resource`.`END_TIME` >= '2017-10-16 23:34:28.519'\n" +
                 "\tAND `buyer_resource`.`seller_id` = 2933220011\n" +
-                "\tAND (`buyer_resource`.`AVAILABLE_COUNT` = 0 OR `buyer_resource`.`AVAILABLE_COUNT` = -1)\n" +
+                "\tAND ((`buyer_resource`.`AVAILABLE_COUNT` = 0 OR `buyer_resource`.`AVAILABLE_COUNT` = -1))\n" +
                 "LIMIT 0, 20", formattedSql);
     }
 }

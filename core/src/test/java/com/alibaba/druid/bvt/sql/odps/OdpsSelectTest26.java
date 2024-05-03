@@ -33,7 +33,7 @@ public class OdpsSelectTest26 extends TestCase {
                 "    and process in('preCheckMobile','VerifyScrollCheckcode','SendMobileCheckcode','VerifyMobile',\n" +
                 "    'VerifyMobileCheckCode','VerifyNick','VerifyPasswordFormat','register','CheckMobileConflict','VerifyEmail') \n" +
                 "    group  by process,value5";//
-        assertEquals("SELECT count(DISTINCT trackid) AS total, process, value5 AS result\n" +
+        assertEquals("SELECT count(DISTINCT (trackid)) AS total, process, value5 AS result\n" +
                 "FROM havanaapp.s_register_process_log\n" +
                 "WHERE ds = '20170706'\n" +
                 "\tAND value6 = 'MOBILE_TB'\n" +
@@ -53,7 +53,7 @@ public class OdpsSelectTest26 extends TestCase {
                 "GROUP BY process, \n" +
                 "\tvalue5", SQLUtils.formatOdps(sql));
 
-        assertEquals("select count(DISTINCT trackid) as total, process, value5 as result\n" +
+        assertEquals("select count(DISTINCT (trackid)) as total, process, value5 as result\n" +
                 "from havanaapp.s_register_process_log\n" +
                 "where ds = '20170706'\n" +
                 "\tand value6 = 'MOBILE_TB'\n" +
