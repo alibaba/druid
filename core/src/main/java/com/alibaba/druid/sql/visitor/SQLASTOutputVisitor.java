@@ -705,13 +705,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 } else {
                     //bracket = !parameterized && !((SQLBinaryOpExpr) item).isParenthesized();
                 }
-                if (bracket) {
-                    print('(');
-                    visit(binaryOpExpr);
-                    print(')');
-                } else {
-                    visit(binaryOpExpr);
-                }
+                visit(binaryOpExpr);
 //
 //                if (item.hasAfterComment() && !parameterized) {
 //                    print(' ');
@@ -1794,7 +1788,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLIntegerExpr x) {
         boolean parameterized = this.parameterized;
+        if (x.isParenthesized() && !parameterized) {
+            print('(');
+        }
         printInteger(x, parameterized);
+        if (x.isParenthesized() && !parameterized) {
+            print(')');
+        }
         return false;
     }
 
@@ -1802,7 +1802,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printInteger(SQLIntegerExpr x, boolean parameterized) {
         Number number = x.getNumber();
-
         if (number.equals(ONE)) {
             if (DbType.oracle.equals(dbType)) {
                 SQLObject parent = x.getParent();

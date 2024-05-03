@@ -122,28 +122,35 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
 
         System.out.println(stmt.toString());
     }
+    public void test_9999() throws Exception {
+        String sql = "SELECT  NULLIF ( 5, + 589999 * MIN( 67 ) + COUNT( * ) * 8 ) * 47 + CAST( NULL AS SIGNED ) from aaa";
 
+        SQLStatement stmt = SQLUtils
+            .parseSingleStatement(sql, DbType.mysql);
+        System.out.println(stmt.toString());
+    }
     public void test_7() throws Exception {
         String sql = "SELECT + CASE WHEN 33 NOT BETWEEN - + 16 AND ( + COUNT( * ) "
             + "+ COUNT( * ) / - COALESCE ( - 27, ( - MAX( ALL 41 ) ) / 24 * - - 95 - - 80 + - COUNT( * ) * CAST( NULL AS DECIMAL ) / + 76 - - + 74 * - 49 + - - 25 ) * 89 * - "
             + "NULLIF ( - - SUM( DISTINCT + 57 ), COUNT( * ) ) - 29 - + MAX( - - 43 ) - + + MAX( DISTINCT + 90 ) + CASE - + 26 "
-            + "WHEN NULLIF ( 5, + 58 * MIN( 67 ) + COUNT( * ) * 8 ) * 47 + CAST( NULL AS SIGNED ) "
+            + "WHEN NULLIF ( 5, + 589999 * MIN( 67 ) + COUNT( * ) * 8 ) * 47 + CAST( NULL AS SIGNED ) "
             + "THEN 57 WHEN + 45 THEN NULL ELSE CAST( 35 AS SIGNED ) * 56 END * CAST( NULL AS SIGNED ) ) "
             + "THEN NULL WHEN NOT + ( - 10 ) / 42 IS NULL THEN + 93 ELSE 54 END * + 36";
 
         SQLStatement stmt = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);
 
-        assertEquals("SELECT (+CASE \n" +
-                "\t\tWHEN 33 NOT BETWEEN (-(+16)) AND (+COUNT(*) + COUNT(*) / -COALESCE(-27, (-MAX(ALL 41)) / 24 * --95 - -80 + (-COUNT(*)) * CAST(NULL AS DECIMAL) / +76 - (-(+74)) * -49 + --25) * 89 * -NULLIF(-(-SUM(DISTINCT +57)), COUNT(*)) - 29 - +MAX(--43) - +(+MAX(DISTINCT +90)) + CASE -(+26)\n" +
-                "\t\t\t\t\tWHEN NULLIF(5, (+58) * MIN(67) + COUNT(*) * 8) * 47 + CAST(NULL AS SIGNED) THEN 57\n" +
+        assertEquals("SELECT +CASE \n" +
+                "\t\tWHEN 33 NOT BETWEEN -+16 AND (+COUNT(*) + COUNT(*) / -COALESCE(-27, (-MAX(ALL 41)) / 24 * --95 - -80 + -COUNT(*) * CAST(NULL AS DECIMAL) / +76 - -+74 * -49 + --25) * 89 * -"
+            + "NULLIF(--SUM(DISTINCT +57), COUNT(*)) - 29 - +MAX(--43) - ++MAX(DISTINCT +90) + CASE -+26\n" +
+                "\t\t\t\t\tWHEN NULLIF(5, +589999 * MIN(67) + COUNT(*) * 8) * 47 + CAST(NULL AS SIGNED) THEN 57\n" +
                 "\t\t\t\t\tWHEN +45 THEN NULL\n" +
                 "\t\t\t\t\tELSE CAST(35 AS SIGNED) * 56\n" +
                 "\t\t\t\tEND * CAST(NULL AS SIGNED))\n" +
                 "\t\tTHEN NULL\n" +
-                "\t\tWHEN NOT (+-10) / 42 IS NULL THEN +93\n" +
+                "\t\tWHEN NOT +(-10) / 42 IS NULL THEN +93\n" +
                 "\t\tELSE 54\n" +
-                "\tEND) * +36", stmt.toString());
+                "\tEND * +36", stmt.toString());
 
         System.out.println(stmt.toString());
     }
