@@ -33,7 +33,7 @@ public class MySqlSelectTest_297
                 "\t, ip, owner, gmt_create\n" +
                 "FROM resource_instance\n" +
                 "WHERE type = 16\n" +
-                "\tAND properties -> '$.idkp' = '1647796581073291'", stmt.toString());
+                "\tAND (properties -> '$.idkp' = '1647796581073291')", stmt.toString());
     }
 
 

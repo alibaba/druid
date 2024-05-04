@@ -1399,8 +1399,6 @@ public class DruidDataSource extends DruidAbstractDataSource
                 || (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER2))) {
             DbType dbType = DbType.of(this.dbTypeName);
             this.validConnectionChecker = new OceanBaseValidConnectionChecker(dbType);
-        } else if (realDriverClassName.equals(JdbcConstants.HIVE_DRIVER)) {
-            this.validConnectionChecker = new HiveValidConnectionChecker();
         }
 
     }

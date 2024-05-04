@@ -72,7 +72,7 @@ public class DB2SelectTest_11 extends DB2Test {
                         "FROM A, B\n" +
                         "WHERE B.F_2211 = '5'\n" +
                         "\tAND A.F_0301 = B.F_0301\n" +
-                        "\tAND (Substr(B.F_0815, 1, 4) CONCAT Substr(B.F_0815, 5, 2)) > A.F_0802\n" +
+                        "\tAND Substr(B.F_0815, 1, 4) CONCAT Substr(B.F_0815, 5, 2) > A.F_0802\n" +
                         "\tAND A.F_2100 > 0\n" +
                         "UNION\n" +
                         "SELECT A.F_0201, A.F_0301, A.F_0802, A.F_2100\n" +
@@ -88,7 +88,7 @@ public class DB2SelectTest_11 extends DB2Test {
                         "from A, B\n" +
                         "where B.F_2211 = '5'\n" +
                         "\tand A.F_0301 = B.F_0301\n" +
-                        "\tand (Substr(B.F_0815, 1, 4) concat Substr(B.F_0815, 5, 2)) > A.F_0802\n" +
+                        "\tand Substr(B.F_0815, 1, 4) concat Substr(B.F_0815, 5, 2) > A.F_0802\n" +
                         "\tand A.F_2100 > 0\n" +
                         "union\n" +
                         "select A.F_0201, A.F_0301, A.F_0802, A.F_2100\n" +

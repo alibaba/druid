@@ -41,6 +41,7 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable, SQLReplac
             x.setExpr(expr.clone());
         }
         x.operator = operator;
+        x.parenthesized = parenthesized;
         return x;
     }
 

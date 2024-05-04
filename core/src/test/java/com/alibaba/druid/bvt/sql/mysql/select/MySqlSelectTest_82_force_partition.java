@@ -71,9 +71,9 @@ public class MySqlSelectTest_82_force_partition extends MysqlTest {
             assertEquals("SELECT app_key, device_id, brand\n" +
                             "FORCE PARTITION 'MASSDEVICE40'\n" +
                             "FROM ktvs_device_info\n" +
-                            "WHERE app_key = ?\n" +
+                            "WHERE (app_key = ?\n" +
                             "\tAND package_name = ?\n" +
-                            "\tAND app_version IN (?)\n" +
+                            "\tAND app_version IN (?))\n" +
                             "ORDER BY gmt_modified DESC", //
                     output);
         }
@@ -82,9 +82,9 @@ public class MySqlSelectTest_82_force_partition extends MysqlTest {
             assertEquals("select app_key, device_id, brand\n" +
                             "force partition 'MASSDEVICE40'\n" +
                             "from ktvs_device_info\n" +
-                            "where app_key = ?\n" +
+                            "where (app_key = ?\n" +
                             "\tand package_name = ?\n" +
-                            "\tand app_version in (?)\n" +
+                            "\tand app_version in (?))\n" +
                             "order by gmt_modified desc", //
                     output);
         }
@@ -94,9 +94,9 @@ public class MySqlSelectTest_82_force_partition extends MysqlTest {
             assertEquals("SELECT app_key, device_id, brand\n" +
                             "FORCE PARTITION 'MASSDEVICE40'\n" +
                             "FROM ktvs_device_info\n" +
-                            "WHERE app_key = ?\n" +
+                            "WHERE (app_key = ?\n" +
                             "\tAND package_name = ?\n" +
-                            "\tAND app_version IN (?)\n" +
+                            "\tAND app_version IN (?))\n" +
                             "ORDER BY gmt_modified DESC", //
                     output);
         }

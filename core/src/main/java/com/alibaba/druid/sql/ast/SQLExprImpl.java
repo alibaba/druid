@@ -18,9 +18,18 @@ package com.alibaba.druid.sql.ast;
 import java.util.List;
 
 public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
+    protected boolean parenthesized;
+
     public SQLExprImpl() {
     }
 
+    public boolean isParenthesized() {
+        return parenthesized;
+    }
+
+    public void setParenthesized(boolean parenthesized) {
+        this.parenthesized = parenthesized;
+    }
     public abstract boolean equals(Object o);
 
     public abstract int hashCode();

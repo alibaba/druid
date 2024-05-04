@@ -132,7 +132,7 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\t\t\t, '18-JUN-02', 'IT_PROG', 90000000, 0, 100\n" +
                         "\t\t\t, 110);\n" +
                         "\t\ttot_emps := tot_emps + 1;\n" +
-                        "\t\tRETURN new_empno;\n" +
+                        "\t\tRETURN (new_empno);\n" +
                         "\tEND;\n" +
                         "\tFUNCTION create_dept (\n" +
                         "\t\tdepartment_id NUMBER, \n" +
@@ -148,7 +148,7 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\t\tINSERT INTO departments\n" +
                         "\t\tVALUES (new_deptno, 'department name', 100, 1700);\n" +
                         "\t\ttot_depts := tot_depts + 1;\n" +
-                        "\t\tRETURN new_deptno;\n" +
+                        "\t\tRETURN (new_deptno);\n" +
                         "\tEND;\n" +
                         "\tPROCEDURE remove_emp (\n" +
                         "\t\temployee_id NUMBER\n" +

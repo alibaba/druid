@@ -42,7 +42,7 @@ public class PGMergeIntoTest0 extends PGTest {
             "USING (\n" +
             "\tSELECT CustomerId, TransactionValue\n" +
             "\tFROM RecentTransactions\n" +
-            ") T ON (CA.CustomerId = T.CustomerId) \n" +
+            ") T ON CA.CustomerId = T.CustomerId \n" +
             "WHEN NOT MATCHED THEN INSERT (CustomerId, Balance) VALUES (T.CustomerId, T.TransactionValue)\n" +
             "WHEN MATCHED THEN UPDATE SET Balance = Balance + TransactionValue;" , stmt.toString());
 

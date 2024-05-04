@@ -122,7 +122,7 @@ public class OracleCreateTableTest77 extends OracleTest {
                         "FROM (\n" +
                         "\tSELECT p.CONTRACT_HEADER_ID, NULL, P.CONTRACT_PRODUCT_ID, P.INVENTORY_ITEM_ID AS PROD_ID, P.DESCRIPTION AS PROD_DES\n" +
                         "\t\t, P.MI, D.CONTRACT_DEVICE_ID, D.INVENTORY_ITEM_ID AS DEV_ID, D.DESCRIPTION AS DEV_DES, S.SITE_ID\n" +
-                        "\t\t, S.SITE_QUANTITY, S.SITE_ADDRESS || S.SECOND_LEVEL || S.THIRD_LEVEL || S.FOURTH_LEVEL AS SITE_DES\n" +
+                        "\t\t, S.SITE_QUANTITY, (S.SITE_ADDRESS || S.SECOND_LEVEL || S.THIRD_LEVEL || S.FOURTH_LEVEL) AS SITE_DES\n" +
                         "\t\t, M.CONTRACT_MODULE_ID, M.INVENTORY_ITEM_ID AS MOD_ID, M.DESCRIPTION AS MOD_DES, M.module_quantity, p.hard_param\n" +
                         "\t\t, p.soft_param, p.make_param, p.risk_param, p.soft_cost_param, p.prod_manager\n" +
                         "\tFROM (\n" +

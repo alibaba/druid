@@ -6162,6 +6162,9 @@ public class MySqlStatementParser extends SQLStatementParser {
                                     check.setName(constraintSymbol);
                                 }
                                 check.setExpr(this.exprParser.expr());
+                                if (check.getExpr() instanceof SQLExprImpl) {
+                                    ((SQLExprImpl) check.getExpr()).setParenthesized(true);
+                                }
                                 accept(Token.RPAREN);
                                 boolean enforce = true;
                                 if (lexer.token() == Token.NOT) {

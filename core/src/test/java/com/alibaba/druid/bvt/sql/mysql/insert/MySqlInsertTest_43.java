@@ -92,20 +92,20 @@ public class MySqlInsertTest_43 extends TestCase {
                 "\tFROM sales_order t1\n" +
                 "\t\tJOIN (\n" +
                 "\t\t\tSELECT t2_1.warehouse_id, t2_1.external_batch_code\n" +
-                "\t\t\t\t, CASE \n" +
+                "\t\t\t\t, (CASE \n" +
                 "\t\t\t\t\tWHEN t2_2.operation_type = 2\n" +
                 "\t\t\t\t\t\tOR t2_2.operation_type IS NULL\n" +
                 "\t\t\t\t\tTHEN '2'\n" +
                 "\t\t\t\t\tWHEN t2_2.operation_type = 3 THEN '800'\n" +
                 "\t\t\t\t\tWHEN t2_2.operation_type = 1 THEN '900'\n" +
-                "\t\t\t\tEND AS businessType\n" +
+                "\t\t\t\tEND) AS businessType\n" +
                 "\t\t\tFROM batch_order t2_1\n" +
                 "\t\t\t\tJOIN wave_order t2_2\n" +
                 "\t\t\t\tON t2_1.wave_id = t2_2.id\n" +
                 "\t\t\t\t\tAND t2_1.warehouse_id = t2_2.warehouse_id\n" +
                 "\t\t\t\t\tAND t2_2.wave_status IN (5, 6)\n" +
-                "\t\t\t\t\tAND t2_1.ds >= 201901 - 1\n" +
-                "\t\t\t\t\tAND t2_2.ds >= 201901 - 1\n" +
+                "\t\t\t\t\tAND t2_1.ds >= (201901 - 1)\n" +
+                "\t\t\t\t\tAND t2_2.ds >= (201901 - 1)\n" +
                 "\t\t\t\t\tAND t2_1.gmt_create >= date_add(now(), INTERVAL -3 DAY)\n" +
                 "\t\t\t\t\tAND t2_1.gmt_create <= now()\n" +
                 "\t\t\t\t\tAND t2_2.gmt_create >= date_add(now(), INTERVAL -3 DAY)\n" +

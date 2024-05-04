@@ -218,11 +218,11 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t\tUNION ALL\n" +
                         "\t\tSELECT header.product_id AS osg_type_id, HEADER.PARENT_ID AS CONTRACT_MODULE_ID, HEADER.SERIAL_ID AS item_id, HEADER.OSG_HEADER_ID AS CONTRACT_ITEM_ID, ser.product_serial AS item_name\n" +
                         "\t\t\t, 'OSG' AS item_type, HEADER.QUANTITY AS item_quantity\n" +
-                        "\t\t\t, LINE.REF_PRICE + nvl(REPLY.MARKET_REFERENCE_PRICE, 0) AS COST_PRICE\n" +
+                        "\t\t\t, (LINE.REF_PRICE + nvl(REPLY.MARKET_REFERENCE_PRICE, 0)) AS COST_PRICE\n" +
                         "\t\t\t, 1 AS COST_PRICE_PARAMETER, 'Y' AS CONFIRM_FLAG, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04\n" +
                         "\t\t\t, 1 AS OLD_COST -- LINE.PRICE+nvl(REPLY.LIST_PRICE,0) LIST_PRICE,\n" +
                         "\t\t\t, HEADER.LIST_PRICE AS LIST_PRICE, '+Mn\u0016-�' AS ITEM_CODE\n" +
-                        "\t\t\t, LINE.COST + nvl(REPLY.RMBPRICE_WITHTAX, 0) AS CONFIRM_COST_PRICE04 -- 0 PROD_ATTRIBUTE_ID,0 ITEM_CHIP\n" +
+                        "\t\t\t, (LINE.COST + nvl(REPLY.RMBPRICE_WITHTAX, 0)) AS CONFIRM_COST_PRICE04 -- 0 PROD_ATTRIBUTE_ID,0 ITEM_CHIP\n" +
                         "\t\tFROM TCP_CPR.DIFF_CON_OSG3_HEADERS HEADER, ERP_ZTE.ZTE_KX_OSG3_SERIALS ser, ERP_ZTE.zte_kx_osg3_reply_headers REPLY, (\n" +
                         "\t\t\tSELECT LINE.OSG_HEADER_ID, SUM((LINE.QUANTITY - LINE.THEORETIC_QTY) * PART.rmbprice_withtax) AS COST\n" +
                         "\t\t\t\t, SUM((LINE.QUANTITY - LINE.THEORETIC_QTY) * PART.LIST_PRICE) AS PRICE\n" +

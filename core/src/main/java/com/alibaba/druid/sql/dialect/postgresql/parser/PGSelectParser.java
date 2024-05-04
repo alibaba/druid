@@ -17,9 +17,11 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSizeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLTableSampling;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
@@ -272,6 +274,98 @@ public class PGSelectParser extends SQLSelectParser {
             }
         }
 
+        return this.parseTableSourceTableSample(tableSource);
+    }
+
+    public SQLTableSource parseTableSourceTableSample(SQLTableSource tableSource) {
+        if (lexer.identifierEquals(FnvHash.Constants.TABLESAMPLE) && tableSource instanceof SQLExprTableSource) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            SQLTableSampling sampling = new SQLTableSampling();
+            if (lexer.identifierEquals(FnvHash.Constants.BERNOULLI)) {
+                lexer.nextToken();
+                sampling.setBernoulli(true);
+            } else if (lexer.identifierEquals(FnvHash.Constants.SYSTEM)) {
+                lexer.nextToken();
+                sampling.setSystem(true);
+            }
+
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+
+                if (lexer.identifierEquals(FnvHash.Constants.BUCKET)) {
+                    lexer.nextToken();
+                    SQLExpr bucket = this.exprParser.primary();
+                    sampling.setBucket(bucket);
+
+                    if (lexer.token() == Token.OUT) {
+                        lexer.nextToken();
+                        accept(Token.OF);
+                        SQLExpr outOf = this.exprParser.primary();
+                        sampling.setOutOf(outOf);
+                    }
+
+                    if (lexer.token() == Token.ON) {
+                        lexer.nextToken();
+                        SQLExpr on = this.exprParser.expr();
+                        sampling.setOn(on);
+                    }
+                }
+
+                if (lexer.token() == Token.LITERAL_INT || lexer.token() == Token.LITERAL_FLOAT) {
+                    SQLExpr val = this.exprParser.primary();
+
+                    if (lexer.identifierEquals(FnvHash.Constants.ROWS)) {
+                        lexer.nextToken();
+                        sampling.setRows(val);
+                    } else if (lexer.token() == Token.RPAREN) {
+                        sampling.setRows(val);
+                    } else {
+                        acceptIdentifier("PERCENT");
+                        sampling.setPercent(val);
+                    }
+                }
+
+                if (lexer.token() == Token.IDENTIFIER) {
+                    String strVal = lexer.stringVal();
+                    char first = strVal.charAt(0);
+                    char last = strVal.charAt(strVal.length() - 1);
+                    if (last >= 'a' && last <= 'z') {
+                        last -= 32; // to upper
+                    }
+
+                    boolean match = false;
+                    if ((first == '.' || (first >= '0' && first <= '9'))) {
+                        switch (last) {
+                            case 'B':
+                            case 'K':
+                            case 'M':
+                            case 'G':
+                            case 'T':
+                            case 'P':
+                                match = true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    SQLSizeExpr size = new SQLSizeExpr(strVal.substring(0, strVal.length() - 2), last);
+                    sampling.setByteLength(size);
+                    lexer.nextToken();
+                }
+
+                final SQLExprTableSource table = (SQLExprTableSource) tableSource;
+                table.setSampling(sampling);
+
+                accept(Token.RPAREN);
+            } else {
+                lexer.reset(mark);
+            }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.USING)) {
+            return tableSource;
+        }
         return super.parseTableSourceRest(tableSource);
     }
 

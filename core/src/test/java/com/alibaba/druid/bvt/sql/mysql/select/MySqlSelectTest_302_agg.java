@@ -30,9 +30,9 @@ public class MySqlSelectTest_302_agg
         SQLStatement stmt = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);
 
-        assertEquals("SELECT CASE \n" +
-                "\t\tWHEN `test4dmp`.`sum`(1) OVER (PARTITION BY 1 ) = 1 THEN 1\n" +
-                "\tEND AS `case when sum(1) OVER (PARTITION BY 1 ) =1 then 1 end`\n" +
+        assertEquals("SELECT (CASE \n" +
+                "\t\tWHEN (`test4dmp`.`sum`(1) OVER (PARTITION BY 1 ) = 1) THEN 1\n" +
+                "\tEND) AS `case when sum(1) OVER (PARTITION BY 1 ) =1 then 1 end`\n" +
                 "FROM test", stmt.toString());
     }
 
@@ -44,9 +44,9 @@ public class MySqlSelectTest_302_agg
         SQLStatement stmt = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);
 
-        assertEquals("SELECT CASE \n" +
-                "\t\tWHEN `test4dmp`.`sum`(1) = 1 THEN 1\n" +
-                "\tEND\n" +
+        assertEquals("SELECT (CASE \n" +
+                "\t\tWHEN (`test4dmp`.`sum`(1) = 1) THEN 1\n" +
+                "\tEND)\n" +
                 "FROM test", stmt.toString());
     }
 

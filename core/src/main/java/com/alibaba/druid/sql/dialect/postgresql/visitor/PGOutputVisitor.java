@@ -433,9 +433,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (expr != null) {
             if (expr instanceof SQLBinaryOpExpr) {
-                print('(');
                 expr.accept(this);
-                print(')');
             } else if (expr instanceof PGTypeCastExpr && dataType.getArguments().isEmpty()) {
                 dataType.accept(this);
                 print('(');
@@ -655,8 +653,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         x.getTarget().accept(this);
         SQLExpr value = x.getValue();
-        if (x.getTarget() instanceof SQLIdentifierExpr
-            && ((SQLIdentifierExpr) x.getTarget()).getName().equalsIgnoreCase("TIME ZONE")) {
+        boolean needSpace = false;
+        if (x.getTarget() instanceof SQLIdentifierExpr) {
+            String name = ((SQLIdentifierExpr) x.getTarget()).getName();
+            needSpace = "TIME ZONE".equalsIgnoreCase(name) || "schema".equalsIgnoreCase(name) || "names".equalsIgnoreCase(name);
+        }
+        if (needSpace) {
             print(' ');
         } else {
             if (!((SQLSetStatement) x.getParent()).isUseSet()) {
@@ -953,7 +955,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(OracleIntervalExpr x) {
-        if (x.getValue() instanceof SQLLiteralExpr) {
+        if (x.getValue() instanceof SQLLiteralExpr || x.getValue() instanceof SQLVariantRefExpr) {
             print0(ucase ? "INTERVAL " : "interval ");
             x.getValue().accept(this);
             print(' ');
@@ -2645,7 +2647,26 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x instanceof PGCharExpr && ((PGCharExpr) x).isCSytle()) {
             print('E');
         }
-        printChars(x.getText());
+        if (x.getCollate() != null) {
+            String collate = x.getCollate();
+            if (x.isParenthesized()) {
+                print('(');
+            }
+            printChars(x.getText());
+            print(" COLLATE ");
+            if (collate.startsWith("'") || collate.endsWith("\"")) {
+                print(collate);
+            } else {
+                print('\'');
+                print(collate);
+                print('\'');
+            }
+            if (x.isParenthesized()) {
+                print(')');
+            }
+        } else {
+            printChars(x.getText());
+        }
 
         return false;
     }

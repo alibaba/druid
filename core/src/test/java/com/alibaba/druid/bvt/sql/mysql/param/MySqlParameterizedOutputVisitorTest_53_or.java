@@ -44,6 +44,6 @@ public class MySqlParameterizedOutputVisitorTest_53_or extends TestCase {
         assertEquals("SELECT p.id AS \"id\", p.rule_id AS \"ruleId\", p.name AS \"name\", p.param_type AS \"type\", p.default_value AS \"defaultValue\"\n" +
                 "\t, p.description AS \"description\"\n" +
                 "FROM rules_parameters p\n" +
-                "WHERE p.rule_id = ?", psql);
+                "WHERE (p.rule_id = ?)", psql);
     }
 }
