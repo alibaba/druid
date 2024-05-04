@@ -1890,7 +1890,19 @@ public class MySqlExprParser extends SQLExprParser {
                         if (lexer.token() == Token.EQ) {
                             lexer.nextToken();
                         }
-                        assignItem = new SQLAssignItem(new SQLIdentifierExpr("CHARACTER SET"), expr());
+                        if (lexer.token() == Token.IDENTIFIER) {
+                            assignItem = new SQLAssignItem(new SQLIdentifierExpr("CHARACTER SET"), new SQLIdentifierExpr(lexer.stringVal()));
+                            lexer.nextToken();
+                        } else if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.LITERAL_CHARS) {
+                            String charset = lexer.stringVal();
+                            if (charset.startsWith("\"")) {
+                                charset = charset.substring(1, charset.length() - 1);
+                            }
+                            assignItem = new SQLAssignItem(new SQLIdentifierExpr("CHARACTER SET"), new SQLCharExpr(charset));
+                            lexer.nextToken();
+                        } else {
+                            assignItem = new SQLAssignItem(new SQLIdentifierExpr("CHARACTER SET"), expr());
+                        }
                     } else if (lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
                         lexer.nextToken();
                         if (lexer.token() == Token.EQ) {
@@ -1904,8 +1916,19 @@ public class MySqlExprParser extends SQLExprParser {
                     accept(Token.SET);
                     if (lexer.token() == Token.EQ) {
                         lexer.nextToken();
+                    } if (lexer.token() == Token.IDENTIFIER) {
+                        assignItem = new SQLAssignItem(new SQLIdentifierExpr("CHARACTER SET"), new SQLIdentifierExpr(lexer.stringVal()));
+                        lexer.nextToken();
+                    } else if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.LITERAL_CHARS) {
+                        String charset = lexer.stringVal();
+                        if (charset.startsWith("\"")) {
+                            charset = charset.substring(1, charset.length() - 1);
+                        }
+                        assignItem = new SQLAssignItem(new SQLIdentifierExpr("CHARACTER SET"), new SQLCharExpr(charset));
+                        lexer.nextToken();
+                    } else {
+                        assignItem = new SQLAssignItem(new SQLIdentifierExpr("CHARACTER SET"), expr());
                     }
-                    assignItem = new SQLAssignItem(new SQLIdentifierExpr("CHARACTER SET"), expr());
                 } else if (hash == FnvHash.Constants.DATA ||
                         lexer.token() == Token.INDEX) {
                     // {DATA|INDEX} DIRECTORY [=] 'absolute path to directory'

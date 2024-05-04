@@ -1059,23 +1059,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         } else if (left instanceof SQLBetweenExpr) {
             SQLBetweenExpr betweenExpr = (SQLBetweenExpr) left;
-            boolean quote;
-            if (betweenExpr.isNot()) {
-                quote = op.priority <= SQLBinaryOperator.Equality.priority;
-            } else {
-                quote = op.priority < SQLBinaryOperator.Equality.priority;
-            }
-//            if (quote) {
-//                print("(aaa");
-//            }
             visit(betweenExpr);
-//            if (quote) {
-//                print(')');
-//            }
         } else if (left instanceof SQLNotExpr) {
-//            print('(');
             printExpr(left);
-//            print(')');
         } else if (left instanceof SQLUnaryExpr) {
             SQLUnaryExpr unary = (SQLUnaryExpr) left;
 
@@ -1436,6 +1422,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print('(');
         }
         printName0(x.getName());
+        if (x.getCollate() != null) {
+            String collate = x.getCollate();
+            print(" COLLATE ");
+            if (collate.startsWith("'") || collate.endsWith("\"")) {
+                print(collate);
+            } else {
+                print('\'');
+                print(collate);
+                print('\'');
+            }
+        }
         if (x.isParenthesized()) {
             print(')');
         }
@@ -5800,7 +5797,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isNotClustered()) {
             print0(ucase ? " NOT CLUSTERED" : " not clustered");
         }
-
         return false;
     }
 
