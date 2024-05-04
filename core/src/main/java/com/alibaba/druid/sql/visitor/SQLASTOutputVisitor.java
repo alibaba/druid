@@ -10962,7 +10962,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printAndAccept(clusteredBy, ",");
             print(')');
         }
-
+        List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
+        if (sortedBy.size() > 0) {
+            println();
+            print0(ucase ? "SORTED BY (" : "sorted by (");
+            printAndAccept(sortedBy, ", ");
+            print(')');
+        }
+        int buckets = x.getBuckets();
+        if (buckets > 0) {
+            println();
+            print0(ucase ? "INTO " : "into ");
+            print(buckets);
+            print0(ucase ? " BUCKETS" : " buckets");
+        }
         List<SQLExpr> skewedBy = x.getSkewedBy();
         if (skewedBy.size() > 0) {
             println();
@@ -10991,21 +11004,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         Map<String, SQLObject> serdeProperties = x.getSerdeProperties();
         printSerdeProperties(serdeProperties);
 
-        List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
-        if (sortedBy.size() > 0) {
-            println();
-            print0(ucase ? "SORTED BY (" : "sorted by (");
-            printAndAccept(sortedBy, ", ");
-            print(')');
-        }
-
-        int buckets = x.getBuckets();
-        if (buckets > 0) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            print(buckets);
-            print0(ucase ? " BUCKETS" : " buckets");
-        }
 
         SQLExprTableSource like = x.getLike();
         if (like != null) {
