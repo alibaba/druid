@@ -11000,11 +11000,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
             visit(format);
         }
-
         Map<String, SQLObject> serdeProperties = x.getSerdeProperties();
         printSerdeProperties(serdeProperties);
-
-
         SQLExprTableSource like = x.getLike();
         if (like != null) {
             println();
