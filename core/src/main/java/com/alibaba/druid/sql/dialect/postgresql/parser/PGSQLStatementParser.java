@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -666,6 +667,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
             paramExpr = new SQLIdentifierExpr(parameter);
             lexer.nextToken();
             values.add(this.exprParser.primary());
+            lexer.nextToken();
+        } else if (JdbcUtils.isPgsqlDbType(dbType) && ("schema".equalsIgnoreCase(parameter) || "names".equalsIgnoreCase(parameter))) {
+            paramExpr = new SQLIdentifierExpr(parameter);
+            lexer.nextToken();
+            String value = lexer.stringVal();
+            values.add(new SQLCharExpr(value));
             lexer.nextToken();
         } else {
             paramExpr = new SQLIdentifierExpr(parameter);
