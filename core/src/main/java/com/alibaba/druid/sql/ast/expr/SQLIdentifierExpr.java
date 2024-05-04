@@ -31,6 +31,8 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
     private SQLObject resolvedColumn;
     private SQLObject resolvedOwnerObject;
 
+    protected String collate;
+
     public SQLIdentifierExpr() {
     }
 
@@ -69,6 +71,14 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
         }
     }
 
+    public String getCollate() {
+        return collate;
+    }
+
+    public void setCollate(String collate) {
+        this.collate = collate;
+    }
+
     public long nameHashCode64() {
         return hashCode64();
     }
@@ -77,7 +87,11 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
     public long hashCode64() {
         if (hashCode64 == 0
                 && name != null) {
-            hashCode64 = FnvHash.hashCode64(name);
+            if (collate != null) {
+                hashCode64 = FnvHash.hashCode64(name + collate);
+            } else {
+                hashCode64 = FnvHash.hashCode64(name);
+            }
         }
         return hashCode64;
     }
@@ -124,7 +138,7 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
         if (hint != null) {
             x.hint = hint.clone();
         }
-
+        x.collate = collate;
         return x;
     }
 

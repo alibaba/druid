@@ -662,6 +662,16 @@ public class SQLSelectParser extends SQLParser {
                 } else {
                     identExpr = new SQLIdentifierExpr(ident, hash_lower);
                 }
+            } else if (lexer.identifierEquals("COLLATE")) {
+                acceptIdentifier("COLLATE");
+                String collateValue = lexer.stringVal();
+                if (lexer.token == Token.IDENTIFIER || lexer.token == Token.LITERAL_ALIAS || lexer.token == Token.LITERAL_CHARS) {
+                    identExpr = new SQLIdentifierExpr(ident);
+                    ((SQLIdentifierExpr) identExpr).setCollate(collateValue);
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("syntax error. " + lexer.info());
+                }
             } else {
                 identExpr = new SQLIdentifierExpr(ident, hash_lower);
             }

@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.parser.Lexer.SavePoint;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.HexBin;
+import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.MySqlUtils;
 import com.alibaba.druid.util.StringUtils;
 
@@ -441,8 +442,18 @@ public class SQLExprParser extends SQLParser {
                 }
 
                 lexer.nextToken();
-
-                if (hash_lower == FnvHash.Constants.TRY_CAST) {
+                if (lexer.identifierEquals("COLLATE")) {
+                    acceptIdentifier("COLLATE");
+                    String collateValue = lexer.stringVal();
+                    if (lexer.token == Token.IDENTIFIER || lexer.token == Token.LITERAL_ALIAS || lexer.token == Token.LITERAL_CHARS) {
+                        SQLIdentifierExpr identifierExpr = new SQLIdentifierExpr(ident);
+                        identifierExpr.setCollate(collateValue);
+                        lexer.nextToken();
+                        sqlExpr = identifierExpr;
+                    } else {
+                        throw new ParserException("syntax error. " + lexer.info());
+                    }
+                } else if (hash_lower == FnvHash.Constants.TRY_CAST) {
                     accept(Token.LPAREN);
                     SQLCastExpr cast = new SQLCastExpr();
                     cast.setTry(true);
@@ -607,7 +618,26 @@ public class SQLExprParser extends SQLParser {
                 break;
             case LITERAL_CHARS: {
                 sqlExpr = new SQLCharExpr(lexer.stringVal());
-
+                if (JdbcUtils.isPgsqlDbType(dbType)) {
+                    Lexer.SavePoint savePoint = lexer.mark();
+                    lexer.nextToken();
+                    if (lexer.token() == Token.IDENTIFIER) {
+                        String collate = lexer.stringVal();
+                        if (collate.equalsIgnoreCase("collate")) {
+                            lexer.nextToken();
+                            String collateValue = lexer.stringVal();
+                            if (lexer.token == Token.IDENTIFIER || lexer.token == Token.LITERAL_ALIAS || lexer.token == Token.LITERAL_CHARS) {
+                                ((SQLCharExpr) sqlExpr).setCollate(lexer.stringVal());
+                            } else {
+                                throw new ParserException("syntax error. " + lexer.info());
+                            }
+                        } else {
+                            lexer.reset(savePoint);
+                        }
+                    } else {
+                        lexer.reset(savePoint);
+                    }
+                }
                 if (DbType.mysql == dbType) {
                     lexer.nextTokenValue();
 
@@ -5899,8 +5929,8 @@ public class SQLExprParser extends SQLParser {
                     expr = new SQLIdentifierExpr(ident);
                 }
             } else if (lexer.identifierEquals(FnvHash.Constants.COLLATE)
-                    && dbType == DbType.mysql
-                    && lexer.stringVal().charAt(0) != '`'
+                && (JdbcUtils.isMysqlDbType(dbType) || JdbcUtils.isPgsqlDbType(dbType))
+                && lexer.stringVal().charAt(0) != '`'
             ) {
                 lexer.nextToken();
                 String collate = lexer.stringVal();
@@ -5909,7 +5939,7 @@ public class SQLExprParser extends SQLParser {
                 SQLBinaryOpExpr binaryExpr = new SQLBinaryOpExpr(
                         new SQLIdentifierExpr(ident),
                         SQLBinaryOperator.COLLATE,
-                        new SQLIdentifierExpr(collate), DbType.mysql
+                        new SQLIdentifierExpr(collate), dbType
                 );
 
                 expr = binaryExpr;

@@ -2647,7 +2647,26 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x instanceof PGCharExpr && ((PGCharExpr) x).isCSytle()) {
             print('E');
         }
-        printChars(x.getText());
+        if (x.getCollate() != null) {
+            String collate = x.getCollate();
+            if (x.isParenthesized()) {
+                print('(');
+            }
+            printChars(x.getText());
+            print(" COLLATE ");
+            if (collate.startsWith("'") || collate.endsWith("\"")) {
+                print(collate);
+            } else {
+                print('\'');
+                print(collate);
+                print('\'');
+            }
+            if (x.isParenthesized()) {
+                print(')');
+            }
+        } else {
+            printChars(x.getText());
+        }
 
         return false;
     }
