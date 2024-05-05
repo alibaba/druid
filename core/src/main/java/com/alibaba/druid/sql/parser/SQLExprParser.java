@@ -395,7 +395,6 @@ public class SQLExprParser extends SQLParser {
                     sqlExpr = new SQLMethodInvokeExpr();
                     break;
                 }
-
                 sqlExpr = expr();
 
                 if (lexer.token == Token.COMMA) {
@@ -5912,7 +5911,6 @@ public class SQLExprParser extends SQLParser {
         boolean connectByRoot = false;
         Token token = lexer.token;
         int startPos = lexer.startPos;
-
         if (token == Token.IDENTIFIER
                 && !(lexer.hashLCase() == -5808529385363204345L && lexer.charAt(lexer.pos) == '\'' && dbType == DbType.mysql) // x'123' X'123'
         ) {
@@ -6474,7 +6472,6 @@ public class SQLExprParser extends SQLParser {
             while (lexer.token == Token.HINT) {
                 lexer.nextToken();
             }
-
             expr = expr();
         }
 

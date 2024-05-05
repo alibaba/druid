@@ -45,7 +45,6 @@ public class Issue5791 {
                 System.out.println(dbType + "原始的sql===" + sql);
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 List<SQLStatement> statementList = parser.parseStatementList();
-                com.alibaba.druid.sql.ast.statement.SQLJoinTableSource ggg;
                 String sqlGen = statementList.toString();
                 System.out.println(dbType + "生成的sql===" + sqlGen);
                 assertTrue(sqlGen.contains(" C2-2"));
