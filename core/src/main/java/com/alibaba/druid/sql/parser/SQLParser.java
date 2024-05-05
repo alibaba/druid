@@ -776,7 +776,7 @@ public class SQLParser {
                     return alias;
                 case GROUP:
                 case ORDER:
-                    if (dbType == DbType.odps || dbType == DbType.hive) {
+                    {
                         Lexer.SavePoint mark = lexer.mark();
                         alias = lexer.stringVal();
                         lexer.nextToken();
@@ -784,7 +784,6 @@ public class SQLParser {
                             lexer.reset(mark);
                             alias = null;
                         }
-                        break;
                     }
                     break;
                 case QUES:
