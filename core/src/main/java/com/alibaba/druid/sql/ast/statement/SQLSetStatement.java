@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -36,6 +37,8 @@ public class SQLSetStatement extends SQLStatementImpl {
     private List<SQLCommentHint> hints;
 
     private boolean useSet;
+
+    SQLStatement maridbSetForStatement;
 
     public SQLSetStatement() {
     }
@@ -98,11 +101,22 @@ public class SQLSetStatement extends SQLStatementImpl {
         this.items.add(assignItem);
     }
 
+    public SQLStatement getMaridbSetForStatement() {
+        return maridbSetForStatement;
+    }
+
+    public void setMaridbSetForStatement(SQLStatement maridbSetForStatement) {
+        this.maridbSetForStatement = maridbSetForStatement;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.items);
             acceptChild(visitor, this.hints);
+            if (maridbSetForStatement != null) {
+                maridbSetForStatement.accept(visitor);
+            }
         }
         visitor.endVisit(this);
     }
