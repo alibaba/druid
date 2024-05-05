@@ -1075,32 +1075,6 @@ public class SQLSelectParser extends SQLParser {
     protected void parseSelectList(SQLSelectQueryBlock queryBlock) {
         final List<SQLSelectItem> selectList = queryBlock.getSelectList();
         for (; ; ) {
-            SavePoint savePoint = lexer.markOut();
-            if (lexer.token() == Token.LPAREN) {
-                lexer.nextToken();
-                if (lexer.token() == Token.WITH) {
-                    String alias = null;
-                    SQLSelect select = select();
-                    SQLSelectExpr sqlSelectExpr = new SQLSelectExpr(select);
-                    sqlSelectExpr.setParenthesized(true);
-                    SQLSelectItem selectItem = new SQLSelectItem(sqlSelectExpr, alias, false);
-                    selectList.add(selectItem);
-                    selectItem.setParent(queryBlock);
-                    accept(Token.RPAREN);
-                    if (lexer.token() == Token.AS) {
-                        accept(Token.AS);
-                        sqlSelectExpr.setAs(new SQLIdentifierExpr(lexer.stringVal()));
-                        lexer.nextToken();
-                        if (lexer.token != Token.COMMA) {
-                            break;
-                        }
-                        lexer.nextToken();
-                    }
-                } else {
-                    lexer.reset(savePoint);
-                }
-            }
-
             final SQLSelectItem selectItem = this.exprParser.parseSelectItem();
             selectList.add(selectItem);
             selectItem.setParent(queryBlock);
