@@ -524,6 +524,13 @@ public class MySqlExprParser extends SQLExprParser {
                     return primaryRest(binaryExpr);
                 }
             default:
+                if (lexer.token() == Token.WITH) {
+                    SQLQueryExpr queryExpr = new SQLQueryExpr(
+                        createSelectParser()
+                            .select());
+                    return queryExpr;
+                }
+
                 return super.primary();
         }
 
