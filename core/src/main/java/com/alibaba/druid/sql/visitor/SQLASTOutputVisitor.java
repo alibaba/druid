@@ -1152,11 +1152,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit((SQLInListExpr) x);
         } else if (clazz == SQLNotExpr.class) {
             visit((SQLNotExpr) x);
+        } else if (clazz == SQLSelectExpr.class) {
+            visit((SQLSelectExpr) x);
         } else {
             x.accept(this);
         }
     }
-
+    public boolean visit(SQLSelectExpr x) {
+        if (x.isParenthesized()) {
+            print('(');
+        }
+        visit(x.getSqlSelect());
+        if (x.isParenthesized()) {
+            print(')');
+        }
+        if (x.getAs() != null) {
+            print0(ucase ? " AS " : " as ");
+            printExpr(x.getAs());
+        }
+        return false;
+    }
     public boolean visit(SQLCaseExpr x) {
         if (x.isParenthesized()) {
             print('(');

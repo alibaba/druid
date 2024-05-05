@@ -2564,4 +2564,11 @@ public interface SQLASTVisitor {
     default void endVisit(SQLCostStatement x) {
     }
 
+    default boolean visit(SQLSelectExpr x) {
+        return true;
+    }
+
+    default void endVisit(SQLSelectExpr x) {
+    }
+
 }
