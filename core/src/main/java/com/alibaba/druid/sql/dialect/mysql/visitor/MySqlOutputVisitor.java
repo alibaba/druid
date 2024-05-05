@@ -4165,6 +4165,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (printSet) {
             print0(ucase ? "SET " : "set ");
         }
+        if (x.getMaridbSetForStatement() != null) {
+            print0(ucase ? "STATEMENT " : "statement ");
+        }
         SQLSetStatement.Option option = x.getOption();
         if (option != null) {
             print(option.name());
@@ -4177,6 +4180,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         printAndAccept(x.getItems(), ", ");
 
+        if (x.getMaridbSetForStatement() != null) {
+            print0(ucase ? " FOR " : " for ");
+            x.getMaridbSetForStatement().accept(this);
+        }
         if (x.getHints() != null && x.getHints().size() > 0) {
             print(' ');
             printAndAccept(x.getHints(), " ");

@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.ArrayList;
@@ -5191,9 +5192,19 @@ public class MySqlStatementParser extends SQLStatementParser {
             return stmt;
         } else {
             SQLSetStatement stmt = new SQLSetStatement(getDbType());
-
+            boolean mariadbSetStatementFlag = false;
+            if (JdbcUtils.isMysqlDbType(getDbType())) {
+                if (lexer.identifierEquals("STATEMENT")) {
+                    mariadbSetStatementFlag = true;
+                    lexer.nextToken();
+                }
+            }
             parseAssignItems(stmt.getItems(), stmt, true);
-
+            if (mariadbSetStatementFlag) {
+                accept(Token.FOR);
+                SQLStatement maridbSetForStatement = this.parseStatement();
+                stmt.setMaridbSetForStatement(maridbSetForStatement);
+            }
             if (global != null) {
                 SQLVariantRefExpr varRef = (SQLVariantRefExpr) stmt.getItems().get(0).getTarget();
                 varRef.setGlobal(true);
