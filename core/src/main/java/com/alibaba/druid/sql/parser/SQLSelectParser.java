@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveCreateTableParser;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
-import com.alibaba.druid.sql.parser.Lexer.SavePoint;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.StringUtils;
 
