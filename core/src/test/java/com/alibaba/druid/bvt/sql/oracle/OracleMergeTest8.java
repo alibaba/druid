@@ -53,8 +53,8 @@ public class OracleMergeTest8 extends OracleTest {
                         "\t\tSELECT t1.cust_no, t1.organ_key\n" +
                         "\t\tFROM t08_cust_result_c_mid t1\n" +
                         "\t\tUNION\n" +
-                        "\t\tSELECT t2.cust_no, t2.organ_key\n" +
-                        "\t\tFROM t08_cust_result_i_mid t2\n" +
+                        "\t\t(SELECT t2.cust_no, t2.organ_key\n" +
+                        "\t\tFROM t08_cust_result_i_mid t2)\n" +
                         "\t)\n" +
                         ") t3 ON (t3.cust_no = t.cust_no) \n" +
                         "WHEN MATCHED THEN UPDATE SET t.organ_key = t3.organ_key",

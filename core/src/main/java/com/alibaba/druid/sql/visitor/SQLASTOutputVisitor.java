@@ -2488,7 +2488,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (isPrettyFormat() && x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
         }
-
+        if (x.isParenthesized()) {
+            print('(');
+        }
         print0(ucase ? "SELECT " : "select ");
 
         if (x.getHintsSize() > 0) {
@@ -2590,7 +2592,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             print0(ucase ? "FOR UPDATE" : "for update");
         }
-
+        if (x.isParenthesized()) {
+            print(')');
+        }
         return false;
     }
 

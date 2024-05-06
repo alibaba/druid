@@ -1222,7 +1222,9 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
         if (isPrettyFormat() && x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
         }
-
+        if (x.isParenthesized()) {
+            print('(');
+        }
         print0(ucase ? "SELECT " : "select ");
 
         if (x.getHintsSize() > 0) {
@@ -1298,7 +1300,9 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
                 x.getWaitTime().accept(this);
             }
         }
-
+        if (x.isParenthesized()) {
+            print(')');
+        }
         return false;
     }
 
