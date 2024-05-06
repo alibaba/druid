@@ -195,6 +195,7 @@ public class SQLSelectParser extends SQLParser {
 
                     paren = lexer.token == Token.LPAREN;
                     SQLSelectQuery r = this.query(paren ? null : union, false);
+                    r.setParenthesized(paren);
                     union.addRelation(r);
                     right = r;
                 }
@@ -411,6 +412,7 @@ public class SQLSelectParser extends SQLParser {
 
             SQLSelectQuery select = query();
             accept(Token.RPAREN);
+            select.setParenthesized(true);
 
             return queryRest(select, acceptUnion);
         }

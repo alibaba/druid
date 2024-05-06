@@ -249,6 +249,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             SQLSelectQuery select = query();
             accept(Token.RPAREN);
+            select.setParenthesized(true);
 
             return queryRest(select, acceptUnion);
         }
@@ -636,6 +637,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if ((lexer.token() == Token.UNION || lexer.token() == Token.MINUS || lexer.token() == Token.EXCEPT)
                     && tableSource instanceof OracleSelectSubqueryTableSource) {
+                ((OracleSelectSubqueryTableSource) tableSource).getSelect().getQueryBlock().setParenthesized(true);
                 OracleSelectSubqueryTableSource selectSubqueryTableSource = (OracleSelectSubqueryTableSource) tableSource;
                 SQLSelect select = selectSubqueryTableSource.getSelect();
                 SQLSelectQuery selectQuery = this.queryRest(select.getQuery(), true);
