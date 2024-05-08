@@ -5347,7 +5347,7 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
             SQLSelect select = this.createSQLSelectParser().select();
-            SQLSubqueryTableSource tableSource = new SQLSubqueryTableSource(select);
+            SQLSubqueryTableSource tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
             stmt.setInto(tableSource);
             accept(Token.RPAREN);
         } else {

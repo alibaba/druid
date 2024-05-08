@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.sql.dm;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLParseAssertUtil;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
@@ -27,7 +28,7 @@ public class DM_MergeTest_0 extends TestCase {
                 "WHEN MATCHED THEN UPDATE SET login_name = ?, dept_name = ?, ipaddr = ?, login_location = ?, browser = ?, os = ?, status = ?, start_timestamp = ?, last_access_time = ?, expire_time = ?\n" +
                 "\tWHERE sessionid = ?\n" +
                 "WHEN NOT MATCHED THEN INSERT (SESSIONID, LOGIN_NAME, DEPT_NAME, IPADDR, LOGIN_LOCATION, BROWSER, OS, STATUS, START_TIMESTAMP, LAST_ACCESS_TIME, EXPIRE_TIME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", stmt.toString());
-
+        SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
     }
 
     public void test_1() throws Exception {
@@ -48,6 +49,6 @@ public class DM_MergeTest_0 extends TestCase {
                 "WHEN MATCHED THEN UPDATE SET login_name = ?, dept_name = ?, ipaddr = ?, login_location = ?, browser = ?, os = ?, status = ?, start_timestamp = ?, last_access_time = ?, expire_time = ?\n" +
                 "\tWHERE sessionid = ?\n" +
                 "WHEN NOT MATCHED THEN INSERT (SESSIONID, LOGIN_NAME, DEPT_NAME, IPADDR, LOGIN_LOCATION, BROWSER, OS, STATUS, START_TIMESTAMP, LAST_ACCESS_TIME, EXPIRE_TIME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", stmt.toString());
-
+        SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
     }
 }

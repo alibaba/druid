@@ -210,13 +210,13 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t, M.customize_sites_id, M.spare_flag\n" +
                         "FROM TCP_CPR.DIFF_CON_CONFIG_MODULE_V M\n" +
                         "\tLEFT JOIN (\n" +
-                        "\t\tSELECT 0 AS osg_type_id, v.contract_module_id, v.item_id, v.contract_item_id, v.item_des\n" +
+                        "\t\t(SELECT 0 AS osg_type_id, v.contract_module_id, v.item_id, v.contract_item_id, v.item_des\n" +
                         "\t\t\t, v.item_type, v.ITEM_QUANTITY, v.cost_price, v.COST_PRICE_PARAMETER, v.CONFIRM_FLAG\n" +
                         "\t\t\t, v.COST_PRICE04, v.CONFIRM_ITEM_PARAM, v.CONFIRM_FLAG04, v.OLD_COST, v.LIST_PRICE\n" +
                         "\t\t\t, v.ITEM_CODE, v.CONFIRM_COST_PRICE04\n" +
-                        "\t\tFROM TCP_CPR.DIFF_CON_CONFIG_ITEM_V v\n" +
+                        "\t\tFROM TCP_CPR.DIFF_CON_CONFIG_ITEM_V v)\n" +
                         "\t\tUNION ALL\n" +
-                        "\t\tSELECT header.product_id AS osg_type_id, HEADER.PARENT_ID AS CONTRACT_MODULE_ID, HEADER.SERIAL_ID AS item_id, HEADER.OSG_HEADER_ID AS CONTRACT_ITEM_ID, ser.product_serial AS item_name\n" +
+                        "\t\t(SELECT header.product_id AS osg_type_id, HEADER.PARENT_ID AS CONTRACT_MODULE_ID, HEADER.SERIAL_ID AS item_id, HEADER.OSG_HEADER_ID AS CONTRACT_ITEM_ID, ser.product_serial AS item_name\n" +
                         "\t\t\t, 'OSG' AS item_type, HEADER.QUANTITY AS item_quantity\n" +
                         "\t\t\t, (LINE.REF_PRICE + nvl(REPLY.MARKET_REFERENCE_PRICE, 0)) AS COST_PRICE\n" +
                         "\t\t\t, 1 AS COST_PRICE_PARAMETER, 'Y' AS CONFIRM_FLAG, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04\n" +
@@ -235,16 +235,16 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t\tWHERE HEADER.ENABLED_FLAG = 'Y'\n" +
                         "\t\t\tAND ser.serial_id = HEADER.Serial_Id\n" +
                         "\t\t\tAND header.REPLY_ID = reply.reply_head_id(+)\n" +
-                        "\t\t\tAND header.OSG_HEADER_ID = line.OSG_HEADER_ID\n" +
+                        "\t\t\tAND header.OSG_HEADER_ID = line.OSG_HEADER_ID)\n" +
                         "\t\tUNION ALL\n" +
-                        "\t\tSELECT item.osg_type_id AS osg_type_id, ITEM.PARENT_ID AS CONTRACT_MODULE_ID, item.osg_item_id AS item_id, ITEM.OSG_ITEM_ID AS CONTRACT_ITEM_ID, SYS_ITEM.DESCRIPTION AS item_name\n" +
+                        "\t\t(SELECT item.osg_type_id AS osg_type_id, ITEM.PARENT_ID AS CONTRACT_MODULE_ID, item.osg_item_id AS item_id, ITEM.OSG_ITEM_ID AS CONTRACT_ITEM_ID, SYS_ITEM.DESCRIPTION AS item_name\n" +
                         "\t\t\t, 'SINGLEOSG' AS item_type, ITEM.QUANTITY AS item_quantity, SYS_ITEM.MARKET_REFERENCE_PRICE AS COST_PRICE, 1 AS COST_PRICE_PARAMETER, SYS_ITEM.ENABLED_FLAG AS CONFIRM_FLAG\n" +
                         "\t\t\t, 0 AS COST_PRICE04, 1 AS CONFIRM_ITEM_PARAM, 'Y' AS CONFIRM_FLAG04, 1 AS OLD_COST -- SYS_ITEM.LIST_PRICE LIST_PRICE,\n" +
                         "\t\t\t, ITEM.LIST_PRICE AS LIST_PRICE, SYS_ITEM.INVENTORY_ID || '\n" +
                         "+Mn\u0016-�' AS ITEM_CODE, SYS_ITEM.PRICE AS CONFIRM_COST_PRICE04 -- , 0 PROD_ATTRIBUTE_ID--,0 ITEM_CHIP\n" +
                         "\t\tFROM TCP_CPR.DIFF_CON_OSG3A_HEADERS ITEM, ERP_ZTE.ZTE_KX_OSG3_ITEMS SYS_ITEM\n" +
                         "\t\tWHERE ITEM.OSG_ITEM_ID = SYS_ITEM.OSG_ITEM_ID\n" +
-                        "\t\t\tAND ITEM.ENABLED_FLAG = 'Y'\n" +
+                        "\t\t\tAND ITEM.ENABLED_FLAG = 'Y')\n" +
                         "\t) I ON M.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID \n" +
                         "WHERE item_quantity >= 0",//
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));

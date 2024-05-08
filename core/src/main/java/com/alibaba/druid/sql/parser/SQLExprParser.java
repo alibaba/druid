@@ -421,6 +421,7 @@ public class SQLExprParser extends SQLParser {
 
                 accept(Token.RPAREN);
 
+
                 break;
             case INSERT:
                 lexer.nextToken();
@@ -4100,6 +4101,7 @@ public class SQLExprParser extends SQLParser {
                             if (targetList.size() == 1
                                     && targetList.get(0) instanceof SQLQueryExpr) {
                                 SQLQueryExpr queryExpr = (SQLQueryExpr) targetList.get(0);
+                                queryExpr.getSubQuery().getQuery().setParenthesized(queryExpr.isParenthesized());
                                 SQLSelectQuery query = this.createSelectParser().queryRest(queryExpr.getSubQuery().getQuery(), true);
                                 if (query != queryExpr.getSubQuery()) {
                                     queryExpr.getSubQuery().setQuery(query);

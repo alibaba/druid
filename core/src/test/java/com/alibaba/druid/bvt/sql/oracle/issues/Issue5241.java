@@ -20,6 +20,7 @@ public class Issue5241 {
         for (DbType dbType : new DbType[]{
             //DbType.mysql,
             //DbType.oracle,
+            DbType.postgresql,
             DbType.oscar,
         }) {
             for (String sql : new String[]{

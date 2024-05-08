@@ -165,4 +165,25 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         }
         return null;
     }
+
+    public SQLColumnDefinition findColumn(String columnName) {
+        SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+        if (queryBlock != null) {
+            return queryBlock.findColumn(columnName);
+        } else {
+            if (select.getQuery() instanceof SQLUnionQuery && ((SQLUnionQuery) select.getQuery()).getFirstQueryBlock() instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock left = ((SQLUnionQuery) select.getQuery()).getFirstQueryBlock();
+                return ((SQLSelectQueryBlock) left).findColumn(columnName);
+            }
+        }
+        return null;
+    }
+
+    public static SQLSubqueryTableSource fixParenthesized(SQLSubqueryTableSource rightTableSourceTmp) {
+        if (rightTableSourceTmp.getSelect() != null && rightTableSourceTmp.getSelect().getQuery() != null && rightTableSourceTmp.getSelect()
+            .getQuery().isParenthesized()) {
+            rightTableSourceTmp.getSelect().getQuery().setParenthesized(false);
+        }
+        return rightTableSourceTmp;
+    }
 }
