@@ -420,8 +420,6 @@ public class SQLExprParser extends SQLParser {
                 }
 
                 accept(Token.RPAREN);
-
-
                 break;
             case INSERT:
                 lexer.nextToken();
