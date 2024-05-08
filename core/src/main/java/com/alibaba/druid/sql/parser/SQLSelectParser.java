@@ -1139,7 +1139,7 @@ public class SQLSelectParser extends SQLParser {
                 if (query instanceof SQLUnionQuery) {
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
-                    tableSource = new SQLSubqueryTableSource(select);
+                    tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                 }
             } else if (lexer.token == Token.LPAREN) {
                 tableSource = parseTableSource();
@@ -1606,7 +1606,7 @@ public class SQLSelectParser extends SQLParser {
                         || (lexer.token == Token.WITH && dbType == DbType.mysql)
                         || (lexer.token == Token.FROM && (dbType == DbType.odps || dbType == DbType.hive))) {
                     SQLSelect select = this.select();
-                    rightTableSource = new SQLSubqueryTableSource(select);
+                    rightTableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                 } else {
                     rightTableSource = this.parseTableSource();
                 }

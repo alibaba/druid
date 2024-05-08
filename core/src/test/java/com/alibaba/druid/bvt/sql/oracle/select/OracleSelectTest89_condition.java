@@ -59,11 +59,11 @@ public class OracleSelectTest89_condition extends OracleTest {
                     "FROM v.e\n" +
                     "WHERE cid <> rid\n" +
                     "\tAND rid NOT IN (\n" +
-                    "\t\tSELECT DISTINCT rid\n" +
-                    "\t\tFROM v.s\n" +
+                    "\t\t(SELECT DISTINCT rid\n" +
+                    "\t\tFROM v.s)\n" +
                     "\t\tUNION\n" +
-                    "\t\tSELECT DISTINCT rid\n" +
-                    "\t\tFROM v.p\n" +
+                    "\t\t(SELECT DISTINCT rid\n" +
+                    "\t\tFROM v.p)\n" +
                     "\t)\n" +
                     "\tAND TIMESTAMP <= 1298505600000", text);
         }
