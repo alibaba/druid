@@ -9499,7 +9499,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(']');
         } else {
             SQLDataType componentType = x.getComponentType();
-            if (componentType != null) {
+            if (x.isUsedForCast() && componentType != null && componentType.getArguments() != null && componentType.getArguments().size() > 0) {
+                componentType.accept(this);
+                print0(ucase ? " ARRAY" : " array");
+            } else if (componentType != null) {
                 print0(ucase ? "ARRAY<" : "array<");
                 componentType.accept(this);
                 print('>');
