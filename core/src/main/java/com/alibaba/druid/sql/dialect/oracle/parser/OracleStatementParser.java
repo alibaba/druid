@@ -686,7 +686,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.ELSIF
-                    && parent instanceof SQLIfStatement) {
+                    && (parent instanceof SQLIfStatement || parent instanceof SQLIfStatement.ElseIf)) {
                 break;
             }
 
@@ -1165,7 +1165,7 @@ public class OracleStatementParser extends SQLStatementParser {
             elseIf.setParent(stmt);
 
             accept(Token.THEN);
-            this.parseStatementList(elseIf.getStatements(), -1, stmt);
+            this.parseStatementList(elseIf.getStatements(), -1, elseIf);
 
             stmt.getElseIfList().add(elseIf);
         }
