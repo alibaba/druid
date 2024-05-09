@@ -976,4 +976,26 @@ public class PGSQLStatementParser extends SQLStatementParser {
         }
         return stmt;
     }
+
+    @Override
+    public SQLStatement parseCreateUser() {
+        accept(Token.CREATE);
+        accept(Token.USER);
+        SQLCreateUserStatement stmt = new SQLCreateUserStatement();
+        stmt.setDbType(dbType);
+        stmt.setUser(this.exprParser.name());
+        if (lexer.token() == Token.WITH) {
+            accept(Token.WITH);
+            stmt.setPostgresqlWith(true);
+        }
+        if (lexer.identifierEquals("ENCRYPTED")) {
+            stmt.setPostgresqlEncrypted(true);
+            lexer.nextToken();
+        }
+        if (lexer.identifierEquals("PASSWORD")) {
+            lexer.nextToken();
+        }
+        stmt.setPassword(this.exprParser.primary());
+        return stmt;
+    }
 }
