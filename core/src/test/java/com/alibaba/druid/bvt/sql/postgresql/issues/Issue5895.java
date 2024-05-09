@@ -30,10 +30,8 @@ public class Issue5895 {
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 List<SQLStatement> statementList = parser.parseStatementList();
                 assertEquals(1, statementList.size());
-                System.out.println("解析后"+statementList.get(0).toString());
-//                assertEquals("ALTER TABLE db1.rs_push_mall_data\n"
-//                    + "\tADD KEY idx_bill_no_json (CAST(bill_no_json AS CHAR(50) ARRAY));", statementList.get(0).toString());
-               // SQLParseAssertUtil.assertParseSql(sql, dbType);
+                System.out.println("解析后" + statementList.get(0).toString());
+                SQLParseAssertUtil.assertParseSql(sql, dbType);
             }
         }
     }
