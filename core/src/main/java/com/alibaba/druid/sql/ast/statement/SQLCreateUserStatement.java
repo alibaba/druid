@@ -23,11 +23,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLCreateUserStatement extends SQLStatementImpl implements SQLCreateStatement {
     private SQLName user;
     private SQLExpr password;
-
     private boolean postgresqlWith;
     private boolean postgresqlEncrypted;
-
-
     // oracle
     private SQLName defaultTableSpace;
 
