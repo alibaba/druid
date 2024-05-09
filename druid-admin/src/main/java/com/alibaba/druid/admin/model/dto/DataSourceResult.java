@@ -118,7 +118,7 @@ public class DataSourceResult {
         @JSONField(name = "RemoveAbandoned")
         private boolean RemoveAbandoned;
         @JSONField(name = "ClobOpenCount")
-        private int ClobOpenCount;
+        private long ClobOpenCount;
         @JSONField(name = "BlobOpenCount")
         private int BlobOpenCount;
         @JSONField(name = "KeepAliveCheckCount")

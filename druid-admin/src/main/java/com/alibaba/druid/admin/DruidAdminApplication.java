@@ -30,6 +30,12 @@ public class DruidAdminApplication {
         if (properties.getLoginPassword() != null) {
             registrationBean.addInitParameter("loginPassword", properties.getLoginPassword());
         }
+        if (properties.getKubeConfigFilePath() != null) {
+            registrationBean.addInitParameter("kubeConfigFilePath", properties.getKubeConfigFilePath());
+        }
+        if (properties.getK8sNamespace() != null) {
+            registrationBean.addInitParameter("k8sNamespace", properties.getK8sNamespace());
+        }
         return registrationBean;
     }
 

@@ -31,6 +31,10 @@ eureka:
 
 monitor:
   applications: #需要监控的服务名spring.application.name
+    - a
+    - b
   login-username: admin #监控页面的登录用户名和密码
   login-password: 123456
+  kube-config-file-path:  # k8s集群访问凭证，相对路径，默认resources目录
+  k8s-namespace:  # k8s集群命名空间
 
