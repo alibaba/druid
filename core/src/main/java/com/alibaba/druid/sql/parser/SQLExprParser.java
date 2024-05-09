@@ -947,6 +947,13 @@ public class SQLExprParser extends SQLParser {
                     accept(Token.AS);
                     cast.setDataType(
                             parseDataType(false));
+                    if (cast.getDataType() instanceof SQLArrayDataType) {
+                        SQLArrayDataType arrayDataType = (SQLArrayDataType) cast.getDataType();
+                        if (arrayDataType.getDbType() == null) {
+                            arrayDataType.setDbType(dbType);
+                        }
+                        arrayDataType.setUsedForCast(true);
+                    }
                     accept(Token.RPAREN);
 
                     sqlExpr = cast;
