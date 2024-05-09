@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.alibaba</groupId>
     <artifactId>druid-admin</artifactId>
-    <version>1.2.12</version>
+    <version>1.2.22</version>
     <name>druid-admin</name>
     <description>Demo project for Spring Boot</description>
 
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.2.12</version>
+            <version>1.2.22</version>
         </dependency>
 
         <dependency>
@@ -83,6 +83,21 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.kubernetes/client-java -->
+        <dependency>
+            <groupId>io.kubernetes</groupId>
+            <artifactId>client-java</artifactId>
+            <version>16.0.3</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.14.9</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
