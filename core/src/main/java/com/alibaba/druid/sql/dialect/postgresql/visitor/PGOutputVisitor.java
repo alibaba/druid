@@ -685,6 +685,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(SQLCreateUserStatement x) {
         print0(ucase ? "CREATE USER " : "create user ");
         x.getUser().accept(this);
+        if (x.isPostgresqlWith()) {
+            print0(ucase ? " WITH " : " with ");
+        }
+        if (x.isPostgresqlEncrypted()) {
+            print0(ucase ? " ENCRYPTED " : " encrypted ");
+        }
         print0(ucase ? " PASSWORD " : " password ");
 
         SQLExpr passoword = x.getPassword();
@@ -696,7 +702,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         } else {
             passoword.accept(this);
         }
-
         return false;
     }
 
