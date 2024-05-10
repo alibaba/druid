@@ -891,7 +891,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             boolean printOpSpace = true;
             if (relational) {
-                println();
+                if (dbType == DbType.hive && x.getParent() instanceof SQLMethodInvokeExpr) {
+                    print(' ');
+                } else {
+                    println();
+                }
             } else {
                 if (operator == SQLBinaryOperator.Modulus
                         && DbType.oracle == dbType
