@@ -370,7 +370,8 @@ public class MonitorStatService implements DruidStatServiceMBean {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ResultCode", RESULT_CODE_SUCCESS);
         jsonObject.put("Content", objects);
-        return jsonObject.toJSONString();
+        return jsonObject.toJSONString(JSONWriter.Feature.LargeObject, JSONWriter.Feature.ReferenceDetection,
+                JSONWriter.Feature.BrowserCompatible, JSONWriter.Feature.BrowserSecure);
     }
 
     /**
