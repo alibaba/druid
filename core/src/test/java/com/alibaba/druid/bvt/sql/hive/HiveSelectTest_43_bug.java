@@ -16,6 +16,7 @@
 package com.alibaba.druid.bvt.sql.hive;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLParseAssertUtil;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
@@ -257,6 +258,6 @@ public class HiveSelectTest_43_bug extends TestCase {
                 "GROUP BY ddate, game_id, plat_id, channel_group_id, channel_id, zone_id, reg_day_num_td_segment_id;", stmt.toString());
 
 //        SQLUtils.toSQLString(stmt, DbType.hive)
-
+        SQLParseAssertUtil.assertParseSql(sql, DbType.hive);
     }
 }

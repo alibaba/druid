@@ -420,7 +420,6 @@ public class SQLExprParser extends SQLParser {
                 }
 
                 accept(Token.RPAREN);
-
                 break;
             case INSERT:
                 lexer.nextToken();
@@ -948,6 +947,13 @@ public class SQLExprParser extends SQLParser {
                     accept(Token.AS);
                     cast.setDataType(
                             parseDataType(false));
+                    if (cast.getDataType() instanceof SQLArrayDataType) {
+                        SQLArrayDataType arrayDataType = (SQLArrayDataType) cast.getDataType();
+                        if (arrayDataType.getDbType() == null) {
+                            arrayDataType.setDbType(dbType);
+                        }
+                        arrayDataType.setUsedForCast(true);
+                    }
                     accept(Token.RPAREN);
 
                     sqlExpr = cast;
@@ -1462,6 +1468,17 @@ public class SQLExprParser extends SQLParser {
         SQLAllExpr allExpr = new SQLAllExpr();
 
         accept(Token.LPAREN);
+        if (lexer.token != Token.SELECT && lexer.token != Token.VALUES && lexer.token != Token.LPAREN) {
+            SQLExpr expr = this.expr();
+            SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr("ALL");
+            methodInvokeExpr.addArgument(expr);
+            while (lexer.token == Token.COMMA) {
+                lexer.nextToken();
+                methodInvokeExpr.addArgument(expr());
+            }
+            accept(Token.RPAREN);
+            return methodInvokeExpr;
+        }
         SQLSelect allSubQuery = createSelectParser().select();
         allExpr.setSubQuery(allSubQuery);
         accept(Token.RPAREN);
@@ -1482,6 +1499,18 @@ public class SQLExprParser extends SQLParser {
         }
         lexer.nextToken();
 
+        if (lexer.token != Token.SELECT && lexer.token != Token.VALUES && lexer.token != Token.LPAREN) {
+            SQLExpr expr = this.expr();
+            SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr("SOME");
+            methodInvokeExpr.addArgument(expr);
+            while (lexer.token == Token.COMMA) {
+                lexer.nextToken();
+                methodInvokeExpr.addArgument(expr());
+            }
+            accept(Token.RPAREN);
+            return methodInvokeExpr;
+        }
+
         SQLSomeExpr someExpr = new SQLSomeExpr();
         SQLSelect someSubQuery = createSelectParser().select();
         someExpr.setSubQuery(someSubQuery);
@@ -1499,10 +1528,14 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token == Token.LPAREN) {
             accept(Token.LPAREN);
 
-            if (lexer.token == Token.ARRAY || lexer.token == Token.IDENTIFIER) {
+            if (lexer.token != Token.SELECT && lexer.token != Token.VALUES && lexer.token != Token.LPAREN) {
                 SQLExpr expr = this.expr();
                 SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr("ANY");
                 methodInvokeExpr.addArgument(expr);
+                while (lexer.token == Token.COMMA) {
+                    lexer.nextToken();
+                    methodInvokeExpr.addArgument(expr());
+                }
                 accept(Token.RPAREN);
                 return methodInvokeExpr;
             }
@@ -4100,6 +4133,7 @@ public class SQLExprParser extends SQLParser {
                             if (targetList.size() == 1
                                     && targetList.get(0) instanceof SQLQueryExpr) {
                                 SQLQueryExpr queryExpr = (SQLQueryExpr) targetList.get(0);
+                                queryExpr.getSubQuery().getQuery().setParenthesized(queryExpr.isParenthesized());
                                 SQLSelectQuery query = this.createSelectParser().queryRest(queryExpr.getSubQuery().getQuery(), true);
                                 if (query != queryExpr.getSubQuery()) {
                                     queryExpr.getSubQuery().setQuery(query);

@@ -389,7 +389,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                     select.getQuery().setParenthesized(true);
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
-                    tableSource = new SQLSubqueryTableSource(select);
+                    tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                 }
 
                 if (hints != null) {
@@ -407,7 +407,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                         select.getQuery().setParenthesized(true);
                         tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                     } else {
-                        tableSource = new SQLSubqueryTableSource(select);
+                        tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                     }
 
                     if (hints != null) {
@@ -422,7 +422,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                         unionQuery.setParenthesized(true);
                         tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                     } else {
-                        tableSource = new SQLSubqueryTableSource(unionQuery);
+                        tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(unionQuery));
                     }
 
                     if (hints != null) {

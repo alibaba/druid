@@ -40,9 +40,9 @@ public class OracleCreateTableTest35 extends OracleTest {
 
         Assert.assertEquals("CREATE TABLE sto_scandata_bak_2013_05_08_023000" //
                         + "\nAS"//
-                        + "\nSELECT *"//
+                        + "\n(SELECT *"//
                         + "\nFROM sto_scandata t"//
-                        + "\nWHERE t.delflag = 1",//
+                        + "\nWHERE t.delflag = 1)",//
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

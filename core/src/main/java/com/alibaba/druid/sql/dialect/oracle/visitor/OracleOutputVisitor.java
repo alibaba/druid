@@ -346,7 +346,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (isPrettyFormat() && x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
         }
-
+        if (x.isParenthesized()) {
+            print('(');
+        }
         print0(ucase ? "SELECT " : "select ");
 
         if (x.getHintsSize() > 0) {
@@ -424,6 +426,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
         }
 
+        if (x.isParenthesized()) {
+            print(')');
+        }
         return false;
     }
 

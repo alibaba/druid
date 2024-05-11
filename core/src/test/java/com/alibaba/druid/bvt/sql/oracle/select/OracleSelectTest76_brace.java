@@ -54,9 +54,9 @@ public class OracleSelectTest76_brace extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT *\n" +
+            assertEquals("(SELECT *\n" +
                     "FROM emp\n" +
-                    "WHERE empno = 111;", text);
+                    "WHERE empno = 111);", text);
         }
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

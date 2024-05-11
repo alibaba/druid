@@ -891,7 +891,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             boolean printOpSpace = true;
             if (relational) {
-                println();
+                if (dbType == DbType.hive && x.getParent() instanceof SQLMethodInvokeExpr) {
+                    print(' ');
+                } else {
+                    println();
+                }
             } else {
                 if (operator == SQLBinaryOperator.Modulus
                         && DbType.oracle == dbType
@@ -2488,7 +2492,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (isPrettyFormat() && x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
         }
-
+        if (x.isParenthesized()) {
+            print('(');
+        }
         print0(ucase ? "SELECT " : "select ");
 
         if (x.getHintsSize() > 0) {
@@ -2590,7 +2596,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             print0(ucase ? "FOR UPDATE" : "for update");
         }
-
+        if (x.isParenthesized()) {
+            print(')');
+        }
         return false;
     }
 
@@ -9495,7 +9503,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(']');
         } else {
             SQLDataType componentType = x.getComponentType();
-            if (componentType != null) {
+            if (x.isUsedForCast() && componentType != null && componentType.getArguments() != null && componentType.getArguments().size() > 0) {
+                componentType.accept(this);
+                print0(ucase ? " ARRAY" : " array");
+            } else if (componentType != null) {
                 print0(ucase ? "ARRAY<" : "array<");
                 componentType.accept(this);
                 print('>');
