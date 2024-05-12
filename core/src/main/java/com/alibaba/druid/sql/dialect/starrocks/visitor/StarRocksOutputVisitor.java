@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -155,12 +156,22 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         if (x.getDistributedBy() != null) {
             print0(ucase ? "DISTRIBUTED BY " : "distributed by ");
             x.getDistributedBy().accept(this);
-            print0(ucase ? " BUCKETS " : "buckets ");
             int buckets = x.getBuckets();
-            print0(String.valueOf(buckets));
+            if (buckets > 0) {
+                print0(ucase ? " BUCKETS " : "buckets ");
+                print0(String.valueOf(buckets));
+            }
         }
 
         println();
+        List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
+        if (sortedBy.size() > 0) {
+            println();
+            print0(ucase ? "ORDER BY (" : "order by (");
+            printAndAccept(sortedBy, ", ");
+            print(')');
+            println();
+        }
         if (x.getStarRocksProperties().size() > 0) {
             print0(ucase ? "PROPERTIES" : "properties");
             print(x.getStarRocksProperties());

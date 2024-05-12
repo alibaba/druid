@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLAlterResourceGroupStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLCreateResourceGroupStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLListResourceGroupStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 
 public interface SQLASTVisitor {
@@ -2562,6 +2563,12 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLCostStatement x) {
+    }
+    default boolean visit(StarRocksIndexDefinition x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksIndexDefinition x) {
     }
 
 }
