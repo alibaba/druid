@@ -4793,6 +4793,8 @@ public class SQLExprParser extends SQLParser {
 
     public SQLColumnDefinition parseColumn(SQLObject parent) {
         SQLColumnDefinition column = createColumnDefinition();
+        column.setParent(parent);
+        column.setDbType(dbType);
         if (Token.IF == lexer.token) {
             lexer.nextToken();
             accept(Token.NOT);

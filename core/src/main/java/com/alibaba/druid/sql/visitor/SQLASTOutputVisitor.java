@@ -3342,10 +3342,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
         }
         x.getName().accept(this);
-
         final SQLDataType dataType = x.getDataType();
         if (dataType != null) {
-            print(' ');
+            if (JdbcUtils.isPgsqlDbType(dbType) && x.getParent() instanceof SQLAlterTableAlterColumn) {
+                print0(ucase ? " TYPE " : " type ");
+            } else {
+                print(' ');
+            }
             dataType.accept(this);
         }
 
@@ -5553,7 +5556,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             originColumn.accept(this);
             print(' ');
         }
-
         x.getColumn().accept(this);
 
         if (x.isSetNotNull()) { // postgresql
