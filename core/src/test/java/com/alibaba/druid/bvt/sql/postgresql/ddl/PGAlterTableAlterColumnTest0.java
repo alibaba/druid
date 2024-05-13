@@ -18,7 +18,7 @@ public class PGAlterTableAlterColumnTest0 extends PGTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         assertEquals("ALTER TABLE organizations\n" +
-                "\tALTER COLUMN guarded BOOLEAN,\n" +
+                "\tALTER COLUMN guarded TYPE BOOLEAN,\n" +
                 "\tALTER COLUMN guarded DROP NOT NULL", stmt.toString());
 
         Assert.assertEquals(1, statementList.size());

@@ -576,7 +576,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         }
 
         SQLColumnDefinition column = this.exprParser.parseColumn();
-
+        column.setDbType(dbType);
         SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
         alterColumn.setColumn(column);
 
