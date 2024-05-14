@@ -851,7 +851,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         for (; ; ) {
             if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == operator
-                    && operator != SQLBinaryOperator.IsNot && operator != SQLBinaryOperator.Is) {
+                && operator != SQLBinaryOperator.IsNot && operator != SQLBinaryOperator.Is && operator != SQLBinaryOperator.Modulus) {
                 SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
                 groupList.add(binaryLeft.getRight());
                 left = binaryLeft.getLeft();
