@@ -1371,15 +1371,12 @@ public class SQLExprParser extends SQLParser {
                 }
                 throw new ParserException("ERROR. " + lexer.info());
             case LBRACKET:
-                if (dbType == DbType.odps || dbType == DbType.clickhouse) {
-                    SQLArrayExpr array = new SQLArrayExpr();
-                    lexer.nextToken();
-                    this.exprList(array.getValues(), array);
-                    accept(Token.RBRACKET);
-                    sqlExpr = array;
-                    break;
-                }
-                throw new ParserException("ERROR. " + lexer.info());
+                SQLArrayExpr arrayTmp = new SQLArrayExpr();
+                lexer.nextToken();
+                this.exprList(arrayTmp.getValues(), arrayTmp);
+                accept(Token.RBRACKET);
+                sqlExpr = arrayTmp;
+                break;
             case ON:
                 if (dbType == DbType.postgresql) {
                     String methodName = lexer.stringVal();
