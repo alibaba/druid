@@ -25,11 +25,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class PGTypeCastExpr extends SQLCastExpr implements PGExpr {
     public PGTypeCastExpr() {
     }
-    
+
     public PGTypeCastExpr(SQLExpr expr, SQLDataType dataType) {
         super(expr, dataType);
     }
-    
+
     @Override
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
