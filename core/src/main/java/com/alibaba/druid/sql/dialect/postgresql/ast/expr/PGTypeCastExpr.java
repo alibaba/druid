@@ -43,4 +43,17 @@ public class PGTypeCastExpr extends SQLCastExpr implements PGExpr {
     public String toString() {
         return SQLUtils.toPGString(this);
     }
+
+    @Override
+    public PGTypeCastExpr clone() {
+        PGTypeCastExpr x = new PGTypeCastExpr();
+        x.isTry = isTry;
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        if (dataType != null) {
+            x.setDataType(dataType.clone());
+        }
+        return x;
+    }
 }
