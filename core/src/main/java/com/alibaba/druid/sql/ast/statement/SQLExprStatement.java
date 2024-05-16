@@ -27,7 +27,7 @@ public class SQLExprStatement extends SQLStatementImpl implements SQLReplaceable
     }
 
     public SQLExprStatement(SQLExpr expr) {
-        this.expr = expr;
+        this.setExpr(expr);
     }
 
     @Override
@@ -36,7 +36,6 @@ public class SQLExprStatement extends SQLStatementImpl implements SQLReplaceable
             acceptChild(visitor, expr);
         }
         visitor.endVisit(this);
-
     }
 
     public SQLExpr getExpr() {
