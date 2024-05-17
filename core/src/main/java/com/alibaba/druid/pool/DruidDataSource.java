@@ -1697,7 +1697,6 @@ public class DruidDataSource extends DruidAbstractDataSource
                     if (creatingCountUpdater.compareAndSet(this, 0, 1)) {
                         PhysicalConnectionInfo pyConnInfo = DruidDataSource.this.createPhysicalConnection();
                         holder = new DruidConnectionHolder(this, pyConnInfo);
-                        holder.lastActiveTimeMillis = System.currentTimeMillis();
 
                         creatingCountUpdater.decrementAndGet(this);
                         directCreateCountUpdater.incrementAndGet(this);
