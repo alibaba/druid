@@ -1443,7 +1443,9 @@ public class DruidDataSource extends DruidAbstractDataSource
                 this.exceptionSorter = new MockExceptionSorter();
             } else if (realDriverClassName.contains("DB2")) {
                 this.exceptionSorter = new DB2ExceptionSorter();
-
+            } else if (realDriverClassName.equals(JdbcConstants.GOLDENDB_DRIVER)) {
+                this.validConnectionChecker = new MySqlValidConnectionChecker();
+                this.isMySql = true;
             } else {
                 Class<?> superClass = driverClass.getSuperclass();
                 if (superClass != null && superClass != Object.class) {
