@@ -34,6 +34,20 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
     private boolean map;
     private boolean member;
 
+    public SQLParameter() {
+    }
+
+    public SQLParameter(SQLName name, SQLDataType dataType) {
+        this.setName(name);
+        this.setDataType(dataType);
+    }
+
+    public SQLParameter(SQLName name, SQLDataType dataType, SQLExpr defaultValue) {
+        this.setName(name);
+        this.setDataType(dataType);
+        this.setDefaultValue(defaultValue);
+    }
+
     public SQLExpr getDefaultValue() {
         return defaultValue;
     }
