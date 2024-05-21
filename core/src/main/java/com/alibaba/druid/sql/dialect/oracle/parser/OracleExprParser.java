@@ -121,8 +121,7 @@ public class OracleExprParser extends SQLExprParser {
                 || hash == FnvHash.Constants.VARCHAR
                 || hash == FnvHash.Constants.VARCHAR2
                 || hash == FnvHash.Constants.NVARCHAR
-                || hash == FnvHash.Constants.NVARCHAR2
-                || hash == FnvHash.Constants.CHARACTER;
+                || hash == FnvHash.Constants.NVARCHAR2;
     }
 
     public SQLDataType parseDataType(boolean restrict) {
