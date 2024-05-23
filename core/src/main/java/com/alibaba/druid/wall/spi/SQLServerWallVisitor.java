@@ -118,7 +118,7 @@ public class SQLServerWallVisitor extends WallVisitorBase implements WallVisitor
     }
 
     public boolean visit(SQLServerSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
+        WallVisitorUtils.checkSelect(this, x);
         return true;
     }
     @Override
