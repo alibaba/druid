@@ -698,7 +698,7 @@ public class SQLParserUtils {
             start = lexer.startPos;
         }
 
-        for (int tokens = 0; lexer.token != Token.EOF; ) {
+        for (int tokens = 1; lexer.token != Token.EOF; ) {
             if (token == Token.SEMI) {
                 int len = lexer.startPos - start;
                 if (len > 0) {
@@ -878,7 +878,7 @@ public class SQLParserUtils {
         }
 
         sql = sql.trim();
-        if (sql.startsWith("jar")) {
+        if (sql.startsWith("jar") || sql.startsWith("JAR")) {
             return sql;
         }
 
