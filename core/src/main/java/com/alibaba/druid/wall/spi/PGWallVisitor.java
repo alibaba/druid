@@ -52,7 +52,7 @@ public class PGWallVisitor extends WallVisitorBase implements WallVisitor, PGAST
 
     @Override
     public boolean visit(PGSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
+        WallVisitorUtils.checkSelect(this, x);
         return true;
     }
 

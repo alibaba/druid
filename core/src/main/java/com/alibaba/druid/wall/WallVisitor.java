@@ -77,7 +77,7 @@ public interface WallVisitor extends SQLASTVisitor {
     }
 
     default boolean visit(SQLSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
+        WallVisitorUtils.checkSelect(this, x);
 
         return true;
     }
