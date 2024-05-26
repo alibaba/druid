@@ -704,15 +704,17 @@ public class WallConfig implements WallConfigMBean {
     }
 
     /**
-     * @deprecated use isSelectAllow
+     * @deprecated use {@link WallConfig#isSelectAllow()}
      */
+    @Deprecated
     public boolean isSelelctAllow() {
         return isSelectAllow();
     }
 
     /**
-     * @deprecated use setSelelctAllow
+     * @deprecated use {@link WallConfig#setSelectAllow(boolean)}
      */
+    @Deprecated
     public void setSelelctAllow(boolean selelctAllow) {
         this.setSelectAllow(selelctAllow);
     }
@@ -757,11 +759,17 @@ public class WallConfig implements WallConfigMBean {
         this.deleteWhereAlwayTrueCheck = deleteWhereAlwayTrueCheck;
     }
 
+    /**
+     * @deprecated use {@link WallConfig#isUpdateWhereAlwayTrueCheck()}
+     */
     @Deprecated
     public boolean isUpdateWhereAlayTrueCheck() {
         return updateWhereAlwayTrueCheck;
     }
 
+    /**
+     * @deprecated use {@link WallConfig#setUpdateWhereAlwayTrueCheck(boolean)}
+     */
     @Deprecated
     public void setUpdateWhereAlayTrueCheck(boolean updateWhereAlwayTrueCheck) {
         this.updateWhereAlwayTrueCheck = updateWhereAlwayTrueCheck;
