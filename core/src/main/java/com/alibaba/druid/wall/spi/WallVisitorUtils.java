@@ -187,7 +187,15 @@ public class WallVisitorUtils {
         checkInsertForMultiTenant(visitor, x);
     }
 
+    /**
+     *
+     * @deprecated use {@link WallVisitorUtils#checkSelect(WallVisitor, SQLSelectQueryBlock)}
+     */
+    @Deprecated
     public static void checkSelelct(WallVisitor visitor, SQLSelectQueryBlock x) {
+        checkSelect(visitor, x);
+    }
+    public static void checkSelect(WallVisitor visitor, SQLSelectQueryBlock x) {
         if (x.getInto() != null) {
             checkReadOnly(visitor, x.getInto());
         }
