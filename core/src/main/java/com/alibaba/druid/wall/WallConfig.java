@@ -757,6 +757,7 @@ public class WallConfig implements WallConfigMBean {
         this.deleteWhereAlwayTrueCheck = deleteWhereAlwayTrueCheck;
     }
 
+    @Deprecated
     public boolean isUpdateWhereAlayTrueCheck() {
         return updateWhereAlwayTrueCheck;
     }
@@ -773,7 +774,6 @@ public class WallConfig implements WallConfigMBean {
         this.updateWhereAlwayTrueCheck = updateWhereAlwayTrueCheck;
     }
 
-    @Deprecated
     public boolean isConditionOpBitwseAllow() {
         return conditionOpBitwseAllow;
     }
