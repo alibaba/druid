@@ -1000,7 +1000,7 @@ public class WallVisitorUtils {
 
         boolean checkCondition = visitor != null
                 && (!visitor.getConfig().isConstArithmeticAllow()
-                || !visitor.getConfig().isConditionOpBitwseAllow() || !visitor.getConfig().isConditionOpXorAllow());
+                || !visitor.getConfig().isConditionOpBitwiseAllow() || !visitor.getConfig().isConditionOpXorAllow());
 
         if (x.getLeft() instanceof SQLName) {
             if (x.getRight() instanceof SQLName) {
@@ -1454,7 +1454,7 @@ public class WallVisitorUtils {
                 addViolation(visitor, ErrorCode.XOR, " allow", x);
             }
 
-            if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {
+            if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwiseAllow()) {
                 addViolation(visitor, ErrorCode.BITWISE, "bitwise operator not allow", x);
             }
 

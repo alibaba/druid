@@ -45,7 +45,7 @@ public class Issue_728 extends TestCase {
         String sql = "SELECT * from city_list where city_id = 1 & 2";
 
         WallConfig config = new WallConfig();
-        config.setConditionOpBitwseAllow(false);
+        config.setConditionOpBitwiseAllow(false);
 
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }

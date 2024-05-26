@@ -15,7 +15,7 @@ public class BitwiseInvertTest extends TestCase {
 
     public void test_false() throws Exception {
         WallConfig config = new WallConfig();
-        config.setConditionOpBitwseAllow(false);
+        config.setConditionOpBitwiseAllow(false);
         Assert.assertFalse(WallUtils.isValidateMySql(//
                 "SELECT * from t where ~2", config)); //
     }
