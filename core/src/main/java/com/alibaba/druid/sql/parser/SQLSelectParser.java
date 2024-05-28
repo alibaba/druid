@@ -1609,8 +1609,14 @@ public class SQLSelectParser extends SQLParser {
                     rightTableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                 } else {
                     rightTableSource = this.parseTableSource();
+                    if (rightTableSource instanceof SQLExprTableSource) {
+                        SQLExprTableSource sqlExprTableSource = (SQLExprTableSource) rightTableSource;
+                        if (sqlExprTableSource.getExpr() instanceof SQLQueryExpr) {
+                            SQLQueryExpr expr = (SQLQueryExpr) sqlExprTableSource.getExpr();
+                            expr.setParenthesized(true);
+                        }
+                    }
                 }
-
                 if (lexer.token == Token.UNION
                         || lexer.token == Token.EXCEPT
                         || lexer.token == Token.MINUS

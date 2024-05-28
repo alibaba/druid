@@ -41,10 +41,10 @@ public class OracleInsertTest21_encoding_error extends OracleTest {
                         "\t(ID, company_name, company_id, amount, start_time\n" +
                         "\t, end_time, is_deleted, attr2)\n" +
                         "VALUES (seq_fee_use_agent.NEXTVAL, '\n" +
-                        "w[���р  Pl�', '19929', \n" +
-                        "\t(SELECT c.FEE_AGENT\n" +
-                        "\tFROM cfg_fee_agent c)\n" +
-                        "\t, to_date((\n" +
+                        "w[���р  Pl�', '19929', (\n" +
+                        "\tSELECT c.FEE_AGENT\n" +
+                        "\tFROM cfg_fee_agent c\n" +
+                        "\t), to_date((\n" +
                         "\t\tSELECT to_char(SYSDATE, 'yyyy-mm-dd HH24:mi:ss')\n" +
                         "\t\tFROM dual\n" +
                         "\t), 'yyyy-mm-dd HH24:mi:ss')\n" +

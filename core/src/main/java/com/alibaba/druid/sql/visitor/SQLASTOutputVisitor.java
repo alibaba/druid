@@ -2320,13 +2320,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (parent instanceof SQLSelect) {
             parent = parent.getParent();
         }
-
+        if (x.isParenthesized()) {
+            print('(');
+        }
         SQLSelect subQuery = x.getSubQuery();
         if (parent instanceof ValuesClause) {
             println();
-            print('(');
             visit(subQuery);
-            print(')');
             println();
         } else if ((parent instanceof SQLStatement
                 && !(parent instanceof OracleForStatement))
@@ -2358,12 +2358,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount--;
             println();
         } else {
-            print('(');
             this.indentCount++;
             println();
             visit(subQuery);
             this.indentCount--;
             println();
+        }
+        if (x.isParenthesized()) {
             print(')');
         }
         return false;
