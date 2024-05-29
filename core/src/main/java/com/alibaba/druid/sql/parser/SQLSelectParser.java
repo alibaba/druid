@@ -1376,7 +1376,6 @@ public class SQLSelectParser extends SQLParser {
         if (tableSource.getAlias() == null || tableSource.getAlias().length() == 0) {
             Token token = lexer.token;
             long hash;
-
             switch (token) {
                 case LEFT:
                 case RIGHT:
@@ -1387,6 +1386,7 @@ public class SQLSelectParser extends SQLParser {
                     if (lexer.token == Token.OUTER
                             || lexer.token == Token.JOIN
                             || lexer.identifierEquals(FnvHash.Constants.ANTI)
+                            || lexer.identifierEquals(FnvHash.Constants.ARRAY)
                             || lexer.identifierEquals(FnvHash.Constants.SEMI)) {
                         lexer.reset(mark);
                     } else {
@@ -1397,6 +1397,17 @@ public class SQLSelectParser extends SQLParser {
                 case OUTER:
                     break;
                 default:
+                    if (identifierEquals("ARRAY")) {
+                        Lexer.SavePoint mark = lexer.mark();
+                        String strVal = lexer.stringVal();
+                        lexer.nextToken();
+                        if (lexer.token == Token.JOIN) {
+                            lexer.reset(mark);
+                        } else {
+                            tableSource.setAlias(strVal);
+                        }
+                        break;
+                    }
                     if (identifierEquals("PIVOT") || identifierEquals("UNPIVOT")) {
                         parsePivot(tableSource);
                     } else if (!(token == Token.IDENTIFIER
@@ -1495,7 +1506,11 @@ public class SQLSelectParser extends SQLParser {
                 global = true;
             }
         }
-
+        if (identifierEquals("ARRAY")) {
+            lexer.nextToken();
+            accept(Token.JOIN);
+            joinType = SQLJoinTableSource.JoinType.ARRAY_JOIN;
+        }
         switch (lexer.token) {
             case LEFT:
                 lexer.nextToken();
@@ -1506,6 +1521,9 @@ public class SQLSelectParser extends SQLParser {
                 } else if (lexer.identifierEquals(FnvHash.Constants.ANTI)) {
                     lexer.nextToken();
                     joinType = SQLJoinTableSource.JoinType.LEFT_ANTI_JOIN;
+                } else if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
+                    lexer.nextToken();
+                    joinType = SQLJoinTableSource.JoinType.LEFT_ARRAY_JOIN;
                 } else if (lexer.token == Token.OUTER) {
                     lexer.nextToken();
                     joinType = natural ? SQLJoinTableSource.JoinType.NATURAL_LEFT_JOIN : SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;

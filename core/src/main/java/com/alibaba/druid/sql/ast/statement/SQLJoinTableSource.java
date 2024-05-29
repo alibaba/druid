@@ -284,6 +284,8 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         LEFT_OUTER_JOIN("LEFT JOIN"),
         LEFT_SEMI_JOIN("LEFT SEMI JOIN"),
         LEFT_ANTI_JOIN("LEFT ANTI JOIN"),
+        ARRAY_JOIN("ARRAY JOIN"),
+        LEFT_ARRAY_JOIN("LEFT ARRAY JOIN"),
         RIGHT_OUTER_JOIN("RIGHT JOIN"),
         FULL_OUTER_JOIN("FULL JOIN"),
         STRAIGHT_JOIN("STRAIGHT_JOIN"),
