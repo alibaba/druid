@@ -39,6 +39,12 @@ public class Issue5933 {
                 SQLJoinTableSource sts = (SQLJoinTableSource) stmt.getSelect().getQueryBlock().getFrom();
                 System.out.println("JOIN类型 " + sts.getJoinType());
                 assertEquals("ARRAY JOIN", sts.getJoinType().name);
+                assertEquals("SELECT *\n"
+                    + "FROM base_customized_cost\n"
+                    + "\tARRAY JOIN split.service AS service\n"
+                    + "WHERE capture_time >= DATE('2024-04-01')\n"
+                    + "\tAND capture_time < DATE('2024-05-01')\n"
+                    + "LIMIT 100;", stmt.toString());
                 SQLParseAssertUtil.assertParseSql(sql, dbType);
             }
         }

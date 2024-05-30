@@ -3001,6 +3001,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(' ');
             if (columns != null && columns.size() > 0) {
                 print0(ucase ? " AS " : " as ");
+            } else if (x.isNeedAsTokenForAlias()) {
+                print0(ucase ? "AS " : "as ");
             }
             print0(alias);
         }

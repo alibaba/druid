@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
+    protected boolean needAsTokenForAlias;
     protected String alias;
     protected List<SQLHint> hints;
     protected SQLExpr flashback;
@@ -37,6 +38,14 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
 
     public SQLTableSourceImpl(String alias) {
         this.alias = alias;
+    }
+
+    public boolean isNeedAsTokenForAlias() {
+        return needAsTokenForAlias;
+    }
+
+    public void setNeedAsTokenForAlias(boolean needAsTokenForAlias) {
+        this.needAsTokenForAlias = needAsTokenForAlias;
     }
 
     public String getAlias() {
