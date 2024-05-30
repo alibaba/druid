@@ -1774,6 +1774,10 @@ public class SQLSelectParser extends SQLParser {
                     lexer.nextToken();
 
                     if (lexer.token != Token.ON) {
+                        if (dbType == DbType.clickhouse && rightTableSource instanceof SQLExprTableSource) {
+                            SQLExprTableSource exprTableSource = (SQLExprTableSource) rightTableSource;
+                            exprTableSource.setNeedAsTokenForAlias(true);
+                        }
                         tableAlias = this.tableAlias(true);
                     } else {
                         tableAlias = null;
