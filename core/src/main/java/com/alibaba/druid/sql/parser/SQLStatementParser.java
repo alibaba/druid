@@ -7561,7 +7561,7 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLShowVariantsStatement parseShowVariants() {
         SQLShowVariantsStatement stmt = new SQLShowVariantsStatement();
-
+        stmt.setDbType(dbType);
         if (lexer.token() == Token.LIKE) {
             lexer.nextToken();
             SQLExpr like = exprParser.expr();
