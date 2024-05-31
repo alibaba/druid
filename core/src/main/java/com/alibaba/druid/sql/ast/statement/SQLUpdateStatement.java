@@ -118,6 +118,10 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     }
 
     public SQLName getTableName() {
+        return this.getTableName(false);
+    }
+
+    public SQLName getTableName(boolean lastFlag) {
         if (tableSource instanceof SQLExprTableSource) {
             return ((SQLExprTableSource) tableSource).getName();
         }
@@ -126,7 +130,19 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             SQLTableSource left = ((SQLJoinTableSource) tableSource).getLeft();
             if (left instanceof SQLExprTableSource) {
                 return ((SQLExprTableSource) left).getName();
+            } else if (lastFlag && left instanceof SQLJoinTableSource) {
+                return getLastTableName(left);
             }
+        }
+        return null;
+    }
+
+    private SQLName getLastTableName(SQLTableSource tableSource) {
+        SQLTableSource left = ((SQLJoinTableSource) tableSource).getLeft();
+        if (left instanceof SQLExprTableSource) {
+            return ((SQLExprTableSource) left).getName();
+        } else if (left instanceof SQLJoinTableSource) {
+            return getLastTableName(left);
         }
         return null;
     }
