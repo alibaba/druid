@@ -14,22 +14,22 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * @author lizongbo
- * @see <a href="https://github.com/alibaba/druid/issues/5894>Issue来源</a>
- * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/cast-functions.html#function_cast">CAST(expr AS type [ARRAY])</a>
+ * @see <a href="https://github.com/alibaba/druid/issues/5958" >Issue来源</a>
  */
-public class Issue5894 {
+public class Issue5958 {
+
 
     @Test
-    public void test_parse_aschararray() {
+    public void test_parse_alter() {
         for (DbType dbType : new DbType[]{DbType.mysql}) {
             for (String sql : new String[]{
-                "alter table db1.rs_push_mall_data add key idx_bill_no_json((CAST(bill_no_json AS CHAR(50) ARRAY)));",
+                //"select (((a-b))) from aa;",
+                "alter TABLE test.rs_urge_pickup_config ADD KEY idx_site_id_list2 ((cast(site_id_list as char(10) array)));",
             }) {
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 List<SQLStatement> statementList = parser.parseStatementList();
+                System.out.println(statementList);
                 assertEquals(1, statementList.size());
-                assertEquals("ALTER TABLE db1.rs_push_mall_data\n"
-                    + "\tADD KEY idx_bill_no_json ((CAST(bill_no_json AS CHAR(50) ARRAY)));", statementList.get(0).toString());
                 SQLParseAssertUtil.assertParseSql(sql, dbType);
             }
         }

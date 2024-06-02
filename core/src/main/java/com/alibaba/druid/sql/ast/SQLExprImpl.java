@@ -19,7 +19,7 @@ import java.util.List;
 
 public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
     protected boolean parenthesized;
-
+    protected int parenthesizedCount;
     public SQLExprImpl() {
     }
 
@@ -29,7 +29,25 @@ public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
 
     public void setParenthesized(boolean parenthesized) {
         this.parenthesized = parenthesized;
+        if (parenthesized) {
+            parenthesizedCount++;
+        } else {
+            parenthesizedCount--;
+        }
     }
+
+    public int getParenthesizedCount() {
+        return parenthesizedCount;
+    }
+
+    public void setParenthesizedCount(int parenthesizedCount) {
+        this.parenthesizedCount = parenthesizedCount;
+    }
+
+    public void increaseParenthesizedCount() {
+        this.parenthesizedCount++;
+    }
+
     public abstract boolean equals(Object o);
 
     public abstract int hashCode();
