@@ -1288,6 +1288,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLCastExpr x) {
+        tryPrintLparen(x);
         if (x.isTry()) {
             print0(ucase ? "TRY_CAST(" : "try_cast(");
         } else {
@@ -1297,7 +1298,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? " AS " : " as ");
         x.getDataType().accept(this);
         print0(")");
-
+        tryPrintRparen(x);
         return false;
     }
 
@@ -11838,5 +11839,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(x.getComment());
         }
         return false;
+    }
+    protected void tryPrintLparen(SQLExprImpl x) {
+        if (x.isParenthesized()) {
+            print('(');
+        }
+        for (int i = 1; i < x.getParenthesizedCount(); ++i) {
+            print('(');
+        }
+    }
+
+    protected void tryPrintRparen(SQLExprImpl x) {
+        if (x.isParenthesized()) {
+            print(')');
+        }
+        for (int i = 1; i < x.getParenthesizedCount(); ++i) {
+            print(')');
+        }
     }
 }
