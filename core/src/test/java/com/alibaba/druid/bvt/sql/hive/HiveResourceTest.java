@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.hive;
 
+import static org.junit.Assert.assertEquals;
+
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.bvt.sql.SQLResourceTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
@@ -22,69 +26,91 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
+import org.junit.Test;
 
-public class HiveResourceTest extends TestCase {
+public class HiveResourceTest extends SQLResourceTest {
+    public HiveResourceTest() {
+        super(DbType.hive);
+    }
+
+    @Test
     public void test_0() throws Exception {
         exec_test("bvt/parser/hive-0.txt");
     }
 
+    @Test
     public void test_1() throws Exception {
         exec_test("bvt/parser/hive-1.txt");
     }
 
+    @Test
     public void test_2() throws Exception {
         exec_test("bvt/parser/hive-2.txt");
     }
 
+    @Test
     public void test_3() throws Exception {
         exec_test("bvt/parser/hive-3.txt");
     }
 
+    @Test
     public void test_4() throws Exception {
         exec_test("bvt/parser/hive-4.txt");
     }
 
+    @Test
     public void test_5() throws Exception {
         exec_test("bvt/parser/hive-5.txt");
     }
 
+    @Test
     public void test_6() throws Exception {
         exec_test("bvt/parser/hive-6.txt");
     }
 
+    @Test
     public void test_7() throws Exception {
         exec_test("bvt/parser/hive-7.txt");
     }
 
+    @Test
     public void test_8() throws Exception {
         exec_test("bvt/parser/hive-8.txt");
     }
 
+    @Test
     public void test_9() throws Exception {
         exec_test("bvt/parser/hive-9.txt");
     }
 
+    @Test
     public void test_10() throws Exception {
         exec_test("bvt/parser/hive-10.txt");
     }
 
+    @Test
     public void test_tpcds_5() throws Exception {
         exec_test("bvt/parser/hive/tpcds/query5.sql");
     }
 
+    @Test
     public void test_tpcds_12() throws Exception {
         exec_test("bvt/parser/hive/tpcds/query12.sql");
     }
 
+    @Test
     public void test_tpcds_16() throws Exception {
         exec_test("bvt/parser/hive/tpcds/query16.sql");
+    }
+
+    @Test
+    public void hive_parse() throws Exception {
+        fileTest(1, 999, i -> "bvt/parser/hive/" + i + ".txt");
     }
 
     public void exec_test(String resource) throws Exception {
@@ -110,7 +136,7 @@ public class HiveResourceTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new HiveSchemaStatVisitor();
         stmt.accept(visitor);

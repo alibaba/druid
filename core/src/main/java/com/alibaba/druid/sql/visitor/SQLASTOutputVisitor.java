@@ -7211,6 +7211,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLAlterTableSetSerde x) {
+        print0(ucase ? "SET SERDE " : "set serde ");
+        x.getSerde().accept(this);
+
+        if (x.getSerdeProperties().size() > 0) {
+            println();
+            print0(ucase ? "WITH SERDEPROPERTIES (" : "with serdeproperties (");
+            printAndAccept(x.getSerdeProperties(), ", ");
+            print(')');
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLArrayExpr x) {
         SQLExpr expr = x.getExpr();
 
