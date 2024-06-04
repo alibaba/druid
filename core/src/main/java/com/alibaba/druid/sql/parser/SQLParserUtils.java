@@ -716,7 +716,7 @@ public class SQLParserUtils {
                 start = lexer.startPos;
                 startToken = token;
                 set = false;
-                tokens = 0;
+                tokens = token == Token.LINE_COMMENT || token == Token.MULTI_LINE_COMMENT ? 0 : 1;
                 continue;
             } else if (token == Token.MULTI_LINE_COMMENT) {
                 int len = lexer.startPos - start;
@@ -733,7 +733,7 @@ public class SQLParserUtils {
                 token = lexer.token;
                 start = lexer.startPos;
                 startToken = token;
-                tokens = 0;
+                tokens = token == Token.LINE_COMMENT || token == Token.MULTI_LINE_COMMENT ? 0 : 1;
                 continue;
             } else if (token == Token.CREATE) {
                 lexer.nextToken();
