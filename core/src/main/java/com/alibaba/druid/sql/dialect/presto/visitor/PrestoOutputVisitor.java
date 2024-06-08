@@ -39,7 +39,7 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVi
     }
 
     public PrestoOutputVisitor(StringBuilder appender) {
-        super(appender);
+        super(appender, DbType.presto);
     }
 
     public PrestoOutputVisitor(StringBuilder appender, boolean parameterized) {

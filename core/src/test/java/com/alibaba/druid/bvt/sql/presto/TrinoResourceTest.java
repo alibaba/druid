@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.sql.presto;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.bvt.sql.SQLResourceTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
@@ -20,7 +21,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class TrinoResourceTest {
+public class TrinoResourceTest extends SQLResourceTest{
+
+    public TrinoResourceTest() {
+        super(DbType.trino);
+    }
+
     @Test
     public void test_1() throws Exception {
         exec_test("bvt/parser/trino/tpcds/q01.sql");
@@ -149,6 +155,11 @@ public class TrinoResourceTest {
     @Test
     public void test_92() throws Exception {
         exec_test("bvt/parser/trino/tpcds/q92.sql");
+    }
+
+    @Test
+    public void trino_parse() throws Exception {
+        fileTest(1, 999, i -> "bvt/parser/trino/" + i + ".txt");
     }
 
     public void exec_test(String resource) throws Exception {

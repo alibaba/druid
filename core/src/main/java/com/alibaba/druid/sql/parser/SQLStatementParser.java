@@ -4642,7 +4642,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreateSchema() {
-        throw new ParserException("TODO " + lexer.info());
+        return parseCreateDatabase();
     }
 
     public SQLStatement parseCreateDatabase() {
@@ -4653,7 +4653,12 @@ public class SQLStatementParser extends SQLParser {
             stmt.addBeforeComment(lexer.readAndResetComments());
         }
 
-        if (lexer.token == Token.SCHEMA && dbType == DbType.hive) {
+        if (lexer.token == Token.CREATE) {
+            lexer.nextToken();
+        }
+
+        if (lexer.token == Token.SCHEMA && (dbType == DbType.hive
+                || dbType == DbType.presto || dbType == DbType.trino)) {
             lexer.nextToken();
         } else {
             accept(Token.DATABASE);

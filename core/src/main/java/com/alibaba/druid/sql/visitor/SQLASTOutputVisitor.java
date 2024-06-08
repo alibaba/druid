@@ -5066,13 +5066,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.getDbProperties().size() > 0) {
             if (dbType == DbType.mysql
-                    || dbType == DbType.presto
-                    || dbType == DbType.trino
                     || dbType == DbType.ads
                     || dbType == DbType.mariadb) {
                 println();
                 print0(ucase ? "WITH (" : "with (");
-            } else if (dbType == DbType.hive) {
+            } else if (dbType == DbType.hive || dbType == DbType.presto || dbType == DbType.trino) {
                 println();
                 print0(ucase ? "WITH DBPROPERTIES (" : "with dbproperties (");
             } else {
