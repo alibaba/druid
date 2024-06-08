@@ -31,6 +31,8 @@ public class PrestoLexer extends Lexer {
         map.put("UPSERT", Token.UPSERT);
         map.put("ARRAY", Token.ARRAY);
 
+        map.put("IF", Token.IF);
+
         DEFAULT_PHOENIX_KEYWORDS = new Keywords(map);
     }
 
