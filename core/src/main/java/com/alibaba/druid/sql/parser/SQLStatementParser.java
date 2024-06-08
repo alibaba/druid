@@ -2528,6 +2528,12 @@ public class SQLStatementParser extends SQLParser {
             OdpsAlterTableSetFileFormat item = new OdpsAlterTableSetFileFormat();
             item.setValue(this.exprParser.primary());
             stmt.addItem(item);
+        } else if (lexer.identifierEquals("FILEFORMAT") && (dbType == DbType.hive
+            || dbType == DbType.spark)) {
+            lexer.nextToken();
+            SQLAlterTableSetFileFormat item = new SQLAlterTableSetFileFormat();
+            item.setValue(this.exprParser.primary());
+            stmt.addItem(item);
         } else if (lexer.identifierEquals(FnvHash.Constants.SERDE)) {
             lexer.nextToken();
             SQLAlterTableSetSerde setTableSerde = new SQLAlterTableSetSerde();
