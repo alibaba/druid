@@ -1,0 +1,4 @@
+ALTER TABLE table_name SET fileformat orc
+--------------------
+ALTER TABLE table_name
+	SET FILEFORMAT orc

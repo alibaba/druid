@@ -2613,4 +2613,11 @@ public interface SQLASTVisitor {
     default void endVisit(SQLAlterTableSetSerde x) {
     }
 
+    default boolean visit(SQLAlterTableSetFileFormat x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableSetFileFormat x) {
+    }
+
 }
