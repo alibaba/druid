@@ -32,6 +32,7 @@ import java.util.*;
  * @author wenshao [szujobs@hotmail.com]
  */
 public final class JdbcUtils implements JdbcConstants {
+
     private static final Log LOG = LogFactory.getLog(JdbcUtils.class);
 
     private static final Properties DRIVER_URL_MAPPING = new Properties();
@@ -534,7 +535,7 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:dbcp:")) {
             return JdbcConstants.TYDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:opengauss:")) {
-            return "org.opengauss.Driver";
+            return JdbcConstants.OPENGAUSS_DRIVER;
         } else if (rawUrl.startsWith("jdbc:TAOS:")) {
             return JdbcConstants.TAOS_DATA;
         } else if (rawUrl.startsWith("jdbc:TAOS-RS:")) {
