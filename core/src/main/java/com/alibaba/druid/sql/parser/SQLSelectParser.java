@@ -434,6 +434,13 @@ public class SQLSelectParser extends SQLParser {
             queryBlock.addBeforeComment(lexer.readAndResetComments());
         }
 
+        if (lexer.token() == Token.TABLE && dbType == DbType.spark) {
+            lexer.nextToken();
+            queryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
+            queryBlock.setFrom(parseTableSource());
+            return queryRest(queryBlock, acceptUnion);
+        }
+
         accept(Token.SELECT);
 
         querySelectListBefore(queryBlock);
