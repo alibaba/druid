@@ -53,6 +53,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected SQLPartitionOf partitionOf;
     protected SQLPartitionBy localPartitioning;
     protected SQLExpr storedAs;
+    protected SQLExpr storedBy;
     protected SQLExpr location;
 
     protected boolean onCommitPreserveRows;
@@ -103,6 +104,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, partitioning);
         this.acceptChild(v, localPartitioning);
         this.acceptChild(v, storedAs);
+        this.acceptChild(v, storedBy);
         this.acceptChild(v, location);
 
         this.acceptChild(v, partitionColumns);
@@ -1256,6 +1258,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         if (storedAs != null) {
             x.setStoredAs(storedAs.clone());
         }
+        if (storedBy != null) {
+            x.setStoredBy(storedBy.clone());
+        }
 
         if (location != null) {
             x.setLocation(location.clone());
@@ -1337,6 +1342,17 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             x.setParent(this);
         }
         this.storedAs = x;
+    }
+
+    public SQLExpr getStoredBy() {
+        return storedBy;
+    }
+
+    public void setStoredBy(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedBy = x;
     }
 
     public SQLCreateTableStatement clone() {

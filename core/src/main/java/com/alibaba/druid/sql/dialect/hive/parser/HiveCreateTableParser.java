@@ -260,21 +260,27 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         }
         if (lexer.identifierEquals(FnvHash.Constants.STORED)) {
             lexer.nextToken();
-            accept(Token.AS);
-
-            if (lexer.identifierEquals(FnvHash.Constants.INPUTFORMAT)) {
-                HiveInputOutputFormat format = new HiveInputOutputFormat();
-                lexer.nextToken();
-                format.setInput(this.exprParser.primary());
-
-                if (lexer.identifierEquals(FnvHash.Constants.OUTPUTFORMAT)) {
-                    lexer.nextToken();
-                    format.setOutput(this.exprParser.primary());
-                }
-                stmt.setStoredAs(format);
-            } else {
+            if (lexer.token() == Token.BY) {
+                accept(Token.BY);
                 SQLName name = this.exprParser.name();
-                stmt.setStoredAs(name);
+                stmt.setStoredBy(name);
+            } else {
+                accept(Token.AS);
+
+                if (lexer.identifierEquals(FnvHash.Constants.INPUTFORMAT)) {
+                    HiveInputOutputFormat format = new HiveInputOutputFormat();
+                    lexer.nextToken();
+                    format.setInput(this.exprParser.primary());
+
+                    if (lexer.identifierEquals(FnvHash.Constants.OUTPUTFORMAT)) {
+                        lexer.nextToken();
+                        format.setOutput(this.exprParser.primary());
+                    }
+                    stmt.setStoredAs(format);
+                } else {
+                    SQLName name = this.exprParser.name();
+                    stmt.setStoredAs(name);
+                }
             }
         }
 

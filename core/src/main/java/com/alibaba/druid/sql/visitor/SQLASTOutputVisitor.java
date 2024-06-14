@@ -3778,6 +3778,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " STORE AS " : " store as ");
             printExpr(storedAs, parameterized);
         }
+        SQLExpr storedBy = x.getStoredBy();
+        if (storedBy != null) {
+            print0(ucase ? " STORE BY " : " store by ");
+            printExpr(storedBy, parameterized);
+        }
 
         SQLSelect select = x.getSelect();
         if (printSelect && select != null) {
@@ -11046,6 +11051,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (x.isRbracketUse()) {
                 print("]");
             }
+        }
+        SQLExpr storedBy = x.getStoredBy();
+        if (storedBy != null) {
+            println();
+            print0(ucase ? " STORED BY " : " STORED by ");
+            printExpr(storedBy, parameterized);
         }
 
         SQLExpr location = x.getLocation();
