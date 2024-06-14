@@ -20,8 +20,13 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterSchemaStatement;
@@ -189,5 +194,64 @@ public class PrestoStatementParser extends SQLStatementParser {
         stmt.setNewName(this.exprParser.identifier());
 
         return stmt;
+    }
+
+    @Override
+    public SQLStatement parseInsert() {
+        if (lexer.token() == Token.FROM) {
+            lexer.nextToken();
+
+            HiveMultiInsertStatement stmt = new HiveMultiInsertStatement();
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                SQLName tableName = this.exprParser.name();
+                SQLExprTableSource from = new SQLExprTableSource(tableName);
+                SQLTableSource tableSource = createSQLSelectParser().parseTableSourceRest(from);
+                stmt.setFrom(tableSource);
+
+                if (lexer.token() == Token.IDENTIFIER) {
+                    from.setAlias(lexer.stringVal());
+                    lexer.nextToken();
+                }
+            } else {
+                accept(Token.LPAREN);
+
+                SQLSelectParser selectParser = createSQLSelectParser();
+                SQLSelect select = selectParser.select();
+
+                accept(Token.RPAREN);
+
+                String alias = lexer.stringVal();
+                accept(Token.IDENTIFIER);
+
+                SQLTableSource from = new SQLSubqueryTableSource(select, alias);
+
+                switch (lexer.token()) {
+                    case LEFT:
+                    case RIGHT:
+                    case FULL:
+                    case JOIN:
+                        from = selectParser.parseTableSourceRest(from);
+                        break;
+                    default:
+                        break;
+                }
+
+                stmt.setFrom(from);
+            }
+
+            for (; ; ) {
+                HiveInsert insert = parseHiveInsert();
+                stmt.addItem(insert);
+
+                if (lexer.token() != Token.INSERT) {
+                    break;
+                }
+            }
+
+            return stmt;
+        }
+
+        return parseHiveInsertStmt();
     }
 }
