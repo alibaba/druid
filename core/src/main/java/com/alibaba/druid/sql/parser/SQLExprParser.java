@@ -4910,6 +4910,7 @@ public class SQLExprParser extends SQLParser {
                 && token != Token.PRIMARY
                 && token != Token.RPAREN
                 && token != Token.COMMA
+                && token != Token.COMMENT
         ) {
             column.setDataType(
                     parseDataType());
