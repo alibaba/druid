@@ -3477,6 +3477,35 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print0(ucase ? "TABLE " : "table ");
 
         printTableSourceExpr(x.getName());
+
+        this.indentCount++;
+        if (x.getTableOptions().size() > 0) {
+            println();
+        }
+        this.indentCount--;
+        {
+            int i = 0;
+            for (SQLAssignItem item : x.getTableOptions()) {
+                SQLExpr key = item.getTarget();
+                if (i != 0) {
+                    print(' ');
+                }
+                final String keyStringCase = ucase ? key.toString().toUpperCase() : key.toString().toLowerCase();
+                print0(keyStringCase);
+                if ("TABLESPACE".equalsIgnoreCase(keyStringCase)) {
+                    print(' ');
+                } else {
+                    print0(" = ");
+                }
+                item.getValue().accept(this);
+                i++;
+            }
+        }
+        if (x.getItems().size() > 0) {
+            if (x.getTableOptions().size() > 0) {
+                print(',');
+            }
+        }
         this.indentCount++;
         for (int i = 0; i < x.getItems().size(); ++i) {
             SQLAlterTableItem item = x.getItems().get(i);
@@ -3496,34 +3525,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             println();
             print0(ucase ? "UPGRADE PARTITIONING" : "upgrade partitioning");
         }
-
-        if (x.getTableOptions().size() > 0) {
-            if (x.getItems().size() > 0) {
-                print(',');
-            }
-            println();
-        }
-
         this.indentCount--;
-
-        int i = 0;
-        for (SQLAssignItem item : x.getTableOptions()) {
-            SQLExpr key = item.getTarget();
-            if (i != 0) {
-                print(' ');
-            }
-            final String keyStringCase = ucase ? key.toString().toUpperCase() : key.toString().toLowerCase();
-            print0(keyStringCase);
-            if ("TABLESPACE".equalsIgnoreCase(keyStringCase)) {
-                print(' ');
-            } else {
-                print0(" = ");
-            }
-            item.getValue().accept(this);
-            i++;
-        }
-
-        SQLPartitionBy partitionBy = x.getPartition();
+       SQLPartitionBy partitionBy = x.getPartition();
         if (partitionBy != null) {
             println();
             print0(ucase ? "PARTITION BY " : "partition by ");

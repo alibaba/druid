@@ -763,6 +763,12 @@ public interface SQLASTVisitor {
 
     default void endVisit(SQLAlterTableDropConstraint x) {
     }
+    default boolean visit(SQLAlterTableDropCheck x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableDropCheck x) {
+    }
     default boolean visit(SQLAlterTableValidateConstraint x) {
         return true;
     }

@@ -21,7 +21,7 @@ public class SQLParseAssertUtil {
      * @param dbType
      */
     public static void assertParseSql(String sql, DbType dbType) {
-        System.out.println(dbType + "原始的sql===" + sql);
+        System.out.println(dbType + "最初的最原始的sql===[" + sql + "]");
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> statementList = parser.parseStatementList();
         String sqlGen = statementList.toString();

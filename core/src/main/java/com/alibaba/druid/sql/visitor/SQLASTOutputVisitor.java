@@ -5731,6 +5731,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
     @Override
+    public boolean visit(SQLAlterTableDropCheck x) {
+        print0(ucase ? "DROP CHECK " : "drop check ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+        x.getCheckName().accept(this);
+        return false;
+    }
+    @Override
     public boolean visit(SQLAlterTableValidateConstraint x) {
         print0(ucase ? "VALIDATE CONSTRAINT " : "validate constraint ");
         x.getConstraintName().accept(this);

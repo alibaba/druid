@@ -2351,6 +2351,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLAlterTableDropConstraint x) {
         return false;
     }
+    @Override
+    public boolean visit(SQLAlterTableDropCheck x) {
+        return false;
+    }
 
     @Override
     public boolean visit(SQLDropIndexStatement x) {
