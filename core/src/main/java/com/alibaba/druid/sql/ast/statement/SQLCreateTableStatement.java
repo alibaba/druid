@@ -948,6 +948,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         } else if (item instanceof SQLAlterTableDropConstraint) {
             return apply((SQLAlterTableDropConstraint) item);
+        } else if (item instanceof SQLAlterTableDropCheck) {
+            return apply((SQLAlterTableDropCheck) item);
 
         } else if (item instanceof SQLAlterTableDropKey) {
             return apply((SQLAlterTableDropKey) item);
@@ -1043,6 +1045,19 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             if (e instanceof SQLConstraint) {
                 SQLConstraint constraint = (SQLConstraint) e;
                 if (SQLUtils.nameEquals(constraint.getName(), item.getConstraintName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private boolean apply(SQLAlterTableDropCheck item) {
+        for (int i = tableElementList.size() - 1; i >= 0; i--) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLConstraint) {
+                SQLConstraint constraint = (SQLConstraint) e;
+                if (SQLUtils.nameEquals(constraint.getName(), item.getCheckName())) {
                     tableElementList.remove(i);
                     return true;
                 }

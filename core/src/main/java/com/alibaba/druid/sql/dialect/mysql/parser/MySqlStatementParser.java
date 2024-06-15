@@ -6374,7 +6374,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                     // RENAME {INDEX|KEY} old_index_name TO new_index_name
                     // RENAME [TO|AS] new_tbl_name
                     lexer.nextToken();
-
                     switch (lexer.token()) {
                         case INDEX:
                         case KEY: {
@@ -6948,7 +6947,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setPartition(partitionBy);
         } else {
             // Change to rename table if only one rename to xx.
-            if (1 == stmt.getItems().size() && stmt.getItems().get(0) instanceof SQLAlterTableRename) {
+            if (stmt.getTableOptions().isEmpty() && 1 == stmt.getItems().size() && stmt.getItems().get(0) instanceof SQLAlterTableRename) {
                 MySqlRenameTableStatement renameStmt = new MySqlRenameTableStatement();
                 MySqlRenameTableStatement.Item item = new MySqlRenameTableStatement.Item();
                 item.setName((SQLName) stmt.getTableSource().getExpr());
@@ -8017,6 +8016,11 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
             SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
             item.setConstraintName(this.exprParser.name());
+            stmt.addItem(item);
+        } else if (lexer.token() == Token.CHECK) {
+            lexer.nextToken();
+            SQLAlterTableDropCheck item = new SQLAlterTableDropCheck();
+            item.setCheckName(this.exprParser.name());
             stmt.addItem(item);
         } else if (lexer.token() == Token.COLUMN) {
             lexer.nextToken();
