@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.Constants;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
@@ -22,8 +23,14 @@ import com.alibaba.druid.support.logging.LogFactory;
 import javax.management.ObjectName;
 
 import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import static com.alibaba.druid.util.Utils.getBoolean;
 
 public class DruidDataSourceUtils {
     private static final Log LOG = LogFactory.getLog(DruidDataSourceUtils.class);
@@ -212,4 +219,334 @@ public class DruidDataSourceUtils {
             return null;
         }
     }
+
+    public static void configFromPropety(DruidDataSource druidDataSource, Properties properties) {
+       {
+           String property = properties.getProperty("druid.name");
+           if (property != null) {
+               druidDataSource.setName(property);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.url");
+           if (property != null) {
+               druidDataSource.setUrl(property);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.username");
+           if (property != null) {
+               druidDataSource.setUsername(property);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.password");
+           if (property != null) {
+               druidDataSource.setPassword(property);
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.testWhileIdle");
+           if (value != null) {
+               druidDataSource.setTestWhileIdle(value);
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.testOnBorrow");
+           if (value != null) {
+               druidDataSource.setTestOnBorrow(value);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.validationQuery");
+           if (property != null && property.length() > 0) {
+               druidDataSource.setValidationQuery(property);
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.useGlobalDataSourceStat");
+           if (value != null) {
+               druidDataSource.setUseGlobalDataSourceStat(value);
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.useGloalDataSourceStat"); // compatible for early versions
+           if (value != null) {
+               druidDataSource.setUseGlobalDataSourceStat(value);
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.asyncInit"); // compatible for early versions
+           if (value != null) {
+               druidDataSource.setAsyncInit(value);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.filters");
+
+           if (property != null && property.length() > 0) {
+               try {
+                   druidDataSource.setFilters(property);
+               } catch (SQLException e) {
+                   LOG.error("setFilters error", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty(Constants.DRUID_TIME_BETWEEN_LOG_STATS_MILLIS);
+           if (property != null && property.length() > 0) {
+               try {
+                   long value = Long.parseLong(property);
+                   druidDataSource.setTimeBetweenLogStatsMillis(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property '" + Constants.DRUID_TIME_BETWEEN_LOG_STATS_MILLIS + "'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty(Constants.DRUID_STAT_SQL_MAX_SIZE);
+           if (property != null && property.length() > 0) {
+               try {
+                   int value = Integer.parseInt(property);
+                   if (druidDataSource.getDataSourceStat() != null) {
+                       druidDataSource.getDataSourceStat().setMaxSqlSize(value);
+                   }
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property '" + Constants.DRUID_STAT_SQL_MAX_SIZE + "'", e);
+               }
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.clearFiltersEnable");
+           if (value != null) {
+               druidDataSource.setClearFiltersEnable(value);
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.resetStatEnable");
+           if (value != null) {
+               druidDataSource.setResetStatEnable(value);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.notFullTimeoutRetryCount");
+           if (property != null && property.length() > 0) {
+               try {
+                   int value = Integer.parseInt(property);
+                   druidDataSource.setNotFullTimeoutRetryCount(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.notFullTimeoutRetryCount'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty("druid.timeBetweenEvictionRunsMillis");
+           if (property != null && property.length() > 0) {
+               try {
+                   long value = Long.parseLong(property);
+                   druidDataSource.setTimeBetweenEvictionRunsMillis(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.timeBetweenEvictionRunsMillis'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty("druid.maxWaitThreadCount");
+           if (property != null && property.length() > 0) {
+               try {
+                   int value = Integer.parseInt(property);
+                   druidDataSource.setMaxWaitThreadCount(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.maxWaitThreadCount'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty("druid.maxWait");
+           if (property != null && property.length() > 0) {
+               try {
+                   int value = Integer.parseInt(property);
+                   druidDataSource.setMaxWait(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.maxWait'", e);
+               }
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.failFast");
+           if (value != null) {
+               druidDataSource.setFailFast(value);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.phyTimeoutMillis");
+           if (property != null && property.length() > 0) {
+               try {
+                   long value = Long.parseLong(property);
+                   druidDataSource.setPhyTimeoutMillis(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.phyTimeoutMillis'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty("druid.phyMaxUseCount");
+           if (property != null && property.length() > 0) {
+               try {
+                   long value = Long.parseLong(property);
+                   druidDataSource.setPhyMaxUseCount(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.phyMaxUseCount'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty("druid.minEvictableIdleTimeMillis");
+           if (property != null && property.length() > 0) {
+               try {
+                   long value = Long.parseLong(property);
+                   druidDataSource.setMinEvictableIdleTimeMillis(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.minEvictableIdleTimeMillis'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty("druid.maxEvictableIdleTimeMillis");
+           if (property != null && property.length() > 0) {
+               try {
+                   long value = Long.parseLong(property);
+                   druidDataSource.setMaxEvictableIdleTimeMillis(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.maxEvictableIdleTimeMillis'", e);
+               }
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.keepAlive");
+           if (value != null) {
+               druidDataSource.setKeepAlive(value);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.keepAliveBetweenTimeMillis");
+           if (property != null && property.length() > 0) {
+               try {
+                   long value = Long.parseLong(property);
+                   druidDataSource.setKeepAliveBetweenTimeMillis(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.keepAliveBetweenTimeMillis'", e);
+               }
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.poolPreparedStatements");
+           if (value != null) {
+               druidDataSource.setPoolPreparedStatements(value);
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.initVariants");
+           if (value != null) {
+               druidDataSource.setInitVariants(value);
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.initGlobalVariants");
+           if (value != null) {
+               druidDataSource.setInitGlobalVariants(value);
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.useUnfairLock");
+           if (value != null) {
+               druidDataSource.setUseUnfairLock(value);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.driverClassName");
+           if (property != null) {
+               druidDataSource.setDriverClassName(property);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.initialSize");
+           if (property != null && property.length() > 0) {
+               try {
+                   int value = Integer.parseInt(property);
+                   druidDataSource.setInitialSize(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.initialSize'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty("druid.minIdle");
+           if (property != null && property.length() > 0) {
+               try {
+                   int value = Integer.parseInt(property);
+                   druidDataSource.setMinIdle(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.minIdle'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty("druid.maxActive");
+           if (property != null && property.length() > 0) {
+               try {
+                   int value = Integer.parseInt(property);
+                   druidDataSource.setMaxActive(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.maxActive'", e);
+               }
+           }
+       }
+       {
+           Boolean value = getBoolean(properties, "druid.killWhenSocketReadTimeout");
+           if (value != null) {
+               druidDataSource.setKillWhenSocketReadTimeout(value);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.connectProperties");
+           if (property != null) {
+               druidDataSource.setConnectionProperties(property);
+           }
+       }
+       {
+           String property = properties.getProperty("druid.maxPoolPreparedStatementPerConnectionSize");
+           if (property != null && property.length() > 0) {
+               try {
+                   int value = Integer.parseInt(property);
+                   druidDataSource.setMaxPoolPreparedStatementPerConnectionSize(value);
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.maxPoolPreparedStatementPerConnectionSize'", e);
+               }
+           }
+       }
+       {
+           String property = properties.getProperty("druid.initConnectionSqls");
+           if (property != null && property.length() > 0) {
+               try {
+                   StringTokenizer tokenizer = new StringTokenizer(property, ";");
+                   druidDataSource.setConnectionInitSqls(Collections.list(tokenizer));
+               } catch (NumberFormatException e) {
+                   LOG.error("illegal property 'druid.initConnectionSqls'", e);
+               }
+           }
+       }
+       {
+           String property = System.getProperty("druid.load.spifilter.skip");
+           if (property != null && !"false".equals(property)) {
+               druidDataSource.setLoadSpifilterSkip(true);
+           }
+       }
+       {
+           String property = System.getProperty("druid.checkExecuteTime");
+           if (property != null && !"false".equals(property)) {
+               druidDataSource.setCheckExecuteTime(true);
+           }
+       }
+   }
 }

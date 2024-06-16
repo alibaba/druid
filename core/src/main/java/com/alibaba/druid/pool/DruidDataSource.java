@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import com.alibaba.druid.Constants;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
@@ -73,8 +72,6 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static com.alibaba.druid.util.Utils.getBoolean;
 
 /**
  * @author ljw [ljw2083@alibaba-inc.com]
@@ -194,333 +191,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     public void configFromPropeties(Properties properties) {
-        {
-            String property = properties.getProperty("druid.name");
-            if (property != null) {
-                this.setName(property);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.url");
-            if (property != null) {
-                this.setUrl(property);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.username");
-            if (property != null) {
-                this.setUsername(property);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.password");
-            if (property != null) {
-                this.setPassword(property);
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.testWhileIdle");
-            if (value != null) {
-                this.testWhileIdle = value;
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.testOnBorrow");
-            if (value != null) {
-                this.testOnBorrow = value;
-            }
-        }
-        {
-            String property = properties.getProperty("druid.validationQuery");
-            if (property != null && property.length() > 0) {
-                this.setValidationQuery(property);
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.useGlobalDataSourceStat");
-            if (value != null) {
-                this.setUseGlobalDataSourceStat(value);
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.useGloalDataSourceStat"); // compatible for early versions
-            if (value != null) {
-                this.setUseGlobalDataSourceStat(value);
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.asyncInit"); // compatible for early versions
-            if (value != null) {
-                this.setAsyncInit(value);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.filters");
-
-            if (property != null && property.length() > 0) {
-                try {
-                    this.setFilters(property);
-                } catch (SQLException e) {
-                    LOG.error("setFilters error", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty(Constants.DRUID_TIME_BETWEEN_LOG_STATS_MILLIS);
-            if (property != null && property.length() > 0) {
-                try {
-                    long value = Long.parseLong(property);
-                    this.setTimeBetweenLogStatsMillis(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property '" + Constants.DRUID_TIME_BETWEEN_LOG_STATS_MILLIS + "'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty(Constants.DRUID_STAT_SQL_MAX_SIZE);
-            if (property != null && property.length() > 0) {
-                try {
-                    int value = Integer.parseInt(property);
-                    if (dataSourceStat != null) {
-                        dataSourceStat.setMaxSqlSize(value);
-                    }
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property '" + Constants.DRUID_STAT_SQL_MAX_SIZE + "'", e);
-                }
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.clearFiltersEnable");
-            if (value != null) {
-                this.setClearFiltersEnable(value);
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.resetStatEnable");
-            if (value != null) {
-                this.setResetStatEnable(value);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.notFullTimeoutRetryCount");
-            if (property != null && property.length() > 0) {
-                try {
-                    int value = Integer.parseInt(property);
-                    this.setNotFullTimeoutRetryCount(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.notFullTimeoutRetryCount'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty("druid.timeBetweenEvictionRunsMillis");
-            if (property != null && property.length() > 0) {
-                try {
-                    long value = Long.parseLong(property);
-                    this.setTimeBetweenEvictionRunsMillis(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.timeBetweenEvictionRunsMillis'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty("druid.maxWaitThreadCount");
-            if (property != null && property.length() > 0) {
-                try {
-                    int value = Integer.parseInt(property);
-                    this.setMaxWaitThreadCount(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.maxWaitThreadCount'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty("druid.maxWait");
-            if (property != null && property.length() > 0) {
-                try {
-                    int value = Integer.parseInt(property);
-                    this.setMaxWait(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.maxWait'", e);
-                }
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.failFast");
-            if (value != null) {
-                this.setFailFast(value);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.phyTimeoutMillis");
-            if (property != null && property.length() > 0) {
-                try {
-                    long value = Long.parseLong(property);
-                    this.setPhyTimeoutMillis(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.phyTimeoutMillis'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty("druid.phyMaxUseCount");
-            if (property != null && property.length() > 0) {
-                try {
-                    long value = Long.parseLong(property);
-                    this.setPhyMaxUseCount(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.phyMaxUseCount'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty("druid.minEvictableIdleTimeMillis");
-            if (property != null && property.length() > 0) {
-                try {
-                    long value = Long.parseLong(property);
-                    this.setMinEvictableIdleTimeMillis(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.minEvictableIdleTimeMillis'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty("druid.maxEvictableIdleTimeMillis");
-            if (property != null && property.length() > 0) {
-                try {
-                    long value = Long.parseLong(property);
-                    this.setMaxEvictableIdleTimeMillis(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.maxEvictableIdleTimeMillis'", e);
-                }
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.keepAlive");
-            if (value != null) {
-                this.setKeepAlive(value);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.keepAliveBetweenTimeMillis");
-            if (property != null && property.length() > 0) {
-                try {
-                    long value = Long.parseLong(property);
-                    this.setKeepAliveBetweenTimeMillis(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.keepAliveBetweenTimeMillis'", e);
-                }
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.poolPreparedStatements");
-            if (value != null) {
-                this.setPoolPreparedStatements0(value);
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.initVariants");
-            if (value != null) {
-                this.setInitVariants(value);
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.initGlobalVariants");
-            if (value != null) {
-                this.setInitGlobalVariants(value);
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.useUnfairLock");
-            if (value != null) {
-                this.setUseUnfairLock(value);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.driverClassName");
-            if (property != null) {
-                this.setDriverClassName(property);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.initialSize");
-            if (property != null && property.length() > 0) {
-                try {
-                    int value = Integer.parseInt(property);
-                    this.setInitialSize(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.initialSize'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty("druid.minIdle");
-            if (property != null && property.length() > 0) {
-                try {
-                    int value = Integer.parseInt(property);
-                    this.setMinIdle(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.minIdle'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty("druid.maxActive");
-            if (property != null && property.length() > 0) {
-                try {
-                    int value = Integer.parseInt(property);
-                    this.setMaxActive(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.maxActive'", e);
-                }
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.killWhenSocketReadTimeout");
-            if (value != null) {
-                setKillWhenSocketReadTimeout(value);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.connectProperties");
-            if (property != null) {
-                this.setConnectionProperties(property);
-            }
-        }
-        {
-            String property = properties.getProperty("druid.maxPoolPreparedStatementPerConnectionSize");
-            if (property != null && property.length() > 0) {
-                try {
-                    int value = Integer.parseInt(property);
-                    this.setMaxPoolPreparedStatementPerConnectionSize(value);
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.maxPoolPreparedStatementPerConnectionSize'", e);
-                }
-            }
-        }
-        {
-            String property = properties.getProperty("druid.initConnectionSqls");
-            if (property != null && property.length() > 0) {
-                try {
-                    StringTokenizer tokenizer = new StringTokenizer(property, ";");
-                    setConnectionInitSqls(Collections.list(tokenizer));
-                } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'druid.initConnectionSqls'", e);
-                }
-            }
-        }
-        {
-            String property = System.getProperty("druid.load.spifilter.skip");
-            if (property != null && !"false".equals(property)) {
-                loadSpifilterSkip = true;
-            }
-        }
-        {
-            String property = System.getProperty("druid.checkExecuteTime");
-            if (property != null && !"false".equals(property)) {
-                checkExecuteTime = true;
-            }
-        }
+        DruidDataSourceUtils.configFromPropety(this, properties);
     }
 
     public boolean isKillWhenSocketReadTimeout() {
@@ -4086,6 +3757,14 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     public void setCheckExecuteTime(boolean checkExecuteTime) {
         this.checkExecuteTime = checkExecuteTime;
+    }
+
+    public boolean isLoadSpifilterSkip() {
+        return loadSpifilterSkip;
+    }
+
+    public void setLoadSpifilterSkip(boolean loadSpifilterSkip) {
+        this.loadSpifilterSkip = loadSpifilterSkip;
     }
 
     public void forEach(Connection conn) {
