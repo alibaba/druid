@@ -191,7 +191,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     public void configFromPropeties(Properties properties) {
-        DruidDataSourceUtils.configFromPropety(this, properties);
+        DruidDataSourceUtils.configFromProperties(this, properties);
     }
 
     public boolean isKillWhenSocketReadTimeout() {
