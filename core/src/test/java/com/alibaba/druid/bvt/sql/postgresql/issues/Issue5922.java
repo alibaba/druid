@@ -27,6 +27,9 @@ public class Issue5922 {
                 "DROP FUNCTION add_numbers;",
                 "DROP FUNCTION add_numbers();",
                 "DROP FUNCTION sqrt(integer);",
+                "DROP FUNCTION IF EXISTS add_numbers(a integer,b integer);",
+                "DROP FUNCTION IF EXISTS add_numbers(a ,b);",
+                "DROP FUNCTION IF EXISTS add_numbers(a ,b integer,c );",
             }) {
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 List<SQLStatement> statementList = parser.parseStatementList();
