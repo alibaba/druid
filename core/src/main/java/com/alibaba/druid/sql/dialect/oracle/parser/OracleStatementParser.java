@@ -1965,7 +1965,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return block;
     }
 
-    private void parserParameters(List<SQLParameter> parameters, SQLObject parent) {
+    protected void parserParameters(List<SQLParameter> parameters, SQLObject parent) {
         for (; ; ) {
             SQLParameter parameter = new SQLParameter();
             parameter.setParent(parent);
