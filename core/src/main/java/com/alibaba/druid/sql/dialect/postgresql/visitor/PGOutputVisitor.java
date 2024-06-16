@@ -2024,6 +2024,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(SQLParameter x) {
         SQLName name = x.getName();
+        if (x.getDataType() == null) {
+            x.getName().accept(this);
+            return false;
+        }
         if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
             x.getName().accept(this);
             print0(ucase ? "CURSOR " : "cursor ");

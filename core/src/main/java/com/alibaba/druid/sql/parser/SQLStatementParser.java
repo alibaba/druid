@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.SQLParameter.ParameterType;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement.Type;
@@ -3068,6 +3069,66 @@ public class SQLStatementParser extends SQLParser {
 
         return stmt;
     }
+    protected void parserParameters(List<SQLParameter> parameters, SQLObject parent) {
+        if (lexer.token() == Token.RPAREN) {
+            return;
+        }
+
+        for (; ; ) {
+            SQLParameter parameter = new SQLParameter();
+
+            if (lexer.token() == Token.CURSOR) {
+                lexer.nextToken();
+
+                parameter.setName(this.exprParser.name());
+
+                accept(Token.IS);
+                SQLSelect select = this.createSQLSelectParser().select();
+
+                SQLDataTypeImpl dataType = new SQLDataTypeImpl();
+                dataType.setName("CURSOR");
+                parameter.setDataType(dataType);
+
+                parameter.setDefaultValue(new SQLQueryExpr(select));
+
+            } else if (lexer.token() == Token.IN || lexer.token() == Token.OUT || lexer.token() == Token.INOUT) {
+                if (lexer.token() == Token.IN) {
+                    parameter.setParamType(ParameterType.IN);
+                } else if (lexer.token() == Token.OUT) {
+                    parameter.setParamType(ParameterType.OUT);
+                } else if (lexer.token() == Token.INOUT) {
+                    parameter.setParamType(ParameterType.INOUT);
+                }
+                lexer.nextToken();
+
+                parameter.setName(this.exprParser.name());
+
+                parameter.setDataType(this.exprParser.parseDataType());
+            } else {
+                // default parameter type is in
+                parameter.setParamType(ParameterType.DEFAULT);
+                parameter.setName(this.exprParser.name());
+                if (lexer.token() != Token.COMMA && lexer.token() != Token.RPAREN) {
+                    parameter.setDataType(this.exprParser.parseDataType());
+                    if (lexer.token() == Token.COLONEQ) {
+                        lexer.nextToken();
+                        parameter.setDefaultValue(this.exprParser.expr());
+                    }
+                }
+            }
+
+            parameters.add(parameter);
+            if (lexer.token() == Token.COMMA || lexer.token() == Token.SEMI) {
+                lexer.nextToken();
+            }
+
+            if (lexer.token() != Token.BEGIN && lexer.token() != Token.RPAREN) {
+                continue;
+            }
+
+            break;
+        }
+    }
 
     protected SQLDropFunctionStatement parseDropFunction(boolean acceptDrop) {
         if (acceptDrop) {
@@ -3086,7 +3147,13 @@ public class SQLStatementParser extends SQLParser {
 
         SQLName name = this.exprParser.name();
         stmt.setName(name);
-
+//在这里要判断是否带函数声明
+        if (lexer.token() == Token.LPAREN) { // match "("
+            lexer.nextToken();
+            stmt.setParameters(new ArrayList<>());
+            parserParameters(stmt.getParameters(), stmt);
+            accept(Token.RPAREN); // match ")"
+        }
         return stmt;
     }
 

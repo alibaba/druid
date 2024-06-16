@@ -6322,7 +6322,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         x.getName().accept(this);
-
+        if (x.getParameters() != null) {
+            print0("(");
+            int paramSize = x.getParameters().size();
+            if (paramSize > 0) {
+                this.indentCount++;
+                println();
+                for (int i = 0; i < paramSize; ++i) {
+                    if (i != 0) {
+                        print0(", ");
+                        println();
+                    }
+                    SQLParameter param = x.getParameters().get(i);
+                    param.accept(this);
+                }
+                this.indentCount--;
+                println();
+            }
+            print(')');
+        }
         return false;
     }
 
