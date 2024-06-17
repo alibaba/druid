@@ -24,6 +24,12 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLShowColumnsStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowDatabasesStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowIndexesStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowPartitionsStmt;
+import com.alibaba.druid.sql.ast.statement.SQLShowViewsStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
@@ -42,6 +48,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.FnvHash.Constants;
 
 import java.util.List;
 
@@ -295,6 +303,140 @@ public class PrestoStatementParser extends SQLStatementParser {
             MysqlDeallocatePrepareStatement stmt = parseDeallocatePrepare();
             statementList.add(stmt);
             return true;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.SHOW)) {
+            Lexer.SavePoint savePoint = this.lexer.mark();
+            lexer.nextToken();
+
+            if (lexer.identifierEquals(FnvHash.Constants.VIEWS)) {
+                lexer.nextToken();
+
+                SQLShowViewsStatement stmt = new SQLShowViewsStatement();
+                if (lexer.token() == Token.IN) {
+                    lexer.nextToken();
+                    SQLName db = this.exprParser.name();
+                    stmt.setDatabase(db);
+                }
+                if (lexer.token() == Token.LIKE) {
+                    lexer.nextToken();
+                    SQLExpr pattern = this.exprParser.expr();
+                    stmt.setLike(pattern);
+                }
+                statementList.add(stmt);
+                return true;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.TABLES)) {
+                lexer.reset(savePoint);
+                SQLStatement stmt = this.parseShowTables();
+                statementList.add(stmt);
+                return true;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.DATABASES)
+                || lexer.identifierEquals(Constants.SCHEMAS)) {
+                lexer.nextToken();
+
+                SQLShowDatabasesStatement stmt = parseShowDatabases(false);
+                statementList.add(stmt);
+                return true;
+            }
+
+            if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+                SQLShowIndexesStatement stmt = new SQLShowIndexesStatement();
+                stmt.setType("INDEX");
+
+                if (lexer.token() == Token.ON) {
+                    lexer.nextToken();
+                    SQLName table = exprParser.name();
+                    stmt.setTable(table);
+                }
+
+                if (lexer.token() == Token.HINT) {
+                    stmt.setHints(this.exprParser.parseHints());
+                }
+
+                statementList.add(stmt);
+
+                return true;
+            }
+
+            if (lexer.token() == Token.CREATE) {
+                SQLShowCreateTableStatement stmt = parseShowCreateTable();
+
+                statementList.add(stmt);
+                return true;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.PARTITIONS)) {
+                lexer.nextToken();
+
+                SQLShowPartitionsStmt stmt = new SQLShowPartitionsStmt();
+
+                if (lexer.token() == Token.FROM) {
+                    lexer.nextToken();
+                }
+                SQLExpr expr = this.exprParser.expr();
+                stmt.setTableSource(new SQLExprTableSource(expr));
+
+                if (lexer.token() == Token.PARTITION) {
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    parseAssignItems(stmt.getPartition(), stmt, false);
+                    accept(Token.RPAREN);
+                }
+
+                if (lexer.token() == Token.WHERE) {
+                    lexer.nextToken();
+                    stmt.setWhere(
+                        this.exprParser.expr()
+                    );
+                }
+
+                statementList.add(stmt);
+                return true;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.COLUMNS)) {
+                lexer.nextToken();
+
+                SQLShowColumnsStatement stmt = new SQLShowColumnsStatement();
+
+                if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
+                    lexer.nextToken();
+                    SQLName table = exprParser.name();
+                    if (lexer.token() == Token.SUB && table instanceof SQLIdentifierExpr) {
+                        lexer.mark();
+                        lexer.nextToken();
+                        String strVal = lexer.stringVal();
+                        lexer.nextToken();
+                        if (table instanceof SQLIdentifierExpr) {
+                            SQLIdentifierExpr ident = (SQLIdentifierExpr) table;
+                            table = new SQLIdentifierExpr(ident.getName() + "-" + strVal);
+                        }
+                    }
+                    stmt.setTable(table);
+                }
+
+                if (lexer.token() == Token.LIKE) {
+                    lexer.nextToken();
+                    SQLExpr like = exprParser.expr();
+                    stmt.setLike(like);
+                }
+
+                if (lexer.token() == Token.WHERE) {
+                    lexer.nextToken();
+                    SQLExpr where = exprParser.expr();
+                    stmt.setWhere(where);
+                }
+
+                statementList.add(stmt);
+                return true;
+            }
+
+            throw new ParserException("TODO " + lexer.info());
         }
         return false;
     }
