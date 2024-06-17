@@ -14,6 +14,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
+import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCreateScanStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
 import java.util.List;
@@ -194,6 +195,32 @@ public class SparkOutputVisitor extends HiveOutputVisitor implements SparkVisito
         print0("x'");
         print0(x.getHex());
         print('\'');
+        return false;
+    }
+
+    public boolean visit(SparkCreateScanStatement x) {
+        print0(ucase ? "CREATE " : "create ");
+        print0(ucase ? "SCAN " : "scan ");
+
+        x.getName().accept(this);
+        if (x.getOn() != null) {
+            print0(ucase ? " ON " : " on ");
+            x.getOn().accept(this);
+        }
+
+        SQLExpr using = x.getUsing();
+        if (using != null) {
+            println();
+            print0(ucase ? "USING " : "using ");
+            printExpr(using);
+        }
+
+        if (x.getOptions().size() > 0) {
+            print0(ucase ? " OPTIONS (" : " options (");
+            printAndAccept(x.getOptions(), ", ");
+            print(')');
+        }
+
         return false;
     }
 }

@@ -6,6 +6,7 @@ package com.alibaba.druid.sql.dialect.spark.visitor;
 
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitor;
 import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
+import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCreateScanStatement;
 
 /**
  * @author peiheng.qph
@@ -17,4 +18,11 @@ public interface SparkVisitor extends HiveASTVisitor {
     }
 
     default void endVisit(SparkCreateTableStatement x) {}
+
+    default boolean visit(SparkCreateScanStatement x) {
+        return true;
+    }
+
+    default void endVisit(SparkCreateScanStatement x) {
+    }
 }
