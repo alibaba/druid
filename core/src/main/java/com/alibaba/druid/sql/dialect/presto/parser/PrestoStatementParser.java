@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.presto.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,16 +27,31 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterSchemaStatement;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoExecuteStatement;
+import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoPrepareStatement;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
+
+import java.util.List;
 
 /**
  * Created by wenshao on 16/9/13.
  */
 public class PrestoStatementParser extends SQLStatementParser {
+    {
+        dbType = DbType.presto;
+    }
     public PrestoStatementParser(String sql) {
         super(new PrestoExprParser(sql));
     }
@@ -253,5 +269,76 @@ public class PrestoStatementParser extends SQLStatementParser {
         }
 
         return parseHiveInsertStmt();
+    }
+
+    @Override
+    public boolean parseStatementListDialect(List<SQLStatement> statementList) {
+        if (lexer.identifierEquals("PREPARE")) {
+            PrestoPrepareStatement stmt = parsePrepare();
+            statementList.add(stmt);
+            return true;
+        }
+
+        if (lexer.identifierEquals("EXECUTE")) {
+            acceptIdentifier("EXECUTE");
+
+            if (lexer.identifierEquals("IMMEDIATE")) {
+                acceptIdentifier("IMMEDIATE");
+            }
+
+            PrestoExecuteStatement stmt = parseExecute();
+            statementList.add(stmt);
+            return true;
+        }
+
+        if (lexer.identifierEquals("DEALLOCATE")) {
+            MysqlDeallocatePrepareStatement stmt = parseDeallocatePrepare();
+            statementList.add(stmt);
+            return true;
+        }
+        return false;
+    }
+
+    public PrestoPrepareStatement parsePrepare() {
+        acceptIdentifier("PREPARE");
+
+        SQLName name = exprParser.name();
+        accept(Token.FROM);
+        PrestoPrepareStatement stmt = new PrestoPrepareStatement(name);
+
+        if (lexer.token() == Token.SELECT) {
+            SQLSelect select = createSQLSelectParser().select();
+            stmt.setSelect(select);
+        } else if (lexer.token() == Token.INSERT) {
+            SQLStatement sqlStatement = parseInsert();
+            stmt.setInsert((HiveInsertStatement) sqlStatement);
+        }
+        return stmt;
+    }
+
+    public PrestoExecuteStatement parseExecute() {
+        PrestoExecuteStatement stmt = new PrestoExecuteStatement();
+
+        SQLName statementName = exprParser.name();
+        stmt.setStatementName(statementName);
+
+        if (lexer.identifierEquals("USING")) {
+            lexer.nextToken();
+            exprParser.exprList(stmt.getParameters(), stmt);
+        } else if (lexer.token() == Token.IDENTIFIER) {
+            exprParser.exprList(stmt.getParameters(), stmt);
+        }
+        return stmt;
+    }
+
+    public MysqlDeallocatePrepareStatement parseDeallocatePrepare() {
+        acceptIdentifier("DEALLOCATE");
+        acceptIdentifier("PREPARE");
+
+        MysqlDeallocatePrepareStatement stmt = new MysqlDeallocatePrepareStatement();
+        SQLName statementName = exprParser.name();
+        stmt.setStatementName(statementName);
+
+        return stmt;
     }
 }
