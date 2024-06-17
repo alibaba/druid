@@ -4058,6 +4058,9 @@ public class SQLStatementParser extends SQLParser {
                         return parseCreateTable();
                     }
                     throw new ParserException("parse create error, " + lexer.info());
+                } else if (lexer.identifierEquals(FnvHash.Constants.SCAN)) {
+                    lexer.reset(mark);
+                    return parseCreateScan();
                 }
 
                 SQLStatement stmt = createTableRest(mark);
@@ -4085,6 +4088,10 @@ public class SQLStatementParser extends SQLParser {
 
     protected SQLStatement createTableRest(Lexer.SavePoint mark) {
         return null;
+    }
+
+    public SQLStatement parseCreateScan() {
+        throw new ParserException("TODO " + lexer.token);
     }
 
     public SQLStatement parseCreateRole() {
