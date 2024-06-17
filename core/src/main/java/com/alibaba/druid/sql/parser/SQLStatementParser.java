@@ -226,7 +226,7 @@ public class SQLStatementParser extends SQLParser {
                             && statementList.size() > 0
                             && statementList.get(statementList.size() - i) instanceof MySqlHintStatement) {
                         hintStatement = (MySqlHintStatement) statementList.get(statementList.size() - i);
-                    } else if (i > 0 && dbType != DbType.odps && !semi) {
+                    } else if (i > 0 && dbType != DbType.odps && dbType != DbType.presto && dbType != DbType.trino && !semi) {
                         throw new ParserException("syntax error. " + lexer.info());
                     }
                     SQLStatement stmt = parseSelect();
