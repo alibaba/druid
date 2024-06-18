@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLShowColumnsStatement;
 import com.alibaba.druid.sql.ast.statement.SQLShowCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLShowDatabasesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLShowFunctionsStatement;
 import com.alibaba.druid.sql.ast.statement.SQLShowIndexesStatement;
@@ -365,10 +366,23 @@ public class PrestoStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.CREATE) {
-                SQLShowCreateTableStatement stmt = parseShowCreateTable();
+                Lexer.SavePoint savePointCreateTable = this.lexer.mark();
+                lexer.nextToken();
+                if (lexer.token() == Token.TABLE) {
+                    lexer.reset(savePointCreateTable);
+                    SQLShowCreateTableStatement stmt = parseShowCreateTable();
 
-                statementList.add(stmt);
-                return true;
+                    statementList.add(stmt);
+                    return true;
+                }
+                if (lexer.token() == Token.VIEW) {
+                    lexer.nextToken();
+                    SQLShowCreateViewStatement stmt = new SQLShowCreateViewStatement();
+                    SQLName view = exprParser.name();
+                    stmt.setName(view);
+                    statementList.add(stmt);
+                    return true;
+                }
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.PARTITIONS)) {
