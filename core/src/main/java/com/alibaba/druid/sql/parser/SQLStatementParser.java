@@ -465,6 +465,12 @@ public class SQLStatementParser extends SQLParser {
                     statementList.add(stmt);
                     continue;
                 }
+                case CACHE: {
+                    SQLStatement stmt = parseCache();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
                 default:
                     break;
             }
@@ -1263,6 +1269,10 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseLeave() {
+        throw new ParserException("not supported. " + lexer.info());
+    }
+
+    public SQLStatement parseCache() {
         throw new ParserException("not supported. " + lexer.info());
     }
 
