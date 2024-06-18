@@ -337,6 +337,20 @@ public class HiveStatementParser extends SQLStatementParser {
                 return true;
             }
 
+            if (lexer.identifierEquals(FnvHash.Constants.FUNCTIONS)) {
+                lexer.nextToken();
+
+                SQLShowFunctionsStatement stmt = new SQLShowFunctionsStatement();
+                if (lexer.token() == Token.LIKE) {
+                    lexer.nextToken();
+                    SQLExpr like = this.exprParser.expr();
+                    stmt.setLike(like);
+                }
+
+                statementList.add(stmt);
+                return true;
+            }
+
             throw new ParserException("TODO " + lexer.info());
         }
 
