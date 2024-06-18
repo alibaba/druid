@@ -9344,7 +9344,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLShowFunctionsStatement x) {
-        print0(ucase ? "SHOW FUNCTIONS" : "show functions");
+        if (x.getKind() != null) {
+            print0(ucase ? "SHOW " : "show ");
+            printExpr(x.getKind());
+            print0(ucase ? " FUNCTIONS" : " functions");
+        } else {
+            print0(ucase ? "SHOW FUNCTIONS" : "show functions");
+        }
+
         final SQLExpr like = x.getLike();
         if (like != null) {
             print0(ucase ? " LIKE " : " like ");

@@ -4,13 +4,20 @@
  */
 package com.alibaba.druid.sql.dialect.spark.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLShowFunctionsStatement;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
 import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCreateScanStatement;
+import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
+
+import java.util.List;
 
 /**
  * @author peiheng.qph
@@ -63,5 +70,36 @@ public class SparkStatementParser extends HiveStatementParser {
         }
 
         return stmt;
+    }
+
+    public boolean parseStatementListDialect(List<SQLStatement> statementList) {
+        if (lexer.identifierEquals(FnvHash.Constants.SHOW)) {
+            Lexer.SavePoint savePoint = this.lexer.mark();
+            lexer.nextToken();
+            if (lexer.token() == Token.USER
+                || lexer.identifierEquals(FnvHash.Constants.SYSTEM)
+                || lexer.token() == Token.ALL
+                || lexer.identifierEquals(FnvHash.Constants.FUNCTIONS)) {
+                SQLShowFunctionsStatement stmt = new SQLShowFunctionsStatement();
+
+                if (!lexer.identifierEquals(FnvHash.Constants.FUNCTIONS)) {
+                    SQLName name = this.exprParser.name();
+                    stmt.setKind(name);
+                }
+                if (lexer.identifierEquals(FnvHash.Constants.FUNCTIONS)) {
+                    lexer.nextToken();
+
+                    if (lexer.token() == Token.LIKE) {
+                        lexer.nextToken();
+                        SQLExpr like = this.exprParser.expr();
+                        stmt.setLike(like);
+                    }
+                    statementList.add(stmt);
+                    return true;
+                }
+            }
+            lexer.reset(savePoint);
+        }
+        return super.parseStatementListDialect(statementList);
     }
 }
