@@ -9,11 +9,14 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLShowFunctionsStatement;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
+import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCacheTableStatement;
 import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCreateScanStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
@@ -67,6 +70,44 @@ public class SparkStatementParser extends HiveStatementParser {
                 break;
             }
             accept(Token.RPAREN);
+        }
+
+        return stmt;
+    }
+
+    public SparkCacheTableStatement parseCache() {
+        accept(Token.CACHE);
+        SparkCacheTableStatement stmt = new SparkCacheTableStatement();
+        if (lexer.identifierEquals("LAZY")) {
+            lexer.nextToken();
+            stmt.setLazy(true);
+        }
+        accept(Token.TABLE);
+        stmt.setName(exprParser.name());
+        if (lexer.identifierEquals("OPTIONS")) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+
+            for (; ; ) {
+                SQLAssignItem item = this.exprParser.parseAssignItem();
+                stmt.addOption(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+
+                break;
+            }
+            accept(Token.RPAREN);
+        }
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+            stmt.setAs(true);
+        }
+        if (!lexer.isEOF()) {
+            SQLSelectParser selectParser = createSQLSelectParser();
+            SQLSelect query = selectParser.select();
+            stmt.setQuery(query);
         }
 
         return stmt;
