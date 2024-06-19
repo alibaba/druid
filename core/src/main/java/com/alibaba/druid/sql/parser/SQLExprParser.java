@@ -1745,7 +1745,8 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
         } else {
             if (lexer.token == Token.LPAREN &&
-                    !(expr instanceof SQLIntegerExpr) && !(expr instanceof SQLHexExpr)) {
+                    !(expr instanceof SQLIntegerExpr) && !(expr instanceof SQLHexExpr) && !(expr instanceof SQLVariantRefExpr)
+            ) {
                 SQLExpr method = methodRest(expr, true);
                 if (lexer.token == Token.LBRACKET || lexer.token == Token.DOT) {
                     method = primaryRest(method);

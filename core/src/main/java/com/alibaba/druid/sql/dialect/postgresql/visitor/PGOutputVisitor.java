@@ -2769,4 +2769,46 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         return false;
     }
 
+    @Override
+    protected void printeAutoIncrement() {
+        print0(ucase ? " GENERATED ALWAYS AS IDENTITY" : " generated always as identity");
+    }
+
+    @Override
+    protected void printGeneratedAlways(SQLColumnDefinition x, boolean parameterized) {
+        SQLExpr generatedAlwaysAs = x.getGeneratedAlwaysAs();
+        SQLColumnDefinition.Identity identity = x.getIdentity();
+
+        if (generatedAlwaysAs != null || identity != null) {
+            print0(ucase ? " GENERATED ALWAYS AS " : " generated always as ");
+            if (generatedAlwaysAs != null) {
+                printExpr(generatedAlwaysAs, parameterized);
+                print(' ');
+            }
+            identity.accept(this);
+        }
+    }
+
+    @Override
+    public boolean visit(SQLColumnDefinition.Identity x) {
+        print0(ucase ? "IDENTITY" : "identity");
+        Integer seed = x.getSeed();
+        if (seed != null) {
+            print0(ucase ? " (INCREMENT BY " : " (increment by ");
+            print(x.getIncrement());
+            print0(ucase ? " START WITH  " : " start with  ");
+            print(seed);
+            print(')');
+        }
+        return false;
+    }
+
+    @Override
+    protected void visitAggreateRest(SQLAggregateExpr x) {
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            print(' ');
+            orderBy.accept(this);
+        }
+    }
 }

@@ -22,10 +22,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2EvalVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
@@ -187,7 +184,11 @@ public class SQLEvalVisitorUtils {
             owner.accept(visitor);
         }
 
-        String methodName = x.getMethodName().toLowerCase();
+        String methodName = x.getMethodName();
+        if (methodName == null) {
+            return true;
+        }
+        methodName = methodName.toLowerCase();
 
         Function function = visitor.getFunction(methodName);
 
@@ -574,6 +575,10 @@ public class SQLEvalVisitorUtils {
                         String name = ((SQLDataType) ownerValue).getName();
                         x.putAttribute(EVAL_VALUE, name);
                     }
+                    if (ownerValue instanceof SQLMethodInvokeExpr) {
+                        String name = ((SQLMethodInvokeExpr) ownerValue).getMethodName();
+                        x.putAttribute(EVAL_VALUE, name);
+                    }
                 }
                 break;
             }
@@ -585,6 +590,24 @@ public class SQLEvalVisitorUtils {
                     }
                     String type = type(ownerValue);
                     x.putAttribute(EVAL_VALUE, type);
+                }
+                break;
+            }
+            case "parent": {
+                if (owner != null && x.getArguments().isEmpty()) {
+                    Object ownerValue = owner.getAttribute(EVAL_VALUE);
+                    if (ownerValue == null) {
+                        ownerValue = owner;
+                    }
+                    if (ownerValue instanceof SQLObject) {
+                        SQLObject parent = ((SQLObject) ownerValue).getParent();
+                        if (parent instanceof SQLSelect) {
+                            parent = parent.getParent();
+                        }
+                        if (parent instanceof SQLSelectStatement) {
+                            x.putAttribute(EVAL_VALUE, EVAL_VALUE_NULL);
+                        }
+                    }
                 }
                 break;
             }
@@ -606,6 +629,40 @@ public class SQLEvalVisitorUtils {
 
         if (x instanceof SQLNumericLiteralExpr || x instanceof Number) {
             return "number";
+        }
+
+        if (x instanceof SQLMethodInvokeExpr) {
+            return "function";
+        }
+
+        if (x instanceof SQLIdentifierExpr) {
+            SQLColumnDefinition column = ((SQLIdentifierExpr) x).getResolvedColumn();
+            if (column != null) {
+                SQLDataType dataType = column.getDataType();
+
+                if (dataType instanceof SQLCharacterDataType) {
+                    return "string";
+                }
+                String dataTypeName = dataType.getName();
+                if (dataTypeName != null) {
+                    dataTypeName = dataTypeName.toLowerCase();
+                    switch (dataTypeName) {
+                        case "tinyint":
+                        case "smallint":
+                        case "int":
+                        case "integer":
+                        case "bigint":
+                        case "numeric":
+                        case "number":
+                        case "decimal":
+                        case "float":
+                        case "double":
+                            return "number";
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         return null;

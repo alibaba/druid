@@ -120,6 +120,10 @@ public enum DbType {
             return ads;
         }
 
+        if ("maxcompute".equalsIgnoreCase(name)) {
+            return odps;
+        }
+
         try {
             return valueOf(name);
         } catch (Exception e) {

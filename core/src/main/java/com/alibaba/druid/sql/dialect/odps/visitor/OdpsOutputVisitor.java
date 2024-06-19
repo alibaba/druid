@@ -17,9 +17,7 @@ package com.alibaba.druid.sql.dialect.odps.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
@@ -312,14 +310,44 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         SQLTableSource left = x.getLeft();
         left.accept(this);
 
-        if (x.getJoinType() == JoinType.COMMA) {
+        SQLTableSource right = x.getRight();
+        JoinType joinType = x.getJoinType();
+        if (joinType == JoinType.CROSS_JOIN
+                && right instanceof SQLUnnestTableSource
+        ) {
+            SQLUnnestTableSource unnest = (SQLUnnestTableSource) right;
+            if (unnest.isOrdinality()) {
+                print0(ucase ? " LATERAL VIEW POSEXPLODE(" : " lateral view posexplode(");
+            } else {
+                print0(ucase ? " LATERAL VIEW EXPLODE(" : " lateral view explode(");
+            }
+            List<SQLExpr> items = unnest.getItems();
+            printAndAccept(items, ", ");
+            print(')');
+
+            if (right.getAlias() != null) {
+                print(' ');
+                print0(right.getAlias());
+            }
+
+            final List<SQLName> columns = unnest.getColumns();
+            if (columns != null && columns.size() > 0) {
+                print0(ucase ? " AS " : " as ");
+                printAndAccept(unnest.getColumns(), ", ");
+            }
+
+            return false;
+        }
+
+        if (joinType == JoinType.COMMA) {
             print(',');
         } else {
             println();
-            printJoinType(x.getJoinType());
+            printJoinType(joinType);
         }
+
         print(' ');
-        x.getRight().accept(this);
+        right.accept(this);
 
         if (x.getCondition() != null) {
             println();

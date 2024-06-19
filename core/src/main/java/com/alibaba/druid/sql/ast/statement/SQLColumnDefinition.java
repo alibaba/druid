@@ -666,7 +666,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return false;
     }
 
-    public SQLExpr getGeneratedAlawsAs() {
+    public SQLExpr getGeneratedAlwaysAs() {
         return generatedAlawsAs;
     }
 

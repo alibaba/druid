@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.dialect.h2.parser.H2ExprParser;
 import com.alibaba.druid.sql.dialect.h2.parser.H2Lexer;
 import com.alibaba.druid.sql.dialect.h2.parser.H2StatementParser;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveExprParser;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
@@ -147,6 +148,7 @@ public class SQLParserUtils {
                 return new OdpsStatementParser(sql, features);
             case phoenix:
                 return new PhoenixStatementParser(sql);
+            case spark:
             case hive:
                 return new HiveStatementParser(sql, features);
             case presto:
@@ -201,6 +203,7 @@ public class SQLParserUtils {
             case presto:
             case trino:
                 return new PrestoExprParser(sql, features);
+            case spark:
             case hive:
                 return new HiveExprParser(sql, features);
             case clickhouse:
@@ -258,6 +261,9 @@ public class SQLParserUtils {
                 return new ClickhouseLexer(sql, features);
             case starrocks:
                 return new StarRocksLexer(sql, features);
+            case hive:
+            case spark:
+                return new HiveLexer(sql, features);
             default: {
                 Lexer lexer = new Lexer(sql, null, dbType);
                 for (SQLParserFeature feature : features) {
@@ -283,6 +289,7 @@ public class SQLParserUtils {
             case postgresql:
             case greenplum:
             case edb:
+            case hologres:
                 return new PGSelectQueryBlock();
             case odps:
                 return new OdpsSelectQueryBlock();

@@ -1703,8 +1703,11 @@ public class SQLSelectParser extends SQLParser {
                             accept(Token.RPAREN);
                         }
 
-                        SQLTableSource tableSrc = parseTableSourceRest(unnest);
-                        rightTableSource = tableSrc;
+                        if (lexer.identifierEquals(FnvHash.Constants.CROSS)) {
+                            rightTableSource = unnest;
+                        } else {
+                            rightTableSource = parseTableSourceRest(unnest);
+                        }
                     } else {
                         lexer.reset(mark);
                     }
