@@ -35,7 +35,7 @@ import java.util.Properties;
 
 /**
  * <pre>
- * 这个类主要是负责两个事情, 解密, 和下载远程的配置文件
+ * 这个类主要是负责两个事情：解密和下载远程的配置文件
  * [解密]
  *
  * DruidDataSource dataSource = new DruidDataSource();
@@ -44,7 +44,7 @@ import java.util.Properties;
  * //启用config filter
  * dataSource.setFilters("config");
  * //使用RSA解密(使用默认密钥）
- * dataSource.setConnectionPropertise("config.decrypt=true");
+ * dataSource.setConnectionProperties("config.decrypt=true");
  * dataSource.setPassword("加密的密文");
  *
  * [远程配置文件]
@@ -53,7 +53,7 @@ import java.util.Properties;
  * //启用config filter
  * dataSource.setFilters("config");
  * //使用RSA解密(使用默认密钥）
- * dataSource.setConnectionPropertise("config.file=http://localhost:8080/remote.propreties;");
+ * dataSource.setConnectionProperties("config.file=http://localhost:8080/remote.propreties;");
  *
  * [Spring的配置解密]
  *
