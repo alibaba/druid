@@ -47,9 +47,9 @@ public class PGSelectTest68 extends TestCase {
         SQLStatement stmt = stmtList.get(0);
 
         assertEquals("SELECT CASE \n" +
-                "\t\tWHEN POSITION('市区' IN (area_string)) > 0 THEN 1\n" +
-                "\t\tWHEN POSITION('郊区' IN (area_string)) > 0 THEN 2\n" +
-                "\t\tWHEN POSITION('无市郊区规划信息' IN (area_string)) > 0 THEN 9\n" +
+                "\t\tWHEN POSITION('市区' IN area_string) > 0 THEN 1\n" +
+                "\t\tWHEN POSITION('郊区' IN area_string) > 0 THEN 2\n" +
+                "\t\tWHEN POSITION('无市郊区规划信息' IN area_string) > 0 THEN 9\n" +
                 "\t\tELSE -1\n" +
                 "\tEND\n" +
                 "FROM (\n" +
@@ -63,9 +63,9 @@ public class PGSelectTest68 extends TestCase {
                 ") t", SQLUtils.toPGString(stmt));
 
         assertEquals("select case \n" +
-                "\t\twhen POSITION('市区' in (area_string)) > 0 then 1\n" +
-                "\t\twhen POSITION('郊区' in (area_string)) > 0 then 2\n" +
-                "\t\twhen POSITION('无市郊区规划信息' in (area_string)) > 0 then 9\n" +
+                "\t\twhen POSITION('市区' in area_string) > 0 then 1\n" +
+                "\t\twhen POSITION('郊区' in area_string) > 0 then 2\n" +
+                "\t\twhen POSITION('无市郊区规划信息' in area_string) > 0 then 9\n" +
                 "\t\telse -1\n" +
                 "\tend\n" +
                 "from (\n" +

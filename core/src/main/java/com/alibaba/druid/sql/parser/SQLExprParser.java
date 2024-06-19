@@ -5019,28 +5019,7 @@ public class SQLExprParser extends SQLParser {
                             column.setStep(unitIndex);
                         }
                     } else if (lexer.token == Token.LPAREN) {
-                        lexer.nextToken();
-                        SQLColumnDefinition.Identity ident = new SQLColumnDefinition.Identity();
-                        if (lexer.token == Token.LITERAL_INT) {
-                            ident.setSeed(lexer.integerValue().intValue());
-                            lexer.nextToken();
-                        } else {
-                            throw new ParserException("TODO : " + lexer.info());
-                        }
-
-                        if (lexer.token == Token.COMMA) {
-                            lexer.nextToken();
-                            if (lexer.token == Token.LITERAL_INT) {
-                                ident.setIncrement(lexer.integerValue().intValue());
-                                lexer.nextToken();
-                            } else {
-                                throw new ParserException("TODO : " + lexer.info());
-                            }
-                        }
-
-                        column.setIdentity(ident);
-
-                        accept(Token.RPAREN);
+                        column.setIdentity(parseIdentity());
                     }
                     return parseColumnRest(column);
                 }
@@ -5088,6 +5067,34 @@ public class SQLExprParser extends SQLParser {
         }
 
         return column;
+    }
+
+    protected SQLColumnDefinition.Identity parseIdentity() {
+        accept(Token.LPAREN);
+        SQLColumnDefinition.Identity ident = new SQLColumnDefinition.Identity();
+        if (dbType == DbType.oracle) {
+            accept(Token.START);
+            accept(Token.WITH);
+        }
+        if (lexer.token == Token.LITERAL_INT) {
+            ident.setSeed(lexer.integerValue().intValue());
+            lexer.nextToken();
+        } else {
+            throw new ParserException("TODO : " + lexer.info());
+        }
+
+        if (lexer.token == Token.COMMA) {
+            lexer.nextToken();
+            if (lexer.token == Token.LITERAL_INT) {
+                ident.setIncrement(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                throw new ParserException("TODO : " + lexer.info());
+            }
+        }
+
+        accept(Token.RPAREN);
+        return ident;
     }
 
     private SQLColumnReference parseReference() {

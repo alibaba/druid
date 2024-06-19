@@ -7137,24 +7137,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLArrayExpr x) {
         SQLExpr expr = x.getExpr();
 
-        if (expr instanceof SQLIdentifierExpr
-                && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.ARRAY
-                && printNameQuote
-        ) {
+        boolean arrayValue = expr instanceof SQLIdentifierExpr
+                && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.ARRAY;
+        if (arrayValue && printNameQuote) {
             print0(((SQLIdentifierExpr) expr).getName());
         } else if (expr != null) {
             expr.accept(this);
+        } else {
+            boolean trino = dbType == DbType.trino || dbType == DbType.presto;
+            if (trino) {
+                print0(ucase ? "ARRAY" : "array");
+            }
         }
 
-        boolean trino = dbType == DbType.trino || dbType == DbType.presto;
-        if (trino) {
-            print0(ucase ? "ARRAY" : "array");
-        }
+        boolean brace = arrayValue && (dbType == DbType.hive || dbType == DbType.spark || dbType == DbType.odps);
 
-        boolean hive = dbType == DbType.odps || dbType == DbType.hive || dbType == DbType.spark;
-        print(hive ? '(' : '[');
+        print(brace ? '(' : '[');
         printAndAccept(x.getValues(), ", ");
-        print(hive ? ')' : ']');
+        print(brace ? ')' : ']');
         return false;
     }
 

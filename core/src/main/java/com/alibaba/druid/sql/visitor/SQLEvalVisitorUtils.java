@@ -234,7 +234,7 @@ public class SQLEvalVisitorUtils {
                 }
                 break;
             }
-            case "abc": {
+            case "abs": {
                 if (x.getArguments().size() != 1) {
                     return false;
                 }

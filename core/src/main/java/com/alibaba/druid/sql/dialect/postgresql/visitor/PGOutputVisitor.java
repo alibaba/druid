@@ -2802,13 +2802,4 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         return false;
     }
-
-    @Override
-    protected void visitAggreateRest(SQLAggregateExpr x) {
-        SQLOrderBy orderBy = x.getOrderBy();
-        if (orderBy != null) {
-            print(' ');
-            orderBy.accept(this);
-        }
-    }
 }
