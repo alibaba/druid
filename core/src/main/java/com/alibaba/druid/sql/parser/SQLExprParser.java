@@ -1610,6 +1610,17 @@ public class SQLExprParser extends SQLParser {
 
         SQLExpr value = expr();
 
+        if (value instanceof SQLCharExpr) {
+            String literal = ((SQLCharExpr) value).getText();
+            int space = literal.indexOf(' ');
+            if (space != -1) {
+                int intervalValue = Integer.valueOf(literal.substring(0, space));
+                String unitStr = literal.substring(space + 1).toUpperCase();
+                SQLIntervalUnit unit = SQLIntervalUnit.of(unitStr);
+                return new SQLIntervalExpr(new SQLIntegerExpr(intervalValue), unit);
+            }
+        }
+
         switch (lexer.token) {
             case COMMA:
             case RPAREN:
@@ -1630,13 +1641,9 @@ public class SQLExprParser extends SQLParser {
         String unit = lexer.stringVal().toUpperCase();
         lexer.nextToken();
 
-        if (unit.equals("DAYS")) {
-            unit = "DAY";
-        }
-
         SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
         intervalExpr.setValue(value);
-        intervalExpr.setUnit(SQLIntervalUnit.valueOf(unit));
+        intervalExpr.setUnit(SQLIntervalUnit.of(unit));
 
         return intervalExpr;
     }

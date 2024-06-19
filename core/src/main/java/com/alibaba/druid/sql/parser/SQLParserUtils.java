@@ -187,6 +187,7 @@ public class SQLParserUtils {
             case greenplum:
             case edb:
             case gaussdb:
+            case hologres:
                 return new PGExprParser(sql, features);
             case sqlserver:
             case jtds:
@@ -238,6 +239,7 @@ public class SQLParserUtils {
             case postgresql:
             case greenplum:
             case edb:
+            case hologres:
                 return new PGLexer(sql, features);
             case db2:
                 return new DB2Lexer(sql, features);
