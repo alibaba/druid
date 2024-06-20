@@ -225,10 +225,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         this.printTblProperties(x);
 
-        if (x.getLifecycle() != null) {
+        if (x.getLifeCycle() != null) {
             println();
             print0(ucase ? "LIFECYCLE " : "lifecycle ");
-            x.getLifecycle().accept(this);
+            x.getLifeCycle().accept(this);
         }
 
         SQLExpr using = x.getUsing();

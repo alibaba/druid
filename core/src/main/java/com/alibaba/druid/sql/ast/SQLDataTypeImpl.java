@@ -26,7 +26,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDbTypedObject {
+public class SQLDataTypeImpl extends SQLObjectImpl
+        implements SQLDataType, SQLDbTypedObject, SQLReplaceable {
     private String name;
     private long nameHashCode64;
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
@@ -521,5 +522,21 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
                 || hashCode64 == FnvHash.Constants.LONGBLOB
                 || hashCode64 == FnvHash.Constants.BINARY
                 || hashCode64 == FnvHash.Constants.VARBINARY;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < arguments.size(); i++) {
+            if (arguments.get(i) == expr) {
+                target.setParent(this);
+                arguments.set(i, target);
+                return true;
+            }
+        }
+        if (indexBy == expr) {
+            target.setParent(this);
+            indexBy = target;
+        }
+        return false;
     }
 }

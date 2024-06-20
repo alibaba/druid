@@ -283,6 +283,22 @@ public class Lexer {
         return token;
     }
 
+    public final boolean nextIf(Token token) {
+        if (this.token == token) {
+            nextToken();
+            return true;
+        }
+        return false;
+    }
+
+    public final boolean nextIfIdentifier(String identifier) {
+        if (this.identifierEquals(identifier)) {
+            nextToken();
+            return true;
+        }
+        return false;
+    }
+
     public void setToken(Token token) {
         this.token = token;
     }
@@ -3056,7 +3072,7 @@ public class Lexer {
         return stringVal;
     }
 
-    private final void stringVal(StringBuilder out) {
+    private void stringVal(StringBuilder out) {
         if (stringVal != null) {
             out.append(stringVal);
             return;
@@ -3340,6 +3356,25 @@ public class Lexer {
 
     public int getLine() {
         return line;
+    }
+
+    public void computeRowAndColumn(SQLObject x) {
+        if (!keepSourceLocation) {
+            return;
+        }
+
+        int line = 1;
+        int column = 1;
+        for (int i = 0; i < startPos; ++i) {
+            char ch = text.charAt(i);
+            if (ch == '\n') {
+                column = 1;
+                line++;
+            } else {
+                column++;
+            }
+        }
+        x.setSource(line, column);
     }
 
     public void computeRowAndColumn() {

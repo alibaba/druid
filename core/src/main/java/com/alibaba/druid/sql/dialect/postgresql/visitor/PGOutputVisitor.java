@@ -2802,4 +2802,26 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         return false;
     }
+
+    @Override
+    public boolean visit(SQLIntervalExpr x) {
+        print0(ucase ? "INTERVAL " : "interval ");
+        SQLExpr value = x.getValue();
+
+        boolean str = value instanceof SQLCharExpr;
+        if (!str) {
+            print('\'');
+        }
+        value.accept(this);
+
+        SQLIntervalUnit unit = x.getUnit();
+        if (unit != null) {
+            print(' ');
+            print0(ucase ? unit.name : unit.nameLCase);
+        }
+        if (!str) {
+            print('\'');
+        }
+        return false;
+    }
 }

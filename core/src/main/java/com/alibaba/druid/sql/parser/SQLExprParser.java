@@ -141,7 +141,8 @@ public class SQLExprParser extends SQLParser {
             expr = xorRest(expr);
             expr = orRest(expr);
             return expr;
-        } if (token == Token.IN) {
+        }
+        if (token == Token.IN) {
             lexer.nextToken();
             if (lexer.token == Token.PARTITION) {
                 lexer.reset(mark);
@@ -581,8 +582,7 @@ public class SQLExprParser extends SQLParser {
                     }
                     SQLIdentifierExpr identifierExpr = new SQLIdentifierExpr(ident, hash_lower);
                     if (sourceLine != -1) {
-                        identifierExpr.setSourceLine(sourceLine);
-                        identifierExpr.setSourceColumn(sourceColumn);
+                        identifierExpr.setSource(sourceLine, sourceColumn);
                     }
                     sqlExpr = identifierExpr;
                 }
@@ -694,6 +694,10 @@ public class SQLExprParser extends SQLParser {
                 }
                 break;
             case VARIANT: {
+                if (lexer.keepSourceLocation) {
+                    lexer.computeRowAndColumn();
+                }
+                int line = lexer.getPosLine(), column = lexer.getPosColumn();
                 String varName = lexer.stringVal();
                 lexer.nextToken();
 
@@ -704,6 +708,7 @@ public class SQLExprParser extends SQLParser {
                 }
 
                 SQLVariantRefExpr varRefExpr = new SQLVariantRefExpr(varName);
+                varRefExpr.setSource(line, column);
                 if (varName.startsWith(":")) {
                     varRefExpr.setIndex(lexer.nextVarIndex());
                 }
@@ -1964,6 +1969,20 @@ public class SQLExprParser extends SQLParser {
         }
 
         methodInvokeExpr = new SQLMethodInvokeExpr(methodName, hash_lower);
+        if (lexer.keepSourceLocation) {
+            int line, column;
+            if (lexer.keepSourceLocation) {
+                lexer.computeRowAndColumn();
+            }
+            if (expr instanceof SQLObjectImpl) {
+                line = expr.getSourceLine();
+                column = expr.getSourceColumn();
+            } else {
+                line = lexer.getPosLine();
+                column = lexer.getPosColumn();
+            }
+            methodInvokeExpr.setSource(line, column);
+        }
         if (owner != null) {
             methodInvokeExpr.setOwner(owner);
         }
@@ -1995,7 +2014,7 @@ public class SQLExprParser extends SQLParser {
                     //处理类似偏函数的语法 func(x,y)(a,b,c)
                     lexer.nextToken();
                     SQLParametricMethodInvokeExpr parametricExpr =
-                        new SQLParametricMethodInvokeExpr(methodName, hash_lower);
+                            new SQLParametricMethodInvokeExpr(methodName, hash_lower);
                     methodInvokeExpr.cloneTo(parametricExpr);
                     methodInvokeExpr = parametricExpr;
                     exprList(((SQLParametricMethodInvokeExpr) methodInvokeExpr).getSecondArguments(), methodInvokeExpr);
@@ -2545,9 +2564,7 @@ public class SQLExprParser extends SQLParser {
 
         SQLIdentifierExpr identifierExpr = new SQLIdentifierExpr(identName, hash);
         if (lexer.keepSourceLocation) {
-            lexer.computeRowAndColumn();
-            identifierExpr.setSourceLine(lexer.posLine);
-            identifierExpr.setSourceColumn(lexer.posColumn);
+            lexer.computeRowAndColumn(identifierExpr);
         }
 
         SQLName name = identifierExpr;
@@ -3435,8 +3452,10 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public SQLExpr additiveRest(SQLExpr expr) {
+    public final SQLExpr additiveRest(SQLExpr expr) {
         Token token = lexer.token;
+
+        SQLBinaryOperator operator;
         if (token == Token.PLUS) {
             lexer.nextToken();
 
@@ -3447,25 +3466,22 @@ public class SQLExprParser extends SQLParser {
                 }
             }
 
-            SQLExpr rightExp = multiplicative();
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Add, rightExp, dbType);
-            expr = additiveRest(expr);
+            operator = SQLBinaryOperator.Add;
         } else if ((token == Token.BARBAR || token == Token.CONCAT)
                 && (isEnabled(SQLParserFeature.PipesAsConcat) || DbType.mysql != dbType)) {
             lexer.nextToken();
-            SQLExpr rightExp = multiplicative();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Concat, rightExp, dbType);
-            expr = additiveRest(expr);
+            operator = SQLBinaryOperator.Concat;
         } else if (token == Token.SUB) {
             lexer.nextToken();
-            SQLExpr rightExp = multiplicative();
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Subtract, rightExp, dbType);
-            expr = additiveRest(expr);
+            operator = SQLBinaryOperator.Subtract;
+        } else {
+            return expr;
         }
 
-        return expr;
+        SQLExpr rightExp = multiplicative();
+        return additiveRest(
+                new SQLBinaryOpExpr(expr, operator, rightExp, dbType)
+        );
     }
 
     public final SQLExpr shift() {
@@ -4265,6 +4281,11 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLDataType parseDataType(boolean restrict) {
+        if (lexer.keepSourceLocation) {
+            lexer.computeRowAndColumn();
+        }
+        int sourceLine = lexer.getPosLine(), sourceColumn = lexer.getPosColumn();
+
         Token token = lexer.token;
         if (token == Token.DEFAULT || token == Token.NOT || token == Token.NULL) {
             return null;
@@ -4600,6 +4621,7 @@ public class SQLExprParser extends SQLParser {
             dataType.putAttribute("ads.arrayDataType", Boolean.TRUE);
         }
 
+        dataType.setSource(sourceLine, sourceColumn);
         return parseDataTypeRest(dataType);
     }
 
@@ -5976,8 +5998,8 @@ public class SQLExprParser extends SQLParser {
                     expr = new SQLIdentifierExpr(ident);
                 }
             } else if (lexer.identifierEquals(FnvHash.Constants.COLLATE)
-                && (JdbcUtils.isMysqlDbType(dbType) || JdbcUtils.isPgsqlDbType(dbType))
-                && lexer.stringVal().charAt(0) != '`'
+                    && (JdbcUtils.isMysqlDbType(dbType) || JdbcUtils.isPgsqlDbType(dbType))
+                    && lexer.stringVal().charAt(0) != '`'
             ) {
                 lexer.nextToken();
                 String collate = lexer.stringVal();
@@ -6358,8 +6380,7 @@ public class SQLExprParser extends SQLParser {
                 SQLIdentifierExpr identifierExpr = new SQLIdentifierExpr(ident, hash_lower);
                 if (lexer.keepSourceLocation) {
                     lexer.computeRowAndColumn();
-                    identifierExpr.setSourceLine(lexer.posLine);
-                    identifierExpr.setSourceColumn(lexer.posColumn);
+                    identifierExpr.setSource(lexer.posLine, lexer.posColumn);
                 }
                 expr = identifierExpr;
             }

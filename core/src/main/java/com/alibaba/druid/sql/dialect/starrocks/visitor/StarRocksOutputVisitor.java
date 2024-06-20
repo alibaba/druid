@@ -47,12 +47,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             model.accept(this);
         }
 
-        if (x.getComment() != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            x.getComment().accept(this);
-        }
-
         SQLExpr partitionBy = x.getPartitionBy();
         if (partitionBy != null) {
             println();
@@ -241,11 +235,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print(' ');
             print0(ucase ? "USING " : "using ");
             print0(ucase ? x.getBitmap().getText().toUpperCase(Locale.ROOT) : x.getBitmap().getText().toLowerCase(Locale.ROOT));
-        }
-        if (x.getIndexComment() != null) {
-            print(' ');
-            print0(ucase ? "COMMENT " : "comment ");
-            x.getIndexComment().accept(this);
         }
         return false;
     }

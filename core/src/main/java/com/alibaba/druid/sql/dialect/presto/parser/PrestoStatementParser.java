@@ -34,6 +34,9 @@ public class PrestoStatementParser extends SQLStatementParser {
     public PrestoStatementParser(String sql) {
         super(new PrestoExprParser(sql));
     }
+ public PrestoStatementParser(String sql, SQLParserFeature... features) {
+        super(new PrestoExprParser(sql, features));
+    }
 
     public PrestoStatementParser(Lexer lexer) {
         super(new PrestoExprParser(lexer));

@@ -171,7 +171,10 @@ public class PGExprParser extends SQLExprParser {
     protected SQLExpr parseInterval() {
         accept(Token.INTERVAL);
         SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
-        if (lexer.token() != Token.LITERAL_CHARS && lexer.token() != Token.LITERAL_INT) {
+        if (lexer.token() != Token.LITERAL_CHARS
+                && lexer.token() != Token.LITERAL_INT
+                && lexer.token() != Token.VARIANT
+        ) {
             return new SQLIdentifierExpr("INTERVAL");
         }
         intervalExpr.setValue(new SQLCharExpr(lexer.stringVal()));

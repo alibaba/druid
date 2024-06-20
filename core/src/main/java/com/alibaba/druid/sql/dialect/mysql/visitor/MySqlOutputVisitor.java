@@ -350,7 +350,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0("' ");
         }
 
-        if (x.isAutoIncrement()) {
+        boolean autoIncrement = x.isAutoIncrement();
+        if (!autoIncrement && x.getGeneratedAlwaysAs() == null && x.getIdentity() != null) {
+            autoIncrement = true;
+        }
+
+        if (autoIncrement) {
             print0(ucase ? " AUTO_INCREMENT" : " auto_increment");
         }
 
@@ -5684,4 +5689,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
-} //
+
+    protected void printCreateTableOptions(SQLCreateTableStatement x) {
+        List<SQLAssignItem> options = x.getTableOptions();
+        if (options.isEmpty()) {
+            return;
+        }
+        println();
+        printAndAccept(options, ", ");
+    }
+}

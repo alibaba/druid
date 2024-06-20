@@ -305,7 +305,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.META)) {
             lexer.nextToken();
             acceptIdentifier("LIFECYCLE");
-            stmt.setMetaLifeCycle(this.exprParser.primary());
+            stmt.setLifeCycle(this.exprParser.primary());
         }
 
         if (lexer.token() == Token.SELECT || lexer.token() == Token.AS) {

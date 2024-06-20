@@ -125,6 +125,9 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public SQLDataType parseDataType(boolean restrict) {
+        lexer.computeRowAndColumn();
+        int sourceLine = lexer.getLine(), sourceColumn = lexer.getPosColumn();
+
         if (lexer.token() == Token.CONSTRAINT || lexer.token() == Token.COMMA) {
             return null;
         }
@@ -293,6 +296,8 @@ public class OracleExprParser extends SQLExprParser {
 
         SQLDataTypeImpl dataType = new SQLDataTypeImpl(typeName.toString());
         dataType.setDbType(dbType);
+        dataType.setSource(sourceLine, sourceColumn);
+
         return parseDataTypeRest(dataType);
     }
 
@@ -504,7 +509,6 @@ public class OracleExprParser extends SQLExprParser {
 
         if (expr instanceof SQLIdentifierExpr) {
             String methodName = ((SQLIdentifierExpr) expr).getName();
-            SQLMethodInvokeExpr methodExpr = new SQLMethodInvokeExpr(methodName);
             if ("treat".equalsIgnoreCase(methodName)) {
                 OracleTreatExpr treatExpr = new OracleTreatExpr();
 

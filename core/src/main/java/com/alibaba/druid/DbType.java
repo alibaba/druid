@@ -76,6 +76,8 @@ public enum DbType {
 
     hologres(1L << 48),
 
+    bigquery(1L << 49),
+
     ingres(0),
     cloudscape(0),
     timesten(0),

@@ -271,8 +271,9 @@ public abstract class SQLObjectImpl implements SQLObject {
         return sourceColumn;
     }
 
-    public void setSourceColumn(int sourceColumn) {
-        this.sourceColumn = sourceColumn;
+    public void setSource(int line, int column) {
+        this.sourceLine = line;
+        this.sourceColumn = column;
     }
 
     public SQLCommentHint getHint() {

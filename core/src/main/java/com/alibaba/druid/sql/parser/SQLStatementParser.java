@@ -300,7 +300,9 @@ public class SQLStatementParser extends SQLParser {
                     continue;
                 }
                 case EXPLAIN: {
-                    lexer.computeRowAndColumn();
+                    if (lexer.keepSourceLocation) {
+                        lexer.computeRowAndColumn();
+                    }
                     int sourceLine = lexer.posLine;
                     int sourceColumn = lexer.posColumn;
 
@@ -311,8 +313,7 @@ public class SQLStatementParser extends SQLParser {
                     if (lexer.identifierEquals("PLANCACHE")) {
                         lexer.nextToken();
                         MySqlExplainPlanCacheStatement stmt = new MySqlExplainPlanCacheStatement();
-                        stmt.setSourceLine(sourceLine);
-                        stmt.setSourceLine(sourceColumn);
+                        stmt.setSource(sourceLine, sourceColumn);
                         statementList.add(stmt);
 //                    } else if(lexer.token ==  Token.ANALYZE) {
 //                        lexer.nextToken();
@@ -323,8 +324,7 @@ public class SQLStatementParser extends SQLParser {
                     } else {
                         lexer.reset(savePoint);
                         SQLExplainStatement stmt = parseExplain();
-                        stmt.setSourceLine(sourceLine);
-                        stmt.setSourceLine(sourceColumn);
+                        stmt.setSource(sourceLine, sourceColumn);
                         stmt.setParent(parent);
                         statementList.add(stmt);
                     }
@@ -3078,6 +3078,9 @@ public class SQLStatementParser extends SQLParser {
             SQLParameter parameter = new SQLParameter();
 
             if (lexer.token() == Token.CURSOR) {
+                SQLDataTypeImpl dataType = new SQLDataTypeImpl();
+                lexer.computeRowAndColumn(dataType);
+
                 lexer.nextToken();
 
                 parameter.setName(this.exprParser.name());
@@ -3085,7 +3088,6 @@ public class SQLStatementParser extends SQLParser {
                 accept(Token.IS);
                 SQLSelect select = this.createSQLSelectParser().select();
 
-                SQLDataTypeImpl dataType = new SQLDataTypeImpl();
                 dataType.setName("CURSOR");
                 parameter.setDataType(dataType);
 

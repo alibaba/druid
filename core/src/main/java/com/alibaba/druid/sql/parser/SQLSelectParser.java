@@ -1196,8 +1196,9 @@ public class SQLSelectParser extends SQLParser {
         }
 
         if (lexer.token() == Token.VALUES) {
-            lexer.nextToken();
             SQLValuesTableSource tableSource = new SQLValuesTableSource();
+            lexer.computeRowAndColumn(tableSource);
+            lexer.nextToken();
 
             for (; ; ) {
                 accept(Token.LPAREN);
@@ -2110,8 +2111,9 @@ public class SQLSelectParser extends SQLParser {
     }
 
     public SQLValuesTableSource parseValues() {
-        accept(Token.VALUES);
         SQLValuesTableSource tableSource = new SQLValuesTableSource();
+        lexer.computeRowAndColumn(tableSource);
+        accept(Token.VALUES);
 
         for (; ; ) {
             // compatible (VALUES 1,2,3) and (VALUES (1), (2), (3)) for ads

@@ -2505,8 +2505,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     public MySqlExplainStatement parseExplain() {
         // see https://dev.mysql.com/doc/refman/5.7/en/explain.html
         MySqlExplainStatement explain = new MySqlExplainStatement();
-        explain.setSourceLine(lexer.getPosLine());
-        explain.setSourceLine(lexer.getPosColumn());
+        lexer.computeRowAndColumn(explain);
 
         // {EXPLAIN}
         if (lexer.token() == Token.EXPLAIN) {

@@ -13,7 +13,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByValue;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.parser.*;
@@ -136,7 +135,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
 
-                    if (lexer.token() == Token.RPAREN) { // compatible for sql server
+                    if (lexer.token() == Token.RPAREN) {
                         break;
                     }
                     continue;
@@ -158,17 +157,11 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
-
-            SQLSelect select = null;
-            if (DbType.oracle == dbType) {
-                select = new OracleSelectParser(this.exprParser).select();
-            } else {
-                select = this.createSQLSelectParser().select();
-            }
+            SQLSelect select = this.createSQLSelectParser().select();
             createTable.setSelect(select);
         }
 
-        if (lexer.token() == Token.WITH && DbType.postgresql == dbType) {
+        if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             accept(Token.LPAREN);
             parseAssignItems(createTable.getTableOptions(), createTable, false);
@@ -193,57 +186,71 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
 
     public void parseCreateTableRest(SQLCreateTableStatement stmt) {
         StarRocksCreateTableStatement srStmt = (StarRocksCreateTableStatement) stmt;
-        if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
-            lexer.nextToken();
-            if (lexer.token() == Token.EQ) {
+        for (; ; ) {
+            if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
                 lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                stmt.setEngine(
+                        this.exprParser.expr()
+                );
+                continue;
             }
-            stmt.setEngine(
-                    this.exprParser.expr()
-            );
-        }
 
-        if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE) || lexer.identifierEquals(FnvHash.Constants.AGGREGATE)
-            || lexer.token() == Token.UNIQUE || lexer.token() == Token.PRIMARY) {
-            SQLName model = this.exprParser.name();
-            accept(Token.KEY);
-            SQLIndexDefinition modelKey = new SQLIndexDefinition();
-            modelKey.setType(model.getSimpleName());
-            modelKey.setKey(true);
-            srStmt.setModelKey(modelKey);
-            this.exprParser.parseIndexRest(modelKey, srStmt);
-        }
-        if (lexer.token() == Token.COMMENT) {
-            lexer.nextToken();
-            srStmt.setComment(new SQLCharExpr(StringUtils.removeNameQuotes(lexer.stringVal())));
-            accept(lexer.token());
-        }
-
-        if (lexer.token() == Token.PARTITION) {
-            SQLPartitionBy clause = parsePartitionBy();
-            srStmt.setPartitioning(clause);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.DISTRIBUTED)) {
-            lexer.nextToken();
-            accept(Token.BY);
-            SQLExpr hash = this.exprParser.expr();
-            srStmt.setDistributedBy(hash);
-            if (lexer.identifierEquals(FnvHash.Constants.BUCKETS)) {
-                lexer.nextToken();
-                int bucket = lexer.integerValue().intValue();
-                stmt.setBuckets(bucket);
-                lexer.nextToken();
+            if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE) || lexer.identifierEquals(FnvHash.Constants.AGGREGATE)
+                    || lexer.token() == Token.UNIQUE || lexer.token() == Token.PRIMARY) {
+                SQLName model = this.exprParser.name();
+                accept(Token.KEY);
+                SQLIndexDefinition modelKey = new SQLIndexDefinition();
+                modelKey.setType(model.getSimpleName());
+                modelKey.setKey(true);
+                srStmt.setModelKey(modelKey);
+                this.exprParser.parseIndexRest(modelKey, srStmt);
+                continue;
             }
-        }
-        if (lexer.token() == Token.ORDER) {
-            parseOrderBy(stmt);
-        }
-        if (lexer.identifierEquals(FnvHash.Constants.PROPERTIES)) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            srStmt.getStarRocksProperties()
-                    .addAll(parseProperties(srStmt));
+
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+                srStmt.setComment(new SQLCharExpr(StringUtils.removeNameQuotes(lexer.stringVal())));
+                accept(lexer.token());
+                continue;
+            }
+
+            if (lexer.token() == Token.PARTITION) {
+                SQLPartitionBy clause = parsePartitionBy();
+                srStmt.setPartitioning(clause);
+                continue;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.DISTRIBUTED)) {
+                lexer.nextToken();
+                accept(Token.BY);
+                SQLExpr hash = this.exprParser.expr();
+                srStmt.setDistributedBy(hash);
+                if (lexer.identifierEquals(FnvHash.Constants.BUCKETS)) {
+                    lexer.nextToken();
+                    int bucket = lexer.integerValue().intValue();
+                    stmt.setBuckets(bucket);
+                    lexer.nextToken();
+                }
+                continue;
+            }
+
+            if (lexer.token() == Token.ORDER) {
+                parseOrderBy(stmt);
+                continue;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.PROPERTIES)) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                srStmt.getStarRocksProperties()
+                        .addAll(parseProperties(srStmt));
+                continue;
+            }
+
+            break;
         }
     }
 

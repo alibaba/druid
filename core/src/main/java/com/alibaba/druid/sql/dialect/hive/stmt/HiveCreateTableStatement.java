@@ -31,7 +31,6 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
     protected List<SQLExpr> skewedBy = new ArrayList<SQLExpr>();
     protected List<SQLExpr> skewedByOn = new ArrayList<SQLExpr>();
     protected Map<String, SQLObject> serdeProperties = new LinkedHashMap<String, SQLObject>();
-    protected SQLExpr metaLifeCycle;
 
     protected boolean likeQuery; // for DLA
 
@@ -80,7 +79,6 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
         for (SQLObject item : serdeProperties.values()) {
             acceptChild(v, item);
         }
-        acceptChild(v, metaLifeCycle);
         acceptChild(v, intoBuckets);
     }
 
@@ -96,9 +94,6 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
             SQLObject entryValue = entry.getValue().clone();
             entryValue.setParent(x);
             x.serdeProperties.put(entry.getKey(), entryValue);
-        }
-        if (metaLifeCycle != null) {
-            x.setMetaLifeCycle(metaLifeCycle.clone());
         }
 
         x.setLikeQuery(this.likeQuery);
@@ -146,17 +141,6 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
 
     public Map<String, SQLObject> getSerdeProperties() {
         return serdeProperties;
-    }
-
-    public SQLExpr getMetaLifeCycle() {
-        return metaLifeCycle;
-    }
-
-    public void setMetaLifeCycle(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.metaLifeCycle = x;
     }
 
     public boolean isLikeQuery() {

@@ -83,12 +83,6 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVi
 
         printCreateTable(x, false);
 
-        if (null != x.getComment()) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            printExpr(x.getComment());
-        }
-
         List<SQLAssignItem> options = x.getTableOptions();
         if (options.size() > 0) {
             println();

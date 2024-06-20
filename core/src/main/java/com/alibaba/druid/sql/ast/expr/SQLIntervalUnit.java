@@ -127,7 +127,11 @@ public enum SQLIntervalUnit {
             case "SECONDS":
                 return SECOND;
             default:
-                return valueOf(str);
+                try {
+                    return valueOf(str);
+                } catch (Exception e) {
+                    return null;
+                }
         }
     }
 }

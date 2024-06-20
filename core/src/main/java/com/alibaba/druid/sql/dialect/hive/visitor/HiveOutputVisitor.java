@@ -549,11 +549,11 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         int sepecial = 0;
         SQLAssignItem partitionedBy = null, format = null;
         boolean trino = x.getDbType() == DbType.presto || x.getDbType() == DbType.trino;
-        if (trino) {
-            for (int i = 0, size = options.size(); i < size; ++i) {
-                SQLAssignItem option = options.get(i);
-                if (option.getTarget() instanceof SQLIdentifierExpr) {
-                    SQLIdentifierExpr target = (SQLIdentifierExpr) option.getTarget();
+        for (int i = 0, size = options.size(); i < size; ++i) {
+            SQLAssignItem option = options.get(i);
+            if (option.getTarget() instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr target = (SQLIdentifierExpr) option.getTarget();
+                if (trino) {
                     if ("PARTITIONED_BY".equalsIgnoreCase(target.getName())) {
                         sepecial++;
                         partitionedBy = option;
@@ -589,6 +589,12 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             print(')');
         }
 
+        if (x.getLifeCycle() != null) {
+            println();
+            print0(ucase ? "LIFECYCLE " : "lifecycle ");
+            x.getLifeCycle().accept(this);
+        }
+
         if (options.size() == sepecial) {
             return;
         }
@@ -597,7 +603,9 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         print0(ucase ? "TBLPROPERTIES (" : "tblproperties (");
         for (int i = 0, p = 0, size = options.size(); i < size; ++i) {
             SQLAssignItem option = options.get(i);
-            if (option == partitionedBy || option == format) {
+            if (option == partitionedBy
+                    || option == format
+            ) {
                 continue;
             }
 

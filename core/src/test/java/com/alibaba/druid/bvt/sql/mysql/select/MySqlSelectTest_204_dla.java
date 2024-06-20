@@ -193,7 +193,7 @@ public class MySqlSelectTest_204_dla extends MysqlTest {
 
 
         HiveCreateTableStatement createTableStatement = (HiveCreateTableStatement) createTableStatementList.get(0);
-        SQLExpr lifeCycle = createTableStatement.getMetaLifeCycle();
+        SQLExpr lifeCycle = createTableStatement.getLifeCycle();
         if (lifeCycle instanceof SQLIntegerExpr) {
             int intValue = ((SQLIntegerExpr) lifeCycle).getNumber().intValue();
         } else if (lifeCycle instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) lifeCycle).nameHashCode64() == FnvHash.Constants.ALWAYS) {

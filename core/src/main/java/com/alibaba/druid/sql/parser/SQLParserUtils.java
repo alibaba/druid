@@ -25,6 +25,9 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.ads.parser.AdsStatementParser;
 import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkLexer;
 import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkStatementParser;
+import com.alibaba.druid.sql.dialect.bigquery.BigQueryExprParser;
+import com.alibaba.druid.sql.dialect.bigquery.BigQueryLexer;
+import com.alibaba.druid.sql.dialect.bigquery.BigQueryStatementParser;
 import com.alibaba.druid.sql.dialect.blink.parser.BlinkStatementParser;
 import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseExprParser;
 import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseLexer;
@@ -153,7 +156,9 @@ public class SQLParserUtils {
                 return new HiveStatementParser(sql, features);
             case presto:
             case trino:
-                return new PrestoStatementParser(sql);
+                return new PrestoStatementParser(sql, features);
+            case bigquery:
+                return new BigQueryStatementParser(sql, features);
             case ads:
                 return new AdsStatementParser(sql);
             case antspark:
@@ -206,6 +211,8 @@ public class SQLParserUtils {
             case spark:
             case hive:
                 return new HiveExprParser(sql, features);
+            case bigquery:
+                return new BigQueryExprParser(sql, features);
             case clickhouse:
                 return new ClickhouseExprParser(sql, features);
             case oscar:
@@ -264,6 +271,8 @@ public class SQLParserUtils {
             case hive:
             case spark:
                 return new HiveLexer(sql, features);
+            case bigquery:
+                return new BigQueryLexer(sql, features);
             default: {
                 Lexer lexer = new Lexer(sql, null, dbType);
                 for (SQLParserFeature feature : features) {

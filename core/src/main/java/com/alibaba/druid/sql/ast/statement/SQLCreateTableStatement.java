@@ -77,6 +77,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected boolean dimension;
     protected SQLExpr engine;
 
+    protected SQLExpr lifeCycle;
+
     public SQLCreateTableStatement() {
     }
 
@@ -112,6 +114,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, sortedBy);
         this.acceptChild(v, tableOptions);
         this.acceptChild(v, tblProperties);
+        this.acceptChild(v, lifeCycle);
     }
 
     public SQLExpr getComment() {
@@ -1277,6 +1280,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             x.setStoredBy(storedBy.clone());
         }
 
+        if (lifeCycle != null) {
+            x.setLifeCycle(lifeCycle.clone());
+        }
+
         if (location != null) {
             x.setLocation(location.clone());
         }
@@ -1519,6 +1526,27 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return null;
     }
 
+    public boolean removeOption(String name) {
+        if (name == null) {
+            return false;
+        }
+
+        long hash64 = FnvHash.hashCode64(name);
+
+        for (int i = tableOptions.size() - 1; i >= 0; i--) {
+            SQLAssignItem item = tableOptions.get(i);
+            final SQLExpr target = item.getTarget();
+            if (target instanceof SQLIdentifierExpr) {
+                if (((SQLIdentifierExpr) target).hashCode64() == hash64) {
+                    tableOptions.remove(i);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public SQLExpr getTblProperty(String name) {
         if (name == null) {
             return null;
@@ -1611,5 +1639,16 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     public DDLObjectType getDDLObjectType() {
         return DDLObjectType.TABLE;
+    }
+
+    public SQLExpr getLifeCycle() {
+        return lifeCycle;
+    }
+
+    public void setLifeCycle(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.lifeCycle = x;
     }
 }
