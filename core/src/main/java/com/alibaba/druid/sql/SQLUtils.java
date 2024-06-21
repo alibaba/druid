@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
+import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
@@ -532,6 +533,8 @@ public class SQLUtils {
                 return new OscarOutputVisitor(out);
             case starrocks:
                 return new StarRocksOutputVisitor(out);
+            case bigquery:
+                return new BigQueryOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }

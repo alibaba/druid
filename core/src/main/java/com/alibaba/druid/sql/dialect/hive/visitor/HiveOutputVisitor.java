@@ -19,10 +19,8 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveAddJarStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
@@ -504,117 +502,5 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         print0(ucase ? "ADD JAR " : "add jar ");
         print0(x.getPath());
         return false;
-    }
-
-    protected void printStoredAs(SQLCreateTableStatement x) {
-        SQLExpr storedAs = x.getStoredAs();
-        if (storedAs != null) {
-            print0(ucase ? " STORE AS " : " store as ");
-            printExpr(storedAs, parameterized);
-            return;
-        }
-
-        SQLAssignItem format = null;
-        List<SQLAssignItem> options = x.getTableOptions();
-        boolean trino = x.getDbType() == DbType.presto || x.getDbType() == DbType.trino;
-        if (trino) {
-            for (int i = 0, size = options.size(); i < size; ++i) {
-                SQLAssignItem option = options.get(i);
-                if (option.getTarget() instanceof SQLIdentifierExpr) {
-                    SQLIdentifierExpr target = (SQLIdentifierExpr) option.getTarget();
-                    if ("FORMAT".equalsIgnoreCase(target.getName())) {
-                        format = option;
-                    }
-                }
-            }
-        }
-
-        if (format != null) {
-            print0(ucase ? " STORED AS " : " stored as ");
-            if (format.getValue() instanceof SQLCharExpr) {
-                String formatValue = ((SQLCharExpr) format.getValue()).getText();
-                print0(formatValue);
-            } else {
-                printExpr(format.getValue(), parameterized);
-            }
-        }
-    }
-
-    protected void printCreateTableOptions(SQLCreateTableStatement x) {
-        List<SQLAssignItem> options = x.getTableOptions();
-        if (options.isEmpty()) {
-            return;
-        }
-
-        int sepecial = 0;
-        SQLAssignItem partitionedBy = null, format = null;
-        boolean trino = x.getDbType() == DbType.presto || x.getDbType() == DbType.trino;
-        for (int i = 0, size = options.size(); i < size; ++i) {
-            SQLAssignItem option = options.get(i);
-            if (option.getTarget() instanceof SQLIdentifierExpr) {
-                SQLIdentifierExpr target = (SQLIdentifierExpr) option.getTarget();
-                if (trino) {
-                    if ("PARTITIONED_BY".equalsIgnoreCase(target.getName())) {
-                        sepecial++;
-                        partitionedBy = option;
-                    } else if ("FORMAT".equalsIgnoreCase(target.getName()) && x.getStoredAs() == null) {
-                        sepecial++;
-                        format = option;
-                    }
-                }
-            }
-        }
-
-        if (partitionedBy != null) {
-            println();
-            print0(ucase ? "PARTITIONED BY (" : "partitioned by (");
-            SQLExpr value = partitionedBy.getValue();
-            if (value instanceof SQLArrayExpr) {
-                List<SQLExpr> values = ((SQLArrayExpr) value).getValues();
-                for (int i = 0, size = values.size(); i < size; ++i) {
-                    if (i != 0) {
-                        print0(", ");
-                    }
-                    SQLExpr column = values.get(i);
-                    if (column instanceof SQLCharExpr) {
-                        String formatValue = ((SQLCharExpr) column).getText();
-                        print0(formatValue);
-                    } else {
-                        printExpr(column, parameterized);
-                    }
-                }
-            } else {
-                value.accept(this);
-            }
-            print(')');
-        }
-
-        if (x.getLifeCycle() != null) {
-            println();
-            print0(ucase ? "LIFECYCLE " : "lifecycle ");
-            x.getLifeCycle().accept(this);
-        }
-
-        if (options.size() == sepecial) {
-            return;
-        }
-
-        println();
-        print0(ucase ? "TBLPROPERTIES (" : "tblproperties (");
-        for (int i = 0, p = 0, size = options.size(); i < size; ++i) {
-            SQLAssignItem option = options.get(i);
-            if (option == partitionedBy
-                    || option == format
-            ) {
-                continue;
-            }
-
-            if (p != 0) {
-                print0(", ");
-            }
-            option.accept(this);
-            p++;
-        }
-        print(')');
     }
 }

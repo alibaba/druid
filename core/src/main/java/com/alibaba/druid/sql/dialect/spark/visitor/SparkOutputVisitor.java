@@ -90,11 +90,8 @@ public class SparkOutputVisitor extends HiveOutputVisitor implements SparkVisito
             print0(ucase ? "USING " : "using ");
             print0(x.getDatasource().toString());
         }
-        if (x.getComment() != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            x.getComment().accept(this);
-        }
+
+        printComment(x.getComment());
 
         int partitionSize = x.getPartitionColumns().size();
         if (partitionSize > 0) {
@@ -123,13 +120,7 @@ public class SparkOutputVisitor extends HiveOutputVisitor implements SparkVisito
             print(')');
         }
 
-        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
-        if (clusteredBy.size() > 0) {
-            println();
-            print0(ucase ? "CLUSTERED BY (" : "clustered by (");
-            printAndAccept(clusteredBy, ",");
-            print(')');
-        }
+        printClusteredBy(x);
 
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
         if (sortedBy.size() > 0) {

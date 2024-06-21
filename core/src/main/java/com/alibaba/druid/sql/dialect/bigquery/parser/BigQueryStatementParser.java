@@ -1,4 +1,4 @@
-package com.alibaba.druid.sql.dialect.bigquery;
+package com.alibaba.druid.sql.dialect.bigquery.parser;
 
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;

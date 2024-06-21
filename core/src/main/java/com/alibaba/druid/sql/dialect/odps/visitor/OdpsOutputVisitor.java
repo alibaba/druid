@@ -118,11 +118,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             print(')');
         }
 
-        if (x.getComment() != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            x.getComment().accept(this);
-        }
+        printComment(x.getComment());
 
         int partitionSize = x.getPartitionColumns().size();
         if (partitionSize > 0) {
@@ -151,16 +147,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             print(')');
         }
 
-        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
-        if (clusteredBy.size() > 0) {
-            println();
-            if (x.getClusteringType() == ClusteringType.Range) {
-                print0(ucase ? "RANGE " : "range ");
-            }
-            print0(ucase ? "CLUSTERED BY (" : "clustered by (");
-            printAndAccept(clusteredBy, ",");
-            print(')');
-        }
+        printClusteredBy(x);
 
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
         if (sortedBy.size() > 0) {

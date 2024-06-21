@@ -51,7 +51,7 @@ public class MySqlSelectTest_203_dla extends MysqlTest {
                 "\t'LOCATION' = 'oss://oss-cn-hangzhou-for-openanalytics-dailybuild/jinluo/tbl1_part/kv1.txt',\n" +
                 "\t'SCHEMA' = 'jinluo_test0810'\n" +
                 ")\n" +
-                "META LIFECYCLE 1", stmt.toString());
+                "LIFECYCLE 1", stmt.toString());
 
         assertEquals("select $1, $2\n" +
                 "from table temp_1 (\n" +
@@ -63,7 +63,7 @@ public class MySqlSelectTest_203_dla extends MysqlTest {
                 "\t'LOCATION' = 'oss://oss-cn-hangzhou-for-openanalytics-dailybuild/jinluo/tbl1_part/kv1.txt',\n" +
                 "\t'SCHEMA' = 'jinluo_test0810'\n" +
                 ")\n" +
-                "meta lifecycle 1", stmt.toLowerCaseString());
+                "lifecycle 1", stmt.toLowerCaseString());
 
         final TempTableNameGen tempTableNameGen = new TempTableNameGen() {
             @Override

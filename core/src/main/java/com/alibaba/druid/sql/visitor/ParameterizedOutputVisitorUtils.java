@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDDLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
@@ -432,6 +433,8 @@ public class ParameterizedOutputVisitorUtils {
                 return new PrestoOutputVisitor(out, true);
             case clickhouse:
                 return new ClickhouseOutputVisitor(out, true);
+            case bigquery:
+                return new BigQueryOutputVisitor(out, true);
             default:
                 return new SQLASTOutputVisitor(out, true);
         }

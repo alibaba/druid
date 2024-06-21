@@ -82,7 +82,7 @@ public class MySqlSelectTest_204_dla extends MysqlTest {
                 "\t'LOCATION' = 'oss//x.x.x.x:xxx/test_db',\n" +
                 "\t'SCHEMA' = 'test_db'\n" +
                 ")\n" +
-                "META LIFECYCLE 1\n" +
+                "LIFECYCLE 1\n" +
                 "\tJOIN TABLE temp_2 (\n" +
                 "\t\tid INT COMMENT 'default',\n" +
                 "\t\tbool_col BOOLEAN COMMENT 'default',\n" +
@@ -109,7 +109,7 @@ public class MySqlSelectTest_204_dla extends MysqlTest {
                 "\tTBLPROPERTIES (\n" +
                 "\t\t'recursive.directories' = 'false'\n" +
                 "\t)\n" +
-                "\tMETA LIFECYCLE 1 ON temp_1.$1 = temp_2.id\n" +
+                "\tLIFECYCLE 1 ON temp_1.$1 = temp_2.id\n" +
                 "WHERE temp_2.bool_col = true;", stmt.toString());
 
         assertEquals("select temp_1.$1, temp_2.smallint_col\n" +
@@ -122,7 +122,7 @@ public class MySqlSelectTest_204_dla extends MysqlTest {
                 "\t'LOCATION' = 'oss//x.x.x.x:xxx/test_db',\n" +
                 "\t'SCHEMA' = 'test_db'\n" +
                 ")\n" +
-                "meta lifecycle 1\n" +
+                "lifecycle 1\n" +
                 "\tjoin table temp_2 (\n" +
                 "\t\tid INT comment 'default',\n" +
                 "\t\tbool_col BOOLEAN comment 'default',\n" +
@@ -149,7 +149,7 @@ public class MySqlSelectTest_204_dla extends MysqlTest {
                 "\ttblproperties (\n" +
                 "\t\t'recursive.directories' = 'false'\n" +
                 "\t)\n" +
-                "\tmeta lifecycle 1 on temp_1.$1 = temp_2.id\n" +
+                "\tlifecycle 1 on temp_1.$1 = temp_2.id\n" +
                 "where temp_2.bool_col = true;", stmt.toLowerCaseString());
 
         final TempTableNameGen tempTableNameGen = new TempTableNameGen() {

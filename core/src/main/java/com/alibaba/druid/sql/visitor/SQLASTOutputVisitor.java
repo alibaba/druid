@@ -527,6 +527,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
     }
 
+    public void println(char ch) {
+        print(ch);
+        println();
+    }
+
     // ////////////////////
 
     public boolean visit(SQLBetweenExpr x) {
@@ -3741,7 +3746,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLCreateTableStatement x) {
-        printCreateTable(x, true);
+        printCreateTable(x, false);
 
         SQLPartitionOf partitionOf = x.getPartitionOf();
         if (partitionOf != null) {
@@ -3770,17 +3775,78 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             engine.accept(this);
         }
 
+        SQLSelect select = x.getSelect();
+        if (select != null) {
+            println();
+            print0(ucase ? "AS" : "as");
+
+            println();
+            visit(select);
+        }
+
         return false;
     }
 
-    protected void printCreateTableOptions(SQLCreateTableStatement x) {
-        List<SQLAssignItem> options = x.getTableOptions();
-        if (options.isEmpty()) {
+    protected void printClusteredBy(SQLCreateTableStatement x) {
+        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
+        if (clusteredBy.isEmpty()) {
             return;
         }
         println();
-        print0(ucase ? "WITH (" : "with (");
-        printAndAccept(options, ", ");
+        if (x.getClusteringType() == ClusteringType.Range) {
+            print0(ucase ? "RANGE " : "range ");
+        }
+        print0(ucase ? "CLUSTERED BY (" : "clustered by (");
+        printAndAccept(clusteredBy, ",");
+        print(')');
+    }
+
+    protected void printCreateTableOptions(SQLCreateTableStatement x) {
+        List<SQLAssignItem> tableOptions = x.getTableOptions();
+        if (tableOptions.isEmpty()) {
+            return;
+        }
+
+        println();
+        if (dbType == DbType.hive || dbType == DbType.odps) {
+            print0(ucase ? "TBLPROPERTIES (" : "tblproperties (");
+        } else if (dbType == DbType.trino || dbType == DbType.presto) {
+            print0(ucase ? "WITH (" : "with (");
+        } else {
+            print0(ucase ? "OPTIONS (" : "options (");
+        }
+        incrementIndent();
+        println();
+        int i = 0;
+        for (SQLAssignItem option : tableOptions) {
+            if (i != 0) {
+                print(",");
+                println();
+            }
+            String key = option.getTarget().toString();
+
+            boolean quote = false;
+            char c0;
+            if (dbType == DbType.presto || dbType == DbType.trino) {
+                quote = false;
+            } else if (key.length() > 0 && (c0 = key.charAt(0)) != '"' && c0 != '`' && c0 != '\'') {
+                quote = true;
+            }
+
+            if (quote) {
+                print('\'');
+            }
+            print0(key);
+            if (quote) {
+                print('\'');
+            }
+
+            print0(" = ");
+            option.getValue().accept(this);
+            ++i;
+        }
+        decrementIndent();
+        println();
         print(')');
     }
 
@@ -3823,14 +3889,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        printPartitionedBy(x);
+        printComment(x.getComment());
 
-        SQLExpr comment = x.getComment();
-        if (comment != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            comment.accept(this);
-        }
+        printPartitionedBy(x);
+        printLifeCycle(x.getLifeCycle());
+        printClusteredBy(x);
 
         printStoredAs(x);
         SQLExpr storedBy = x.getStoredBy();
@@ -3838,6 +3901,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " STORE BY " : " store by ");
             printExpr(storedBy, parameterized);
         }
+
+        printCreateTableLike(x);
 
         SQLSelect select = x.getSelect();
         if (printSelect && select != null) {
@@ -3847,6 +3912,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             visit(select);
         }
+    }
+
+    protected void printComment(SQLExpr comment) {
+        if (comment == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "COMMENT " : "comment ");
+        comment.accept(this);
     }
 
     protected void printStoredAs(SQLCreateTableStatement x) {
@@ -5217,11 +5291,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        if (x.getComment() != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            x.getComment().accept(this);
-        }
+        printComment(x.getComment());
 
         println();
         print0(ucase ? "AS" : "as");
@@ -5303,12 +5373,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        SQLLiteralExpr comment = x.getComment();
-        if (comment != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            comment.accept(this);
-        }
+        printComment(x.getComment());
 
         println();
         print0(ucase ? "AS" : "as");
@@ -7860,10 +7925,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             partitionsCount.accept(this);
         }
 
-        if (x.getLifecycle() != null) {
-            print0(ucase ? " LIFECYCLE " : " lifecycle ");
-            x.getLifecycle().accept(this);
-        }
+        printLifeCycle(x.getLifeCycle());
 
         if (x.getSubPartitionBy() != null) {
             println();
@@ -7945,10 +8007,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             this.indentCount--;
         }
 
-        if (x.getLifecycle() != null) {
-            print0(ucase ? " LIFECYCLE " : " lifecycle ");
-            x.getLifecycle().accept(this);
-        }
+        printLifeCycle(x.getLifecycle());
 
         return false;
     }
@@ -9006,11 +9065,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 option.getValue().accept(this);
             }
 
-            if (x.getComment() != null) {
-                println();
-                print0(ucase ? "COMMENT " : "comment ");
-                x.getComment().accept(this);
-            }
+            printComment(x.getComment());
         }
 
         SQLPartitionBy partitionBy = x.getPartitionBy();
@@ -11004,55 +11059,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             using.accept(this);
         }
 
-        List<SQLAssignItem> tableOptions = x.getTableOptions();
-        if (tableOptions.size() > 0) {
-            println();
-            if (dbType == DbType.trino || dbType == DbType.presto) {
-                print0(ucase ? "WITH (" : "with (");
-            } else {
-                print0(ucase ? "OPTIONS (" : "options (");
-            }
-            incrementIndent();
-            println();
-            int i = 0;
-            for (SQLAssignItem option : tableOptions) {
-                if (i != 0) {
-                    print(",");
-                    println();
-                }
-                String key = option.getTarget().toString();
+        printCreateTableOptions(x);
 
-                boolean quote = false;
-                char c0;
-                if (dbType == DbType.presto || dbType == DbType.trino) {
-                    quote = false;
-                } else if (key.length() > 0 && (c0 = key.charAt(0)) != '"' && c0 != '`' && c0 != '\'') {
-                    quote = true;
-                }
-
-                if (quote) {
-                    print('\'');
-                }
-                print0(key);
-                if (quote) {
-                    print('\'');
-                }
-
-                print0(" = ");
-                option.getValue().accept(this);
-                ++i;
-            }
-            decrementIndent();
-            println();
-            print(')');
-        }
-
-        SQLExpr comment = x.getComment();
-        if (comment != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            comment.accept(this);
-        }
+        printComment(x.getComment());
 
         List<SQLAssignItem> mappedBy = x.getMappedBy();
         if (mappedBy != null && mappedBy.size() > 0) {
@@ -11111,12 +11120,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         Map<String, SQLObject> serdeProperties = x.getSerdeProperties();
         printSerdeProperties(serdeProperties);
-        SQLExprTableSource like = x.getLike();
-        if (like != null) {
-            println();
-            print0(ucase ? "LIKE " : "like ");
-            like.accept(this);
-        }
+        printCreateTableLike(x);
 
         SQLExpr storedAs = x.getStoredAs();
         if (storedAs != null) {
@@ -11154,13 +11158,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         printTblProperties(x);
-
-        SQLExpr metaLifeCycle = x.getLifeCycle();
-        if (metaLifeCycle != null) {
-            println();
-            print0(ucase ? "META LIFECYCLE " : "meta lifecycle ");
-            printExpr(metaLifeCycle);
-        }
+        printLifeCycle(x.getLifeCycle());
 
         SQLSelect select = x.getSelect();
         if (printSelect && select != null) {
@@ -11176,7 +11174,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
     }
 
-    private void printPartitionedBy(SQLCreateTableStatement x) {
+    protected void printCreateTableLike(SQLCreateTableStatement x) {
+        SQLExprTableSource like = x.getLike();
+        if (like == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "LIKE " : "like ");
+        like.accept(this);
+    }
+
+    protected void printPartitionedBy(SQLCreateTableStatement x) {
         List<SQLColumnDefinition> partitionColumns = x.getPartitionColumns();
         int partitionSize = partitionColumns.size();
         if (partitionSize == 0) {
@@ -11189,7 +11197,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
         for (int i = 0; i < partitionSize; ++i) {
             SQLColumnDefinition column = partitionColumns.get(i);
-            column.accept(this);
+            printPartitoinedByColumn(column);
 
             if (i != partitionSize - 1) {
                 print(',');
@@ -11206,6 +11214,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.indentCount--;
         println();
         print(')');
+    }
+
+    protected void printLifeCycle(SQLExpr lifeCycle) {
+        if (lifeCycle == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "LIFECYCLE " : "lifecycle ");
+        lifeCycle.accept(this);
+    }
+
+    protected void printPartitoinedByColumn(SQLColumnDefinition column) {
+        column.accept(this);
     }
 
     protected void printSerdeProperties(Map<String, SQLObject> serdeProperties) {

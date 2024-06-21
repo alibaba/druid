@@ -6702,7 +6702,7 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
                 lexer.nextToken();
-                partitionClause.setLifecycle((SQLIntegerExpr) expr());
+                partitionClause.setLifeCycle((SQLIntegerExpr) expr());
             }
         }
         return partitionClause;

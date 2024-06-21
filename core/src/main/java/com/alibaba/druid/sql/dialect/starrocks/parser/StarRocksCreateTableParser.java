@@ -369,7 +369,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
             lexer.nextToken();
-            partitionClause.setLifecycle((SQLIntegerExpr) exprParser.expr());
+            partitionClause.setLifeCycle((SQLIntegerExpr) exprParser.expr());
         }
 
         if (lexer.token() == Token.LPAREN) {
@@ -415,7 +415,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
             lexer.nextToken();
-            clause.setLifecycle((SQLIntegerExpr) exprParser.expr());
+            clause.setLifeCycle((SQLIntegerExpr) exprParser.expr());
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.SUBPARTITION)) {

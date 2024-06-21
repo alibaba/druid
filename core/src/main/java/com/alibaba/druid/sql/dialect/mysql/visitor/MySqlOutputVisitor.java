@@ -3134,10 +3134,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
                 print0("\"" + x.getTokenizers().get(i) + "\"");
             }
-            print0("]");
+            print(']');
         }
         println();
-        print0(")");
+        print(')');
         return false;
     }
 
@@ -3145,12 +3145,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MysqlCreateFullTextDictionaryStatement x) {
         print0(ucase ? "CREATE FULLTEXT DICTIONARY " : "create fulltext dictionary ");
         x.getName().accept(this);
-        println("(");
+        println('(');
         x.getColumn().accept(this);
         println();
-        print0(") ");
+        print(')');
 
         if (x.getComment() != null) {
+            println();
             print0(ucase ? "COMMENT " : "comment ");
             print0(x.getComment());
         }
@@ -3957,11 +3958,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         print0(")");
 
-        if (x.getComment() != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            x.getComment().accept(this);
-        }
+        printComment(x.getComment());
 
         return false;
     }
