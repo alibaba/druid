@@ -1515,11 +1515,11 @@ public class SQLEvalVisitorUtils {
         }
 
         if (val instanceof Float) {
-            return new BigDecimal((Float) val);
+            return BigDecimal.valueOf((Float) val);
         }
 
         if (val instanceof Double) {
-            return new BigDecimal((Double) val);
+            return BigDecimal.valueOf((Double) val);
         }
 
         return BigDecimal.valueOf(((Number) val).longValue());
