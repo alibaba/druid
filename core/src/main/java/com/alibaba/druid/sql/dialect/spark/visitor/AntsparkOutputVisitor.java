@@ -2,7 +2,7 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2018 All Rights Reserved.
  */
-package com.alibaba.druid.sql.dialect.antspark.visitor;
+package com.alibaba.druid.sql.dialect.spark.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -11,7 +11,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.dialect.antspark.ast.AntsparkCreateTableStatement;
+import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class AntsparkOutputVisitor extends HiveOutputVisitor implements Antspark
 
     //add using statment
     @Override
-    public boolean visit(AntsparkCreateTableStatement x) {
+    public boolean visit(SparkCreateTableStatement x) {
         print0(ucase ? "CREATE " : "create ");
 
         if (x.isExternal()) {
@@ -187,6 +187,6 @@ public class AntsparkOutputVisitor extends HiveOutputVisitor implements Antspark
     }
 
     @Override
-    public void endVisit(AntsparkCreateTableStatement x) {
+    public void endVisit(SparkCreateTableStatement x) {
     }
 }

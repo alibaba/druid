@@ -2,11 +2,11 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2018 All Rights Reserved.
  */
-package com.alibaba.druid.sql.dialect.antspark.visitor;
+package com.alibaba.druid.sql.dialect.spark.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.antspark.ast.AntsparkCreateTableStatement;
+import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
@@ -16,11 +16,11 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
  */
 public class AntsparkSchemaStatVisitor extends SchemaStatVisitor implements AntsparkVisitor {
     {
-        dbType = DbType.antspark;
+        dbType = DbType.spark;
     }
 
     public AntsparkSchemaStatVisitor() {
-        super(DbType.antspark);
+        super(DbType.spark);
     }
 
     public AntsparkSchemaStatVisitor(SchemaRepository repository) {
@@ -28,12 +28,12 @@ public class AntsparkSchemaStatVisitor extends SchemaStatVisitor implements Ants
     }
 
     @Override
-    public boolean visit(AntsparkCreateTableStatement x) {
+    public boolean visit(SparkCreateTableStatement x) {
         return super.visit((SQLCreateTableStatement) x);
     }
 
     @Override
-    public void endVisit(AntsparkCreateTableStatement x) {
+    public void endVisit(SparkCreateTableStatement x) {
         super.endVisit((SQLCreateTableStatement) x);
     }
 }

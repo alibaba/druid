@@ -2,7 +2,7 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2018 All Rights Reserved.
  */
-package com.alibaba.druid.sql.dialect.antspark.parser;
+package com.alibaba.druid.sql.dialect.spark.parser;
 
 import com.alibaba.druid.sql.ast.SQLCurrentTimeExpr;
 import com.alibaba.druid.sql.ast.SQLCurrentUserExpr;
@@ -12,6 +12,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveExprParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -22,7 +23,7 @@ import java.util.Arrays;
  * @author peiheng.qph
  * @version $Id: AntsparkExprParser.java, v 0.1 2018年09月14日 15:04 peiheng.qph Exp $
  */
-public class AntsparkExprParser extends SQLExprParser {
+public class SparkExprParser extends HiveExprParser {
     private static final String[] AGGREGATE_FUNCTIONS;
     private static final long[] AGGREGATE_FUNCTIONS_CODES;
 
@@ -39,12 +40,12 @@ public class AntsparkExprParser extends SQLExprParser {
         }
     }
 
-    public AntsparkExprParser(String sql) {
-        this(new AntsparkLexer(sql));
+    public SparkExprParser(String sql) {
+        this(new SparkLexer(sql));
         this.lexer.nextToken();
     }
 
-    public AntsparkExprParser(Lexer lexer) {
+    public SparkExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;

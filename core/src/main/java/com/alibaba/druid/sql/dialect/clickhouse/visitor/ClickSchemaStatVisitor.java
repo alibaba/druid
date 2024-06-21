@@ -9,11 +9,11 @@ import com.alibaba.druid.stat.TableStat;
 
 public class ClickSchemaStatVisitor extends SchemaStatVisitor implements ClickhouseVisitor {
     {
-        dbType = DbType.antspark;
+        dbType = DbType.spark;
     }
 
     public ClickSchemaStatVisitor() {
-        super(DbType.antspark);
+        super(DbType.spark);
     }
 
     public ClickSchemaStatVisitor(SchemaRepository repository) {

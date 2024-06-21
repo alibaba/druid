@@ -2,9 +2,10 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2018 All Rights Reserved.
  */
-package com.alibaba.druid.sql.dialect.antspark.parser;
+package com.alibaba.druid.sql.dialect.spark.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.Token;
@@ -16,7 +17,7 @@ import java.util.Map;
  * @author peiheng.qph
  * @version $Id: AntsparkLexer.java, v 0.1 2018年09月14日 15:04 peiheng.qph Exp $
  */
-public class AntsparkLexer extends Lexer {
+public class SparkLexer extends HiveLexer {
     public static final Keywords DEFAULT_ANTSPARK_KEYWORDS;
 
     static {
@@ -46,9 +47,9 @@ public class AntsparkLexer extends Lexer {
         DEFAULT_ANTSPARK_KEYWORDS = new Keywords(map);
     }
 
-    public AntsparkLexer(String input) {
+    public SparkLexer(String input) {
         super(input);
-        dbType = DbType.antspark;
+        dbType = DbType.spark;
         super.keywords = DEFAULT_ANTSPARK_KEYWORDS;
     }
 }

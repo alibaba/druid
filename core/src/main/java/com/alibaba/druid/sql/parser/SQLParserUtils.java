@@ -23,8 +23,8 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.ads.parser.AdsStatementParser;
-import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkLexer;
-import com.alibaba.druid.sql.dialect.antspark.parser.AntsparkStatementParser;
+import com.alibaba.druid.sql.dialect.spark.parser.SparkLexer;
+import com.alibaba.druid.sql.dialect.spark.parser.SparkStatementParser;
 import com.alibaba.druid.sql.dialect.bigquery.BigQueryExprParser;
 import com.alibaba.druid.sql.dialect.bigquery.BigQueryLexer;
 import com.alibaba.druid.sql.dialect.bigquery.BigQueryStatementParser;
@@ -151,7 +151,6 @@ public class SQLParserUtils {
                 return new OdpsStatementParser(sql, features);
             case phoenix:
                 return new PhoenixStatementParser(sql);
-            case spark:
             case hive:
                 return new HiveStatementParser(sql, features);
             case presto:
@@ -161,8 +160,8 @@ public class SQLParserUtils {
                 return new BigQueryStatementParser(sql, features);
             case ads:
                 return new AdsStatementParser(sql);
-            case antspark:
-                return new AntsparkStatementParser(sql);
+            case spark:
+                return new SparkStatementParser(sql);
             case clickhouse:
                 return new ClickhouseStatementParser(sql);
             case starrocks:
@@ -208,7 +207,6 @@ public class SQLParserUtils {
             case presto:
             case trino:
                 return new PrestoExprParser(sql, features);
-            case spark:
             case hive:
                 return new HiveExprParser(sql, features);
             case bigquery:
@@ -260,8 +258,8 @@ public class SQLParserUtils {
             case presto:
             case trino:
                 return new PrestoLexer(sql, features);
-            case antspark:
-                return new AntsparkLexer(sql);
+            case spark:
+                return new SparkLexer(sql);
             case oscar:
                 return new OscarLexer(sql, features);
             case clickhouse:
@@ -269,7 +267,6 @@ public class SQLParserUtils {
             case starrocks:
                 return new StarRocksLexer(sql, features);
             case hive:
-            case spark:
                 return new HiveLexer(sql, features);
             case bigquery:
                 return new BigQueryLexer(sql, features);

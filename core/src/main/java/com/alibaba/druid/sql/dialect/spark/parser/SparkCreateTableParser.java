@@ -2,13 +2,14 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2018 All Rights Reserved.
  */
-package com.alibaba.druid.sql.dialect.antspark.parser;
+package com.alibaba.druid.sql.dialect.spark.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.antspark.ast.AntsparkCreateTableStatement;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveCreateTableParser;
+import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -20,17 +21,17 @@ import com.alibaba.druid.util.FnvHash;
  * @author peiheng.qph
  * @version $Id: AntsparkCreateTableParser.java, v 0.1 2018年09月14日 15:03 peiheng.qph Exp $
  */
-public class AntsparkCreateTableParser extends SQLCreateTableParser {
-    public AntsparkCreateTableParser(String sql) {
-        super(new AntsparkExprParser(sql));
+public class SparkCreateTableParser extends HiveCreateTableParser {
+    public SparkCreateTableParser(String sql) {
+        super(new SparkExprParser(sql));
     }
 
-    public AntsparkCreateTableParser(SQLExprParser exprParser) {
+    public SparkCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
     }
 
     public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
-        AntsparkCreateTableStatement stmt = new AntsparkCreateTableStatement();
+        SparkCreateTableStatement stmt = new SparkCreateTableStatement();
 
         if (acceptCreate) {
             if (lexer.hasComment() && lexer.isKeepComments()) {
@@ -300,9 +301,9 @@ public class AntsparkCreateTableParser extends SQLCreateTableParser {
         return stmt;
     }
 
-    private void parseRowFormat(AntsparkCreateTableStatement stmt) {
+    private void parseRowFormat(SparkCreateTableStatement stmt) {
     }
 
-    private void parseSortedBy(AntsparkCreateTableStatement stmt) {
+    private void parseSortedBy(SparkCreateTableStatement stmt) {
     }
 }

@@ -45,6 +45,10 @@ public class HiveStatementParser extends SQLStatementParser {
         super(new HiveExprParser(lexer));
     }
 
+    public HiveStatementParser(SQLExprParser exprParser) {
+        super(exprParser);
+    }
+
     public HiveSelectParser createSQLSelectParser() {
         return new HiveSelectParser(this.exprParser, selectListCache);
     }

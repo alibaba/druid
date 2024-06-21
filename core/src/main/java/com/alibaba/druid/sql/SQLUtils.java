@@ -20,8 +20,8 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
-import com.alibaba.druid.sql.dialect.antspark.visitor.AntsparkOutputVisitor;
-import com.alibaba.druid.sql.dialect.antspark.visitor.AntsparkSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.AntsparkOutputVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.AntsparkSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
@@ -166,7 +166,7 @@ public class SQLUtils {
     }
 
     public static String toAntsparkString(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, DbType.antspark, option);
+        return toSQLString(sqlObject, DbType.spark, option);
     }
 
     public static String toMySqlString(SQLObject sqlObject) {
@@ -516,14 +516,13 @@ public class SQLUtils {
                 return new OdpsOutputVisitor(out);
             case h2:
                 return new H2OutputVisitor(out);
-            case spark:
             case hive:
                 return new HiveOutputVisitor(out);
             case ads:
                 return new AdsOutputVisitor(out);
             case blink:
                 return new BlinkOutputVisitor(out);
-            case antspark:
+            case spark:
                 return new AntsparkOutputVisitor(out);
             case presto:
                 return new PrestoOutputVisitor(out);
@@ -583,7 +582,7 @@ public class SQLUtils {
                 return new H2SchemaStatVisitor(repository);
             case hive:
                 return new HiveSchemaStatVisitor(repository);
-            case antspark:
+            case spark:
                 return new AntsparkSchemaStatVisitor(repository);
             case clickhouse:
                 return new ClickSchemaStatVisitor(repository);

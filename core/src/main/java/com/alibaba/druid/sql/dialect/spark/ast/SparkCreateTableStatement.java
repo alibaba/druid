@@ -2,7 +2,7 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2018 All Rights Reserved.
  */
-package com.alibaba.druid.sql.dialect.antspark.ast;
+package com.alibaba.druid.sql.dialect.spark.ast;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -10,7 +10,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.dialect.antspark.visitor.AntsparkVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.AntsparkVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @author peiheng.qph
  * @version $Id: AntsparkCreateTableStatement.java, v 0.1 2018年09月14日 15:02 peiheng.qph Exp $
  */
-public class AntsparkCreateTableStatement extends SQLCreateTableStatement {
+public class SparkCreateTableStatement extends SQLCreateTableStatement {
     protected List<SQLAssignItem> mappedBy = new ArrayList<SQLAssignItem>(1);
     protected List<SQLExpr> skewedBy = new ArrayList<SQLExpr>();
     protected List<SQLExpr> skewedByOn = new ArrayList<SQLExpr>();
@@ -30,8 +30,8 @@ public class AntsparkCreateTableStatement extends SQLCreateTableStatement {
     protected SQLExpr metaLifeCycle;
     protected SQLExprTableSource datasource;
 
-    public AntsparkCreateTableStatement() {
-        super(DbType.antspark);
+    public SparkCreateTableStatement() {
+        super(DbType.spark);
     }
 
     public List<SQLAssignItem> getMappedBy() {

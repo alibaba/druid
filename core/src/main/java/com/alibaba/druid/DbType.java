@@ -39,7 +39,11 @@ public enum DbType {
 
     clickhouse(1 << 28),
     blink(1 << 29),
+
+    @Deprecated
     antspark(1 << 30),
+
+    spark(1 << 30),
     oceanbase_oracle(1 << 31),
     polardb(1L << 32),
 
@@ -72,11 +76,9 @@ public enum DbType {
 
     redshift(1L << 46),
 
-    spark(1L << 47),
+    hologres(1L << 47),
 
-    hologres(1L << 48),
-
-    bigquery(1L << 49),
+    bigquery(1L << 48),
 
     ingres(0),
     cloudscape(0),
