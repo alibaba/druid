@@ -1151,4 +1151,31 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         print0(x.getArguments());
         return false;
     }
+
+    public boolean visit(SQLStructExpr x) {
+        List<SQLAliasedExpr> items = x.getItems();
+        int aliasCount = 0;
+        for (int i = 0, size = items.size(); i < size; ++i) {
+            SQLAliasedExpr item = items.get(i);
+            if (item.getAlias() != null) {
+                aliasCount++;
+            }
+        }
+        if (aliasCount != items.size()) {
+            return super.visit(x);
+        }
+
+        print0(ucase ? "NAMED_STRUCT(" : "named_struct(");
+        for (int i = 0, size = items.size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            SQLAliasedExpr item = items.get(i);
+            visit(new SQLIdentifierExpr(item.getAlias()));
+            print0(", ");
+            item.getExpr().accept(this);
+        }
+        print(')');
+        return false;
+    }
 }

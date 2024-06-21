@@ -204,6 +204,20 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default boolean visit(SQLStructExpr x) {
+        return true;
+    }
+
+    default void endVisit(SQLStructExpr x) {
+    }
+
+    default boolean visit(SQLAliasedExpr x) {
+        return true;
+    }
+
+    default void endVisit(SQLAliasedExpr x) {
+    }
+
     default void endVisit(SQLCastExpr x) {
     }
 

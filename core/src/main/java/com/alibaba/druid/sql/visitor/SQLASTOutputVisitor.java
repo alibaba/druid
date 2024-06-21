@@ -2690,6 +2690,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     }
 
+    public boolean visit(SQLStructExpr x) {
+        print0(ucase ? "STRUCT(" : "struct(");
+        printAndAccept(x.getItems(), ", ");
+        print(')');
+        return false;
+    }
+
+    public boolean visit(SQLAliasedExpr x) {
+        SQLExpr expr = x.getExpr();
+        if (expr == null) {
+            return false;
+        }
+        expr.accept(this);
+
+        String alias = x.getAlias();
+        if (alias != null && alias.length() > 0) {
+            printExprAlias(alias);
+
+            return false;
+        }
+        return false;
+    }
+
     public boolean visit(SQLSelectItem x) {
         if (x.isConnectByRoot()) {
             print0(ucase ? "CONNECT_BY_ROOT " : "connect_by_root ");
@@ -2707,50 +2730,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         String alias = x.getAlias();
         if (alias != null && alias.length() > 0) {
-            print0(ucase ? " AS " : " as ");
-            char c0 = alias.charAt(0);
-
-            boolean special = false;
-            if (c0 != '"' && c0 != '\'' && c0 != '`' && c0 != '[') {
-                for (int i = 1; i < alias.length(); ++i) {
-                    char ch = alias.charAt(i);
-                    if (ch < 256) {
-                        if (ch >= '0' && ch <= '9') {
-                            // skip
-                        } else if (ch >= 'a' && ch <= 'z') {
-                            // skip
-                        } else if (ch >= 'A' && ch <= 'Z') {
-                            // skip
-                        } else if (ch == '_' || ch == '$') {
-                            // skip
-                        } else {
-                            special = true;
-                        }
-                    }
-                }
-            }
-            if ((!printNameQuote) && (!special)) {
-                print0(alias);
-            } else {
-                print(quote);
-
-                String unquoteAlias = null;
-                if (c0 == '`' && alias.charAt(alias.length() - 1) == '`') {
-                    unquoteAlias = alias.substring(1, alias.length() - 1);
-                } else if (c0 == '\'' && alias.charAt(alias.length() - 1) == '\'') {
-                    unquoteAlias = alias.substring(1, alias.length() - 1);
-                } else if (c0 == '"' && alias.charAt(alias.length() - 1) == '"') {
-                    unquoteAlias = alias.substring(1, alias.length() - 1);
-                } else {
-                    print0(alias);
-                }
-
-                if (unquoteAlias != null) {
-                    print0(unquoteAlias);
-                }
-
-                print(quote);
-            }
+            printExprAlias(alias);
 
             return false;
         }
@@ -2787,6 +2767,53 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print(')');
 
         return false;
+    }
+
+    protected void printExprAlias(String alias) {
+        print0(ucase ? " AS " : " as ");
+        char c0 = alias.charAt(0);
+
+        boolean special = false;
+        if (c0 != '"' && c0 != '\'' && c0 != '`' && c0 != '[') {
+            for (int i = 1; i < alias.length(); ++i) {
+                char ch = alias.charAt(i);
+                if (ch < 256) {
+                    if (ch >= '0' && ch <= '9') {
+                        // skip
+                    } else if (ch >= 'a' && ch <= 'z') {
+                        // skip
+                    } else if (ch >= 'A' && ch <= 'Z') {
+                        // skip
+                    } else if (ch == '_' || ch == '$') {
+                        // skip
+                    } else {
+                        special = true;
+                    }
+                }
+            }
+        }
+        if ((!printNameQuote) && (!special)) {
+            print0(alias);
+        } else {
+            print(quote);
+
+            String unquoteAlias = null;
+            if (c0 == '`' && alias.charAt(alias.length() - 1) == '`') {
+                unquoteAlias = alias.substring(1, alias.length() - 1);
+            } else if (c0 == '\'' && alias.charAt(alias.length() - 1) == '\'') {
+                unquoteAlias = alias.substring(1, alias.length() - 1);
+            } else if (c0 == '"' && alias.charAt(alias.length() - 1) == '"') {
+                unquoteAlias = alias.substring(1, alias.length() - 1);
+            } else {
+                print0(alias);
+            }
+
+            if (unquoteAlias != null) {
+                print0(unquoteAlias);
+            }
+
+            print(quote);
+        }
     }
 
     public boolean visit(SQLOrderBy x) {

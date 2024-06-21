@@ -211,6 +211,7 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
             DbType.hive,
             DbType.odps,
             DbType.mariadb,
+            DbType.bigquery,
             DbType.tidb
     );
 

@@ -291,6 +291,14 @@ public class Lexer {
         return false;
     }
 
+    public final boolean nextIfComma() {
+        if (this.token == COMMA) {
+            nextToken();
+            return true;
+        }
+        return false;
+    }
+
     public final boolean nextIfIdentifier(String identifier) {
         if (this.identifierEquals(identifier)) {
             nextToken();

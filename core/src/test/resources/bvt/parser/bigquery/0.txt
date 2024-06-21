@@ -1,0 +1,21 @@
+WITH
+  Items AS (
+    SELECT STRUCT('blue' AS color, 'round' AS shape) AS info UNION ALL
+    SELECT STRUCT('blue', 'square') UNION ALL
+    SELECT STRUCT('red', 'round')
+  )
+SELECT * FROM Items;
+--------------------
+WITH Items AS (
+		SELECT STRUCT('blue' AS color, 'round' AS shape) AS info
+		UNION ALL
+		SELECT STRUCT('blue', 'square')
+		UNION ALL
+		SELECT STRUCT('red', 'round')
+	)
+SELECT *
+FROM Items;
+------------------------------------------------------------------------------------------------------------------------
+SELECT DATE_ADD(DATE '2008-12-25', INTERVAL 5 DAY) AS five_days_later;
+--------------------
+SELECT DATE_ADD(DATE '2008-12-25', INTERVAL 5 DAY) AS five_days_later;

@@ -26,7 +26,7 @@ import java.util.List;
 
 public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Comparable<SQLIdentifierExpr> {
     protected String name;
-    private long hashCode64;
+    protected long hashCode64;
 
     private SQLObject resolvedColumn;
     private SQLObject resolvedOwnerObject;

@@ -46,6 +46,12 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         this.methodName = methodName;
     }
 
+    public SQLMethodInvokeExpr(SQLIdentifierExpr methodName) {
+        this.methodName = methodName.name;
+        this.methodNameHashCode64 = methodName.hashCode64;
+        this.setSource(methodName.getSourceLine(), methodName.getSourceColumn());
+    }
+
     public SQLMethodInvokeExpr(String methodName, long methodNameHashCode64) {
         this.methodName = methodName;
         this.methodNameHashCode64 = methodNameHashCode64;

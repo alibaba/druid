@@ -1,9 +1,13 @@
 package com.alibaba.druid.sql.dialect.bigquery;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLStructExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
@@ -42,5 +46,32 @@ public class BigQueryExprParser extends SQLExprParser {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
+    }
+
+    protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
+        if (expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
+            long hashCode64 = identifierExpr.hashCode64();
+            if (hashCode64 == FnvHash.Constants.STRUCT) {
+                SQLStructExpr structExpr = new SQLStructExpr();
+                structExpr.setSource(identifierExpr.getSourceLine(), identifierExpr.getSourceColumn());
+                while (true) {
+                    SQLExpr item = expr();
+                    String alias = null;
+                    if (lexer.nextIf(Token.AS)) {
+                        alias = alias();
+                    }
+                    structExpr.addItem(item, alias);
+
+                    if (lexer.nextIfComma()) {
+                        continue;
+                    }
+                    break;
+                }
+                accept(Token.RPAREN);
+                return structExpr;
+            }
+        }
+        return super.methodRest(expr, acceptLPAREN);
     }
 }
