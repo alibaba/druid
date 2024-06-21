@@ -6,24 +6,24 @@ package com.alibaba.druid.sql.dialect.spark.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 /**
  * @author peiheng.qph
  * @version $Id: AntsparkSchemaStatVisitor.java, v 0.1 2018年09月16日 23:09 peiheng.qph Exp $
  */
-public class AntsparkSchemaStatVisitor extends SchemaStatVisitor implements AntsparkVisitor {
+public class SparkSchemaStatVisitor extends HiveSchemaStatVisitor implements SparkVisitor {
     {
         dbType = DbType.spark;
     }
 
-    public AntsparkSchemaStatVisitor() {
+    public SparkSchemaStatVisitor() {
         super(DbType.spark);
     }
 
-    public AntsparkSchemaStatVisitor(SchemaRepository repository) {
+    public SparkSchemaStatVisitor(SchemaRepository repository) {
         super(repository);
     }
 

@@ -7,7 +7,6 @@ package com.alibaba.druid.sql.dialect.spark.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
 import com.alibaba.druid.sql.parser.Keywords;
-import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.Token;
 
 import java.util.HashMap;

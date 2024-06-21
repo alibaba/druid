@@ -6,7 +6,6 @@ package com.alibaba.druid.sql.dialect.spark.parser;
 
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 /**
  * @author peiheng.qph

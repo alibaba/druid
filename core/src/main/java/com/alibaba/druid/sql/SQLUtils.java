@@ -20,8 +20,6 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
-import com.alibaba.druid.sql.dialect.spark.visitor.AntsparkOutputVisitor;
-import com.alibaba.druid.sql.dialect.spark.visitor.AntsparkSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
@@ -59,6 +57,8 @@ import com.alibaba.druid.sql.dialect.oscar.visitor.OscarOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.SparkOutputVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
@@ -523,7 +523,7 @@ public class SQLUtils {
             case blink:
                 return new BlinkOutputVisitor(out);
             case spark:
-                return new AntsparkOutputVisitor(out);
+                return new SparkOutputVisitor(out);
             case presto:
                 return new PrestoOutputVisitor(out);
             case clickhouse:
@@ -583,7 +583,7 @@ public class SQLUtils {
             case hive:
                 return new HiveSchemaStatVisitor(repository);
             case spark:
-                return new AntsparkSchemaStatVisitor(repository);
+                return new SparkSchemaStatVisitor(repository);
             case clickhouse:
                 return new ClickSchemaStatVisitor(repository);
             default:

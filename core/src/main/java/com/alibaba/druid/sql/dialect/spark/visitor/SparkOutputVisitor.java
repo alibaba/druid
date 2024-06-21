@@ -11,8 +11,8 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
+import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
 
 import java.util.List;
 import java.util.Map;
@@ -20,14 +20,14 @@ import java.util.Map.Entry;
 
 /**
  * @author peiheng.qph
- * @version $Id: AntsparkOutputVisitor.java, v 0.1 2018年09月17日 10:40 peiheng.qph Exp $
+ * @version $Id: SparkOutputVisitor.java, v 0.1 2018年09月17日 10:40 peiheng.qph Exp $
  */
-public class AntsparkOutputVisitor extends HiveOutputVisitor implements AntsparkVisitor {
-    public AntsparkOutputVisitor(StringBuilder appender, DbType dbType) {
+public class SparkOutputVisitor extends HiveOutputVisitor implements SparkVisitor {
+    public SparkOutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public AntsparkOutputVisitor(StringBuilder appender) {
+    public SparkOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 

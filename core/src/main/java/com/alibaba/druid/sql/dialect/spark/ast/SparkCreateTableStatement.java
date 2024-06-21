@@ -10,7 +10,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.dialect.spark.visitor.AntsparkVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.SparkVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -27,7 +27,6 @@ public class SparkCreateTableStatement extends SQLCreateTableStatement {
     protected List<SQLExpr> skewedBy = new ArrayList<SQLExpr>();
     protected List<SQLExpr> skewedByOn = new ArrayList<SQLExpr>();
     protected Map<String, SQLObject> serdeProperties = new LinkedHashMap<String, SQLObject>();
-    protected SQLExpr metaLifeCycle;
     protected SQLExprTableSource datasource;
 
     public SparkCreateTableStatement() {
@@ -60,17 +59,6 @@ public class SparkCreateTableStatement extends SQLCreateTableStatement {
         return serdeProperties;
     }
 
-    public SQLExpr getMetaLifeCycle() {
-        return metaLifeCycle;
-    }
-
-    public void setMetaLifeCycle(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.metaLifeCycle = x;
-    }
-
     public void setDatasource(SQLExpr datasource) {
         this.datasource = new SQLExprTableSource(datasource);
     }
@@ -85,14 +73,14 @@ public class SparkCreateTableStatement extends SQLCreateTableStatement {
     }
 
     protected void accept0(SQLASTVisitor v) {
-        if (v instanceof AntsparkVisitor) {
-            accept0((AntsparkVisitor) v);
+        if (v instanceof SparkVisitor) {
+            accept0((SparkVisitor) v);
             return;
         }
         super.accept0(v);
     }
 
-    protected void accept0(AntsparkVisitor v) {
+    protected void accept0(SparkVisitor v) {
         if (v.visit(this)) {
             acceptChild(v);
         }
@@ -108,6 +96,5 @@ public class SparkCreateTableStatement extends SQLCreateTableStatement {
         for (SQLObject item : serdeProperties.values()) {
             acceptChild(v, item);
         }
-        acceptChild(v, metaLifeCycle);
     }
 }

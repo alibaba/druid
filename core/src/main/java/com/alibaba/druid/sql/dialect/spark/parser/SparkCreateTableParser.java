@@ -8,11 +8,10 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveCreateTableParser;
 import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
@@ -275,7 +274,7 @@ public class SparkCreateTableParser extends HiveCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.META)) {
             lexer.nextToken();
             acceptIdentifier("LIFECYCLE");
-            stmt.setMetaLifeCycle(this.exprParser.primary());
+            stmt.setLifeCycle(this.exprParser.primary());
         }
 
         if (lexer.token() == Token.SELECT || lexer.token() == Token.AS) {
