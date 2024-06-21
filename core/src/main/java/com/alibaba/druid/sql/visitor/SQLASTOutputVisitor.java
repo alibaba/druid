@@ -3117,7 +3117,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (param instanceof Double) {
-            param = new BigDecimal((double) param);
+            param = BigDecimal.valueOf((double) param);
         }
         if (param instanceof BigDecimal) { // 不需要科学计数法输出
             print0(((BigDecimal) param).toPlainString());
