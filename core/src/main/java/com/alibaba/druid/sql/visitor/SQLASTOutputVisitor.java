@@ -1677,9 +1677,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         //}
 
         if (x.isNot()) {
-            print0(ucase ? " NOT IN (" : " not in (");
+            print0(ucase ? " NOT IN " : " not in ");
         } else {
-            print0(ucase ? " IN (" : " in (");
+            print0(ucase ? " IN " : " in ");
+        }
+
+        boolean quoteValue = !((x.getParent() instanceof SQLMethodInvokeExpr
+                && ((SQLMethodInvokeExpr) x.getParent()).getArguments().size() == 1)
+                && ((SQLMethodInvokeExpr) x.getParent()).methodNameHashCode64() == FnvHash.Constants.POSITION);
+        if (quoteValue) {
+            print('(');
         }
 
         final List<SQLExpr> list = x.getTargetList();
@@ -1718,7 +1725,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
-        print(')');
+        if (quoteValue) {
+            print(')');
+        }
 
         List<String> afterComments = x.getAfterCommentsDirect();
         if (afterComments != null && !afterComments.isEmpty() && afterComments.get(0).startsWith("--")) {
@@ -1890,7 +1899,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    private void printMethodParameters(SQLMethodInvokeExpr x, List<SQLExpr> parameters) {
+    protected void printMethodParameters(SQLMethodInvokeExpr x, List<SQLExpr> parameters) {
         String function = x.getMethodName();
         long nameHashCode64 = x.methodNameHashCode64();
 
@@ -2067,11 +2076,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printExpr(arguments.get(i), false);
         }
 
-        boolean withGroup = x.isWithinGroup();
-        if (withGroup) {
-            print0(ucase ? ") WITHIN GROUP (" : ") within group (");
-        }
-
         visitAggreateRest(x);
 
         print(')');
@@ -2110,6 +2114,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void visitAggreateRest(SQLAggregateExpr x) {
+        boolean withGroup = x.isWithinGroup();
+        if (withGroup) {
+            print0(ucase ? ") WITHIN GROUP (" : ") within group (");
+        }
+
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {
             if (!x.isWithinGroup()) {
@@ -3361,7 +3370,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.isAutoIncrement()) {
-            print0(ucase ? " AUTO_INCREMENT" : " auto_increment");
+            printeAutoIncrement();
         }
 
         final AutoIncrementType sequenceType = x.getSequenceType();
@@ -3393,21 +3402,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isDisableNovalidate()) {
             print0(ucase ? " DISABLE NOVALIDATE" : " disable novalidate");
         }
-        SQLExpr generatedAlawsAs = x.getGeneratedAlawsAs();
-        if (generatedAlawsAs != null) {
-            print0(ucase ? " GENERATED ALWAYS AS " : " generated always as ");
-            printExpr(generatedAlawsAs, parameterized);
-        }
 
-        SQLColumnDefinition.Identity identity = x.getIdentity();
-        if (identity != null) {
-            if (dbType == DbType.h2) {
-                print0(ucase ? " AS " : " as ");
-            } else {
-                print(' ');
-            }
-            identity.accept(this);
-        }
+        printGeneratedAlways(x, parameterized);
 
         if (x.isVirtual()) {
             print0(ucase ? " VIRTUAL" : " virtual");
@@ -3456,6 +3452,28 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.parameterized = parameterized;
 
         return false;
+    }
+
+    protected void printGeneratedAlways(SQLColumnDefinition x, boolean parameterized) {
+        SQLExpr generatedAlwaysAs = x.getGeneratedAlwaysAs();
+        if (generatedAlwaysAs != null) {
+            print0(ucase ? " GENERATED ALWAYS AS " : " generated always as ");
+            printExpr(generatedAlwaysAs, parameterized);
+        }
+
+        SQLColumnDefinition.Identity identity = x.getIdentity();
+        if (identity != null) {
+            if (dbType == DbType.h2) {
+                print0(ucase ? " AS " : " as ");
+            } else {
+                print(' ');
+            }
+            identity.accept(this);
+        }
+    }
+
+    protected void printeAutoIncrement() {
+        print0(ucase ? " AUTO_INCREMENT" : " auto_increment");
     }
 
     @Override
@@ -3710,13 +3728,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "PARTITION BY " : "partition by ");
             partitionBy.accept(this);
         }
-        List<SQLAssignItem> options = x.getTableOptions();
-        if (options.size() > 0) {
-            println();
-            print0(ucase ? "WITH (" : "with (");
-            printAndAccept(options, ", ");
-            print(')');
-        }
+        printCreateTableOptions(x);
 
         SQLName tablespace = x.getTablespace();
         if (tablespace != null) {
@@ -3732,6 +3744,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         return false;
+    }
+
+    protected void printCreateTableOptions(SQLCreateTableStatement x) {
+        List<SQLAssignItem> options = x.getTableOptions();
+        if (options.isEmpty()) {
+            return;
+        }
+        println();
+        print0(ucase ? "WITH (" : "with (");
+        printAndAccept(options, ", ");
+        print(')');
     }
 
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
@@ -3773,11 +3796,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        SQLExpr storedAs = x.getStoredAs();
-        if (storedAs != null) {
-            print0(ucase ? " STORE AS " : " store as ");
-            printExpr(storedAs, parameterized);
-        }
+        printStoredAs(x);
         SQLExpr storedBy = x.getStoredBy();
         if (storedBy != null) {
             print0(ucase ? " STORE BY " : " store by ");
@@ -3792,6 +3811,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             visit(select);
         }
+    }
+
+    protected void printStoredAs(SQLCreateTableStatement x) {
+        SQLExpr storedAs = x.getStoredAs();
+        if (storedAs == null) {
+            return;
+        }
+        print0(ucase ? " STORE AS " : " store as ");
+        printExpr(storedAs, parameterized);
     }
 
     public boolean visit(SQLUniqueConstraint x) {
@@ -7109,18 +7137,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLArrayExpr x) {
         SQLExpr expr = x.getExpr();
 
-        if (expr instanceof SQLIdentifierExpr
-                && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.ARRAY
-                && printNameQuote
-        ) {
+        boolean arrayValue = expr instanceof SQLIdentifierExpr
+                && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.ARRAY;
+        if (arrayValue && printNameQuote) {
             print0(((SQLIdentifierExpr) expr).getName());
         } else if (expr != null) {
             expr.accept(this);
+        } else {
+            boolean trino = dbType == DbType.trino || dbType == DbType.presto;
+            if (trino) {
+                print0(ucase ? "ARRAY" : "array");
+            }
         }
 
-        print('[');
+        boolean brace = arrayValue && (dbType == DbType.hive || dbType == DbType.spark || dbType == DbType.odps);
+
+        print(brace ? '(' : '[');
         printAndAccept(x.getValues(), ", ");
-        print(']');
+        print(brace ? ')' : ']');
         return false;
     }
 
@@ -10928,7 +10962,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         List<SQLAssignItem> tableOptions = x.getTableOptions();
         if (tableOptions.size() > 0) {
             println();
-            print0(ucase ? "OPTIONS (" : "options (");
+            if (dbType == DbType.trino || dbType == DbType.presto) {
+                print0(ucase ? "WITH (" : "with (");
+            } else {
+                print0(ucase ? "OPTIONS (" : "options (");
+            }
             incrementIndent();
             println();
             int i = 0;
@@ -10939,17 +10977,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 }
                 String key = option.getTarget().toString();
 
-                boolean unquote = false;
+                boolean quote = false;
                 char c0;
-                if (key.length() > 0 && (c0 = key.charAt(0)) != '"' && c0 != '`' && c0 != '\'') {
-                    unquote = true;
+                if (dbType == DbType.presto || dbType == DbType.trino) {
+                    quote = false;
+                } else if (key.length() > 0 && (c0 = key.charAt(0)) != '"' && c0 != '`' && c0 != '\'') {
+                    quote = true;
                 }
 
-                if (unquote) {
+                if (quote) {
                     print('\'');
                 }
                 print0(key);
-                if (unquote) {
+                if (quote) {
                     print('\'');
                 }
 

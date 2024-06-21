@@ -68,6 +68,14 @@ public enum DbType {
 
     goldendb(1L << 44),
 
+    snowflake(1L << 45),
+
+    redshift(1L << 46),
+
+    spark(1L << 47),
+
+    hologres(1L << 48),
+
     ingres(0),
     cloudscape(0),
     timesten(0),
@@ -110,6 +118,10 @@ public enum DbType {
 
         if ("aliyun_ads".equalsIgnoreCase(name)) {
             return ads;
+        }
+
+        if ("maxcompute".equalsIgnoreCase(name)) {
+            return odps;
         }
 
         try {

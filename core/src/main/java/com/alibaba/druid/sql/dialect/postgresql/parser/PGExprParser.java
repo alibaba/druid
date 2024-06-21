@@ -36,7 +36,11 @@ public class PGExprParser extends SQLExprParser {
     public static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", "DENSE_RANK", "PERCENT_RANK", "CUME_DIST"};
+        String[] strings = {
+                "AVG", "COUNT", "MAX", "MIN", "STDDEV",
+                "SUM", "ROW_NUMBER", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK",
+                "DENSE_RANK", "PERCENT_RANK", "CUME_DIST"
+        };
 
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];

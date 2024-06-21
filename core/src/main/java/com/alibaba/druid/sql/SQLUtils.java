@@ -505,6 +505,7 @@ public class SQLUtils {
             case postgresql:
             case greenplum:
             case edb:
+            case hologres:
                 return new PGOutputVisitor(out);
             case sqlserver:
             case jtds:
@@ -515,6 +516,7 @@ public class SQLUtils {
                 return new OdpsOutputVisitor(out);
             case h2:
                 return new H2OutputVisitor(out);
+            case spark:
             case hive:
                 return new HiveOutputVisitor(out);
             case ads:
@@ -1989,6 +1991,15 @@ public class SQLUtils {
             return ((SQLReplaceable) parent).replace(expr, target);
         }
 
+        return false;
+    }
+
+    public static boolean replaceInParent(SQLSelect cmp, SQLSelect dest) {
+        SQLObject parent = cmp.getParent();
+        if (parent instanceof SQLSelectStatement) {
+            ((SQLSelectStatement) parent).setSelect(dest);
+            return true;
+        }
         return false;
     }
 

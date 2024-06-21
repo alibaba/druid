@@ -1270,9 +1270,18 @@ public class OracleExprParser extends SQLExprParser {
             }
 
             accept(Token.AS);
-            SQLExpr expr = this.expr();
 
-            column.setGeneratedAlawsAs(expr);
+            if (lexer.token() == Token.NULL || lexer.token() == Token.DEFAULT || lexer.token() == Token.LPAREN) {
+                SQLExpr expr = this.expr();
+
+                column.setGeneratedAlawsAs(expr);
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.IDENTITY)) {
+                lexer.nextToken();
+                column.setIdentity(
+                        parseIdentity());
+            }
         }
 
         for (; ; ) {
@@ -1306,6 +1315,33 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         return column;
+    }
+
+    protected SQLColumnDefinition.Identity parseIdentity() {
+        accept(Token.LPAREN);
+        SQLColumnDefinition.Identity ident = new SQLColumnDefinition.Identity();
+        accept(Token.START);
+        accept(Token.WITH);
+
+        if (lexer.token() == Token.LITERAL_INT) {
+            ident.setSeed(lexer.integerValue().intValue());
+            lexer.nextToken();
+        } else {
+            throw new ParserException("TODO : " + lexer.info());
+        }
+
+        if (lexer.token() == Token.COMMA) {
+            lexer.nextToken();
+            if (lexer.token() == Token.LITERAL_INT) {
+                ident.setIncrement(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                throw new ParserException("TODO : " + lexer.info());
+            }
+        }
+
+        accept(Token.RPAREN);
+        return ident;
     }
 
     public SQLExpr exprRest(SQLExpr expr) {

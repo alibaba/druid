@@ -480,7 +480,15 @@ public class SQLParser {
             lexer.nextToken();
         } else if (lexer.token == Token.IDENTIFIER) {
             alias = lexer.stringVal();
-            lexer.nextToken();
+            boolean skip = false;
+            if (dbType == DbType.hive || dbType == DbType.odps) {
+                skip = "TBLPROPERTIES".equalsIgnoreCase(alias);
+            }
+            if (skip) {
+                alias = null;
+            } else {
+                lexer.nextToken();
+            }
         } else if (lexer.token == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();

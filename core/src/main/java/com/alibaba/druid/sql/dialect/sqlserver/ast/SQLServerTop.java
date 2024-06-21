@@ -16,10 +16,11 @@
 package com.alibaba.druid.sql.dialect.sqlserver.ast;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
-public class SQLServerTop extends SQLServerObjectImpl {
+public class SQLServerTop extends SQLServerObjectImpl implements SQLReplaceable {
     private SQLExpr expr;
     private boolean percent;
     private boolean withTies;
@@ -76,5 +77,13 @@ public class SQLServerTop extends SQLServerObjectImpl {
         x.percent = percent;
         x.withTies = withTies;
         return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == this.expr) {
+            this.expr = target;
+        }
+        return false;
     }
 }
