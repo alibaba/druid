@@ -3915,7 +3915,7 @@ public class SQLStatementParser extends SQLParser {
         throw new ParserException("TODO " + lexer.info());
     }
 
-    protected SQLStatement parseCreate() {
+    public SQLStatement parseCreate() {
         Lexer.SavePoint mark = lexer.markOut();
         accept(Token.CREATE);
 
