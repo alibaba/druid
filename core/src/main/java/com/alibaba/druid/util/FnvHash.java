@@ -582,6 +582,7 @@ public final class FnvHash {
         long SIMPLE = fnv1a_64_lower("SIMPLE");
         long RESTRICT = fnv1a_64_lower("RESTRICT");
         long ON = fnv1a_64_lower("ON");
+        long ONLINE = fnv1a_64_lower("ONLINE");
         long ACTION = fnv1a_64_lower("ACTION");
         long SEPARATOR = fnv1a_64_lower("SEPARATOR");
         long DATA = fnv1a_64_lower("DATA");
@@ -657,6 +658,7 @@ public final class FnvHash {
         long STATISTICS = fnv1a_64_lower("STATISTICS");
         long TRANSACTION = fnv1a_64_lower("TRANSACTION");
         long OFF = fnv1a_64_lower("OFF");
+        long OFFLINE = fnv1a_64_lower("OFFLINE");
         long IDENTITY_INSERT = fnv1a_64_lower("IDENTITY_INSERT");
         long PASSWORD = fnv1a_64_lower("PASSWORD");
         long SOCKET = fnv1a_64_lower("SOCKET");

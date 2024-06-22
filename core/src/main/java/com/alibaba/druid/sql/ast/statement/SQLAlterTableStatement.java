@@ -39,7 +39,8 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     private boolean removePatiting;
     private boolean upgradePatiting;
-    private List<SQLAssignItem> tableOptions = new ArrayList<SQLAssignItem>();
+    private List<SQLAssignItem> tableOptions = new ArrayList<>();
+    private List<SQLName> unsetTableOptions = new ArrayList<>();
     private SQLPartitionBy partition;
 
     // odps
@@ -186,6 +187,10 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public List<SQLAssignItem> getTableOptions() {
         return tableOptions;
+    }
+
+    public List<SQLName> getUnsetTableOptions() {
+        return unsetTableOptions;
     }
 
     public SQLPartitionBy getPartition() {

@@ -406,6 +406,10 @@ public class SQLSelectParser extends SQLParser {
         return query(parent, true);
     }
 
+    protected SQLSelectQueryBlock createSelectQueryBlock() {
+        return new SQLSelectQueryBlock(dbType);
+    }
+
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
@@ -421,7 +425,7 @@ public class SQLSelectParser extends SQLParser {
             return valuesQuery(acceptUnion);
         }
 
-        SQLSelectQueryBlock queryBlock = new SQLSelectQueryBlock(dbType);
+        SQLSelectQueryBlock queryBlock = createSelectQueryBlock();
 
         if (lexer.hasComment() && lexer.isKeepComments()) {
             queryBlock.addBeforeComment(lexer.readAndResetComments());
@@ -595,6 +599,10 @@ public class SQLSelectParser extends SQLParser {
 
             String alias = this.lexer.stringVal();
             lexer.nextToken();
+            if (lexer.nextIf(Token.LPAREN)) {
+                exprParser.names(entry.getColumns(), entry);
+                accept(Token.RPAREN);
+            }
             entry.setAlias(alias);
 
             if (lexer.token == Token.LPAREN) {
@@ -611,6 +619,7 @@ public class SQLSelectParser extends SQLParser {
                 case LPAREN:
                 case WITH:
                 case FROM:
+                case VALUES:
                     entry.setSubQuery(select());
                     break;
                 default:
@@ -844,7 +853,7 @@ public class SQLSelectParser extends SQLParser {
                 Lexer.SavePoint mark = lexer.mark();
                 lexer.nextToken();
                 if (!lexer.identifierEquals(FnvHash.Constants.GROUPING)) {
-                    if (dbType == DbType.odps) {
+                    if (dbType == DbType.odps || dbType == DbType.hive || dbType == DbType.spark) {
                         lexer.reset(mark);
                     } else {
                         throw new ParserException("group by all syntax error. " + lexer.info());
@@ -1217,7 +1226,7 @@ public class SQLSelectParser extends SQLParser {
                 break;
             }
 
-            if (lexer.token == Token.RPAREN) {
+            if (lexer.token == Token.RPAREN || lexer.token == Token.SEMI || lexer.token == Token.EOF) {
                 return tableSource;
             }
 

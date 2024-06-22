@@ -37,6 +37,10 @@ public class OdpsSelectParser extends SQLSelectParser {
         this.selectListCache = selectListCache;
     }
 
+    protected SQLSelectQueryBlock createSelectQueryBlock() {
+        return new OdpsSelectQueryBlock();
+    }
+
     @Override
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token() == Token.LPAREN) {

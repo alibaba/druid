@@ -262,7 +262,7 @@ public class OscarStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    protected SQLStatement parseAlterSchema() {
+    protected SQLStatement alterSchema() {
         accept(Token.ALTER);
         accept(Token.SCHEMA);
 
@@ -587,11 +587,8 @@ public class OscarStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLCreateIndexStatement parseCreateIndex(boolean acceptCreate) {
-        if (acceptCreate) {
-            accept(Token.CREATE);
-        }
-
+    public SQLCreateIndexStatement parseCreateIndex() {
+        accept(Token.CREATE);
         SQLCreateIndexStatement stmt = new SQLCreateIndexStatement(getDbType());
         if (lexer.token() == Token.UNIQUE) {
             lexer.nextToken();

@@ -7,12 +7,14 @@ package com.alibaba.druid.sql.dialect.spark.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -178,6 +180,20 @@ public class SparkOutputVisitor extends HiveOutputVisitor implements SparkVisito
     }
 
     @Override
-    public void endVisit(SparkCreateTableStatement x) {
+    public boolean visit(SQLHexExpr x) {
+        if (this.parameterized) {
+            print('?');
+            incrementReplaceCunt();
+
+            if (this.parameters != null) {
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
+        }
+
+        print0("x'");
+        print0(x.getHex());
+        print('\'');
+        return false;
     }
 }

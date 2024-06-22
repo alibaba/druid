@@ -204,8 +204,7 @@ public class PGExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (lexer.token() == Token.COLONCOLON) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.COLONCOLON)) {
             SQLDataType dataType = this.parseDataType();
 
             PGTypeCastExpr castExpr = new PGTypeCastExpr();

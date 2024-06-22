@@ -36,26 +36,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         return getSQLCreateTableParser().parseCreateTable();
     }
 
-    @Override
-    public SQLStatement parseCreate() {
-        Lexer.SavePoint savePoint = lexer.markOut();
-        lexer.nextToken();
-
-        // create external source
-        if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
-            acceptIdentifier("EXTERNAL");
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
-            lexer.reset(savePoint);
-            return parseCreateResourceStatement();
-        }
-
-        lexer.reset(savePoint);
-        return super.parseCreate();
-    }
-
-    private StarRocksCreateResourceStatement parseCreateResourceStatement() {
+    protected SQLStatement createResource() {
         StarRocksCreateResourceStatement stmt = new StarRocksCreateResourceStatement();
         accept(Token.CREATE);
         // create external source

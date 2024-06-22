@@ -31,9 +31,4 @@ public class SparkSchemaStatVisitor extends HiveSchemaStatVisitor implements Spa
     public boolean visit(SparkCreateTableStatement x) {
         return super.visit((SQLCreateTableStatement) x);
     }
-
-    @Override
-    public void endVisit(SparkCreateTableStatement x) {
-        super.endVisit((SQLCreateTableStatement) x);
-    }
 }

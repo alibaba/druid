@@ -1821,6 +1821,13 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default void endVisit(SQLAlterTableSetSerdeProperties x) {
+    }
+
+    default boolean visit(SQLAlterTableSetSerdeProperties x) {
+        return true;
+    }
+
     default boolean visit(SQLShowCreateViewStatement x) {
         return true;
     }

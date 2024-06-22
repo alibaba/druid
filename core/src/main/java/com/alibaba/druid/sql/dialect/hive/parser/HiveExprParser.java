@@ -95,9 +95,8 @@ public class HiveExprParser extends SQLExprParser {
                     Number num = ((SQLNumericLiteralExpr) expr).getNumber();
                     expr = new SQLDecimalExpr(num.toString());
                 } else if (lexer.token() == Token.IDENTIFIER) { // hortonworks
-                    SQLIntervalUnit unit = SQLIntervalUnit.of(lexer.stringVal());
+                    SQLIntervalUnit unit = parseIntervalUnit();
                     if (unit != null) {
-                        lexer.nextToken();
                         expr = new SQLIntervalExpr(expr, unit);
                     }
                 }
@@ -112,6 +111,12 @@ public class HiveExprParser extends SQLExprParser {
     public SQLExpr primary() {
         final Token tok = lexer.token();
         switch (tok) {
+            case WITH: {
+                return primaryRest(
+                        new SQLQueryExpr(
+                                createSelectParser()
+                                        .select()));
+            }
             case IDENTIFIER:
                 final long hash_lower = lexer.hashLCase();
                 if (hash_lower == FnvHash.Constants.OUTLINE) {
@@ -215,6 +220,10 @@ public class HiveExprParser extends SQLExprParser {
     protected SQLExpr parseInterval() {
         accept(Token.INTERVAL);
         SQLExpr value = expr();
+
+        if (value instanceof SQLIntervalExpr) {
+            return value;
+        }
 
         if (lexer.token() != Token.IDENTIFIER) {
             throw new ParserException("Syntax error. " + lexer.info());

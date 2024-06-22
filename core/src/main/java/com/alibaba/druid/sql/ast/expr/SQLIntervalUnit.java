@@ -127,11 +127,15 @@ public enum SQLIntervalUnit {
             case "SECONDS":
                 return SECOND;
             default:
-                try {
-                    return valueOf(str);
-                } catch (Exception e) {
-                    return null;
-                }
+                break;
         }
+
+        for (SQLIntervalUnit value : values()) {
+            if (value.name().equals(str)) {
+                return value;
+            }
+        }
+
+        return null;
     }
 }

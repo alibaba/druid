@@ -259,7 +259,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    protected SQLStatement parseAlterSchema() {
+    protected SQLStatement alterSchema() {
         accept(Token.ALTER);
         accept(Token.SCHEMA);
 
@@ -513,16 +513,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         accept(Token.END);
         return stmt;
     }
-    public SQLStatement parseAlter() {
-        Lexer.SavePoint mark = lexer.mark();
-        accept(Token.ALTER);
-        if (lexer.token() == Token.DATABASE) {
-            lexer.nextToken();
-            return parseAlterDatabase();
-        }
-        lexer.reset(mark);
-        return super.parseAlter();
-    }
+
     public SQLStatement parseConnectTo() {
         acceptIdentifier("CONNECT");
         accept(Token.TO);
@@ -714,11 +705,8 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLCreateIndexStatement parseCreateIndex(boolean acceptCreate) {
-        if (acceptCreate) {
-            accept(Token.CREATE);
-        }
-
+    public SQLCreateIndexStatement parseCreateIndex() {
+        accept(Token.CREATE);
         SQLCreateIndexStatement stmt = new SQLCreateIndexStatement(getDbType());
         if (lexer.token() == Token.UNIQUE) {
             lexer.nextToken();
@@ -934,8 +922,13 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public PGAlterDatabaseStatement parseAlterDatabase() {
-        PGAlterDatabaseStatement stmt = new PGAlterDatabaseStatement(this.getDbType());
+    public PGAlterDatabaseStatement alterDatabase() {
+        accept(Token.ALTER);
+        if (!lexer.nextIf(Token.SCHEMA)) {
+            accept(Token.DATABASE);
+        }
+
+        PGAlterDatabaseStatement stmt = new PGAlterDatabaseStatement(dbType);
         stmt.setDatabaseName(this.exprParser.identifier());
         if ("RENAME".equalsIgnoreCase(lexer.stringVal())) {
             lexer.nextToken();

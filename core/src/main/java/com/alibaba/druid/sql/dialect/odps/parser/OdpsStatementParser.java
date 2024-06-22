@@ -148,7 +148,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                     if (lexer.token() == Token.WITH) {
                         lexer.nextToken();
                         acceptIdentifier("PRIVILEGES");
-                        parsePrivileages(stmt.getPrivileges(), stmt);
+                        parsePrivilege(stmt.getPrivileges(), stmt);
                     }
                 }
 
@@ -1336,7 +1336,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                 lexer.nextToken();
             }
 
-            parsePrivileages(stmt.getPrivileges(), stmt);
+            parsePrivilege(stmt.getPrivileges(), stmt);
         }
 
         if (lexer.token() == Token.ON) {
@@ -1403,7 +1403,7 @@ public class OdpsStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    protected void parsePrivileages(List<SQLPrivilegeItem> privileges, SQLObject parent) {
+    protected void parsePrivilege(List<SQLPrivilegeItem> privileges, SQLObject parent) {
         for (; ; ) {
             String privilege = null;
             if (lexer.token() == Token.ALL) {

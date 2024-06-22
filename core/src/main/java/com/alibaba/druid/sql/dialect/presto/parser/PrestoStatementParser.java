@@ -100,24 +100,6 @@ public class PrestoStatementParser extends SQLStatementParser {
         return new PrestoCreateTableParser(this.exprParser);
     }
 
-    @Override
-    public SQLStatement parseAlter() {
-        Lexer.SavePoint mark = lexer.mark();
-        accept(Token.ALTER);
-
-        if (lexer.token() == Token.FUNCTION) {
-            lexer.reset(mark);
-            return parseAlterFunction();
-        }
-        if (lexer.token() == Token.SCHEMA) {
-            lexer.reset(mark);
-            return parseAlterSchema();
-        } else {
-            lexer.reset(mark);
-            return super.parseAlter();
-        }
-    }
-
     protected SQLStatement parseAlterFunction() {
         accept(Token.ALTER);
         accept(Token.FUNCTION);
@@ -191,7 +173,7 @@ public class PrestoStatementParser extends SQLStatementParser {
     }
 
     @Override
-    protected SQLStatement parseAlterSchema() {
+    protected SQLStatement alterSchema() {
         accept(Token.ALTER);
         accept(Token.SCHEMA);
 

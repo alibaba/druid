@@ -307,6 +307,14 @@ public class Lexer {
         return false;
     }
 
+    public final boolean nextIfIdentifier(long hashCode54) {
+        if (this.identifierEquals(hashCode54)) {
+            nextToken();
+            return true;
+        }
+        return false;
+    }
+
     public void setToken(Token token) {
         this.token = token;
     }
@@ -1355,7 +1363,7 @@ public class Lexer {
                         scanChar();
                         token = COLONCOLON;
                     } else {
-                        if (isEnabled(SQLParserFeature.TDDLHint) || dbType == DbType.hive || dbType == DbType.odps) {
+                        if (isEnabled(SQLParserFeature.TDDLHint) || dbType == DbType.hive || dbType == DbType.odps || dbType == DbType.spark) {
                             token = COLON;
                             return;
                         }
@@ -1621,7 +1629,12 @@ public class Lexer {
                     token = Token.GTEQ;
                 } else if (ch == '>') {
                     scanChar();
-                    token = Token.GTGT;
+                    if (ch == '>') {
+                        scanChar();
+                        token = Token.GTGTGT;
+                    } else {
+                        token = Token.GTGT;
+                    }
                 } else {
                     token = Token.GT;
                 }
@@ -1641,7 +1654,13 @@ public class Lexer {
                     token = Token.LTGT;
                 } else if (ch == '<') {
                     scanChar();
-                    token = Token.LTLT;
+
+                    if (ch == '<') {
+                        scanChar();
+                        token = Token.LTLTLT;
+                    } else {
+                        token = Token.LTLT;
+                    }
                 } else if (ch == '@') {
                     scanChar();
                     token = Token.LT_MONKEYS_AT;
@@ -2938,6 +2957,12 @@ public class Lexer {
             if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
                 numberExp = false;
             }
+        } else if (ch == 'd' || ch == 'D') {
+            if (!isIdentifierChar(charAt(pos + 1))) {
+                ch = charAt(++pos);
+                token = Token.LITERAL_FLOAT;
+                return;
+            }
         }
 
         if (numberSale > 0 || numberExp) {
@@ -3358,7 +3383,7 @@ public class Lexer {
         comments.add(comment);
     }
 
-    public List<String> getComments() {
+    public final List<String> getComments() {
         return comments;
     }
 

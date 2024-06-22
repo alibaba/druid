@@ -1464,56 +1464,10 @@ public class MySqlExprParser extends SQLExprParser {
         MySqlUnique unique = new MySqlUnique();
         parseIndex(unique.getIndexDefinition());
         return unique;
-        /*
-        accept(Token.UNIQUE);
+    }
 
-        if (lexer.token() == Token.KEY) {
-            lexer.nextToken();
-        }
-
-        if (lexer.token() == Token.INDEX) {
-            lexer.nextToken();
-        }
-
-        MySqlUnique unique = new MySqlUnique();
-
-        if (lexer.token() != Token.LPAREN && !lexer.identifierEquals(FnvHash.Constants.USING)) {
-            SQLName indexName = name();
-            unique.setName(indexName);
-        }
-
-        //5.5语法 USING BTREE 放在index 名字后
-        if (lexer.identifierEquals(FnvHash.Constants.USING)) {
-            lexer.nextToken();
-            unique.setIndexType(lexer.stringVal());
-            lexer.nextToken();
-        }
-
-        parseIndexRest(unique);
-
-        for (;;) {
-            if (lexer.token() == Token.COMMENT) {
-                lexer.nextToken();
-                SQLExpr comment = this.primary();
-                unique.setComment(comment);
-            } else if (lexer.identifierEquals(FnvHash.Constants.KEY_BLOCK_SIZE)) {
-                lexer.nextToken();
-                if (lexer.token() == Token.EQ) {
-                    lexer.nextToken();
-                }
-                SQLExpr keyBlockSize = this.primary();
-                unique.setKeyBlockSize(keyBlockSize);
-            } else if (lexer.identifierEquals(FnvHash.Constants.USING)) {
-                lexer.nextToken();
-                unique.setIndexType(lexer.stringVal());
-                accept(Token.IDENTIFIER);
-            } else {
-                break;
-            }
-        }
-
-        return unique;
-        */
+    protected SQLForeignKeyImpl createForeignKey() {
+        return new MysqlForeignKey();
     }
 
     public MysqlForeignKey parseForeignKey() {
@@ -1969,5 +1923,18 @@ public class MySqlExprParser extends SQLExprParser {
             }
         }
         return succeed;
+    }
+
+    public SQLCheck parseCheck() {
+        SQLCheck check = super.parseCheck();
+        boolean enforce = true;
+        if (lexer.token() == Token.NOT) {
+            enforce = false;
+            lexer.nextToken();
+        }
+        if (lexer.nextIfIdentifier("ENFORCED")) {
+            check.setEnforced(enforce);
+        }
+        return check;
     }
 }

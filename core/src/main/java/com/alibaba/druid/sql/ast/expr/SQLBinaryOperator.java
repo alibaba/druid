@@ -45,7 +45,9 @@ public enum SQLBinaryOperator {
     QuesAmp("?&", 20),
 
     LeftShift("<<", 80),
+    LeftShiftUnsigned("<<<", 80),
     RightShift(">>", 80),
+    RightShiftUnsigned(">>>", 80),
 
     BitwiseAnd("&", 90),
     BitwiseOr("|", 100),

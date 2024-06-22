@@ -5297,7 +5297,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "AS" : "as");
         println();
 
-        x.getSubQuery().accept(this);
+        SQLSelect subQuery = x.getSubQuery();
+        if (subQuery != null) {
+            subQuery.accept(this);
+        }
 
         if (x.isWithCheckOption()) {
             println();
@@ -5682,19 +5685,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAlterTableAlterColumn x) {
         if (DbType.odps == dbType) {
-            print0(ucase ? "CHANGE COLUMN " : "change column ");
+            print0(ucase ? "CHANGE COLUMN" : "change column");
         } else if (DbType.hive == dbType) {
-            print0(ucase ? "CHANGE " : "change ");
+            print0(ucase ? "CHANGE" : "change");
         } else {
-            print0(ucase ? "ALTER COLUMN " : "alter column ");
+            print0(ucase ? "ALTER COLUMN" : "alter column");
         }
 
         SQLName originColumn = x.getOriginColumn();
         if (originColumn != null) {
-            originColumn.accept(this);
             print(' ');
+            originColumn.accept(this);
         }
-        x.getColumn().accept(this);
+
+        SQLColumnDefinition column = x.getColumn();
+        if (column != null) {
+            print(' ');
+            column.accept(this);
+        }
 
         if (x.isSetNotNull()) { // postgresql
             print0(ucase ? " SET NOT NULL" : " set not null");
@@ -7219,6 +7227,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "SET PARTITIONPROPERTIES (" : "set partitionproperties (");
             printAndAccept(x.getPartitionProperties(), ", ");
             print0(") ");
+        }
+
+        SQLExpr location = x.getLocation();
+        if (location != null) {
+            println();
+            print0(ucase ? "SET LOCATION " : "set location ");
+            location.accept(this);
         }
         return false;
     }
@@ -9946,6 +9961,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLAlterTableSetSerdeProperties x) {
+        print0(ucase ? "SET SERDEPROPERTIES (" : "set serdeproperties (");
+        printAndAccept(x.getSerdeProperties(), ", ");
+        print(')');
+
+        final SQLExpr on = x.getOn();
+        if (on != null) {
+            print0(ucase ? " ON " : " on ");
+            on.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLShowCreateViewStatement x) {
         print0(ucase ? "SHOW CREATE VIEW " : "show create view ");
         x.getName().accept(this);
@@ -10336,6 +10366,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         List<SQLName> columns = x.getColumns();
 
         boolean quote = columns.size() > 0;
+        if (quote) {
+            if (x.getParent() instanceof SQLSelect && x.getParent().getParent() instanceof SQLCreateViewStatement) {
+                quote = false;
+            }
+        }
         if (quote) {
             print('(');
         }

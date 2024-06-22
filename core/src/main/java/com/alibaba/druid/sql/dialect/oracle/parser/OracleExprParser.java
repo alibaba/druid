@@ -1206,7 +1206,7 @@ public class OracleExprParser extends SQLExprParser {
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
-            OracleCreateIndexStatement createIndex = new OracleStatementParser(lexer).parseCreateIndex(true);
+            OracleCreateIndexStatement createIndex = new OracleStatementParser(lexer).parseCreateIndex();
             using.setIndex(createIndex);
             accept(Token.RPAREN);
         }

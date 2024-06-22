@@ -4,12 +4,8 @@
  */
 package com.alibaba.druid.sql.dialect.spark.parser;
 
-import com.alibaba.druid.sql.ast.SQLCurrentTimeExpr;
-import com.alibaba.druid.sql.ast.SQLCurrentUserExpr;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveExprParser;
@@ -67,12 +63,38 @@ public class SparkExprParser extends HiveExprParser {
             return primaryRest(array);
         }
 
+        if (expr instanceof SQLCharExpr
+                && lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
+            lexer.nextToken();
+            ((SQLCharExpr) expr).setCollate(lexer.stringVal());
+            accept(Token.IDENTIFIER);
+        }
+
+        while (lexer.nextIf(Token.COLONCOLON)) {
+            expr = new SQLCastExpr(expr, parseDataType());
+        }
+
         return super.primaryRest(expr);
     }
 
     public SQLExpr primary() {
         final Token tok = lexer.token();
         switch (tok) {
+            case LIKE:
+                Lexer.SavePoint mark = lexer.markOut();
+                lexer.nextToken();
+                if (lexer.nextIf(Token.LPAREN)) {
+                    SQLExpr left = expr();
+                    accept(Token.COMMA);
+                    SQLExpr right = expr();
+                    accept(Token.RPAREN);
+                    return primaryRest(
+                            new SQLBinaryOpExpr(left, SQLBinaryOperator.Like, right)
+                    );
+                } else {
+                    lexer.reset(mark);
+                }
+                break;
             case IDENTIFIER:
                 final long hash_lower = lexer.hashLCase();
                 if (hash_lower == FnvHash.Constants.OUTLINE) {
@@ -80,6 +102,19 @@ public class SparkExprParser extends HiveExprParser {
                     SQLExpr file = primary();
                     SQLExpr expr = new MySqlOutFileExpr(file);
 
+                    return primaryRest(expr);
+                }
+
+                if (hash_lower == FnvHash.Constants.X) {
+                    String x = lexer.stringVal();
+                    lexer.nextToken();
+                    SQLExpr expr;
+                    if (lexer.token() == Token.LITERAL_CHARS) {
+                        expr = new SQLHexExpr(lexer.stringVal());
+                        lexer.nextToken();
+                    } else {
+                        expr = new SQLCharExpr(x);
+                    }
                     return primaryRest(expr);
                 }
 
@@ -200,4 +235,5 @@ public class SparkExprParser extends HiveExprParser {
 
         return super.parseColumnRest(column);
     }
+
 }

@@ -1324,7 +1324,7 @@ public class OracleStatementParser extends SQLStatementParser {
             return parseAlterTable();
         } else if (lexer.token() == Token.INDEX) {
             lexer.reset(savePoint);
-            return parseAlterIndex();
+            return alterIndex();
         } else if (lexer.token() == Token.TRIGGER) {
             lexer.nextToken();
             OracleAlterTriggerStatement stmt = new OracleAlterTriggerStatement();
@@ -1465,7 +1465,7 @@ public class OracleStatementParser extends SQLStatementParser {
             return parseAlterFunction();
         } else if (lexer.token() == Token.SEQUENCE) {
             lexer.reset(savePoint);
-            return parseAlterSequence();
+            return alterSequence();
         } else if (lexer.identifierEquals(FnvHash.Constants.TYPE)) {
             lexer.reset(savePoint);
             return parseAlterType();
@@ -2541,11 +2541,8 @@ public class OracleStatementParser extends SQLStatementParser {
         return dbLink;
     }
 
-    public OracleCreateIndexStatement parseCreateIndex(boolean acceptCreate) {
-        if (acceptCreate) {
-            accept(Token.CREATE);
-        }
-
+    public OracleCreateIndexStatement parseCreateIndex() {
+        accept(Token.CREATE);
         OracleCreateIndexStatement stmt = new OracleCreateIndexStatement();
         if (lexer.token() == Token.UNIQUE) {
             stmt.setType("UNIQUE");
@@ -2713,11 +2710,8 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLCreateSequenceStatement parseCreateSequence(boolean acceptCreate) {
-        if (acceptCreate) {
-            accept(Token.CREATE);
-        }
-
+    public SQLCreateSequenceStatement parseCreateSequence() {
+        accept(Token.CREATE);
         accept(Token.SEQUENCE);
 
         SQLCreateSequenceStatement stmt = new SQLCreateSequenceStatement();
