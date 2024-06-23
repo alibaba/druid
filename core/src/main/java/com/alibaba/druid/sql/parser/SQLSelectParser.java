@@ -1128,11 +1128,14 @@ public class SQLSelectParser extends SQLParser {
             queryBlock.setCommentsAfaterFrom(lexer.readAndResetComments());
         }
         queryBlock.setFrom(
-                parseTableSource());
+                parseTableSource(true));
 
     }
 
     public SQLTableSource parseTableSource() {
+        return parseTableSource(false);
+    }
+    public SQLTableSource parseTableSource(boolean forFrom) {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
             SQLTableSource tableSource;
