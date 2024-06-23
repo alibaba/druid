@@ -69,7 +69,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected int buckets;
     protected int shards;
     protected final List<SQLAssignItem> tableOptions = new ArrayList<SQLAssignItem>();
-    protected final List<SQLAssignItem> tblProperties = new ArrayList<SQLAssignItem>();
+//    protected final List<SQLAssignItem> tblProperties = new ArrayList<SQLAssignItem>();
 
     protected boolean replace;
     protected boolean ignore;
@@ -113,7 +113,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, clusteredBy);
         this.acceptChild(v, sortedBy);
         this.acceptChild(v, tableOptions);
-        this.acceptChild(v, tblProperties);
+//        this.acceptChild(v, tblProperties);
         this.acceptChild(v, lifeCycle);
     }
 
@@ -1297,11 +1297,11 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             x.tableOptions.add(item2);
         }
 
-        for (SQLAssignItem item : this.tblProperties) {
-            SQLAssignItem item2 = item.clone();
-            item2.setParent(item);
-            x.tblProperties.add(item2);
-        }
+//        for (SQLAssignItem item : this.tblProperties) {
+//            SQLAssignItem item2 = item.clone();
+//            item2.setParent(item);
+//            x.tblProperties.add(item2);
+//        }
 
         if (rowFormat != null) {
             x.setRowFormat(rowFormat.clone());
@@ -1461,14 +1461,14 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return tableOptions;
     }
 
+    @Deprecated
     public List<SQLAssignItem> getTblProperties() {
-        return tblProperties;
+        return tableOptions;
     }
 
+    @Deprecated
     public void addTblProperty(String name, SQLExpr value) {
-        SQLAssignItem assignItem = new SQLAssignItem(new SQLIdentifierExpr(name), value);
-        assignItem.setParent(this);
-        tblProperties.add(assignItem);
+        addOption(name, value);
     }
 
     public SQLExternalRecordFormat getRowFormat() {
@@ -1554,7 +1554,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         long hash64 = FnvHash.hashCode64(name);
 
-        for (SQLAssignItem item : tblProperties) {
+        for (SQLAssignItem item : tableOptions) {
             final SQLExpr target = item.getTarget();
             if (target instanceof SQLIdentifierExpr) {
                 if (((SQLIdentifierExpr) target).hashCode64() == hash64) {

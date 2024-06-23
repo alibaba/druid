@@ -26,7 +26,7 @@ import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
 
-public class ClickhouseExprParser extends SQLExprParser {
+public class CKExprParser extends SQLExprParser {
     private static final String[] AGGREGATE_FUNCTIONS;
     private static final long[] AGGREGATE_FUNCTIONS_CODES;
 
@@ -42,17 +42,17 @@ public class ClickhouseExprParser extends SQLExprParser {
         }
     }
 
-    public ClickhouseExprParser(String sql) {
-        this(new ClickhouseLexer(sql));
+    public CKExprParser(String sql) {
+        this(new CKLexer(sql));
         this.lexer.nextToken();
     }
 
-    public ClickhouseExprParser(String sql, SQLParserFeature... features) {
-        this(new ClickhouseLexer(sql, features));
+    public CKExprParser(String sql, SQLParserFeature... features) {
+        this(new CKLexer(sql, features));
         this.lexer.nextToken();
     }
 
-    public ClickhouseExprParser(Lexer lexer) {
+    public CKExprParser(Lexer lexer) {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;

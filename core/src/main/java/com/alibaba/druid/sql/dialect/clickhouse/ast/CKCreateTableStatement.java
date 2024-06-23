@@ -5,19 +5,19 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClickhouseCreateTableStatement extends SQLCreateTableStatement {
+public class CKCreateTableStatement extends SQLCreateTableStatement {
     protected final List<SQLAssignItem> settings = new ArrayList<SQLAssignItem>();
     private SQLOrderBy orderBy;
     private SQLExpr partitionBy;
     private SQLExpr sampleBy;
 
-    public ClickhouseCreateTableStatement() {
+    public CKCreateTableStatement() {
         super(DbType.clickhouse);
     }
 
@@ -63,8 +63,8 @@ public class ClickhouseCreateTableStatement extends SQLCreateTableStatement {
 
     @Override
     protected void accept0(SQLASTVisitor v) {
-        if (v instanceof ClickhouseVisitor) {
-            ClickhouseVisitor vv = (ClickhouseVisitor) v;
+        if (v instanceof CKVisitor) {
+            CKVisitor vv = (CKVisitor) v;
             if (vv.visit(this)) {
                 acceptChild(vv);
             }

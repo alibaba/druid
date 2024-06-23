@@ -4,27 +4,27 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
-import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseAlterTableUpdateStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKAlterTableUpdateStatement;
 import com.alibaba.druid.sql.parser.*;
 
 import static com.alibaba.druid.sql.parser.Token.ALTER;
 import static com.alibaba.druid.sql.parser.Token.TABLE;
 
-public class ClickhouseStatementParser extends SQLStatementParser {
-    public ClickhouseStatementParser(String sql) {
-        super(new ClickhouseExprParser(sql));
+public class CKStatementParser extends SQLStatementParser {
+    public CKStatementParser(String sql) {
+        super(new CKExprParser(sql));
     }
 
-    public ClickhouseStatementParser(String sql, SQLParserFeature... features) {
-        super(new ClickhouseExprParser(sql, features));
+    public CKStatementParser(String sql, SQLParserFeature... features) {
+        super(new CKExprParser(sql, features));
     }
 
-    public ClickhouseStatementParser(Lexer lexer) {
-        super(new ClickhouseExprParser(lexer));
+    public CKStatementParser(Lexer lexer) {
+        super(new CKExprParser(lexer));
     }
 
     public SQLSelectParser createSQLSelectParser() {
-        return new ClickhouseSelectParser(this.exprParser, selectListCache);
+        return new CKSelectParser(this.exprParser, selectListCache);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ClickhouseStatementParser extends SQLStatementParser {
     }
 
     public SQLCreateTableParser getSQLCreateTableParser() {
-        return new ClickhouseCreateTableParser(this.exprParser);
+        return new CKCreateTableParser(this.exprParser);
     }
 
     protected SQLAlterStatement alterTable() {
@@ -95,7 +95,7 @@ public class ClickhouseStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.UPDATE) {
-            ClickhouseAlterTableUpdateStatement stmt = new ClickhouseAlterTableUpdateStatement(getDbType());
+            CKAlterTableUpdateStatement stmt = new CKAlterTableUpdateStatement(getDbType());
             stmt.setTableName(tableName);
             stmt.setClusterName(clusterName);
             lexer.nextToken();

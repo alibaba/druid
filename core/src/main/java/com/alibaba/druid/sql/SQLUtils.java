@@ -22,8 +22,8 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
 import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickSchemaStatVisitor;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKStatVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
@@ -526,9 +526,10 @@ public class SQLUtils {
             case spark:
                 return new SparkOutputVisitor(out);
             case presto:
+            case trino:
                 return new PrestoOutputVisitor(out);
             case clickhouse:
-                return new ClickhouseOutputVisitor(out);
+                return new CKOutputVisitor(out);
             case oscar:
                 return new OscarOutputVisitor(out);
             case starrocks:
@@ -588,7 +589,7 @@ public class SQLUtils {
             case spark:
                 return new SparkSchemaStatVisitor(repository);
             case clickhouse:
-                return new ClickSchemaStatVisitor(repository);
+                return new CKStatVisitor(repository);
             default:
                 return new SchemaStatVisitor(repository);
         }
@@ -1980,6 +1981,18 @@ public class SQLUtils {
         }
 
         return false;
+    }
+
+    public static boolean replaceInParent(SQLDataType expr, SQLDataType target) {
+        SQLObject parent = expr.getParent();
+        if (parent instanceof SQLColumnDefinition) {
+            ((SQLColumnDefinition) parent).setDataType(target);
+        } else if (parent instanceof SQLCastExpr) {
+            ((SQLCastExpr) parent).setDataType(target);
+        } else {
+            return false;
+        }
+        return true;
     }
 
     public static boolean replaceInParent(SQLExpr expr, SQLExpr target) {

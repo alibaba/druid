@@ -27,9 +27,9 @@ import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryExprParser;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryLexer;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryStatementParser;
 import com.alibaba.druid.sql.dialect.blink.parser.BlinkStatementParser;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseExprParser;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseLexer;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.CKExprParser;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.CKLexer;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.CKStatementParser;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2Lexer;
@@ -163,11 +163,11 @@ public class SQLParserUtils {
             case spark:
                 return new SparkStatementParser(sql);
             case clickhouse:
-                return new ClickhouseStatementParser(sql);
+                return new CKStatementParser(sql);
             case starrocks:
                 return new StarRocksStatementParser(sql);
             default:
-                return new SQLStatementParser(sql, dbType);
+                return new SQLStatementParser(sql, dbType, features);
         }
     }
 
@@ -212,7 +212,7 @@ public class SQLParserUtils {
             case bigquery:
                 return new BigQueryExprParser(sql, features);
             case clickhouse:
-                return new ClickhouseExprParser(sql, features);
+                return new CKExprParser(sql, features);
             case oscar:
                 return new OscarExprParser(sql, features);
             case starrocks:
@@ -263,7 +263,7 @@ public class SQLParserUtils {
             case oscar:
                 return new OscarLexer(sql, features);
             case clickhouse:
-                return new ClickhouseLexer(sql, features);
+                return new CKLexer(sql, features);
             case starrocks:
                 return new StarRocksLexer(sql, features);
             case hive:

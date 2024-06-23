@@ -5,12 +5,12 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 
-public abstract class ClickhouseAlterTableStatement extends SQLStatementImpl implements SQLAlterStatement {
+public abstract class CKAlterTableStatement extends SQLStatementImpl implements SQLAlterStatement {
     private SQLName tableName;
 
     private SQLName clusterName;
 
-    public ClickhouseAlterTableStatement(DbType dbType) {
+    public CKAlterTableStatement(DbType dbType) {
         super(dbType);
     }
 

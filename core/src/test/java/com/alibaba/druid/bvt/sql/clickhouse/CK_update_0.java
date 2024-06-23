@@ -5,26 +5,25 @@ import java.util.List;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickSchemaStatVisitor;
-import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.CKStatementParser;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 
 import junit.framework.TestCase;
 
-public class ClickHouse_update_0 extends TestCase {
+public class CK_update_0 extends TestCase {
 
     public void test_0() throws Exception {
         String sql = "alter table tb1 ON CLUSTER 'cluster' update A=1,B=1,C=2  where ID = 1;"
             + "alter table tb1 ON CLUSTER cluster update A=3,B=4,C=5  where ID = 2;";
-        ClickhouseStatementParser parser=new ClickhouseStatementParser(sql);
+        CKStatementParser parser=new CKStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         System.out.println(statementList);
         assertEquals(2, statementList.size());
 
-        ClickSchemaStatVisitor visitor = new ClickSchemaStatVisitor();
+        CKStatVisitor visitor = new CKStatVisitor();
         stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
@@ -56,13 +55,13 @@ public class ClickHouse_update_0 extends TestCase {
     public void test_1() throws Exception {
         String sql = "alter table tb1 update A=1,B=1,C=2  where ID = 1;"
             + "alter table tb1 update A=3,B=4,C=5  where ID = 2;";
-        ClickhouseStatementParser parser=new ClickhouseStatementParser(sql);
+        CKStatementParser parser=new CKStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         System.out.println(statementList);
         assertEquals(2, statementList.size());
 
-        ClickSchemaStatVisitor visitor = new ClickSchemaStatVisitor();
+        CKStatVisitor visitor = new CKStatVisitor();
         stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
@@ -94,12 +93,12 @@ public class ClickHouse_update_0 extends TestCase {
     public void test_3() throws Exception {
             String sql = "alter table tb1 ON CLUSTER cluster update A=1,B=1,C=2 IN PARTITION partition_id where ID = 1;"
             + "alter table tb1 ON CLUSTER cluster update A=3,B=4,C=5 IN PARTITION partition_id where ID = 2;";
-        ClickhouseStatementParser parser=new ClickhouseStatementParser(sql);
+        CKStatementParser parser=new CKStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         assertEquals(2, statementList.size());
 
-        ClickSchemaStatVisitor visitor = new ClickSchemaStatVisitor();
+        CKStatVisitor visitor = new CKStatVisitor();
         stmt.accept(visitor);
 
         System.out.println("test_3.Tables : " + visitor.getTables());

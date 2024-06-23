@@ -4,23 +4,23 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseCreateTableStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
-public class ClickhouseCreateTableParser extends SQLCreateTableParser {
-    public ClickhouseCreateTableParser(SQLExprParser exprParser) {
+public class CKCreateTableParser extends SQLCreateTableParser {
+    public CKCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
     }
 
     protected SQLCreateTableStatement newCreateStatement() {
-        return new ClickhouseCreateTableStatement();
+        return new CKCreateTableStatement();
     }
 
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
-        ClickhouseCreateTableStatement ckStmt = (ClickhouseCreateTableStatement) stmt;
+        CKCreateTableStatement ckStmt = (CKCreateTableStatement) stmt;
         if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
             lexer.nextToken();
             if (lexer.token() == Token.EQ) {

@@ -16,14 +16,18 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.SQLPartitionOf;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
+import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
+
+import static com.alibaba.druid.sql.parser.SQLParserFeature.Template;
 
 public class SQLCreateTableParser extends SQLDDLParser {
     public SQLCreateTableParser(String sql) {
@@ -154,7 +158,13 @@ public class SQLCreateTableParser extends SQLDDLParser {
             lexer.nextToken();
 
             SQLSelect select = null;
-            if (DbType.oracle == dbType) {
+            if (lexer.token == Token.IDENTIFIER
+                    && lexer.isEnabled(Template)
+                    && lexer.stringVal.startsWith("$")) {
+                select = new SQLSelect(
+                        new SQLSelectQueryTemplate(lexer.stringVal));
+                lexer.nextToken();
+            } else if (DbType.oracle == dbType) {
                 select = new OracleSelectParser(this.exprParser).select();
             } else {
                 select = this.createSQLSelectParser().select();
@@ -226,5 +236,28 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
     protected SQLCreateTableStatement newCreateStatement() {
         return new SQLCreateTableStatement(getDbType());
+    }
+
+    protected void parseOptions(SQLCreateTableStatement stmt) {
+        lexer.nextToken();
+        accept(Token.LPAREN);
+
+        for (; ; ) {
+            String name = lexer.stringVal();
+            lexer.nextToken();
+            accept(Token.EQ);
+            SQLExpr value = this.exprParser.primary();
+            stmt.addOption(name, value);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                continue;
+            }
+            break;
+        }
+
+        accept(Token.RPAREN);
     }
 }

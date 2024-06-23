@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLCreateResourceGroupS
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLListResourceGroupStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
+import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 
 public interface SQLASTVisitor {
     default void endVisit(SQLAllColumnExpr x) {
@@ -2596,6 +2597,13 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(StarRocksIndexDefinition x) {
+    }
+
+    default boolean visit(SQLSelectQueryTemplate x) {
+        return true;
+    }
+
+    default void endVisit(SQLSelectQueryTemplate x) {
     }
 
 }

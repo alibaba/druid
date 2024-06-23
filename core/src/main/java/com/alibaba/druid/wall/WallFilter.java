@@ -187,9 +187,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 break;
             case clickhouse:
                 if (config == null) {
-                    config = new WallConfig(ClickhouseWallProvider.DEFAULT_CONFIG_DIR);
+                    config = new WallConfig(CKWallProvider.DEFAULT_CONFIG_DIR);
                 }
-                provider = new ClickhouseWallProvider(config);
+                provider = new CKWallProvider(config);
                 break;
             default:
                 provider = initWallProviderWithSPI(dataSource, config, dbType);

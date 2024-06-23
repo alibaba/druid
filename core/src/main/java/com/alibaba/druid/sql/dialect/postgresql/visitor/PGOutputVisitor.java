@@ -2825,14 +2825,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         return false;
     }
 
-    protected void printCreateTableOptions(SQLCreateTableStatement x) {
-        List<SQLAssignItem> options = x.getTableOptions();
-        if (options.isEmpty()) {
-            return;
-        }
+    @Override
+    protected void printTableOptionsPrefix(SQLCreateTableStatement x) {
         println();
         print0(ucase ? "WITH (" : "with (");
-        printAndAccept(options, ", ");
-        print(')');
+        incrementIndent();
+        println();
+    }
+
+    protected boolean legacyCube() {
+        return true;
     }
 }

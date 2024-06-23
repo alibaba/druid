@@ -29,7 +29,6 @@ import java.util.List;
 
 public class OdpsCreateTableStatement extends HiveCreateTableStatement {
     protected final List<SQLExpr> withSerdeproperties = new ArrayList<SQLExpr>();
-    protected SQLExpr storedBy;
 
     public OdpsCreateTableStatement() {
         super(DbType.odps);
@@ -80,17 +79,6 @@ public class OdpsCreateTableStatement extends HiveCreateTableStatement {
 
         acceptChild(v, withSerdeproperties);
         acceptChild(v, storedBy);
-    }
-
-    public SQLExpr getStoredBy() {
-        return storedBy;
-    }
-
-    public void setStoredBy(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.storedBy = x;
     }
 
     public List<SQLExpr> getWithSerdeproperties() {
