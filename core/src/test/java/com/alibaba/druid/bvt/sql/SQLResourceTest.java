@@ -111,7 +111,7 @@ public class SQLResourceTest {
             assertEquals(2, parts.length);
 
             String sql = parts[0].trim();
-            String expected = parts[1].trim();
+            String expected = parts[1].trim().replaceAll("\r\n","\n");
 
             System.out.println();
             System.out.println(sql);
