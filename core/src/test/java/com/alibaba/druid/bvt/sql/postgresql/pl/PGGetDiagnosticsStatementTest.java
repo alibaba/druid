@@ -9,8 +9,6 @@ import java.util.List;
 
 public class PGGetDiagnosticsStatementTest extends PGTest {
 	public void test_0() throws Exception {
-		// TODO: Add "DECLARE n INTEGER;" when the parser supports it
-		
 		String sql = "DO $$\n" +
 					 "BEGIN\n" +
 					 "  GET DIAGNOSTICS n = ROW_COUNT;\n" +

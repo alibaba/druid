@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLBlockStatement extends SQLStatementImpl {
+    private boolean isDollarQuoted;
+    private String dollarQuoteTagName;
     private String labelName;
     private String endLabel;
     private List<SQLParameter> parameters = new ArrayList<SQLParameter>();
@@ -31,6 +33,7 @@ public class SQLBlockStatement extends SQLStatementImpl {
     public SQLStatement exception;
     private boolean endOfCommit;
     private boolean haveBeginEnd;
+    private String language;
 
     public SQLBlockStatement() {
         haveBeginEnd = true;
@@ -44,6 +47,30 @@ public class SQLBlockStatement extends SQLStatementImpl {
         this.statementList = statementList;
     }
 
+    public boolean isDollarQuoted() {
+        return isDollarQuoted;
+    }
+    
+    public void setIsDollarQuoted(boolean isDollarQuoted) {
+        this.isDollarQuoted = isDollarQuoted;
+    }
+    
+    public String getDollarQuoteTagName() {
+        return dollarQuoteTagName;
+    }
+    
+    public void setDollarQuoteTagName(String dollarQuoteTagName) {
+        this.dollarQuoteTagName = dollarQuoteTagName;
+    }
+    
+    public String getLanguage() {
+        return language;
+    }
+    
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+    
     public String getLabelName() {
         return labelName;
     }

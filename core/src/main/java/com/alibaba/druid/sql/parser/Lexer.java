@@ -582,7 +582,7 @@ public class Lexer {
             return;
         }
 
-        if (ch == '$' && isVaraintChar(charAt(pos + 1))) {
+        if (ch == '$' && isVariantChar(charAt(pos + 1))) {
             scanVariable();
             return;
         }
@@ -595,7 +595,7 @@ public class Lexer {
         nextToken();
     }
 
-    static boolean isVaraintChar(char ch) {
+    static boolean isVariantChar(char ch) {
         return ch == '{' || (ch >= '0' && ch <= '9');
     }
 
@@ -663,7 +663,7 @@ public class Lexer {
             scanChar();
         }
 
-        if (ch == '$' && isVaraintChar(charAt(pos + 1))) {
+        if (ch == '$' && isVariantChar(charAt(pos + 1))) {
             scanVariable();
             return;
         }
@@ -1267,8 +1267,11 @@ public class Lexer {
                 continue;
             }
 
-            if (ch == '$' && isVaraintChar(charAt(pos + 1))) {
+            if (ch == '$') {
                 scanVariable();
+                if (isVariantChar(charAt(pos + 1))) {
+                    scanVariable();
+                }
                 return;
             }
 
@@ -2413,6 +2416,7 @@ public class Lexer {
         this.ch = charAt(pos);
 
         stringVal = addSymbol();
+        
         token = Token.VARIANT;
     }
 
