@@ -4,12 +4,14 @@ for example, if you are reporting a bug, please provide the following informatio
 dbtype: mysql
 dbversion: 5.7
 duird version: 1.2.22
+jdk version: 17
 error sql: select * from test
 error info: error message
 -->
 **dbtype:** 
 **dbversion:** 
 **druid verion:**
+**jdk verion:**
 **error sql:**
 **testcase code:**
 **stacktrace info:**
