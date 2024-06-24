@@ -63,6 +63,7 @@ public enum Token {
     UNIQUE("UNIQUE"),
     FOREIGN("FOREIGN"),
     REFERENCES("REFERENCES"),
+    LANGUAGE("LANGUAGE"),
 
     EXPLAIN("EXPLAIN"),
     FOR("FOR"),
@@ -367,6 +368,7 @@ public enum Token {
     GTGTGT(">>>"),
     MONKEYS_AT("@"),
     MONKEYS_AT_AT("@@"),
+    DOLLAR_DOLLAR("$$"),
     POUND("#"),
     POUNDGT("#>"),
     POUNDGTGT("#>>"),

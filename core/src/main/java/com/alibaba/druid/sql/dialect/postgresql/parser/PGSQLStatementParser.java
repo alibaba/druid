@@ -15,8 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -414,53 +417,145 @@ public class PGSQLStatementParser extends SQLStatementParser {
         stmt.setDbType(dbType);
 
         accept(Token.DO);
-
-        stmt.setFuncName(this.exprParser.name());
-
-        if (lexer.token() == Token.DECLARE) {
-            parseVariables(stmt);
+        if (lexer.token() == Token.DOLLAR_DOLLAR) {
+            stmt.setDollarQuoted(true);
+            lexer.nextToken();
         }
-
+        
+        String labelName = null;
+        if (lexer.token() == Token.IDENTIFIER) {
+            labelName = lexer.stringVal();
+            lexer.nextToken();
+        }
+        
         SQLStatement block;
-        if (lexer.token() == Token.BEGIN) {
-            block = this.parseBlock();
+        if (lexer.token() == Token.BEGIN
+                || lexer.token() == Token.DECLARE) {
+            block = this.parseBlock(labelName);
         } else {
             block = this.parseStatement();
         }
         stmt.setBlock(block);
-        if (lexer.token() == Token.IDENTIFIER) {
-            SQLName endFuncName = this.exprParser.name();
-            if (!stmt.getFuncName().equals(endFuncName)) {
-                printError(lexer.token());
+        
+        if (lexer.token() == Token.DOLLAR_DOLLAR) {
+            lexer.nextToken();
+            if(lexer.token() != Token.SEMI) {
+                accept(Token.LANGUAGE);
+                stmt.setLanguage(this.exprParser.identifier());
             }
+            accept(Token.SEMI);
         }
+        
         return stmt;
     }
 
-    public void parseVariables(PGDoStatement stmt) {
-        accept(Token.DECLARE);
-        if (lexer.token() != Token.BEGIN) {
-            // todo: parseVariables
-            throw new ParserException("TODO " + lexer.info());
-        }
-    }
-
-    public SQLBlockStatement parseBlock() {
+    public SQLBlockStatement parseBlock(String labelName) {
         SQLBlockStatement block = new SQLBlockStatement();
         block.setDbType(dbType);
-        block.setHaveBeginEnd(false);
+        if (labelName != null) {
+            block.setLabelName(labelName);
+        }
+        
+        if (lexer.token() == Token.DECLARE) {
+            lexer.nextToken();
+        }
+        if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.CURSOR) {
+            parseParameters(block.getParameters(), block);
+            for (SQLParameter param : block.getParameters()) {
+                param.setParent(block);
+            }
+        }
+        
         accept(Token.BEGIN);
         List<SQLStatement> statementList = block.getStatementList();
         this.parseStatementList(statementList, -1, block);
         if (lexer.token() != Token.END
-            && statementList.size() > 0
+            && !statementList.isEmpty()
             && (statementList.get(statementList.size() - 1) instanceof SQLCommitStatement
             || statementList.get(statementList.size() - 1) instanceof SQLRollbackStatement)) {
             block.setEndOfCommit(true);
             return block;
         }
         accept(Token.END);
+        
+        Token token = lexer.token();
+        if (token != Token.SEMI) {
+            if (lexer.token() == Token.IDENTIFIER) {
+                labelName = lexer.stringVal();
+                if (!block.getLabelName().equals(labelName)) {
+                    printError(lexer.token());
+                }
+            }
+        }
+
+        accept(Token.SEMI);
         return block;
+    }
+
+    private void parseParameters(List<SQLParameter> parameters, SQLObject parent) {
+        for (;;) {
+            SQLParameter parameter = new SQLParameter();
+            parameter.setParent(parent);
+
+            SQLName name;
+            SQLDataType dataType = null;
+            name = this.exprParser.name();
+            if (lexer.token() == Token.IN) {
+                lexer.nextToken();
+
+                if (lexer.token() == Token.OUT) {
+                    lexer.nextToken();
+                    parameter.setParamType(SQLParameter.ParameterType.INOUT);
+                } else {
+                    parameter.setParamType(SQLParameter.ParameterType.IN);
+                }
+            } else if (lexer.token() == Token.OUT) {
+                lexer.nextToken();
+
+                if (lexer.token() == Token.IN) {
+                    lexer.nextToken();
+                    parameter.setParamType(SQLParameter.ParameterType.INOUT);
+                } else {
+                    parameter.setParamType(SQLParameter.ParameterType.OUT);
+                }
+            } else if (lexer.token() == Token.INOUT) {
+                lexer.nextToken();
+                parameter.setParamType(SQLParameter.ParameterType.INOUT);
+            }
+
+            dataType = this.exprParser.parseDataType(false);
+
+            if (lexer.token() == Token.NOT) {
+                lexer.nextToken();
+                accept(Token.NULL);
+                parameter.setNotNull(true);
+            }
+
+            if (lexer.token() == Token.COLONEQ || lexer.token() == Token.DEFAULT) {
+                lexer.nextToken();
+                parameter.setDefaultValue(this.exprParser.expr());
+            }
+
+            parameter.setName(name);
+            parameter.setDataType(dataType);
+
+            parameters.add(parameter);
+            Token token = lexer.token();
+            if (token == Token.COMMA || token == Token.SEMI || token == Token.IS) {
+                lexer.nextToken();
+            }
+
+            token = lexer.token();
+            if (token != Token.BEGIN
+                    && token != Token.RPAREN
+                    && token != Token.EOF
+                    && token != Token.FUNCTION
+                    && !lexer.identifierEquals("DETERMINISTIC")) {
+                continue;
+            }
+
+            break;
+        }
     }
 
     @Override

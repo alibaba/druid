@@ -1,10 +1,13 @@
 package com.alibaba.druid.bvt.sql.postgresql;
 
 import com.alibaba.druid.sql.PGTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 
-import org.junit.Assert;
+import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class PGDoSQLTest  extends PGTest {
     public void testDoSQL(){
@@ -36,5 +39,21 @@ public class PGDoSQLTest  extends PGTest {
         SQLStatement statement = parser.parseStatement();
         assertEquals(resultSql,statement.toString());
 
+    }
+
+    public void testDoSQL_WithDeclare() {
+        String sql = "DO $$\n" +
+                "DECLARE\n" +
+                "\tn INTEGER;\n" +
+                "BEGIN\n" +
+                "\tGET DIAGNOSTICS n = ROW_COUNT;\n" +
+                "END;\n" +
+                "$$ LANGUAGE plpgsql;";
+
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.POSTGRESQL);
+        assertEquals(1, statementList.size());
+
+        String output = SQLUtils.toSQLString(statementList, JdbcConstants.POSTGRESQL);
+        assertEquals(sql, output);
     }
 }

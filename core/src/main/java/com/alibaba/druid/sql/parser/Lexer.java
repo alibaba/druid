@@ -1298,6 +1298,13 @@ public class Lexer {
                     ch = charAt(pos);
                     continue;
                 }
+                
+                if (ch == '$' && charAt(pos + 1) == '$') {
+                    pos += 2;
+                    ch = charAt(pos);
+                    token = DOLLAR_DOLLAR;
+                    return;
+                }
 
                 scanIdentifier();
                 return;

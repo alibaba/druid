@@ -18,16 +18,20 @@ package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGDoStatement extends SQLStatementImpl implements PGSQLStatement {
+    private boolean isDollarQuoted;
     private SQLName name;
-
-    private SQLName funcName;
-
     private SQLStatement block;
+    private SQLIdentifierExpr language;
 
+    public PGDoStatement() {
+        isDollarQuoted = true;
+    }
+    
     protected void accept0(SQLASTVisitor visitor) {
         accept0((PGASTVisitor) visitor);
     }
@@ -35,26 +39,25 @@ public class PGDoStatement extends SQLStatementImpl implements PGSQLStatement {
     @Override
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, funcName);
             acceptChild(visitor, block);
         }
         visitor.endVisit(this);
     }
 
+    public boolean isDollarQuoted() {
+        return isDollarQuoted;
+    }
+    
+    public void setDollarQuoted(boolean dollarQuoted) {
+        this.isDollarQuoted = dollarQuoted;
+    }
+    
     public SQLName getName() {
         return name;
     }
 
     public void setName(SQLName name) {
         this.name = name;
-    }
-
-    public SQLName getFuncName() {
-        return funcName;
-    }
-
-    public void setFuncName(SQLName funcName) {
-        this.funcName = funcName;
     }
 
     public SQLStatement getBlock() {
@@ -66,5 +69,13 @@ public class PGDoStatement extends SQLStatementImpl implements PGSQLStatement {
             block.setParent(this);
         }
         this.block = block;
+    }
+
+    public SQLIdentifierExpr getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(SQLIdentifierExpr language) {
+        this.language = language;
     }
 }

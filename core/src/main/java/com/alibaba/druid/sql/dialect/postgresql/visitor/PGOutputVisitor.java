@@ -550,7 +550,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(PGStartTransactionStatement x) {
         if (x.isUseBegin()) {
-            print0(ucase ? "BFGIN" : "begin");
+            print0(ucase ? "BEGIN" : "begin");
             return false;
         }
         print0(ucase ? "START TRANSACTION" : "start transaction");
@@ -559,12 +559,19 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(PGDoStatement x) {
         print0(ucase ? "DO " : "do ");
-        x.getFuncName().accept(this);
+        if (x.isDollarQuoted()) {
+            print0("$$");
+        }
         println();
-        print0(ucase ? "BEGIN" : "begin");
         x.getBlock().accept(this);
-        print0(ucase ? "END " : "end ");
-        x.getFuncName().accept(this);
+        println();
+        if (x.isDollarQuoted()) {
+            if (x.getLanguage() != null) {
+                print0("$$ LANGUAGE " + x.getLanguage().getSimpleName() + ";");
+            } else {
+                print0("$$;");
+            }
+        }
         return false;
     }
 
@@ -693,14 +700,14 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         print0(ucase ? " PASSWORD " : " password ");
 
-        SQLExpr passoword = x.getPassword();
+        SQLExpr password = x.getPassword();
 
-        if (passoword instanceof SQLIdentifierExpr) {
+        if (password instanceof SQLIdentifierExpr) {
             print('\'');
-            passoword.accept(this);
+            password.accept(this);
             print('\'');
         } else {
-            passoword.accept(this);
+            password.accept(this);
         }
         return false;
     }

@@ -2448,7 +2448,10 @@ public class SQLExprParser extends SQLParser {
         } else if (lexer.token == Token.VARIANT) {
             identName = lexer.stringVal();
             lexer.nextToken();
-        } else {
+        } else if (lexer.token == Token.DOLLAR_DOLLAR) {
+            identName = lexer.stringVal();
+            lexer.nextToken();
+        }else {
             switch (lexer.token) {
 //                case MODEL:
                 case MODE:
@@ -2543,6 +2546,7 @@ public class SQLExprParser extends SQLParser {
                 case IS:
                 case LOCK:
                 case REFERENCES:
+                case LANGUAGE:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;
