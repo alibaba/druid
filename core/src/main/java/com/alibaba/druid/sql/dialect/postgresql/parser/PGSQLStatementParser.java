@@ -483,7 +483,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
             if (lexer.token() == Token.VARIANT) {
                 lexer.nextToken();
-                if(lexer.token() != Token.SEMI) {
+                if (lexer.token() != Token.SEMI) {
                     // END $$tag$$ LANGUAGE plpgsql;
                     accept(Token.LANGUAGE);
                     block.setLanguage(lexer.stringVal());
@@ -505,7 +505,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 printError(lexer.token());
             }
             lexer.nextToken();
-            if(lexer.token() != Token.SEMI) {
+            if (lexer.token() != Token.SEMI) {
                 accept(Token.LANGUAGE);
                 block.setLanguage(lexer.stringVal());
                 acceptIdentifier(block.getLanguage());
