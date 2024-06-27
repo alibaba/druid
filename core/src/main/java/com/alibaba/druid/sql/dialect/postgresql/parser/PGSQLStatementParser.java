@@ -472,7 +472,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         Token token = lexer.token();
         if (token != Token.SEMI) {
-            // END label;
+            // "END label;" or "END label $$ LANGUAGE plpgsql;"
             if (token == Token.IDENTIFIER) {
                 String endLabel = lexer.stringVal();
                 block.setEndLabel(endLabel);
@@ -481,20 +481,16 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 }
                 acceptIdentifier(endLabel);
             }
-            if (lexer.token() == Token.VARIANT) {
-                lexer.nextToken();
-                if (lexer.token() != Token.SEMI) {
-                    // END $$tag$$ LANGUAGE plpgsql;
-                    accept(Token.LANGUAGE);
-                    block.setLanguage(lexer.stringVal());
-                    acceptIdentifier(block.getLanguage());
-                }
-            }
+            parseEndDollarQuote(block);
         }
 
         accept(Token.SEMI);
-        // END;
-        // $$ LANGUAGE plpgsql;
+        // "$$ LANGUAGE plpgsql;"
+        parseEndDollarQuote(block);
+        return block;
+    }
+
+    private void parseEndDollarQuote(SQLBlockStatement block) {
         if (lexer.token() == Token.VARIANT) {
             String dollarQuotedStr = lexer.stringVal();
             if (!dollarQuotedStr.endsWith("$")) {
@@ -512,7 +508,6 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
             accept(Token.SEMI);
         }
-        return block;
     }
 
     private void parseParameters(List<SQLParameter> parameters, SQLObject parent) {
