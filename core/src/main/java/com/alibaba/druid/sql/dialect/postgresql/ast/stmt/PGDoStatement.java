@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGDoStatement extends SQLStatementImpl implements PGSQLStatement {
     private SQLStatement block;
-    
+
     protected void accept0(SQLASTVisitor visitor) {
         accept0((PGASTVisitor) visitor);
     }

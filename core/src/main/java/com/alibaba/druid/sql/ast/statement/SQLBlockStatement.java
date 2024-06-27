@@ -50,27 +50,27 @@ public class SQLBlockStatement extends SQLStatementImpl {
     public boolean isDollarQuoted() {
         return isDollarQuoted;
     }
-    
+
     public void setIsDollarQuoted(boolean isDollarQuoted) {
         this.isDollarQuoted = isDollarQuoted;
     }
-    
+
     public String getDollarQuoteTagName() {
         return dollarQuoteTagName;
     }
-    
+
     public void setDollarQuoteTagName(String dollarQuoteTagName) {
         this.dollarQuoteTagName = dollarQuoteTagName;
     }
-    
+
     public String getLanguage() {
         return language;
     }
-    
+
     public void setLanguage(String language) {
         this.language = language;
     }
-    
+
     public String getLabelName() {
         return labelName;
     }

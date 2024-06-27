@@ -556,7 +556,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print0(ucase ? "START TRANSACTION" : "start transaction");
         return false;
     }
-    
+
     @Override
     public boolean visit(PGDoStatement x) {
         print0(ucase ? "DO " : "do ");
@@ -570,12 +570,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print(x.getDollarQuoteTagName() == null ? "$$" : "$" + x.getDollarQuoteTagName() + "$");
             println();
         }
-        
+
         if (x.getLabelName() != null) {
             print0(x.getLabelName());
             println();
         }
-        
+
         if (!x.getParameters().isEmpty()) {
             this.indentCount++;
             if (x.getParent() instanceof SQLCreateProcedureStatement) {
@@ -634,7 +634,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
                 print0(ucase ? "END;" : "end;");
             }
             println();
-            
+
             if (x.isDollarQuoted()) {
                 print(x.getDollarQuoteTagName() == null ? "$$" : "$" + x.getDollarQuoteTagName() + "$");
                 if (x.getLanguage() != null) {
@@ -648,7 +648,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         return false;
     }
-    
+
     @Override
     public boolean visit(PGEndTransactionStatement x) {
         print0(ucase ? "END" : "end");
