@@ -96,7 +96,7 @@ public class OracleSelectTest71 extends OracleTest {
     }
 
     public void testSelectWithJoin_UnderParen() {
-        String sql = "SELECT /* NUSQL.TEST */\n" +
+        String sql = "SELECT\n" +
                      "    A.ID,\n" +
                      "    B.NAME,\n" +
                      "    C.TYPE\n" +
