@@ -2416,7 +2416,7 @@ public class Lexer {
         this.ch = charAt(pos);
 
         stringVal = addSymbol();
-        
+
         token = Token.VARIANT;
     }
 
