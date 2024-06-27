@@ -633,17 +633,14 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             } else {
                 print0(ucase ? "END;" : "end;");
             }
-            println();
 
             if (x.isDollarQuoted()) {
+                println();
                 print(x.getDollarQuoteTagName() == null ? "$$" : "$" + x.getDollarQuoteTagName() + "$");
                 if (x.getLanguage() != null) {
                     print0(" LANGUAGE " + x.getLanguage());
                 }
                 print(';');
-            } else {
-                // END;
-                print0(ucase ? "END;" : "end;");
             }
         }
         return false;
