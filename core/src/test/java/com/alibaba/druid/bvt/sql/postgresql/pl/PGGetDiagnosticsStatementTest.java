@@ -16,12 +16,13 @@ public class PGGetDiagnosticsStatementTest extends PGTest {
 
 		List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.POSTGRESQL);
 		assertEquals(1, statementList.size());
-		
+
 		String output = SQLUtils.toSQLString(statementList, JdbcConstants.POSTGRESQL);
 		assertEquals("DO $$\n" +
 					 "BEGIN\n" +
 					 "\tGET DIAGNOSTICS n = ROW_COUNT;\n" +
-					 "END $$;",
+					 "END;\n" +
+					 "$$;",
 					 output);
 	}
 }
