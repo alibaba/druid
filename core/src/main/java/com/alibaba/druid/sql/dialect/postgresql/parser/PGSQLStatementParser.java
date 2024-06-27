@@ -506,7 +506,6 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 block.setLanguage(lexer.stringVal());
                 acceptIdentifier(block.getLanguage());
             }
-            accept(Token.SEMI);
         }
     }
 
