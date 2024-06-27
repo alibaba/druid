@@ -419,14 +419,14 @@ public class PGSQLStatementParser extends SQLStatementParser {
         accept(Token.DO);
         SQLStatement block = this.parseBlock();
         stmt.setBlock(block);
-        
+
         return stmt;
     }
 
     public SQLBlockStatement parseBlock() {
         SQLBlockStatement block = new SQLBlockStatement();
         block.setDbType(dbType);
-        
+
         if (lexer.token() == Token.VARIANT) {
             String dollarQuotedStr = lexer.stringVal();
             if (!dollarQuotedStr.endsWith("$")) {
@@ -443,11 +443,11 @@ public class PGSQLStatementParser extends SQLStatementParser {
             labelName = lexer.stringVal();
             lexer.nextToken();
         }
-        
+
         if (labelName != null) {
             block.setLabelName(labelName);
         }
-        
+
         if (lexer.token() == Token.DECLARE) {
             lexer.nextToken();
         }
@@ -457,7 +457,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 param.setParent(block);
             }
         }
-        
+
         accept(Token.BEGIN);
         List<SQLStatement> statementList = block.getStatementList();
         this.parseStatementList(statementList, -1, block);
@@ -469,7 +469,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             return block;
         }
         accept(Token.END);
-        
+
         Token token = lexer.token();
         if (token != Token.SEMI) {
             // END label;
