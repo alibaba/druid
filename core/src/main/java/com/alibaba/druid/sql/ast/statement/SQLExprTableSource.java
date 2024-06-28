@@ -294,6 +294,12 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
             x.setExpr(expr.clone());
         }
 
+        if (hints != null) {
+            for (SQLHint p : hints) {
+                SQLHint p1 = p.clone();
+                x.getHints().add(p1);
+            }
+        }
         if (partitions != null) {
             for (SQLName p : partitions) {
                 SQLName p1 = p.clone();

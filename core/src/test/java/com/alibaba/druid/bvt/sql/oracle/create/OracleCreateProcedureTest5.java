@@ -33,7 +33,7 @@ public class OracleCreateProcedureTest5 extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         print(statementList);
-
+System.out.println("statementList==="+statementList);
         assertEquals(1, statementList.size());
 
         SQLStatement stmt = (SQLStatement) statementList.get(0);

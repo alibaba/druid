@@ -22,12 +22,16 @@ import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
 public class JSONWriter {
-    private StringBuilder out;
+    private final StringBuilder out;
 
     public JSONWriter() {
         this.out = new StringBuilder();
@@ -73,6 +77,21 @@ public class JSONWriter {
 
         if (o instanceof Date) {
             writeDate((Date) o);
+            return;
+        }
+
+        if (o instanceof LocalDate) {
+            writeLocalDate((LocalDate) o);
+            return;
+        }
+
+        if (o instanceof LocalTime) {
+            writeLocalTime((LocalTime) o);
+            return;
+        }
+
+        if (o instanceof LocalDateTime) {
+            writeLocalDateTime((LocalDateTime) o);
             return;
         }
 
@@ -143,6 +162,42 @@ public class JSONWriter {
         //SimpleDataFormat is not thread-safe, we need to make it local.
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         writeString(dateFormat.format(date));
+    }
+
+    /**
+     * 写 local date
+     */
+    public void writeLocalDate(LocalDate date) {
+        if (date == null) {
+            writeNull();
+            return;
+        }
+        String formatDate = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(date);
+        writeString(formatDate);
+    }
+
+    /**
+     * 写 LocalTime
+     */
+    public void writeLocalTime(LocalTime time) {
+        if (time == null) {
+            writeNull();
+            return;
+        }
+        String formatTime = DateTimeFormatter.ofPattern("HH:mm:ss").format(time);
+        writeString(formatTime);
+    }
+
+    /**
+     * 写 LocalTime
+     */
+    public void writeLocalDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            writeNull();
+            return;
+        }
+        String formatDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(dateTime);
+        writeString(formatDateTime);
     }
 
     public void writeError(Throwable error) {
@@ -316,6 +371,7 @@ public class JSONWriter {
         out.append(c);
     }
 
+    @Override
     public String toString() {
         return out.toString();
     }

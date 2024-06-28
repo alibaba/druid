@@ -176,9 +176,9 @@ public class MySqlSelectIntoParser extends SQLSelectParser {
     }
 
     /**
-     * parser the select into arguments
+     * Parses the arguments for the INTO clause and returns a list of SQL expressions.
      *
-     * @return
+     * @return a list of SQL expressions representing the arguments passed to the INTO clause
      */
     protected List<SQLExpr> parseIntoArgs() {
         List<SQLExpr> args = new ArrayList<SQLExpr>();

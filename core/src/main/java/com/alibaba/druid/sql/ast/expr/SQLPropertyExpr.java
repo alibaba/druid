@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLReplaceable, Comparable<SQLPropertyExpr> {
     private SQLExpr owner;
+    private String splitString;
     private String name;
 
     protected long nameHashCod64;
@@ -64,6 +64,14 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
 
     public SQLExpr getOwner() {
         return this.owner;
+    }
+
+    public String getSplitString() {
+        return splitString;
+    }
+
+    public void setSplitString(String splitString) {
+        this.splitString = splitString;
     }
 
     @Deprecated
@@ -112,6 +120,9 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
             hash ^= '.';
             hash *= FnvHash.PRIME;
         }
+        if (splitString != null) {
+            hash = FnvHash.hashCode64(hash, splitString);
+        }
         hash = FnvHash.hashCode64(hash, name);
         hashCode64 = hash;
     }
@@ -145,14 +156,10 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
         }
     }
 
-    public void output(Appendable buf) {
-        try {
-            this.owner.output(buf);
-            buf.append(".");
-            buf.append(this.name);
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        this.owner.output(buf);
+        buf.append(".");
+        buf.append(this.name);
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -216,6 +223,9 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
             return false;
         }
 
+        if (!Objects.equals(this.splitString, other.splitString)) {
+            return false;
+        }
         if (owner == null) {
             if (other.owner != null) {
                 return false;
@@ -396,7 +406,11 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
             return this.name;
         }
 
-        return owner.toString() + '.' + name;
+        if (splitString == null) {
+            return owner.toString() + '.' + name;
+        } else {
+            return owner.toString() + splitString + name;
+        }
     }
 
     @Override

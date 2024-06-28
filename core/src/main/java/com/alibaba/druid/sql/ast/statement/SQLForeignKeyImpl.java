@@ -29,7 +29,17 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
     private boolean onDeleteSetNull;
     private boolean disableNovalidate;
 
+    private boolean hasConstraint;
+
     public SQLForeignKeyImpl() {
+    }
+
+    public boolean isHasConstraint() {
+        return hasConstraint;
+    }
+
+    public void setHasConstraint(boolean hasConstraint) {
+        this.hasConstraint = hasConstraint;
     }
 
     @Override

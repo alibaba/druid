@@ -44,7 +44,7 @@ public class MySqlSelectTest_185 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-
+        System.out.println(stmt.toString());
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
 
         SQLSelect select = selectStmt.getSelect();
@@ -85,7 +85,7 @@ public class MySqlSelectTest_185 extends MysqlTest {
                         "\tAND product.status = 1\n" +
                         "\tAND product.more_color BETWEEN (0\n" +
                         "\t\tAND 1)\n" +
-                        "\tAND (product.master_color = 1)\n" +
+                        "\tAND product.master_color = 1\n" +
                         "ORDER BY product.sort ASC", //
                 output);
     }

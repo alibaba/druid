@@ -236,7 +236,6 @@ public class WebSessionStatValue {
         data.put("CreateTime", this.getCreateTime());
         data.put("LastAccessTime", this.getLastAccessTime());
         data.put("RemoteAddress", this.getRemoteAddress());
-        data.put("Principal", this.getPrincipal());
 
         data.put("JdbcCommitCount", this.getJdbcCommitCount());
         data.put("JdbcRollbackCount", this.getJdbcRollbackCount());

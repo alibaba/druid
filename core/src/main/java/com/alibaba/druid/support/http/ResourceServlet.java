@@ -30,7 +30,9 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
 
 @SuppressWarnings("serial")
 public abstract class ResourceServlet extends HttpServlet {
@@ -42,7 +44,17 @@ public abstract class ResourceServlet extends HttpServlet {
     public static final String PARAM_NAME_ALLOW = "allow";
     public static final String PARAM_NAME_DENY = "deny";
     public static final String PARAM_REMOTE_ADDR = "remoteAddress";
+    private static final DruidWebSecurityProvider SECURITY_SPI;
 
+    static {
+        final Iterator<DruidWebSecurityProvider> providers = ServiceLoader.load(DruidWebSecurityProvider.class).iterator();
+        if (providers.hasNext()) {
+            SECURITY_SPI = providers.next();
+            LOG.info("use DruidWebSecurityProvider: " + SECURITY_SPI.getClass().getName());
+        } else {
+            SECURITY_SPI = null;
+        }
+    }
     protected final ResourceHandler handler;
 
     public ResourceServlet(String resourcePath) {
@@ -197,6 +209,8 @@ public abstract class ResourceServlet extends HttpServlet {
                 return;
             }
 
+            // 设置http响应头，以便在浏览器端缓存静态资源,
+            response.setHeader("Cache-Control", "max-age=36000");
             if (fileName.endsWith(".css")) {
                 response.setContentType("text/css;charset=utf-8");
             } else if (fileName.endsWith(".js")) {
@@ -241,6 +255,13 @@ public abstract class ResourceServlet extends HttpServlet {
 
         public boolean isRequireAuth() {
             return username != null;
+        }
+
+        public boolean isNotLogin(final HttpServletRequest request) {
+            if (SECURITY_SPI != null) {
+                return SECURITY_SPI.isNotPermit(request);
+            }
+            return !containsUser(request) && !checkLoginParam(request);
         }
 
         public boolean isPermittedRequest(HttpServletRequest request) {
@@ -312,8 +333,7 @@ public abstract class ResourceServlet extends HttpServlet {
             }
 
             if (isRequireAuth() //
-                    && !containsUser(request)//
-                    && !checkLoginParam(request)//
+                    && isNotLogin(request) //
                     && !("/login.html".equals(path) //
                     || path.startsWith("/css")//
                     || path.startsWith("/js") //

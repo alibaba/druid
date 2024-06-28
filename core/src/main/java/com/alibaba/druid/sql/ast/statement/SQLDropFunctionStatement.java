@@ -18,13 +18,17 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.List;
+
 public class SQLDropFunctionStatement extends SQLStatementImpl implements SQLDropStatement, SQLReplaceable {
     private SQLName name;
     private boolean ifExists;
+    protected List<SQLParameter> parameters;
     private boolean temporary;
 
     public SQLDropFunctionStatement() {
@@ -38,6 +42,7 @@ public class SQLDropFunctionStatement extends SQLStatementImpl implements SQLDro
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
+            acceptChild(visitor, parameters);
         }
         visitor.endVisit(this);
     }
@@ -59,6 +64,14 @@ public class SQLDropFunctionStatement extends SQLStatementImpl implements SQLDro
 
     public void setIfExists(boolean ifExists) {
         this.ifExists = ifExists;
+    }
+
+    public List<SQLParameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<SQLParameter> parameters) {
+        this.parameters = parameters;
     }
 
     public boolean isTemporary() {

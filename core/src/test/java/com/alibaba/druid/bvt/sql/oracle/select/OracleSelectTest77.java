@@ -103,9 +103,9 @@ public class OracleSelectTest77 extends OracleTest {
                     "LEFT JOIN tcc_cpr.tcc_cpr_payment c ON a.contract_header_id = c.contract_header_id\n" +
                     "\tAND c.payment_condition_code = 'ZTE_PAYMENT_YUFU'\n" +
                     "\tAND c.enabled_flag = 'Y' \n" +
-                    "\tLEFT JOIN tcc_cust.tcc_cust_customer d ON a.customer_id = d.id\n" +
+                    "\tLEFT JOIN tcc_cust.tcc_cust_customer d ON (a.customer_id = d.id\n" +
                     "\tAND (d.enable_flag = 'Y'\n" +
-                    "\t\tOR d.enable_flag = 'T') \n" +
+                    "\t\tOR d.enable_flag = 'T')) \n" +
                     "WHERE a.enabled_flag = 'Y'", text);
         }
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

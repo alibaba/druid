@@ -199,7 +199,7 @@ public class AbstractWebStatImpl {
         return null;
     }
 
-    public class WebStatFilterContextListener extends StatFilterContextListenerAdapter {
+    public static class WebStatFilterContextListener extends StatFilterContextListenerAdapter {
         @Override
         public void addUpdateCount(int updateCount) {
             WebRequestStat reqStat = WebRequestStat.current();

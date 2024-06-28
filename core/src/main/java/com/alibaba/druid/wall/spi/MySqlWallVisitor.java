@@ -42,7 +42,7 @@ public class MySqlWallVisitor extends WallVisitorBase implements WallVisitor, My
 
     @Override
     public boolean visit(MySqlSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
+        WallVisitorUtils.checkSelect(this, x);
         return true;
     }
 

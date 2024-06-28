@@ -45,7 +45,7 @@ public class OracleCreateTriggerTest3 extends OracleTest {
                         "\tBEFORE INSERT OR UPDATE salary job_id\n" +
                         "\tON employees\n" +
                         "\tFOR EACH ROW\n" +
-                        "\tWHEN new.job_id <> 'AD_VP'\n" +
+                        "\tWHEN (new.job_id <> 'AD_VP')\n" +
                         "CALL check_sal(:new.job_id, :new.salary, :new.last_name)",//
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 

@@ -21,7 +21,8 @@ public class MySqlCreateTableTest161_storage_policy extends MysqlTest {
                 "\tlog_time datetime\n" +
                 ") STORAGE_POLICY = 'HOT'\n" +
                 "DISTRIBUTE BY HASH(log_id)\n" +
-                "PARTITION BY VALUE (date_format('%Y%m%d')) LIFECYCLE 180", stmt.toString());
+                "PARTITION BY VALUE (date_format('%Y%m%d'))\n" +
+                "LIFECYCLE 180", stmt.toString());
     }
 
     public void test_1() throws Exception {
@@ -38,7 +39,8 @@ public class MySqlCreateTableTest161_storage_policy extends MysqlTest {
                 "\tlog_time datetime\n" +
                 ") STORAGE_POLICY = 'COLD'\n" +
                 "DISTRIBUTE BY HASH(log_id)\n" +
-                "PARTITION BY VALUE (date_format('%Y%m%d')) LIFECYCLE 180;", stmt.toString());
+                "PARTITION BY VALUE (date_format('%Y%m%d'))\n" +
+                "LIFECYCLE 180;", stmt.toString());
     }
 
     public void test_2() throws Exception {
@@ -55,7 +57,8 @@ public class MySqlCreateTableTest161_storage_policy extends MysqlTest {
                 "\tlog_time datetime\n" +
                 ") STORAGE_POLICY = 'MIXED' HOT_PARTITION_COUNT = 10\n" +
                 "DISTRIBUTE BY HASH(log_id)\n" +
-                "PARTITION BY VALUE (date_format('%Y%m%d')) LIFECYCLE 180;", stmt.toString());
+                "PARTITION BY VALUE (date_format('%Y%m%d'))\n" +
+                "LIFECYCLE 180;", stmt.toString());
     }
 
     public void test_3() throws Exception {

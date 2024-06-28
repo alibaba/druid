@@ -1,13 +1,11 @@
 package com.alibaba.druid.sql.dialect.odps.ast;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,12 +60,8 @@ public class OdpsNewExpr extends SQLMethodInvokeExpr implements OdpsObject {
         visitor.endVisit(this);
     }
 
-    public void output(Appendable buf) {
-        try {
-            buf.append("new ");
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        buf.append("new ");
         super.output(buf);
     }
 

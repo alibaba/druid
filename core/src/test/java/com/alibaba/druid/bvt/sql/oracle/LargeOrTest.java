@@ -28,7 +28,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 
 public class LargeOrTest extends TestCase {
     public void test_largeOr() throws Exception {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("SELECT 1 FROM T WHERE ID = ?");
         for (int i = 0; i < 10000; ++i) {
             buf.append(" OR ID = ?");
@@ -43,7 +43,7 @@ public class LargeOrTest extends TestCase {
     }
 
     public void test_largeAnd() throws Exception {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("SELECT 1 FROM T WHERE ID = ?");
         for (int i = 0; i < 10000; ++i) {
             buf.append(" AND ID = ?");

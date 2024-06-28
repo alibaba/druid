@@ -32,13 +32,13 @@ public class SQLServerSelectTest31 extends TestCase {
         {
             String text = SQLUtils.toSQLString(stmtList, JdbcConstants.SQL_SERVER);
 
-            assertEquals("SELECT TOP 1 CAST(OriganID AS VARCHAR(20)) + ',' + MobilePhoneUrl\n" +
+            assertEquals("SELECT TOP 1 (CAST(OriganID AS VARCHAR(20)) + ',' + MobilePhoneUrl)\n" +
                     "FROM T", text);
         }
         {
             String text = SQLUtils.toSQLString(stmtList, JdbcConstants.SQL_SERVER, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            assertEquals("select top 1 cast(OriganID as VARCHAR(20)) + ',' + MobilePhoneUrl\n" +
+            assertEquals("select top 1 (cast(OriganID as VARCHAR(20)) + ',' + MobilePhoneUrl)\n" +
                     "from T", text);
         }
     }

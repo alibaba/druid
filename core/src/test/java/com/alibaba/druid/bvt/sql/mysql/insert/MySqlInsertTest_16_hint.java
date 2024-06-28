@@ -52,7 +52,7 @@ public class MySqlInsertTest_16_hint extends MysqlTest {
 //
         assertTrue(visitor.containsTable("mytable"));
 
-        String formatSql = "INSERT INTO mytable\n" +
+        String formatSql = "INSERT INTO mytable /*!(col2, col3, col1) */\n" +
                 "VALUES (load_file('sompath'), 'str1', 2);";
         Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }

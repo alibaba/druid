@@ -73,49 +73,49 @@ public class OracleSelectTest135 extends TestCase {
 
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
-        assertEquals("SELECT *\n" +
-                "FROM (\n" +
-                "\tSELECT C.FLEX_VALUE, c.PARENT_FLEX_VALUE, c.CN_DESCRIPTION, c.En_Description\n" +
-                "\tFROM (\n" +
-                "\t\tSELECT a.PARENT_FLEX_VALUE, a.FLEX_VALUE, a.CN_DESCRIPTION, a.EN_DESCRIPTION, a.SUMMARY_FLAG\n" +
-                "\t\tFROM bpm_department_t4 a\n" +
-                "\t\tWHERE 1 = 1\n" +
-                "\t\t\tAND a.ENABLED_FLAG = 'Y'\n" +
-                "\t\tMINUS\n" +
-                "\t\tSELECT DISTINCT b.PARENT_FLEX_VALUE, b.FLEX_VALUE, b.CN_DESCRIPTION, b.EN_DESCRIPTION, b.SUMMARY_FLAG\n" +
-                "\t\tFROM bpm_department_t4 b\n" +
-                "\t\tWHERE 1 = 1\n" +
-                "\t\t\tAND b.ENABLED_FLAG = 'Y'\n" +
-                "\t\tSTART WITH b.flex_value = 'C019998'\n" +
-                "\t\t\tOR b.flex_value LIKE 'ZF%'\n" +
-                "\t\tCONNECT BY PRIOR b.flex_value = b.parent_flex_value\n" +
-                "\t) c\n" +
-                "\tWHERE 1 = 1\n" +
-                "\t\tAND UPPER(c.FLEX_VALUE) LIKE concat(concat('%', '334518102833'), '%')\n" +
-                "\t\tOR c.CN_DESCRIPTION LIKE concat(concat('%', '334518102833'), '%')\n" +
-                ")", stmt.toString());
+        assertEquals("SELECT *\n"
+            + "FROM (\n"
+            + "\tSELECT C.FLEX_VALUE, c.PARENT_FLEX_VALUE, c.CN_DESCRIPTION, c.En_Description\n"
+            + "\tFROM (\n"
+            + "\t\t(SELECT a.PARENT_FLEX_VALUE, a.FLEX_VALUE, a.CN_DESCRIPTION, a.EN_DESCRIPTION, a.SUMMARY_FLAG\n"
+            + "\t\tFROM bpm_department_t4 a\n"
+            + "\t\tWHERE 1 = 1\n"
+            + "\t\t\tAND a.ENABLED_FLAG = 'Y')\n"
+            + "\t\tMINUS\n"
+            + "\t\t(SELECT DISTINCT b.PARENT_FLEX_VALUE, b.FLEX_VALUE, b.CN_DESCRIPTION, b.EN_DESCRIPTION, b.SUMMARY_FLAG\n"
+            + "\t\tFROM bpm_department_t4 b\n"
+            + "\t\tWHERE 1 = 1\n"
+            + "\t\t\tAND b.ENABLED_FLAG = 'Y'\n"
+            + "\t\tSTART WITH (b.flex_value = 'C019998'\n"
+            + "\t\t\tOR b.flex_value LIKE 'ZF%')\n"
+            + "\t\tCONNECT BY PRIOR b.flex_value = b.parent_flex_value)\n"
+            + "\t) c\n"
+            + "\tWHERE 1 = 1\n"
+            + "\t\tAND UPPER(c.FLEX_VALUE) LIKE concat(concat('%', '334518102833'), '%')\n"
+            + "\t\tOR c.CN_DESCRIPTION LIKE concat(concat('%', '334518102833'), '%')\n"
+            + ")", stmt.toString());
 
-        assertEquals("select *\n" +
-                "from (\n" +
-                "\tselect C.FLEX_VALUE, c.PARENT_FLEX_VALUE, c.CN_DESCRIPTION, c.En_Description\n" +
-                "\tfrom (\n" +
-                "\t\tselect a.PARENT_FLEX_VALUE, a.FLEX_VALUE, a.CN_DESCRIPTION, a.EN_DESCRIPTION, a.SUMMARY_FLAG\n" +
-                "\t\tfrom bpm_department_t4 a\n" +
-                "\t\twhere 1 = 1\n" +
-                "\t\t\tand a.ENABLED_FLAG = 'Y'\n" +
-                "\t\tminus\n" +
-                "\t\tselect distinct b.PARENT_FLEX_VALUE, b.FLEX_VALUE, b.CN_DESCRIPTION, b.EN_DESCRIPTION, b.SUMMARY_FLAG\n" +
-                "\t\tfrom bpm_department_t4 b\n" +
-                "\t\twhere 1 = 1\n" +
-                "\t\t\tand b.ENABLED_FLAG = 'Y'\n" +
-                "\t\tstart with b.flex_value = 'C019998'\n" +
-                "\t\t\tor b.flex_value like 'ZF%'\n" +
-                "\t\tconnect by prior b.flex_value = b.parent_flex_value\n" +
-                "\t) c\n" +
-                "\twhere 1 = 1\n" +
-                "\t\tand UPPER(c.FLEX_VALUE) like concat(concat('%', '334518102833'), '%')\n" +
-                "\t\tor c.CN_DESCRIPTION like concat(concat('%', '334518102833'), '%')\n" +
-                ")", stmt.toLowerCaseString());
+        assertEquals("select *\n"
+            + "from (\n"
+            + "\tselect C.FLEX_VALUE, c.PARENT_FLEX_VALUE, c.CN_DESCRIPTION, c.En_Description\n"
+            + "\tfrom (\n"
+            + "\t\t(select a.PARENT_FLEX_VALUE, a.FLEX_VALUE, a.CN_DESCRIPTION, a.EN_DESCRIPTION, a.SUMMARY_FLAG\n"
+            + "\t\tfrom bpm_department_t4 a\n"
+            + "\t\twhere 1 = 1\n"
+            + "\t\t\tand a.ENABLED_FLAG = 'Y')\n"
+            + "\t\tminus\n"
+            + "\t\t(select distinct b.PARENT_FLEX_VALUE, b.FLEX_VALUE, b.CN_DESCRIPTION, b.EN_DESCRIPTION, b.SUMMARY_FLAG\n"
+            + "\t\tfrom bpm_department_t4 b\n"
+            + "\t\twhere 1 = 1\n"
+            + "\t\t\tand b.ENABLED_FLAG = 'Y'\n"
+            + "\t\tstart with (b.flex_value = 'C019998'\n"
+            + "\t\t\tor b.flex_value like 'ZF%')\n"
+            + "\t\tconnect by prior b.flex_value = b.parent_flex_value)\n"
+            + "\t) c\n"
+            + "\twhere 1 = 1\n"
+            + "\t\tand UPPER(c.FLEX_VALUE) like concat(concat('%', '334518102833'), '%')\n"
+            + "\t\tor c.CN_DESCRIPTION like concat(concat('%', '334518102833'), '%')\n"
+            + ")", stmt.toLowerCaseString());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

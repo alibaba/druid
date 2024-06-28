@@ -53,8 +53,8 @@ public class SchemaStatTest12 extends TestCase {
         System.out.println("functionns : " + statVisitor.getFunctions());
         assertEquals(3, relationships.size());
 
-        Assert.assertEquals(23, statVisitor.getColumns().size());
-        Assert.assertEquals(19, statVisitor.getConditions().size());
+        Assert.assertEquals(24, statVisitor.getColumns().size());
+        Assert.assertEquals(20, statVisitor.getConditions().size());
         assertEquals(1, statVisitor.getFunctions().size());
     }
 }

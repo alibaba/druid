@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 /**
@@ -30,10 +31,21 @@ public class WallSelectWhereTest extends TestCase {
     private String sql = "SELECT F1, F2  from t WHERE 1 = 1";
 
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql));
+        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        final WallConfig config = new WallConfig();
+        config.setSelectWhereAlwayTrueCheck(false);
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+
+        config.setSelectWhereAlwayTrueCheck(true);
+        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        final WallConfig config = new WallConfig();
+        config.setSelectWhereAlwayTrueCheck(false);
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        config.setSelectWhereAlwayTrueCheck(true);
+        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 }

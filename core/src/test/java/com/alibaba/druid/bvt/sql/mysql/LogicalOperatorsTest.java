@@ -111,7 +111,7 @@ public class LogicalOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT (!1) + 1;", text);
+        Assert.assertEquals("SELECT !1 + 1;", text);
     }
 
     public void test_8() throws Exception {
@@ -211,7 +211,7 @@ public class LogicalOperatorsTest extends TestCase {
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
         Assert.assertEquals("SELECT *\n" +
                 "FROM SUNTEST\n" +
-                "WHERE (~ID) = 1;", text);
+                "WHERE ~ID = 1;", text);
 
 
         sql = "SELECT * FROM SUNTEST WHERE ~(ID = 1);";

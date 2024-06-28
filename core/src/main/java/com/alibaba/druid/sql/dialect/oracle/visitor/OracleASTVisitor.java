@@ -48,12 +48,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     default void endVisit(OracleSelectJoin x) {
     }
 
-    default void endVisit(OracleSelectPivot x) {
-    }
-
-    default void endVisit(OracleSelectPivot.Item x) {
-    }
-
     default void endVisit(OracleSelectRestriction.CheckOption x) {
     }
 
@@ -61,9 +55,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleSelectSubqueryTableSource x) {
-    }
-
-    default void endVisit(OracleSelectUnPivot x) {
     }
 
     default void endVisit(OracleUpdateStatement x) {
@@ -93,14 +84,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
         return true;
     }
 
-    default boolean visit(OracleSelectPivot x) {
-        return true;
-    }
-
-    default boolean visit(OracleSelectPivot.Item x) {
-        return true;
-    }
-
     default boolean visit(OracleSelectRestriction.CheckOption x) {
         return true;
     }
@@ -110,10 +93,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default boolean visit(OracleSelectSubqueryTableSource x) {
-        return true;
-    }
-
-    default boolean visit(OracleSelectUnPivot x) {
         return true;
     }
 
@@ -515,6 +494,13 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(OracleAlterTableShrinkSpace x) {
+    }
+
+    default boolean visit(OracleAlterSummaryStatement x) {
+        return true;
+    }
+
+    default void endVisit(OracleAlterSummaryStatement x) {
     }
 
     default boolean visit(OracleFileSpecification x) {

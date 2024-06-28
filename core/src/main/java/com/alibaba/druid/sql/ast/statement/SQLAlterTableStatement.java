@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLAlterStatement {
+    private boolean only;
     private SQLExprTableSource tableSource;
     private List<SQLAlterTableItem> items = new ArrayList<SQLAlterTableItem>();
 
@@ -38,7 +39,8 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     private boolean removePatiting;
     private boolean upgradePatiting;
-    private List<SQLAssignItem> tableOptions = new ArrayList<SQLAssignItem>();
+    private List<SQLAssignItem> tableOptions = new ArrayList<>();
+    private List<SQLName> unsetTableOptions = new ArrayList<>();
     private SQLPartitionBy partition;
 
     // odps
@@ -60,6 +62,14 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public SQLAlterTableStatement(DbType dbType) {
         super(dbType);
+    }
+
+    public boolean isOnly() {
+        return only;
+    }
+
+    public void setOnly(boolean only) {
+        this.only = only;
     }
 
     public boolean isIgnore() {
@@ -177,6 +187,10 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public List<SQLAssignItem> getTableOptions() {
         return tableOptions;
+    }
+
+    public List<SQLName> getUnsetTableOptions() {
+        return unsetTableOptions;
     }
 
     public SQLPartitionBy getPartition() {

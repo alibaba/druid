@@ -8,7 +8,7 @@ druid.common = function () {
 
     // only one page for now
     var sqlViewPage = 1;
-    var sqlViewPerPageCount = 1000000;
+    var sqlViewPerPageCount = 100;
 
     return {
         init: function () {

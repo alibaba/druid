@@ -16,25 +16,17 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
-    protected SQLExpr expr;
-    protected String alias;
-
+public class SQLSelectItem extends SQLAliasedExpr implements SQLReplaceable {
     protected boolean connectByRoot;
     protected transient long aliasHashCode64;
     protected List<String> aliasList;
@@ -79,81 +71,14 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         }
     }
 
-    public SQLExpr getExpr() {
-        return this.expr;
-    }
-
-    public void setExpr(SQLExpr expr) {
-        if (expr != null) {
-            expr.setParent(this);
+    public void output(StringBuilder buf) {
+        if (this.connectByRoot) {
+            buf.append(" CONNECT_BY_ROOT ");
         }
-        this.expr = expr;
-    }
-
-    public String computeAlias() {
-        String alias = this.getAlias();
-        if (alias == null) {
-            if (expr instanceof SQLIdentifierExpr) {
-                alias = ((SQLIdentifierExpr) expr).getName();
-            } else if (expr instanceof SQLPropertyExpr) {
-                alias = ((SQLPropertyExpr) expr).getName();
-            }
-        }
-
-        return SQLUtils.normalize(alias);
-    }
-
-    public SQLDataType computeDataType() {
-        if (expr == null) {
-            return null;
-        }
-
-        return expr.computeDataType();
-    }
-
-    public String getAlias() {
-        return this.alias;
-    }
-
-    public String getAlias2() {
-        if (this.alias == null || this.alias.length() == 0) {
-            return alias;
-        }
-
-        char first = alias.charAt(0);
-        if (first == '"' || first == '\'') {
-            char[] chars = new char[alias.length() - 2];
-            int len = 0;
-            for (int i = 1; i < alias.length() - 1; ++i) {
-                char ch = alias.charAt(i);
-                if (ch == '\\') {
-                    ++i;
-                    ch = alias.charAt(i);
-                }
-                chars[len++] = ch;
-            }
-            return new String(chars, 0, len);
-        }
-
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public void output(Appendable buf) {
-        try {
-            if (this.connectByRoot) {
-                buf.append(" CONNECT_BY_ROOT ");
-            }
-            this.expr.output(buf);
-            if ((this.alias != null) && (this.alias.length() != 0)) {
-                buf.append(" AS ");
-                buf.append(this.alias);
-            }
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
+        this.expr.output(buf);
+        if ((this.alias != null) && (this.alias.length() != 0)) {
+            buf.append(" AS ");
+            buf.append(this.alias);
         }
     }
 
@@ -221,16 +146,6 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             x.aliasList = new ArrayList<String>(aliasList);
         }
         return x;
-    }
-
-    @Override
-    public boolean replace(SQLExpr expr, SQLExpr target) {
-        if (this.expr == expr) {
-            setExpr(target);
-            return true;
-        }
-
-        return false;
     }
 
     public boolean match(String alias) {

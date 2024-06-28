@@ -44,37 +44,37 @@ public class MySqlCreateViewTest1 extends MysqlTest {
 
         assertEquals("CREATE ALGORITHM = UNDEFINED\n" +
                         "\tDEFINER = 'root'@'localhost'\n" +
-                        "\tSQL SECURITY = DEFINER\n" +
+                        "\tSQL SECURITY DEFINER\n" +
                         "\tVIEW view_audit_enroll\n" +
                         "AS\n" +
                         "SELECT a.enroll_id AS \"enrollId\"\n" +
                         "\t, CASE \n" +
-                        "\t\tWHEN (\n" +
+                        "\t\tWHEN ((\n" +
                         "\t\t\t\tSELECT audit\n" +
                         "\t\t\t\tFROM actvty_audit\n" +
                         "\t\t\t\tWHERE enroll_id = a.enroll_id\n" +
                         "\t\t\t\t\tAND rankjurisdiction = 1\n" +
-                        "\t\t\t) > 0\n" +
+                        "\t\t\t) > 0)\n" +
                         "\t\tTHEN '县站已审核'\n" +
                         "\t\tELSE NULL\n" +
                         "\tEND AS \"countyAudit\"\n" +
                         "\t, CASE \n" +
-                        "\t\tWHEN (\n" +
+                        "\t\tWHEN ((\n" +
                         "\t\t\t\tSELECT audit\n" +
                         "\t\t\t\tFROM actvty_audit\n" +
                         "\t\t\t\tWHERE enroll_id = a.enroll_id\n" +
                         "\t\t\t\t\tAND rankjurisdiction = 2\n" +
-                        "\t\t\t) > 0\n" +
+                        "\t\t\t) > 0)\n" +
                         "\t\tTHEN '市馆已审核'\n" +
                         "\t\tELSE NULL\n" +
                         "\tEND AS \"cityAudit\"\n" +
                         "\t, CASE \n" +
-                        "\t\tWHEN (\n" +
+                        "\t\tWHEN ((\n" +
                         "\t\t\t\tSELECT audit\n" +
                         "\t\t\t\tFROM actvty_audit\n" +
                         "\t\t\t\tWHERE enroll_id = a.enroll_id\n" +
                         "\t\t\t\t\tAND rankjurisdiction = 3\n" +
-                        "\t\t\t) > 0\n" +
+                        "\t\t\t) > 0)\n" +
                         "\t\tTHEN '省馆已审核'\n" +
                         "\t\tELSE NULL\n" +
                         "\tEND AS \"provinceAudit\"\n" +
@@ -84,37 +84,37 @@ public class MySqlCreateViewTest1 extends MysqlTest {
 
         Assert.assertEquals("create algorithm = UNDEFINED\n" +
                         "\tdefiner = 'root'@'localhost'\n" +
-                        "\tsql security = DEFINER\n" +
+                        "\tsql security DEFINER\n" +
                         "\tview view_audit_enroll\n" +
                         "as\n" +
                         "select a.enroll_id as \"enrollId\"\n" +
                         "\t, case \n" +
-                        "\t\twhen (\n" +
+                        "\t\twhen ((\n" +
                         "\t\t\t\tselect audit\n" +
                         "\t\t\t\tfrom actvty_audit\n" +
                         "\t\t\t\twhere enroll_id = a.enroll_id\n" +
                         "\t\t\t\t\tand rankjurisdiction = 1\n" +
-                        "\t\t\t) > 0\n" +
+                        "\t\t\t) > 0)\n" +
                         "\t\tthen '县站已审核'\n" +
                         "\t\telse null\n" +
                         "\tend as \"countyAudit\"\n" +
                         "\t, case \n" +
-                        "\t\twhen (\n" +
+                        "\t\twhen ((\n" +
                         "\t\t\t\tselect audit\n" +
                         "\t\t\t\tfrom actvty_audit\n" +
                         "\t\t\t\twhere enroll_id = a.enroll_id\n" +
                         "\t\t\t\t\tand rankjurisdiction = 2\n" +
-                        "\t\t\t) > 0\n" +
+                        "\t\t\t) > 0)\n" +
                         "\t\tthen '市馆已审核'\n" +
                         "\t\telse null\n" +
                         "\tend as \"cityAudit\"\n" +
                         "\t, case \n" +
-                        "\t\twhen (\n" +
+                        "\t\twhen ((\n" +
                         "\t\t\t\tselect audit\n" +
                         "\t\t\t\tfrom actvty_audit\n" +
                         "\t\t\t\twhere enroll_id = a.enroll_id\n" +
                         "\t\t\t\t\tand rankjurisdiction = 3\n" +
-                        "\t\t\t) > 0\n" +
+                        "\t\t\t) > 0)\n" +
                         "\t\tthen '省馆已审核'\n" +
                         "\t\telse null\n" +
                         "\tend as \"provinceAudit\"\n" +

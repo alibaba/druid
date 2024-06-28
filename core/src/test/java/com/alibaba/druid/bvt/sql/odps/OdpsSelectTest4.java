@@ -22,14 +22,14 @@ import org.junit.Assert;
 public class OdpsSelectTest4 extends TestCase {
     public void test_distribute_by() throws Exception {
         String sql = "select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60) from dual";//
-        Assert.assertEquals("SELECT total_day_cnt * EXP((-datediff(TO_DATE('20150819', 'yyyymmdd'), last_time, 'dd')) / 60)\n" +
+        Assert.assertEquals("SELECT total_day_cnt * EXP(-datediff(TO_DATE('20150819', 'yyyymmdd'), last_time, 'dd') / 60)\n" +
                 "FROM dual", SQLUtils.formatOdps(sql));
     }
 
     public void test_distribute_by_lcase() throws Exception {
         String sql = "select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60) from dual";//
 
-        assertEquals("select total_day_cnt * EXP((-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd')) / 60)\n" +
+        assertEquals("select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60)\n" +
                 "from dual", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

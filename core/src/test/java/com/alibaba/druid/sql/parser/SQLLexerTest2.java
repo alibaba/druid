@@ -84,9 +84,18 @@ public class SQLLexerTest2 extends TestCase {
         }
         assert exception != null;
         Assert.assertEquals("not supported.pos 13, line 2, column 2, token IDENTIFIER FORM", exception.getMessage());
-
-
     }
 
+    public void test_lexer_computePos() {
+        String sql = "\nSELECT;";
+        Lexer lexer = new Lexer(sql);
+        lexer.nextToken();
+        lexer.nextToken();
+        lexer.computeRowAndColumn();
+        int posLine = lexer.getPosLine();
+        int column = lexer.getPosColumn();
+        Assert.assertEquals(posLine, 2);
+        Assert.assertEquals(column, 7);
+    }
 
 }

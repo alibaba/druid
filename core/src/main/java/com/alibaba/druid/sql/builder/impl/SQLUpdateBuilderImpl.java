@@ -165,6 +165,8 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
             case oracle:
                 return new OracleUpdateStatement();
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGUpdateStatement();
             case sqlserver:
                 return new SQLServerUpdateStatement();

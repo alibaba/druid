@@ -69,4 +69,46 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
                 + " STORED BY 'OTS'\n"
                 + " WITH (column_mapping = 'pk:pk,a:col1,b:col2', serializer = 'default')", output);
     }
+
+    @Test
+    public void test_4() throws Exception {
+        String sql = "create database /*!32312 if  not  exists */ test4 /*!40100 default  character  set  utf8 */;";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatement();
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test4 CHARACTER SET utf8", output);
+    }
+
+    @Test
+    public void test_5() throws Exception {
+        String sql = "create database /*!32312 if  not  exists */ test5 /*!40100 default  character  set  utf8  collate  utf8_general_ci */;";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatement();
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test5 CHARACTER SET utf8 COLLATE utf8_general_ci", output);
+    }
+
+    @Test
+    public void test_6() throws Exception {
+        String sql = "create database /*!32312 if  not  exists */ test6 /*!40100 collate  utf8_general_ci  character  set  utf8  */;";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatement();
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test6 CHARACTER SET utf8 COLLATE utf8_general_ci", output);
+    }
 }

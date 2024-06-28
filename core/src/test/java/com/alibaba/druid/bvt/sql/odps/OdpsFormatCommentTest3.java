@@ -17,8 +17,7 @@ public class OdpsFormatCommentTest3 extends TestCase {
                 + "\nselect f2 -- aa"//
                 + "\nfrom t1;";//
         Assert.assertEquals("-- 使用服务模式"//
-                + "\nSET odps.service.mode = all;"//
-                + "\n-- 使用新引擎"//
+                + "\nSET odps.service.mode = all;-- 使用新引擎"//
                 + "\nSET odps.nvm.enabled = true;"//
                 + "\n" //
                 + "\nSELECT f1 -- aa"//

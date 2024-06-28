@@ -23,26 +23,25 @@ import java.io.UnsupportedEncodingException;
  * @author xianmao.hexm 2007-3-5 09:51:33
  */
 public class CharsetConvert {
-    private String clientEncoding;
+    private final String clientEncoding;
 
-    private String serverEncoding;
+    private final String serverEncoding;
 
-    private boolean enable;
+    private final boolean enable;
 
     public CharsetConvert(String clientEncoding, String serverEncoding) {
         this.clientEncoding = clientEncoding;
         this.serverEncoding = serverEncoding;
-        if (clientEncoding != null && serverEncoding != null && !clientEncoding.equalsIgnoreCase(serverEncoding)) {
-            enable = true;
-        }
+        this.enable = clientEncoding != null && serverEncoding != null && !clientEncoding.equalsIgnoreCase(serverEncoding);
     }
 
     /**
-     * 字符串编码
+     * Encodes the specified string using the specified client and server encodings, if enabled.
+     * If encoding is not enabled or the input string is empty, the original string is returned unchanged.
      *
-     * @param s String
-     * @return String
-     * @throws UnsupportedEncodingException
+     * @param s the string to be encoded
+     * @return the encoded string, or the original string if encoding is not enabled or the input string is empty
+     * @throws UnsupportedEncodingException if the specified encoding is not supported
      */
     public String encode(String s) throws UnsupportedEncodingException {
         if (enable && !isEmpty(s)) {
@@ -52,11 +51,12 @@ public class CharsetConvert {
     }
 
     /**
-     * 字符串解码
+     * Decodes the specified string using the specified server and client encodings, if enabled.
+     * If decoding is not enabled or the input string is empty, the original string is returned unchanged.
      *
-     * @param s String
-     * @return String
-     * @throws UnsupportedEncodingException
+     * @param s the string to be decoded
+     * @return the decoded string, or the original string if decoding is not enabled or the input string is empty
+     * @throws UnsupportedEncodingException if the specified encoding is not supported
      */
     public String decode(String s) throws UnsupportedEncodingException {
         if (enable && !isEmpty(s)) {
@@ -66,13 +66,13 @@ public class CharsetConvert {
     }
 
     /**
-     * 判断空字符串
+     * Determines whether the specified string is null or empty.
      *
-     * @param s String
-     * @return boolean
+     * @param s the string to be checked
+     * @return true if the specified string is null or empty, false otherwise
      */
     public boolean isEmpty(String s) {
-        return s == null || "".equals(s);
+        return s == null || s.isEmpty();
     }
 
 }

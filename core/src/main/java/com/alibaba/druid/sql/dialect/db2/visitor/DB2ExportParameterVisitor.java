@@ -36,7 +36,7 @@ public class DB2ExportParameterVisitor extends DB2OutputVisitor implements Expor
     private final boolean requireParameterizedOutput;
 
     public DB2ExportParameterVisitor(final List<Object> parameters,
-                                     final Appendable appender,
+                                     final StringBuilder appender,
                                      final boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
@@ -51,7 +51,7 @@ public class DB2ExportParameterVisitor extends DB2OutputVisitor implements Expor
         this(parameters, new StringBuilder(), false);
     }
 
-    public DB2ExportParameterVisitor(final Appendable appender) {
+    public DB2ExportParameterVisitor(final StringBuilder appender) {
         this(new ArrayList<Object>(), appender, true);
     }
 

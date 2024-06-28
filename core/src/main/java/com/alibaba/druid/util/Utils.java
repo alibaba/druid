@@ -15,29 +15,30 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
 import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class Utils {
     public static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+    private static final Log LOG = LogFactory.getLog(DruidDataSourceUtils.class);
 
     public static String read(InputStream in) {
         if (in == null) {
             return null;
         }
 
-        InputStreamReader reader;
-        try {
-            reader = new InputStreamReader(in, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
+        InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
         return read(reader);
     }
 
@@ -184,6 +185,73 @@ public class Utils {
         return buf.toString();
     }
 
+    static void trySetIntProperty(Properties properties, String key, Consumer<Integer> setter) {
+        if (properties == null) {
+            LOG.error("propertiesisnull");
+            return;
+        }
+        if (key == null || setter == null) {
+            LOG.error("keyisnullOrSetterisnull,|key=" + key + ",setter=" + setter);
+            return;
+        }
+        String property = properties.getProperty(key);
+        if (property != null && property.length() > 0) {
+            try {
+                int value = Integer.parseInt(property);
+                setter.accept(value);
+            } catch (NumberFormatException e) {
+                LOG.error("illegal property '" + key + "' = " + property, e);
+            }
+        }
+    }
+
+    static void trySetLongProperty(Properties properties, String key, Consumer<Long> setter) {
+        if (properties == null) {
+            LOG.error("propertiesisnull");
+            return;
+        }
+        if (key == null || setter == null) {
+            LOG.error("keyisnullOrSetterisnull,|key=" + key + ",setter=" + setter);
+            return;
+        }
+        String property = properties.getProperty(key);
+        if (property != null && property.length() > 0) {
+            try {
+                long value = Long.parseLong(property);
+                setter.accept(value);
+            } catch (NumberFormatException e) {
+                LOG.error("illegal property '" + key + "' = " + property, e);
+            }
+        }
+    }
+    static void trySetStringProperty(Properties properties, String key, Consumer<String> setter) {
+        if (properties == null) {
+            LOG.error("propertiesisnull");
+            return;
+        }
+        if (key == null || setter == null) {
+            LOG.error("keyisnullOrSetterisnull,|key=" + key + ",setter=" + setter);
+            return;
+        }
+        String value = properties.getProperty(key);
+        if (value != null) {
+            setter.accept(value);
+        }
+    }
+    static void trySetBooleanProperty(Properties properties, String key, Consumer<Boolean> setter) {
+        if (properties == null) {
+            LOG.error("propertiesisnull");
+            return;
+        }
+        if (key == null || setter == null) {
+            LOG.error("keyisnullOrSetterisnull,|key=" + key + ",setter=" + setter);
+            return;
+        }
+        Boolean value = getBoolean(properties, key);
+        if (value != null) {
+            setter.accept(value);
+        }
+    }
     public static Boolean getBoolean(Properties properties, String key) {
         String property = properties.getProperty(key);
         if ("true".equals(property)) {
@@ -471,6 +539,13 @@ public class Utils {
             JdbcUtils.close(is);
             JdbcUtils.close(reader);
         }
+    }
+
+    /**
+     * Returns a default value if the object passed is {@code null}.
+     */
+    public static <T> T getIfNull(final T object, final T defaultValue) {
+        return object != null ? object : defaultValue;
     }
 
 }

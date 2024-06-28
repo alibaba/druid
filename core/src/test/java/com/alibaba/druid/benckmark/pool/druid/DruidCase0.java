@@ -16,6 +16,9 @@
 package com.alibaba.druid.benckmark.pool.druid;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import junit.framework.TestCase;
 
@@ -27,6 +30,7 @@ public class DruidCase0 extends TestCase {
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
+        dataSource.setFilters("stat");
         dataSource.setMaxActive(8);
         dataSource.setMinIdle(1);
         dataSource.setMinEvictableIdleTimeMillis(1000 * 60 * 5);
@@ -37,18 +41,34 @@ public class DruidCase0 extends TestCase {
     }
 
     public void test_benchmark() throws Exception {
-        for (int i = 0; i < 10; ++i) {
+        Connection conn = dataSource.getConnection();
+        conn.close();
+
+        for (int i = 0; i < 5; ++i) {
             long startMillis = System.currentTimeMillis();
             benchmark();
             long millis = System.currentTimeMillis() - startMillis;
 
             System.out.println("millis : " + millis);
+            // 1043
         }
     }
 
     public void benchmark() throws Exception {
         for (int i = 0; i < 1000 * 1000 * 10; ++i) {
             Connection conn = dataSource.getConnection();
+//            Statement stmt = conn.createStatement();
+//            ResultSet rs = stmt.executeQuery("select 1");
+//            rs.close();
+//            stmt.close();
+
+            PreparedStatement pstmt = conn.prepareStatement("select 1");
+            ResultSet rs = pstmt.executeQuery();
+//            rs.next();
+//            rs.getInt(1);
+//            rs.getInt(1);
+            rs.close();
+            pstmt.close();
             conn.close();
         }
     }

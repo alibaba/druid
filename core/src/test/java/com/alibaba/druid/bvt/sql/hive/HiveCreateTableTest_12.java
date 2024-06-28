@@ -64,12 +64,12 @@ public class HiveCreateTableTest_12 extends OracleTest {
                     "\tcountry STRING\n" +
                     ")\n" +
                     "CLUSTERED BY (userid)\n" +
+                    "SORTED BY (viewTime)\n" +
+                    "INTO 32 BUCKETS\n" +
                     "ROW FORMAT DELIMITED\n" +
                     "\tFIELDS TERMINATED BY '\\001'\n" +
                     "\tCOLLECTION ITEMS TERMINATED BY '\\002'\n" +
                     "\tMAP KEYS TERMINATED BY '\\003'\n" +
-                    "SORTED BY (viewTime)\n" +
-                    "INTO 32 BUCKETS\n" +
                     "STORED AS SEQUENCEFILE;", text);
         }
 

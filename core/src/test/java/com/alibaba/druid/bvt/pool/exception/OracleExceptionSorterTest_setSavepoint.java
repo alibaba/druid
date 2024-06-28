@@ -67,6 +67,9 @@ public class OracleExceptionSorterTest_setSavepoint extends TestCase {
         }
         Assert.assertNotNull(setError);
 
+        // assert that shrink will not call emptySignal at this time.
+        dataSource.shrink(true, false);
+        
         conn.close();
 
         {

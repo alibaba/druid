@@ -73,7 +73,9 @@ public class SpringStatManager {
 
         for (Object stat : stats) {
             List<Map<String, Object>> methodStatDataList = SpringStatUtils.getMethodStatDataList(stat);
-            allMethodStatDataList.addAll(methodStatDataList);
+            if (methodStatDataList != null) {
+                allMethodStatDataList.addAll(methodStatDataList);
+            }
         }
 
         return allMethodStatDataList;

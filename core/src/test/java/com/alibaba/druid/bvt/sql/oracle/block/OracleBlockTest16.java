@@ -65,8 +65,8 @@ public class OracleBlockTest16 extends OracleTest {
                 "\t\tLOOP\n" +
                 "\t\t\tj := j + 1;\n" +
                 "\t\t\ts := s + i * j;\n" +
-                "\t\t\tEXIT inner_loop WHEN j > 5;\n" +
-                "\t\t\tEXIT outer_loop WHEN i * j > 15;\n" +
+                "\t\t\tEXIT inner_loop WHEN (j > 5);\n" +
+                "\t\t\tEXIT outer_loop WHEN ((i * j) > 15);\n" +
                 "\t\tEND LOOP inner_loop;\n" +
                 "\tEND LOOP outer_loop;\n" +
                 "\tDBMS_OUTPUT.PUT_LINE('The sum of products equals: ' || TO_CHAR(s));\n" +

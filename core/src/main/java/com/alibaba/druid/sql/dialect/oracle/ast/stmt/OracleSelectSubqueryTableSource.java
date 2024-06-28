@@ -23,8 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource implements OracleSelectTableSource {
-    protected OracleSelectPivotBase pivot;
-
     public OracleSelectSubqueryTableSource() {
     }
 
@@ -40,14 +38,6 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
         super(select);
     }
 
-    public OracleSelectPivotBase getPivot() {
-        return pivot;
-    }
-
-    public void setPivot(OracleSelectPivotBase pivot) {
-        this.pivot = pivot;
-    }
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         this.accept0((OracleASTVisitor) visitor);
@@ -58,6 +48,7 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
             acceptChild(visitor, this.getHints());
             acceptChild(visitor, this.select);
             acceptChild(visitor, this.pivot);
+            acceptChild(visitor, this.unpivot);
             acceptChild(visitor, this.flashback);
         }
         visitor.endVisit(this);
@@ -73,6 +64,10 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
 
         if (pivot != null) {
             setParent(pivot.clone());
+        }
+
+        if (unpivot != null) {
+            x.setUnpivot(unpivot.clone());
         }
 
         return x;

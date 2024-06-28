@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * SQLServerWallTest
@@ -32,15 +31,13 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 public class MySqlWallTest65 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        provider.getConfig().setSchemaCheck(true);
-
+        WallConfig config = provider.getConfig();
+        config.setSchemaCheck(true);
         Assert.assertFalse(provider.checkValid(//
                 "SELECT email, passwd, login_id, full_name" +
-                        " FROM members" +
-                        " WHERE member_id = 3 AND 0<(SELECT COUNT(*) FROM tabname);"));
+                        " FROM test1.members" +
+                        " WHERE member_id = 3 OR 0<(SELECT COUNT(*) FROM tabname);"));
 
         Assert.assertEquals(2, provider.getTableStats().size());
     }
-
-
 }

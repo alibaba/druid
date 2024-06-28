@@ -20,10 +20,19 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableDropConstraint extends SQLObjectImpl implements SQLAlterTableItem {
+    private boolean ifExists;
     private SQLName constraintName;
 
     protected boolean cascade;
     protected boolean restrict;
+
+    public boolean isIfExists() {
+        return ifExists;
+    }
+
+    public void setIfExists(boolean ifExists) {
+        this.ifExists = ifExists;
+    }
 
     public boolean isCascade() {
         return cascade;

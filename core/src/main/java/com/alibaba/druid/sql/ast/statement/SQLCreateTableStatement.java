@@ -50,8 +50,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     protected SQLName tablespace;
     protected SQLPartitionBy partitioning;
+    protected SQLPartitionOf partitionOf;
     protected SQLPartitionBy localPartitioning;
     protected SQLExpr storedAs;
+    protected SQLExpr storedBy;
     protected SQLExpr location;
 
     protected boolean onCommitPreserveRows;
@@ -74,6 +76,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected boolean single; // polardbx
     protected boolean dimension;
     protected SQLExpr engine;
+
+    protected SQLExpr lifeCycle;
 
     public SQLCreateTableStatement() {
     }
@@ -102,6 +106,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, partitioning);
         this.acceptChild(v, localPartitioning);
         this.acceptChild(v, storedAs);
+        this.acceptChild(v, storedBy);
         this.acceptChild(v, location);
 
         this.acceptChild(v, partitionColumns);
@@ -109,6 +114,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, sortedBy);
         this.acceptChild(v, tableOptions);
         this.acceptChild(v, tblProperties);
+        this.acceptChild(v, lifeCycle);
     }
 
     public SQLExpr getComment() {
@@ -191,7 +197,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public static enum Type {
-        GLOBAL_TEMPORARY, LOCAL_TEMPORARY, TEMPORARY, SHADOW
+        GLOBAL_TEMPORARY, LOCAL_TEMPORARY, TEMPORARY, SHADOW, TRANSACTIONAL
     }
 
     public List<SQLTableElement> getTableElementList() {
@@ -362,6 +368,16 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.partitioning = partitioning;
     }
 
+    public SQLPartitionOf getPartitionOf() {
+        return partitionOf;
+    }
+
+    public void setPartitionOf(SQLPartitionOf partitionOf) {
+        if (partitionOf != null) {
+            partitionOf.setParent(this);
+        }
+        this.partitionOf = partitionOf;
+    }
     public void setLocalPartitioning(SQLPartitionBy localPartitioning) {
         if (localPartitioning != null) {
             localPartitioning.setParent(this);
@@ -935,6 +951,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         } else if (item instanceof SQLAlterTableDropConstraint) {
             return apply((SQLAlterTableDropConstraint) item);
+        } else if (item instanceof SQLAlterTableDropCheck) {
+            return apply((SQLAlterTableDropCheck) item);
 
         } else if (item instanceof SQLAlterTableDropKey) {
             return apply((SQLAlterTableDropKey) item);
@@ -1030,6 +1048,19 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             if (e instanceof SQLConstraint) {
                 SQLConstraint constraint = (SQLConstraint) e;
                 if (SQLUtils.nameEquals(constraint.getName(), item.getConstraintName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private boolean apply(SQLAlterTableDropCheck item) {
+        for (int i = tableElementList.size() - 1; i >= 0; i--) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLConstraint) {
+                SQLConstraint constraint = (SQLConstraint) e;
+                if (SQLUtils.nameEquals(constraint.getName(), item.getCheckName())) {
                     tableElementList.remove(i);
                     return true;
                 }
@@ -1245,6 +1276,13 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         if (storedAs != null) {
             x.setStoredAs(storedAs.clone());
         }
+        if (storedBy != null) {
+            x.setStoredBy(storedBy.clone());
+        }
+
+        if (lifeCycle != null) {
+            x.setLifeCycle(lifeCycle.clone());
+        }
 
         if (location != null) {
             x.setLocation(location.clone());
@@ -1326,6 +1364,17 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             x.setParent(this);
         }
         this.storedAs = x;
+    }
+
+    public SQLExpr getStoredBy() {
+        return storedBy;
+    }
+
+    public void setStoredBy(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedBy = x;
     }
 
     public SQLCreateTableStatement clone() {
@@ -1477,6 +1526,27 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return null;
     }
 
+    public boolean removeOption(String name) {
+        if (name == null) {
+            return false;
+        }
+
+        long hash64 = FnvHash.hashCode64(name);
+
+        for (int i = tableOptions.size() - 1; i >= 0; i--) {
+            SQLAssignItem item = tableOptions.get(i);
+            final SQLExpr target = item.getTarget();
+            if (target instanceof SQLIdentifierExpr) {
+                if (((SQLIdentifierExpr) target).hashCode64() == hash64) {
+                    tableOptions.remove(i);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public SQLExpr getTblProperty(String name) {
         if (name == null) {
             return null;
@@ -1569,5 +1639,16 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     public DDLObjectType getDDLObjectType() {
         return DDLObjectType.TABLE;
+    }
+
+    public SQLExpr getLifeCycle() {
+        return lifeCycle;
+    }
+
+    public void setLifeCycle(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.lifeCycle = x;
     }
 }

@@ -17,26 +17,28 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-18.04 ]
-        java: [ 8 ]
+        os: [ ubuntu-latest ]
+        java: [ 8, 11, 17, 21 ]
       fail-fast: false
       max-parallel: 16
     name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           cache: 'maven'
-      - name: Build with Maven
+      - name: Build with Maven if test jdk8
+        if: ${{ matrix.java == '8' || matrix.java == '11'}}
         run: ./mvnw -Pgen-javadoc clean package -B
-      - name: Generate code coverage
-        run: ./mvnw -Pgen-code-cov clean test
-      # https://github.com/marketplace/actions/codecov
-      - uses: codecov/codecov-action@v3
+      - name: Build with Maven if test jdk17
+        if: ${{ matrix.java == '17' || matrix.java == '21' }}
+        run: ./mvnw -Penable-for-jdk17+,gen-code-cov clean package -B
+      - name: "Codecov if test jdk17"
+        if: ${{ matrix.java == '17' }}
+        uses: codecov/codecov-action@v3.1.0
         with:
-          name: codecov-umbrella
-          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./core/target/site/jacoco/jacoco.xml,./druid-spring-boot-starter/target/site/jacoco/jacoco.xml,./druid-spring-boot-3-starter/target/site/jacoco/jacoco.xml

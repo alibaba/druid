@@ -86,10 +86,10 @@ public class MySqlSelectTest_98 extends MysqlTest {
                             "\tFROM (\n" +
                             "\t\tSELECT DISTINCT brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.__aid AS __aid\n" +
                             "\t\tFROM brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump\n" +
-                            "\t\tWHERE brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_interest IN ('1142')\n" +
+                            "\t\tWHERE (brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_interest IN ('1142')\n" +
                             "\t\t\tAND brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.user_age IN ('4', '3', '2', '1')\n" +
                             "\t\t\tAND brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_basic IN ('1605', '1603', '1604', '1563')\n" +
-                            "\t\t\tAND NOT (brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_industry IN ('1140'))\n" +
+                            "\t\t\tAND NOT (brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_industry IN ('1140')))\n" +
                             "\t) t1\n" +
                             ") t2\n" +
                             "\tJOIN (\n" +
@@ -109,10 +109,10 @@ public class MySqlSelectTest_98 extends MysqlTest {
                             "\tfrom (\n" +
                             "\t\tselect distinct brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.__aid as __aid\n" +
                             "\t\tfrom brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump\n" +
-                            "\t\twhere brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_interest in ('1142')\n" +
+                            "\t\twhere (brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_interest in ('1142')\n" +
                             "\t\t\tand brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.user_age in ('4', '3', '2', '1')\n" +
                             "\t\t\tand brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_basic in ('1605', '1603', '1604', '1563')\n" +
-                            "\t\t\tand not (brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_industry in ('1140'))\n" +
+                            "\t\t\tand not (brand_crm_ship.ktv_algo_brand_display_ad_label_out_dump.label_list_industry in ('1140')))\n" +
                             "\t) t1\n" +
                             ") t2\n" +
                             "\tjoin (\n" +

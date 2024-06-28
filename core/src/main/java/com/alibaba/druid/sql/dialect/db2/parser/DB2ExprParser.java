@@ -210,7 +210,7 @@ public class DB2ExprParser extends SQLExprParser {
         return column;
     }
 
-    private SQLColumnDefinition.Identity parseIdentity() {
+    protected SQLColumnDefinition.Identity parseIdentity() {
         SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
 
         accept(Token.IDENTITY);

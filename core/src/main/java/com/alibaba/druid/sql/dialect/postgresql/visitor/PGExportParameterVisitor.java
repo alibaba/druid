@@ -35,7 +35,7 @@ public class PGExportParameterVisitor extends PGOutputVisitor implements ExportP
     private final boolean requireParameterizedOutput;
 
     public PGExportParameterVisitor(final List<Object> parameters,
-                                    final Appendable appender,
+                                    final StringBuilder appender,
                                     final boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
@@ -50,7 +50,7 @@ public class PGExportParameterVisitor extends PGOutputVisitor implements ExportP
         this(parameters, new StringBuilder(), false);
     }
 
-    public PGExportParameterVisitor(final Appendable appender) {
+    public PGExportParameterVisitor(final StringBuilder appender) {
         this(new ArrayList<Object>(), appender, true);
     }
 

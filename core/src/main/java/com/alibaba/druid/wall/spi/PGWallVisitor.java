@@ -16,6 +16,13 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
@@ -41,5 +48,27 @@ public class PGWallVisitor extends WallVisitorBase implements WallVisitor, PGAST
             return true;
         }
         return !this.provider.checkDenyTable(name);
+    }
+
+    @Override
+    public boolean visit(PGSelectQueryBlock x) {
+        WallVisitorUtils.checkSelect(this, x);
+        return true;
+    }
+
+    @Override
+    public boolean visit(PGDeleteStatement x) {
+        WallVisitorUtils.checkReadOnly(this, x.getFrom());
+        return visit((SQLDeleteStatement) x);
+    }
+
+    @Override
+    public boolean visit(PGUpdateStatement x) {
+        return visit((SQLUpdateStatement) x);
+    }
+
+    @Override
+    public boolean visit(PGInsertStatement x) {
+        return visit((SQLInsertStatement) x);
     }
 }

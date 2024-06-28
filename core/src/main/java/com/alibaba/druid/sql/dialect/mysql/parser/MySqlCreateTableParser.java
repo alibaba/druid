@@ -954,6 +954,20 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     accept(Token.RPAREN);
                     stmt.setDistributeByType(new SQLIdentifierExpr("HASH"));
+                } else if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE)) {
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    for (; ; ) {
+                        SQLName name = this.exprParser.name();
+                        stmt.getDistributeBy().add(name);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.RPAREN);
+                    stmt.setDistributeByType(new SQLIdentifierExpr("DUPLICATE"));
                 } else if (lexer.identifierEquals(FnvHash.Constants.BROADCAST)) {
                     lexer.nextToken();
                     stmt.setDistributeByType(new SQLIdentifierExpr("BROADCAST"));
@@ -1095,6 +1109,11 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
+            if (lexer.identifierEquals(FnvHash.Constants.SINGLE)) {
+                lexer.nextToken();
+                stmt.setSingle(true);
+                continue;
+            }
             break;
         }
 
@@ -1121,6 +1140,9 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 SQLSelect query = new MySqlSelectParser(this.exprParser).select();
                 stmt.setSelect(query);
                 accept(Token.RPAREN);
+            }
+            if (lexer.token() == Token.WITH) {
+                stmt.setWithSelect(this.parseWith());
             }
         }
 
@@ -1315,7 +1337,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
             lexer.nextToken();
-            partitionClause.setLifecycle((SQLIntegerExpr) exprParser.expr());
+            partitionClause.setLifeCycle((SQLIntegerExpr) exprParser.expr());
         }
 
         if (lexer.token() == Token.LPAREN) {
@@ -1437,7 +1459,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
             lexer.nextToken();
-            clause.setLifecycle((SQLIntegerExpr) exprParser.expr());
+            clause.setLifeCycle((SQLIntegerExpr) exprParser.expr());
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.SUBPARTITION)) {

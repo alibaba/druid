@@ -69,6 +69,9 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         lexer.nextTokenIdent();
 
+        if (lexer.hasComment()) {
+            queryBlock.setCommentsAfaterFrom(lexer.readAndResetComments());
+        }
         while (lexer.token() == Token.HINT) {
             lexer.nextToken();
         }
@@ -330,6 +333,10 @@ public class MySqlSelectParser extends SQLSelectParser {
             queryBlock.setHints(hints);
         }
 
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            queryBlock.addAfterComment(lexer.readAndResetComments());
+        }
+
         return queryRest(queryBlock, acceptUnion);
     }
 
@@ -382,7 +389,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                     select.getQuery().setParenthesized(true);
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
-                    tableSource = new SQLSubqueryTableSource(select);
+                    tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                 }
 
                 if (hints != null) {
@@ -400,7 +407,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                         select.getQuery().setParenthesized(true);
                         tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                     } else {
-                        tableSource = new SQLSubqueryTableSource(select);
+                        tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                     }
 
                     if (hints != null) {
@@ -415,7 +422,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                         unionQuery.setParenthesized(true);
                         tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                     } else {
-                        tableSource = new SQLSubqueryTableSource(unionQuery);
+                        tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(unionQuery));
                     }
 
                     if (hints != null) {
@@ -660,20 +667,18 @@ public class MySqlSelectParser extends SQLSelectParser {
                 }
             }
         } else {
-            SQLExpr intoExpr = this.exprParser.name();
-            if (lexer.token() == Token.COMMA) {
-                SQLListExpr list = new SQLListExpr();
-                list.addItem(intoExpr);
-
-                while (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    SQLName name = this.exprParser.name();
-                    list.addItem(name);
-                }
-
-                intoExpr = list;
+            SQLExpr expr = this.expr();
+            if (lexer.token() != Token.COMMA) {
+                queryBlock.setInto(expr);
+                return;
             }
-            queryBlock.setInto(intoExpr);
+            SQLListExpr list = new SQLListExpr();
+            list.addItem(expr);
+            while (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                list.addItem(expr());
+            }
+            queryBlock.setInto(list);
         }
     }
 

@@ -21,6 +21,17 @@ import java.util.List;
 import java.util.Map;
 
 public interface SQLObject {
+    default int getSourceColumn() {
+        return 0;
+    }
+
+    default int getSourceLine() {
+        return 0;
+    }
+
+    default void setSource(int column, int line) {
+    }
+
     void accept(SQLASTVisitor visitor);
 
     SQLObject clone();
@@ -39,9 +50,7 @@ public interface SQLObject {
 
     Map<String, Object> getAttributesDirect();
 
-    void output(StringBuffer buf);
-
-    void output(Appendable buf);
+    void output(StringBuilder buf);
 
     void addBeforeComment(String comment);
 

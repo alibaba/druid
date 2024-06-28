@@ -29,7 +29,7 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     protected List<SQLName> storeIn = new ArrayList<SQLName>();
     protected List<SQLExpr> columns = new ArrayList<SQLExpr>();
 
-    protected SQLIntegerExpr lifecycle;
+    protected SQLIntegerExpr lifeCycle;
 
     public List<SQLPartition> getPartitions() {
         return partitions;
@@ -110,7 +110,7 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
             x.storeIn.add(name2);
         }
 
-        x.lifecycle = lifecycle;
+        x.lifeCycle = lifeCycle;
     }
 
     public boolean isPartitionByColumn(long columnNameHashCode64) {
@@ -128,12 +128,12 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
         return false;
     }
 
-    public SQLIntegerExpr getLifecycle() {
-        return lifecycle;
+    public SQLIntegerExpr getLifeCycle() {
+        return lifeCycle;
     }
 
-    public void setLifecycle(SQLIntegerExpr lifecycle) {
-        this.lifecycle = lifecycle;
+    public void setLifeCycle(SQLIntegerExpr x) {
+        this.lifeCycle = x;
     }
 
     public abstract SQLPartitionBy clone();

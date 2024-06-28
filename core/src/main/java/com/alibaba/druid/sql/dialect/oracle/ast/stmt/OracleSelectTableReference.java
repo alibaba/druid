@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectTableReference extends SQLExprTableSource implements OracleSelectTableSource {
     private boolean only;
-    protected OracleSelectPivotBase pivot;
 
     protected PartitionExtensionClause partition;
     protected SampleClause sampleClause;
@@ -67,17 +66,6 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
         this.sampleClause = sampleClause;
     }
 
-    public OracleSelectPivotBase getPivot() {
-        return pivot;
-    }
-
-    public void setPivot(OracleSelectPivotBase pivot) {
-        if (pivot != null) {
-            pivot.setParent(this);
-        }
-        this.pivot = pivot;
-    }
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof OracleASTVisitor) {
@@ -93,6 +81,7 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
             acceptChild(visitor, this.partition);
             acceptChild(visitor, this.sampleClause);
             acceptChild(visitor, this.pivot);
+            acceptChild(visitor, this.unpivot);
         }
         visitor.endVisit(this);
     }
@@ -117,6 +106,9 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
         if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) {
             return false;
         }
+        if (unpivot != null ? !unpivot.equals(that.unpivot) : that.unpivot != null) {
+            return false;
+        }
         if (partition != null ? !partition.equals(that.partition) : that.partition != null) {
             return false;
         }
@@ -131,6 +123,7 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
         int result = super.hashCode();
         result = 31 * result + (only ? 1 : 0);
         result = 31 * result + (pivot != null ? pivot.hashCode() : 0);
+        result = 31 * result + (unpivot != null ? unpivot.hashCode() : 0);
         result = 31 * result + (partition != null ? partition.hashCode() : 0);
         result = 31 * result + (sampleClause != null ? sampleClause.hashCode() : 0);
         result = 31 * result + (flashback != null ? flashback.hashCode() : 0);
@@ -149,6 +142,10 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
 
         if (pivot != null) {
             x.setPivot(pivot.clone());
+        }
+
+        if (unpivot != null) {
+            x.setUnpivot(unpivot.clone());
         }
 
         if (partition != null) {

@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.alibaba</groupId>
         <artifactId>druid-parent</artifactId>
-        <version>1.2.17-SNAPSHOT</version>
+        <version>1.2.24-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>druid-spring-boot-starter</artifactId>
@@ -13,10 +13,6 @@
     <name>druid-spring-boot-starter</name>
     <description>Spring Boot with Druid support,help you simplify Druid config in Spring Boot.</description>
     <url>https://github.com/alibaba/druid</url>
-
-    <properties>
-        <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
-    </properties>
 
     <developers>
         <developer>
@@ -33,7 +29,7 @@
                     management as the parent import style -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${springboot2.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -64,6 +60,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.2</version>
         </dependency>
 
         <dependency>
@@ -115,4 +117,26 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>${springboot2.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.openjdk.jmh</groupId>
+                            <artifactId>jmh-generator-annprocess</artifactId>
+                            <version>${jmh.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -31,6 +31,7 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     protected final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
     protected SQLExpr where;
+    protected SQLLimit limit;
     protected SQLTableSource from;
 
     protected SQLTableSource tableSource;
@@ -43,7 +44,16 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     public SQLUpdateStatement() {
     }
+    public SQLLimit getLimit() {
+        return limit;
+    }
 
+    public void setLimit(SQLLimit limit) {
+        if (limit != null) {
+            limit.setParent(this);
+        }
+        this.limit = limit;
+    }
     public void cloneTo(SQLUpdateStatement x) {
         x.dbType = dbType;
         x.afterSemi = afterSemi;
@@ -108,6 +118,10 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     }
 
     public SQLName getTableName() {
+        return this.getTableName(false);
+    }
+
+    public SQLName getTableName(boolean lastFlag) {
         if (tableSource instanceof SQLExprTableSource) {
             return ((SQLExprTableSource) tableSource).getName();
         }
@@ -116,7 +130,19 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             SQLTableSource left = ((SQLJoinTableSource) tableSource).getLeft();
             if (left instanceof SQLExprTableSource) {
                 return ((SQLExprTableSource) left).getName();
+            } else if (lastFlag && left instanceof SQLJoinTableSource) {
+                return getLastTableName(left);
             }
+        }
+        return null;
+    }
+
+    private SQLName getLastTableName(SQLTableSource tableSource) {
+        SQLTableSource left = ((SQLJoinTableSource) tableSource).getLeft();
+        if (left instanceof SQLExprTableSource) {
+            return ((SQLExprTableSource) left).getName();
+        } else if (left instanceof SQLJoinTableSource) {
+            return getLastTableName(left);
         }
         return null;
     }

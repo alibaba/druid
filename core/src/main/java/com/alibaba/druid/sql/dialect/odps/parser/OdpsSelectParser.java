@@ -37,6 +37,10 @@ public class OdpsSelectParser extends SQLSelectParser {
         this.selectListCache = selectListCache;
     }
 
+    protected SQLSelectQueryBlock createSelectQueryBlock() {
+        return new OdpsSelectQueryBlock();
+    }
+
     @Override
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token() == Token.LPAREN) {
@@ -244,6 +248,10 @@ public class OdpsSelectParser extends SQLSelectParser {
             return new SQLExprTableSource(new SQLIdentifierExpr(str));
         }
         SQLTableSource tableSource = super.parseTableSource();
+
+        if (lexer.token() == Token.HINT) {
+            this.exprParser.parseHints(tableSource.getHints());
+        }
 
         if (lexer.token() == Token.TABLE && tableSource.getAlias() == null) {
             tableSource.setAlias(

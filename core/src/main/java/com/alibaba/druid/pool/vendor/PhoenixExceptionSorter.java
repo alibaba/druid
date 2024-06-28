@@ -29,7 +29,7 @@ public class PhoenixExceptionSorter implements ExceptionSorter {
      * 解决phoenix 的错误 --Connection is null or closed
      *
      * @param e the exception
-     * @return
+     * @return a boolean indicating whether the SQLException is fatal
      */
     @Override
     public boolean isExceptionFatal(SQLException e) {

@@ -60,6 +60,7 @@ public class OscarSelectParser extends SQLSelectParser {
                 ((SQLSelectQueryBlock) select).setParenthesized(true);
             }
             accept(Token.RPAREN);
+            select.setParenthesized(true);
 
             return queryRest(select, acceptUnion);
         }

@@ -45,6 +45,10 @@ public class HiveStatementParser extends SQLStatementParser {
         super(new HiveExprParser(lexer));
     }
 
+    public HiveStatementParser(SQLExprParser exprParser) {
+        super(exprParser);
+    }
+
     public HiveSelectParser createSQLSelectParser() {
         return new HiveSelectParser(this.exprParser, selectListCache);
     }
@@ -380,11 +384,8 @@ public class HiveStatementParser extends SQLStatementParser {
         return parseHiveCreateFunction();
     }
 
-    public SQLCreateIndexStatement parseCreateIndex(boolean acceptCreate) {
-        if (acceptCreate) {
-            accept(Token.CREATE);
-        }
-
+    public SQLCreateIndexStatement parseCreateIndex() {
+        accept(Token.CREATE);
         accept(Token.INDEX);
 
         SQLCreateIndexStatement stmt = new SQLCreateIndexStatement(dbType);
@@ -534,7 +535,7 @@ public class HiveStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    protected SQLStatement parseAlterDatabase() {
+    protected SQLStatement alterDatabase() {
         accept(Token.ALTER);
         if (lexer.token() == Token.SCHEMA) {
             lexer.nextToken();
@@ -559,8 +560,8 @@ public class HiveStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    protected SQLStatement parseAlterSchema() {
-        return parseAlterDatabase();
+    protected SQLStatement alterSchema() {
+        return alterDatabase();
     }
 
     public SQLStatement parseCreateSchema() {

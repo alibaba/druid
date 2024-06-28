@@ -53,14 +53,14 @@ public class MySqlParameterizedOutputVisitorTest_57 extends TestCase {
 
         assertEquals("SELECT `ktv_resource`.`VERSION`\n" +
                 "FROM ktv_resource `ktv_resource`\n" +
-                "WHERE `ktv_resource`.`BUYER_ID` = ?\n" +
-                "\tAND `ktv_resource`.`STATUS` = ?\n" +
-                "\tAND `ktv_resource`.`START_TIME` <= ?\n" +
-                "\tAND `ktv_resource`.`END_TIME` >= ?\n" +
-                "\tAND `ktv_resource`.`seller_id` = ?\n" +
+                "WHERE (`ktv_resource`.`BUYER_ID` = ?)\n" +
+                "\tAND (`ktv_resource`.`STATUS` = ?)\n" +
+                "\tAND (`ktv_resource`.`START_TIME` <= ?)\n" +
+                "\tAND (`ktv_resource`.`END_TIME` >= ?)\n" +
+                "\tAND (`ktv_resource`.`seller_id` = ?)\n" +
                 "\tAND (`ktv_resource`.`AVAILABLE_COUNT` IS NULL\n" +
-                "\t\tOR `ktv_resource`.`AVAILABLE_COUNT` > ?\n" +
-                "\t\tOR `ktv_resource`.`AVAILABLE_COUNT` = ?)\n" +
+                "\t\tOR (`ktv_resource`.`AVAILABLE_COUNT` > ?)\n" +
+                "\t\tOR (`ktv_resource`.`AVAILABLE_COUNT` = ?))\n" +
                 "LIMIT ?, ?", psql);
 
         String rsql = SQLUtils.format(psql, JdbcConstants.MYSQL, parameters);

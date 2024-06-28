@@ -77,10 +77,7 @@ public class MySqlCaseStatement extends MySqlStatementImpl {
 
     @Override
     public List<SQLObject> getChildren() {
-        List<SQLObject> children = new ArrayList<SQLObject>();
-        children.addAll(children);
-        children.addAll(whenList);
-        children.addAll(whenList);
+        List<SQLObject> children = new ArrayList<>(whenList);
         if (elseItem != null) {
             children.add(elseItem);
         }

@@ -27,11 +27,26 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
     private ParameterType paramType;
     private boolean noCopy;
     private boolean constant;
+    private boolean isNotNull;
     private SQLName cursorName;
-    private final List<SQLParameter> cursorParameters = new ArrayList<SQLParameter>();
+    private final List<SQLParameter> cursorParameters = new ArrayList<>();
     private boolean order;
     private boolean map;
     private boolean member;
+
+    public SQLParameter() {
+    }
+
+    public SQLParameter(SQLName name, SQLDataType dataType) {
+        this.setName(name);
+        this.setDataType(dataType);
+    }
+
+    public SQLParameter(SQLName name, SQLDataType dataType, SQLExpr defaultValue) {
+        this.setName(name);
+        this.setDataType(dataType);
+        this.setDefaultValue(defaultValue);
+    }
 
     public SQLExpr getDefaultValue() {
         return defaultValue;
@@ -82,6 +97,14 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
             acceptChild(visitor, defaultValue);
         }
         visitor.endVisit(this);
+    }
+
+    public void setNotNull(boolean isNotNull) {
+        this.isNotNull = isNotNull;
+    }
+
+    public boolean isNotNull() {
+        return this.isNotNull;
     }
 
     public static enum ParameterType {

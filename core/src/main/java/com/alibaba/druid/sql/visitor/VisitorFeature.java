@@ -28,6 +28,9 @@ public enum VisitorFeature {
     OutputParameterizedQuesUnMergeAnd,
     OutputParameterizedQuesUnMergeValuesList,
     OutputParameterizedUnMergeShardingTable,
+    OutputParameterizedUnMergeZero,
+    OutputParameterizedUnMergeOne,
+    OutputParameterizedUnMergeIn,
     OutputParameterizedZeroReplaceNotUseOriginalSql,
     OutputRegForPresto,
     /**

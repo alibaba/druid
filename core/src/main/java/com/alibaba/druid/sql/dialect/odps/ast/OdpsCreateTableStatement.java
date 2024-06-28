@@ -29,7 +29,6 @@ import java.util.List;
 
 public class OdpsCreateTableStatement extends HiveCreateTableStatement {
     protected final List<SQLExpr> withSerdeproperties = new ArrayList<SQLExpr>();
-    protected SQLExpr lifecycle;
     protected SQLExpr storedBy;
 
     public OdpsCreateTableStatement() {
@@ -59,14 +58,6 @@ public class OdpsCreateTableStatement extends HiveCreateTableStatement {
         this.partitionColumns.add(column);
     }
 
-    public SQLExpr getLifecycle() {
-        return lifecycle;
-    }
-
-    public void setLifecycle(SQLExpr lifecycle) {
-        this.lifecycle = lifecycle;
-    }
-
     @Override
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof OdpsASTVisitor) {
@@ -88,7 +79,6 @@ public class OdpsCreateTableStatement extends HiveCreateTableStatement {
         super.acceptChild(v);
 
         acceptChild(v, withSerdeproperties);
-        acceptChild(v, lifecycle);
         acceptChild(v, storedBy);
     }
 

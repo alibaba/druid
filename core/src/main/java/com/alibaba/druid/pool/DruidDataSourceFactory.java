@@ -49,6 +49,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
     public static final String PROP_TIMEBETWEENEVICTIONRUNSMILLIS = "timeBetweenEvictionRunsMillis";
     public static final String PROP_NUMTESTSPEREVICTIONRUN = "numTestsPerEvictionRun";
     public static final String PROP_MINEVICTABLEIDLETIMEMILLIS = "minEvictableIdleTimeMillis";
+    public static final String PROP_MAXEVICTABLEIDLETIMEMILLIS = "maxEvictableIdleTimeMillis";
     public static final String PROP_PHY_TIMEOUT_MILLIS = "phyTimeoutMillis";
     public static final String PROP_TESTWHILEIDLE = "testWhileIdle";
     public static final String PROP_PASSWORD = "password";
@@ -70,6 +71,8 @@ public class DruidDataSourceFactory implements ObjectFactory {
     public static final String PROP_NAME = "name";
     public static final String PROP_INIT = "init";
 
+    public static final String PROP_CONNECT_TIMEOUT = "connectTimeout";
+    public static final String PROP_SOCKET_TIMEOUT = "socketTimeout";
     private static final String[] ALL_PROPERTIES = {
             PROP_DEFAULTAUTOCOMMIT,
             PROP_DEFAULTREADONLY,
@@ -86,6 +89,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
             PROP_TIMEBETWEENEVICTIONRUNSMILLIS,
             PROP_NUMTESTSPEREVICTIONRUN,
             PROP_MINEVICTABLEIDLETIMEMILLIS,
+            PROP_MAXEVICTABLEIDLETIMEMILLIS,
             PROP_TESTWHILEIDLE,
             PROP_PASSWORD,
             PROP_FILTERS,
@@ -105,6 +109,8 @@ public class DruidDataSourceFactory implements ObjectFactory {
             PROP_EXCEPTION_SORTER_CLASS_NAME,
             PROP_INIT,
             PROP_NAME,
+            PROP_CONNECT_TIMEOUT,
+            PROP_SOCKET_TIMEOUT,
 
             "druid.timeBetweenLogStatsMillis",
             "druid.stat.sql.MaxSize",
@@ -274,6 +280,11 @@ public class DruidDataSourceFactory implements ObjectFactory {
             dataSource.setMinEvictableIdleTimeMillis(Long.parseLong(value));
         }
 
+        value = (String) properties.get(PROP_MAXEVICTABLEIDLETIMEMILLIS);
+        if (value != null) {
+            dataSource.setMaxEvictableIdleTimeMillis(Long.parseLong(value));
+        }
+
         value = (String) properties.get(PROP_PHY_TIMEOUT_MILLIS);
         if (value != null) {
             dataSource.setPhyTimeoutMillis(Long.parseLong(value));
@@ -366,6 +377,14 @@ public class DruidDataSourceFactory implements ObjectFactory {
         value = (String) properties.get(PROP_CONNECTIONPROPERTIES);
         if (value != null) {
             dataSource.setConnectionProperties(value);
+        }
+        value = (String) properties.get(PROP_SOCKET_TIMEOUT);
+        if (value != null) {
+            dataSource.setSocketTimeout(Integer.parseInt(value));
+        }
+        value = (String) properties.get(PROP_CONNECT_TIMEOUT);
+        if (value != null) {
+            dataSource.setConnectTimeout(Integer.parseInt(value));
         }
 
         {

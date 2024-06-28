@@ -52,7 +52,7 @@ public class HiveCreateTableTest_10 extends OracleTest {
                     "\tSERDE 'org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe'\n" +
                     "STORED AS RCFile\n" +
                     "AS\n" +
-                    "SELECT key % 1024 AS new_key, concat(key, value) AS key_value_pair\n" +
+                    "SELECT (key % 1024) AS new_key, concat(key, value) AS key_value_pair\n" +
                     "FROM key_value_store\n" +
                     "SORT BY new_key, key_value_pair;", text);
         }

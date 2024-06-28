@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
@@ -29,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlStatement {
-    private SQLLimit limit;
-
     private boolean lowPriority;
     private boolean ignore;
     private boolean commitOnSuccess;
@@ -46,17 +43,6 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
 
     public MySqlUpdateStatement() {
         super(DbType.mysql);
-    }
-
-    public SQLLimit getLimit() {
-        return limit;
-    }
-
-    public void setLimit(SQLLimit limit) {
-        if (limit != null) {
-            limit.setParent(this);
-        }
-        this.limit = limit;
     }
 
     @Override
@@ -191,7 +177,7 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
         if (queryOnPk != that.queryOnPk) {
             return false;
         }
-        if (this.hints != null ? hints.equals(that.hints) : that.hints != null) {
+        if (this.hints != null ? !hints.equals(that.hints) : that.hints != null) {
             return false;
         }
         if (limit != null ? !limit.equals(that.limit) : that.limit != null) {

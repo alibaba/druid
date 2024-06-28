@@ -82,17 +82,17 @@ public class MySqlSelectTest_112_orderBy extends TestCase {
                 "\t\t, a.tournament_name, a.season_id, a.season, a.result\n" +
                 "\t\t, CASE \n" +
                 "\t\t\tWHEN b.team_id = a.home_team_id THEN \n" +
-                "\t\t\t\tCASE \n" +
+                "\t\t\t\t(CASE \n" +
                 "\t\t\t\t\tWHEN CONVERT(SUBSTRING(a.result, 1, LOCATE(':', a.result) - 1), SIGNED) > CONVERT(SUBSTRING(a.result, LOCATE(':', a.result) + 1, CHAR_LENGTH(a.result)), SIGNED) THEN 3\n" +
                 "\t\t\t\t\tWHEN CONVERT(SUBSTRING(a.result, 1, LOCATE(':', a.result) - 1), SIGNED) < CONVERT(SUBSTRING(a.result, LOCATE(':', a.result) + 1, CHAR_LENGTH(a.result)), SIGNED) THEN 0\n" +
                 "\t\t\t\t\tELSE 1\n" +
-                "\t\t\t\tEND\n" +
+                "\t\t\t\tEND)\n" +
                 "\t\t\tWHEN b.team_id = a.away_team_id THEN \n" +
-                "\t\t\t\tCASE \n" +
+                "\t\t\t\t(CASE \n" +
                 "\t\t\t\t\tWHEN CONVERT(SUBSTRING(a.result, 1, LOCATE(':', a.result) - 1), SIGNED) > CONVERT(SUBSTRING(a.result, LOCATE(':', a.result) + 1, CHAR_LENGTH(a.result)), SIGNED) THEN 0\n" +
                 "\t\t\t\t\tWHEN CONVERT(SUBSTRING(a.result, 1, LOCATE(':', a.result) - 1), SIGNED) < CONVERT(SUBSTRING(a.result, LOCATE(':', a.result) + 1, CHAR_LENGTH(a.result)), SIGNED) THEN 3\n" +
                 "\t\t\t\t\tELSE 1\n" +
-                "\t\t\t\tEND\n" +
+                "\t\t\t\tEND)\n" +
                 "\t\tEND AS wdl\n" +
                 "\tFROM p_coach_match_detail a\n" +
                 "\t\tLEFT JOIN p_coach_career b\n" +

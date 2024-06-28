@@ -16,11 +16,20 @@
 package com.alibaba.druid.sql.dialect.postgresql.ast.expr;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGTypeCastExpr extends SQLCastExpr implements PGExpr {
+    public PGTypeCastExpr() {
+    }
+
+    public PGTypeCastExpr(SQLExpr expr, SQLDataType dataType) {
+        super(expr, dataType);
+    }
+
     @Override
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -38,6 +47,19 @@ public class PGTypeCastExpr extends SQLCastExpr implements PGExpr {
         }
 
         super.accept0(visitor);
+    }
+
+    @Override
+    public PGTypeCastExpr clone() {
+        PGTypeCastExpr x = new PGTypeCastExpr();
+        x.isTry = isTry;
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        if (dataType != null) {
+            x.setDataType(dataType.clone());
+        }
+        return x;
     }
 
     public String toString() {

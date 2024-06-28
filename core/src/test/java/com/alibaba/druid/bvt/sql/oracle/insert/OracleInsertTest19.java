@@ -42,11 +42,11 @@ public class OracleInsertTest19 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("INSERT INTO TB_DUOBAO_PARTICIPATE_NUMBER (PARTICIPATE_NUMBER, PERIOD_ID, PRODUCT_ID, number_index)"
-                        + "\nSELECT ?, ?, ?, ?"
-                        + "\nFROM DUAL"
+                        + "\n(SELECT ?, ?, ?, ?"
+                        + "\nFROM DUAL)"
                         + "\nUNION ALL"
-                        + "\nSELECT ?, ?, ?, ?"
-                        + "\nFROM DUAL",//
+                        + "\n(SELECT ?, ?, ?, ?"
+                        + "\nFROM DUAL)",//
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

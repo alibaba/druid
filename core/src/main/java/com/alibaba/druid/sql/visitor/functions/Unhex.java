@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.util.HexBin;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
@@ -64,12 +64,7 @@ public class Unhex implements Function {
                 return SQLEvalVisitor.EVAL_VALUE_NULL;
             }
 
-            String result;
-            try {
-                result = new String(bytes, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException(e.getMessage(), e);
-            }
+            String result = new String(bytes, StandardCharsets.UTF_8);
             return result;
         }
 

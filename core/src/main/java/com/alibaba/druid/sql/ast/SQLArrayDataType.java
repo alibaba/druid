@@ -14,6 +14,7 @@ public class SQLArrayDataType extends SQLObjectImpl implements SQLDataType {
 
     private DbType dbType;
     private SQLDataType componentType;
+    private boolean usedForCast;
     private List<SQLExpr> arguments = new ArrayList<SQLExpr>();
 
     public SQLArrayDataType(SQLDataType componentType) {
@@ -53,6 +54,14 @@ public class SQLArrayDataType extends SQLObjectImpl implements SQLDataType {
     @Override
     public void setWithTimeZone(Boolean value) {
         throw new UnsupportedOperationException();
+    }
+
+    public boolean isUsedForCast() {
+        return usedForCast;
+    }
+
+    public void setUsedForCast(boolean usedForCast) {
+        this.usedForCast = usedForCast;
     }
 
     @Override

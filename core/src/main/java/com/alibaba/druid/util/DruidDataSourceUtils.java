@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.Constants;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
@@ -22,8 +23,17 @@ import com.alibaba.druid.support.logging.LogFactory;
 import javax.management.ObjectName;
 
 import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import static com.alibaba.druid.util.Utils.trySetBooleanProperty;
+import static com.alibaba.druid.util.Utils.trySetIntProperty;
+import static com.alibaba.druid.util.Utils.trySetLongProperty;
+import static com.alibaba.druid.util.Utils.trySetStringProperty;
 
 public class DruidDataSourceUtils {
     private static final Log LOG = LogFactory.getLog(DruidDataSourceUtils.class);
@@ -211,5 +221,110 @@ public class DruidDataSourceUtils {
             LOG.error("getActiveConnectionStackTrace error", e);
             return null;
         }
+    }
+
+    public static void configFromProperties(DruidDataSource druidDataSource, Properties properties) {
+        trySetStringProperty(properties, "druid.name", druidDataSource::setName);
+        trySetStringProperty(properties, "druid.url", druidDataSource::setUrl);
+        trySetStringProperty(properties, "druid.username", druidDataSource::setUsername);
+        trySetStringProperty(properties, "druid.password", druidDataSource::setPassword);
+        trySetBooleanProperty(properties, "druid.testWhileIdle", druidDataSource::setTestWhileIdle);
+        trySetBooleanProperty(properties, "druid.testOnBorrow", druidDataSource::setTestOnBorrow);
+        {
+            String property = properties.getProperty("druid.validationQuery");
+            if (property != null && property.length() > 0) {
+                druidDataSource.setValidationQuery(property);
+            }
+        }
+        trySetBooleanProperty(properties, "druid.useGlobalDataSourceStat", druidDataSource::setUseGlobalDataSourceStat);
+        trySetBooleanProperty(properties, "druid.useGloalDataSourceStat", druidDataSource::setUseGlobalDataSourceStat);
+        trySetBooleanProperty(properties, "druid.asyncInit", druidDataSource::setAsyncInit);
+        {
+            String property = properties.getProperty("druid.filters");
+
+            if (property != null && property.length() > 0) {
+                try {
+                    druidDataSource.setFilters(property);
+                } catch (SQLException e) {
+                    LOG.error("setFilters error", e);
+                }
+            }
+        }
+        trySetLongProperty(properties, Constants.DRUID_TIME_BETWEEN_LOG_STATS_MILLIS, druidDataSource::setTimeBetweenLogStatsMillis);
+        {
+            String property = properties.getProperty(Constants.DRUID_STAT_SQL_MAX_SIZE);
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    if (druidDataSource.getDataSourceStat() != null) {
+                        druidDataSource.getDataSourceStat().setMaxSqlSize(value);
+                    }
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property '" + Constants.DRUID_STAT_SQL_MAX_SIZE + "'", e);
+                }
+            }
+        }
+        trySetBooleanProperty(properties, "druid.clearFiltersEnable", druidDataSource::setClearFiltersEnable);
+        trySetBooleanProperty(properties, "druid.resetStatEnable", druidDataSource::setResetStatEnable);
+        trySetIntProperty(properties, "druid.notFullTimeoutRetryCount", druidDataSource::setNotFullTimeoutRetryCount);
+        trySetLongProperty(properties, "druid.timeBetweenEvictionRunsMillis", druidDataSource::setTimeBetweenEvictionRunsMillis);
+        trySetIntProperty(properties, "druid.maxWaitThreadCount", druidDataSource::setMaxWaitThreadCount);
+        trySetIntProperty(properties, "druid.maxWait", druidDataSource::setMaxWait);
+        trySetBooleanProperty(properties, "druid.failFast", druidDataSource::setFailFast);
+        trySetLongProperty(properties, "druid.phyTimeoutMillis", druidDataSource::setPhyTimeoutMillis);
+        trySetLongProperty(properties, "druid.phyMaxUseCount", druidDataSource::setPhyMaxUseCount);
+        trySetLongProperty(properties, "druid.minEvictableIdleTimeMillis", druidDataSource::setMinEvictableIdleTimeMillis);
+        trySetLongProperty(properties, "druid.maxEvictableIdleTimeMillis", druidDataSource::setMaxEvictableIdleTimeMillis);
+        trySetBooleanProperty(properties, "druid.keepAlive", druidDataSource::setKeepAlive);
+        trySetLongProperty(properties, "druid.keepAliveBetweenTimeMillis", druidDataSource::setKeepAliveBetweenTimeMillis);
+        trySetBooleanProperty(properties, "druid.poolPreparedStatements", druidDataSource::setPoolPreparedStatements);
+        trySetBooleanProperty(properties, "druid.initVariants", druidDataSource::setInitVariants);
+        trySetBooleanProperty(properties, "druid.initGlobalVariants", druidDataSource::setInitGlobalVariants);
+        trySetBooleanProperty(properties, "druid.useUnfairLock", druidDataSource::setUseUnfairLock);
+        trySetStringProperty(properties, "druid.driverClassName", druidDataSource::setDriverClassName);
+        trySetIntProperty(properties, "druid.initialSize", druidDataSource::setInitialSize);
+        trySetIntProperty(properties, "druid.minIdle", druidDataSource::setMinIdle);
+        trySetIntProperty(properties, "druid.maxActive", druidDataSource::setMaxActive);
+        trySetBooleanProperty(properties, "druid.killWhenSocketReadTimeout", druidDataSource::setKillWhenSocketReadTimeout);
+        trySetStringProperty(properties, "druid.connectProperties", druidDataSource::setConnectionProperties);
+        trySetIntProperty(properties, "druid.maxPoolPreparedStatementPerConnectionSize",
+            druidDataSource::setMaxPoolPreparedStatementPerConnectionSize);
+        {
+            String property = properties.getProperty("druid.initConnectionSqls");
+            if (property != null && property.length() > 0) {
+                try {
+                    StringTokenizer tokenizer = new StringTokenizer(property, ";");
+                    druidDataSource.setConnectionInitSqls(Collections.list(tokenizer));
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.initConnectionSqls'", e);
+                }
+            }
+        }
+        {
+            String property = System.getProperty("druid.load.spifilter.skip");
+            if (property != null && !"false".equals(property)) {
+                druidDataSource.setLoadSpifilterSkip(true);
+            }
+        }
+        {
+            String property = System.getProperty("druid.checkExecuteTime");
+            if (property != null && !"false".equals(property)) {
+                druidDataSource.setCheckExecuteTime(true);
+            }
+        }
+        // new added
+        trySetIntProperty(properties, "druid.connectionErrorRetryAttempts", druidDataSource::setConnectionErrorRetryAttempts);
+        trySetLongProperty(properties, "druid.timeBetweenConnectErrorMillis", druidDataSource::setTimeBetweenConnectErrorMillis);
+        trySetBooleanProperty(properties, "druid.breakAfterAcquireFailure", druidDataSource::setBreakAfterAcquireFailure);
+        trySetBooleanProperty(properties, "druid.testOnReturn", druidDataSource::setTestOnReturn);
+        trySetBooleanProperty(properties, "druid.removeAbandoned", druidDataSource::setRemoveAbandoned);
+        trySetBooleanProperty(properties, "druid.logAbandoned", druidDataSource::setLogAbandoned);
+        trySetLongProperty(properties, "druid.removeAbandonedTimeoutMillis", druidDataSource::setRemoveAbandonedTimeoutMillis);
+        trySetIntProperty(properties, "druid.validationQueryTimeout", druidDataSource::setValidationQueryTimeout);
+        trySetIntProperty(properties, "druid.queryTimeout", druidDataSource::setQueryTimeout);
+        trySetIntProperty(properties, "druid.connectTimeout", druidDataSource::setConnectTimeout);
+        trySetIntProperty(properties, "druid.socketTimeout", druidDataSource::setSocketTimeout);
+        trySetIntProperty(properties, "druid.transactionQueryTimeout", druidDataSource::setTransactionQueryTimeout);
+        trySetIntProperty(properties, "druid.loginTimeout", druidDataSource::setLoginTimeout);
     }
 }

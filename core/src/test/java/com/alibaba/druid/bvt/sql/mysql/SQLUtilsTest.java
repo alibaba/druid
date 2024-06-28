@@ -39,10 +39,10 @@ public class SQLUtilsTest extends TestCase {
     }
 
     public void test_format_2() throws Exception {
-        String sql = "begin\n"// 
+        String sql = "begin\n"//
                 + " if (a=10) then\n" + " null;\n" + " else\n" + " null;\n" + " end if;\n" + "end;";
         Assert.assertEquals("BEGIN"
-                + "\n\tIF a = 10 THEN"
+                + "\n\tIF (a = 10) THEN"
                 + "\n\t\tNULL;"
                 + "\n\tELSE"
                 + "\n\t\tNULL;"
@@ -59,7 +59,7 @@ public class SQLUtilsTest extends TestCase {
                 "\tAND lottery_notice_issue <= 2014066\n" +
                 "UNION ALL\n" +
                 "SELECT NULL, NULL, NULL, NULL, NULL\n" +
-                "\t, NULL# and lottery_notice_issue>=2014062 order by lottery_notice_issue desc";
+                "\t, NULL # and lottery_notice_issue>=2014062 order by lottery_notice_issue desc";
         Assert.assertEquals(expected, formattedSql);
     }
 

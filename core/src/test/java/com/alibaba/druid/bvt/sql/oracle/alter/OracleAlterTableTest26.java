@@ -349,4 +349,61 @@ public class OracleAlterTableTest26 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("KBS_QUESTION")));
     }
+
+    public void test_11() throws Exception {
+        String sql = "analyze table JUNYU_ORCL.EQ_DRAGONCARD_TEMP compute statistics";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("ANALYZE TABLE JUNYU_ORCL.EQ_DRAGONCARD_TEMP COMPUTE STATISTICS",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        Assert.assertEquals(1, visitor.getTables().size());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.EQ_DRAGONCARD_TEMP")));
+    }
+
+    public void test_12() throws Exception {
+        String sql = "alter table \"JUNYU_ORCL\".\"WORKER_STATS\" drop constraint \"SYS_C007550\" cascade;";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("ALTER TABLE \"JUNYU_ORCL\".\"WORKER_STATS\"\n" +
+                        "\tDROP CONSTRAINT \"SYS_C007550\" CASCADE;",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        Assert.assertEquals(1, visitor.getTables().size());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.WORKER_STATS")));
+    }
+
+    public void test_13() throws Exception {
+        String sql = " /* QSMQ VALIDATION */ ALTER SUMMARY \"CHJMESPRO\".\"MV_PRODUCTION_OVERVIEW_HOUR\" COMPILE;";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("ALTER SUMMARY \"CHJMESPRO\".\"MV_PRODUCTION_OVERVIEW_HOUR\" COMPILE ;",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+    }
 }

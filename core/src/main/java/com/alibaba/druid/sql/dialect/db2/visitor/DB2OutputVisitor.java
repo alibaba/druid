@@ -29,11 +29,11 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisitor {
-    public DB2OutputVisitor(Appendable appender) {
+    public DB2OutputVisitor(StringBuilder appender) {
         super(appender, DbType.db2);
     }
 
-    public DB2OutputVisitor(Appendable appender, boolean parameterized) {
+    public DB2OutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.db2;
     }
@@ -51,6 +51,10 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
             println();
             print0(ucase ? "WITH " : "with ");
             print0(x.getIsolation().name());
+            if (x.getLockRequest() != null) {
+                println();
+                print0(ucase ? "USE AND KEEP " + x.getLockRequest().name() + " LOCKS" : "use and keep " + x.getLockRequest().name().toLowerCase() + " locks");
+            }
         }
 
         if (x.getOptimizeFor() != null) {

@@ -16,13 +16,18 @@
 package com.alibaba.druid.filter.encoding;
 
 /**
- * 类URLParameter.java的实现描述：JDBC 参数类
- *
- * @author hexianmao 2007-5-24 上午11:21:59
+ * 已过期,后续版本考虑直接下线该代码. {@link EncodingConvertFilter}
  */
+@Deprecated
 public class CharsetParameter {
+    /**
+     * {@link EncodingConvertFilter#CLIENT_ENCODING_KEY}
+     */
     public static final String CLIENTENCODINGKEY = "clientEncoding";
 
+    /**
+     * {@link EncodingConvertFilter#SERVER_ENCODING_KEY}
+     */
     public static final String SERVERENCODINGKEY = "serverEncoding";
 
     // 数据库客户端编码

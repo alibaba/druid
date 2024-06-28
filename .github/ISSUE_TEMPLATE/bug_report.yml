@@ -1,0 +1,83 @@
+name: Bug report
+description: Create a report to help us improve
+title: "[BUG] "
+labels: ["bug", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: dbtype
+    attributes:
+      label: Database Type
+      description: What database are you using?
+      placeholder: e.g., MySQL, Oracle...
+    validations:
+      required: true
+  - type: input
+    id: dbversion
+    attributes:
+      label: Database Version
+      description: What version of the database are you using?
+      placeholder: e.g., MySQL 5.7, Oracle 12c...
+    validations:
+      required: true
+  - type: input
+    id: druid-version
+    attributes:
+      label: Druid Version
+      description: What version of Druid are you using?
+      placeholder: e.g., 1.2.22
+    validations:
+      required: true
+  - type: input
+    id: jdk-version
+    attributes:
+      label: JDK Version
+      description: What version of JDK are you using?
+      placeholder: e.g., OpenJDK 11
+    validations:
+      required: true
+  - type: textarea
+    id: error-sql
+    attributes:
+      label: Error SQL
+      description: Please provide the SQL that caused the error.
+      placeholder: SELECT * FROM your_table
+    validations:
+      required: true
+  - type: textarea
+    id: testcase-code
+    attributes:
+      label: Testcase Code
+      description: Please provide the testcase code that reproduces the issue.
+      placeholder: |
+        ```java
+        // Your testcase code here
+        ```
+    validations:
+      required: false
+  - type: textarea
+    id: stacktrace-info
+    attributes:
+      label: Stacktrace Info
+      description: Please provide the stacktrace information if applicable.
+      placeholder: |
+        ```java
+        // Your stacktrace here
+        ```
+    validations:
+      required: false
+  - type: textarea
+    id: error-info
+    attributes:
+      label: Error Info
+      description: Please provide any additional error information or logs.
+      placeholder: |
+        ```log
+        // Your error info or logs here
+        ```
+    validations:
+      required: false

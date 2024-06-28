@@ -73,7 +73,8 @@ public class MySqlAlterTable_refactor_test extends MysqlTest {
         Assert.assertEquals(1, statementList.size());
 
         assertEquals("ALTER TABLE test001\n" +
-                        "\tADD COLUMN x int FIRST,\n" +
+                "\tAUTO_INCREMENT = 1 AVG_ROW_LENGTH = 1 CHARACTER SET = utf8 CHECKSUM = 0 COLLATE = utf8_unicode_ci COMMENT = 'hehe' COMPRESSION = 'LZ4' CONNECTION = 'conn' COLLATE = 'path' DELAY_KEY_WRITE = 1 ENCRYPTION = 'N' ENGINE = innodb INSERT_METHOD = no KEY_BLOCK_SIZE = 32 MAX_ROWS = 999 MIN_ROWS = 1 PACK_KEYS = DEFAULT PASSWORD = 'psw' ROW_FORMAT = dynamic STATS_AUTO_RECALC = DEFAULT STATS_PERSISTENT = DEFAULT STATS_SAMPLE_PAGES = 10 TABLESPACE `tbs_name` STORAGE memory UNION = (tb1, tb2, tb3) AUTO_INCREMENT = 1," +
+            "\n\tADD COLUMN x int FIRST,\n" +
                         "\tADD COLUMN (x int, x int),\n" +
                         "\tADD INDEX (a, b),\n" +
                         "\tADD FULLTEXT INDEX (a, b),\n" +
@@ -95,8 +96,7 @@ public class MySqlAlterTable_refactor_test extends MysqlTest {
                         "\tRENAME INDEX a TO b,\n" +
                         "\tRENAME TO tb2,\n" +
                         "\tWITHOUT VALIDATION,\n" +
-                        "\tORDER BY a, b, c,\n" +
-                        "\tAUTO_INCREMENT = 1 AVG_ROW_LENGTH = 1 CHARACTER SET = utf8 CHECKSUM = 0 COLLATE = utf8_unicode_ci COMMENT = 'hehe' COMPRESSION = 'LZ4' CONNECTION = 'conn' COLLATE = 'path' DELAY_KEY_WRITE = 1 ENCRYPTION = 'N' ENGINE = innodb INSERT_METHOD = no KEY_BLOCK_SIZE = 32 MAX_ROWS = 999 MIN_ROWS = 1 PACK_KEYS = DEFAULT PASSWORD = 'psw' ROW_FORMAT = dynamic STATS_AUTO_RECALC = DEFAULT STATS_PERSISTENT = DEFAULT STATS_SAMPLE_PAGES = 10 TABLESPACE = `tbs_name` STORAGE memory UNION = (tb1, tb2, tb3) AUTO_INCREMENT = 1",
+                        "\tORDER BY a, b, c" ,
                 SQLUtils.toMySqlString(statementList.get(0)));
     }
 

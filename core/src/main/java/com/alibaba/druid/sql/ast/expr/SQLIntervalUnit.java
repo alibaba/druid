@@ -104,4 +104,38 @@ public enum SQLIntervalUnit {
                 return false;
         }
     }
+
+    public static SQLIntervalUnit of(String str) {
+        if (str == null || str.isEmpty()) {
+            return null;
+        }
+
+        str = str.toUpperCase();
+        switch (str) {
+            case "YEARS":
+                return YEAR;
+            case "MONTHS":
+                return MONTH;
+            case "WEEKS":
+                return WEEK;
+            case "DAYS":
+                return DAY;
+            case "HOURS":
+                return HOUR;
+            case "MINUTES":
+                return MINUTE;
+            case "SECONDS":
+                return SECOND;
+            default:
+                break;
+        }
+
+        for (SQLIntervalUnit value : values()) {
+            if (value.name().equals(str)) {
+                return value;
+            }
+        }
+
+        return null;
+    }
 }

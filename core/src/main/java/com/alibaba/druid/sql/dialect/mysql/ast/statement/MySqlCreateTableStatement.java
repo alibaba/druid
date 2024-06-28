@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
@@ -61,9 +62,12 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     // for ads
     protected Map<String, SQLName> with = new HashMap<String, SQLName>(3);
 
+    protected SQLStatement withSelect;
     // adb
     protected SQLName archiveBy;
     protected Boolean withData;
+
+    protected Boolean single;
 
     public MySqlCreateTableStatement() {
         super(DbType.mysql);
@@ -75,6 +79,14 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
+    }
+
+    public SQLStatement getWithSelect() {
+        return withSelect;
+    }
+
+    public void setWithSelect(SQLStatement withSelect) {
+        this.withSelect = withSelect;
     }
 
     @Deprecated
@@ -155,6 +167,9 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
             if (select != null) {
                 select.accept(visitor);
+            }
+            if (withSelect != null) {
+                withSelect.accept(visitor);
             }
         }
         visitor.endVisit(this);
@@ -247,7 +262,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         super.simplify();
     }
 
-    public void showCoumns(Appendable out) throws IOException {
+    public void showCoumns(StringBuilder out) throws IOException {
         this.accept(new MySqlShowColumnOutpuVisitor(out));
     }
 
@@ -540,6 +555,10 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             }
         }
 
+        if (single != null) {
+            x.setSingle(single);
+        }
+
     }
 
     public MySqlCreateTableStatement clone() {
@@ -659,7 +678,8 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     public SQLExpr getEngine() {
         for (SQLAssignItem option : tableOptions) {
             SQLExpr target = option.getTarget();
-            if (target instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) target).getName().equalsIgnoreCase("ENGINE")) {
+            if (target instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) target).getName()
+                .equalsIgnoreCase("ENGINE")) {
                 return option.getValue();
             }
         }
@@ -686,5 +706,13 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             x.setParent(this);
         }
         addOption("TRANSACTIONAL", x);
+    }
+
+    public Boolean getSingle() {
+        return single;
+    }
+
+    public void setSingle(Boolean single) {
+        this.single = single;
     }
 }

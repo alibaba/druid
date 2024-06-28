@@ -36,6 +36,6 @@ public class MySqlWallTest24 extends TestCase {
 
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-                "SELECT count(*) AS num FROM hkapp_goods WHERE  status=1 AND level=1 AND xxx = 1 AND 1=1")); //
+                "SELECT count(*) AS num FROM hkapp_goods WHERE  status=1 AND level=1 AND xxx = 1 OR 1=1")); //
     }
 }

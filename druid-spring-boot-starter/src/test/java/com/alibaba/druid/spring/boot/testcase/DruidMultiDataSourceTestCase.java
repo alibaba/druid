@@ -17,11 +17,9 @@ package com.alibaba.druid.spring.boot.testcase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.demo.DemoApplication;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
@@ -31,7 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author lihengming [89921218@qq.com]
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = DemoApplication.class)
 @ActiveProfiles("multi-datasource")
 public class DruidMultiDataSourceTestCase {
@@ -42,7 +39,7 @@ public class DruidMultiDataSourceTestCase {
 
     @Test
     public void testDataSourceOne() throws SQLException {
-        assertThat(dataSourceOne.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
+        assertThat(dataSourceOne.getUrl()).isEqualTo("jdbc:h2:file:./demo-db;NON_KEYWORDS=user");
         assertThat(dataSourceOne.getUsername()).isEqualTo("sa");
         assertThat(dataSourceOne.getPassword()).isEqualTo("sa");
         assertThat(dataSourceOne.getDriverClassName()).isEqualTo("org.h2.Driver");
@@ -54,7 +51,7 @@ public class DruidMultiDataSourceTestCase {
     }
     @Test
     public void testDataSourceTwo() throws SQLException {
-        assertThat(dataSourceTwo.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
+        assertThat(dataSourceTwo.getUrl()).isEqualTo("jdbc:h2:file:./demo-db;NON_KEYWORDS=user");
         assertThat(dataSourceTwo.getUsername()).isEqualTo("sa");
         assertThat(dataSourceTwo.getPassword()).isEqualTo("sa");
         assertThat(dataSourceTwo.getDriverClassName()).isEqualTo("org.h2.Driver");

@@ -13,7 +13,7 @@
                               |                           |
   --------------------------> |                           |
   --------------------------> |                           |    销毁多余连接的线程
-  --------------------------> |                           |    (highWater.awati, idleTimeout.await)
+  --------------------------> |                           |    (highWater.await, idleTimeout.await)
     close                     |                           | --------------------------------------> 
     (highWater.signal)        |                           |
     (maxActive.signal)        |                           |  
@@ -26,4 +26,4 @@
                               |                           |
                               |---------------------------|
                               
-五个Condition：notEmpty、maxActive、lowWater、hightWater, idleTime
+五个Condition：notEmpty、maxActive、lowWater、highWater, idleTime

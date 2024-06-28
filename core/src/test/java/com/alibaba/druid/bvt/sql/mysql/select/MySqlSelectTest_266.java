@@ -52,7 +52,7 @@ public class MySqlSelectTest_266 extends MysqlTest {
                 "WHERE NOT `CUSTOMER`.`custkey` IN (\n" +
                 "\tSELECT `CUSTKEY`\n" +
                 "\tFROM \"ORDERS\"\n" +
-                "\tWHERE `CUSTKEY` > 100\n" +
+                "\tWHERE (`CUSTKEY` > 100)\n" +
                 ")\n" +
                 "GROUP BY `NAME`\n" +
                 "ORDER BY `MAXKEY` ASC\n" +

@@ -16,7 +16,7 @@ public class UnsignedBigIntTest extends TestCase {
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(sb);
         visitor.setPrettyFormat(false);
         sqlStatement.accept(visitor);
-        assertEquals("SELECT a FROM b WHERE c <> 1 LIMIT 0, 18446744073709551615", sb.toString());
+        assertEquals("SELECT a FROM b WHERE c <> 1 LIMIT 18446744073709551615 OFFSET 0", sb.toString());
     }
 
     public void test_postgresqlUnsignedBitInt() {
