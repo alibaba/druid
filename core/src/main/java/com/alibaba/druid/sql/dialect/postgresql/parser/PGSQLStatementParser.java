@@ -481,31 +481,34 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 }
                 acceptIdentifier(endLabel);
             }
-            parseEndDollarQuote(block);
+            if (lexer.token() == Token.VARIANT) {
+                parseEndDollarQuote(block);
+            }
         }
-
         accept(Token.SEMI);
-        // "$$ LANGUAGE plpgsql;"
-        parseEndDollarQuote(block);
+
+        if (lexer.token() == Token.VARIANT) {
+            // "$$ LANGUAGE plpgsql;"
+            parseEndDollarQuote(block);
+            accept(Token.SEMI);
+        }
         return block;
     }
 
     private void parseEndDollarQuote(SQLBlockStatement block) {
-        if (lexer.token() == Token.VARIANT) {
-            String dollarQuotedStr = lexer.stringVal();
-            if (!dollarQuotedStr.endsWith("$")) {
-                throw new ParserException("syntax error. " + lexer.info());
-            }
-            String dollarQuoteTagName = dollarQuotedStr.substring(1, dollarQuotedStr.length() - 1);
-            if (!block.getDollarQuoteTagName().equals(dollarQuoteTagName)) {
-                printError(lexer.token());
-            }
-            lexer.nextToken();
-            if (lexer.token() != Token.SEMI) {
-                accept(Token.LANGUAGE);
-                block.setLanguage(lexer.stringVal());
-                acceptIdentifier(block.getLanguage());
-            }
+        String dollarQuotedStr = lexer.stringVal();
+        if (!dollarQuotedStr.endsWith("$")) {
+            throw new ParserException("syntax error. " + lexer.info());
+        }
+        String dollarQuoteTagName = dollarQuotedStr.substring(1, dollarQuotedStr.length() - 1);
+        if (!block.getDollarQuoteTagName().equals(dollarQuoteTagName)) {
+            printError(lexer.token());
+        }
+        lexer.nextToken();
+        if (lexer.token() != Token.SEMI) {
+            accept(Token.LANGUAGE);
+            block.setLanguage(lexer.stringVal());
+            acceptIdentifier(block.getLanguage());
         }
     }
 
