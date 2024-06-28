@@ -20,8 +20,6 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
-import com.alibaba.druid.sql.dialect.antspark.visitor.AntsparkOutputVisitor;
-import com.alibaba.druid.sql.dialect.antspark.visitor.AntsparkSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
@@ -475,11 +473,11 @@ public class SQLUtils {
         return out.toString();
     }
 
-    public static SQLASTOutputVisitor createOutputVisitor(Appendable out, DbType dbType) {
+    public static SQLASTOutputVisitor createOutputVisitor(StringBuilder out, DbType dbType) {
         return createFormatOutputVisitor(out, null, dbType);
     }
 
-    public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out,
+    public static SQLASTOutputVisitor createFormatOutputVisitor(StringBuilder out,
                                                                 List<SQLStatement> statementList,
                                                                 DbType dbType) {
         if (dbType == null) {
@@ -521,8 +519,8 @@ public class SQLUtils {
                 return new AdsOutputVisitor(out);
             case blink:
                 return new BlinkOutputVisitor(out);
-            case antspark:
-                return new AntsparkOutputVisitor(out);
+//            case antspark:
+//                return new AntsparkOutputVisitor(out);
             case presto:
                 return new PrestoOutputVisitor(out);
             case clickhouse:
@@ -577,8 +575,8 @@ public class SQLUtils {
                 return new H2SchemaStatVisitor(repository);
             case hive:
                 return new HiveSchemaStatVisitor(repository);
-            case antspark:
-                return new AntsparkSchemaStatVisitor(repository);
+//            case antspark:
+//                return new AntsparkSchemaStatVisitor(repository);
             case clickhouse:
                 return new ClickSchemaStatVisitor(repository);
             default:
