@@ -33,6 +33,9 @@ import com.alibaba.druid.support.profile.Profiler;
 import java.io.InputStream;
 import java.io.Reader;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
@@ -90,18 +93,22 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         this.dbType = DbType.of(dbType);
     }
 
+    @Override
     public long getSlowSqlMillis() {
         return slowSqlMillis;
     }
 
+    @Override
     public void setSlowSqlMillis(long slowSqlMillis) {
         this.slowSqlMillis = slowSqlMillis;
     }
 
+    @Override
     public boolean isLogSlowSql() {
         return logSlowSql;
     }
 
+    @Override
     public void setLogSlowSql(boolean logSlowSql) {
         this.logSlowSql = logSlowSql;
     }
@@ -114,10 +121,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         this.connectionStackTraceEnable = connectionStackTraceEnable;
     }
 
+    @Override
     public boolean isMergeSql() {
         return mergeSql;
     }
 
+    @Override
     public void setMergeSql(boolean mergeSql) {
         this.mergeSql = mergeSql;
     }
@@ -135,6 +144,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return this.mergeSql(sql, dbType);
     }
 
+    @Override
     public String mergeSql(String sql, String dbType) {
         return mergeSql(sql, DbType.of(dbType));
     }
@@ -168,6 +178,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
     }
 
+    @Override
     public void configFromProperties(Properties properties) {
         if (properties == null) {
             return;
@@ -217,6 +228,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
     }
 
+    @Override
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
         ConnectionProxy connection = null;
 
@@ -282,6 +294,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getConnectionStat().incrementConnectionCommitCount();
+        StatFilterContext.getInstance().commit();
     }
 
     @Override
@@ -290,6 +303,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
+        StatFilterContext.getInstance().rollback();
     }
 
     @Override
@@ -489,7 +503,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
                 String lastExecSql = statement.getLastExecuteSql();
                 if (logSlowSql) {
-                    String msg = "slow sql " + millis + " millis. " + lastExecSql + "" + slowParameters;
+                    String msg = "slow sql " + millis + " millis. " + lastExecSql + " " + slowParameters;
                     switch (slowSqlLogLevel) {
                         case "WARN":
                             LOG.warn(msg);
@@ -573,6 +587,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             } else if (value instanceof java.util.Date) {
                 out.writeObject(value);
             } else if (value instanceof Boolean) {
+                out.writeObject(value);
+            } else if (value instanceof LocalDate) {
+                out.writeObject(value);
+            } else if (value instanceof LocalTime) {
+                out.writeObject(value);
+            } else if (value instanceof LocalDateTime) {
                 out.writeObject(value);
             } else if (value instanceof InputStream) {
                 out.writeString("<InputStream>");

@@ -131,6 +131,8 @@ public interface JdbcConstants {
     DbType CLICKHOUSE = DbType.clickhouse;
     String CLICKHOUSE_DRIVER = "ru.yandex.clickhouse.ClickHouseDriver";
 
+    String CLICKHOUSE_DRIVER_NEW = "com.clickhouse.jdbc.ClickHouseDriver";
+
     String KDB = "kdb";
     String KDB_DRIVER = "com.inspur.jdbc.KdDriver";
 
@@ -153,4 +155,13 @@ public interface JdbcConstants {
 
     DbType TYDB = DbType.tydb;
     String TYDB_DRIVER = "com.dbcp.jdbc.Driver";
+
+    String TAOS_DATA = "com.taosdata.jdbc.TSDBDriver";
+    String TAOS_DATA_RS = "com.taosdata.jdbc.rs.RestfulDriver";
+
+    String GOLDENDB_DRIVER = "com.goldendb.jdbc.Driver";
+
+    String GBASE8S_DRIVER = "com.gbasedbt.jdbc.Driver";
+
+    String OPENGAUSS_DRIVER = "org.opengauss.Driver";
 }

@@ -61,7 +61,7 @@ public class PGSelectTest69_interval extends TestCase {
                 "FROM robot_job j\n" +
                 "WHERE j.job_status = 1\n" +
                 "\tAND j.timeout_advice = 0\n" +
-                "\tAND j.execute_begin <= NOW() - CAST(? AS interval) * 60", SQLUtils.toPGString(stmt));
+                "\tAND (j.execute_begin <= NOW() - CAST(? AS interval) * 60)", SQLUtils.toPGString(stmt));
 
         assertEquals("select job_id, task_id, process_id, job_type, job_status\n" +
                 "\t, execute_server, execute_result, execute_times, execute_begin, execute_end\n" +
@@ -69,7 +69,7 @@ public class PGSelectTest69_interval extends TestCase {
                 "from robot_job j\n" +
                 "where j.job_status = 1\n" +
                 "\tand j.timeout_advice = 0\n" +
-                "\tand j.execute_begin <= NOW() - cast(? as interval) * 60", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "\tand (j.execute_begin <= NOW() - cast(? as interval) * 60)", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, stmtList.size());
 

@@ -43,7 +43,7 @@ public class StarRocksCharExpr extends SQLCharExpr implements StarRocksExpr {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         output(buf);
         return buf.toString();
     }

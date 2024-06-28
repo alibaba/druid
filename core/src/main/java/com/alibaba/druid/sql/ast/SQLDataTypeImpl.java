@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
@@ -25,10 +26,14 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDbTypedObject {
+public class SQLDataTypeImpl extends SQLObjectImpl
+        implements SQLDataType, SQLDbTypedObject, SQLReplaceable {
     private String name;
     private long nameHashCode64;
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
+
+    protected SQLListExpr enumList;
+
     private Boolean withTimeZone;
     private boolean withLocalTimeZone;
     private DbType dbType;
@@ -56,6 +61,11 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
         addArgument(arg);
     }
 
+    public SQLDataTypeImpl(String name, SQLListExpr enumList) {
+        this(name);
+        setEnumList(enumList);
+    }
+
     public SQLDataTypeImpl(String name, int precision, int scale) {
         this(name);
         addArgument(new SQLIntegerExpr(precision));
@@ -71,6 +81,9 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
                     arg.accept(visitor);
                 }
             }
+        }
+        if (enumList != null) {
+            visitor.visit(enumList);
         }
 
         visitor.endVisit(this);
@@ -90,6 +103,14 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
     public void setName(String name) {
         this.name = name;
         nameHashCode64 = 0L;
+    }
+
+    public SQLListExpr getEnumList() {
+        return enumList;
+    }
+
+    public void setEnumList(SQLListExpr enumList) {
+        this.enumList = enumList;
     }
 
     public List<SQLExpr> getArguments() {
@@ -115,6 +136,9 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
         SQLDataTypeImpl dataType = (SQLDataTypeImpl) o;
 
         if (name != null ? !name.equals(dataType.name) : dataType.name != null) {
+            return false;
+        }
+        if (enumList != null ? !enumList.equals(dataType.enumList) : dataType.enumList != null) {
             return false;
         }
         if (!arguments.equals(dataType.arguments)) {
@@ -436,12 +460,13 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
         long hashCode64 = nameHashCode64();
 
         return hashCode64 == FnvHash.Constants.BIGINT
-                || hashCode64 == FnvHash.Constants.INT
-                || hashCode64 == FnvHash.Constants.INT4
-                || hashCode64 == FnvHash.Constants.INT24
-                || hashCode64 == FnvHash.Constants.SMALLINT
-                || hashCode64 == FnvHash.Constants.TINYINT
-                || hashCode64 == FnvHash.Constants.INTEGER;
+            || hashCode64 == FnvHash.Constants.INT
+            || hashCode64 == FnvHash.Constants.INT4
+            || hashCode64 == FnvHash.Constants.INT24
+            || hashCode64 == FnvHash.Constants.SMALLINT
+            || hashCode64 == FnvHash.Constants.MEDIUMINT
+            || hashCode64 == FnvHash.Constants.TINYINT
+            || hashCode64 == FnvHash.Constants.INTEGER;
     }
 
     public boolean isNumberic() {
@@ -497,5 +522,21 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType, SQLDb
                 || hashCode64 == FnvHash.Constants.LONGBLOB
                 || hashCode64 == FnvHash.Constants.BINARY
                 || hashCode64 == FnvHash.Constants.VARBINARY;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < arguments.size(); i++) {
+            if (arguments.get(i) == expr) {
+                target.setParent(this);
+                arguments.set(i, target);
+                return true;
+            }
+        }
+        if (indexBy == expr) {
+            target.setParent(this);
+            indexBy = target;
+        }
+        return false;
     }
 }

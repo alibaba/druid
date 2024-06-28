@@ -23,8 +23,8 @@ public class JdbcUtils_driver extends TestCase {
         Driver driver = (Driver) clazz.newInstance();
         Assert.assertNotNull(driver);
 
-        Assert.assertEquals(0, driver.getMajorVersion());
-        Assert.assertEquals(1, driver.getMinorVersion());
+        Assert.assertEquals(3, driver.getMajorVersion());
+        Assert.assertEquals(4, driver.getMinorVersion());
 
         Assert.assertEquals(JdbcConstants.ODPS, JdbcUtils.getDbTypeRaw(url, className));
     }

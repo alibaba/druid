@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author wenshao[szujobs@hotmail.com]
  */
 public class SymbolTable {
-    private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final boolean JVM_16;
 
     static {
@@ -125,7 +124,7 @@ public class SymbolTable {
     private static String subString(byte[] bytes, int from, int len) {
         byte[] strBytes = new byte[len];
         System.arraycopy(bytes, from, strBytes, 0, len);
-        return new String(strBytes, UTF8);
+        return new String(strBytes, StandardCharsets.UTF_8);
     }
 
     private static class Entry {

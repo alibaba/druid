@@ -26,6 +26,7 @@ import org.junit.Assert;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -40,7 +41,7 @@ public class TestIdle extends TestCase {
     protected void setUp() throws Exception {
         TabularData dataSourceList = DruidDataSourceStatManager.getInstance().getDataSourceList();
         if (dataSourceList.size() > 0) {
-            DruidDataSource first = DruidDataSourceStatManager.getInstance().getDruidDataSourceInstances().iterator().next();
+            DataSourceMonitorable first = DruidDataSourceStatManager.getInstance().getDruidDataSourceInstances().iterator().next();
             System.out.println(first.getInitStackTrace());
         }
         Assert.assertEquals(0, dataSourceList.size());

@@ -331,7 +331,7 @@ public class OracleSelectTest78 extends OracleTest {
         assertEquals(46, visitor.getColumns().size());
         assertEquals(30, visitor.getConditions().size());
         assertEquals(7, visitor.getRelationships().size());
-        assertEquals(2, visitor.getOrderByColumns().size());
+        assertEquals(4, visitor.getOrderByColumns().size());
 
         {
             String text = SQLUtils.toOracleString(stmt);

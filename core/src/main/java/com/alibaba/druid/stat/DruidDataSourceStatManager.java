@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.stat;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidDataSourceUtils;
@@ -114,7 +113,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
         if (instances == null) {
             synchronized (properties) {
-                instances = (IdentityHashMap<Object, ObjectName>) properties.get(SYS_PROP_INSTANCES);
+                instances = (Map<Object, ObjectName>) properties.get(SYS_PROP_INSTANCES);
 
                 if (instances == null) {
                     instances = Collections.synchronizedMap(new IdentityHashMap<Object, ObjectName>());
@@ -205,7 +204,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     }
 
     @SuppressWarnings("unchecked")
-    public static Set<DruidDataSource> getDruidDataSourceInstances() {
+    public static Set<DataSourceMonitorable> getDruidDataSourceInstances() {
         getInstances();
         return dataSources.keySet();
     }
@@ -340,6 +339,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
                 // 45
                 SimpleType.LONG, //
+                SimpleType.STRING, //
                 //
         };
 
@@ -409,6 +409,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
                 // 45 -
                 "ExecuteUpdateCount",
+                "InitStackTrace",
         };
 
         String[] indexDescriptions = indexNames;

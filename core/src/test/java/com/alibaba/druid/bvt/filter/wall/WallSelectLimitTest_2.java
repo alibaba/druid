@@ -38,7 +38,7 @@ public class WallSelectLimitTest_2 extends TestCase {
         System.out.println(resultSql);
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
-                "LIMIT 10", resultSql);
+                "LIMIT 0, 10", resultSql);
     }
 
     public void testMySql_0() throws Exception {
@@ -70,7 +70,7 @@ public class WallSelectLimitTest_2 extends TestCase {
         System.out.println(resultSql);
         assertEquals("SELECT *\n" +
                 "FROM t\n" +
-                "LIMIT 10", resultSql);
+                "LIMIT 10 OFFSET 0", resultSql);
     }
 
     public void testDB2() throws Exception {

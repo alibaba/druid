@@ -17,9 +17,7 @@ package com.alibaba.druid.sql.dialect.odps.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
@@ -51,7 +49,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         groupItemSingleLine = true;
     }
 
-    public OdpsOutputVisitor(Appendable appender) {
+    public OdpsOutputVisitor(StringBuilder appender) {
         super(appender, DbType.odps);
     }
 
@@ -120,11 +118,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             print(')');
         }
 
-        if (x.getComment() != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            x.getComment().accept(this);
-        }
+        printComment(x.getComment());
 
         int partitionSize = x.getPartitionColumns().size();
         if (partitionSize > 0) {
@@ -153,16 +147,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             print(')');
         }
 
-        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
-        if (clusteredBy.size() > 0) {
-            println();
-            if (x.getClusteringType() == ClusteringType.Range) {
-                print0(ucase ? "RANGE " : "range ");
-            }
-            print0(ucase ? "CLUSTERED BY (" : "clustered by (");
-            printAndAccept(clusteredBy, ",");
-            print(')');
-        }
+        printClusteredBy(x);
 
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
         if (sortedBy.size() > 0) {
@@ -227,10 +212,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         this.printTblProperties(x);
 
-        if (x.getLifecycle() != null) {
+        if (x.getLifeCycle() != null) {
             println();
             print0(ucase ? "LIFECYCLE " : "lifecycle ");
-            x.getLifecycle().accept(this);
+            x.getLifeCycle().accept(this);
         }
 
         SQLExpr using = x.getUsing();
@@ -287,6 +272,18 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         println();
         print(')');
 
+        SQLPivot pivot = x.getPivot();
+        if (pivot != null) {
+            println();
+            pivot.accept(this);
+        }
+
+        SQLUnpivot unpivot = x.getUnpivot();
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
+        }
+
         if (x.getAlias() != null) {
             print(' ');
             print0(x.getAlias());
@@ -300,19 +297,44 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         SQLTableSource left = x.getLeft();
         left.accept(this);
 
-        if (left.hasAfterComment() && isPrettyFormat()) {
-            println();
-            printlnComment(left.getAfterCommentsDirect());
+        SQLTableSource right = x.getRight();
+        JoinType joinType = x.getJoinType();
+        if (joinType == JoinType.CROSS_JOIN
+                && right instanceof SQLUnnestTableSource
+        ) {
+            SQLUnnestTableSource unnest = (SQLUnnestTableSource) right;
+            if (unnest.isOrdinality()) {
+                print0(ucase ? " LATERAL VIEW POSEXPLODE(" : " lateral view posexplode(");
+            } else {
+                print0(ucase ? " LATERAL VIEW EXPLODE(" : " lateral view explode(");
+            }
+            List<SQLExpr> items = unnest.getItems();
+            printAndAccept(items, ", ");
+            print(')');
+
+            if (right.getAlias() != null) {
+                print(' ');
+                print0(right.getAlias());
+            }
+
+            final List<SQLName> columns = unnest.getColumns();
+            if (columns != null && columns.size() > 0) {
+                print0(ucase ? " AS " : " as ");
+                printAndAccept(unnest.getColumns(), ", ");
+            }
+
+            return false;
         }
 
-        if (x.getJoinType() == JoinType.COMMA) {
+        if (joinType == JoinType.COMMA) {
             print(',');
         } else {
             println();
-            printJoinType(x.getJoinType());
+            printJoinType(joinType);
         }
+
         print(' ');
-        x.getRight().accept(this);
+        right.accept(this);
 
         if (x.getCondition() != null) {
             println();
@@ -320,6 +342,10 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             this.indentCount++;
             x.getCondition().accept(this);
             this.indentCount--;
+            if (x.getAfterCommentsDirect() != null) {
+                printAfterComments(x.getAfterCommentsDirect());
+                println();
+            }
         }
 
         if (x.getUsing().size() > 0) {
@@ -443,9 +469,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         if (from != null) {
             println();
             print0(ucase ? "FROM " : "from ");
+            if (x.getCommentsAfaterFrom() != null) {
+                printAfterComments(x.getCommentsAfaterFrom());
+                println();
+            }
             from.accept(this);
         }
-
         SQLExpr where = x.getWhere();
         if (where != null) {
             printWhere(where);
@@ -1107,6 +1136,33 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     public boolean visit(OdpsCopyStmt x) {
         print0(ucase ? "COPY " : "copy ");
         print0(x.getArguments());
+        return false;
+    }
+
+    public boolean visit(SQLStructExpr x) {
+        List<SQLAliasedExpr> items = x.getItems();
+        int aliasCount = 0;
+        for (int i = 0, size = items.size(); i < size; ++i) {
+            SQLAliasedExpr item = items.get(i);
+            if (item.getAlias() != null) {
+                aliasCount++;
+            }
+        }
+        if (aliasCount != items.size()) {
+            return super.visit(x);
+        }
+
+        print0(ucase ? "NAMED_STRUCT(" : "named_struct(");
+        for (int i = 0, size = items.size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            SQLAliasedExpr item = items.get(i);
+            visit(new SQLIdentifierExpr(item.getAlias()));
+            print0(", ");
+            item.getExpr().accept(this);
+        }
+        print(')');
         return false;
     }
 }

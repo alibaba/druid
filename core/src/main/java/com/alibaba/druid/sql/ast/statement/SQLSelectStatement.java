@@ -56,7 +56,7 @@ public class SQLSelectStatement extends SQLStatementImpl {
         this.select = select;
     }
 
-    public void output(Appendable buf) {
+    public void output(StringBuilder buf) {
         this.select.output(buf);
     }
 
@@ -119,5 +119,17 @@ public class SQLSelectStatement extends SQLStatementImpl {
 
     public boolean addWhere(SQLExpr where) {
         return select.addWhere(where);
+    }
+
+    public void addBeforeComment(String comment) {
+        if (headHints == null && attributes == null && select.hints == null && select.getBeforeCommentsDirect() == null) {
+            SQLSelectQueryBlock queryBlock = select.getQueryBlock();
+            List<String> queryBlockBeforeComments = queryBlock.getBeforeCommentsDirect();
+            if (queryBlockBeforeComments != null) {
+                queryBlockBeforeComments.add(comment);
+                return;
+            }
+        }
+        super.addBeforeComment(comment);
     }
 }

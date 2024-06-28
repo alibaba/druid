@@ -38,6 +38,14 @@ public class SQLListExpr extends SQLExprImpl implements SQLReplaceable {
         }
     }
 
+    public SQLListExpr(List<SQLExpr> items) {
+        this.items = new ArrayList<>(items.size());
+        for (SQLExpr item : items) {
+            item.setParent(this);
+            this.items.add(item);
+        }
+    }
+
     public List<SQLExpr> getItems() {
         return items;
     }

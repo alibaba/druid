@@ -79,7 +79,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
                 lexer.nextToken();
-                stmt.setLifecycle(this.exprParser.expr());
+                stmt.setLifeCycle(this.exprParser.expr());
 
                 continue;
             }
@@ -385,7 +385,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
                 lexer.nextToken();
-                stmt.setLifecycle(this.exprParser.expr());
+                stmt.setLifeCycle(this.exprParser.expr());
                 continue;
             }
 
@@ -418,7 +418,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
                 lexer.nextToken();
-                stmt.setLifecycle(this.exprParser.expr());
+                stmt.setLifeCycle(this.exprParser.expr());
                 continue;
             }
 
@@ -457,7 +457,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
                 lexer.nextToken();
-                stmt.setLifecycle(this.exprParser.expr());
+                stmt.setLifeCycle(this.exprParser.expr());
                 continue;
             }
 

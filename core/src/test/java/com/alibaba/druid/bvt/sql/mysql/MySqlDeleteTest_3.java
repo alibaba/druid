@@ -44,7 +44,7 @@ public class MySqlDeleteTest_3 extends MysqlTest {
         Assert.assertEquals("DELETE FROM t1\n" +
                 "WHERE s11 > ANY (\n" +
                 "\t\tSELECT COUNT(*)\n" +
-                "\t\tFROM t2\n" +
+                "\t\tFROM  /* no hint */\n\t\tt2\n" +
                 "\t\tWHERE NOT EXISTS (\n" +
                 "\t\t\tSELECT *\n" +
                 "\t\t\tFROM t3\n" +
@@ -63,7 +63,7 @@ public class MySqlDeleteTest_3 extends MysqlTest {
         assertEquals("delete from t1\n" +
                 "where s11 > any (\n" +
                 "\t\tselect count(*)\n" +
-                "\t\tfrom t2\n" +
+                "\t\tfrom  /* no hint */\n\t\tt2\n" +
                 "\t\twhere not exists (\n" +
                 "\t\t\tselect *\n" +
                 "\t\t\tfrom t3\n" +

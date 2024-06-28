@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLIndex;
 import com.alibaba.druid.sql.ast.SQLIndexDefinition;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -246,6 +247,14 @@ public class MySqlTableIndex extends SQLConstraintImpl implements SQLTableElemen
 
     public void setQueryAnalyzerName(SQLName queryAnalyzerName) {
         this.indexDefinition.setQueryAnalyzerName(queryAnalyzerName);
+    }
+
+    public void setPartitioning(SQLPartitionBy sqlPartitioning) {
+        this.indexDefinition.setPartitioning(sqlPartitioning);
+    }
+
+    public SQLPartitionBy getPartitioning() {
+        return this.indexDefinition.getPartitioning();
     }
 
     public SQLName getWithDicName() {

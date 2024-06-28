@@ -18,10 +18,10 @@ public class MySqlSelectTest_137 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("SELECT decimal_test = 87 / bigint_test = bigint_test > second(timestamp_test)\n" +
+        assertEquals("SELECT ((decimal_test = 87 / bigint_test = bigint_test) > (second(timestamp_test)))\n" +
                 "FROM select_base_two_multi_db_one_tb", stmt.toString());
 
-        assertEquals("SELECT decimal_test = ? / bigint_test = bigint_test > second(timestamp_test)\n" +
+        assertEquals("SELECT ((decimal_test = ? / bigint_test = bigint_test) > (second(timestamp_test)))\n" +
                 "FROM select_base_two_multi_db_one_tb", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 

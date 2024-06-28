@@ -15,23 +15,23 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Comparable<SQLIdentifierExpr> {
     protected String name;
-    private long hashCode64;
+    protected long hashCode64;
 
     private SQLObject resolvedColumn;
     private SQLObject resolvedOwnerObject;
+
+    protected String collate;
 
     public SQLIdentifierExpr() {
     }
@@ -71,6 +71,14 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
         }
     }
 
+    public String getCollate() {
+        return collate;
+    }
+
+    public void setCollate(String collate) {
+        this.collate = collate;
+    }
+
     public long nameHashCode64() {
         return hashCode64();
     }
@@ -79,17 +87,17 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
     public long hashCode64() {
         if (hashCode64 == 0
                 && name != null) {
-            hashCode64 = FnvHash.hashCode64(name);
+            if (collate != null) {
+                hashCode64 = FnvHash.hashCode64(name + collate);
+            } else {
+                hashCode64 = FnvHash.hashCode64(name);
+            }
         }
         return hashCode64;
     }
 
-    public void output(Appendable buf) {
-        try {
-            buf.append(this.name);
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        buf.append(this.name);
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -106,6 +114,10 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
 
     @Override
     public boolean equals(Object obj) {
+        if (obj instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) obj).equals(this);
+        }
+
         if (!(obj instanceof SQLIdentifierExpr)) {
             return false;
         }
@@ -126,7 +138,7 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
         if (hint != null) {
             x.hint = hint.clone();
         }
-
+        x.collate = collate;
         return x;
     }
 

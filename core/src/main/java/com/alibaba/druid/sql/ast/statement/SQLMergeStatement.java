@@ -30,6 +30,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
     private SQLExpr on;
     private MergeUpdateClause updateClause;
     private MergeInsertClause insertClause;
+    private boolean insertClauseFirst;
     private SQLErrorLoggingClause errorLoggingClause;
 
     public void accept0(SQLASTVisitor visitor) {
@@ -37,8 +38,13 @@ public class SQLMergeStatement extends SQLStatementImpl {
             acceptChild(visitor, into);
             acceptChild(visitor, using);
             acceptChild(visitor, on);
-            acceptChild(visitor, updateClause);
-            acceptChild(visitor, insertClause);
+            if (insertClauseFirst) {
+                acceptChild(visitor, insertClause);
+                acceptChild(visitor, updateClause);
+            } else {
+                acceptChild(visitor, updateClause);
+                acceptChild(visitor, insertClause);
+            }
             acceptChild(visitor, errorLoggingClause);
         }
         visitor.endVisit(this);
@@ -84,6 +90,9 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public void setUpdateClause(MergeUpdateClause updateClause) {
+        if (updateClause != null) {
+            updateClause.setParent(this);
+        }
         this.updateClause = updateClause;
     }
 
@@ -92,6 +101,9 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public void setInsertClause(MergeInsertClause insertClause) {
+        if (insertClause != null) {
+            insertClause.setParent(this);
+        }
         this.insertClause = insertClause;
     }
 
@@ -105,6 +117,14 @@ public class SQLMergeStatement extends SQLStatementImpl {
 
     public List<SQLHint> getHints() {
         return hints;
+    }
+
+    public boolean isInsertClauseFirst() {
+        return insertClauseFirst;
+    }
+
+    public void setInsertClauseFirst(boolean insertClauseFirst) {
+        this.insertClauseFirst = insertClauseFirst;
     }
 
     public static class MergeUpdateClause extends SQLObjectImpl {

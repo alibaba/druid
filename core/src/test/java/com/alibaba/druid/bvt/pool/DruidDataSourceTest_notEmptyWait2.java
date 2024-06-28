@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -45,11 +46,13 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
                 public void run() {
                     startLatch.countDown();
                     try {
+                        System.out.println(Thread.currentThread() +" "+ LocalDateTime.now() + " begin " );
                         Connection conn = dataSource.getConnection();
                         Thread.sleep(2);
+                        System.out.println(Thread.currentThread() +" "+ LocalDateTime.now() + " getConnection== " + conn);
                         conn.close();
                     } catch (Exception e) {
-                        // e.printStackTrace();
+                         e.printStackTrace();
                         errorCount.incrementAndGet();
                     } finally {
                         endLatch.countDown();
@@ -80,11 +83,12 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
 
         errorThreadEndLatch.await(100, TimeUnit.MILLISECONDS);
 
-        Assert.assertEquals(1, maxWaitErrorCount.get());
+        Assert.assertEquals(0, maxWaitErrorCount.get());//因为最大超时没有设置，所以线程一直循环进不到maxWaitErrorCount加1的逻辑了
         Assert.assertTrue(dataSource.getNotEmptySignalCount() > 0);
 
         conn.close();
 
+        System.out.println(Thread.currentThread() +" "+ LocalDateTime.now() +"释放了连接");
         endLatch.await(100, TimeUnit.MILLISECONDS);
         Assert.assertEquals(0, errorCount.get());
 

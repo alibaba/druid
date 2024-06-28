@@ -98,7 +98,7 @@ public class OracleCreateTypeTest10 extends OracleTest {
                         "\tBEGIN\n" +
                         "\t\tIF ctx2.currentstr IS NULL THEN\n" +
                         "\t\t\tself.currentstr := self.currentstr;\n" +
-                        "\t\tELSE IF self.currentstr IS NULL THEN\n" +
+                        "\t\tELSIF self.currentstr IS NULL THEN\n" +
                         "\t\t\tself.currentstr := ctx2.currentstr;\n" +
                         "\t\tELSE\n" +
                         "\t\t\tself.currentstr := self.currentstr || currentseprator || ctx2.currentstr;\n" +

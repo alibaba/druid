@@ -15,60 +15,35 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.util.StringUtils;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 
 public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
     public static final int DEFAULT_VALIDATION_QUERY_TIMEOUT = 1;
-    public static final String DEFAULT_VALIDATION_QUERY = "SELECT 1";
+    /**
+     * @see <a href="https://dev.mysql.com/doc/connectors/en/connector-j-usagenotes-j2ee-concepts-connection-pooling.html">Connection Pooling with Connector/J</a>
+     * <p>
+     * specify a validation query in your connection pool that starts with {@literal /}* ping *{@literal /}.
+     * Note that the syntax must be exactly as specified. This will cause the driver send a ping to the server
+     * and return a dummy lightweight result set. When using a ReplicationConnection or LoadBalancedConnection,
+     * the ping will be sent across all active connections.
+     */
+    public static final String DEFAULT_VALIDATION_QUERY = "/* ping */ SELECT 1";
 
     private static final long serialVersionUID = 1L;
     private static final Log LOG = LogFactory.getLog(MySqlValidConnectionChecker.class);
 
-    private Class<?> clazz;
-    private Method ping;
-    private boolean usePingMethod;
+    /** using ping SQL by default */
+    private boolean usePingMethod = true;
 
     public MySqlValidConnectionChecker() {
-        this(false);
-    }
-
-    public MySqlValidConnectionChecker(boolean usePingMethod) {
-        try {
-            clazz = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
-            if (clazz == null) {
-                clazz = Utils.loadClass("com.mysql.cj.jdbc.ConnectionImpl");
-            }
-            if (clazz == null) {
-                clazz = Utils.loadClass("com.mysql.cj.api.MysqlConnection");
-            }
-
-            if (clazz != null) {
-                ping = clazz.getMethod("pingInternal", boolean.class, int.class);
-            }
-
-            if (ping != null && usePingMethod == true) {
-                this.usePingMethod = true;
-            }
-        } catch (Exception e) {
-            LOG.warn("Cannot resolve com.mysql.jdbc.Connection.ping method.  Will use 'SELECT 1' instead.", e);
-        }
-
         configFromProperties(System.getProperties());
     }
 
@@ -101,52 +76,11 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
             return false;
         }
 
-        if (usePingMethod) {
-            if (conn instanceof DruidPooledConnection) {
-                conn = ((DruidPooledConnection) conn).getConnection();
-            }
-
-            if (conn instanceof ConnectionProxy) {
-                conn = ((ConnectionProxy) conn).getRawObject();
-            }
-
-            if (clazz.isAssignableFrom(conn.getClass())) {
-                if (validationQueryTimeout <= 0) {
-                    validationQueryTimeout = DEFAULT_VALIDATION_QUERY_TIMEOUT;
-                }
-
-                try {
-                    ping.invoke(conn, true, validationQueryTimeout * 1000);
-                } catch (InvocationTargetException e) {
-                    Throwable cause = e.getCause();
-                    if (cause instanceof SQLException) {
-                        throw (SQLException) cause;
-                    }
-                    throw e;
-                }
-                return true;
-            }
+        if (usePingMethod || StringUtils.isEmpty(validateQuery)) {
+            validateQuery = DEFAULT_VALIDATION_QUERY;
         }
 
-        String query = validateQuery;
-        if (validateQuery == null || validateQuery.isEmpty()) {
-            query = DEFAULT_VALIDATION_QUERY;
-        }
-
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = conn.createStatement();
-            if (validationQueryTimeout > 0) {
-                stmt.setQueryTimeout(validationQueryTimeout);
-            }
-            rs = stmt.executeQuery(query);
-            return true;
-        } finally {
-            JdbcUtils.close(rs);
-            JdbcUtils.close(stmt);
-        }
-
+        return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, validationQueryTimeout);
     }
 
 }

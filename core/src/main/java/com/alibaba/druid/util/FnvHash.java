@@ -106,8 +106,8 @@ public final class FnvHash {
     /**
      * lower and normalized and fnv_1a_64
      *
-     * @param name
-     * @return
+     * @param name the string to calculate the hash code for
+     * @return the 64-bit hash code of the string
      */
     public static long hashCode64(String name) {
         if (name == null) {
@@ -282,9 +282,9 @@ public final class FnvHash {
     /**
      * normalized and lower and fnv1a_64_hash
      *
-     * @param owner
-     * @param name
-     * @return
+     * @param owner the owner string to include in the hash code calculation (can be null)
+     * @param name  the name string to include in the hash code calculation (can be null)
+     * @return the 64-bit hash code calculated from the owner and name strings
      */
     public static long hashCode64(String owner, String name) {
         long hashCode = BASIC;
@@ -385,6 +385,7 @@ public final class FnvHash {
         long START = fnv1a_64_lower("START");
         long BTREE = fnv1a_64_lower("BTREE");
         long HASH = fnv1a_64_lower("HASH");
+        long DUPLICATE = fnv1a_64_lower("DUPLICATE");
         long LIST = fnv1a_64_lower("LIST");
         long NO_WAIT = fnv1a_64_lower("NO_WAIT");
         long WAIT = fnv1a_64_lower("WAIT");
@@ -405,6 +406,7 @@ public final class FnvHash {
         long COLLATE = fnv1a_64_lower("COLLATE");
         long BOOLEAN = fnv1a_64_lower("BOOLEAN");
         long SMALLINT = fnv1a_64_lower("SMALLINT");
+        long MEDIUMINT = fnv1a_64_lower("MEDIUMINT");
         long SHORT = fnv1a_64_lower("SHORT");
         long TINY = fnv1a_64_lower("TINY");
         long TINYINT = fnv1a_64_lower("TINYINT");
@@ -490,6 +492,7 @@ public final class FnvHash {
         long CIRCLE = fnv1a_64_lower("CIRCLE");
         long LSEG = fnv1a_64_lower("LSEG");
         long POINT = fnv1a_64_lower("POINT");
+        long E = fnv1a_64_lower("E");
         long BOX = fnv1a_64_lower("BOX");
         long MACADDR = fnv1a_64_lower("MACADDR");
         long INET = fnv1a_64_lower("INET");
@@ -579,6 +582,7 @@ public final class FnvHash {
         long SIMPLE = fnv1a_64_lower("SIMPLE");
         long RESTRICT = fnv1a_64_lower("RESTRICT");
         long ON = fnv1a_64_lower("ON");
+        long ONLINE = fnv1a_64_lower("ONLINE");
         long ACTION = fnv1a_64_lower("ACTION");
         long SEPARATOR = fnv1a_64_lower("SEPARATOR");
         long DATA = fnv1a_64_lower("DATA");
@@ -654,6 +658,7 @@ public final class FnvHash {
         long STATISTICS = fnv1a_64_lower("STATISTICS");
         long TRANSACTION = fnv1a_64_lower("TRANSACTION");
         long OFF = fnv1a_64_lower("OFF");
+        long OFFLINE = fnv1a_64_lower("OFFLINE");
         long IDENTITY_INSERT = fnv1a_64_lower("IDENTITY_INSERT");
         long PASSWORD = fnv1a_64_lower("PASSWORD");
         long SOCKET = fnv1a_64_lower("SOCKET");
@@ -1139,12 +1144,11 @@ public final class FnvHash {
         long INSTALL = fnv1a_64_lower("INSTALL");
         long UNLOAD = fnv1a_64_lower("UNLOAD");
 
-        long DUPLICATE = fnv1a_64_lower("DUPLICATE");
         long AGGREGATE = fnv1a_64_lower("AGGREGATE");
         long UNIQUE = fnv1a_64_lower("UNIQUE");
         long PRIMARY = fnv1a_64_lower("PRIMARY");
         long THAN = fnv1a_64_lower("THAN");
         long PROPERTIES = fnv1a_64_lower("PROPERTIES");
-        long RANDOM = fnv1a_64_lower("RANDOM");
+        long SINGLE = fnv1a_64_lower("SINGLE");
     }
 }

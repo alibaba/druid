@@ -30,10 +30,12 @@ import java.util.List;
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement, SQLObjectWithDataType, SQLReplaceable, SQLDbTypedObject {
     protected DbType dbType;
 
+    protected boolean ifNotExists;
     protected SQLName name;
     protected SQLDataType dataType;
     protected SQLExpr defaultExpr;
     protected final List<SQLColumnConstraint> constraints = new ArrayList<SQLColumnConstraint>(0);
+    protected boolean disableNovalidate;
     protected SQLExpr comment;
 
     protected Boolean enable;
@@ -105,6 +107,10 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     public SQLColumnDefinition() {
     }
 
+    public SQLColumnDefinition(SQLName name) {
+        this.setName(name);
+    }
+
     public Identity getIdentity() {
         return identity;
     }
@@ -139,6 +145,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
     public void setRely(Boolean rely) {
         this.rely = rely;
+    }
+
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 
     public SQLName getName() {
@@ -267,6 +281,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             constraint.setParent(this);
         }
         this.constraints.add(constraint);
+    }
+
+    public boolean isDisableNovalidate() {
+        return disableNovalidate;
+    }
+
+    public void setDisableNovalidate(boolean disableNovalidate) {
+        this.disableNovalidate = disableNovalidate;
     }
 
     @Override
@@ -634,7 +656,11 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         }
     }
 
+    @Deprecated
     public boolean containsNotNullConstaint() {
+        return containsNotNullConstraint();
+    }
+    public boolean containsNotNullConstraint() {
         for (SQLColumnConstraint constraint : this.constraints) {
             if (constraint instanceof SQLNotNullConstraint) {
                 return true;
@@ -644,7 +670,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return false;
     }
 
-    public SQLExpr getGeneratedAlawsAs() {
+    public SQLExpr getGeneratedAlwaysAs() {
         return generatedAlawsAs;
     }
 

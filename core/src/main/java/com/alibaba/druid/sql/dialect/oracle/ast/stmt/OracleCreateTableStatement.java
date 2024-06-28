@@ -211,8 +211,12 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.inMemoryMetadata = inMemoryMetadata;
     }
 
-    protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
+    protected void accept0(SQLASTVisitor v) {
+        if (v instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) v);
+        } else {
+            super.accept0(v);
+        }
     }
 
     public OracleStorageClause getStorage() {

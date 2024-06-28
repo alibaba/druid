@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.alibaba.druid.PoolTestCase;
 import org.junit.Assert;
-
+import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DataSourceNotAvailableException;
 import com.alibaba.druid.pool.DruidDataSource;
 

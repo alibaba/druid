@@ -32,18 +32,18 @@ public class PGSelectTest25 extends PGTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals("SELECT COALESCE("
+        Assert.assertEquals("SELECT COALESCE(("
                 + "\n\t\tSELECT project_deduct_mandays"
                 + "\n\t\tFROM mytable_01"
                 + "\n\t\tLIMIT 1"
-                + "\n\t)"
+                + "\n\t))"
                 + "\nFROM t", SQLUtils.toPGString(stmt));
 
-        Assert.assertEquals("select COALESCE("
+        Assert.assertEquals("select COALESCE(("
                 + "\n\t\tselect project_deduct_mandays"
                 + "\n\t\tfrom mytable_01"
                 + "\n\t\tlimit 1"
-                + "\n\t)"
+                + "\n\t))"
                 + "\nfrom t", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());

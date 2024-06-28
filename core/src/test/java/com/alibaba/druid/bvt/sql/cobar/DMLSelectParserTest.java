@@ -39,7 +39,7 @@ public class DMLSelectParserTest extends TestCase {
                 "(SELECT id\n" +
                 "FROM t3)\n" +
                 "ORDER BY d DESC\n" +
-                "LIMIT ?, 1", output);
+                "LIMIT 1 OFFSET ?", output);
     }
 
     public void test_union_1() throws Exception {

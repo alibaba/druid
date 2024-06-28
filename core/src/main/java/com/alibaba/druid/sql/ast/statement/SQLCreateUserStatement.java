@@ -23,7 +23,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLCreateUserStatement extends SQLStatementImpl implements SQLCreateStatement {
     private SQLName user;
     private SQLExpr password;
-
+    private boolean postgresqlWith;
+    private boolean postgresqlEncrypted;
     // oracle
     private SQLName defaultTableSpace;
 
@@ -39,6 +40,22 @@ public class SQLCreateUserStatement extends SQLStatementImpl implements SQLCreat
             user.setParent(this);
         }
         this.user = user;
+    }
+
+    public boolean isPostgresqlWith() {
+        return postgresqlWith;
+    }
+
+    public void setPostgresqlWith(boolean postgresqlWith) {
+        this.postgresqlWith = postgresqlWith;
+    }
+
+    public boolean isPostgresqlEncrypted() {
+        return postgresqlEncrypted;
+    }
+
+    public void setPostgresqlEncrypted(boolean postgresqlEncrypted) {
+        this.postgresqlEncrypted = postgresqlEncrypted;
     }
 
     public SQLExpr getPassword() {

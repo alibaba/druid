@@ -148,7 +148,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                     if (lexer.token() == Token.WITH) {
                         lexer.nextToken();
                         acceptIdentifier("PRIVILEGES");
-                        parsePrivileages(stmt.getPrivileges(), stmt);
+                        parsePrivilege(stmt.getPrivileges(), stmt);
                     }
                 }
 
@@ -286,6 +286,7 @@ public class OdpsStatementParser extends SQLStatementParser {
         if (lexer.identifierEquals("WHOAMI")) {
             lexer.nextToken();
             SQLWhoamiStatement stmt = new SQLWhoamiStatement();
+            stmt.setDbType(DbType.odps);
             statementList.add(stmt);
             return true;
         }
@@ -602,6 +603,12 @@ public class OdpsStatementParser extends SQLStatementParser {
                 return true;
             }
             lexer.reset(mark);
+        }
+
+        if (identifierEquals("COST")) {
+            SQLStatement stmt = parseCost();
+            statementList.add(stmt);
+            return true;
         }
 
         return false;
@@ -1229,6 +1236,15 @@ public class OdpsStatementParser extends SQLStatementParser {
         throw new ParserException("TODO " + lexer.info());
     }
 
+    public SQLStatement parseCost() {
+        acceptIdentifier("COST");
+        acceptIdentifier("SQL");
+        SQLStatement stmt = parseStatement();
+        SQLCostStatement cost = new SQLCostStatement();
+        cost.setStatement(stmt);
+        return cost;
+    }
+
     public SQLStatement parseSet() {
         List<String> comments = null;
         if (lexer.isKeepComments() && lexer.hasComment()) {
@@ -1320,7 +1336,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                 lexer.nextToken();
             }
 
-            parsePrivileages(stmt.getPrivileges(), stmt);
+            parsePrivilege(stmt.getPrivileges(), stmt);
         }
 
         if (lexer.token() == Token.ON) {
@@ -1387,7 +1403,7 @@ public class OdpsStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    protected void parsePrivileages(List<SQLPrivilegeItem> privileges, SQLObject parent) {
+    protected void parsePrivilege(List<SQLPrivilegeItem> privileges, SQLObject parent) {
         for (; ; ) {
             String privilege = null;
             if (lexer.token() == Token.ALL) {

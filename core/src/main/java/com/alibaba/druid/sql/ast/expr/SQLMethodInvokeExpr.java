@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +44,12 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
     public SQLMethodInvokeExpr(String methodName) {
         this.methodName = methodName;
+    }
+
+    public SQLMethodInvokeExpr(SQLIdentifierExpr methodName) {
+        this.methodName = methodName.name;
+        this.methodNameHashCode64 = methodName.hashCode64;
+        this.setSource(methodName.getSourceLine(), methodName.getSourceColumn());
     }
 
     public SQLMethodInvokeExpr(String methodName, long methodNameHashCode64) {
@@ -152,31 +156,38 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         this.from = x;
     }
 
-    public void output(Appendable buf) {
-        try {
-            if (this.owner != null) {
-                this.owner.output(buf);
-                buf.append(".");
-            }
-
-            buf.append(this.methodName);
-            buf.append("(");
-            for (int i = 0, size = this.arguments.size(); i < size; ++i) {
-                if (i != 0) {
-                    buf.append(", ");
-                }
-
-                this.arguments.get(i).output(buf);
-            }
-            buf.append(")");
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
+    public void output(StringBuilder buf) {
+        if (this.owner != null) {
+            this.owner.output(buf);
+            buf.append(".");
         }
+
+        if (this.content != null) {
+            this.content.output(buf);
+            buf.append(' ');
+        }
+        buf.append(this.methodName);
+        buf.append("(");
+        for (int i = 0, size = this.arguments.size(); i < size; ++i) {
+            if (i != 0) {
+                buf.append(", ");
+            }
+
+            this.arguments.get(i).output(buf);
+        }
+        if (this.as != null) {
+            buf.append(' ');
+            this.as.output(buf);
+        }
+        buf.append(")");
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            if (this.content != null) {
+                acceptChild(visitor, this.content);
+            }
             if (this.owner != null) {
                 this.owner.accept(visitor);
             }
@@ -197,6 +208,9 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
             if (this.hasFor != null) {
                 this.hasFor.accept(visitor);
+            }
+            if (this.as != null) {
+                acceptChild(visitor, this.as);
             }
         }
 
@@ -216,6 +230,9 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
+            if (this.content != null) {
+                acceptChild(visitor, this.content);
+            }
             if (this.owner != null) {
                 this.owner.accept(visitor);
             }
@@ -236,6 +253,9 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
             if (this.hasFor != null) {
                 this.hasFor.accept(visitor);
+            }
+            if (this.as != null) {
+                acceptChild(visitor, this.as);
             }
         }
 
@@ -257,6 +277,12 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             return false;
         }
         if (owner != null ? !owner.equals(that.owner) : that.owner != null) {
+            return false;
+        }
+        if (content != null ? !content.equals(that.content) : that.content != null) {
+            return false;
+        }
+        if (as != null ? !as.equals(that.as) : that.as != null) {
             return false;
         }
         if (!arguments.equals(that.arguments)) {
@@ -288,6 +314,9 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             x.setOwner(owner.clone());
         }
 
+        if (content != null) {
+            x.setContent(content);
+        }
         for (SQLExpr arg : arguments) {
             x.addArgument(arg.clone());
         }
@@ -524,5 +553,30 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
     public void setResolvedReturnDataType(SQLDataType resolvedReturnDataType) {
         this.resolvedReturnDataType = resolvedReturnDataType;
+    }
+
+    private SQLExpr as;
+    private SQLExpr content;
+
+    public SQLExpr getAs() {
+        return as;
+    }
+
+    public void setAs(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.as = x;
+     }
+
+    public SQLExpr getContent() {
+        return content;
+    }
+
+    public void setContent(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.content = x;
     }
 }

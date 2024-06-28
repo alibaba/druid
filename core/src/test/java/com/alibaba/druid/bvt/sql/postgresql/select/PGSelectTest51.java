@@ -65,41 +65,41 @@ public class PGSelectTest51 extends TestCase {
 
         assertEquals("SELECT TMP_PAGE.*, ROWNUM AS ROW_ID\n" +
                 "FROM (\n" +
-                "\t(SELECT M.*, A.*\n" +
+                "\tSELECT M.*, A.*\n" +
                 "\tFROM T_EW_MERCHANT M\n" +
                 "\t\tLEFT JOIN LP_ADDRESS A ON M.ADDRESS_KEY = A.KEY\n" +
-                "\tWHERE M.MERCHANT_CODE LIKE ('%' || ? || '%')\n" +
-                "\t\tOR M.MERCHANT_NAME LIKE ('%' || ? || '%')\n" +
-                "\t\tOR M.MERCHANT_NAME LIKE ('%' || ? || '%')\n" +
-                "\t\tOR M.CERTIFICATE LIKE ('%' || ? || '%')\n" +
-                "\t\tOR M.OWNER LIKE ('%' || ? || '%')\n" +
-                "\t\tOR A.COUNTRY LIKE ('%' || ? || '%')\n" +
-                "\t\tOR A.PROVINCE LIKE ('%' || ? || '%')\n" +
-                "\t\tOR A.CITY LIKE ('%' || ? || '%')\n" +
-                "\t\tOR A.COUNTY LIKE ('%' || ? || '%')\n" +
-                "\t\tOR A.STREET_AREA LIKE ('%' || ? || '%')\n" +
-                "\t\tOR A.DETAILE LIKE ('%' || ? || '%')\n" +
-                "\t\tOR A.ZIPCODE LIKE ('%' || ? || '%'))\n" +
+                "\tWHERE M.MERCHANT_CODE LIKE '%' || ? || '%'\n" +
+                "\t\tOR M.MERCHANT_NAME LIKE '%' || ? || '%'\n" +
+                "\t\tOR M.MERCHANT_NAME LIKE '%' || ? || '%'\n" +
+                "\t\tOR M.CERTIFICATE LIKE '%' || ? || '%'\n" +
+                "\t\tOR M.OWNER LIKE '%' || ? || '%'\n" +
+                "\t\tOR A.COUNTRY LIKE '%' || ? || '%'\n" +
+                "\t\tOR A.PROVINCE LIKE '%' || ? || '%'\n" +
+                "\t\tOR A.CITY LIKE '%' || ? || '%'\n" +
+                "\t\tOR A.COUNTY LIKE '%' || ? || '%'\n" +
+                "\t\tOR A.STREET_AREA LIKE '%' || ? || '%'\n" +
+                "\t\tOR A.DETAILE LIKE '%' || ? || '%'\n" +
+                "\t\tOR A.ZIPCODE LIKE '%' || ? || '%'\n" +
                 ") TMP_PAGE\n" +
                 "WHERE ROWNUM <= 10", SQLUtils.toPGString(stmt));
 
         assertEquals("select TMP_PAGE.*, ROWNUM as ROW_ID\n" +
                 "from (\n" +
-                "\t(select M.*, A.*\n" +
+                "\tselect M.*, A.*\n" +
                 "\tfrom T_EW_MERCHANT M\n" +
                 "\t\tleft join LP_ADDRESS A on M.ADDRESS_KEY = A.KEY\n" +
-                "\twhere M.MERCHANT_CODE like ('%' || ? || '%')\n" +
-                "\t\tor M.MERCHANT_NAME like ('%' || ? || '%')\n" +
-                "\t\tor M.MERCHANT_NAME like ('%' || ? || '%')\n" +
-                "\t\tor M.CERTIFICATE like ('%' || ? || '%')\n" +
-                "\t\tor M.OWNER like ('%' || ? || '%')\n" +
-                "\t\tor A.COUNTRY like ('%' || ? || '%')\n" +
-                "\t\tor A.PROVINCE like ('%' || ? || '%')\n" +
-                "\t\tor A.CITY like ('%' || ? || '%')\n" +
-                "\t\tor A.COUNTY like ('%' || ? || '%')\n" +
-                "\t\tor A.STREET_AREA like ('%' || ? || '%')\n" +
-                "\t\tor A.DETAILE like ('%' || ? || '%')\n" +
-                "\t\tor A.ZIPCODE like ('%' || ? || '%'))\n" +
+                "\twhere M.MERCHANT_CODE like '%' || ? || '%'\n" +
+                "\t\tor M.MERCHANT_NAME like '%' || ? || '%'\n" +
+                "\t\tor M.MERCHANT_NAME like '%' || ? || '%'\n" +
+                "\t\tor M.CERTIFICATE like '%' || ? || '%'\n" +
+                "\t\tor M.OWNER like '%' || ? || '%'\n" +
+                "\t\tor A.COUNTRY like '%' || ? || '%'\n" +
+                "\t\tor A.PROVINCE like '%' || ? || '%'\n" +
+                "\t\tor A.CITY like '%' || ? || '%'\n" +
+                "\t\tor A.COUNTY like '%' || ? || '%'\n" +
+                "\t\tor A.STREET_AREA like '%' || ? || '%'\n" +
+                "\t\tor A.DETAILE like '%' || ? || '%'\n" +
+                "\t\tor A.ZIPCODE like '%' || ? || '%'\n" +
                 ") TMP_PAGE\n" +
                 "where ROWNUM <= 10", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

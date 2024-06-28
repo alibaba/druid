@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLShowStatement;
@@ -23,6 +24,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGShowStatement extends SQLStatementImpl implements PGSQLStatement, SQLShowStatement {
     private SQLExpr expr;
+
+    public PGShowStatement() {
+        super(DbType.postgresql);
+    }
+
+    public PGShowStatement(DbType dbType) {
+        super(dbType);
+    }
 
     public SQLExpr getExpr() {
         return expr;

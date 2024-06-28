@@ -42,6 +42,7 @@ public class TestDisable extends TestCase {
         dataSource.setMaxActive(2);
         dataSource.setMaxIdle(2);
         dataSource.setMinIdle(1);
+        dataSource.setMaxWait(500);// 加上最大等待时间，防止出现无限等待导致单测卡死的情况
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
         dataSource.setTestWhileIdle(true);
@@ -65,8 +66,10 @@ public class TestDisable extends TestCase {
             threads[i] = new Thread("thread-" + i) {
                 public void run() {
                     try {
+                        System.out.println("wait for start " + getName());
                         startLatch.await();
                         Connection conn = dataSource.getConnection();
+                        System.out.println("getConnection start " + getName());
                     } catch (DataSourceDisableException e) {
                         // skip
                     } catch (Exception e) {
@@ -86,6 +89,7 @@ public class TestDisable extends TestCase {
 
         new Thread("close thread") {
             public void run() {
+                System.out.println("setEnable " + getName());
                 dataSource.setEnable(false);
             }
         }.start();

@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * @author wenshao
@@ -28,10 +27,12 @@ public class WallSelectWhereTest3 extends TestCase {
     private String sql = "select * from t WHERE FID = 256 AND CHR(67)||CHR(65)||CHR(84) = 'CAT'";
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        WallConfig config = new WallConfig();
+        config.setConditionAndAlwayFalseAllow(true);
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        Assert.assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

@@ -99,7 +99,7 @@ public class OracleSelectTest111 extends OracleTest {
                     + "WHERE server_id = 5000\n"
                     + "\tAND health = 'A'\n"
                     + "\tAND primary = 'Y'\n"
-                    + "\tAND last_update_date >= SYSDATE - 1 / 288", text);
+                    + "\tAND last_update_date >= (SYSDATE - (1 / 288))", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());

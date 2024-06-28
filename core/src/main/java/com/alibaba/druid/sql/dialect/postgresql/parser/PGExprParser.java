@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLArrayDataType;
+import com.alibaba.druid.sql.ast.SQLCurrentTimeExpr;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.*;
@@ -35,7 +36,11 @@ public class PGExprParser extends SQLExprParser {
     public static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", "DENSE_RANK", "PERCENT_RANK", "CUME_DIST"};
+        String[] strings = {
+                "AVG", "COUNT", "MAX", "MIN", "STDDEV",
+                "SUM", "ROW_NUMBER", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK",
+                "DENSE_RANK", "PERCENT_RANK", "CUME_DIST"
+        };
 
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
@@ -53,7 +58,7 @@ public class PGExprParser extends SQLExprParser {
     }
 
     public PGExprParser(String sql, SQLParserFeature... features) {
-        this(new PGLexer(sql));
+        this(new PGLexer(sql, features));
         this.lexer.nextToken();
         this.dbType = DbType.postgresql;
     }
@@ -140,6 +145,18 @@ public class PGExprParser extends SQLExprParser {
                 break;
             }
             return values;
+        } else if (lexer.identifierEquals(FnvHash.Constants.CURRENT_TIMESTAMP)) {
+            SQLCurrentTimeExpr currentTimeExpr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.CURRENT_TIMESTAMP);
+            lexer.nextToken();
+            if (lexer.identifierEquals(FnvHash.Constants.AT)) {
+                lexer.nextToken();
+                acceptIdentifier("time");
+                acceptIdentifier("zone");
+                String timeZone = lexer.stringVal();
+                lexer.nextToken();
+                currentTimeExpr.setTimeZone(timeZone);
+            }
+            return primaryRest(currentTimeExpr);
         } else if (lexer.token() == Token.WITH) {
             SQLQueryExpr queryExpr = new SQLQueryExpr(
                     createSelectParser()
@@ -154,7 +171,10 @@ public class PGExprParser extends SQLExprParser {
     protected SQLExpr parseInterval() {
         accept(Token.INTERVAL);
         SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
-        if (lexer.token() != Token.LITERAL_CHARS && lexer.token() != Token.LITERAL_INT) {
+        if (lexer.token() != Token.LITERAL_CHARS
+                && lexer.token() != Token.LITERAL_INT
+                && lexer.token() != Token.VARIANT
+        ) {
             return new SQLIdentifierExpr("INTERVAL");
         }
         intervalExpr.setValue(new SQLCharExpr(lexer.stringVal()));
@@ -184,8 +204,7 @@ public class PGExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (lexer.token() == Token.COLONCOLON) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.COLONCOLON)) {
             SQLDataType dataType = this.parseDataType();
 
             PGTypeCastExpr castExpr = new PGTypeCastExpr();
@@ -291,6 +310,13 @@ public class PGExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
 
                 return primaryRest(extract);
+            } else if (FnvHash.Constants.E == hash && lexer.token() == Token.LITERAL_CHARS) {
+                String str = lexer.stringVal();
+                lexer.nextToken();
+                PGCharExpr cstyleStr = new PGCharExpr();
+                cstyleStr.setText(str);
+                cstyleStr.setCSytle(true);
+                return primaryRest(cstyleStr);
             } else if (FnvHash.Constants.POINT == hash) {
                 switch (lexer.token()) {
                     case DOT:

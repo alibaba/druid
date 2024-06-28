@@ -18,7 +18,7 @@ public class MySqlSelectTest_176_hints extends MysqlTest {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.EnableSQLBinaryOpExprGroup,
                 SQLParserFeature.OptimizedForParameterized);
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
-
+        System.out.println(stmt.toString());
         assertEquals(1, statementList.size());
 
         assertEquals("SELECT a.*, b.start_time, b.end_time, b.user_limit, b.member_limit\n" +

@@ -29,4 +29,7 @@ public interface SQLConstraint extends SQLObject {
     void setComment(SQLExpr x);
 
     void simplify();
+
+    default void setHasConstraint(boolean hasConstraint) {
+    }
 }

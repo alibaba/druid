@@ -284,6 +284,10 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
             x.setOrderBy(orderBy.clone());
         }
 
+        // 修复listagg wthin group语句转换错误的问题
+        // https://github.com/alibaba/druid/issues/5930
+        x.setWithinGroup(withinGroup);
+
         x.ignoreNulls = ignoreNulls;
 
         if (attributes != null) {

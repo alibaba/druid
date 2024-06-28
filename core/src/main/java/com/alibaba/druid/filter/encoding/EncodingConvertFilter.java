@@ -33,27 +33,20 @@ import java.util.Properties;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class EncodingConvertFilter extends FilterAdapter {
-    public static final String ATTR_CHARSET_PARAMETER = "ali.charset.param";
     public static final String ATTR_CHARSET_CONVERTER = "ali.charset.converter";
-    private String clientEncoding;
-    private String serverEncoding;
 
+    public static final String CLIENT_ENCODING_KEY = "clientEncoding";
+
+    public static final String SERVER_ENCODING_KEY = "serverEncoding";
+
+    @Override
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
         ConnectionProxy conn = chain.connection_connect(info);
 
-        CharsetParameter param = new CharsetParameter();
-        param.setClientEncoding(info.getProperty(CharsetParameter.CLIENTENCODINGKEY));
-        param.setServerEncoding(info.getProperty(CharsetParameter.SERVERENCODINGKEY));
+        String clientEncoding = info.getProperty(CLIENT_ENCODING_KEY);
+        String serverEncoding = info.getProperty(SERVER_ENCODING_KEY);
 
-        if (param.getClientEncoding() == null || "".equalsIgnoreCase(param.getClientEncoding())) {
-            param.setClientEncoding(clientEncoding);
-        }
-        if (param.getServerEncoding() == null || "".equalsIgnoreCase(param.getServerEncoding())) {
-            param.setServerEncoding(serverEncoding);
-        }
-        conn.putAttribute(ATTR_CHARSET_PARAMETER, param);
-        conn.putAttribute(ATTR_CHARSET_CONVERTER,
-                new CharsetConvert(param.getClientEncoding(), param.getServerEncoding()));
+        conn.putAttribute(ATTR_CHARSET_CONVERTER, new CharsetConvert(clientEncoding, serverEncoding));
 
         return conn;
     }

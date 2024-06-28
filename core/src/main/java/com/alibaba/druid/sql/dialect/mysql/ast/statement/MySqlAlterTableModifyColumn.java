@@ -37,6 +37,7 @@ public class MySqlAlterTableModifyColumn extends MySqlObjectImpl implements SQLA
             acceptChild(visitor, firstColumn);
             acceptChild(visitor, afterColumn);
         }
+        visitor.endVisit(this);
     }
 
     public SQLName getFirstColumn() {

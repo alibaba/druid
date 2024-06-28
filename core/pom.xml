@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.alibaba</groupId>
 		<artifactId>druid-parent</artifactId>
-		<version>1.2.17-SNAPSHOT</version>
+		<version>1.2.24-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>druid</artifactId>
@@ -17,7 +17,6 @@
 	<properties>
 		<spring.version>4.3.20.RELEASE</spring.version>
 		<junit.version>4.13.1</junit.version>
-		<jmh.version>1.19</jmh.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
@@ -118,6 +117,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>5.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
@@ -198,9 +204,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.21</version>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.0.33</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -220,6 +226,13 @@
 			<groupId>com.oracle.ojdbc</groupId>
 			<artifactId>ojdbc8</artifactId>
 			<version>19.3.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.dameng</groupId>
+			<artifactId>DmJdbcDriver18</artifactId>
+			<version>8.1.3.62</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -263,19 +276,19 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.1.0.Final</version>
+			<version>5.6.9.Final</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
-			<version>5.1.0.Final</version>
+			<version>5.6.9.Final</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.aliyun.odps</groupId>
 			<artifactId>odps-sdk-udf</artifactId>
-			<version>0.37.10-public</version>
+			<version>0.43.3-public</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 			<exclusions>
@@ -313,15 +326,9 @@
 		<dependency>
 			<groupId>com.alibaba.fastjson2</groupId>
 			<artifactId>fastjson2</artifactId>
-			<version>2.0.24</version>
+			<version>2.0.29</version>
 			<scope>provided</scope>
 			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hive</groupId>
-			<artifactId>hive-jdbc</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>ru.yandex.clickhouse</groupId>
@@ -343,7 +350,7 @@
 		<dependency>
 			<groupId>com.aliyun.odps</groupId>
 			<artifactId>odps-jdbc</artifactId>
-			<version>1.6</version>
+			<version>3.4.2</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -443,7 +450,7 @@
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4</artifactId>
-			<version>4.7</version>
+			<version>4.11.1</version>
 			<scope>test</scope>
 		</dependency>
 

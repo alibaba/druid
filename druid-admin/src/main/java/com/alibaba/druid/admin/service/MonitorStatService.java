@@ -2,12 +2,7 @@ package com.alibaba.druid.admin.service;
 
 import com.alibaba.druid.admin.config.MonitorProperties;
 import com.alibaba.druid.admin.model.ServiceNode;
-import com.alibaba.druid.admin.model.dto.ConnectionResult;
-import com.alibaba.druid.admin.model.dto.DataSourceResult;
-import com.alibaba.druid.admin.model.dto.SqlDetailResult;
-import com.alibaba.druid.admin.model.dto.SqlListResult;
-import com.alibaba.druid.admin.model.dto.WallResult;
-import com.alibaba.druid.admin.model.dto.WebResult;
+import com.alibaba.druid.admin.model.dto.*;
 import com.alibaba.druid.admin.util.HttpUtil;
 import com.alibaba.druid.stat.DruidStatServiceMBean;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
@@ -18,18 +13,19 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONWriter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import io.kubernetes.client.openapi.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -44,7 +40,7 @@ public class MonitorStatService implements DruidStatServiceMBean {
     public static final int RESULT_CODE_ERROR = -1;
 
     private static final int DEFAULT_PAGE = 1;
-    private static final int DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
+    private static final int DEFAULT_PER_PAGE_COUNT = 1000;
     private static final String ORDER_TYPE_DESC = "desc";
     private static final String ORDER_TYPE_ASC = "asc";
     private static final String DEFAULT_ORDER_TYPE = ORDER_TYPE_ASC;
@@ -60,13 +56,25 @@ public class MonitorStatService implements DruidStatServiceMBean {
     @Autowired
     private MonitorProperties monitorProperties;
 
+    @Autowired
+    private K8sDiscoveryClient k8sDiscoveryClient;
+
     /**
      * 获取所有服务信息
      *
      * @return
      */
-    public Map<String, ServiceNode> getAllServiceNodeMap(){
+    public Map<String, ServiceNode> getAllServiceNodeMap() {
         List<String> services = discoveryClient.getServices();
+        List<String> applications = monitorProperties.getApplications();
+        String kubeConfig = monitorProperties.getKubeConfigFilePath();
+        if (CollectionUtils.isEmpty(services) && !Strings.isNullOrEmpty(kubeConfig)) {
+            try {
+                return k8sDiscoveryClient.getK8sPodsInfo(applications, kubeConfig, monitorProperties.getK8sNamespace());
+            } catch (IOException | ApiException e) {
+                log.error("get k8s resource fail: ", e);
+            }
+        }
         List<ServiceNode> serviceNodes = new ArrayList<>();
         for (String service : services) {
             List<ServiceInstance> instances = discoveryClient.getInstances(service);
@@ -79,7 +87,7 @@ public class MonitorStatService implements DruidStatServiceMBean {
                 int port = instance.getPort();
                 String serviceId = instance.getServiceId();
                 // 根据前端参数采集指定的服务
-                if (monitorProperties.getApplications().contains(serviceId)) {
+                if (applications.contains(serviceId)) {
                     ServiceNode serviceNode = new ServiceNode();
                     serviceNode.setId(instanceId);
                     serviceNode.setPort(port);
@@ -90,7 +98,7 @@ public class MonitorStatService implements DruidStatServiceMBean {
                 }
             }
         }
-        return serviceNodes.parallelStream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
+        return serviceNodes.stream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
                 Function.identity(), (v1, v2) -> v2));
     }
 
@@ -100,11 +108,18 @@ public class MonitorStatService implements DruidStatServiceMBean {
      * @param parameters
      * @return
      */
-    public Map<String, ServiceNode> getServiceAllNodeMap(Map<String, String> parameters){
+    public Map<String, ServiceNode> getServiceAllNodeMap(Map<String, String> parameters) {
         String requestServiceName = parameters.get("serviceName");
         List<String> services = discoveryClient.getServices();
+        String kubeConfig = monitorProperties.getKubeConfigFilePath();
+        if (CollectionUtils.isEmpty(services) && !Strings.isNullOrEmpty(kubeConfig)) {
+            try {
+                return k8sDiscoveryClient.getK8sPodsInfo(Lists.newArrayList(requestServiceName), kubeConfig, monitorProperties.getK8sNamespace());
+            } catch (IOException | ApiException e) {
+                log.error("get k8s resource fail: ", e);
+            }
+        }
         List<ServiceNode> serviceNodes = new ArrayList<>();
-
         for (String service : services) {
             List<ServiceInstance> instances = discoveryClient.getInstances(service);
             for (ServiceInstance instance : instances) {
@@ -127,9 +142,10 @@ public class MonitorStatService implements DruidStatServiceMBean {
                 }
             }
         }
-        return serviceNodes.parallelStream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
+        return serviceNodes.stream().collect(Collectors.toMap(i -> i.getServiceName() + "-" + i.getAddress() + "-" + i.getPort(),
                 Function.identity(), (v1, v2) -> v2));
     }
+
     @Override
     public String service(String url) {
         Map<String, String> parameters = getParameters(url);
@@ -343,14 +359,20 @@ public class MonitorStatService implements DruidStatServiceMBean {
             }
         }
         List<Map<String, Object>> maps = comparatorOrderBy(arrayMap, parameters);
-        String jsonString = JSON.toJSONString(maps);
+        String jsonString = JSON.toJSONString(
+                maps,
+                JSONWriter.Feature.LargeObject,
+                JSONWriter.Feature.ReferenceDetection,
+                JSONWriter.Feature.BrowserCompatible,
+                JSONWriter.Feature.BrowserSecure
+        );
         JSONArray objects = JSON.parseArray(jsonString);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ResultCode", RESULT_CODE_SUCCESS);
         jsonObject.put("Content", objects);
-        return jsonObject.toJSONString();
+        return jsonObject.toJSONString(JSONWriter.Feature.LargeObject, JSONWriter.Feature.ReferenceDetection,
+                JSONWriter.Feature.BrowserCompatible, JSONWriter.Feature.BrowserSecure);
     }
-
 
     /**
      * 数据源监控
@@ -368,6 +390,7 @@ public class MonitorStatService implements DruidStatServiceMBean {
             String serviceName = serviceNode.getServiceName();
 
             String url = "http://" + serviceNode.getAddress() + ":" + serviceNode.getPort() + "/druid/datasource.json";
+            log.info("request url: " + url);
             DataSourceResult dataSourceResult = HttpUtil.get(url, lastResult.getClass());
             if (dataSourceResult != null) {
                 List<DataSourceResult.ContentBean> nodeContent = dataSourceResult.getContent();

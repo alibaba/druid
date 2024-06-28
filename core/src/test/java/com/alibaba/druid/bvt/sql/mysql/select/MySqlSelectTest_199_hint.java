@@ -158,7 +158,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
                             "FROM customer\n" +
                             "\tINNER JOIN orders\n" +
                             "\tON customer.custkey = orders.custkey/*+ wefwe=true*/\n" +
-                            "\t\tAND customer.nationkey = orders.orderkey", //
+                            "\t\tAND customer.nationkey = orders.orderkey /* wef=false */\n\t\t", //
                     output);
         }
     }
@@ -240,8 +240,8 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
                             + "WHERE store_sales.ss_sold_date_sk IN (\n"
                             + "\t\tSELECT d_date_sk\n"
                             + "\t\tFROM date_dim\n"
-                            + "\t\tWHERE d_moy = 11\n"
-                            + "\t\t\tAND d_year = 2000\n"
+                            + "\t\tWHERE (d_moy = 11)\n"
+                            + "\t\t\tAND (d_year = 2000)\n"
                             + "\t)/*+ dynamicFilter = true*/\n"
                             + "\tAND store_sales.ss_item_sk = item.i_item_sk/*+ dynamicFilter = true*/\n"
                             + "\tAND item.i_manager_id = 1\n" + "GROUP BY ss_store_sk\n"
@@ -284,27 +284,27 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT w_state, i_item_id\n" +
-                            "\t, sum(CASE \n"
-                            + "\t\tWHEN CAST(d_date AS DATE) < CAST('2000-03-11' AS DATE) THEN cs_sales_price - COALESCE(cr_refunded_cash, 0)\n"
-                            + "\t\tELSE 0\n"
-                            + "\tEND) AS sales_before\n"
-                            + "\t, sum(CASE \n"
-                            + "\t\tWHEN CAST(d_date AS DATE) >= CAST('2000-03-11' AS DATE) THEN cs_sales_price - COALESCE(cr_refunded_cash, 0)\n"
-                            + "\t\tELSE 0\n"
-                            + "\tEND) AS sales_after\n"
-                            + "FROM catalog_sales\n"
-                            + "\tLEFT JOIN catalog_returns\n"
-                            + "\tON cs_order_number = cr_order_number\n"
-                            + "\t\tAND cs_item_sk = cr_item_sk, warehouse, item, date_dim\n"
-                            + "WHERE i_current_price BETWEEN DECIMAL '0.99' AND DECIMAL '1.49'\n"
-                            + "\tAND i_item_sk = cs_item_sk/*+ dynamicFilter = true*/\n"
-                            + "\tAND cs_warehouse_sk = w_warehouse_sk\n"
-                            + "\tAND cs_sold_date_sk = d_date_sk/*+ dynamicFilter = true*/\n"
-                            + "\tAND CAST(d_date AS DATE) BETWEEN (CAST('2000-03-11' AS DATE) - INTERVAL '30' DAY) AND (CAST('2000-03-11' AS DATE) + INTERVAL '30' DAY)\n"
-                            + "GROUP BY w_state, i_item_id\n"
-                            + "ORDER BY w_state ASC, i_item_id ASC\n"
-                            + "LIMIT 100", //
+            Assert.assertEquals("SELECT w_state, i_item_id\n"
+                    + "\t, sum((CASE \n"
+                    + "\t\tWHEN (CAST(d_date AS DATE) < CAST('2000-03-11' AS DATE)) THEN (cs_sales_price - COALESCE(cr_refunded_cash, 0))\n"
+                    + "\t\tELSE 0\n"
+                    + "\tEND)) AS sales_before\n"
+                    + "\t, sum((CASE \n"
+                    + "\t\tWHEN (CAST(d_date AS DATE) >= CAST('2000-03-11' AS DATE)) THEN (cs_sales_price - COALESCE(cr_refunded_cash, 0))\n"
+                    + "\t\tELSE 0\n"
+                    + "\tEND)) AS sales_after\n"
+                    + "FROM catalog_sales\n"
+                    + "\tLEFT JOIN catalog_returns\n"
+                    + "\tON (cs_order_number = cr_order_number)\n"
+                    + "\t\tAND (cs_item_sk = cr_item_sk), warehouse, item, date_dim\n"
+                    + "WHERE ((i_current_price BETWEEN DECIMAL '0.99' AND DECIMAL '1.49')\n"
+                    + "\tAND (i_item_sk = cs_item_sk/*+ dynamicFilter = true*/)\n"
+                    + "\tAND (cs_warehouse_sk = w_warehouse_sk)\n"
+                    + "\tAND (cs_sold_date_sk = d_date_sk/*+ dynamicFilter = true*/)\n"
+                    + "\tAND (CAST(d_date AS DATE) BETWEEN (CAST('2000-03-11' AS DATE) - INTERVAL '30' DAY) AND (CAST('2000-03-11' AS DATE) + INTERVAL '30' DAY)))\n"
+                    + "GROUP BY w_state, i_item_id\n"
+                    + "ORDER BY w_state ASC, i_item_id ASC\n"
+                    + "LIMIT 100", //
                     output);
         }
     }
@@ -339,8 +339,8 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
                             + "\tAND store_sales.ss_sold_date_sk IN (\n"
                             + "\t\tSELECT d_date_sk\n"
                             + "\t\tFROM date_dim\n"
-                            + "\t\tWHERE d_moy = 11\n"
-                            + "\t\t\tAND d_year = 2000\n"
+                            + "\t\tWHERE (d_moy = 11)\n"
+                            + "\t\t\tAND (d_year = 2000)\n"
                             + "\t)/*+ dynamicFilter = true*/\n"
                             + "\tAND item.i_manager_id = 1\n"
                             + "GROUP BY ss_store_sk\n"

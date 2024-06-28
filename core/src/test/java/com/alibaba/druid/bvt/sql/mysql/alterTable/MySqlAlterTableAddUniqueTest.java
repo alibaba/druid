@@ -33,10 +33,10 @@ public class MySqlAlterTableAddUniqueTest extends TestCase {
         parser.match(Token.EOF);
 
         Assert.assertEquals("ALTER TABLE icp.wx_msg"
-                + "\n\tADD UNIQUE (msgId, msgType, event, eventKey)", SQLUtils.toMySqlString(stmt));
+                + "\n\tADD UNIQUE idx_msgId_msgType_event_eventKey (msgId, msgType, event, eventKey)", SQLUtils.toMySqlString(stmt));
 
         Assert.assertEquals("alter table icp.wx_msg"
-                + "\n\tadd unique (msgId, msgType, event, eventKey)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                + "\n\tadd unique idx_msgId_msgType_event_eventKey (msgId, msgType, event, eventKey)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);

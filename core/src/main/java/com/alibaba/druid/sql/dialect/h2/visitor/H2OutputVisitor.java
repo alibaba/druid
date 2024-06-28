@@ -34,15 +34,15 @@ import java.util.List;
 public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor {
     private static final Log LOG = LogFactory.getLog(H2OutputVisitor.class);
 
-    public H2OutputVisitor(Appendable appender) {
+    public H2OutputVisitor(StringBuilder appender) {
         super(appender, DbType.h2);
     }
 
-    public H2OutputVisitor(Appendable appender, DbType dbType) {
+    public H2OutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public H2OutputVisitor(Appendable appender, boolean parameterized) {
+    public H2OutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         dbType = DbType.h2;
     }

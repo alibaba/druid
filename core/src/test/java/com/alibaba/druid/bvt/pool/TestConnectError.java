@@ -36,6 +36,7 @@ public class TestConnectError extends TestCase {
             private AtomicInteger count = new AtomicInteger();
 
             public Connection connect(String url, Properties info) throws SQLException {
+                // create first connection successfully.
                 if (count.getAndIncrement() % 2 == 0) {
                     throw new SQLException();
                 }

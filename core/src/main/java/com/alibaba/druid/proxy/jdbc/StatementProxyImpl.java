@@ -54,7 +54,7 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         return this.statement;
     }
 
-    public FilterChainImpl createChain() {
+    public final FilterChainImpl createChain() {
         FilterChainImpl chain = this.filterChain;
         if (chain == null) {
             chain = new FilterChainImpl(this.getConnectionProxy().getDirectDataSource());
@@ -65,7 +65,7 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         return chain;
     }
 
-    public void recycleFilterChain(FilterChainImpl chain) {
+    public final void recycleFilterChain(FilterChainImpl chain) {
         chain.reset();
         this.filterChain = chain;
     }
@@ -76,7 +76,9 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
             batchSqlList = new ArrayList<String>();
         }
 
-        createChain().statement_addBatch(this, sql);
+        FilterChainImpl chain = createChain();
+        chain.statement_addBatch(this, sql);
+        recycleFilterChain(chain);
         batchSqlList.add(sql);
     }
 
@@ -482,7 +484,7 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     @Override
     public String getBatchSql() {
         List<String> sqlList = getBatchSqlList();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (String item : sqlList) {
             if (buf.length() > 0) {
                 buf.append("\n;\n");

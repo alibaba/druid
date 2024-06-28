@@ -4,11 +4,15 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
 import java.util.Locale;
@@ -22,15 +26,15 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         this.quote = '`';
     }
 
-    public StarRocksOutputVisitor(Appendable appender) {
+    public StarRocksOutputVisitor(StringBuilder appender) {
         super(appender);
     }
 
-    public StarRocksOutputVisitor(Appendable appender, DbType dbType) {
+    public StarRocksOutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public StarRocksOutputVisitor(Appendable appender, boolean parameterized) {
+    public StarRocksOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 
@@ -59,7 +63,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         println(", ");
                     }
                     SQLExpr sqlExpr = x.getAggDuplicateParameters().get(i);
-                    if (!sqlExpr.toString().startsWith("(")) {
+                    if (!sqlExpr.toString().startsWith("(") && !sqlExpr.toString().startsWith("`")) {
                         print0("(");
                         sqlExpr.accept(this);
                         print0(")");
@@ -79,7 +83,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         println(", ");
                     }
                     SQLExpr sqlExpr = x.getPrimaryUniqueParameters().get(i);
-                    if (!sqlExpr.toString().startsWith("(")) {
+                    if (!sqlExpr.toString().startsWith("(") && !sqlExpr.toString().startsWith("`")) {
                         print0("(");
                         sqlExpr.accept(this);
                         print0(")");
@@ -99,7 +103,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         println(", ");
                     }
                     SQLExpr sqlExpr = x.getPrimaryUniqueParameters().get(i);
-                    if (!sqlExpr.toString().startsWith("(")) {
+                    if (!sqlExpr.toString().startsWith("(") && !sqlExpr.toString().startsWith("`")) {
                         print0("(");
                         sqlExpr.accept(this);
                         print0(")");
@@ -110,17 +114,27 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             }
         }
 
-        if (x.getComment() != null) {
-            println();
-            print0(ucase ? "COMMENT " : "comment ");
-            print0(x.getComment().toString());
-        }
+//        if (x.getComment() != null) {
+//            println();
+//            print0(ucase ? "COMMENT " : "comment ");
+//            print0(x.getComment().toString());
+//        }
 
-        SQLExpr partitionBy = x.getPartitionBy();
-        if (partitionBy != null) {
+        List<SQLExpr> partitionBy = x.getPartitionBy();
+        if (partitionBy != null && partitionBy.size() > 0) {
             println();
             print0(ucase ? "PARTITION BY " : "partition by ");
-            partitionBy.accept(this);
+            x.getPartitionByName().accept(this);
+
+            print0("(");
+            for (int i = 0; i < partitionBy.size(); i++) {
+                partitionBy.get(i).accept(this);
+                if (i != partitionBy.size() - 1) {
+                    print0(",");
+                }
+            }
+            print0(")");
+
             println();
             print0("(");
             println();
@@ -318,6 +332,57 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         return false;
     }
 
+    protected void print(List<? extends SQLExpr> exprList) {
+        int size = exprList.size();
+        if (size == 0) {
+            return;
+        }
+
+        print0(" (");
+
+        this.indentCount++;
+        println();
+        for (int i = 0; i < size; ++i) {
+            SQLExpr element = exprList.get(i);
+
+            if (element instanceof SQLArrayExpr) {
+                SQLArrayExpr array = ((SQLArrayExpr) element);
+                SQLExpr expr = array.getExpr();
+
+                if (expr instanceof SQLIdentifierExpr
+                        && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.ARRAY
+                        && printNameQuote
+                ) {
+                    print0(((SQLIdentifierExpr) expr).getName());
+                } else if (expr != null) {
+                    expr.accept(this);
+                }
+
+                print('[');
+                printAndAccept(array.getValues(), ", ");
+
+                if (i != size - 1) {
+                    print0(",");
+                }
+
+                print(']');
+            } else {
+                element.accept(this);
+            }
+
+            if (i != size - 1 && !(element instanceof SQLArrayExpr)) {
+                print(',');
+            }
+
+            if (i != size - 1) {
+                println();
+            }
+        }
+        this.indentCount--;
+        println();
+        print(')');
+    }
+
     public boolean visit(SQLColumnDefinition x) {
         super.visit((SQLColumnDefinition) x);
         if (x.getAggType() != null) {
@@ -334,6 +399,21 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print0(ucase ? "COMMENT " : "comment ");
             x.getIndexComment().accept(this);
         }
+        return false;
+    }
+
+    public boolean visit(StarRocksCreateResourceStatement x) {
+        print0(ucase ? "CREATE " : "create ");
+        if (x.isExternal()) {
+            print0(ucase ? "EXTERNAL " : "external ");
+        }
+
+        print0(ucase ? "RESOURCE " : "resource ");
+        x.getName().accept(this);
+        println();
+
+        print0(ucase ? "PROPERTIES" : "properties");
+        print(x.getProperties());
         return false;
     }
 }

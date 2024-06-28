@@ -69,4 +69,21 @@ public class OracleSelectTest83_number_negative extends OracleTest {
 //         Assert.assertTrue(visitor.containsColumn("sup_task", "orgid"));
 //
     }
+
+    public void test_1() throws Exception {
+        String sql = "SELECT * FROM employees WHERE -salary < 0 ORDER BY employee_id";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statement = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        statement.accept(visitor);
+
+        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
+    }
 }

@@ -20,8 +20,6 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This abstract class defines a listener to monitor the change of DataSource nodes.
@@ -36,7 +34,6 @@ public abstract class NodeListener extends Observable {
     private Properties properties = new Properties();
     private Date lastUpdateTime;
     private Observer observer;
-    private Lock lock = new ReentrantLock();
 
     /**
      * The method implements the detail update logic.

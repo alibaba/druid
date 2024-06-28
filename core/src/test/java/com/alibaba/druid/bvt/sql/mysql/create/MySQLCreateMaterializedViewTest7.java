@@ -95,7 +95,8 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 ")\n" +
                 "DISTRIBUTED BY HASH(id)\n" +
                 "COMMENT 'materialized view c'\n" +
-                "PARTITION BY VALUE (date_format(dat, '%Y%m%d')) LIFECYCLE 30\n" +
+                "PARTITION BY VALUE (date_format(dat, '%Y%m%d'))\n" +
+                "LIFECYCLE 30\n" +
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM base;");
@@ -119,7 +120,8 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 ")\n" +
                 "DISTRIBUTED BY HASH(`ID`) ENGINE = 'CSTORE' INDEX_ALL = 'Y'\n" +
                 "COMMENT 'materialized view d'\n" +
-                "PARTITION BY VALUE (name) LIFECYCLE 15\n" +
+                "PARTITION BY VALUE (name)\n" +
+                "LIFECYCLE 15\n" +
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM base;");
@@ -161,8 +163,8 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM `base0`, `base1`\n" +
-                "WHERE `a` = `d`\n" +
-                "\tAND `c` <> `F`");
+                "WHERE ((`a` = `d`)\n" +
+                "\tAND (`c` <> `F`))");
     }
 
     public void test6() throws Exception {
@@ -222,8 +224,8 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM `base0`, `base1`\n" +
-                "WHERE `a` = `d`\n" +
-                "\tAND `c` <> `F`", unifySQL);
+                "WHERE ((`a` = `d`)\n" +
+                "\tAND (`c` <> `F`))", unifySQL);
     }
 
     public void ok(String sql, String expectedSql) {

@@ -36,9 +36,10 @@ public class MySqlCreateFullTextDictTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE FULLTEXT DICTIONARY test1(\n"
+        assertEquals("CREATE FULLTEXT DICTIONARY test1(\n"
                 + "word varchar COMMENT 'comment1'\n"
-                + ") COMMENT 'comment1'", output);
+                + ")\n" +
+                "COMMENT 'comment1'", output);
     }
 
     @Test
@@ -50,7 +51,7 @@ public class MySqlCreateFullTextDictTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW FULLTEXT DICTIONARIES", output);
+        assertEquals("SHOW FULLTEXT DICTIONARIES", output);
     }
 
     @Test
@@ -62,7 +63,7 @@ public class MySqlCreateFullTextDictTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW FULLTEXT DICTIONARIES", output);
+        assertEquals("SHOW FULLTEXT DICTIONARIES", output);
     }
 
     @Test
@@ -74,6 +75,6 @@ public class MySqlCreateFullTextDictTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DROP FULLTEXT DICTIONARY dic_name", output);
+        assertEquals("DROP FULLTEXT DICTIONARY dic_name", output);
     }
 }

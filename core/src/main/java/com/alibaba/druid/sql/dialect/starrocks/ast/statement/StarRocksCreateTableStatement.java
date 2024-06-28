@@ -20,7 +20,8 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     protected final List<SQLExpr> primaryUniqueParameters = new ArrayList<>();
     protected final List<SQLExpr> AggDuplicateParameters = new ArrayList<>();
 
-    protected SQLExpr partitionBy;
+    protected List<SQLExpr> partitionBy = new ArrayList<>();
+    protected SQLName partitionByName;
     protected SQLExpr start;
     protected SQLExpr end;
     protected SQLExpr every;
@@ -150,6 +151,14 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         return aggDuplicate;
     }
 
+    public SQLName getPartitionByName() {
+        return this.partitionByName;
+    }
+
+    public void setPartitionByName(SQLName partitionByName) {
+        this.partitionByName = partitionByName;
+    }
+
     public void setAggDuplicate(SQLName aggDuplicate) {
         this.aggDuplicate = aggDuplicate;
     }
@@ -170,14 +179,11 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         return orderBy;
     }
 
-    public void setPartitionBy(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
+    public void setPartitionBy(List<SQLExpr> x) {
         this.partitionBy = x;
     }
 
-    public SQLExpr getPartitionBy() {
+    public List<SQLExpr> getPartitionBy() {
         return partitionBy;
     }
 

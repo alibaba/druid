@@ -2,8 +2,11 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.Objects;
+
 public class SQLCurrentTimeExpr extends SQLExprImpl {
     private final Type type;
+    private String timeZone;
 
     public SQLCurrentTimeExpr(Type type) {
         if (type == null) {
@@ -23,27 +26,42 @@ public class SQLCurrentTimeExpr extends SQLExprImpl {
         return type;
     }
 
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         SQLCurrentTimeExpr that = (SQLCurrentTimeExpr) o;
 
-        return type == that.type;
+        if (type != that.type) {
+            return false;
+        }
+        return Objects.equals(timeZone, that.timeZone);
     }
 
     @Override
     public int hashCode() {
-        return type.hashCode();
+        int result = type.hashCode();
+        result = 31 * result + (timeZone != null ? timeZone.hashCode() : 0);
+        return result;
     }
 
     public SQLCurrentTimeExpr clone() {
-        return new SQLCurrentTimeExpr(type);
+        SQLCurrentTimeExpr x = new SQLCurrentTimeExpr(type);
+        x.setTimeZone(timeZone);
+        return x;
     }
 
     public static enum Type {

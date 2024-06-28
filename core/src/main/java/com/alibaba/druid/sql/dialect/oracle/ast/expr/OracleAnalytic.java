@@ -30,7 +30,16 @@ public class OracleAnalytic extends SQLOver implements SQLReplaceable, OracleExp
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.partitionBy);
+            acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.windowing);
+        }
+        visitor.endVisit(this);
     }
 
     public void accept0(OracleASTVisitor visitor) {

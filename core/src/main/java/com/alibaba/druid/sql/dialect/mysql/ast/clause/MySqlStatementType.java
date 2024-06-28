@@ -61,8 +61,9 @@ public enum MySqlStatementType {
     }
 
     public static MySqlStatementType getType(SQLStatement stmt) {
+        String stmtClassName = stmt.getClass().getName();
         for (MySqlStatementType type : MySqlStatementType.values()) {
-            if (type.name == stmt.getClass().getName()) {
+            if (type.name.equals(stmtClassName)) {
                 return type;
             }
         }

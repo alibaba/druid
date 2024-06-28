@@ -158,6 +158,8 @@ public class SQLServerExprParser extends SQLExprParser {
     public SQLServerTop parseTop() {
         if (lexer.token() == Token.TOP) {
             SQLServerTop top = new SQLServerTop();
+            lexer.computeRowAndColumn(top);
+
             lexer.nextToken();
 
             boolean paren = false;
@@ -223,6 +225,7 @@ public class SQLServerExprParser extends SQLExprParser {
         SQLExpr expr;
         if (lexer.token() == Token.IDENTIFIER) {
             expr = new SQLIdentifierExpr(lexer.stringVal());
+            lexer.computeRowAndColumn(expr);
             lexer.nextTokenComma();
 
             if (lexer.token() != Token.COMMA) {

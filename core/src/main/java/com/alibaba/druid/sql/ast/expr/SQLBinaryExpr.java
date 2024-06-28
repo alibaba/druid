@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.Utils;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
@@ -84,14 +82,10 @@ public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr, SQLVal
         visitor.endVisit(this);
     }
 
-    public void output(Appendable buf) {
-        try {
-            buf.append("b'");
-            buf.append(text);
-            buf.append('\'');
-        } catch (IOException ex) {
-            throw new FastsqlException("output error", ex);
-        }
+    public void output(StringBuilder buf) {
+        buf.append("b'");
+        buf.append(text);
+        buf.append('\'');
     }
 
     @Override

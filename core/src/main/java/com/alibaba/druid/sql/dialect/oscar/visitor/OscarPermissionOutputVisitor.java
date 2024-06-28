@@ -27,12 +27,12 @@ import com.alibaba.druid.sql.dialect.oscar.ast.stmt.*;
 import java.util.List;
 
 public class OscarPermissionOutputVisitor extends OscarOutputVisitor {
-    public OscarPermissionOutputVisitor(Appendable appender) {
+    public OscarPermissionOutputVisitor(StringBuilder appender) {
         super(appender);
         this.dbType = DbType.oscar;
     }
 
-    public OscarPermissionOutputVisitor(Appendable appender, boolean parameterized) {
+    public OscarPermissionOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.oscar;
     }

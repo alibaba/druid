@@ -19,10 +19,7 @@ import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
@@ -92,5 +89,85 @@ public class H2ExprParser extends SQLExprParser {
         }
 
         return column;
+    }
+
+    protected SQLColumnDefinition.Identity parseIdentity0() {
+        SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
+
+        accept(Token.IDENTITY);
+        if (lexer.token() == Token.LPAREN) {
+            accept(Token.LPAREN);
+
+            if (lexer.identifierEquals(FnvHash.Constants.START)) {
+                lexer.nextToken();
+                accept(Token.WITH);
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setSeed((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.INCREMENT)) {
+                lexer.nextToken();
+                accept(Token.BY);
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setIncrement((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.CYCLE)) {
+                lexer.nextToken();
+                identity.setCycle(true);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.MINVALUE)) {
+                lexer.nextTokenValue();
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setMinValue((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.MAXVALUE)) {
+                lexer.nextToken();
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setMaxValue((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+
+            accept(Token.RPAREN);
+        }
+
+        return identity;
     }
 }

@@ -60,7 +60,7 @@ public class OracleBlockTest18 extends OracleTest {
                 "AS\n" +
                 "\tbonus NUMBER := 0;\n" +
                 "BEGIN\n" +
-                "\tIF sales > quota + 200 THEN\n" +
+                "\tIF sales > (quota + 200) THEN\n" +
                 "\t\tbonus := (sales - quota) / 4;\n" +
                 "\tELSE\n" +
                 "\t\tbonus := 50;\n" +

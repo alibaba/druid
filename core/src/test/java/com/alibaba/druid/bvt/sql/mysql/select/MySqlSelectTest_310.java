@@ -59,4 +59,54 @@ public class MySqlSelectTest_310
         assertEquals("-- abc\n" +
                 "SELECT orders.extras -> '$.case_no' > 1", stmt.toString());
     }
+
+    public void test_4() throws Exception {
+        String sql = "SELECT 1#abc\n";
+
+        SQLStatement stmt = SQLUtils
+                .parseSingleStatement(sql, DbType.mysql, SQLParserFeature.MySQLSupportStandardComment);
+
+        assertEquals("SELECT 1 # abc", stmt.toString());
+
+        // bypass last \n.
+        sql = "SELECT 1#abc\n";
+
+        stmt = SQLUtils
+                .parseSingleStatement(sql, DbType.mysql, SQLParserFeature.MySQLSupportStandardComment);
+
+        assertEquals("SELECT 1 # abc", stmt.toString());
+
+        // bypass last \r\n.
+        sql = "SELECT 1#abc\r\n";
+
+        stmt = SQLUtils
+                .parseSingleStatement(sql, DbType.mysql, SQLParserFeature.MySQLSupportStandardComment);
+
+        assertEquals("SELECT 1 # abc", stmt.toString());
+    }
+
+    public void test_5() throws Exception {
+        String sql = "SELECT 1--abc";
+
+        SQLStatement stmt = SQLUtils
+                .parseSingleStatement(sql, DbType.mysql, SQLParserFeature.MySQLSupportStandardComment);
+
+        assertEquals("SELECT 1 -- abc", stmt.toString());
+
+        // bypass last \n.
+        sql = "SELECT 1--abc\n";
+
+        stmt = SQLUtils
+                .parseSingleStatement(sql, DbType.mysql, SQLParserFeature.MySQLSupportStandardComment);
+
+        assertEquals("SELECT 1 -- abc", stmt.toString());
+
+        // bypass last \r\n.
+        sql = "SELECT 1--abc\r\n";
+
+        stmt = SQLUtils
+                .parseSingleStatement(sql, DbType.mysql, SQLParserFeature.MySQLSupportStandardComment);
+
+        assertEquals("SELECT 1 -- abc", stmt.toString());
+    }
 }

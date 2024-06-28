@@ -49,6 +49,7 @@ public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterT
 
     public void setColumn(SQLColumnDefinition column) {
         this.column = column;
+        column.setParent(this);
     }
 
     public boolean isSetNotNull() {

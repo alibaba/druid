@@ -31,6 +31,6 @@ public class MySqlSelectTest_308_mtr
         assertEquals("SELECT *\n" +
                 "FROM t1\n" +
                 "\tJOIN t2\n" +
-                "\tSTRAIGHT_JOIN t3 ON t1.a = t3.c;", stmt.toString());
+                "\tSTRAIGHT_JOIN t3 ON (t1.a = t3.c);", stmt.toString());
     }
 }

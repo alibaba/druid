@@ -78,7 +78,7 @@ public class MySqlSelectTest_16 extends MysqlTest {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT a\n" +
                         "FROM t\n" +
-                        "WHERE (NOT a > 1)\n" +
+                        "WHERE NOT a > 1\n" +
                         "\tAND NOT b < 1", //
                 output);
     }

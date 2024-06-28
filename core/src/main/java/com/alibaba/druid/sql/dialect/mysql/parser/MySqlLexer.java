@@ -38,6 +38,7 @@ public class MySqlLexer extends Lexer {
         map.put("DUAL", Token.DUAL);
         map.put("FALSE", Token.FALSE);
         map.put("IF", Token.IF);
+        map.put("ELSEIF", Token.ELSEIF);
         map.put("KILL", Token.KILL);
 
         map.put("LIMIT", Token.LIMIT);
@@ -110,33 +111,34 @@ public class MySqlLexer extends Lexer {
 
         Token lastToken = this.token;
 
-        scanChar();
         mark = pos;
         bufPos = 0;
+        scanChar();
+
         for (; ; ) {
             if (ch == '\r') {
-                if (charAt(pos + 1) == '\n') {
-                    bufPos += 2;
-                    scanChar();
-                    break;
-                }
                 bufPos++;
+                scanChar();
+                if (ch == '\n') {
+                    scanChar();
+                }
                 break;
             } else if (ch == EOI) {
+                bufPos++;
                 break;
             }
 
             if (ch == '\n') {
-                scanChar();
                 bufPos++;
+                scanChar();
                 break;
             }
 
-            scanChar();
             bufPos++;
+            scanChar();
         }
 
-        stringVal = subString(mark - 1, bufPos + 1);
+        stringVal = subString(mark, bufPos);
         token = Token.LINE_COMMENT;
         commentCount++;
         if (keepComments) {
@@ -149,7 +151,7 @@ public class MySqlLexer extends Lexer {
 
         endOfComment = isEOF();
 
-        if (!isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
+        if (!isAllowComment() && (endOfComment || !isSafeComment(stringVal))) {
             throw new NotAllowCommentException();
         }
     }
@@ -212,12 +214,11 @@ public class MySqlLexer extends Lexer {
             for (; ; ) {
                 ch = charAt(++pos);
 
-                if (!isIdentifierChar(ch)) {
+                if (!isIdentifierCharForVariable(ch)) {
                     break;
                 }
 
                 bufPos++;
-                continue;
             }
         }
 
@@ -715,30 +716,30 @@ public class MySqlLexer extends Lexer {
         }
 
         if (ch == '/' || ch == '-') {
-            scanChar();
             bufPos++;
+            scanChar();
 
             for (; ; ) {
                 if (ch == '\r') {
-                    if (charAt(pos + 1) == '\n') {
-                        bufPos += 2;
-                        scanChar();
-                        break;
-                    }
                     bufPos++;
+                    scanChar();
+                    if (ch == '\n') {
+                        scanChar();
+                    }
                     break;
                 } else if (ch == EOI) {
+                    bufPos++;
                     break;
                 }
 
                 if (ch == '\n') {
-                    scanChar();
                     bufPos++;
+                    scanChar();
                     break;
                 }
 
-                scanChar();
                 bufPos++;
+                scanChar();
             }
 
             stringVal = subString(mark, bufPos);
@@ -754,7 +755,7 @@ public class MySqlLexer extends Lexer {
 
             endOfComment = isEOF();
 
-            if (!isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
+            if (!isAllowComment() && (endOfComment || !isSafeComment(stringVal))) {
                 throw new NotAllowCommentException();
             }
 
@@ -785,5 +786,19 @@ public class MySqlLexer extends Lexer {
             return identifierFlags[c];
         }
         return c != '　' && c != '，';
+    }
+
+    /**
+     * employee.code=:employee.code 解析异常
+     * 修复:变量名支持含符号.
+     *
+     * @param c the character to check
+     * @return true if the character is a valid identifier character for variables; otherwise false
+     */
+    public static boolean isIdentifierCharForVariable(char c) {
+        if (c == '.') {
+            return true;
+        }
+        return isIdentifierChar(c);
     }
 }

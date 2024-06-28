@@ -130,6 +130,8 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
             case tidb:
                 return new MySqlDeleteStatement();
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGDeleteStatement();
             default:
                 return new SQLDeleteStatement();

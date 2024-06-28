@@ -41,10 +41,13 @@ public enum SQLBinaryOperator {
     PoundGtGt("#>>", 20),
     QuesQues("??", 20),
     QuesBar("?|", 20),
+    QuesQuesBar("??|", 20),
     QuesAmp("?&", 20),
 
     LeftShift("<<", 80),
+    LeftShiftUnsigned("<<<", 80),
     RightShift(">>", 80),
+    RightShiftUnsigned(">>>", 80),
 
     BitwiseAnd("&", 90),
     BitwiseOr("|", 100),
@@ -165,5 +168,19 @@ public enum SQLBinaryOperator {
             default:
                 return false;
         }
+    }
+
+    public static SQLBinaryOperator from(String str) {
+        if (str == null) {
+            return null;
+        }
+
+        for (SQLBinaryOperator value : values()) {
+            if (value.name.equals(str)) {
+                return value;
+            }
+        }
+
+        return valueOf(str);
     }
 }

@@ -111,7 +111,7 @@ public class OracleCreateFunctionTest_3 extends OracleTest {
                         "\t\t\tRESULT := '1';\n" +
                         "\t\tEND IF;\n" +
                         "\tEND IF;\n" +
-                        "\tRETURN RESULT;\n" +
+                        "\tRETURN (RESULT);\n" +
                         "EXCEPTION\n" +
                         "\tWHEN OTHERS THEN\n" +
                         "\t\tCLOSE VALUECURSOR;\n" +

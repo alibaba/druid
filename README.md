@@ -1,10 +1,11 @@
 # druid
 
-[![Java CI](https://img.shields.io/github/workflow/status/alibaba/fastjson2/Java%20CI/main?logo=github&logoColor=white)](https://github.com/alibaba/fastjson2/actions/workflows/ci.yaml)
-[![Codecov](https://img.shields.io/codecov/c/github/alibaba/driud/main?logo=codecov&logoColor=white)](https://codecov.io/gh/alibaba/druid/branch/master) 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid/)
-[![GitHub release](https://img.shields.io/github/release/alibaba/druid.svg)](https://github.com/alibaba/druid/releases)
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Java CI](https://img.shields.io/github/actions/workflow/status/alibaba/druid/ci.yaml?branch=master&logo=github&logoColor=white)](https://github.com/alibaba/druid/actions/workflows/ci.yaml)
+[![Codecov](https://img.shields.io/codecov/c/github/alibaba/druid/master?logo=codecov&logoColor=white)](https://codecov.io/gh/alibaba/druid/branch/master)
+[![Maven Central](https://img.shields.io/maven-central/v/com.alibaba/druid?logo=apache-maven&logoColor=white)](https://search.maven.org/artifact/com.alibaba/druid)
+[![Last SNAPSHOT](https://img.shields.io/nexus/snapshots/https/oss.sonatype.org/com.alibaba/druid?label=latest%20snapshot)](https://oss.sonatype.org/content/repositories/snapshots/com/alibaba/druid/)
+[![GitHub release](https://img.shields.io/github/release/alibaba/druid)](https://github.com/alibaba/druid/releases)
+[![License](https://img.shields.io/github/license/alibaba/druid?color=4D7A97&logo=apache)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 Introduction
 ---

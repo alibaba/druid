@@ -1,8 +1,7 @@
 package com.alibaba.druid.admin.servlet;
 
-import com.alibaba.druid.admin.util.SpringContextUtils;
-import com.alibaba.druid.support.http.ResourceServlet;
 import com.alibaba.druid.admin.service.MonitorStatService;
+import com.alibaba.druid.support.http.ResourceServlet;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletException;
@@ -13,16 +12,17 @@ import javax.servlet.ServletException;
  **/
 @Slf4j
 public class MonitorViewServlet extends ResourceServlet {
-    private MonitorStatService monitorStatService;
+    private final MonitorStatService monitorStatService;
 
-    public MonitorViewServlet() {
+    public MonitorViewServlet(MonitorStatService monitorStatService) {
         super("support/http/resources");
+        this.monitorStatService = monitorStatService;
     }
 
+    @Override
     public void init() throws ServletException {
         log.info("init MonitorViewServlet");
         super.init();
-        monitorStatService = SpringContextUtils.getBean(MonitorStatService.class);
     }
 
     @Override

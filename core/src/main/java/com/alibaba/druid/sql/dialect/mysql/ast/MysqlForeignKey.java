@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  */
 public class MysqlForeignKey extends SQLForeignKeyImpl {
     private SQLName indexName;
-    private boolean hasConstraint;
     private Match referenceMatch;
     protected Option onUpdate;
     protected Option onDelete;
@@ -41,14 +40,6 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
 
     public void setIndexName(SQLName indexName) {
         this.indexName = indexName;
-    }
-
-    public boolean isHasConstraint() {
-        return hasConstraint;
-    }
-
-    public void setHasConstraint(boolean hasConstraint) {
-        this.hasConstraint = hasConstraint;
     }
 
     @Override

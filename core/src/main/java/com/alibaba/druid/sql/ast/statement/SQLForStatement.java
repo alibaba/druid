@@ -11,6 +11,7 @@ import java.util.List;
 
 public class SQLForStatement extends SQLStatementImpl {
     protected SQLName index;
+    protected boolean isReverse;
     protected SQLExpr range;
 
     protected List<SQLStatement> statements = new ArrayList<SQLStatement>();
@@ -24,6 +25,14 @@ public class SQLForStatement extends SQLStatementImpl {
 
     public void setIndex(SQLName index) {
         this.index = index;
+    }
+
+    public void setReverse(boolean isReverse) {
+        this.isReverse = isReverse;
+    }
+
+    public boolean isReverse() {
+        return isReverse;
     }
 
     public SQLExpr getRange() {

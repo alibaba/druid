@@ -40,13 +40,13 @@ public class ListDG {
     }
 
     // 邻接表中表对应的链表的顶点
-    private class ENode {
+    private static class ENode {
         int ivex;       // 该边所指向的顶点的位置
         ENode nextEdge; // 指向下一条弧的指针
     }
 
     // 邻接表中表的顶点
-    private class VNode {
+    private static class VNode {
         Object data;          // 顶点信息
         ENode firstEdge;    // 指向第一条依附该顶点的弧
     }
@@ -195,7 +195,7 @@ public class ListDG {
      * 打印矩阵队列图
      */
     public void print() {
-        System.out.printf("== List Graph:\n");
+        System.out.print("== List Graph:\n");
         for (int i = 0; i < mVexs.size(); i++) {
             System.out.printf("%d(%c): ", i, mVexs.get(i).data);
             ENode node = mVexs.get(i).firstEdge;

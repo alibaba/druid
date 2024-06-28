@@ -600,6 +600,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case tidb:
                 return new MySqlOrderByStatVisitor(x);
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGOrderByStatVisitor(x);
             case oracle:
                 return new OracleOrderByStatVisitor(x);
@@ -1023,8 +1025,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
 
                 SQLTableSource resolvedTableSource = propertyExpr.getResolvedTableSource();
-                if (resolvedTableSource instanceof SQLSubqueryTableSource) {
-                    SQLSelect select = ((SQLSubqueryTableSource) resolvedTableSource).getSelect();
+                if (resolvedTableSource instanceof SQLSubqueryTableSource || resolvedTableSource instanceof SQLWithSubqueryClause.Entry) {
+                    SQLSelect select;
+                    if (resolvedTableSource instanceof SQLSubqueryTableSource) {
+                        select = ((SQLSubqueryTableSource) resolvedTableSource).getSelect();
+                    } else {
+                        select = ((SQLWithSubqueryClause.Entry) resolvedTableSource).getSubQuery();
+                    }
+
                     SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
                     if (queryBlock != null) {
                         if (queryBlock.getGroupBy() != null) {
@@ -1267,6 +1275,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (groupBy != null) {
             for (SQLExpr expr : groupBy.getItems()) {
                 statExpr(expr);
+            }
+            if (groupBy.getHaving() != null) {
+                statExpr(groupBy.getHaving());
             }
         }
 
@@ -1835,7 +1846,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLStatement returningStatement = x.getReturningStatement();
         SQLExpr expr = x.getExpr();
 
-        if (Boolean.TRUE == with.getRecursive()) {
+        if (Boolean.TRUE.equals(with.getRecursive())) {
             SQLSelect select = x.getSubQuery();
             if (select != null) {
                 select.accept(this);
@@ -2338,6 +2349,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     @Override
     public boolean visit(SQLAlterTableDropConstraint x) {
+        return false;
+    }
+    @Override
+    public boolean visit(SQLAlterTableDropCheck x) {
         return false;
     }
 

@@ -15,21 +15,15 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
     private static final long serialVersionUID = -2227528634302168877L;
-
-    private int defaultQueryTimeout = 1;
 
     private String defaultValidateQuery = "SELECT 'x'";
 
@@ -37,40 +31,20 @@ public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter impl
         configFromProperties(System.getProperties());
     }
 
+    /**
+     * pgsql Driver 9.0以及以下版本不支持setQueryTimeout，可通过设置validationQueryTimeout小于0兼容低版本
+     */
     public boolean isValidConnection(Connection conn,
                                      String validateQuery,
                                      int validationQueryTimeout) throws Exception {
-        if (validateQuery == null || validateQuery.isEmpty()) {
-            validateQuery = this.defaultValidateQuery;
-        }
-
         if (conn.isClosed()) {
             return false;
         }
 
-        if (conn instanceof DruidPooledConnection) {
-            conn = ((DruidPooledConnection) conn).getConnection();
+        if (StringUtils.isEmpty(validateQuery)) {
+            validateQuery = this.defaultValidateQuery;
         }
 
-        if (conn instanceof ConnectionProxy) {
-            conn = ((ConnectionProxy) conn).getRawObject();
-        }
-
-        int queryTimeout = validationQueryTimeout <= 0 ? defaultQueryTimeout : validationQueryTimeout;
-
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = conn.createStatement();
-            if (queryTimeout >= 0) {
-                //pgsql Driver 9.0以及以下版本不支持setQueryTimeout，可通过设置queryTimeout<0兼容低版本
-                stmt.setQueryTimeout(queryTimeout);
-            }
-            rs = stmt.executeQuery(validateQuery);
-            return true;
-        } finally {
-            JdbcUtils.close(rs);
-            JdbcUtils.close(stmt);
-        }
+        return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, validationQueryTimeout);
     }
 }

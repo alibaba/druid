@@ -41,7 +41,9 @@ public class SQLAlterViewStatement extends SQLStatementImpl implements SQLCreate
 
     protected SQLExprTableSource tableSource;
 
-    protected final List<SQLTableElement> columns = new ArrayList<SQLTableElement>();
+    protected final List<SQLTableElement> columns = new ArrayList<>();
+    protected final List<SQLAssignItem> options = new ArrayList<>();
+    protected final List<SQLName> unsetOptions = new ArrayList<>();
 
     private boolean withCheckOption;
     private boolean withCascaded;
@@ -282,5 +284,13 @@ public class SQLAlterViewStatement extends SQLStatementImpl implements SQLCreate
     @Override
     public DDLObjectType getDDLObjectType() {
         return DDLObjectType.VIEW;
+    }
+
+    public List<SQLAssignItem> getOptions() {
+        return options;
+    }
+
+    public List<SQLName> getUnsetOptions() {
+        return unsetOptions;
     }
 }

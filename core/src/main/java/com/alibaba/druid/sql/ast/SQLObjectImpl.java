@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObject;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -70,11 +71,7 @@ public abstract class SQLObjectImpl implements SQLObject {
         child.accept(visitor);
     }
 
-    public void output(StringBuffer buf) {
-        output((Appendable) buf);
-    }
-
-    public void output(Appendable buf) {
+    public void output(StringBuilder buf) {
         DbType dbType = null;
         if (this instanceof OracleSQLObject) {
             dbType = DbType.oracle;
@@ -82,6 +79,8 @@ public abstract class SQLObjectImpl implements SQLObject {
             dbType = DbType.mysql;
         } else if (this instanceof PGSQLObject) {
             dbType = DbType.postgresql;
+        } else if (this instanceof SQLServerObject) {
+            dbType = DbType.sqlserver;
         } else if (this instanceof SQLDbTypedObject) {
             dbType = ((SQLDbTypedObject) this).getDbType();
         }
@@ -92,7 +91,7 @@ public abstract class SQLObjectImpl implements SQLObject {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         output(buf);
         return buf.toString();
     }
@@ -272,8 +271,9 @@ public abstract class SQLObjectImpl implements SQLObject {
         return sourceColumn;
     }
 
-    public void setSourceColumn(int sourceColumn) {
-        this.sourceColumn = sourceColumn;
+    public void setSource(int line, int column) {
+        this.sourceLine = line;
+        this.sourceColumn = column;
     }
 
     public SQLCommentHint getHint() {

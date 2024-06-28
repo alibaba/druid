@@ -18,8 +18,11 @@ package com.alibaba.druid.bvt.sql.oracle.pl;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
 import java.util.List;
 
@@ -117,5 +120,44 @@ public class Oracle_pl_1 extends OracleTest {
                             "end;", //
                     output);
         }
+    }
+
+    public void test_1() {
+        String sql = "DECLARE\n" +
+                     "  acct_id INTEGER(4) NOT NULL := 9999;\n" +
+                     "  a NATURALN                  := 9999;\n" +
+                     "  b POSITIVEN                 := 9999;\n" +
+                     "  c SIMPLE_INTEGER            := 9999;\n" +
+                     "BEGIN\n" +
+                     "  NULL;\n" +
+                     "END;";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statement = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        Assert.assertEquals("DECLARE\n" +
+                            "\tacct_id INTEGER(4) NOT NULL := 9999;\n" +
+                            "\ta NATURALN := 9999;\n" +
+                            "\tb POSITIVEN := 9999;\n" +
+                            "\tc SIMPLE_INTEGER := 9999;\n" +
+                            "BEGIN\n" +
+                            "\tNULL;\n" +
+                            "END;", SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        statement.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("conditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+
+        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
     }
 }
