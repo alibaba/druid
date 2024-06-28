@@ -1,7 +1,12 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.expr.StarRocksCharExpr;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -86,13 +91,116 @@ public class StarRocksExprParser extends SQLExprParser {
             SQLCharExpr bitmap = new StarRocksCharExpr(lexer.stringVal());
             column.setBitmap(bitmap);
             lexer.nextToken();
-            accept(Token.COMMENT);
-            SQLCharExpr indexComment = new StarRocksCharExpr(lexer.stringVal());
-            column.setIndexComment(indexComment);
-            lexer.nextToken();
+
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+                SQLCharExpr indexComment = new StarRocksCharExpr(lexer.stringVal());
+                column.setIndexComment(indexComment);
+                lexer.nextToken();
+            }
 
         }
 
         return super.parseColumnRest(column);
     }
+
+    @Override
+    public SQLPartition parsePartition() {
+        if (lexer.identifierEquals(FnvHash.Constants.DBPARTITION)
+                || lexer.identifierEquals(FnvHash.Constants.TBPARTITION)
+                || lexer.identifierEquals(FnvHash.Constants.SUBPARTITION)) {
+            lexer.nextToken();
+        } else {
+            accept(Token.PARTITION);
+        }
+
+        SQLPartition partitionDef = new SQLPartition();
+
+        SQLName name;
+        if (lexer.token() == Token.LITERAL_INT) {
+            Number number = lexer.integerValue();
+            name = new SQLIdentifierExpr(number.toString());
+            lexer.nextToken();
+        } else {
+            name = this.name();
+        }
+        partitionDef.setName(name);
+
+        SQLPartitionValue values = this.parsePartitionValues();
+        if (values != null) {
+            partitionDef.setValues(values);
+        }
+
+        for (; ; ) {
+            boolean storage = false;
+            if (lexer.identifierEquals(FnvHash.Constants.DATA)) {
+                lexer.nextToken();
+                acceptIdentifier("DIRECTORY");
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                partitionDef.setDataDirectory(this.expr());
+            } else if (lexer.token() == Token.TABLESPACE) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                SQLName tableSpace = this.name();
+                partitionDef.setTablespace(tableSpace);
+            } else if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+                acceptIdentifier("DIRECTORY");
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                partitionDef.setIndexDirectory(this.expr());
+            } else if (lexer.identifierEquals(FnvHash.Constants.MAX_ROWS)) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                SQLExpr maxRows = this.primary();
+                partitionDef.setMaxRows(maxRows);
+            } else if (lexer.identifierEquals(FnvHash.Constants.MIN_ROWS)) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                SQLExpr minRows = this.primary();
+                partitionDef.setMaxRows(minRows);
+            } else if (lexer.identifierEquals(FnvHash.Constants.ENGINE) || //
+                    (storage = (lexer.token() == Token.STORAGE || lexer.identifierEquals(FnvHash.Constants.STORAGE)))) {
+                if (storage) {
+                    lexer.nextToken();
+                }
+                acceptIdentifier("ENGINE");
+
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                SQLName engine = this.name();
+                partitionDef.setEngine(engine);
+            } else if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                SQLExpr comment = this.primary();
+                partitionDef.setComment(comment);
+            } else {
+                break;
+            }
+        }
+
+        if (lexer.identifierEquals("LOCALITY")) {
+            lexer.nextToken();
+            accept(Token.EQ);
+            SQLExpr locality = this.expr();
+            partitionDef.setLocality(locality);
+        }
+
+        return partitionDef;
+    }
+
 }
