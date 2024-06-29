@@ -4551,7 +4551,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print(((Double) value).doubleValue());
             } else if (value instanceof Date) {
                 print((Date) value);
-            } else if (value instanceof BigDecimal) {
+            } else if (value instanceof BigDecimal || value instanceof BigInteger) {
                 print(value.toString());
             } else if (value == null) {
                 print0(ucase ? "NULL" : "null");
