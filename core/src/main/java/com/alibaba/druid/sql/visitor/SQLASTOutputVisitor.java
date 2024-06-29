@@ -4552,7 +4552,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             } else if (value instanceof Date) {
                 print((Date) value);
             } else if (value instanceof BigDecimal) {
-                print(((BigDecimal)value).toPlainString());
+                print(((BigDecimal) value).toPlainString());
             } else if (value instanceof BigInteger) {
                 print(value.toString());
             } else if (value == null) {
