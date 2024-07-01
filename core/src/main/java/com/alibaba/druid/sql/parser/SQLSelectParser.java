@@ -410,6 +410,9 @@ public class SQLSelectParser extends SQLParser {
         return new SQLSelectQueryBlock(dbType);
     }
 
+    protected void querySelectListBefore(SQLSelectQueryBlock x) {
+    }
+
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
@@ -432,6 +435,8 @@ public class SQLSelectParser extends SQLParser {
         }
 
         accept(Token.SELECT);
+
+        querySelectListBefore(queryBlock);
 
         if (lexer.token() == Token.HINT) {
             this.exprParser.parseHints(queryBlock.getHints());

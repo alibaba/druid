@@ -1,9 +1,13 @@
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
+import com.alibaba.druid.sql.test.TestUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
+
+import java.util.List;
 
 /**
  * Created by tianzhen.wtz on 2014/12/26 0026 20:44.
@@ -29,8 +33,17 @@ public class PGIntervalSQLTest extends TestCase {
     private void equal(String targetSql, String resultSql) {
         PGSQLStatementParser parser = new PGSQLStatementParser(targetSql);
         PGSelectStatement statement = parser.parseSelect();
-        Assert.assertTrue(statement.toString().equals(resultSql));
+        assertEquals(statement.toString(), resultSql);
 
     }
 
+    public void testIntervalSQL_OracleToPg() {
+        String sql = "SELECT (SYSTIMESTAMP - order_date) DAY(9) TO SECOND from orders WHERE order_id = 2458";
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        assertEquals(1, statementList.size());
+
+        String output = TestUtils.outputPg(statementList);
+        assertEquals("SELECT (SYSTIMESTAMP - order_date) DAY(9) TO SECOND\nFROM orders\nWHERE order_id = 2458", output);
+    }
 }
