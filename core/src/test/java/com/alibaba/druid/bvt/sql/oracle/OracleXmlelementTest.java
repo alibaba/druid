@@ -10,7 +10,7 @@ import java.util.List;
 
 public class OracleXmlelementTest extends OracleTest {
     public void testOracleXmlelement() {
-        String sql = "SELECT /* NUSQL.TEST */ XMLELEMENT(NAME foo).getstringval() from dual";
+        String sql = "SELECT XMLELEMENT(NAME foo).getstringval() from dual";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -27,7 +27,7 @@ public class OracleXmlelementTest extends OracleTest {
     }
 
     public void testOracleXmlelement_WithoutNameKeyword() {
-        String sql = "SELECT /* NUSQL.TEST */ XMLELEMENT(foo).getstringval() from dual";
+        String sql = "SELECT XMLELEMENT(foo).getstringval() from dual";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

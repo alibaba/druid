@@ -15,8 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -414,53 +417,165 @@ public class PGSQLStatementParser extends SQLStatementParser {
         stmt.setDbType(dbType);
 
         accept(Token.DO);
-
-        stmt.setFuncName(this.exprParser.name());
-
-        if (lexer.token() == Token.DECLARE) {
-            parseVariables(stmt);
-        }
-
-        SQLStatement block;
-        if (lexer.token() == Token.BEGIN) {
-            block = this.parseBlock();
-        } else {
-            block = this.parseStatement();
-        }
+        SQLStatement block = this.parseBlock();
         stmt.setBlock(block);
-        if (lexer.token() == Token.IDENTIFIER) {
-            SQLName endFuncName = this.exprParser.name();
-            if (!stmt.getFuncName().equals(endFuncName)) {
-                printError(lexer.token());
-            }
-        }
-        return stmt;
-    }
 
-    public void parseVariables(PGDoStatement stmt) {
-        accept(Token.DECLARE);
-        if (lexer.token() != Token.BEGIN) {
-            // todo: parseVariables
-            throw new ParserException("TODO " + lexer.info());
-        }
+        return stmt;
     }
 
     public SQLBlockStatement parseBlock() {
         SQLBlockStatement block = new SQLBlockStatement();
         block.setDbType(dbType);
-        block.setHaveBeginEnd(false);
+
+        if (lexer.token() == Token.VARIANT) {
+            String dollarQuotedStr = lexer.stringVal();
+            if (!dollarQuotedStr.endsWith("$")) {
+                throw new ParserException("syntax error. " + lexer.info());
+            }
+            block.setIsDollarQuoted(true);
+            String dollarQuoteTagName = dollarQuotedStr.substring(1, dollarQuotedStr.length() - 1);
+            block.setDollarQuoteTagName(dollarQuoteTagName);
+            lexer.nextToken();
+        }
+
+        String labelName = null;
+        if (lexer.token() == Token.IDENTIFIER) {
+            labelName = lexer.stringVal();
+            lexer.nextToken();
+        }
+
+        if (labelName != null) {
+            block.setLabelName(labelName);
+        }
+
+        if (lexer.token() == Token.DECLARE) {
+            lexer.nextToken();
+        }
+        if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.CURSOR) {
+            parseParameters(block.getParameters(), block);
+            for (SQLParameter param : block.getParameters()) {
+                param.setParent(block);
+            }
+        }
+
         accept(Token.BEGIN);
         List<SQLStatement> statementList = block.getStatementList();
         this.parseStatementList(statementList, -1, block);
         if (lexer.token() != Token.END
-            && statementList.size() > 0
+            && !statementList.isEmpty()
             && (statementList.get(statementList.size() - 1) instanceof SQLCommitStatement
             || statementList.get(statementList.size() - 1) instanceof SQLRollbackStatement)) {
             block.setEndOfCommit(true);
             return block;
         }
         accept(Token.END);
+
+        Token token = lexer.token();
+        if (token != Token.SEMI) {
+            // "END label;" or "END label $$ LANGUAGE plpgsql;"
+            if (token == Token.IDENTIFIER) {
+                String endLabel = lexer.stringVal();
+                block.setEndLabel(endLabel);
+                if (!block.getLabelName().equals(endLabel)) {
+                    printError(lexer.token());
+                }
+                acceptIdentifier(endLabel);
+            }
+            if (lexer.token() == Token.VARIANT) {
+                parseEndDollarQuote(block);
+            }
+        }
+        accept(Token.SEMI);
+
+        if (lexer.token() == Token.VARIANT) {
+            // "$$ LANGUAGE plpgsql;"
+            parseEndDollarQuote(block);
+            accept(Token.SEMI);
+        }
         return block;
+    }
+
+    private void parseEndDollarQuote(SQLBlockStatement block) {
+        String dollarQuotedStr = lexer.stringVal();
+        if (!dollarQuotedStr.endsWith("$")) {
+            throw new ParserException("syntax error. " + lexer.info());
+        }
+        String dollarQuoteTagName = dollarQuotedStr.substring(1, dollarQuotedStr.length() - 1);
+        if (!block.getDollarQuoteTagName().equals(dollarQuoteTagName)) {
+            printError(lexer.token());
+        }
+        lexer.nextToken();
+        if (lexer.token() != Token.SEMI) {
+            accept(Token.LANGUAGE);
+            block.setLanguage(lexer.stringVal());
+            acceptIdentifier(block.getLanguage());
+        }
+    }
+
+    private void parseParameters(List<SQLParameter> parameters, SQLObject parent) {
+        for (;;) {
+            SQLParameter parameter = new SQLParameter();
+            parameter.setParent(parent);
+
+            SQLName name;
+            SQLDataType dataType = null;
+            name = this.exprParser.name();
+            if (lexer.token() == Token.IN) {
+                lexer.nextToken();
+
+                if (lexer.token() == Token.OUT) {
+                    lexer.nextToken();
+                    parameter.setParamType(SQLParameter.ParameterType.INOUT);
+                } else {
+                    parameter.setParamType(SQLParameter.ParameterType.IN);
+                }
+            } else if (lexer.token() == Token.OUT) {
+                lexer.nextToken();
+
+                if (lexer.token() == Token.IN) {
+                    lexer.nextToken();
+                    parameter.setParamType(SQLParameter.ParameterType.INOUT);
+                } else {
+                    parameter.setParamType(SQLParameter.ParameterType.OUT);
+                }
+            } else if (lexer.token() == Token.INOUT) {
+                lexer.nextToken();
+                parameter.setParamType(SQLParameter.ParameterType.INOUT);
+            }
+
+            dataType = this.exprParser.parseDataType(false);
+
+            if (lexer.token() == Token.NOT) {
+                lexer.nextToken();
+                accept(Token.NULL);
+                parameter.setNotNull(true);
+            }
+
+            if (lexer.token() == Token.COLONEQ || lexer.token() == Token.DEFAULT) {
+                lexer.nextToken();
+                parameter.setDefaultValue(this.exprParser.expr());
+            }
+
+            parameter.setName(name);
+            parameter.setDataType(dataType);
+
+            parameters.add(parameter);
+            Token token = lexer.token();
+            if (token == Token.COMMA || token == Token.SEMI || token == Token.IS) {
+                lexer.nextToken();
+            }
+
+            token = lexer.token();
+            if (token != Token.BEGIN
+                    && token != Token.RPAREN
+                    && token != Token.EOF
+                    && token != Token.FUNCTION
+                    && !lexer.identifierEquals("DETERMINISTIC")) {
+                continue;
+            }
+
+            break;
+        }
     }
 
     @Override

@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
+import com.alibaba.druid.sql.dialect.infomix.visitor.InformixOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -417,6 +418,8 @@ public class ParameterizedOutputVisitorUtils {
                 return new MySqlOutputVisitor(out, true);
             case h2:
                 return new H2OutputVisitor(out, true);
+            case informix:
+                return new InformixOutputVisitor(out, true);
             case postgresql:
             case greenplum:
             case edb:

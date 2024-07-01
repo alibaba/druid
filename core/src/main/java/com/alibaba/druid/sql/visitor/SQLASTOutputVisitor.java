@@ -2510,6 +2510,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    protected void printSelectListBefore(SQLSelectQueryBlock x) {
+        print(' ');
+    }
+
     public boolean visit(SQLSelectQueryBlock x) {
         if (isPrettyFormat() && x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
@@ -2517,17 +2521,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isParenthesized()) {
             print('(');
         }
-        print0(ucase ? "SELECT " : "select ");
+        print0(ucase ? "SELECT" : "select");
 
         if (x.getHintsSize() > 0) {
             printAndAccept(x.getHints(), ", ");
             print(' ');
         }
 
-        final boolean informix = DbType.informix == dbType;
-        if (informix) {
-            printFetchFirst(x);
-        }
+        printSelectListBefore(x);
 
         final int distinctOption = x.getDistionOption();
         if (SQLSetQuantifier.ALL == distinctOption) {
@@ -2610,9 +2611,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printAndAccept(clusterBy, ", ");
         }
 
-        if (!informix) {
-            printFetchFirst(x);
-        }
+        printFetchFirst(x);
 
         if (x.isForUpdate()) {
             println();
@@ -2650,16 +2649,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLExpr offset = limit.getOffset();
         SQLExpr first = limit.getRowCount();
 
-        if (DbType.informix == dbType) {
-            if (offset != null) {
-                print0(ucase ? "SKIP " : "skip ");
-                offset.accept(this);
-            }
-
-            print0(ucase ? " FIRST " : " first ");
-            first.accept(this);
-            print(' ');
-        } else if (DbType.db2 == dbType
+        if (DbType.db2 == dbType
                 || DbType.oracle == dbType
                 || DbType.sqlserver == dbType) {
             //order by 语句必须在FETCH FIRST ROWS ONLY之前
@@ -2697,7 +2687,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             limit.accept(this);
         }
-
     }
 
     public boolean visit(SQLStructExpr x) {
