@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
@@ -73,5 +74,13 @@ public class CKSelectParser
 
     protected SQLSelectQueryBlock createSelectQueryBlock() {
         return new CKSelectQueryBlock();
+    }
+
+    public void parseWhere(SQLSelectQueryBlock queryBlock) {
+        if (lexer.nextIf(Token.PREWHERE)) {
+            SQLExpr preWhere = exprParser.expr();
+            ((CKSelectQueryBlock) queryBlock).setPreWhere(preWhere);
+        }
+        super.parseWhere(queryBlock);
     }
 }

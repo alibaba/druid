@@ -158,7 +158,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             lexer.nextToken();
 
             SQLSelect select = null;
-            if (lexer.token == Token.IDENTIFIER
+            if ((lexer.token == Token.IDENTIFIER || lexer.token == Token.VARIANT)
                     && lexer.isEnabled(Template)
                     && lexer.stringVal.startsWith("$")) {
                 select = new SQLSelect(

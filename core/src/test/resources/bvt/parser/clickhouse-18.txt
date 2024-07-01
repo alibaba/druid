@@ -1,0 +1,9 @@
+SELECT count()
+from mydata
+PREWHERE C = 'x'
+WHERE B = 0;
+---------------------------
+SELECT count()
+FROM mydata
+PREWHERE C = 'x'
+WHERE B = 0;

@@ -183,10 +183,7 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
             x.getFrom().accept(this);
         }
 
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            printWhere(where);
-        }
+        printWhere(x);
 
         if (x.getGroupBy() != null) {
             println();

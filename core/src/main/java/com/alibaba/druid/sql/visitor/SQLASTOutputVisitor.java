@@ -2564,10 +2564,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
             printTableSource(from);
         }
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            printWhere(where);
-        }
+        printWhere(x);
 
         printHierarchical(x);
 
@@ -2623,7 +2620,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    protected void printWhere(SQLExpr where) {
+    protected void printWhere(SQLSelectQueryBlock queryBlock) {
+        SQLExpr where = queryBlock.getWhere();
+        if (where == null) {
+            return;
+        }
+
         println();
         print0(ucase ? "WHERE " : "where ");
 
@@ -2632,12 +2634,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printlnComments(beforeComments);
         }
         printExpr(where, parameterized);
-//
-//        List<String> afterComments = where.getAfterCommentsDirect();
-//        if (afterComments != null && !afterComments.isEmpty() && isPrettyFormat()) {
-//            print(' ');
-//            printlnComment(afterComments);
-//        }
     }
 
     protected void printFetchFirst(SQLSelectQueryBlock x) {

@@ -120,6 +120,13 @@ public class CKResourceTest extends SQLResourceTest {
         exec_test("bvt/parser/clickhouse-17.txt");
     }
 
+
+    @Test
+    public void test_18() throws Exception {
+        exec_test("bvt/parser/clickhouse-18.txt");
+    }
+
+
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);
         InputStream is = null;
