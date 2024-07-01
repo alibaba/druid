@@ -441,15 +441,16 @@ public class MySqlSelectParser extends SQLSelectParser {
                 }
                 // 修复特殊sql语句解析错误问题
                 // 解析异常语句: select *   from (((select  *  from tb1 a where  (a.cc IN('I') )   and 1=1  and (1=2) ))   limit 0,1234) as a  where  (((a.cc IN('I') ) AND (a.cc IN('I') )))   order by a.cc
+                if (lexer.token() == Token.ORDER) {
+                    SQLOrderBy orderBy = this.exprParser.parseOrderBy();
+                    if (tableSource instanceof SQLSubqueryTableSource) {
+                        ((SQLSubqueryTableSource) tableSource).getSelect().setOrderBy(orderBy);
+                    }
+                }
                 if (lexer.token() == Token.LIMIT) {
                     SQLLimit limit = this.exprParser.parseLimit();
-                    if (tableSource != null && tableSource instanceof SQLSubqueryTableSource) {
+                    if (tableSource instanceof SQLSubqueryTableSource) {
                         ((SQLSubqueryTableSource) tableSource).getSelect().setLimit(limit);
-                    }
-                } else if (lexer.token() == Token.ORDER) {
-                    SQLOrderBy orderBy = this.exprParser.parseOrderBy();
-                    if (tableSource != null && tableSource instanceof SQLSubqueryTableSource) {
-                        ((SQLSubqueryTableSource) tableSource).getSelect().setOrderBy(orderBy);
                     }
                 }
                 accept(Token.RPAREN);
