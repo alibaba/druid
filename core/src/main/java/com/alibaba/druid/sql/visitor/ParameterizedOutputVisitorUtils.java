@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
+import com.alibaba.druid.sql.dialect.holo.visitor.HoloOutputVisitor;
 import com.alibaba.druid.sql.dialect.infomix.visitor.InformixOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -425,6 +426,8 @@ public class ParameterizedOutputVisitorUtils {
             case edb:
             case gaussdb:
                 return new PGOutputVisitor(out, true);
+            case hologres:
+                return new HoloOutputVisitor(out, true);
             case sqlserver:
             case jtds:
                 return new SQLServerOutputVisitor(out, true);

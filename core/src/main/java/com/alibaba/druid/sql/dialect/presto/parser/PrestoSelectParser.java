@@ -82,20 +82,6 @@ public class PrestoSelectParser extends SQLSelectParser {
             this.lexer.nextToken();
         }
 
-        if (DbType.informix == this.dbType) {
-            if (this.lexer.identifierEquals(FnvHash.Constants.SKIP)) {
-                this.lexer.nextToken();
-                SQLExpr offset = this.exprParser.primary();
-                queryBlock.setOffset(offset);
-            }
-
-            if (this.lexer.identifierEquals(FnvHash.Constants.FIRST)) {
-                this.lexer.nextToken();
-                SQLExpr first = this.exprParser.primary();
-                queryBlock.setFirst(first);
-            }
-        }
-
         if (this.lexer.token() == Token.DISTINCT) {
             queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
             this.lexer.nextToken();

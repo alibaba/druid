@@ -40,6 +40,9 @@ import com.alibaba.druid.sql.dialect.h2.parser.H2StatementParser;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveExprParser;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
+import com.alibaba.druid.sql.dialect.holo.parser.HoloExprParser;
+import com.alibaba.druid.sql.dialect.holo.parser.HoloLexer;
+import com.alibaba.druid.sql.dialect.holo.parser.HoloStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
@@ -138,6 +141,8 @@ public class SQLParserUtils {
             case edb:
             case gaussdb:
                 return new PGSQLStatementParser(sql, features);
+            case hologres:
+                return new HoloStatementParser(sql, features);
             case sqlserver:
             case jtds:
                 return new SQLServerStatementParser(sql, features);
@@ -193,8 +198,9 @@ public class SQLParserUtils {
             case greenplum:
             case edb:
             case gaussdb:
-            case hologres:
                 return new PGExprParser(sql, features);
+            case hologres:
+                return new HoloExprParser(sql, features);
             case sqlserver:
             case jtds:
                 return new SQLServerExprParser(sql, features);
@@ -247,8 +253,9 @@ public class SQLParserUtils {
             case postgresql:
             case greenplum:
             case edb:
-            case hologres:
                 return new PGLexer(sql, features);
+            case hologres:
+                return new HoloLexer(sql, features);
             case db2:
                 return new DB2Lexer(sql, features);
             case odps:
