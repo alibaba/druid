@@ -43,6 +43,7 @@ import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
 import com.alibaba.druid.sql.dialect.holo.parser.HoloExprParser;
 import com.alibaba.druid.sql.dialect.holo.parser.HoloLexer;
 import com.alibaba.druid.sql.dialect.holo.parser.HoloStatementParser;
+import com.alibaba.druid.sql.dialect.infomix.parser.InformixStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
@@ -171,6 +172,8 @@ public class SQLParserUtils {
                 return new CKStatementParser(sql);
             case starrocks:
                 return new StarRocksStatementParser(sql);
+            case informix:
+                return new InformixStatementParser(sql, features);
             default:
                 return new SQLStatementParser(sql, dbType, features);
         }

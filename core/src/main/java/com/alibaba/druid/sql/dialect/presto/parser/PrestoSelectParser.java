@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.presto.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObject;
