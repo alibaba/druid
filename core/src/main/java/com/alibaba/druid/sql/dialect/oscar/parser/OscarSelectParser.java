@@ -46,6 +46,7 @@ public class OscarSelectParser extends SQLSelectParser {
         return new OscarExprParser(lexer);
     }
 
+
     @Override
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token() == Token.VALUES) {
@@ -151,7 +152,7 @@ public class OscarSelectParser extends SQLSelectParser {
 
         for (;;) {
             if (lexer.token() == Token.LIMIT) {
-                SQLLimit limit = new SQLLimit();
+                SQLLimit limit = getOrInitLimit(queryBlock);
 
                 lexer.nextToken();
                 if (lexer.token() == Token.ALL) {
@@ -163,11 +164,7 @@ public class OscarSelectParser extends SQLSelectParser {
 
                 queryBlock.setLimit(limit);
             } else if (lexer.token() == Token.OFFSET) {
-                SQLLimit limit = queryBlock.getLimit();
-                if (limit == null) {
-                    limit = new SQLLimit();
-                    queryBlock.setLimit(limit);
-                }
+                SQLLimit limit = getOrInitLimit(queryBlock);
                 lexer.nextToken();
                 SQLExpr offset = expr();
                 limit.setOffset(offset);
@@ -251,6 +248,15 @@ public class OscarSelectParser extends SQLSelectParser {
         }
 
         return queryRest(queryBlock, acceptUnion);
+    }
+
+    private SQLLimit getOrInitLimit(SQLSelectQueryBlock queryBlock) {
+        SQLLimit limit = queryBlock.getLimit();
+        if (limit == null) {
+            limit = new SQLLimit();
+            queryBlock.setLimit(limit);
+        }
+        return limit;
     }
 
     public SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
