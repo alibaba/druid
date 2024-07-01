@@ -63,3 +63,18 @@ OPTIONS (
 	'description' = "A table that expires in 1 year",
 	'labels' = [("org_unit", "development")]
 )
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+  WITH DIFFERENTIAL_PRIVACY
+    OPTIONS(epsilon=10, delta=.01, max_groups_contributed=2, privacy_unit_column=id)
+    item,
+    AVG(quantity, contribution_bounds_per_group => (0,100)) AS average_quantity
+FROM professors
+GROUP BY item;
+--------------------
+SELECT
+	WITH DIFFERENTIAL_PRIVACY
+	OPTIONS (epsilon = 10,delta = .01,max_groups_contributed = 2,privacy_unit_column = id)
+	item, AVG(quantity, contribution_bounds_per_group => (0, 100)) AS average_quantity
+FROM professors
+GROUP BY item;
