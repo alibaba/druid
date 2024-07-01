@@ -46,7 +46,6 @@ public class OscarSelectParser extends SQLSelectParser {
         return new OscarExprParser(lexer);
     }
 
-
     @Override
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token() == Token.VALUES) {
