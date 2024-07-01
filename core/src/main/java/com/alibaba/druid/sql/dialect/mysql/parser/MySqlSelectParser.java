@@ -117,11 +117,11 @@ public class MySqlSelectParser extends SQLSelectParser {
             select.setParenthesized(true);
             // 修复特殊sql语句解析错误问题
             // 解析异常语句: ((select * from b where 1=1) limit 0,123)
-            if (lexer.token() == Token.ORDER){
+            if (lexer.token() == Token.ORDER) {
                 parseSortBy((SQLSelectQueryBlock) select);
                 lexer.nextToken();
             }
-            if (lexer.token() == Token.LIMIT){
+            if (lexer.token() == Token.LIMIT) {
                 SQLLimit limit = this.exprParser.parseLimit();
                 ((SQLSelectQueryBlock) select).setLimit(limit);
             }
