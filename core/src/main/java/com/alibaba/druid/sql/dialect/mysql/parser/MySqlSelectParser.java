@@ -115,6 +115,16 @@ public class MySqlSelectParser extends SQLSelectParser {
 
             SQLSelectQuery select = query();
             select.setParenthesized(true);
+            // 修复特殊sql语句解析错误问题
+            // 解析异常语句: ((select * from b where 1=1) limit 0,123)
+            if (lexer.token() == Token.ORDER) {
+                parseSortBy((SQLSelectQueryBlock) select);
+                lexer.nextToken();
+            }
+            if (lexer.token() == Token.LIMIT) {
+                SQLLimit limit = this.exprParser.parseLimit();
+                ((SQLSelectQueryBlock) select).setLimit(limit);
+            }
             accept(Token.RPAREN);
 
             return queryRest(select, acceptUnion);
@@ -427,6 +437,20 @@ public class MySqlSelectParser extends SQLSelectParser {
 
                     if (hints != null) {
                         tableSource.getHints().addAll(hints);
+                    }
+                }
+                // 修复特殊sql语句解析错误问题
+                // 解析异常语句: select *   from (((select  *  from tb1 a where  (a.cc IN('I') )   and 1=1  and (1=2) ))   limit 0,1234) as a  where  (((a.cc IN('I') ) AND (a.cc IN('I') )))   order by a.cc
+                if (lexer.token() == Token.ORDER) {
+                    SQLOrderBy orderBy = this.exprParser.parseOrderBy();
+                    if (tableSource instanceof SQLSubqueryTableSource) {
+                        ((SQLSubqueryTableSource) tableSource).getSelect().setOrderBy(orderBy);
+                    }
+                }
+                if (lexer.token() == Token.LIMIT) {
+                    SQLLimit limit = this.exprParser.parseLimit();
+                    if (tableSource instanceof SQLSubqueryTableSource) {
+                        ((SQLSubqueryTableSource) tableSource).getSelect().setLimit(limit);
                     }
                 }
                 accept(Token.RPAREN);
