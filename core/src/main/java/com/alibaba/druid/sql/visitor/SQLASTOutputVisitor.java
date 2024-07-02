@@ -1339,7 +1339,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print('\'');
             int index = text.indexOf('\'');
             if (index >= 0) {
-                text = text.replaceAll("'", "''");
+                //修复内容中含转义符号\\'XXX\\'以及替换时忽略已经转义的'',仅转义单'和\\'
+                text = text.replaceAll("(\\\\')|(?<!')'(?!')", "''");
             }
             print0(text);
             print('\'');
