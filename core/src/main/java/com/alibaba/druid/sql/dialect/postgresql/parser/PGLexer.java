@@ -71,6 +71,7 @@ public class PGLexer extends Lexer {
         map.put("MATCHED", Token.MATCHED);
         map.put("PARTITION", Token.PARTITION);
         map.put("INTERVAL", Token.INTERVAL);
+        map.put("LANGUAGE", Token.LANGUAGE);
 
         DEFAULT_PG_KEYWORDS = new Keywords(map);
     }

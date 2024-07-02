@@ -299,7 +299,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
-            parseTblProperties(stmt);
+            parseOptions(stmt);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.META)) {
@@ -351,14 +351,14 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
             lexer.nextToken();
             accept(Token.LPAREN);
-            parseAssignItems(stmt.getTblProperties(), stmt, false);
+            parseAssignItems(stmt.getTableOptions(), stmt, false);
             accept(Token.RPAREN);
         }
 
         return stmt;
     }
 
-    private void parseTblProperties(HiveCreateTableStatement stmt) {
+    protected void parseOptions(SQLCreateTableStatement stmt) {
         lexer.nextToken();
         accept(Token.LPAREN);
 
@@ -373,7 +373,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
 
             accept(Token.EQ);
             SQLExpr value = this.exprParser.primary();
-            stmt.addTblProperty(name, value);
+            stmt.addOption(name, value);
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 if (lexer.token() == Token.RPAREN) {

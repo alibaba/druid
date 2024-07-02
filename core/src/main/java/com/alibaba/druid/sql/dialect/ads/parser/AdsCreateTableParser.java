@@ -168,23 +168,7 @@ public class AdsCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.OPTIONS)) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-
-            for (; ; ) {
-                String name = lexer.stringVal();
-                lexer.nextToken();
-                accept(Token.EQ);
-                SQLExpr value = this.exprParser.primary();
-                stmt.addOption(name, value);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-                break;
-            }
-
-            accept(Token.RPAREN);
+            parseOptions(stmt);
         }
 
         if (lexer.token() == Token.COMMENT) {

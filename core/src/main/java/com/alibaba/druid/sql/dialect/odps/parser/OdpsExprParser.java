@@ -224,10 +224,23 @@ public class OdpsExprParser extends SQLExprParser {
         if (lexer.token() == Token.LPAREN
                 && expr instanceof SQLIdentifierExpr
                 && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.TRANSFORM) {
+            String name = lexer.stringVal();
             OdpsTransformExpr transformExpr = new OdpsTransformExpr();
             lexer.nextToken();
-            this.exprList(transformExpr.getInputColumns(), transformExpr);
+            List<SQLExpr> inputColumns = transformExpr.getInputColumns();
+            this.exprList(inputColumns, transformExpr);
             accept(Token.RPAREN);
+
+            if (inputColumns.size() == 2
+                    && inputColumns.get(1) instanceof SQLBinaryOpExpr
+                    && ((SQLBinaryOpExpr) inputColumns.get(1)).getOperator() == SQLBinaryOperator.SubGt
+            ) {
+                SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(name);
+                for (SQLExpr item : inputColumns) {
+                    methodInvokeExpr.addArgument(item);
+                }
+                return primaryRest(methodInvokeExpr);
+            }
 
             if (lexer.identifierEquals(FnvHash.Constants.ROW)) {
                 SQLExternalRecordFormat recordFormat = this.parseRowFormat();

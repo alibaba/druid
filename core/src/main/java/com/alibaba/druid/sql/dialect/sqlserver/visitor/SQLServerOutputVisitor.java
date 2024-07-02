@@ -79,10 +79,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             printTableSource(from);
         }
 
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            printWhere(where);
-        }
+        printWhere(x);
 
         SQLSelectGroupByClause groupBy = x.getGroupBy();
         if (groupBy != null) {

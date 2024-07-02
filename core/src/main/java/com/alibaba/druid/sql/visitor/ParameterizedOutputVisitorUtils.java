@@ -25,9 +25,11 @@ import com.alibaba.druid.sql.ast.statement.SQLDDLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseOutputVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
+import com.alibaba.druid.sql.dialect.holo.visitor.HoloOutputVisitor;
+import com.alibaba.druid.sql.dialect.infomix.visitor.InformixOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -417,11 +419,15 @@ public class ParameterizedOutputVisitorUtils {
                 return new MySqlOutputVisitor(out, true);
             case h2:
                 return new H2OutputVisitor(out, true);
+            case informix:
+                return new InformixOutputVisitor(out, true);
             case postgresql:
             case greenplum:
             case edb:
             case gaussdb:
                 return new PGOutputVisitor(out, true);
+            case hologres:
+                return new HoloOutputVisitor(out, true);
             case sqlserver:
             case jtds:
                 return new SQLServerOutputVisitor(out, true);
@@ -430,9 +436,10 @@ public class ParameterizedOutputVisitorUtils {
             case phoenix:
                 return new PhoenixOutputVisitor(out, true);
             case presto:
+            case trino:
                 return new PrestoOutputVisitor(out, true);
             case clickhouse:
-                return new ClickhouseOutputVisitor(out, true);
+                return new CKOutputVisitor(out, true);
             case bigquery:
                 return new BigQueryOutputVisitor(out, true);
             default:

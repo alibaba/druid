@@ -9,7 +9,7 @@ import com.alibaba.druid.sql.parser.Token;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClickhouseLexer extends Lexer {
+public class CKLexer extends Lexer {
     public static final Keywords DEFAULT_KEYWORDS;
 
     static {
@@ -31,17 +31,18 @@ public class ClickhouseLexer extends Lexer {
         map.put("GLOBAL", Token.GLOBAL);
         map.put("PARTITION", Token.PARTITION);
         map.put("ILIKE", Token.ILIKE);
+        map.put("PREWHERE", Token.PREWHERE);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }
 
-    public ClickhouseLexer(String input) {
+    public CKLexer(String input) {
         super(input);
         dbType = DbType.clickhouse;
         super.keywords = DEFAULT_KEYWORDS;
     }
 
-    public ClickhouseLexer(String input, SQLParserFeature... features) {
+    public CKLexer(String input, SQLParserFeature... features) {
         super(input);
         super.keywords = DEFAULT_KEYWORDS;
         for (SQLParserFeature feature : features) {

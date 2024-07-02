@@ -4,18 +4,18 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClickhouseAlterTableUpdateStatement extends ClickhouseAlterTableStatement {
+public class CKAlterTableUpdateStatement extends CKAlterTableStatement {
     protected final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
     private SQLName partitionId;
     protected SQLExpr where;
 
-    public ClickhouseAlterTableUpdateStatement(DbType dbType) {
+    public CKAlterTableUpdateStatement(DbType dbType) {
         super(dbType);
     }
 
@@ -41,8 +41,8 @@ public class ClickhouseAlterTableUpdateStatement extends ClickhouseAlterTableSta
 
     @Override
     protected void accept0(SQLASTVisitor v) {
-        if (v instanceof ClickhouseVisitor) {
-            ClickhouseVisitor vv = (ClickhouseVisitor) v;
+        if (v instanceof CKVisitor) {
+            CKVisitor vv = (CKVisitor) v;
             if (vv.visit(this)) {
                 acceptChild(vv, this.getTableName());
                 acceptChild(vv, this.getClusterName());

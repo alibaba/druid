@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-public class ClickHouse_select_1 extends TestCase {
+public class CK_select_1 extends TestCase {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM limit_by ORDER BY id, val LIMIT 2 BY id";
 

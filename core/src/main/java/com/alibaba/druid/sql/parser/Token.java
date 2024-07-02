@@ -63,6 +63,7 @@ public enum Token {
     UNIQUE("UNIQUE"),
     FOREIGN("FOREIGN"),
     REFERENCES("REFERENCES"),
+    LANGUAGE("LANGUAGE"),
 
     EXPLAIN("EXPLAIN"),
     FOR("FOR"),
@@ -285,6 +286,9 @@ public enum Token {
     OVERWRITE,
     SORT,
     LATERAL,
+
+    // clickhouse
+    PREWHERE("PREWHERE"),
 
     // Teradata
     SEL("SEL"),

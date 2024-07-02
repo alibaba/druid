@@ -28,29 +28,29 @@ import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClickhouseExportParameterVisitor extends ClickhouseOutputVisitor implements ExportParameterVisitor {
+public class CKExportParameterVisitor extends CKOutputVisitor implements ExportParameterVisitor {
     /**
      * true= if require parameterized sql output
      */
     private final boolean requireParameterizedOutput;
 
-    public ClickhouseExportParameterVisitor(final List<Object> parameters,
-                                            final StringBuilder appender,
-                                            final boolean wantParameterizedOutput) {
+    public CKExportParameterVisitor(final List<Object> parameters,
+                                    final StringBuilder appender,
+                                    final boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
     }
 
-    public ClickhouseExportParameterVisitor() {
+    public CKExportParameterVisitor() {
         this(new ArrayList<Object>());
     }
 
-    public ClickhouseExportParameterVisitor(final List<Object> parameters) {
+    public CKExportParameterVisitor(final List<Object> parameters) {
         this(parameters, new StringBuilder(), false);
     }
 
-    public ClickhouseExportParameterVisitor(final StringBuilder appender) {
+    public CKExportParameterVisitor(final StringBuilder appender) {
         this(new ArrayList<Object>(), appender, true);
     }
 

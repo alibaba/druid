@@ -16,41 +16,47 @@
 package com.alibaba.druid.bvt.sql.clickhouse;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.OracleTest;
+import com.alibaba.druid.bvt.sql.SQLResourceTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-public class ClickHouseResourceTest extends OracleTest {
+import static org.junit.Assert.assertEquals;
+
+public class CKResourceTest extends SQLResourceTest {
+    public CKResourceTest() {
+        super(DbType.clickhouse);
+    }
+
+    @Test
     public void test_0() throws Exception {
         exec_test("bvt/parser/clickhouse-0.txt");
     }
 
+    @Test
     public void test_15() throws Exception {
         exec_test("bvt/parser/clickhouse-15.txt");
     }
 
+    @Test
     public void test_16() throws Exception {
         exec_test("bvt/parser/clickhouse-16.txt");
     }
 
+    @Test
     public void test_2() throws Exception {
         exec_test("bvt/parser/clickhouse-2.txt");
     }
 
+    @Test
     public void test_3() throws Exception {
         exec_test("bvt/parser/clickhouse-3.txt");
     }
@@ -59,49 +65,67 @@ public class ClickHouseResourceTest extends OracleTest {
 //        exec_test("bvt/parser/clickhouse-4.txt");
 //    }
 
+    @Test
     public void test_5() throws Exception {
         exec_test("bvt/parser/clickhouse-5.txt");
     }
 
+    @Test
     public void test_6() throws Exception {
         exec_test("bvt/parser/clickhouse-6.txt");
     }
 
+    @Test
     public void test_7() throws Exception {
         exec_test("bvt/parser/clickhouse-7.txt");
     }
 
+    @Test
     public void test_8() throws Exception {
         exec_test("bvt/parser/clickhouse-8.txt");
     }
 
+    @Test
     public void test_9() throws Exception {
         exec_test("bvt/parser/clickhouse-9.txt");
     }
 
+    @Test
     public void test_10() throws Exception {
         exec_test("bvt/parser/clickhouse-10.txt");
     }
 
+    @Test
     public void test_11() throws Exception {
         exec_test("bvt/parser/clickhouse-11.txt");
     }
 
+    @Test
     public void test_12() throws Exception {
         exec_test("bvt/parser/clickhouse-12.txt");
     }
 
+    @Test
     public void test_13() throws Exception {
         exec_test("bvt/parser/clickhouse-13.txt");
     }
 
+    @Test
     public void test_14() throws Exception {
         exec_test("bvt/parser/clickhouse-14.txt");
     }
 
+    @Test
     public void test_window_funnel() throws Exception {
         exec_test("bvt/parser/clickhouse-17.txt");
     }
+
+
+    @Test
+    public void test_18() throws Exception {
+        exec_test("bvt/parser/clickhouse-18.txt");
+    }
+
 
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);

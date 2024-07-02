@@ -1,16 +1,19 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
-public class ClickhouseSelectParser
+public class CKSelectParser
         extends SQLSelectParser {
-    public ClickhouseSelectParser(Lexer lexer) {
+    public CKSelectParser(Lexer lexer) {
         super(lexer);
     }
 
-    public ClickhouseSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
+    public CKSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
         super(exprParser, selectListCache);
     }
 
@@ -67,5 +70,17 @@ public class ClickhouseSelectParser
         }
 
         return withQueryClause;
+    }
+
+    protected SQLSelectQueryBlock createSelectQueryBlock() {
+        return new CKSelectQueryBlock();
+    }
+
+    public void parseWhere(SQLSelectQueryBlock queryBlock) {
+        if (lexer.nextIf(Token.PREWHERE)) {
+            SQLExpr preWhere = exprParser.expr();
+            ((CKSelectQueryBlock) queryBlock).setPreWhere(preWhere);
+        }
+        super.parseWhere(queryBlock);
     }
 }

@@ -71,6 +71,10 @@ public class SQLStatementParser extends SQLParser {
         this(new SQLExprParser(sql, dbType));
     }
 
+    public SQLStatementParser(String sql, DbType dbType, SQLParserFeature... features) {
+        this(new SQLExprParser(sql, dbType, features));
+    }
+
     public SQLStatementParser(SQLExprParser exprParser) {
         super(exprParser.getLexer(), exprParser.getDbType());
         this.exprParser = exprParser;

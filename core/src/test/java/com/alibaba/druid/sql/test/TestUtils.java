@@ -24,6 +24,7 @@ import javax.management.ObjectName;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -31,6 +32,17 @@ public class TestUtils {
     public static String outputOracle(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         OracleOutputVisitor visitor = new OracleOutputVisitor(out);
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+
+        return out.toString();
+    }
+    
+    public static String outputPg(List<SQLStatement> stmtList) {
+        StringBuilder out = new StringBuilder();
+        PGOutputVisitor visitor = new PGOutputVisitor(out);
 
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);

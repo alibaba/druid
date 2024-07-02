@@ -24,10 +24,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
  * Created by wenshao on 16/9/13.
  */
 public class PrestoExprParser extends SQLExprParser {
-    {
-        dbType = DbType.presto;
-    }
-
     public PrestoExprParser(String sql, SQLParserFeature... features) {
         this(new PrestoLexer(sql, features));
         this.lexer.nextToken();
@@ -35,6 +31,7 @@ public class PrestoExprParser extends SQLExprParser {
 
     public PrestoExprParser(Lexer lexer) {
         super(lexer);
+        dbType = DbType.presto;
     }
 
 }

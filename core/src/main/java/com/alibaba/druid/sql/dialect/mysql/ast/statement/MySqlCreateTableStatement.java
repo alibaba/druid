@@ -258,7 +258,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     @Override
     public void simplify() {
         tableOptions.clear();
-        tblProperties.clear();
+//        tblProperties.clear();
         super.simplify();
     }
 
@@ -676,15 +676,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     }
 
     public SQLExpr getEngine() {
-        for (SQLAssignItem option : tableOptions) {
-            SQLExpr target = option.getTarget();
-            if (target instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) target).getName()
-                .equalsIgnoreCase("ENGINE")) {
-                return option.getValue();
-            }
-        }
-
-        return null;
+        return getOption("ENGINE");
     }
 
     public void setEngine(SQLExpr x) {

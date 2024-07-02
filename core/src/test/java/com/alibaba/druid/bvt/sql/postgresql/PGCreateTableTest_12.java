@@ -41,13 +41,17 @@ public class PGCreateTableTest_12 extends PGTest {
                 "\t\"id\" varchar(6) NOT NULL,\n" +
                 "\t\"name\" varchar(32) NOT NULL\n" +
                 ")\n" +
-                "WITH (OIDS = false);", SQLUtils.toPGString(stmt));
+                "WITH (\n" +
+                "\t'OIDS' = false\n" +
+                ");", SQLUtils.toPGString(stmt));
 
         assertEquals("create table \"public\".\"city\" (\n" +
                 "\t\"id\" varchar(6) not null,\n" +
                 "\t\"name\" varchar(32) not null\n" +
                 ")\n" +
-                "with (OIDS = false);", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "with (\n" +
+                "\t'OIDS' = false\n" +
+                ");", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(3, statementList.size());
 

@@ -210,7 +210,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             location.accept(this);
         }
 
-        this.printTblProperties(x);
+        this.printTableOptions(x);
 
         if (x.getLifeCycle() != null) {
             println();
@@ -475,10 +475,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             }
             from.accept(this);
         }
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            printWhere(where);
-        }
+        printWhere(x);
 
         if (x.getGroupBy() != null) {
             println();

@@ -16,8 +16,8 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.dialect.clickhouse.parser.ClickhouseStatementParser;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.ClickhouseExportParameterVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.parser.CKStatementParser;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
@@ -25,20 +25,20 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
-public class ClickhouseWallProvider extends WallProvider {
+public class CKWallProvider extends WallProvider {
     public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/clickhouse";
 
-    public ClickhouseWallProvider() {
+    public CKWallProvider() {
         this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
-    public ClickhouseWallProvider(WallConfig config) {
+    public CKWallProvider(WallConfig config) {
         super(config, DbType.clickhouse);
     }
 
     @Override
     public SQLStatementParser createParser(String sql) {
-        return new ClickhouseStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup);
+        return new CKStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ClickhouseWallProvider extends WallProvider {
 
     @Override
     public ExportParameterVisitor createExportParameterVisitor() {
-        return new ClickhouseExportParameterVisitor();
+        return new CKExportParameterVisitor();
     }
 
 }

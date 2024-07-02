@@ -193,10 +193,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             printTableSource(from);
         }
 
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            printWhere(where);
-        }
+        printWhere(x);
 
         printHierarchical(x);
 
@@ -5687,12 +5684,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    protected void printCreateTableOptions(SQLCreateTableStatement x) {
-        List<SQLAssignItem> options = x.getTableOptions();
-        if (options.isEmpty()) {
-            return;
-        }
+    @Override
+    protected void printTableOptionsPrefix(SQLCreateTableStatement x) {
+    }
+
+    @Override
+    protected void printTableOptionsPostfix(SQLCreateTableStatement x) {
+    }
+
+    @Override
+    protected void printTableOption(SQLExpr name, SQLExpr value, int index) {
         println();
-        printAndAccept(options, ", ");
+        name.accept(this);
+        print0(" = ");
+        value.accept(this);
     }
 }

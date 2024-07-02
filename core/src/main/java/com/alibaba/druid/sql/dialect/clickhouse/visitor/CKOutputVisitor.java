@@ -3,22 +3,23 @@ package com.alibaba.druid.sql.dialect.clickhouse.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseAlterTableUpdateStatement;
-import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseCreateTableStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKAlterTableUpdateStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateTableStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
 
-public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements ClickhouseVisitor {
-    public ClickhouseOutputVisitor(StringBuilder appender) {
+public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
+    public CKOutputVisitor(StringBuilder appender) {
         super(appender, DbType.clickhouse);
     }
 
-    public ClickhouseOutputVisitor(StringBuilder appender, DbType dbType) {
+    public CKOutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public ClickhouseOutputVisitor(StringBuilder appender, boolean parameterized) {
+    public CKOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 
@@ -73,7 +74,7 @@ public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements Clic
     }
 
     @Override
-    public boolean visit(ClickhouseCreateTableStatement x) {
+    public boolean visit(CKCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
 
         SQLExpr partitionBy = x.getPartitionBy();
@@ -139,7 +140,7 @@ public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements Clic
     }
 
     @Override
-    public boolean visit(ClickhouseAlterTableUpdateStatement x) {
+    public boolean visit(CKAlterTableUpdateStatement x) {
         print0(ucase ? "ALTER TABLE " : "alter table ");
         printExpr(x.getTableName());
         if (x.getClusterName() != null) {
@@ -172,5 +173,30 @@ public class ClickhouseOutputVisitor extends SQLASTOutputVisitor implements Clic
         }
 
         return false;
+    }
+
+    protected void printWhere(SQLSelectQueryBlock queryBlock) {
+        if (queryBlock instanceof CKSelectQueryBlock) {
+            SQLExpr preWhere = ((CKSelectQueryBlock) queryBlock).getPreWhere();
+            if (preWhere != null) {
+                println();
+                print0(ucase ? "PREWHERE " : "prewhere ");
+                printExpr(preWhere);
+            }
+        }
+
+        SQLExpr where = queryBlock.getWhere();
+        if (where == null) {
+            return;
+        }
+
+        println();
+        print0(ucase ? "WHERE " : "where ");
+
+        List<String> beforeComments = where.getBeforeCommentsDirect();
+        if (beforeComments != null && !beforeComments.isEmpty() && isPrettyFormat()) {
+            printlnComments(beforeComments);
+        }
+        printExpr(where, parameterized);
     }
 }

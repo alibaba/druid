@@ -4,11 +4,14 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
 
-public class BigQueryOutputVisitor extends SQLASTOutputVisitor {
+public class BigQueryOutputVisitor extends SQLASTOutputVisitor
+        implements BigQueryVisitor {
     public BigQueryOutputVisitor(StringBuilder appender) {
         super(appender, DbType.db2);
     }
@@ -70,5 +73,40 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor {
         println();
         print0(ucase ? "CLONE " : "clone ");
         like.accept(this);
+    }
+
+    public boolean visit(BigQuerySelectQueryBlock x) {
+        return visit((SQLSelectQueryBlock) x);
+    }
+
+    protected void printSelectListBefore(SQLSelectQueryBlock x) {
+        if (x instanceof BigQuerySelectQueryBlock) {
+            printSelectListBefore((BigQuerySelectQueryBlock) x);
+            return;
+        }
+
+        super.printSelectListBefore(x);
+    }
+
+    protected void printSelectListBefore(BigQuerySelectQueryBlock x) {
+        BigQuerySelectQueryBlock.DifferentialPrivacy privacy = x.getDifferentialPrivacy();
+        if (privacy != null) {
+            incrementIndent();
+            println();
+            privacy.accept(this);
+            decrementIndent();
+        } else {
+            print(' ');
+        }
+    }
+
+    public boolean visit(BigQuerySelectQueryBlock.DifferentialPrivacy x) {
+        print0(ucase ? "WITH DIFFERENTIAL_PRIVACY" : "with differential_privacy");
+        println();
+        print0(ucase ? "OPTIONS (" : "options (");
+        printAndAccept(x.getOptions(), ",");
+        print(')');
+        println();
+        return false;
     }
 }

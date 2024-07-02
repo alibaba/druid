@@ -15,7 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.presto.visitor;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
@@ -32,6 +34,10 @@ import java.util.List;
  * @since 2022-01-07
  */
 public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVisitor {
+    {
+        dbType = DbType.presto;
+    }
+
     public PrestoOutputVisitor(StringBuilder appender) {
         super(appender);
     }
@@ -124,6 +130,22 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVi
 
         print0(ucase ? " RENAME TO " : " rename to ");
         x.getNewName().accept(this);
+        return false;
+    }
+
+    @Override
+    protected void printTableOptionsPrefix(SQLCreateTableStatement x) {
+        println();
+        print0(ucase ? "WITH (" : "with (");
+        incrementIndent();
+        println();
+    }
+
+    @Override
+    public boolean visit(SQLArrayExpr x) {
+        print0(ucase ? "ARRAY[" : "array[");
+        printAndAccept(x.getValues(), ", ");
+        print(']');
         return false;
     }
 }

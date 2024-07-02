@@ -410,6 +410,9 @@ public class SQLSelectParser extends SQLParser {
         return new SQLSelectQueryBlock(dbType);
     }
 
+    protected void querySelectListBefore(SQLSelectQueryBlock x) {
+    }
+
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
@@ -433,26 +436,14 @@ public class SQLSelectParser extends SQLParser {
 
         accept(Token.SELECT);
 
+        querySelectListBefore(queryBlock);
+
         if (lexer.token() == Token.HINT) {
             this.exprParser.parseHints(queryBlock.getHints());
         }
 
         if (lexer.token == Token.COMMENT) {
             lexer.nextToken();
-        }
-
-        if (DbType.informix == dbType) {
-            if (lexer.identifierEquals(FnvHash.Constants.SKIP)) {
-                lexer.nextToken();
-                SQLExpr offset = this.exprParser.primary();
-                queryBlock.setOffset(offset);
-            }
-
-            if (lexer.identifierEquals(FnvHash.Constants.FIRST)) {
-                lexer.nextToken();
-                SQLExpr first = this.exprParser.primary();
-                queryBlock.setFirst(first);
-            }
         }
 
         if (lexer.token == Token.DISTINCT) {
