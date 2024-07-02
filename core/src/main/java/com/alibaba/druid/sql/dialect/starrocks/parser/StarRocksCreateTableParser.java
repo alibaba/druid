@@ -114,8 +114,10 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                         accept(Token.RPAREN);
                         if (lexer.token() == Token.USING) {
                             lexer.nextToken();
-                            accept(Token.BITMAP);
-                            index.setUsingBitmap(true);
+                            if (lexer.identifierEquals(FnvHash.Constants.BITMAP)) {
+                                lexer.nextToken();
+                                index.setUsingBitmap(true);
+                            }
                         }
                         if (lexer.token() == Token.COMMENT) {
                             lexer.nextToken();

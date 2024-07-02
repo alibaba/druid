@@ -156,9 +156,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         if (s.startsWith("MAXVALUE")) {
                             value.accept(this);
                         } else {
-                            print0("(");
+//                            print0("(");
                             value.accept(this);
-                            print0(")");
+//                            print0(")");
                         }
                         i++;
                     }
