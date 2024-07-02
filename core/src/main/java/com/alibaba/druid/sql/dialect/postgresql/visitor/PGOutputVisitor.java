@@ -151,20 +151,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             x.getFrom().accept(this);
         }
 
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            printWhere(where);
-        }
+        printWhere(x);
 
         if (x.getGroupBy() != null) {
             println();
             x.getGroupBy().accept(this);
         }
-
-//        if (x.getWindow() != null) {
-//            println();
-//            x.getWindow().accept(this);
-//        }
 
         final List<SQLWindow> windows = x.getWindows();
         if (windows != null && windows.size() > 0) {

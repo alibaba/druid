@@ -922,7 +922,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLCreateTableParser getSQLCreateTableParser() {
+    public PGCreateTableParser getSQLCreateTableParser() {
         return new PGCreateTableParser(this.exprParser);
     }
 

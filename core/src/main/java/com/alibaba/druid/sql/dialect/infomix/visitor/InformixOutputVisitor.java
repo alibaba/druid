@@ -7,16 +7,13 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class InformixOutputVisitor extends SQLASTOutputVisitor {
-    {
-        dbType = DbType.informix;
-    }
-
     public InformixOutputVisitor(StringBuilder appender) {
-        super(appender);
+        this(appender, false);
     }
 
     public InformixOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
+        dbType = DbType.informix;
     }
 
     protected void printSelectListBefore(SQLSelectQueryBlock x) {

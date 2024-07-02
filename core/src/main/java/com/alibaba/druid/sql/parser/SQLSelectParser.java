@@ -446,20 +446,6 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
         }
 
-        if (DbType.informix == dbType) {
-            if (lexer.identifierEquals(FnvHash.Constants.SKIP)) {
-                lexer.nextToken();
-                SQLExpr offset = this.exprParser.primary();
-                queryBlock.setOffset(offset);
-            }
-
-            if (lexer.identifierEquals(FnvHash.Constants.FIRST)) {
-                lexer.nextToken();
-                SQLExpr first = this.exprParser.primary();
-                queryBlock.setFirst(first);
-            }
-        }
-
         if (lexer.token == Token.DISTINCT) {
             queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
             lexer.nextToken();

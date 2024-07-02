@@ -287,6 +287,9 @@ public enum Token {
     SORT,
     LATERAL,
 
+    // clickhouse
+    PREWHERE("PREWHERE"),
+
     // Teradata
     SEL("SEL"),
     LOCKING("LOCKING"),
