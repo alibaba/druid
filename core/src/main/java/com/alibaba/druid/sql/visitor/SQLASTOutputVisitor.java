@@ -2574,12 +2574,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(groupBy);
         }
 
-        List<SQLWindow> windows = x.getWindows();
-        if (windows != null && windows.size() > 0) {
-            println();
-            print0(ucase ? "WINDOW " : "window ");
-            printAndAccept(windows, ", ");
-        }
+        printQualify(x);
+        printWindow(x);
 
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {
@@ -2618,6 +2614,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
         return false;
+    }
+
+    protected void printQualify(SQLSelectQueryBlock x) {
+        SQLExpr qualify = x.getQualify();
+        if (qualify == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "QUALIFY " : "qualify ");
+        printExpr(qualify);
+    }
+
+    protected void printWindow(SQLSelectQueryBlock x) {
+        List<SQLWindow> windows = x.getWindows();
+        if (windows == null || windows.isEmpty()) {
+            return;
+        }
+        println();
+        print0(ucase ? "WINDOW " : "window ");
+        printAndAccept(windows, ", ");
     }
 
     protected void printWhere(SQLSelectQueryBlock queryBlock) {
