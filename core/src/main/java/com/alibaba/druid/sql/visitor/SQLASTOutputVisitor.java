@@ -1337,7 +1337,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "NULL" : "null");
         } else {
             print('\'');
-            int index = text.indexOf('\'');
+            int index = text.indexOf('\\');
+            if (index >= 0) {
+                //修复内容中含特殊符号\时, 直接拼接会导致sql错误,但是又要忽略已经转义的
+                text = text.replaceAll("(?<!\\\\)\\\\", "\\\\\\\\");
+            }
+            index = text.indexOf('\'');
             if (index >= 0) {
                 //修复内容中含转义符号\\'XXX\\'以及替换时忽略已经转义的'',仅转义单'和\\'
                 text = text.replaceAll("(\\\\')|(?<!')'(?!')", "''");
