@@ -1060,5 +1060,4 @@ public class SQLParserUtils {
 
         return new ArrayList<>(tables);
     }
-
 }
