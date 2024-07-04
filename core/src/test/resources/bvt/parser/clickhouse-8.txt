@@ -1,3 +1,0 @@
-CREATE DATABASE IF NOT EXISTS wengzi_test_db;
----------------------------
-CREATE DATABASE IF NOT EXISTS wengzi_test_db;
