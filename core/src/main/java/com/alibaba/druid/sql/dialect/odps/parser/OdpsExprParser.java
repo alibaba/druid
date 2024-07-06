@@ -96,6 +96,13 @@ public class OdpsExprParser extends SQLExprParser {
             String stringVal = lexer.stringVal();
             long hash_lower = lexer.hashLCase();
 
+            int sourceLine = -1, sourceColumn = -1;
+            if (lexer.isKeepSourceLocation()) {
+                lexer.computeRowAndColumn();
+                sourceLine = lexer.getPosLine();
+                sourceColumn = lexer.getPosColumn();
+            }
+
             lexer.nextTokenComma();
 
             if (FnvHash.Constants.DATETIME == hash_lower
@@ -134,6 +141,10 @@ public class OdpsExprParser extends SQLExprParser {
                     expr = this.primaryRest(expr);
                     expr = this.exprRest(expr);
                 }
+            }
+
+            if (sourceLine != -1) {
+                expr.setSource(sourceLine, sourceColumn);
             }
         } else {
             expr = expr();

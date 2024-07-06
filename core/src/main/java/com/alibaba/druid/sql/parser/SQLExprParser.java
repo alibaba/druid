@@ -6077,6 +6077,13 @@ public class SQLExprParser extends SQLParser {
         if (token == Token.IDENTIFIER
                 && !(lexer.hashLCase() == -5808529385363204345L && lexer.charAt(lexer.pos) == '\'' && (dbType == DbType.mysql || dbType == DbType.spark)) // x'123' X'123'
         ) {
+            int sourceLine = -1, sourceColumn = -1;
+            if (lexer.isKeepSourceLocation()) {
+                lexer.computeRowAndColumn();
+                sourceLine = lexer.getPosLine();
+                sourceColumn = lexer.getPosColumn();
+            }
+
             String ident = lexer.stringVal();
             long hash_lower = lexer.hashLCase();
             lexer.nextTokenComma();
@@ -6619,6 +6626,10 @@ public class SQLExprParser extends SQLParser {
                 expr = this.primaryRest(expr);
             }
             expr = this.exprRest(expr);
+
+            if (sourceLine != -1) {
+                expr.setSource(sourceLine, sourceColumn);
+            }
         } else if (token == Token.STAR) {
             expr = new SQLAllColumnExpr();
             lexer.nextToken();

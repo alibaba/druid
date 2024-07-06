@@ -110,6 +110,10 @@ public class Lexer {
         }
     }
 
+    public boolean isKeepSourceLocation() {
+        return keepSourceLocation;
+    }
+
     public boolean isKeepComments() {
         return keepComments;
     }
@@ -492,11 +496,11 @@ public class Lexer {
     }
 
     public final void nextTokenValue() {
-        this.startPos = pos;
         while (ch == ' ') {
             scanChar();
         }
 
+        this.startPos = pos;
         if (ch == '\'') {
             bufPos = 0;
             if (dbType == DbType.mysql) {
