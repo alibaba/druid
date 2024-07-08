@@ -2682,10 +2682,9 @@ public class SQLExprParser extends SQLParser {
             parseAggregateExprRest(aggregateExpr);
         }
 
-        if (lexer.token == Token.AS) {
-            // for ads compatible
-            lexer.nextToken();
-            lexer.nextToken();
+        if (lexer.token == ORDER) {
+            aggregateExpr.setOrderBy(
+                    this.parseOrderBy());
         }
 
         accept(Token.RPAREN);
@@ -6634,9 +6633,18 @@ public class SQLExprParser extends SQLParser {
             if (sourceLine != -1) {
                 expr.setSource(sourceLine, sourceColumn);
             }
-        } else if (token == Token.STAR) {
-            expr = new SQLAllColumnExpr();
-            lexer.nextToken();
+        } else if (lexer.nextIf(STAR)) {
+            SQLAllColumnExpr star = new SQLAllColumnExpr();
+
+            if (lexer.nextIf(Token.EXCEPT)) {
+                accept(Token.LPAREN);
+                List<SQLExpr> except = new ArrayList<>();
+                this.exprList(except, star);
+                star.setExcept(except);
+                accept(Token.RPAREN);
+            }
+
+            expr = star;
             return new SQLSelectItem(expr, (String) null, connectByRoot);
         } else if (token == Token.DO || token == Token.JOIN || token == Token.TABLESPACE) {
             expr = this.name();

@@ -1138,7 +1138,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else if (clazz == SQLPropertyExpr.class) {
             visit((SQLPropertyExpr) x);
         } else if (clazz == SQLAllColumnExpr.class) {
-            print('*');
+            visit((SQLAllColumnExpr) x);
         } else if (clazz == SQLAggregateExpr.class) {
             visit((SQLAggregateExpr) x);
         } else if (clazz == SQLBinaryOpExpr.class) {
@@ -12027,6 +12027,61 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLSelectQueryTemplate x) {
         print0(x.getText());
         return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        boolean create = x.isCreate();
+        if (create) {
+            print0(ucase ? "CREATE " : "create ");
+
+            if (x.isOrReplace()) {
+                print0(ucase ? "OR REPLACE " : "or replace ");
+            }
+        }
+
+        if (x.isTemporary()) {
+            print0(ucase ? "TEMPORARY " : "temporary ");
+        }
+        print0(ucase ? "FUNCTION " : "function ");
+
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        if (paramSize > 0) {
+            print0(" (");
+            this.indentCount++;
+            println();
+
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+
+            this.indentCount--;
+            println();
+            print(')');
+        }
+
+        printCreateFunctionBody(x);
+        return false;
+    }
+
+    protected void printCreateFunctionBody(SQLCreateFunctionStatement x) {
+        println();
+        print(ucase ? "RETURN " : "return ");
+        x.getReturnDataType().accept(this);
+
+        SQLStatement block = x.getBlock();
+        println();
+        println(ucase ? "AS" : "as");
+        println();
+        block.accept(this);
     }
 
     @Override

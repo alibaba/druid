@@ -2086,38 +2086,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(SQLCreateFunctionStatement x) {
-        boolean create = x.isCreate();
-        if (!create) {
-            print0(ucase ? "FUNCTION " : "function ");
-        } else if (x.isOrReplace()) {
-            print0(ucase ? "CREATE OR REPLACE FUNCTION " : "create or replace function ");
-        } else {
-            print0(ucase ? "CREATE FUNCTION " : "create function ");
-        }
-        x.getName().accept(this);
-
-        int paramSize = x.getParameters().size();
-
-        if (paramSize > 0) {
-            print0(" (");
-            this.indentCount++;
-            println();
-
-            for (int i = 0; i < paramSize; ++i) {
-                if (i != 0) {
-                    print0(", ");
-                    println();
-                }
-                SQLParameter param = x.getParameters().get(i);
-                param.accept(this);
-            }
-
-            this.indentCount--;
-            println();
-            print(')');
-        }
-
+    protected void printCreateFunctionBody(SQLCreateFunctionStatement x) {
         String wrappedSource = x.getWrappedSource();
         if (wrappedSource != null) {
             print0(ucase ? " WRAPPED " : " wrapped ");
@@ -2126,7 +2095,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             if (x.isAfterSemi()) {
                 print(';');
             }
-            return false;
+            return;
         }
 
         println();
@@ -2149,7 +2118,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         SQLStatement block = x.getBlock();
 
-        if (block != null && !create) {
+        if (block != null && !x.isCreate()) {
             println();
             println("IS");
         } else {
@@ -2167,7 +2136,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "LANGUAGE JAVA NAME '" : "language java name '");
             print0(javaCallSpec);
             print('\'');
-            return false;
+            return;
         }
 
         if (x.isParallelEnable()) {
@@ -2189,7 +2158,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (block != null) {
             block.accept(this);
         }
-        return false;
     }
 
     @Override

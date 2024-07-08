@@ -4047,7 +4047,10 @@ public class SQLStatementParser extends SQLParser {
 
         lexer.nextIfIdentifier(Constants.GLOBAL);
 
-        if (lexer.identifierEquals(Constants.TEMPORARY) || lexer.token == Token.TEMPORARY) {
+        if (lexer.identifierEquals(Constants.TEMPORARY)
+                || lexer.token == Token.TEMPORARY
+                || lexer.identifierEquals("TEMP")
+        ) {
             lexer.nextToken();
         }
         lexer.nextIfIdentifier("TRANSACTIONAL");
@@ -7795,20 +7798,7 @@ public class SQLStatementParser extends SQLParser {
         SQLName name = this.exprParser.name();
         stmt.setName(name);
 
-        if (lexer.token == LPAREN) {
-            lexer.nextToken();
-            while (lexer.token != RPAREN) {
-                SQLParameter param = new SQLParameter();
-                param.setName(this.exprParser.name());
-                param.setDataType(this.exprParser.parseDataType());
-                if (lexer.token == COMMA) {
-                    lexer.nextToken();
-                }
-                stmt.getParameters().add(param);
-                param.setParent(stmt);
-            }
-            accept(RPAREN);
-        }
+        parameters(stmt.getParameters(), stmt);
 
         if (lexer.identifierEquals(Constants.RETURNS)) {
             lexer.nextToken();
@@ -7871,6 +7861,23 @@ public class SQLStatementParser extends SQLParser {
         }
 
         return stmt;
+    }
+
+    protected void parameters(List<SQLParameter> parameters, SQLObject parent) {
+        if (lexer.token == LPAREN) {
+            lexer.nextToken();
+            while (lexer.token != RPAREN) {
+                SQLParameter param = new SQLParameter();
+                param.setName(this.exprParser.name());
+                param.setDataType(this.exprParser.parseDataType());
+                if (lexer.token == COMMA) {
+                    lexer.nextToken();
+                }
+                parameters.add(param);
+                param.setParent(parent);
+            }
+            accept(RPAREN);
+        }
     }
 
     protected SQLShowCreateTableStatement parseShowCreateTable() {

@@ -145,4 +145,33 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         print0(ucase ? "CLUSTER BY " : "cluster by ");
         printAndAccept(clusteredBy, ",");
     }
+
+    @Override
+    protected void printCreateFunctionBody(SQLCreateFunctionStatement x) {
+        println();
+        print(ucase ? "RETURN " : "return ");
+        x.getReturnDataType().accept(this);
+
+        String language = x.getLanguage();
+        if (language != null) {
+            println();
+            print0(ucase ? "LANGUAGE " : "language ");
+            print0(language);
+        }
+        List<SQLAssignItem> options = x.getOptions();
+        if (!options.isEmpty()) {
+            println();
+            print0(ucase ? "OPTIONS (" : "options (");
+            printAndAccept(options, ",");
+            print(')');
+        }
+
+        String wrappedSource = x.getWrappedSource();
+        if (wrappedSource != null) {
+            println();
+            print0("AS \"\"\"");
+            print0(wrappedSource);
+            print0("\"\"\"");
+        }
+    }
 }

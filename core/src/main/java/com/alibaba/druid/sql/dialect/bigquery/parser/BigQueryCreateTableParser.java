@@ -69,4 +69,10 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
             break;
         }
     }
+
+    protected void createTableBefore(SQLCreateTableStatement createTable) {
+        if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")) {
+            createTable.setType(SQLCreateTableStatement.Type.TEMPORARY);
+        }
+    }
 }
