@@ -3470,12 +3470,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? ")" : ")");
         }
 
-        List<SQLAssignItem> colProperties = x.getColPropertiesDirect();
-        if (colProperties != null && colProperties.size() > 0) {
-            print0(ucase ? " COLPROPERTIES (" : " colproperties (");
-            printAndAccept(colProperties, ", ");
-            print0(ucase ? ")" : ")");
-        }
+        printColumnProperties(x);
 
         if (x.getEncode() != null) {
             print0(ucase ? " ENCODE=" : " encode=");
@@ -3490,6 +3485,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.parameterized = parameterized;
 
         return false;
+    }
+
+    protected void printColumnProperties(SQLColumnDefinition x) {
+        List<SQLAssignItem> colProperties = x.getColPropertiesDirect();
+        if (colProperties == null || colProperties.isEmpty()) {
+            return;
+        }
+        print0(ucase ? " COLPROPERTIES (" : " colproperties (");
+        printAndAccept(colProperties, ", ");
+        print0(ucase ? ")" : ")");
     }
 
     protected void printGeneratedAlways(SQLColumnDefinition x, boolean parameterized) {

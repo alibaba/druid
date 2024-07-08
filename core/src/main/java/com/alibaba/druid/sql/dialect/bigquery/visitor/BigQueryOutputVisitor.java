@@ -1,10 +1,10 @@
 package com.alibaba.druid.sql.dialect.bigquery.visitor;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLStructDataType;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -108,5 +108,41 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         print(')');
         println();
         return false;
+    }
+
+    protected void printColumnProperties(SQLColumnDefinition x) {
+        List<SQLAssignItem> colProperties = x.getColPropertiesDirect();
+        if (colProperties == null || colProperties.isEmpty()) {
+            return;
+        }
+        print0(ucase ? " OPTIONS (" : " options (");
+        printAndAccept(colProperties, ", ");
+        print0(ucase ? ")" : ")");
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType.Field x) {
+        SQLName name = x.getName();
+        if (name != null) {
+            name.accept(this);
+        }
+        SQLDataType dataType = x.getDataType();
+
+        if (dataType != null) {
+            print(' ');
+            dataType.accept(this);
+        }
+
+        return false;
+    }
+
+    protected void printClusteredBy(SQLCreateTableStatement x) {
+        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
+        if (clusteredBy.isEmpty()) {
+            return;
+        }
+        println();
+        print0(ucase ? "CLUSTER BY " : "cluster by ");
+        printAndAccept(clusteredBy, ",");
     }
 }
