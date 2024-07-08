@@ -364,45 +364,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         printSelectList(x.getSelectList());
-
-        if (x.getInto() != null) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            x.getInto().accept(this);
-        }
-
-        println();
-        print0(ucase ? "FROM " : "from ");
-        if (x.getCommentsAfaterFrom() != null) {
-            printAfterComments(x.getCommentsAfaterFrom());
-            println();
-        }
-        if (x.getFrom() == null) {
-            print0(ucase ? "DUAL" : "dual");
-        } else {
-            x.getFrom().accept(this);
-        }
-
+        printInto(x);
+        printFrom(x);
         printWhere(x);
-
         printHierarchical(x);
-
-        if (x.getGroupBy() != null) {
-            println();
-            x.getGroupBy().accept(this);
-        }
-
-        if (x.getModelClause() != null) {
-            println();
-            x.getModelClause().accept(this);
-        }
-
-        SQLOrderBy orderBy = x.getOrderBy();
-        if (orderBy != null) {
-            println();
-            orderBy.accept(this);
-        }
-
+        printGroupBy(x);
+        printModel(x);
+        printOrderBy(x);
         printFetchFirst(x);
 
         if (x.isForUpdate()) {
@@ -427,6 +395,41 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(')');
         }
         return false;
+    }
+
+    @Override
+    protected void printFrom(SQLSelectQueryBlock x) {
+        println();
+        print0(ucase ? "FROM " : "from ");
+        if (x.getCommentsAfaterFrom() != null) {
+            printAfterComments(x.getCommentsAfaterFrom());
+            println();
+        }
+        SQLTableSource from = x.getFrom();
+        if (from == null) {
+            print0(ucase ? "DUAL" : "dual");
+        } else {
+            from.accept(this);
+        }
+    }
+
+    private void printInto(OracleSelectQueryBlock x) {
+        SQLExprTableSource into = x.getInto();
+        if (into == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "INTO " : "into ");
+        into.accept(this);
+    }
+
+    private void printModel(OracleSelectQueryBlock x) {
+        ModelClause model = x.getModelClause();
+        if (model == null) {
+            return;
+        }
+        println();
+        model.accept(this);
     }
 
     public boolean visit(CheckOption x) {
@@ -2098,9 +2101,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             return;
         }
 
-        println();
-        print(ucase ? "RETURN " : "return ");
-        x.getReturnDataType().accept(this);
+        printCreateFunctionReturns(x);
 
         if (x.isPipelined()) {
             print(ucase ? "PIPELINED " : "pipelined ");

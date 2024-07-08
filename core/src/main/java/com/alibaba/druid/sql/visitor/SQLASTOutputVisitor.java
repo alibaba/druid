@@ -2542,46 +2542,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printSelectList(
                 x.getSelectList());
 
-        SQLExprTableSource into = x.getInto();
-        if (into != null) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            into.accept(this);
-        }
-
-        SQLTableSource from = x.getFrom();
-        if (from != null) {
-            println();
-
-            boolean printFrom = from instanceof SQLLateralViewTableSource
-                    && ((SQLLateralViewTableSource) from).getTableSource() == null;
-            if (!printFrom) {
-                print0(ucase ? "FROM " : "from ");
-                if (x.getCommentsAfaterFrom() != null) {
-                    printAfterComments(x.getCommentsAfaterFrom());
-                    println();
-                }
-            }
-            printTableSource(from);
-        }
+        printInto(x);
+        printFrom(x);
         printWhere(x);
 
         printHierarchical(x);
 
-        SQLSelectGroupByClause groupBy = x.getGroupBy();
-        if (groupBy != null) {
-            println();
-            visit(groupBy);
-        }
+        printGroupBy(x);
 
         printQualify(x);
         printWindow(x);
 
-        SQLOrderBy orderBy = x.getOrderBy();
-        if (orderBy != null) {
-            println();
-            orderBy.accept(this);
-        }
+        printOrderBy(x);
 
         final List<SQLSelectOrderByItem> distributeBy = x.getDistributeByDirect();
         if (distributeBy != null && distributeBy.size() > 0) {
@@ -2616,6 +2588,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    protected void printInto(SQLSelectQueryBlock x) {
+        SQLExprTableSource into = x.getInto();
+        if (into != null) {
+            println();
+            print0(ucase ? "INTO " : "into ");
+            into.accept(this);
+        }
+    }
+
     protected void printQualify(SQLSelectQueryBlock x) {
         SQLExpr qualify = x.getQualify();
         if (qualify == null) {
@@ -2623,7 +2604,53 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         println();
         print0(ucase ? "QUALIFY " : "qualify ");
-        printExpr(qualify);
+        qualify.accept(this);
+    }
+
+    protected void printOrderBy(SQLSelectQueryBlock x) {
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy == null) {
+            return;
+        }
+        println();
+        orderBy.accept(this);
+    }
+
+    protected void printFrom(SQLSelectQueryBlock x) {
+        SQLTableSource from = x.getFrom();
+        if (from == null) {
+            return;
+        }
+
+        println();
+        boolean printFrom = from instanceof SQLLateralViewTableSource
+                && ((SQLLateralViewTableSource) from).getTableSource() == null;
+        if (!printFrom) {
+            print0(ucase ? "FROM " : "from ");
+            if (x.getCommentsAfaterFrom() != null) {
+                printAfterComments(x.getCommentsAfaterFrom());
+                println();
+            }
+        }
+        printTableSource(from);
+    }
+
+    protected void printGroupBy(SQLSelectQueryBlock x) {
+        SQLSelectGroupByClause groupBy = x.getGroupBy();
+        if (groupBy == null) {
+            return;
+        }
+        println();
+        visit(groupBy);
+    }
+
+    protected void printLimit(SQLSelectQueryBlock x) {
+        SQLLimit limit = x.getLimit();
+        if (limit == null) {
+            return;
+        }
+        println();
+        limit.accept(this);
     }
 
     protected void printWindow(SQLSelectQueryBlock x) {
@@ -12073,15 +12100,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printCreateFunctionBody(SQLCreateFunctionStatement x) {
-        println();
-        print(ucase ? "RETURN " : "return ");
-        x.getReturnDataType().accept(this);
+        printCreateFunctionReturns(x);
 
         SQLStatement block = x.getBlock();
         println();
         println(ucase ? "AS" : "as");
         println();
         block.accept(this);
+    }
+
+    protected void printCreateFunctionReturns(SQLCreateFunctionStatement x) {
+        println();
+        print(ucase ? "RETURN " : "return ");
+        x.getReturnDataType().accept(this);
     }
 
     @Override

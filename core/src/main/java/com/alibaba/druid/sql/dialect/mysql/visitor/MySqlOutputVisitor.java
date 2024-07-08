@@ -182,45 +182,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         }
 
-        SQLTableSource from = x.getFrom();
-        if (from != null) {
-            println();
-            print0(ucase ? "FROM " : "from ");
-            if (x.getCommentsAfaterFrom() != null) {
-                printAfterComments(x.getCommentsAfaterFrom());
-                println();
-            }
-            printTableSource(from);
-        }
+        printFrom(x);
 
         printWhere(x);
 
         printHierarchical(x);
 
-        SQLSelectGroupByClause groupBy = x.getGroupBy();
-        if (groupBy != null) {
-            println();
-            visit(groupBy);
-        }
+        printGroupBy(x);
+        printWindow(x);
+        printOrderBy(x);
 
-        final List<SQLWindow> windows = x.getWindows();
-        if (windows != null && windows.size() > 0) {
-            println();
-            print0(ucase ? "WINDOW " : "window ");
-            printAndAccept(windows, ", ");
-        }
-
-        SQLOrderBy orderBy = x.getOrderBy();
-        if (orderBy != null) {
-            println();
-            visit(orderBy);
-        }
-
-        SQLLimit limit = x.getLimit();
-        if (limit != null) {
-            println();
-            visit(limit);
-        }
+        printLimit(x);
 
         SQLName procedureName = x.getProcedureName();
         if (procedureName != null) {
@@ -267,6 +239,21 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         return false;
+    }
+
+    @Override
+    protected void printFrom(SQLSelectQueryBlock x) {
+        SQLTableSource from = x.getFrom();
+        if (from == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "FROM " : "from ");
+        if (x.getCommentsAfaterFrom() != null) {
+            printAfterComments(x.getCommentsAfaterFrom());
+            println();
+        }
+        printTableSource(from);
     }
 
     public boolean visit(SQLColumnDefinition x) {
@@ -3812,74 +3799,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlUnique x) {
         visit(x.getIndexDefinition());
-        /*
-        if (x.isHasConstraint()) {
-            print0(ucase ? "CONSTRAINT " : "constraint ");
-            if (x.getName() != null) {
-                x.getName().accept(this);
-                print(' ');
-            }
-        }
-
-        if (x.isGlobal()) {
-            print0(ucase ? "GLOBAL " : "global ");
-        }
-
-        print0(ucase ? "UNIQUE" : "unique");
-
-        SQLName name = x.getName();
-        if (name != null) {
-            print(' ');
-            name.accept(this);
-        }
-
-        if (x.getIndexType() != null) {
-            print0(ucase ? " USING " : " using ");
-            print0(x.getIndexType());
-        }
-
-        print0(" (");
-        printAndAccept(x.getColumns(), ", ");
-        print(')');
-
-        List<SQLName> covering = x.getCovering();
-        if (covering.size() > 0) {
-            print0(ucase ? " COVERING (" : " covering (");
-            printAndAccept(covering, ", ");
-            print(')');
-        }
-
-        final SQLPartitionBy dbPartitionBy = x.getDbPartitionBy();
-        if (dbPartitionBy != null) {
-            print0(ucase ? " DBPARTITION BY " : " dbpartition by ");
-            dbPartitionBy.accept(this);
-        }
-
-        final SQLExpr tablePartitionBy = x.getTablePartitionBy();
-        if (tablePartitionBy != null) {
-            print0(ucase ? " TBPARTITION BY " : " tbpartition by ");
-            tablePartitionBy.accept(this);
-        }
-
-        final SQLExpr tablePartitions = x.getTablePartitions();
-        if (tablePartitions != null) {
-            print0(ucase ? " TBPARTITIONS " : " tbpartitions ");
-            tablePartitions.accept(this);
-        }
-
-        SQLExpr keyBlockSize = x.getKeyBlockSize();
-        if (keyBlockSize != null) {
-            print0(ucase ? " KEY_BLOCK_SIZE = " : " key_block_size = ");
-            keyBlockSize.accept(this);
-        }
-
-        SQLExpr comment = x.getComment();
-        if (comment != null) {
-            print0(ucase ? " COMMENT " : " comment ");
-            comment.accept(this);
-        }
-        */
-
         return false;
     }
 
@@ -4803,9 +4722,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     protected void printCreateFunctionBody(SQLCreateFunctionStatement x) {
-        println();
-        print(ucase ? "RETURNS " : "returns ");
-        x.getReturnDataType().accept(this);
+        printCreateFunctionReturns(x);
 
         String comment = x.getComment();
         if (comment != null) {
@@ -4828,6 +4745,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         println();
 
         block.accept(this);
+    }
+
+    protected void printCreateFunctionReturns(SQLCreateFunctionStatement x) {
+        println();
+        print(ucase ? "RETURNS " : "returns ");
+        x.getReturnDataType().accept(this);
     }
 
     @Override

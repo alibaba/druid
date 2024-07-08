@@ -475,41 +475,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         printSelectList(x.getSelectList());
 
-        SQLTableSource from = x.getFrom();
-        if (from != null) {
-            println();
-            print0(ucase ? "FROM " : "from ");
-            if (x.getCommentsAfaterFrom() != null) {
-                printAfterComments(x.getCommentsAfaterFrom());
-                println();
-            }
-            from.accept(this);
-        }
+        printFrom(x);
         printWhere(x);
-
-        if (x.getGroupBy() != null) {
-            println();
-            x.getGroupBy().accept(this);
-        }
-
-        final List<SQLWindow> windows = x.getWindows();
-        if (windows != null && windows.size() > 0) {
-            println();
-            print0(ucase ? "WINDOW " : "window ");
-            printAndAccept(windows, ", ");
-        }
-
-        SQLExpr qualify = x.getQualify();
-        if (qualify != null) {
-            println();
-            print0(ucase ? "QUALIFY " : "qualify ");
-            qualify.accept(this);
-        }
-
-        if (x.getOrderBy() != null) {
-            println();
-            x.getOrderBy().accept(this);
-        }
+        printGroupBy(x);
+        printWindow(x);
+        printQualify(x);
+        printOrderBy(x);
 
         SQLZOrderBy zorderBy = x.getZOrderBy();
         if (zorderBy != null) {
@@ -538,10 +509,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             printAndAccept(clusterBy, ", ");
         }
 
-        if (x.getLimit() != null) {
-            println();
-            x.getLimit().accept(this);
-        }
+        printLimit(x);
 
         return false;
     }

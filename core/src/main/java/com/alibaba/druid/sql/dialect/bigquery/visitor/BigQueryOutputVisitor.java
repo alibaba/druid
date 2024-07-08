@@ -148,9 +148,7 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
 
     @Override
     protected void printCreateFunctionBody(SQLCreateFunctionStatement x) {
-        println();
-        print(ucase ? "RETURN " : "return ");
-        x.getReturnDataType().accept(this);
+        printCreateFunctionReturns(x);
 
         String language = x.getLanguage();
         if (language != null) {
