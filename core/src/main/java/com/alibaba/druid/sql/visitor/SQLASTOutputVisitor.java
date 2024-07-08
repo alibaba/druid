@@ -2574,12 +2574,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(groupBy);
         }
 
-        List<SQLWindow> windows = x.getWindows();
-        if (windows != null && windows.size() > 0) {
-            println();
-            print0(ucase ? "WINDOW " : "window ");
-            printAndAccept(windows, ", ");
-        }
+        printQualify(x);
+        printWindow(x);
 
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {
@@ -2618,6 +2614,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
         return false;
+    }
+
+    protected void printQualify(SQLSelectQueryBlock x) {
+        SQLExpr qualify = x.getQualify();
+        if (qualify == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "QUALIFY " : "qualify ");
+        printExpr(qualify);
+    }
+
+    protected void printWindow(SQLSelectQueryBlock x) {
+        List<SQLWindow> windows = x.getWindows();
+        if (windows == null || windows.isEmpty()) {
+            return;
+        }
+        println();
+        print0(ucase ? "WINDOW " : "window ");
+        printAndAccept(windows, ", ");
     }
 
     protected void printWhere(SQLSelectQueryBlock queryBlock) {
@@ -3454,12 +3470,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? ")" : ")");
         }
 
-        List<SQLAssignItem> colProperties = x.getColPropertiesDirect();
-        if (colProperties != null && colProperties.size() > 0) {
-            print0(ucase ? " COLPROPERTIES (" : " colproperties (");
-            printAndAccept(colProperties, ", ");
-            print0(ucase ? ")" : ")");
-        }
+        printColumnProperties(x);
 
         if (x.getEncode() != null) {
             print0(ucase ? " ENCODE=" : " encode=");
@@ -3474,6 +3485,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.parameterized = parameterized;
 
         return false;
+    }
+
+    protected void printColumnProperties(SQLColumnDefinition x) {
+        List<SQLAssignItem> colProperties = x.getColPropertiesDirect();
+        if (colProperties == null || colProperties.isEmpty()) {
+            return;
+        }
+        print0(ucase ? " COLPROPERTIES (" : " colproperties (");
+        printAndAccept(colProperties, ", ");
+        print0(ucase ? ")" : ")");
     }
 
     protected void printGeneratedAlways(SQLColumnDefinition x, boolean parameterized) {
@@ -12006,5 +12027,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLSelectQueryTemplate x) {
         print0(x.getText());
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return appender.toString();
     }
 }

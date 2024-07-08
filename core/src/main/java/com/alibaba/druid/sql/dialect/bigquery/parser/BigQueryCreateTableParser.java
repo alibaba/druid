@@ -49,7 +49,7 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
-            if (lexer.nextIfIdentifier("CLUSTERED")) {
+            if (lexer.nextIfIdentifier("CLUSTER")) {
                 accept(Token.BY);
                 SQLSelectOrderByItem item = exprParser.parseSelectOrderByItem();
                 item.setParent(stmt);

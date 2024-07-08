@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -119,7 +120,10 @@ public class SQLResourceTest {
             System.out.println(DELIMITER_SHORT +  " [" + (i + 1) + "/" + tests.length + "] " + dbType);
             System.out.println();
 
-            String result = SQLUtils.format(sql, dbType);
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+            SQLStatement stmt = parser.parseStatement();
+            assertEquals(Token.EOF, parser.getLexer().token());
+            String result = SQLUtils.toSQLString(stmt, dbType);
             assertEquals(expected, result);
 
             System.out.println(result);

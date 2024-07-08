@@ -474,9 +474,8 @@ public class SQLSelectParser extends SQLParser {
 
         parseGroupBy(queryBlock);
 
-        if (lexer.identifierEquals(FnvHash.Constants.WINDOW)) {
-            parseWindow(queryBlock);
-        }
+        qualify(queryBlock);
+        parseWindow(queryBlock);
 
         parseSortBy(queryBlock);
 
@@ -804,6 +803,14 @@ public class SQLSelectParser extends SQLParser {
                 }
             }
         }
+    }
+
+    protected void qualify(SQLSelectQueryBlock queryBlock) {
+        if (!lexer.nextIf(Token.QUALIFY)) {
+            return;
+        }
+        SQLExpr qualify = exprParser.expr();
+        queryBlock.setQualify(qualify);
     }
 
     protected void parseWindow(SQLSelectQueryBlock queryBlock) {

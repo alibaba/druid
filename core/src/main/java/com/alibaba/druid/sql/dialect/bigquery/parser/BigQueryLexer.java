@@ -36,6 +36,7 @@ public class BigQueryLexer extends Lexer {
         map.put("RLIKE", Token.RLIKE);
         map.put("CONSTRAINT", Token.CONSTRAINT);
         map.put("DIV", Token.DIV);
+        map.put("QUALIFY", Token.QUALIFY);
 
         DEFAULT_BIG_QUERY_KEYWORDS = new Keywords(map);
     }
