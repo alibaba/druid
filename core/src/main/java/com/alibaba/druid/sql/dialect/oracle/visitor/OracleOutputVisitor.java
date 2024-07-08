@@ -2954,4 +2954,40 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         return false;
     }
+
+    @Override
+    public boolean visit(OracleAlterPackageStatement x) {
+        print0(ucase ? "ALTER PACKAGE " : "alter package ");
+        x.getName().accept(this);
+
+        if (x.isCompile()) {
+            print0(ucase ? " COMPILE" : " compile");
+        }
+
+        if (x.isPack()) {
+            print0(ucase ? " PACKAGE" : " package");
+        }
+
+        if (x.isBody()) {
+            print0(ucase ? " BODY" : " body");
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(OracleDropPackageStatement x) {
+        print0(ucase ? "DROP PACKAGE " : "drop package ");
+        x.getName().accept(this);
+        if (x.isBody()) {
+            print0(ucase ? "BODY " : "body ");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(OracleCreateTableSpaceStatement x) {
+        print0(ucase ? x.getSql().toUpperCase() : x.getSql().toLowerCase());
+        return false;
+    }
 }
