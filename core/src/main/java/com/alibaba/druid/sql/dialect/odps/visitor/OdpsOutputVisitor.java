@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -47,6 +48,15 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         builtInFunctions.add("GREATEST");
 
         groupItemSingleLine = true;
+    }
+
+    public OdpsOutputVisitor() {
+        this(new StringBuilder());
+    }
+
+    public OdpsOutputVisitor(boolean ucase) {
+        this(new StringBuilder());
+        config(VisitorFeature.OutputUCase, ucase);
     }
 
     public OdpsOutputVisitor(StringBuilder appender) {

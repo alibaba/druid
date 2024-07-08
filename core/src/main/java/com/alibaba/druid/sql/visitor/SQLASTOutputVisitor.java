@@ -12023,4 +12023,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(x.getText());
         return false;
     }
+
+    @Override
+    public String toString() {
+        return appender.toString();
+    }
 }

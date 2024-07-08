@@ -380,14 +380,20 @@ public class SQLUtils {
     }
 
     public static String toSQLString(List<SQLStatement> statementList, DbType dbType, List<Object> parameters) {
-        return toSQLString(statementList, dbType, parameters, null, null);
+        return toSQLString(statementList, dbType, parameters, null);
     }
 
-    public static String toSQLString(List<SQLStatement> statementList,
-                                     DbType dbType,
-                                     List<Object> parameters,
-                                     FormatOption option) {
+    public static String toSQLString(
+            List<SQLStatement> statementList,
+            DbType dbType,
+            List<Object> parameters,
+            FormatOption option
+    ) {
         return toSQLString(statementList, dbType, parameters, option, null);
+    }
+
+    public static String toSQLString(List<SQLStatement> statementList, DbType dbType, SQLASTOutputVisitor visitor) {
+        return toSQLString(statementList, dbType, (List<Object>) null, null, visitor);
     }
 
     public static String toSQLString(
@@ -399,14 +405,23 @@ public class SQLUtils {
     ) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
-        if (parameters != null) {
-            visitor.setInputParameters(parameters);
-        }
-
         if (option == null) {
             option = DEFAULT_FORMAT_OPTION;
         }
         visitor.setFeatures(option.features);
+        return toSQLString(statementList, dbType, parameters, tableMapping, visitor);
+    }
+
+    public static String toSQLString(
+            List<SQLStatement> statementList,
+            DbType dbType,
+            List<Object> parameters,
+            Map<String, String> tableMapping,
+            SQLASTOutputVisitor visitor
+    ) {
+        if (parameters != null) {
+            visitor.setInputParameters(parameters);
+        }
 
         if (tableMapping != null) {
             visitor.setTableMapping(tableMapping);
@@ -473,16 +488,18 @@ public class SQLUtils {
             }
         }
 
-        return out.toString();
+        return visitor.toString();
     }
 
     public static SQLASTOutputVisitor createOutputVisitor(StringBuilder out, DbType dbType) {
         return createFormatOutputVisitor(out, null, dbType);
     }
 
-    public static SQLASTOutputVisitor createFormatOutputVisitor(StringBuilder out,
-                                                                List<SQLStatement> statementList,
-                                                                DbType dbType) {
+    public static SQLASTOutputVisitor createFormatOutputVisitor(
+            StringBuilder out,
+            List<SQLStatement> statementList,
+            DbType dbType
+    ) {
         if (dbType == null) {
             if (statementList != null && statementList.size() > 0) {
                 dbType = statementList.get(0).getDbType();
@@ -1779,6 +1796,10 @@ public class SQLUtils {
 
         public void config(VisitorFeature feature, boolean state) {
             features = VisitorFeature.config(features, feature, state);
+        }
+
+        public void configTo(SQLASTOutputVisitor v) {
+            v.setFeatures(features);
         }
 
         public final boolean isEnabled(VisitorFeature feature) {
