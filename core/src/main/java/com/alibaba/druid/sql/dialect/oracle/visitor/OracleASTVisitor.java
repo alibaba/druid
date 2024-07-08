@@ -708,4 +708,25 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     default void endVisit(OracleXmlColumnProperties.OracleXMLTypeStorage x) {
     }
+
+    default boolean visit(OracleAlterPackageStatement x) {
+        return true;
+    }
+
+    default void endVisit(OracleAlterPackageStatement x) {
+    }
+
+    default boolean visit(OracleDropPackageStatement x) {
+        return true;
+    }
+
+    default void endVisit(OracleDropPackageStatement x) {
+    }
+
+    default boolean visit(OracleCreateTableSpaceStatement x) {
+        return true;
+    }
+
+    default void endVisit(OracleCreateTableSpaceStatement x) {
+    }
 }
