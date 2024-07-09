@@ -290,6 +290,7 @@ public enum Token {
 
     // clickhouse
     PREWHERE("PREWHERE"),
+    SETTINGS("SETTINGS"),
 
     // Teradata
     SEL("SEL"),

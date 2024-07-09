@@ -15,6 +15,7 @@ public class CKSelectQueryBlock extends SQLSelectQueryBlock {
 
     private SQLExpr preWhere;
     private SQLExpr sample;
+    private SQLExpr format;
     private List<SQLAssignItem> settings = new ArrayList<>();
 
     public SQLExpr getPreWhere() {
@@ -37,6 +38,14 @@ public class CKSelectQueryBlock extends SQLSelectQueryBlock {
             x.setParent(this);
         }
         this.sample = x;
+    }
+
+    public SQLExpr getFormat() {
+        return format;
+    }
+
+    public void setFormat(SQLExpr format) {
+        this.format = format;
     }
 
     public List<SQLAssignItem> getSettings() {

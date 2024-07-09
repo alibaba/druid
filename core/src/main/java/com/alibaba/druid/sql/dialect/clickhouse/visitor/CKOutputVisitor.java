@@ -189,11 +189,16 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
     @Override
     protected void printAfterFetch(SQLSelectQueryBlock queryBlock) {
         if (queryBlock instanceof CKSelectQueryBlock) {
-            List<SQLAssignItem> settings = ((CKSelectQueryBlock) queryBlock).getSettings();
-            if (!settings.isEmpty()) {
+            CKSelectQueryBlock ckSelectQueryBlock = ((CKSelectQueryBlock) queryBlock);
+            if (!ckSelectQueryBlock.getSettings().isEmpty()) {
                 println();
                 print0(ucase ? "SETTINGS " : "settings ");
-                printAndAccept(settings, ", ");
+                printAndAccept(ckSelectQueryBlock.getSettings(), ", ");
+            }
+            if (ckSelectQueryBlock.getFormat() != null) {
+                println();
+                print0(ucase ? "FORMAT " : "format ");
+                ckSelectQueryBlock.getFormat().accept(this);
             }
         }
     }

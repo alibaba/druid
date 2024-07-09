@@ -1798,9 +1798,14 @@ public class SQLSelectParser extends SQLParser {
                     this.exprParser.exprList(join.getUsing(), join);
                     accept(Token.RPAREN);
                 } else if (lexer.token == Token.IDENTIFIER) {
-                    lexer.reset(savePoint);
-                    join.setRight(rightTableSource);
-                    return join;
+                    if (JoinType.COMMA.equals(joinType)) {
+                        lexer.reset(savePoint);
+                        join.setRight(rightTableSource);
+                        return join;
+                    } else {
+                        join.setRight(rightTableSource);
+                        this.exprParser.exprList(join.getUsing(), join);
+                        }
                 } else {
                     join.setAlias(this.tableAlias());
                 }
