@@ -100,4 +100,18 @@ public class SQLAliasedExpr extends SQLObjectImpl implements SQLReplaceable {
     public void setAlias(String alias) {
         this.alias = alias;
     }
+
+    public SQLAliasedExpr clone() {
+        SQLAliasedExpr x = new SQLAliasedExpr();
+        cloneTo(x);
+        return x;
+    }
+
+    protected void cloneTo(SQLAliasedExpr x) {
+        super.cloneTo(x);
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        x.setAlias(alias);
+    }
 }

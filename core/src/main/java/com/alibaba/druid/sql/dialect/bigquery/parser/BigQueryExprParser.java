@@ -4,6 +4,8 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -11,6 +13,7 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class BigQueryExprParser extends SQLExprParser {
     private static final String[] AGGREGATE_FUNCTIONS;
@@ -52,28 +55,45 @@ public class BigQueryExprParser extends SQLExprParser {
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
             long hashCode64 = identifierExpr.hashCode64();
-            if (hashCode64 == FnvHash.Constants.STRUCT) {
-                SQLStructExpr structExpr = new SQLStructExpr();
-                structExpr.setSource(identifierExpr.getSourceLine(), identifierExpr.getSourceColumn());
-                accept(Token.LPAREN);
-                while (true) {
-                    SQLExpr item = expr();
-                    String alias = null;
-                    if (lexer.nextIf(Token.AS)) {
-                        alias = alias();
-                    }
-                    structExpr.addItem(item, alias);
-
-                    if (lexer.nextIfComma()) {
-                        continue;
-                    }
-                    break;
+            if (hashCode64 == FnvHash.Constants.STRUCT && acceptLPAREN) {
+                SQLStructExpr struct = struct();
+                if (lexer.isKeepSourceLocation()) {
+                    struct.setSource(identifierExpr.getSourceLine(), identifierExpr.getSourceColumn());
                 }
-                accept(Token.RPAREN);
-                return structExpr;
+                return struct;
             }
         }
         return super.methodRest(expr, acceptLPAREN);
+    }
+
+    private SQLStructExpr struct() {
+        SQLStructExpr structExpr = new SQLStructExpr();
+        accept(Token.LPAREN);
+        aliasedItems(structExpr.getItems(), structExpr);
+        accept(Token.RPAREN);
+        return structExpr;
+    }
+
+    protected void aliasedItems(List<SQLAliasedExpr> items, SQLObject parent) {
+        while (true) {
+            SQLExpr expr = expr();
+            String alias = null;
+            if (lexer.nextIf(Token.AS)) {
+                alias = alias();
+            }
+
+            SQLAliasedExpr aliasedExpr = new SQLAliasedExpr(expr, alias);
+            aliasedExpr.setParent(parent);
+            items.add(aliasedExpr);
+
+            if (lexer.nextIfComma()) {
+                if (lexer.token() == Token.FROM) {
+                    break;
+                }
+                continue;
+            }
+            break;
+        }
     }
 
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
@@ -115,6 +135,19 @@ public class BigQueryExprParser extends SQLExprParser {
         return struct;
     }
 
+    public SQLExpr primary() {
+        if (lexer.nextIf(Token.DOT)) {
+            String name = lexer.stringVal();
+            SQLExpr expr = new SQLPropertyExpr((SQLExpr) null, name);
+            lexer.nextToken();
+            if (lexer.nextIf(Token.DOT)) {
+                expr = dotRest(expr);
+            }
+            return primaryRest(expr);
+        }
+        return super.primary();
+    }
+
     public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.token() == Token.LBRACKET) {
             SQLArrayExpr array = new SQLArrayExpr();
@@ -126,6 +159,79 @@ public class BigQueryExprParser extends SQLExprParser {
             return primaryRest(expr);
         }
 
+        if (expr instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+            SQLExpr owner = propertyExpr.getOwner();
+            if (owner instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) owner;
+                long hashCode64 = identifierExpr.hashCode64();
+                if (hashCode64 == FnvHash.Constants.DATE
+                        || hashCode64 == FnvHash.Constants.DATETIME
+                        || hashCode64 == FnvHash.Constants.TIMESTAMP
+                ) {
+                    String name = null;
+                    if (lexer.nextIf(Token.DOT)) {
+                        name = lexer.stringVal();
+                        lexer.nextToken();
+                    }
+
+                    SQLExpr timeZone = null;
+                    if (lexer.nextIf(Token.COMMA)) {
+                        timeZone = this.primary();
+                    }
+                    accept(Token.RPAREN);
+                    SQLMethodInvokeExpr func = new SQLMethodInvokeExpr((SQLIdentifierExpr) owner);
+                    func.addArgument(
+                            name != null
+                                    ? new SQLPropertyExpr(new SQLIdentifierExpr(propertyExpr.getName()), name)
+                                    : new SQLIdentifierExpr(identifierExpr.getName())
+                    );
+                    if (timeZone != null) {
+                        func.addArgument(timeZone);
+                    }
+                    expr = func;
+                }
+            }
+        }
+
         return super.primaryRest(expr);
+    }
+
+    public SQLDataType parseDataType() {
+        if (lexer.nextIf(Token.ANY)) {
+            acceptIdentifier("TYPE");
+            return new SQLDataTypeImpl("ANY TYPE");
+        }
+        return parseDataType(true);
+    }
+
+    protected SQLExpr dotRest(SQLExpr expr) {
+        return super.dotRest(expr);
+    }
+
+    protected SQLExpr parseQueryExpr() {
+        Lexer.SavePoint mark = lexer.markOut();
+        if (lexer.nextIf(Token.SELECT)
+                && lexer.nextIf(Token.AS)
+                && lexer.nextIfIdentifier(FnvHash.Constants.STRUCT)
+        ) {
+            return new SQLQueryExpr(
+                    new SQLSelect(
+                            parseSelectAsStruct()));
+        } else {
+            lexer.reset(mark);
+        }
+
+        return super.parseQueryExpr();
+    }
+
+    protected BigQuerySelectAsStruct parseSelectAsStruct() {
+        BigQuerySelectAsStruct selectAsStruct = new BigQuerySelectAsStruct();
+        aliasedItems(selectAsStruct.getItems(), selectAsStruct);
+        if (lexer.nextIf(Token.FROM)) {
+            selectAsStruct.setFrom(
+                    this.createSelectParser().parseTableSource());
+        }
+        return selectAsStruct;
     }
 }

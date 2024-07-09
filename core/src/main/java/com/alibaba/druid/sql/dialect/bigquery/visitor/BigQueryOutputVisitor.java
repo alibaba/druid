@@ -1,10 +1,9 @@
 package com.alibaba.druid.sql.dialect.bigquery.visitor;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStructDataType;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -170,6 +169,60 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
             print0("AS \"\"\"");
             print0(wrappedSource);
             print0("\"\"\"");
+        } else {
+            SQLStatement block = x.getBlock();
+            if (block != null) {
+                println();
+                print0(ucase ? "AS (" : "as (");
+                block.accept(this);
+                print(')');
+            }
         }
+    }
+
+    protected void printCreateFunctionReturns(SQLCreateFunctionStatement x) {
+        SQLDataType returnDataType = x.getReturnDataType();
+        if (returnDataType == null) {
+            return;
+        }
+        println();
+        print(ucase ? "RETURNS " : "returns ");
+        returnDataType.accept(this);
+    }
+
+    public boolean visit(BigQuerySelectAsStruct x) {
+        print0(ucase ? "SELECT AS STRUCT " : "select as struct ");
+        printlnAndAccept(x.getItems(), ", ");
+        printFrom(x);
+        return false;
+    }
+
+    protected void printFrom(BigQuerySelectAsStruct x) {
+        SQLTableSource from = x.getFrom();
+        if (from == null) {
+            return;
+        }
+
+        println();
+        print(ucase ? "FROM " : "from ");
+        printTableSource(from);
+    }
+
+    protected void printFetchFirst(SQLSelectQueryBlock x) {
+        SQLLimit limit = x.getLimit();
+        if (limit == null) {
+            return;
+        }
+        println();
+        limit.accept(this);
+    }
+
+    protected void printLifeCycle(SQLExpr lifeCycle) {
+        if (lifeCycle == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "LIFECYCLE = " : "lifecycle = ");
+        lifeCycle.accept(this);
     }
 }

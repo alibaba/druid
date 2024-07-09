@@ -36,7 +36,7 @@ public class Issue5421 {
                 System.out.println("原始的sql===" + sql);
                 sql=normalizeSql(sql);
                 System.out.println("归一化的sql===" + sql);
-                String newSql=normalizeSql(statement.toString())+";";
+                String newSql=normalizeSql(statement.toString());
                 System.out.println("生成的sql===" + newSql);
                 assertTrue(newSql.equalsIgnoreCase(sql));
                 SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);

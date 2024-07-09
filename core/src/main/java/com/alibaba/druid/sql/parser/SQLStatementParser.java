@@ -226,7 +226,9 @@ public class SQLStatementParser extends SQLParser {
                             && statementList.size() > 0
                             && statementList.get(statementList.size() - i) instanceof MySqlHintStatement) {
                         hintStatement = (MySqlHintStatement) statementList.get(statementList.size() - i);
-                    } else if (i > 0 && dbType != DbType.odps && dbType != DbType.presto && dbType != DbType.trino && !semi) {
+                    } else if (i > 0 && dbType != DbType.odps && !semi
+                            && !(statementList.size() > 0 && statementList.get(statementList.size() - i).isAfterSemi())
+                    ) {
                         throw new ParserException("syntax error. " + lexer.info());
                     }
                     SQLStatement stmt = parseSelect();
@@ -2497,7 +2499,7 @@ public class SQLStatementParser extends SQLParser {
         stmt.addItem(alterTablePartition);
     }
 
-    private void alterTableSet(SQLAlterTableStatement stmt) {
+    protected void alterTableSet(SQLAlterTableStatement stmt) {
         accept(SET);
         if (lexer.token == TABLESPACE) {
             lexer.nextToken();
@@ -5354,6 +5356,11 @@ public class SQLStatementParser extends SQLParser {
         if (END_TOKEN_CHECKING_ENABLED) {
             checkEndToken();
         }
+
+        if (lexer.nextIf(SEMI)) {
+            ret.setAfterSemi(true);
+        }
+
         return ret;
     }
 
@@ -6115,23 +6122,31 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseWith() {
         SQLWithSubqueryClause with = this.parseWithQuery();
 
+        SQLStatement stmt = null;
         if (lexer.token == Token.SELECT || lexer.token == Token.LPAREN) {
             SQLSelectParser selectParser = createSQLSelectParser();
             SQLSelect select = selectParser.select();
             select.setWithSubQuery(with);
-            return new SQLSelectStatement(select, dbType);
+            stmt = new SQLSelectStatement(select, dbType);
         } else if (lexer.token == Token.INSERT) {
             SQLInsertStatement insert = (SQLInsertStatement) this.parseInsert();
             insert.setWith(with);
-            return insert;
+            stmt = insert;
         } else if (lexer.token == Token.FROM) {
             HiveMultiInsertStatement insert = (HiveMultiInsertStatement) this.parseInsert();
             insert.setWith(with);
-            return insert;
+            stmt = insert;
         } else if (lexer.token == UPDATE) {
             SQLUpdateStatement update = this.parseUpdateStatement();
             update.setWith(with);
-            return update;
+            stmt = update;
+        }
+
+        if (stmt != null) {
+            if (lexer.nextIf(SEMI)) {
+                stmt.setAfterSemi(true);
+            }
+            return stmt;
         }
 
         throw new ParserException("TODO. " + lexer.info());

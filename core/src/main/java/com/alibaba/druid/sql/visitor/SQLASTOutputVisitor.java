@@ -107,6 +107,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected transient int lines;
     private TimeZone timeZone;
+    private boolean endLineComment;
 
     protected Boolean printStatementAfterSemi = defaultPrintStatementAfterSemi;
 
@@ -513,7 +514,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public void println() {
-        if (!isPrettyFormat()) {
+        if (!isPrettyFormat() && !endLineComment) {
             print(' ');
             return;
         }
@@ -521,6 +522,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print('\n');
         lines++;
         printIndent();
+        if (endLineComment) {
+            endLineComment = false;
+        }
     }
 
     public void println(String text) {
@@ -1281,7 +1285,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLStatement stmt = x.getStatement();
         if (stmt != null) {
             stmt.accept(this);
-            print(';');
         }
         return false;
     }
@@ -2286,7 +2289,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                         ownerIdent.getName(),
                         this.shardingSupport && this.parameterized
                 );
-            } else {
+            } else if (owner != null) {
                 printExpr(owner, parameterized);
             }
         }
@@ -2381,6 +2384,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
         }
         if (x.isParenthesized()) {
+            if (endLineComment) {
+                println();
+            }
             print(')');
         }
         return false;
@@ -2515,11 +2521,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLSelectQueryBlock x) {
-        if (isPrettyFormat() && x.hasBeforeComment()) {
-            printlnComments(x.getBeforeCommentsDirect());
-        }
         if (x.isParenthesized()) {
             print('(');
+        }
+        if (isPrettyFormat() && x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
         }
         print0(ucase ? "SELECT" : "select");
 
@@ -2584,6 +2590,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "FOR UPDATE" : "for update");
         }
         if (x.isParenthesized()) {
+            if (endLineComment) {
+                println();
+            }
             print(')');
         }
         return false;
@@ -2692,7 +2701,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (DbType.db2 == dbType
                 || DbType.oracle == dbType
-                || DbType.sqlserver == dbType) {
+                || DbType.sqlserver == dbType
+        ) {
             //order by 语句必须在FETCH FIRST ROWS ONLY之前
             SQLObject parent = x.getParent();
             if (parent instanceof SQLSelect) {
@@ -4149,6 +4159,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (bracket) {
+            if (endLineComment) {
+                println();
+            }
             print(')');
         }
 
@@ -6905,11 +6918,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (comments != null) {
             for (int i = 0; i < comments.size(); ++i) {
                 String comment = comments.get(i);
-                if (i != 0 && comment.startsWith("--")) {
+                boolean lineComment = comment.startsWith("--");
+                if (i != 0 && lineComment) {
                     println();
                 }
 
                 printComment(comment);
+                endLineComment = lineComment;
             }
         }
     }
@@ -8854,6 +8869,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     : printStatementAfterSemi.booleanValue();
 
             if (printSemi) {
+                if (endLineComment) {
+                    println();
+                }
                 print(';');
             }
         }

@@ -16,4 +16,8 @@ public abstract class SQLSelectQueryBase extends SQLObjectImpl implements SQLSel
     }
 
     public abstract SQLSelectQueryBase clone();
+
+    protected void cloneTo(SQLSelectQueryBase x) {
+        x.setParenthesized(this.parenthesized);
+    }
 }

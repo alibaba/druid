@@ -33,6 +33,7 @@ public class BigQueryLexer extends Lexer {
         map.put("CREATE", Token.CREATE);
         map.put("CROSS", Token.CROSS);
         map.put("CURRENT", Token.CURRENT);
+        map.put("DECLARE", Token.DECLARE);
         map.put("DEFAULT", Token.DEFAULT);
         map.put("DESC", Token.DESC);
         map.put("DISTINCT", Token.DISTINCT);
@@ -52,6 +53,7 @@ public class BigQueryLexer extends Lexer {
         map.put("FULL", Token.FULL);
         map.put("GROUP", Token.GROUP);
         map.put("HAVING", Token.HAVING);
+        map.put("INSERT", Token.INSERT);
         map.put("IF", Token.IF);
         map.put("IN", Token.IN);
         map.put("INNER", Token.INNER);
@@ -77,6 +79,7 @@ public class BigQueryLexer extends Lexer {
         map.put("PARTITION", Token.PARTITION);
         map.put("QUALIFY", Token.QUALIFY);
         map.put("RECURSIVE", Token.RECURSIVE);
+        map.put("REPLACE", Token.REPLACE);
         map.put("RIGHT", Token.RIGHT);
         map.put("ROWS", Token.ROWS);
         map.put("SELECT", Token.SELECT);

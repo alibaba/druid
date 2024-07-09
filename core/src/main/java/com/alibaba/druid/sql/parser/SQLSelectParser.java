@@ -67,12 +67,10 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token == Token.WITH) {
             SQLWithSubqueryClause with = this.parseWith();
             select.setWithSubQuery(with);
-            for (int i = 0; i < parenCount; i++) {
-                accept(Token.RPAREN);
-            }
         } else {
             if (mark != null) {
                 lexer.reset(mark);
+                parenCount = 0;
             }
         }
 
@@ -112,6 +110,10 @@ public class SQLSelectParser extends SQLParser {
 
         while (lexer.token == Token.HINT) {
             this.exprParser.parseHints(select.getHints());
+        }
+
+        for (int i = 0; i < parenCount; i++) {
+            accept(Token.RPAREN);
         }
 
         return select;
@@ -1137,9 +1139,17 @@ public class SQLSelectParser extends SQLParser {
 
             // https://github.com/alibaba/druid/issues/5140
             if (lexer.token == Token.FROM) {
-                throw new ParserException("syntax error, expect is not TOKEN:from " + lexer.info());
+                if (parseSelectListFromError()) {
+                    throw new ParserException("syntax error, expect is not TOKEN:from " + lexer.info());
+                } else {
+                    break;
+                }
             }
         }
+    }
+
+    protected boolean parseSelectListFromError() {
+        return true;
     }
 
     public void parseFrom(SQLSelectQueryBlock queryBlock) {

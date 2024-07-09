@@ -1,6 +1,8 @@
 package com.alibaba.druid.sql.dialect.bigquery.parser;
 
-import com.alibaba.druid.sql.ast.statement.SQLCreateFunctionStatement;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -38,10 +40,11 @@ public class BigQueryStatementParser extends SQLStatementParser {
                 this.exprParser.name());
 
         parameters(createFunction.getParameters(), createFunction);
-        acceptIdentifier("RETURNS");
-        createFunction.setReturnDataType(
-                this.exprParser.parseDataType()
-        );
+        if (lexer.nextIfIdentifier(FnvHash.Constants.RETURNS)) {
+            createFunction.setReturnDataType(
+                    this.exprParser.parseDataType()
+            );
+        }
 
         for (;;) {
             if (lexer.nextIfIdentifier("LANGUAGE")) {
@@ -58,11 +61,18 @@ public class BigQueryStatementParser extends SQLStatementParser {
             }
 
             if (lexer.nextIf(Token.AS)) {
-                lexer.nextIfIdentifier("R");
-                createFunction.setWrappedSource(
-                        lexer.stringVal()
-                );
-                accept(Token.LITERAL_TEXT_BLOCK);
+                if (lexer.nextIf(Token.LPAREN)) {
+                    createFunction.setBlock(
+                            new SQLExprStatement(
+                                    this.exprParser.expr()));
+                    accept(Token.RPAREN);
+                } else {
+                    lexer.nextIfIdentifier("R");
+                    createFunction.setWrappedSource(
+                            lexer.stringVal()
+                    );
+                    accept(Token.LITERAL_TEXT_BLOCK);
+                }
                 continue;
             }
 
@@ -73,5 +83,29 @@ public class BigQueryStatementParser extends SQLStatementParser {
             createFunction.setAfterSemi(true);
         }
         return createFunction;
+    }
+
+    public SQLStatement parseDeclare() {
+        accept(Token.DECLARE);
+        SQLDeclareStatement declareStatement = new SQLDeclareStatement();
+        for (; ; ) {
+            SQLDeclareItem item = new SQLDeclareItem();
+            declareStatement.addItem(item);
+
+            item.setName(this.exprParser.name());
+
+            item.setDataType(this.exprParser.parseDataType());
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+                item.setValue(this.exprParser.expr());
+            }
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+            } else {
+                break;
+            }
+        }
+        return declareStatement;
     }
 }

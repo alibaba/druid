@@ -2703,7 +2703,7 @@ public class Lexer {
             bufPos++;
         }
 
-        stringVal = subString(mark, bufPos);
+        stringVal = subString(mark - 2, bufPos + 4);
         token = Token.MULTI_LINE_COMMENT;
         commentCount++;
         if (keepComments) {

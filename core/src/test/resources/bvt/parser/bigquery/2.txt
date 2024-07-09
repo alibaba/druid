@@ -12,7 +12,7 @@ CREATE TEMPORARY FUNCTION myFunc (
 	a FLOAT64, 
 	b STRING
 )
-RETURN STRING
+RETURNS STRING
 LANGUAGE js
 OPTIONS (library = ['gs://my-bucket/path/to/lib1.js', 'gs://my-bucket/path/to/lib2.js'])
 AS """

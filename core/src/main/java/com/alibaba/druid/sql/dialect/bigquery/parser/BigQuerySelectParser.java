@@ -3,10 +3,7 @@ package com.alibaba.druid.sql.dialect.bigquery.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectQueryBlock;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectListCache;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class BigQuerySelectParser extends SQLSelectParser {
     public BigQuerySelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
@@ -31,5 +28,9 @@ public class BigQuerySelectParser extends SQLSelectParser {
             exprParser.parseAssignItem(clause.getOptions(), clause);
             ((BigQuerySelectQueryBlock) x).setDifferentialPrivacy(clause);
         }
+    }
+
+    protected boolean parseSelectListFromError() {
+        return false;
     }
 }
