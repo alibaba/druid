@@ -144,7 +144,7 @@ public class ArithmeticOperatorsTest extends TestCase {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
-        String text = SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
+        String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
         assertEquals("SELECT a + (b + c);", text);
     }

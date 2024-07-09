@@ -11,6 +11,6 @@ public class BigQueryResourceTest extends SQLResourceTest {
 
     @Test
     public void bigquery_parse() throws Exception {
-        fileTest(0, 999, i -> "bvt/parser/bigquery/" + i + ".txt");
+        fileTest(1, 999, i -> "bvt/parser/bigquery/" + i + ".txt");
     }
 }

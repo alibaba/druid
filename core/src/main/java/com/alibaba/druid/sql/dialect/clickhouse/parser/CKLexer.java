@@ -32,6 +32,7 @@ public class CKLexer extends Lexer {
         map.put("PARTITION", Token.PARTITION);
         map.put("ILIKE", Token.ILIKE);
         map.put("PREWHERE", Token.PREWHERE);
+        map.put("QUALIFY", Token.QUALIFY);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }

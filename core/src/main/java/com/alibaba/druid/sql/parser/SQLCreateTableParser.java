@@ -65,29 +65,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             accept(Token.CREATE);
         }
 
-        if (lexer.identifierEquals("GLOBAL")) {
-            lexer.nextToken();
-
-            if (lexer.identifierEquals("TEMPORARY")) {
-                lexer.nextToken();
-                createTable.setType(SQLCreateTableStatement.Type.GLOBAL_TEMPORARY);
-            } else {
-                throw new ParserException("syntax error " + lexer.info());
-            }
-        } else if (lexer.token == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("LOCAL")) {
-            lexer.nextToken();
-            if (lexer.token == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("TEMPORAY")) {
-                lexer.nextToken();
-                createTable.setType(SQLCreateTableStatement.Type.LOCAL_TEMPORARY);
-            } else {
-                throw new ParserException("syntax error. " + lexer.info());
-            }
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.DIMENSION)) {
-            lexer.nextToken();
-            createTable.setDimension(true);
-        }
+        createTableBefore(createTable);
 
         accept(Token.TABLE);
 
@@ -217,6 +195,26 @@ public class SQLCreateTableParser extends SQLDDLParser {
         parseCreateTableRest(createTable);
 
         return createTable;
+    }
+
+    protected void createTableBefore(SQLCreateTableStatement createTable) {
+        if (lexer.nextIfIdentifier("GLOBAL")) {
+            if (lexer.nextIfIdentifier("TEMPORARY")) {
+                createTable.setType(SQLCreateTableStatement.Type.GLOBAL_TEMPORARY);
+            } else {
+                throw new ParserException("syntax error " + lexer.info());
+            }
+        } else if (lexer.nextIfIdentifier("LOCAL")) {
+            if (lexer.nextIfIdentifier("TEMPORARY")) {
+                createTable.setType(SQLCreateTableStatement.Type.LOCAL_TEMPORARY);
+            } else {
+                throw new ParserException("syntax error. " + lexer.info());
+            }
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.DIMENSION)) {
+            createTable.setDimension(true);
+        }
     }
 
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {

@@ -54,9 +54,26 @@ public class SQLSelectParser extends SQLParser {
     public SQLSelect select() {
         SQLSelect select = new SQLSelect();
 
+        Lexer.SavePoint mark = null;
+        int parenCount = 0;
+        while (lexer.token == Token.LPAREN) {
+            if (mark == null) {
+                mark = lexer.markOut();
+            }
+            parenCount++;
+            lexer.nextToken();
+        }
+
         if (lexer.token == Token.WITH) {
             SQLWithSubqueryClause with = this.parseWith();
             select.setWithSubQuery(with);
+            for (int i = 0; i < parenCount; i++) {
+                accept(Token.RPAREN);
+            }
+        } else {
+            if (mark != null) {
+                lexer.reset(mark);
+            }
         }
 
         SQLSelectQuery query = query(select, true);
@@ -474,9 +491,8 @@ public class SQLSelectParser extends SQLParser {
 
         parseGroupBy(queryBlock);
 
-        if (lexer.identifierEquals(FnvHash.Constants.WINDOW)) {
-            parseWindow(queryBlock);
-        }
+        qualify(queryBlock);
+        parseWindow(queryBlock);
 
         parseSortBy(queryBlock);
 
@@ -804,6 +820,14 @@ public class SQLSelectParser extends SQLParser {
                 }
             }
         }
+    }
+
+    protected void qualify(SQLSelectQueryBlock queryBlock) {
+        if (!lexer.nextIf(Token.QUALIFY)) {
+            return;
+        }
+        SQLExpr qualify = exprParser.expr();
+        queryBlock.setQualify(qualify);
     }
 
     protected void parseWindow(SQLSelectQueryBlock queryBlock) {

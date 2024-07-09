@@ -2682,10 +2682,9 @@ public class SQLExprParser extends SQLParser {
             parseAggregateExprRest(aggregateExpr);
         }
 
-        if (lexer.token == Token.AS) {
-            // for ads compatible
-            lexer.nextToken();
-            lexer.nextToken();
+        if (lexer.token == ORDER) {
+            aggregateExpr.setOrderBy(
+                    this.parseOrderBy());
         }
 
         accept(Token.RPAREN);
@@ -4406,49 +4405,7 @@ public class SQLExprParser extends SQLParser {
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.STRUCT)) {
-            lexer.nextToken();
-
-            SQLStructDataType struct = new SQLStructDataType(dbType);
-            accept(Token.LT);
-            for (; ; ) {
-                SQLName name;
-                switch (lexer.token) {
-                    case GROUP:
-                    case ORDER:
-                    case FROM:
-                    case TO:
-                        name = new SQLIdentifierExpr(lexer.stringVal());
-                        lexer.nextToken();
-                        break;
-                    default:
-                        name = this.name();
-                        break;
-                }
-
-                accept(Token.COLON);
-                SQLDataType dataType = this.parseDataType();
-                SQLStructDataType.Field field = struct.addField(name, dataType);
-
-                if (lexer.token == Token.COMMENT) {
-                    lexer.nextToken();
-                    SQLCharExpr chars = (SQLCharExpr) this.primary();
-                    field.setComment(chars.getText());
-                }
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-                break;
-            }
-            if (lexer.token == Token.GTGTGT) {
-                lexer.token = Token.GTGT;
-            } else if (lexer.token == Token.GTGT) {
-                lexer.token = Token.GT;
-            } else {
-                accept(Token.GT);
-            }
-            return struct;
+            return parseDataTypeStruct();
         } else if (lexer.token == Token.TABLE) {
             lexer.nextToken();
             SQLTableDataType table = new SQLTableDataType();
@@ -4475,7 +4432,7 @@ public class SQLExprParser extends SQLParser {
             return table;
         } else if (lexer.identifierEquals(FnvHash.Constants.ROW) || lexer.token == Token.ROW) {
             lexer.nextToken();
-            return parseSqlRowDataType();
+            return parseDataTypeRow();
         } else if (lexer.identifierEquals(FnvHash.Constants.NESTED) && dbType == DbType.clickhouse) {
             lexer.nextToken();
             accept(Token.LPAREN);
@@ -4684,7 +4641,53 @@ public class SQLExprParser extends SQLParser {
         return parseDataTypeRest(dataType);
     }
 
-    private SQLRowDataType parseSqlRowDataType() {
+    protected SQLStructDataType parseDataTypeStruct() {
+        acceptIdentifier("STRUCT");
+
+        SQLStructDataType struct = new SQLStructDataType(dbType);
+        accept(Token.LT);
+        for (; ; ) {
+            SQLName name;
+            switch (lexer.token) {
+                case GROUP:
+                case ORDER:
+                case FROM:
+                case TO:
+                    name = new SQLIdentifierExpr(lexer.stringVal());
+                    lexer.nextToken();
+                    break;
+                default:
+                    name = this.name();
+                    break;
+            }
+
+            accept(Token.COLON);
+            SQLDataType dataType = this.parseDataType();
+            SQLStructDataType.Field field = struct.addField(name, dataType);
+
+            if (lexer.token == Token.COMMENT) {
+                lexer.nextToken();
+                SQLCharExpr chars = (SQLCharExpr) this.primary();
+                field.setComment(chars.getText());
+            }
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        if (lexer.token == Token.GTGTGT) {
+            lexer.token = Token.GTGT;
+        } else if (lexer.token == Token.GTGT) {
+            lexer.token = Token.GT;
+        } else {
+            accept(Token.GT);
+        }
+        return struct;
+    }
+
+    protected SQLRowDataType parseDataTypeRow() {
         SQLRowDataType struct = new SQLRowDataType(dbType);
         accept(Token.LPAREN);
 
@@ -4703,7 +4706,7 @@ public class SQLExprParser extends SQLParser {
                 case ROW:
                     lexer.nextToken();
                     name = null;
-                    dataType = this.parseSqlRowDataType();
+                    dataType = this.parseDataTypeRow();
                     break;
                 default:
                     name = this.name();
@@ -6077,6 +6080,13 @@ public class SQLExprParser extends SQLParser {
         if (token == Token.IDENTIFIER
                 && !(lexer.hashLCase() == -5808529385363204345L && lexer.charAt(lexer.pos) == '\'' && (dbType == DbType.mysql || dbType == DbType.spark)) // x'123' X'123'
         ) {
+            int sourceLine = -1, sourceColumn = -1;
+            if (lexer.isKeepSourceLocation()) {
+                lexer.computeRowAndColumn();
+                sourceLine = lexer.getPosLine();
+                sourceColumn = lexer.getPosColumn();
+            }
+
             String ident = lexer.stringVal();
             long hash_lower = lexer.hashLCase();
             lexer.nextTokenComma();
@@ -6619,9 +6629,22 @@ public class SQLExprParser extends SQLParser {
                 expr = this.primaryRest(expr);
             }
             expr = this.exprRest(expr);
-        } else if (token == Token.STAR) {
-            expr = new SQLAllColumnExpr();
-            lexer.nextToken();
+
+            if (sourceLine != -1) {
+                expr.setSource(sourceLine, sourceColumn);
+            }
+        } else if (lexer.nextIf(STAR)) {
+            SQLAllColumnExpr star = new SQLAllColumnExpr();
+
+            if (lexer.nextIf(Token.EXCEPT)) {
+                accept(Token.LPAREN);
+                List<SQLExpr> except = new ArrayList<>();
+                this.exprList(except, star);
+                star.setExcept(except);
+                accept(Token.RPAREN);
+            }
+
+            expr = star;
             return new SQLSelectItem(expr, (String) null, connectByRoot);
         } else if (token == Token.DO || token == Token.JOIN || token == Token.TABLESPACE) {
             expr = this.name();
