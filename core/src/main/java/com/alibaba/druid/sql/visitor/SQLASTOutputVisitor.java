@@ -5100,13 +5100,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.getDbProperties().size() > 0) {
             if (dbType == DbType.mysql
-                    || dbType == DbType.presto
-                    || dbType == DbType.trino
                     || dbType == DbType.ads
                     || dbType == DbType.mariadb) {
                 println();
                 print0(ucase ? "WITH (" : "with (");
-            } else if (dbType == DbType.hive) {
+            } else if (dbType == DbType.hive || dbType == DbType.presto || dbType == DbType.trino) {
                 println();
                 print0(ucase ? "WITH DBPROPERTIES (" : "with dbproperties (");
             } else {
@@ -7135,6 +7133,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLAlterTableSetFileFormat x) {
+        print0(ucase ? "SET FILEFORMAT " : "set fileformat ");
+        x.getValue().accept(this);
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLPrivilegeItem x) {
         printExpr(x.getAction());
 
@@ -7241,6 +7246,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printAndAccept(x.getPartition(), ", ");
             print(')');
         }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableSetSerde x) {
+        print0(ucase ? "SET SERDE " : "set serde ");
+        x.getSerde().accept(this);
+
+        if (x.getSerdeProperties().size() > 0) {
+            println();
+            print0(ucase ? "WITH SERDEPROPERTIES (" : "with serdeproperties (");
+            printAndAccept(x.getSerdeProperties(), ", ");
+            print(')');
+        }
+
         return false;
     }
 
@@ -9358,7 +9378,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLShowFunctionsStatement x) {
-        print0(ucase ? "SHOW FUNCTIONS" : "show functions");
+        if (x.getKind() != null) {
+            print0(ucase ? "SHOW " : "show ");
+            printExpr(x.getKind());
+            print0(ucase ? " FUNCTIONS" : " functions");
+        } else {
+            print0(ucase ? "SHOW FUNCTIONS" : "show functions");
+        }
+
         final SQLExpr like = x.getLike();
         if (like != null) {
             print0(ucase ? " LIKE " : " like ");

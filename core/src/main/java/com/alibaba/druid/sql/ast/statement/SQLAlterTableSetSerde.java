@@ -16,50 +16,42 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLShowFunctionsStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
-    protected SQLExpr like;
-    private SQLName kind;
+import java.util.ArrayList;
+import java.util.List;
 
-    public SQLExpr getLike() {
-        return like;
+public class SQLAlterTableSetSerde extends SQLObjectImpl implements SQLAlterTableItem {
+    private SQLExpr serde;
+    private List<SQLAssignItem> serdeProperties = new ArrayList<>();
+
+    public SQLExpr getSerde() {
+        return serde;
     }
 
-    public void setLike(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
+    public void setSerde(SQLExpr serde) {
+        if (serde != null) {
+            serde.setParent(this);
         }
-        this.like = x;
+        this.serde = serde;
     }
 
-    public SQLName getKind() {
-        return kind;
+    public List<SQLAssignItem> getSerdeProperties() {
+        return serdeProperties;
     }
 
-    public void setKind(SQLName kind) {
-        this.kind = kind;
+    public void addSerdeProperties(SQLAssignItem item) {
+        item.setParent(this);
+        this.serdeProperties.add(item);
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            if (like != null) {
-                like.accept(visitor);
-            }
+            acceptChild(visitor, serde);
+            acceptChild(visitor, serdeProperties);
         }
-    }
-
-    @Override
-    public boolean replace(SQLExpr expr, SQLExpr target) {
-        if (like == expr) {
-            setLike(target);
-            return true;
-        }
-
-        return false;
+        visitor.endVisit(this);
     }
 }

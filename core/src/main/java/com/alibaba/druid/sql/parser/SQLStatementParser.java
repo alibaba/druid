@@ -226,7 +226,7 @@ public class SQLStatementParser extends SQLParser {
                             && statementList.size() > 0
                             && statementList.get(statementList.size() - i) instanceof MySqlHintStatement) {
                         hintStatement = (MySqlHintStatement) statementList.get(statementList.size() - i);
-                    } else if (i > 0 && dbType != DbType.odps && !semi) {
+                    } else if (i > 0 && dbType != DbType.odps && dbType != DbType.presto && dbType != DbType.trino && !semi) {
                         throw new ParserException("syntax error. " + lexer.info());
                     }
                     SQLStatement stmt = parseSelect();
@@ -461,6 +461,12 @@ public class SQLStatementParser extends SQLParser {
                 }
                 case LEAVE: {
                     SQLStatement stmt = parseLeave();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+                case CACHE: {
+                    SQLStatement stmt = parseCache();
                     stmt.setParent(parent);
                     statementList.add(stmt);
                     continue;
@@ -1263,6 +1269,10 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseLeave() {
+        throw new ParserException("not supported. " + lexer.info());
+    }
+
+    public SQLStatement parseCache() {
         throw new ParserException("not supported. " + lexer.info());
     }
 
@@ -2528,6 +2538,35 @@ public class SQLStatementParser extends SQLParser {
             OdpsAlterTableSetFileFormat item = new OdpsAlterTableSetFileFormat();
             item.setValue(this.exprParser.primary());
             stmt.addItem(item);
+        } else if (lexer.identifierEquals("FILEFORMAT") && (dbType == DbType.hive
+            || dbType == DbType.spark)) {
+            lexer.nextToken();
+            SQLAlterTableSetFileFormat item = new SQLAlterTableSetFileFormat();
+            item.setValue(this.exprParser.primary());
+            stmt.addItem(item);
+        } else if (lexer.identifierEquals(FnvHash.Constants.SERDE)) {
+            lexer.nextToken();
+            SQLAlterTableSetSerde setTableSerde = new SQLAlterTableSetSerde();
+            setTableSerde.setSerde(this.exprParser.primary());
+
+            if (lexer.token == Token.WITH) {
+                lexer.nextToken();
+                if (lexer.identifierEquals(FnvHash.Constants.SERDEPROPERTIES)) {
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    for (; ; ) {
+                        SQLAssignItem item = this.exprParser.parseAssignItem();
+                        setTableSerde.addSerdeProperties(item);
+                        if (lexer.token == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.RPAREN);
+                }
+            }
+            stmt.addItem(setTableSerde);
         } else {
             throw new ParserException("TODO " + lexer.info());
         }
@@ -4029,6 +4068,9 @@ public class SQLStatementParser extends SQLParser {
                         return parseCreateTable();
                     }
                     throw new ParserException("parse create error, " + lexer.info());
+                } else if (lexer.identifierEquals(FnvHash.Constants.SCAN)) {
+                    lexer.reset(mark);
+                    return parseCreateScan();
                 }
 
                 SQLStatement stmt = createTableRest(mark);
@@ -4059,6 +4101,10 @@ public class SQLStatementParser extends SQLParser {
 
     protected SQLStatement createTableRest(Lexer.SavePoint mark) {
         return null;
+    }
+
+    public SQLStatement parseCreateScan() {
+        throw new ParserException("TODO " + lexer.token);
     }
 
     public SQLStatement parseCreateRole() {
@@ -4622,7 +4668,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreateSchema() {
-        throw new ParserException("TODO " + lexer.info());
+        return parseCreateDatabase();
     }
 
     public SQLStatement parseCreateDatabase() {
@@ -4633,7 +4679,12 @@ public class SQLStatementParser extends SQLParser {
             stmt.addBeforeComment(lexer.readAndResetComments());
         }
 
-        if (lexer.token == Token.SCHEMA && dbType == DbType.hive) {
+        if (lexer.token == Token.CREATE) {
+            lexer.nextToken();
+        }
+
+        if (lexer.token == Token.SCHEMA && (dbType == DbType.hive
+                || dbType == DbType.presto || dbType == DbType.trino)) {
             lexer.nextToken();
         } else {
             accept(Token.DATABASE);

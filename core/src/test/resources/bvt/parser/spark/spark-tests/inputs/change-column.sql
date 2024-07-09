@@ -23,6 +23,7 @@ DESC test_change;
 ALTER TABLE test_change CHANGE a COMMENT 'this is column a';
 ALTER TABLE test_change CHANGE b COMMENT '#*02?`';
 ALTER TABLE test_change CHANGE c COMMENT '';
+ALTER TABLE test_change ALTER COLUMN a COMMENT 'new comment';
 DESC test_change;
 
 -- Don't change anything.

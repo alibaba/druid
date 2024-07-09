@@ -1,0 +1,4 @@
+PREPARE my_select1 FROM SELECT * FROM nation
+--------------------
+PREPARE my_select1 FROM SELECT *
+FROM nation

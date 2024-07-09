@@ -29,11 +29,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  */
 public class PrestoSelectStatement extends SQLSelectStatement implements PrestoSQLStatement {
     public PrestoSelectStatement() {
-        super(DbType.postgresql);
+        super(DbType.presto);
     }
 
     public PrestoSelectStatement(SQLSelect select) {
-        super(select, DbType.postgresql);
+        super(select, DbType.presto);
     }
 
     @Override
