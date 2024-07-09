@@ -1791,9 +1791,14 @@ public class SQLSelectParser extends SQLParser {
                     this.exprParser.exprList(join.getUsing(), join);
                     accept(Token.RPAREN);
                 } else if (lexer.token == Token.IDENTIFIER) {
-                    lexer.reset(savePoint);
-                    join.setRight(rightTableSource);
-                    return join;
+                    if (JoinType.COMMA.equals(joinType)) {
+                        lexer.reset(savePoint);
+                        join.setRight(rightTableSource);
+                        return join;
+                    } else {
+                        join.setRight(rightTableSource);
+                        this.exprParser.exprList(join.getUsing(), join);
+                        }
                 } else {
                     join.setAlias(this.tableAlias());
                 }
@@ -1967,6 +1972,21 @@ public class SQLSelectParser extends SQLParser {
         return tableSource;
     }
 
+//    public void parseUsing(){
+//        lexer.nextToken();
+//
+//        if (lexer.token == Token.LPAREN) {
+//            lexer.nextToken();
+//            join.setRight(rightTableSource);
+//            this.exprParser.exprList(join.getUsing(), join);
+//            accept(Token.RPAREN);
+//        } else if (lexer.token == Token.IDENTIFIER) {
+//            join.setRight(rightTableSource);
+//            return join;
+//        } else {
+//            join.setAlias(this.tableAlias());
+//        }
+//    }
     public SQLExpr expr() {
         return this.exprParser.expr();
     }

@@ -50,7 +50,7 @@ public class CKCreateTableParser extends SQLCreateTableParser {
             ckStmt.setSampleBy(expr);
         }
 
-        if (lexer.identifierEquals("SETTINGS")) {
+        if (lexer.token() == Token.SETTINGS) {
             lexer.nextToken();
             for (; ; ) {
                 SQLAssignItem item = this.exprParser.parseAssignItem();

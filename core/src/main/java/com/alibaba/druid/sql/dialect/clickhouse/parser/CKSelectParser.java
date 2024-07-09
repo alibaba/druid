@@ -83,7 +83,7 @@ public class CKSelectParser
     protected void afterParseFetchClause(SQLSelectQueryBlock queryBlock) {
         if (queryBlock instanceof CKSelectQueryBlock) {
             CKSelectQueryBlock ckSelectQueryBlock = (CKSelectQueryBlock) queryBlock;
-            if (lexer.identifierEquals("SETTINGS")) {
+            if (lexer.token() == Token.SETTINGS) {
                 lexer.nextToken();
                 for (; ; ) {
                     SQLAssignItem item = this.exprParser.parseAssignItem();
@@ -94,6 +94,11 @@ public class CKSelectParser
                     }
                     break;
                 }
+            }
+
+            if (lexer.token() == Token.FORMAT) {
+                lexer.nextToken();
+                ckSelectQueryBlock.setFormat(expr());
             }
         }
     }
