@@ -1,0 +1,21 @@
+CREATE TEMP FUNCTION myFunc(a FLOAT64, b STRING)
+RETURNS STRING
+LANGUAGE js
+  OPTIONS (
+    library=['gs://my-bucket/path/to/lib1.js', 'gs://my-bucket/path/to/lib2.js'])
+AS r"""
+  // Assumes 'doInterestingStuff' is defined in one of the library files.
+  return doInterestingStuff(a, b);
+""";
+--------------------
+CREATE TEMPORARY FUNCTION myFunc (
+	a FLOAT64, 
+	b STRING
+)
+RETURN STRING
+LANGUAGE js
+OPTIONS (library = ['gs://my-bucket/path/to/lib1.js', 'gs://my-bucket/path/to/lib2.js'])
+AS """
+  // Assumes 'doInterestingStuff' is defined in one of the library files.
+  return doInterestingStuff(a, b);
+""";
