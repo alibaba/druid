@@ -637,6 +637,15 @@ public class OracleStatementParser extends SQLStatementParser {
                     continue;
                 }
 
+                if (lexer.identifierEquals(FnvHash.Constants.PACKAGE)) {
+                    lexer.reset(savePoint);
+
+                    SQLStatement stmt = parseDropPackage();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+
                 if (lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
                     lexer.reset(savePoint);
 
@@ -757,6 +766,17 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    @Override
+    protected SQLStatement parseCreateTableSpace() {
+        accept(Token.CREATE);
+        OracleCreateTableSpaceStatement stmt = new OracleCreateTableSpaceStatement();
+        stmt.setDbType(dbType);
+        accept(Token.TABLESPACE);
+        stmt.setName(this.exprParser.name());
+        stmt.setSql(lexer.text);
+        return stmt;
+    }
+
     public SQLStatement parseDropType() {
         if (lexer.token() == Token.DROP) {
             lexer.nextToken();
@@ -765,6 +785,19 @@ public class OracleStatementParser extends SQLStatementParser {
         stmt.setDbType(dbType);
 
         acceptIdentifier("TYPE");
+
+        stmt.setName(this.exprParser.name());
+        return stmt;
+    }
+
+    public SQLStatement parseDropPackage() {
+        if (lexer.token() == Token.DROP) {
+            lexer.nextToken();
+        }
+        OracleDropPackageStatement stmt = new OracleDropPackageStatement();
+        stmt.setDbType(dbType);
+
+        acceptIdentifier("PACKAGE");
 
         stmt.setName(this.exprParser.name());
         return stmt;
@@ -1481,6 +1514,9 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             return stmt;
+        } else if (lexer.identifierEquals(FnvHash.Constants.PACKAGE)) {
+            lexer.reset(savePoint);
+            return parseAlterPackage();
         }
 
         throw new ParserException("TODO : " + lexer.info());
@@ -1515,6 +1551,34 @@ public class OracleStatementParser extends SQLStatementParser {
             stmt.setReuseSettings(true);
             lexer.nextToken();
             acceptIdentifier("SETTINGS");
+        }
+
+        return stmt;
+    }
+
+    protected SQLStatement parseAlterPackage() {
+        accept(Token.ALTER);
+        acceptIdentifier("PACKAGE");
+
+        OracleAlterPackageStatement stmt = new OracleAlterPackageStatement();
+        stmt.setDbType(dbType);
+
+        SQLName name = this.exprParser.name();
+        stmt.setName(name);
+
+        if (lexer.identifierEquals("COMPILE")) {
+            stmt.setCompile(true);
+            lexer.nextToken();
+        }
+
+        if (lexer.identifierEquals("PACKAGE")) {
+            stmt.setPack(true);
+            lexer.nextToken();
+        }
+
+        if (lexer.identifierEquals("BODY")) {
+            stmt.setBody(true);
+            lexer.nextToken();
         }
 
         return stmt;

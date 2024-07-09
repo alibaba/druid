@@ -1,0 +1,5 @@
+INSERT INTO students TABLE visiting_students
+--------------------
+INSERT INTO students
+SELECT *
+FROM visiting_students

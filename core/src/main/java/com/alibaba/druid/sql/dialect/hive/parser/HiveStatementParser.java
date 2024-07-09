@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.FnvHash.Constants;
 
 import java.util.List;
 
@@ -234,7 +235,8 @@ public class HiveStatementParser extends SQLStatementParser {
                 return true;
             }
 
-            if (lexer.identifierEquals(FnvHash.Constants.DATABASES)) {
+            if (lexer.identifierEquals(FnvHash.Constants.DATABASES)
+                    || lexer.identifierEquals(Constants.SCHEMAS)) {
                 lexer.nextToken();
 
                 SQLShowDatabasesStatement stmt = parseShowDatabases(false);
@@ -329,6 +331,20 @@ public class HiveStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     SQLExpr where = exprParser.expr();
                     stmt.setWhere(where);
+                }
+
+                statementList.add(stmt);
+                return true;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.FUNCTIONS)) {
+                lexer.nextToken();
+
+                SQLShowFunctionsStatement stmt = new SQLShowFunctionsStatement();
+                if (lexer.token() == Token.LIKE) {
+                    lexer.nextToken();
+                    SQLExpr like = this.exprParser.expr();
+                    stmt.setLike(like);
                 }
 
                 statementList.add(stmt);
