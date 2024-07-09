@@ -15,22 +15,8 @@
  */
 package com.alibaba.druid.bvt.sql.hive;
 
-import static org.junit.Assert.assertEquals;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
-import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.List;
 import org.junit.Test;
 
 public class HiveResourceTest extends SQLResourceTest {
@@ -39,120 +25,8 @@ public class HiveResourceTest extends SQLResourceTest {
     }
 
     @Test
-    public void test_0() throws Exception {
-        exec_test("bvt/parser/hive-0.txt");
-    }
-
-    @Test
-    public void test_1() throws Exception {
-        exec_test("bvt/parser/hive-1.txt");
-    }
-
-    @Test
-    public void test_2() throws Exception {
-        exec_test("bvt/parser/hive-2.txt");
-    }
-
-    @Test
-    public void test_3() throws Exception {
-        exec_test("bvt/parser/hive-3.txt");
-    }
-
-    @Test
-    public void test_4() throws Exception {
-        exec_test("bvt/parser/hive-4.txt");
-    }
-
-    @Test
-    public void test_5() throws Exception {
-        exec_test("bvt/parser/hive-5.txt");
-    }
-
-    @Test
-    public void test_6() throws Exception {
-        exec_test("bvt/parser/hive-6.txt");
-    }
-
-    @Test
-    public void test_7() throws Exception {
-        exec_test("bvt/parser/hive-7.txt");
-    }
-
-    @Test
-    public void test_8() throws Exception {
-        exec_test("bvt/parser/hive-8.txt");
-    }
-
-    @Test
-    public void test_9() throws Exception {
-        exec_test("bvt/parser/hive-9.txt");
-    }
-
-    @Test
-    public void test_10() throws Exception {
-        exec_test("bvt/parser/hive-10.txt");
-    }
-
-    @Test
-    public void test_tpcds_5() throws Exception {
-        exec_test("bvt/parser/hive/tpcds/query5.sql");
-    }
-
-    @Test
-    public void test_tpcds_12() throws Exception {
-        exec_test("bvt/parser/hive/tpcds/query12.sql");
-    }
-
-    @Test
-    public void test_tpcds_16() throws Exception {
-        exec_test("bvt/parser/hive/tpcds/query16.sql");
-    }
-
-    @Test
     public void hive_parse() throws Exception {
-        fileTest(1, 999, i -> "bvt/parser/hive/" + i + ".txt");
-    }
-
-    public void exec_test(String resource) throws Exception {
-//        System.out.println(resource);
-        InputStream is = null;
-
-        is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-        Reader reader = new InputStreamReader(is, "UTF-8");
-        String input = Utils.read(reader);
-        JdbcUtils.close(reader);
-        String[] items = input.split("---------------------------");
-        String sql = items[0].trim();
-        String expect = null;
-
-        if (items.length > 1) {
-            expect = items[1].trim();
-            if (expect != null) {
-                expect = expect.replaceAll("\\r\\n", "\n");
-            }
-        }
-
-        HiveStatementParser parser = new HiveStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement stmt = statementList.get(0);
-
-        assertEquals(1, statementList.size());
-
-        SchemaStatVisitor visitor = new HiveSchemaStatVisitor();
-        stmt.accept(visitor);
-
-        if (expect != null && !expect.isEmpty()) {
-            assertEquals(expect, stmt.toString());
-        }
-
-        System.out.println(sql);
-//        System.out.println(stmt.toString());
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//
-//        System.out.println();
-//        System.out.println("---------------------------");
-        System.out.println(SQLUtils.toHiveString(stmt));
+        fileTest(0, 999, i -> "bvt/parser/hive/" + i + ".txt");
     }
 
 }
