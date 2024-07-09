@@ -1,5 +1,0 @@
-ALTER TABLE dbx.tab1 SET SERDE 'org.apache.hadoop' WITH SERDEPROPERTIES ('k' = 'v', 'kay' = 'vee')
---------------------
-ALTER TABLE dbx.tab1
-	SET SERDE 'org.apache.hadoop'
-	WITH SERDEPROPERTIES ('k' = 'v', 'kay' = 'vee')

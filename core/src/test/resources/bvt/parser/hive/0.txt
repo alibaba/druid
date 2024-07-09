@@ -183,3 +183,27 @@ ALTER TABLE bi.bi_xxx_external SET LOCATION 'hdfs://nameservice1/user/hive/wareh
 --------------------
 ALTER TABLE bi.bi_xxx_external
 	SET LOCATION 'hdfs://nameservice1/user/hive/warehouse/bi.db/bi_xxx/pt=aaa'
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE test_tab SET SERDE 'org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe'
+--------------------
+ALTER TABLE test_tab
+	SET SERDE 'org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe'
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE dbx.tab1 SET SERDE 'org.apache.hadoop' WITH SERDEPROPERTIES ('k' = 'v', 'kay' = 'vee')
+--------------------
+ALTER TABLE dbx.tab1
+	SET SERDE 'org.apache.hadoop'
+	WITH SERDEPROPERTIES ('k' = 'v', 'kay' = 'vee')
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE table_name SET fileformat orc
+--------------------
+ALTER TABLE table_name
+	SET FILEFORMAT orc
+------------------------------------------------------------------------------------------------------------------------
+show schemas
+--------------------
+SHOW DATABASES
+------------------------------------------------------------------------------------------------------------------------
+show functions
+--------------------
+SHOW FUNCTIONS
