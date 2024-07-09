@@ -376,10 +376,7 @@ public enum Token {
     POUNDGT("#>"),
     POUNDGTGT("#>>"),
     MONKEYS_AT_GT("@>"),
-    LT_MONKEYS_AT("<@"),
-
-    // Clickhouse
-    SETTINGS("SETTINGS");
+    LT_MONKEYS_AT("<@");
 
     public final String name;
 
