@@ -2,9 +2,13 @@ package com.alibaba.druid.sql.dialect.bigquery.parser;
 
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
+
+import java.util.List;
 
 public class BigQueryStatementParser extends SQLStatementParser {
     public BigQueryStatementParser(String sql) {
@@ -95,17 +99,34 @@ public class BigQueryStatementParser extends SQLStatementParser {
             item.setName(this.exprParser.name());
 
             item.setDataType(this.exprParser.parseDataType());
-            if (lexer.token() == Token.EQ) {
-                lexer.nextToken();
+            if (lexer.nextIf(Token.EQ)) {
                 item.setValue(this.exprParser.expr());
             }
 
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-            } else {
+            if (!lexer.nextIf(Token.COMMA)) {
                 break;
             }
         }
         return declareStatement;
+    }
+
+    public boolean parseStatementListDialect(List<SQLStatement> statementList) {
+        if (lexer.identifierEquals("ASSERT")) {
+            statementList.add(parseAssert());
+            return true;
+        }
+        return false;
+    }
+
+    protected SQLStatement parseAssert() {
+        acceptIdentifier("ASSERT");
+        BigQueryAssertStatement stmt = new BigQueryAssertStatement();
+        stmt.setExpr(
+                exprParser.expr()
+        );
+        if (lexer.nextIf(Token.AS)) {
+            stmt.setAs((SQLCharExpr) exprParser.primary());
+        }
+        return stmt;
     }
 }

@@ -2,7 +2,9 @@ package com.alibaba.druid.sql.dialect.bigquery.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -224,5 +226,17 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         println();
         print0(ucase ? "LIFECYCLE = " : "lifecycle = ");
         lifeCycle.accept(this);
+    }
+
+    public boolean visit(BigQueryAssertStatement x) {
+        print0(ucase ? "ASSERT " : "assert ");
+        x.getExpr().accept(this);
+        SQLCharExpr as = x.getAs();
+        if (as != null) {
+            println();
+            print0(ucase ? "AS " : "as ");
+            as.accept(this);
+        }
+        return false;
     }
 }

@@ -2085,7 +2085,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printExpr(arguments.get(i), false);
         }
 
-        visitAggreateRest(x);
+        visitAggregateRest(x);
 
         print(')');
 
@@ -2122,7 +2122,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    protected void visitAggreateRest(SQLAggregateExpr x) {
+    protected void visitAggregateRest(SQLAggregateExpr x) {
         boolean withGroup = x.isWithinGroup();
         if (withGroup) {
             print0(ucase ? ") WITHIN GROUP (" : ") within group (");
@@ -2134,6 +2134,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print(' ');
             }
             orderBy.accept(this);
+        }
+        SQLExpr limit = x.getLimit();
+        if (limit != null) {
+            print0(ucase ? " LIMIT " : " limit ");
+            limit.accept(this);
         }
     }
 
@@ -12150,6 +12155,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printCreateFunctionReturns(x);
 
         SQLStatement block = x.getBlock();
+        if (block == null) {
+            return;
+        }
         println();
         println(ucase ? "AS" : "as");
         println();
@@ -12157,9 +12165,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printCreateFunctionReturns(SQLCreateFunctionStatement x) {
+        SQLDataType returnDataType = x.getReturnDataType();
+        if (returnDataType == null) {
+            return;
+        }
         println();
         print(ucase ? "RETURN " : "return ");
-        x.getReturnDataType().accept(this);
+        returnDataType.accept(this);
     }
 
     @Override

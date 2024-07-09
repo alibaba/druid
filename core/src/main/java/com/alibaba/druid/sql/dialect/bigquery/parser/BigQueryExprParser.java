@@ -20,7 +20,7 @@ public class BigQueryExprParser extends SQLExprParser {
     private static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
+        String[] strings = {"ARRAY_AGG", "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
                 "ROWNUMBER"};
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
@@ -144,6 +144,12 @@ public class BigQueryExprParser extends SQLExprParser {
                 expr = dotRest(expr);
             }
             return primaryRest(expr);
+        }
+
+        if (lexer.token() == Token.WITH) {
+            return primaryRest(
+                    parseQueryExpr()
+            );
         }
         return super.primary();
     }

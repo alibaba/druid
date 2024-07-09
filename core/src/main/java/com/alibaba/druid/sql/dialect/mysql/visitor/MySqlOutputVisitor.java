@@ -3919,7 +3919,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    protected void visitAggreateRest(SQLAggregateExpr x) {
+    protected void visitAggregateRest(SQLAggregateExpr x) {
         boolean withGroup = x.isWithinGroup();
         if (withGroup) {
             print0(ucase ? ") WITHIN GROUP (" : ") within group (");

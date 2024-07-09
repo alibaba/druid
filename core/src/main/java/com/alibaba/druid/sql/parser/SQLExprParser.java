@@ -420,7 +420,6 @@ public class SQLExprParser extends SQLParser {
 
         switch (tok) {
             case LPAREN:
-                int paranCount = 0;
                 lexer.nextToken();
                 if (lexer.token == Token.RPAREN) {
                     lexer.nextToken();
@@ -2002,7 +2001,7 @@ public class SQLExprParser extends SQLParser {
                 return primaryRest(aggregateExpr);
             }
 
-            return aggregateExpr;
+            return primaryRest(aggregateExpr);
         }
 
         methodInvokeExpr = new SQLMethodInvokeExpr(methodName, hash_lower);
@@ -2690,10 +2689,15 @@ public class SQLExprParser extends SQLParser {
                     this.parseOrderBy());
         }
 
+        if (lexer.nextIf(LIMIT)) {
+            aggregateExpr.setLimit(
+                    expr()
+            );
+        }
+
         accept(Token.RPAREN);
 
-        if (lexer.identifierEquals(FnvHash.Constants.WITHIN)) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier(FnvHash.Constants.WITHIN)) {
             accept(Token.GROUP);
             accept(Token.LPAREN);
             SQLOrderBy orderBy = this.parseOrderBy();

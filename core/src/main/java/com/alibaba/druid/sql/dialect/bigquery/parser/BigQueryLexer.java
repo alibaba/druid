@@ -92,6 +92,7 @@ public class BigQueryLexer extends Lexer {
         map.put("UPDATE", Token.UPDATE);
         map.put("UNION", Token.UNION);
         map.put("USING", Token.USING);
+        map.put("VALUES", Token.VALUES);
         map.put("WHEN", Token.WHEN);
         map.put("WHERE", Token.WHERE);
         map.put("WINDOW", Token.WINDOW);
