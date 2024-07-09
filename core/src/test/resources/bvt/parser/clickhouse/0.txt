@@ -1,0 +1,206 @@
+SELECT uniq(UserID) FROM distributed_table WHERE CounterID = 101500
+    AND UserID GLOBAL IN (
+        SELECT UserID FROM distributed_table WHERE CounterID = 34
+        )
+--------------------
+SELECT uniq(UserID)
+FROM distributed_table
+WHERE CounterID = 101500
+	AND UserID GLOBAL IN (
+		SELECT UserID
+		FROM distributed_table
+		WHERE CounterID = 34
+	)
+------------------------------------------------------------------------------------------------------------------------
+select * from data_all dsa where dsa.sign='1' and dsa.number in ( select DISTINCT number
+from dc_clients do
+where hasAny(splitByString(',',cast(do.df_time as String)),[?,?])=1 )
+--------------------
+SELECT *
+FROM data_all dsa
+WHERE dsa.sign = '1'
+	AND dsa.number IN (
+		SELECT DISTINCT number
+		FROM dc_clients do
+		WHERE hasAny(splitByString(',', CAST(do.df_time AS String)), [?, ?]) = 1
+	)
+------------------------------------------------------------------------------------------------------------------------
+SELECT expressions_list
+FROM table_1
+ASOF LEFT JOIN table_2
+ON equi_cond AND closest_match_cond
+--------------------
+SELECT expressions_list
+FROM table_1
+	 ASOF LEFT JOIN table_2
+	ON equi_cond
+		AND closest_match_cond
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE visits (
+  time     DateTime,
+  visits   Nested
+  (
+    a          String,
+    btime      Int64,
+    c          String,
+    e          String
+  )
+) ENGINE = Memory
+--------------------
+CREATE TABLE visits (
+	time DateTime,
+	visits NESTED (
+		a String,
+		btime Int64,
+		c String,
+		e String
+	)
+) ENGINE = Memory
+------------------------------------------------------------------------------------------------------------------------
+select * from default.first_table
+--------------------
+SELECT *
+FROM default.first_table
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE if not EXISTS  wengzi_test_db.first_table  (
+    `product_code` String,
+    `package_name` String
+)
+ENGINE = MergeTree
+ORDER BY package_name
+SETTINGS index_granularity = 8192
+--------------------
+CREATE TABLE IF NOT EXISTS wengzi_test_db.first_table (
+	`product_code` String,
+	`package_name` String
+) ENGINE = MergeTree
+ORDER BY package_name
+SETTINGS index_granularity = 8192
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE if not EXISTS  wengzi_test_db.first_table  (
+    `product_code` String,
+    `package_name` String
+)
+ENGINE MergeTree()
+    PARTITION BY toYYYYMM(EventDate)
+    ORDER BY (CounterID, EventDate, intHash32(UserID))
+    SAMPLE BY intHash32(UserID)
+    SETTINGS index_granularity=8192
+--------------------
+CREATE TABLE IF NOT EXISTS wengzi_test_db.first_table (
+	`product_code` String,
+	`package_name` String
+) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(EventDate)
+ORDER BY (CounterID, EventDate, intHash32(UserID))
+SAMPLE BY intHash32(UserID)
+SETTINGS index_granularity = 8192
+------------------------------------------------------------------------------------------------------------------------
+CREATE DATABASE IF NOT EXISTS wengzi_test_db
+--------------------
+CREATE DATABASE IF NOT EXISTS wengzi_test_db
+------------------------------------------------------------------------------------------------------------------------
+SELECT asset_id, statistics_year, statistics_month, rent_rate, average_rent
+FROM dw_asset_operating_summary
+WHERE rent_rate IS NOT NULL AND average_rent IS NOT NULL AND is_del = toInt8(0)
+GROUP BY asset_id, statistics_year, statistics_month, rent_rate, average_rent
+ORDER BY asset_id, statistics_year DESC, statistics_month DESC
+LIMIT 1 BY asset_id
+--------------------
+SELECT asset_id, statistics_year, statistics_month, rent_rate, average_rent
+FROM dw_asset_operating_summary
+WHERE rent_rate IS NOT NULL
+	AND average_rent IS NOT NULL
+	AND is_del = toInt8(0)
+GROUP BY asset_id, statistics_year, statistics_month, rent_rate, average_rent
+ORDER BY asset_id, statistics_year DESC, statistics_month DESC
+LIMIT 1 BY asset_id
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE customer_info ADD COLUMN sex Nullable(String)
+--------------------
+ALTER TABLE customer_info
+	ADD COLUMN sex Nullable(String)
+------------------------------------------------------------------------------------------------------------------------
+drop table if exists mintapi_errro_events_count_h_local
+--------------------
+DROP TABLE IF EXISTS mintapi_errro_events_count_h_local
+------------------------------------------------------------------------------------------------------------------------
+OPTIMIZE table db1.table1 on cluster default FINAL
+--------------------
+OPTIMIZE TABLE db1.table1 ON CLUSTER default FINAL
+------------------------------------------------------------------------------------------------------------------------
+OPTIMIZE TABLE table1 DEDUPLICATE
+--------------------
+OPTIMIZE TABLE table1 DEDUPLICATE
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE if not exists etda.mytable1
+(
+    `id` UInt64,
+    `action_parameter_uint64_list` Array(UInt64),
+    `action_parameter_string_list` Array(String)
+)
+--------------------
+CREATE TABLE IF NOT EXISTS etda.mytable1 (
+	`id` UInt64,
+	`action_parameter_uint64_list` Array(UInt64),
+	`action_parameter_string_list` Array(String)
+)
+------------------------------------------------------------------------------------------------------------------------
+SELECT level, sum(cnt) OVER (PARTITION BY NULL ORDER BY level DESC) AS cnt
+FROM (
+        SELECT level, count() AS cnt
+        FROM (
+                SELECT `user_id`, windowFunnel(86400, 'strict_increase')(__event_time, __event_name = 'login', __event_name = 'chat') AS level
+                FROM (
+                select user_id,__event_time,__event_name from db.table
+
+                )
+                GROUP BY `user_id`
+                HAVING level >= 1
+        )
+        GROUP BY level
+)
+ORDER BY level
+--------------------
+SELECT level, sum(cnt) OVER (PARTITION BY NULL ORDER BY level DESC) AS cnt
+FROM (
+	SELECT level, count() AS cnt
+	FROM (
+		SELECT `user_id`, windowFunnel(86400, 'strict_increase')(__event_time, __event_name = 'login', __event_name = 'chat') AS level
+		FROM (
+			SELECT user_id, __event_time, __event_name
+			FROM db.table
+		)
+		GROUP BY `user_id`
+		HAVING level >= 1
+	)
+	GROUP BY level
+)
+ORDER BY level
+------------------------------------------------------------------------------------------------------------------------
+SELECT count()
+from mydata
+PREWHERE C = 'x'
+WHERE B = 0
+--------------------
+SELECT count()
+FROM mydata
+PREWHERE C = 'x'
+WHERE B = 0
+------------------------------------------------------------------------------------------------------------------------
+SELECT *
+FROM foo
+	GLOBAL LEFT SEMI JOIN bla
+--------------------
+SELECT *
+FROM foo
+	GLOBAL LEFT SEMI JOIN bla
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM foo WHERE x GLOBAL IN ( SELECT * FROM bar )
+--------------------
+SELECT *
+FROM foo
+WHERE x GLOBAL IN (
+	SELECT *
+	FROM bar
+)

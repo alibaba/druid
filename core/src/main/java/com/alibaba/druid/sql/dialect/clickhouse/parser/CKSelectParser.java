@@ -1,6 +1,8 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
@@ -33,31 +35,24 @@ public class CKSelectParser
         for (; ; ) {
             SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
             entry.setParent(withQueryClause);
+            SQLExpr sqlExpr = exprParser.expr();
 
-            if (lexer.token() == Token.LPAREN) {
-                lexer.nextToken();
-
-                switch (lexer.token()) {
-                    case SELECT:
-                    case LPAREN:
-                    case WITH:
-                    case FROM:
-                        entry.setSubQuery(select());
-                        break;
-                    default:
-                        break;
-                }
-
+            if (sqlExpr instanceof SQLIdentifierExpr) {
+                String alias = ((SQLIdentifierExpr) sqlExpr).getName();
+                accept(Token.AS);
+                accept(Token.LPAREN);
+                entry.setSubQuery(select());
+                entry.setPrefixAlias(true);
+                entry.setAlias(alias);
                 accept(Token.RPAREN);
             } else {
-                throw new ParserException("TODO");
+                entry.setExpr(sqlExpr);
+                accept(Token.AS);
+                String alias = this.lexer.stringVal();
+                lexer.nextToken();
+                entry.setPrefixAlias(false);
+                entry.setAlias(alias);
             }
-
-            accept(Token.AS);
-
-            String alias = this.lexer.stringVal();
-            lexer.nextToken();
-            entry.setAlias(alias);
 
             withQueryClause.addEntry(entry);
 
@@ -83,4 +78,24 @@ public class CKSelectParser
         }
         super.parseWhere(queryBlock);
     }
+
+    @Override
+    protected void afterParseFetchClause(SQLSelectQueryBlock queryBlock) {
+        if (queryBlock instanceof CKSelectQueryBlock) {
+            CKSelectQueryBlock ckSelectQueryBlock = (CKSelectQueryBlock) queryBlock;
+            if (lexer.identifierEquals("SETTINGS")) {
+                lexer.nextToken();
+                for (; ; ) {
+                    SQLAssignItem item = this.exprParser.parseAssignItem();
+                    ckSelectQueryBlock.getSettings().add(item);
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
 }

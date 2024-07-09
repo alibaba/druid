@@ -3292,6 +3292,7 @@ public class SQLExprParser extends SQLParser {
         boolean global = false;
 
         // for clickhouse
+        Lexer.SavePoint globalMark = lexer.mark();
         if (lexer.token == Token.GLOBAL) {
             global = true;
             lexer.nextToken();
@@ -3300,6 +3301,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 return notRationalRest(expr, true);
             }
+
         }
 
         if (lexer.token == Token.IN) {
@@ -3467,6 +3469,8 @@ public class SQLExprParser extends SQLParser {
             }
 
             expr = containsExpr;
+        } else {
+            lexer.reset(globalMark);
         }
 
         return expr;
