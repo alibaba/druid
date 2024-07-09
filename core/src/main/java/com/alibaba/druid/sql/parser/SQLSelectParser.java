@@ -100,6 +100,8 @@ public class SQLSelectParser extends SQLParser {
         return select;
     }
 
+    protected void afterParseFetchClause(SQLSelectQueryBlock queryBlock) {}
+
     protected SQLUnionQuery createSQLUnionQuery() {
         return new SQLUnionQuery(dbType);
     }
@@ -1969,6 +1971,7 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token == Token.LIMIT) {
             SQLLimit limit = this.exprParser.parseLimit();
             queryBlock.setLimit(limit);
+            afterParseFetchClause(queryBlock);
             return;
         }
 
@@ -2002,6 +2005,7 @@ public class SQLSelectParser extends SQLParser {
                 acceptIdentifier("ONLY");
             }
         }
+        afterParseFetchClause(queryBlock);
     }
 
     protected void parseHierachical(SQLSelectQueryBlock queryBlock) {

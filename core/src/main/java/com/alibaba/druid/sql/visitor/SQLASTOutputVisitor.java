@@ -2605,6 +2605,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         printFetchFirst(x);
+        printAfterFetch(x);
 
         if (x.isForUpdate()) {
             println();
@@ -2652,6 +2653,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printExpr(where, parameterized);
     }
 
+    protected void printAfterFetch(SQLSelectQueryBlock x) {}
     protected void printFetchFirst(SQLSelectQueryBlock x) {
         SQLLimit limit = x.getLimit();
         if (limit == null) {
