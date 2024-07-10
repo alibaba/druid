@@ -37,12 +37,10 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable() {
         OdpsCreateTableStatement stmt = new OdpsCreateTableStatement();
 
-        if (acceptCreate) {
-            accept(Token.CREATE);
-        }
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();

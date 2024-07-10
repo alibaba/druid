@@ -16,12 +16,14 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLShowFunctionsStatement extends SQLStatementImpl implements SQLShowStatement, SQLReplaceable {
     protected SQLExpr like;
+    private SQLName kind;
 
     public SQLExpr getLike() {
         return like;
@@ -32,6 +34,14 @@ public class SQLShowFunctionsStatement extends SQLStatementImpl implements SQLSh
             x.setParent(this);
         }
         this.like = x;
+    }
+
+    public SQLName getKind() {
+        return kind;
+    }
+
+    public void setKind(SQLName kind) {
+        this.kind = kind;
     }
 
     @Override

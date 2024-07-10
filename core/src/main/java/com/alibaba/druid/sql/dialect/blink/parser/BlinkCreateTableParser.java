@@ -35,12 +35,10 @@ public class BlinkCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable() {
         BlinkCreateTableStatement stmt = new BlinkCreateTableStatement();
 
-        if (acceptCreate) {
-            accept(Token.CREATE);
-        }
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();

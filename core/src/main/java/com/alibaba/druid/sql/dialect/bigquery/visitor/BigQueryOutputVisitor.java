@@ -1,10 +1,11 @@
 package com.alibaba.druid.sql.dialect.bigquery.visitor;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -107,6 +108,135 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         printAndAccept(x.getOptions(), ",");
         print(')');
         println();
+        return false;
+    }
+
+    protected void printColumnProperties(SQLColumnDefinition x) {
+        List<SQLAssignItem> colProperties = x.getColPropertiesDirect();
+        if (colProperties == null || colProperties.isEmpty()) {
+            return;
+        }
+        print0(ucase ? " OPTIONS (" : " options (");
+        printAndAccept(colProperties, ", ");
+        print0(ucase ? ")" : ")");
+    }
+
+    @Override
+    public boolean visit(SQLStructDataType.Field x) {
+        SQLName name = x.getName();
+        if (name != null) {
+            name.accept(this);
+        }
+        SQLDataType dataType = x.getDataType();
+
+        if (dataType != null) {
+            print(' ');
+            dataType.accept(this);
+        }
+
+        return false;
+    }
+
+    protected void printClusteredBy(SQLCreateTableStatement x) {
+        List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
+        if (clusteredBy.isEmpty()) {
+            return;
+        }
+        println();
+        print0(ucase ? "CLUSTER BY " : "cluster by ");
+        printAndAccept(clusteredBy, ",");
+    }
+
+    @Override
+    protected void printCreateFunctionBody(SQLCreateFunctionStatement x) {
+        printCreateFunctionReturns(x);
+
+        String language = x.getLanguage();
+        if (language != null) {
+            println();
+            print0(ucase ? "LANGUAGE " : "language ");
+            print0(language);
+        }
+        List<SQLAssignItem> options = x.getOptions();
+        if (!options.isEmpty()) {
+            println();
+            print0(ucase ? "OPTIONS (" : "options (");
+            printAndAccept(options, ",");
+            print(')');
+        }
+
+        String wrappedSource = x.getWrappedSource();
+        if (wrappedSource != null) {
+            println();
+            print0("AS \"\"\"");
+            print0(wrappedSource);
+            print0("\"\"\"");
+        } else {
+            SQLStatement block = x.getBlock();
+            if (block != null) {
+                println();
+                print0(ucase ? "AS (" : "as (");
+                block.accept(this);
+                print(')');
+            }
+        }
+    }
+
+    protected void printCreateFunctionReturns(SQLCreateFunctionStatement x) {
+        SQLDataType returnDataType = x.getReturnDataType();
+        if (returnDataType == null) {
+            return;
+        }
+        println();
+        print(ucase ? "RETURNS " : "returns ");
+        returnDataType.accept(this);
+    }
+
+    public boolean visit(BigQuerySelectAsStruct x) {
+        print0(ucase ? "SELECT AS STRUCT " : "select as struct ");
+        printlnAndAccept(x.getItems(), ", ");
+        printFrom(x);
+        return false;
+    }
+
+    protected void printFrom(BigQuerySelectAsStruct x) {
+        SQLTableSource from = x.getFrom();
+        if (from == null) {
+            return;
+        }
+
+        println();
+        print(ucase ? "FROM " : "from ");
+        printTableSource(from);
+    }
+
+    protected void printFetchFirst(SQLSelectQueryBlock x) {
+        SQLLimit limit = x.getLimit();
+        if (limit == null) {
+            return;
+        }
+        println();
+        limit.accept(this);
+    }
+
+    protected void printLifeCycle(SQLExpr lifeCycle) {
+        if (lifeCycle == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "LIFECYCLE = " : "lifecycle = ");
+        lifeCycle.accept(this);
+    }
+
+    public boolean visit(BigQueryAssertStatement x) {
+        print0(ucase ? "ASSERT " : "assert ");
+        x.getExpr().accept(this);
+        SQLCharExpr as = x.getAs();
+        if (as != null) {
+            println();
+            print0(ucase ? "AS " : "as ");
+            as.accept(this);
+        }
         return false;
     }
 }

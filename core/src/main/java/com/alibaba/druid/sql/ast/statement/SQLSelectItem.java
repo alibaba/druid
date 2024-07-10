@@ -137,15 +137,16 @@ public class SQLSelectItem extends SQLAliasedExpr implements SQLReplaceable {
 
     public SQLSelectItem clone() {
         SQLSelectItem x = new SQLSelectItem();
-        x.alias = alias;
-        if (expr != null) {
-            x.setExpr(expr.clone());
-        }
+        cloneTo(x);
+        return x;
+    }
+
+    protected void cloneTo(SQLSelectItem x) {
+        super.cloneTo(x);
         x.connectByRoot = connectByRoot;
         if (aliasList != null) {
             x.aliasList = new ArrayList<String>(aliasList);
         }
-        return x;
     }
 
     public boolean match(String alias) {

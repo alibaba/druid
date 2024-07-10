@@ -43,7 +43,7 @@ public class Issue5260 {
                 System.out.println(dbType + "生成的sql归一化===" + Issue5421.normalizeSql(newSql));
                 parser = SQLParserUtils.createSQLStatementParser(newSql, dbType);
                 statement = parser.parseStatement();
-                String sqlNew2 = Issue5421.normalizeSql(statement.toString() + ";");
+                String sqlNew2 = Issue5421.normalizeSql(statement.toString());
                 System.out.println(dbType + "再次解析对象得到sql===" + sqlNew2);
                 System.out.println(dbType + "最原始的实际得到sql===" + Issue5421.normalizeSql(sql));
                 assertTrue(Issue5421.normalizeSql(sql).equalsIgnoreCase(sqlNew2));

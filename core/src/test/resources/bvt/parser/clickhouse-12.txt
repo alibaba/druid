@@ -1,3 +1,0 @@
-OPTIMIZE table db1.table1 on cluster default FINAL;
----------------------------
-OPTIMIZE TABLE db1.table1 ON CLUSTER default FINAL;

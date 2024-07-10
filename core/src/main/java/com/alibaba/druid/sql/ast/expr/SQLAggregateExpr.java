@@ -35,6 +35,7 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
     protected SQLOver over;
     protected SQLName overRef;
     protected SQLOrderBy orderBy;
+    protected SQLExpr limit;
     protected boolean withinGroup;
     protected Boolean ignoreNulls;
 
@@ -63,12 +64,22 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
         return orderBy;
     }
 
-    public void setOrderBy(SQLOrderBy orderBy) {
-        if (orderBy != null) {
-            orderBy.setParent(this);
+    public void setOrderBy(SQLOrderBy x) {
+        if (x != null) {
+            x.setParent(this);
         }
+        this.orderBy = x;
+    }
 
-        this.orderBy = orderBy;
+    public SQLExpr getLimit() {
+        return limit;
+    }
+
+    public void setLimit(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.limit = x;
     }
 
     public SQLAggregateOption getOption() {
@@ -147,40 +158,38 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
     }
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor.visit(this)) {
+    protected void accept0(SQLASTVisitor v) {
+        if (v.visit(this)) {
             if (this.owner != null) {
-                this.owner.accept(visitor);
+                this.owner.accept(v);
             }
 
             for (SQLExpr arg : this.arguments) {
                 if (arg != null) {
-                    arg.accept(visitor);
+                    arg.accept(v);
                 }
             }
 
             if (this.keep != null) {
-                this.keep.accept(visitor);
+                this.keep.accept(v);
             }
 
             if (this.filter != null) {
-                this.filter.accept(visitor);
+                this.filter.accept(v);
             }
 
             if (this.over != null) {
-                this.over.accept(visitor);
+                this.over.accept(v);
             }
 
             if (this.overRef != null) {
-                this.overRef.accept(visitor);
+                this.overRef.accept(v);
             }
-
-            if (this.orderBy != null) {
-                this.orderBy.accept(visitor);
-            }
+            acceptChild(v, orderBy);
+            acceptChild(v, limit);
         }
 
-        visitor.endVisit(this);
+        v.endVisit(this);
     }
 
     @Override

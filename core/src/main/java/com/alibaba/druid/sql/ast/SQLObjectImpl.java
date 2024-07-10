@@ -39,6 +39,15 @@ public abstract class SQLObjectImpl implements SQLObject {
     public SQLObjectImpl() {
     }
 
+    protected void cloneTo(SQLObjectImpl x) {
+        x.parent = this.parent;
+        if (this.attributes != null) {
+            x.attributes = new HashMap<>(attributes);
+        }
+        x.sourceLine = this.sourceLine;
+        x.sourceColumn = this.sourceColumn;
+    }
+
     public final void accept(SQLASTVisitor visitor) {
         if (visitor == null) {
             throw new IllegalArgumentException();

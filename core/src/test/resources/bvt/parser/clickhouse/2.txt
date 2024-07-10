@@ -1,0 +1,17 @@
+SELECT * FROM foo JOIN bar USING (id, name)
+--------------------
+SELECT *
+FROM foo
+	JOIN bar USING (id, name)
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM foo JOIN bar USING id, name
+--------------------
+SELECT *
+FROM foo
+	JOIN bar USING (id, name)
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t FORMAT TabSeparated
+--------------------
+SELECT *
+FROM t
+FORMAT TabSeparated

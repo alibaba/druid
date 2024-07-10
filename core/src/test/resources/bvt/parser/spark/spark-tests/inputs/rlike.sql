@@ -1,0 +1,1 @@
+select address from employee_tab where rlike(address, "sh|a");
