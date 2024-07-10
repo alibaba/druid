@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
-import com.alibaba.druid.sql.dialect.hive.parser.HiveCreateTableParser;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.StringUtils;
@@ -1718,12 +1716,6 @@ public class SQLSelectParser extends SQLParser {
                         accept(Token.RPAREN);
                     }
                 }
-            } else if (lexer.token() == Token.TABLE) {
-                HiveCreateTableParser createTableParser = new HiveCreateTableParser(lexer);
-                HiveCreateTableStatement stmt = (HiveCreateTableStatement) createTableParser
-                        .parseCreateTable(false);
-                rightTableSource = new SQLAdhocTableSource(stmt);
-                primaryTableSourceRest(rightTableSource);
             } else {
                 if (lexer.identifierEquals(FnvHash.Constants.UNNEST)) {
                     Lexer.SavePoint mark = lexer.mark();

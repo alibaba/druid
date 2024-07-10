@@ -82,23 +82,17 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable() {
-        return parseCreateTable(true);
-    }
-
     @Override
     public MySqlExprParser getExprParser() {
         return (MySqlExprParser) exprParser;
     }
 
-    public MySqlCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public MySqlCreateTableStatement parseCreateTable() {
         MySqlCreateTableStatement stmt = new MySqlCreateTableStatement();
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                stmt.addBeforeComment(lexer.readAndResetComments());
-            }
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            stmt.addBeforeComment(lexer.readAndResetComments());
         }
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals("TEMPORARY")) {
             lexer.nextToken();

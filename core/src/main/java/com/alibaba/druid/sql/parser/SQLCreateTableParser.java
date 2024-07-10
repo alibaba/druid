@@ -45,25 +45,18 @@ public class SQLCreateTableParser extends SQLDDLParser {
             comments = lexer.readAndResetComments();
         }
 
-        SQLCreateTableStatement stmt = parseCreateTable(true);
+        SQLCreateTableStatement createTable = newCreateStatement();
         if (comments != null) {
-            stmt.addBeforeComment(comments);
+            createTable.addBeforeComment(comments);
         }
 
-        return stmt;
-    }
-
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
-        SQLCreateTableStatement createTable = newCreateStatement();
         createTable.setDbType(getDbType());
 
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                createTable.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            createTable.addBeforeComment(lexer.readAndResetComments());
         }
+
+        accept(Token.CREATE);
 
         createTableBefore(createTable);
 

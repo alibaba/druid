@@ -34,16 +34,14 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         super(new HiveExprParser(lexer));
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable() {
         HiveCreateTableStatement stmt = newCreateStatement();
 
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                stmt.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            stmt.addBeforeComment(lexer.readAndResetComments());
         }
+
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();

@@ -40,17 +40,15 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
         return (StarRocksExprParser) exprParser;
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable() {
         SQLCreateTableStatement createTable = newCreateStatement();
         createTable.setDbType(getDbType());
 
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                createTable.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            createTable.addBeforeComment(lexer.readAndResetComments());
         }
+
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();

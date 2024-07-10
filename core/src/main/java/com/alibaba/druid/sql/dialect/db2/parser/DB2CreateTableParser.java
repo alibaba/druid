@@ -34,16 +34,15 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    @Override
+    public SQLCreateTableStatement parseCreateTable() {
         DB2CreateTableStatement createTable = newCreateStatement();
 
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                createTable.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            createTable.addBeforeComment(lexer.readAndResetComments());
         }
+
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals("GLOBAL")) {
             lexer.nextToken();

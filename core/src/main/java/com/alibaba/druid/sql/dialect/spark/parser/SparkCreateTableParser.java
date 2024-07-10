@@ -29,16 +29,14 @@ public class SparkCreateTableParser extends HiveCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable() {
         SparkCreateTableStatement stmt = new SparkCreateTableStatement();
 
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                stmt.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            stmt.addBeforeComment(lexer.readAndResetComments());
         }
+
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();
