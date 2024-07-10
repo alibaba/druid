@@ -50,36 +50,50 @@ public class SQLCreateTableParser extends SQLDDLParser {
             createTable.addBeforeComment(comments);
         }
 
-        createTable.setDbType(getDbType());
+        createTable.setDbType(dbType);
 
         if (lexer.hasComment() && lexer.isKeepComments()) {
             createTable.addBeforeComment(lexer.readAndResetComments());
         }
 
         accept(Token.CREATE);
-
         createTableBefore(createTable);
-
         accept(Token.TABLE);
+        createTableBeforeName(createTable);
+        createTable.setName(
+                this.exprParser.name());
+        createTableBody(createTable);
+        createTableQuery(createTable);
+        parseCreateTableRest(createTable);
 
-        if (lexer.token() == Token.IF || lexer.identifierEquals("IF")) {
-            lexer.nextToken();
-            accept(Token.NOT);
-            accept(Token.EXISTS);
+        return createTable;
+    }
 
-            createTable.setIfNotExiists(true);
+    protected void createTableQuery(SQLCreateTableStatement createTable) {
+        if (lexer.nextIf(Token.AS)) {
+            SQLSelect select;
+            if ((lexer.token == Token.IDENTIFIER || lexer.token == Token.VARIANT)
+                    && lexer.isEnabled(Template)
+                    && lexer.stringVal.startsWith("$")) {
+                select = new SQLSelect(
+                        new SQLSelectQueryTemplate(lexer.stringVal));
+                lexer.nextToken();
+            } else if (DbType.oracle == dbType) {
+                select = new OracleSelectParser(this.exprParser).select();
+            } else {
+                select = this.createSQLSelectParser().select();
+            }
+            createTable.setSelect(select);
         }
+    }
 
-        createTable.setName(this.exprParser.name());
-
-        if (lexer.token == Token.LPAREN) {
-            lexer.nextToken();
-
+    protected void createTableBody(SQLCreateTableStatement createTable) {
+        if (lexer.nextIf(Token.LPAREN)) {
             for (; ; ) {
                 Token token = lexer.token;
                 if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
                         && DbType.oracle == dbType) {
-                    SQLTableElement element = this.parseCreateTableSupplementalLogingProps();
+                    SQLTableElement element = this.parseCreateTableSupplementalLoggingProps();
                     element.setParent(createTable);
                     createTable.getTableElementList().add(element);
                 } else if (token == Token.IDENTIFIER //
@@ -102,9 +116,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                     createTable.getTableElementList().add(column);
                 }
 
-                if (lexer.token == Token.COMMA) {
-                    lexer.nextToken();
-
+                if (lexer.nextIf(Token.COMMA)) {
                     if (lexer.token == Token.RPAREN) { // compatible for sql server
                         break;
                     }
@@ -116,78 +128,8 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             accept(Token.RPAREN);
 
-            if (lexer.identifierEquals(FnvHash.Constants.INHERITS)) {
-                lexer.nextToken();
-                accept(Token.LPAREN);
-                SQLName inherits = this.exprParser.name();
-                createTable.setInherits(new SQLExprTableSource(inherits));
-                accept(Token.RPAREN);
-            }
+            createTableAfter(createTable);
         }
-
-        if (lexer.token == Token.AS) {
-            lexer.nextToken();
-
-            SQLSelect select = null;
-            if ((lexer.token == Token.IDENTIFIER || lexer.token == Token.VARIANT)
-                    && lexer.isEnabled(Template)
-                    && lexer.stringVal.startsWith("$")) {
-                select = new SQLSelect(
-                        new SQLSelectQueryTemplate(lexer.stringVal));
-                lexer.nextToken();
-            } else if (DbType.oracle == dbType) {
-                select = new OracleSelectParser(this.exprParser).select();
-            } else {
-                select = this.createSQLSelectParser().select();
-            }
-            createTable.setSelect(select);
-        }
-
-        if (lexer.token == Token.WITH && DbType.postgresql == dbType) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            parseAssignItems(createTable.getTableOptions(), createTable, false);
-            accept(Token.RPAREN);
-        }
-
-        if (lexer.token == Token.TABLESPACE) {
-            lexer.nextToken();
-            createTable.setTablespace(
-                    this.exprParser.name()
-            );
-        }
-
-        if (lexer.token() == Token.PARTITION) {
-            Lexer.SavePoint mark = lexer.mark();
-            lexer.nextToken();
-            if (Token.OF.equals(lexer.token())) {
-                lexer.reset(mark);
-                SQLPartitionOf partitionOf = parsePartitionOf();
-                createTable.setPartitionOf(partitionOf);
-            } else if (Token.BY.equals(lexer.token())) {
-                lexer.reset(mark);
-                SQLPartitionBy partitionClause = parsePartitionBy();
-                createTable.setPartitioning(partitionClause);
-            }
-        }
-
-        if (lexer.token() == Token.PARTITION) {
-            Lexer.SavePoint mark = lexer.mark();
-            lexer.nextToken();
-            if (Token.OF.equals(lexer.token())) {
-                lexer.reset(mark);
-                SQLPartitionOf partitionOf = parsePartitionOf();
-                createTable.setPartitionOf(partitionOf);
-            } else if (Token.BY.equals(lexer.token())) {
-                lexer.reset(mark);
-                SQLPartitionBy partitionClause = parsePartitionBy();
-                createTable.setPartitioning(partitionClause);
-            }
-        }
-
-        parseCreateTableRest(createTable);
-
-        return createTable;
     }
 
     protected void createTableBefore(SQLCreateTableStatement createTable) {
@@ -210,7 +152,65 @@ public class SQLCreateTableParser extends SQLDDLParser {
         }
     }
 
+    protected void createTableBeforeName(SQLCreateTableStatement createTable) {
+        if (lexer.nextIf(Token.IF) || lexer.nextIfIdentifier("IF")) {
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+
+            createTable.setIfNotExiists(true);
+        }
+    }
+
+    protected void createTableAfter(SQLCreateTableStatement stmt) {
+        if (lexer.nextIfIdentifier(FnvHash.Constants.INHERITS)) {
+            accept(Token.LPAREN);
+            SQLName inherits = this.exprParser.name();
+            stmt.setInherits(new SQLExprTableSource(inherits));
+            accept(Token.RPAREN);
+        }
+    }
+
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
+        if (lexer.token == Token.WITH && DbType.postgresql == dbType) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            parseAssignItems(stmt.getTableOptions(), stmt, false);
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.nextIf(Token.TABLESPACE)) {
+            stmt.setTablespace(
+                    this.exprParser.name()
+            );
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (Token.OF.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionOf partitionOf = parsePartitionOf();
+                stmt.setPartitionOf(partitionOf);
+            } else if (Token.BY.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionBy partitionClause = parsePartitionBy();
+                stmt.setPartitioning(partitionClause);
+            }
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (Token.OF.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionOf partitionOf = parsePartitionOf();
+                stmt.setPartitionOf(partitionOf);
+            } else if (Token.BY.equals(lexer.token())) {
+                lexer.reset(mark);
+                SQLPartitionBy partitionClause = parsePartitionBy();
+                stmt.setPartitioning(partitionClause);
+            }
+        }
     }
 
     public SQLPartitionBy parsePartitionBy() {
@@ -221,7 +221,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
         return null;
     }
 
-    protected SQLTableElement parseCreateTableSupplementalLogingProps() {
+    protected SQLTableElement parseCreateTableSupplementalLoggingProps() {
         throw new ParserException("TODO " + lexer.info());
     }
 

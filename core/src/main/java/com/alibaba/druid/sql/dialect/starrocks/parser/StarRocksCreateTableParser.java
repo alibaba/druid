@@ -79,7 +79,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                 Token token = lexer.token();
                 if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
                         && DbType.oracle == dbType) {
-                    SQLTableElement element = this.parseCreateTableSupplementalLogingProps();
+                    SQLTableElement element = this.parseCreateTableSupplementalLoggingProps();
                     element.setParent(createTable);
                     createTable.getTableElementList().add(element);
                 } else if (token == Token.IDENTIFIER //

@@ -1639,7 +1639,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     stmt.addItem(item);
                 } else if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)) {
                     SQLTableElement element = this.getSQLCreateTableParser()
-                            .parseCreateTableSupplementalLogingProps();
+                            .parseCreateTableSupplementalLoggingProps();
 
                     SQLAlterTableAddSupplemental item = new SQLAlterTableAddSupplemental();
                     item.setElement(element);

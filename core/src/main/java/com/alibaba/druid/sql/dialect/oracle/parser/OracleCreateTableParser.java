@@ -541,7 +541,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         return partitionByList;
     }
 
-    protected SQLTableElement parseCreateTableSupplementalLogingProps() {
+    protected SQLTableElement parseCreateTableSupplementalLoggingProps() {
         acceptIdentifier("SUPPLEMENTAL");
         acceptIdentifier("LOG");
 

@@ -51,7 +51,6 @@ public class PrestoCreateTableParser extends SQLCreateTableParser {
             createTable.addBeforeComment(comments);
         }
 
-
         createTable.setDbType(getDbType());
 
         if (lexer.hasComment() && lexer.isKeepComments()) {
