@@ -63,6 +63,7 @@ public enum Token {
     UNIQUE("UNIQUE"),
     FOREIGN("FOREIGN"),
     REFERENCES("REFERENCES"),
+    LANGUAGE("LANGUAGE"),
 
     EXPLAIN("EXPLAIN"),
     FOR("FOR"),
@@ -266,6 +267,7 @@ public enum Token {
     LITERAL_HEX,
     LITERAL_CHARS,
     LITERAL_NCHARS,
+    LITERAL_TEXT_BLOCK,
 
     CODE, // odps
 
@@ -285,6 +287,10 @@ public enum Token {
     OVERWRITE,
     SORT,
     LATERAL,
+
+    // clickhouse
+    PREWHERE("PREWHERE"),
+    SETTINGS("SETTINGS"),
 
     // Teradata
     SEL("SEL"),

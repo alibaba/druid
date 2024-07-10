@@ -54,6 +54,12 @@ public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
 
     public abstract SQLExpr clone();
 
+    protected void cloneTo(SQLExprImpl x) {
+        super.cloneTo(x);
+        x.parenthesized = this.parenthesized;
+        x.parenthesizedCount = this.parenthesizedCount;
+    }
+
     public SQLDataType computeDataType() {
         return null;
     }

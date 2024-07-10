@@ -331,6 +331,6 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
     }
 
     private String output(List<SQLStatement> stmtList) {
-        return SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

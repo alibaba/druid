@@ -503,4 +503,12 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         print0(x.getPath());
         return false;
     }
+
+    @Override
+    protected void printTableOptionsPrefix(SQLCreateTableStatement x) {
+        println();
+        print0(ucase ? "TBLPROPERTIES (" : "tblproperties (");
+        incrementIndent();
+        println();
+    }
 }

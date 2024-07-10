@@ -43,7 +43,15 @@ public class SQLStructExpr extends SQLExprImpl {
     }
 
     @Override
-    public SQLExpr clone() {
-        return null;
+    public SQLStructExpr clone() {
+        SQLStructExpr x = new SQLStructExpr();
+       cloneTo(x);
+        return x;
+    }
+
+    protected void cloneTo(SQLStructExpr x) {
+        for (SQLAliasedExpr item : items) {
+            x.addItem(item.clone());
+        }
     }
 }

@@ -17,16 +17,14 @@ public class AdsCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable() {
         SQLCreateTableStatement stmt = newCreateStatement();
 
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                stmt.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            stmt.addBeforeComment(lexer.readAndResetComments());
         }
+
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals(FnvHash.Constants.DIMENSION)) {
             lexer.nextToken();
@@ -168,23 +166,7 @@ public class AdsCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.OPTIONS)) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-
-            for (; ; ) {
-                String name = lexer.stringVal();
-                lexer.nextToken();
-                accept(Token.EQ);
-                SQLExpr value = this.exprParser.primary();
-                stmt.addOption(name, value);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-                break;
-            }
-
-            accept(Token.RPAREN);
+            parseOptions(stmt);
         }
 
         if (lexer.token() == Token.COMMENT) {

@@ -60,42 +60,11 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         }
 
         printSelectList(x.getSelectList());
-
-        SQLExprTableSource into = x.getInto();
-        if (into != null) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            printTableSource(into);
-        }
-
-        SQLTableSource from = x.getFrom();
-        if (from != null) {
-            println();
-            print0(ucase ? "FROM " : "from ");
-            if (x.getCommentsAfaterFrom() != null) {
-                printAfterComments(x.getCommentsAfaterFrom());
-                println();
-            }
-            printTableSource(from);
-        }
-
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            printWhere(where);
-        }
-
-        SQLSelectGroupByClause groupBy = x.getGroupBy();
-        if (groupBy != null) {
-            println();
-            visit(groupBy);
-        }
-
-        SQLOrderBy orderBy = x.getOrderBy();
-        if (orderBy != null) {
-            println();
-            visit(orderBy);
-        }
-
+        printInto(x);
+        printFrom(x);
+        printWhere(x);
+        printGroupBy(x);
+        printOrderBy(x);
         printFetchFirst(x);
 
         return false;

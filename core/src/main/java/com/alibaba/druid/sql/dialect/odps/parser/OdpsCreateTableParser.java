@@ -37,12 +37,10 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable() {
         OdpsCreateTableStatement stmt = new OdpsCreateTableStatement();
 
-        if (acceptCreate) {
-            accept(Token.CREATE);
-        }
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();
@@ -72,7 +70,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
         for (; ; ) {
             if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
-                parseTblProperties(stmt);
+                parseOptions(stmt);
 
                 continue;
             }
@@ -432,7 +430,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
-                parseTblProperties(stmt);
+                parseOptions(stmt);
                 continue;
             }
 
@@ -444,7 +442,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.TBLPROPERTIES)) {
-                parseTblProperties(stmt);
+                parseOptions(stmt);
                 continue;
             }
 
@@ -465,28 +463,5 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         }
 
         return stmt;
-    }
-
-    private void parseTblProperties(OdpsCreateTableStatement stmt) {
-        acceptIdentifier("TBLPROPERTIES");
-        accept(Token.LPAREN);
-
-        for (; ; ) {
-            String name = lexer.stringVal();
-            lexer.nextToken();
-            accept(Token.EQ);
-            SQLExpr value = this.exprParser.primary();
-            stmt.addTblProperty(name, value);
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                if (lexer.token() == Token.RPAREN) {
-                    break;
-                }
-                continue;
-            }
-            break;
-        }
-
-        accept(Token.RPAREN);
     }
 }

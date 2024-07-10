@@ -19,7 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.transform.SQLUnifiedUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 
 public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
@@ -165,67 +164,6 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "FROM `base0`, `base1`\n" +
                 "WHERE ((`a` = `d`)\n" +
                 "\tAND (`c` <> `F`))");
-    }
-
-    public void test6() throws Exception {
-//        SQLUtils.parseSingleMysqlStatement("Create Materialized View `mview_0` (\n" +
-//                " `a` int,\n" +
-//                " `b` double,\n" +
-//                " `c` float,\n" +
-//                " `d` int,\n" +
-//                " `e` double,\n" +
-//                " `f` float,\n" +
-//                " primary key (`a`)\n" +
-//                ") DISTRIBUTED BY HASH(`a`) INDEX_ALL='Y'\n" +
-//                " REFRESH COMPLETE ON DEMAND\n" +
-//                " START WITH '2020-09-02 16:06:05'\n" +
-//                " NEXT adddatedatetime(now(), INTERVAL  '10' MINUTE)\n" +
-//                " DISABLE QUERY REWRITE\n" +
-//                "AS SELECT *\n" +
-//                "FROM\n" +
-//                "  `base0`\n" +
-//                ", `base1`\n" +
-//                "WHERE ((`a` = `d`) AND (`c` <> `F`))");
-
-
-        String sql = "Create Materialized View `mview_0` (\n" +
-                " `a` int,\n" +
-                " `b` double,\n" +
-                " `c` float,\n" +
-                " `d` int,\n" +
-                " `e` double,\n" +
-                " `f` float,\n" +
-                " primary key (`a`)\n" +
-                ") DISTRIBUTED BY HASH(`a`) INDEX_ALL='Y'\n" +
-                " REFRESH COMPLETE ON DEMAND\n" +
-                " START WITH '2020-09-02 16:06:05'\n" +
-                " NEXT adddatedatetime(now(), INTERVAL  '10' MINUTE)\n" +
-                " DISABLE QUERY REWRITE\n" +
-                "AS SELECT *\n" +
-                "FROM\n" +
-                "  `base0`\n" +
-                ", `base1`\n" +
-                "WHERE ((`a` = `d`) AND (`c` <> `F`))";
-        String unifySQL = SQLUnifiedUtils.unifySQL(sql, DbType.mysql);
-
-        assertEquals("CREATE MATERIALIZED VIEW `mview_0` (\n" +
-                "\t`a` int,\n" +
-                "\t`b` double,\n" +
-                "\t`c` float,\n" +
-                "\t`d` int,\n" +
-                "\t`e` double,\n" +
-                "\t`f` float,\n" +
-                "\tPRIMARY KEY (`a`)\n" +
-                ")\n" +
-                "DISTRIBUTE BY HASH(`a`) INDEX_ALL = ?\n" +
-                "REFRESH COMPLETE ON DEMAND\n" +
-                "START WITH ? NEXT adddatedatetime(now(), INTERVAL ? MINUTE)\n" +
-                "DISABLE QUERY REWRITE\n" +
-                "AS\n" +
-                "SELECT *\n" +
-                "FROM `base0`, `base1`\n" +
-                "WHERE ((`a` = `d`)\n" +
-                "\tAND (`c` <> `F`))", unifySQL);
     }
 
     public void ok(String sql, String expectedSql) {

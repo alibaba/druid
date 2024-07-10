@@ -1,0 +1,1 @@
+CREATE SCHEMA IF NOT EXISTS customer_db COMMENT 'This is customer database' LOCATION '/user' WITH DBPROPERTIES (ID=001, Name='John');

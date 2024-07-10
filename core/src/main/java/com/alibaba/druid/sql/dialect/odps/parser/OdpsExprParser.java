@@ -96,6 +96,13 @@ public class OdpsExprParser extends SQLExprParser {
             String stringVal = lexer.stringVal();
             long hash_lower = lexer.hashLCase();
 
+            int sourceLine = -1, sourceColumn = -1;
+            if (lexer.isKeepSourceLocation()) {
+                lexer.computeRowAndColumn();
+                sourceLine = lexer.getPosLine();
+                sourceColumn = lexer.getPosColumn();
+            }
+
             lexer.nextTokenComma();
 
             if (FnvHash.Constants.DATETIME == hash_lower
@@ -134,6 +141,10 @@ public class OdpsExprParser extends SQLExprParser {
                     expr = this.primaryRest(expr);
                     expr = this.exprRest(expr);
                 }
+            }
+
+            if (sourceLine != -1) {
+                expr.setSource(sourceLine, sourceColumn);
             }
         } else {
             expr = expr();
@@ -224,10 +235,23 @@ public class OdpsExprParser extends SQLExprParser {
         if (lexer.token() == Token.LPAREN
                 && expr instanceof SQLIdentifierExpr
                 && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.TRANSFORM) {
+            String name = lexer.stringVal();
             OdpsTransformExpr transformExpr = new OdpsTransformExpr();
             lexer.nextToken();
-            this.exprList(transformExpr.getInputColumns(), transformExpr);
+            List<SQLExpr> inputColumns = transformExpr.getInputColumns();
+            this.exprList(inputColumns, transformExpr);
             accept(Token.RPAREN);
+
+            if (inputColumns.size() == 2
+                    && inputColumns.get(1) instanceof SQLBinaryOpExpr
+                    && ((SQLBinaryOpExpr) inputColumns.get(1)).getOperator() == SQLBinaryOperator.SubGt
+            ) {
+                SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(name);
+                for (SQLExpr item : inputColumns) {
+                    methodInvokeExpr.addArgument(item);
+                }
+                return primaryRest(methodInvokeExpr);
+            }
 
             if (lexer.identifierEquals(FnvHash.Constants.ROW)) {
                 SQLExternalRecordFormat recordFormat = this.parseRowFormat();

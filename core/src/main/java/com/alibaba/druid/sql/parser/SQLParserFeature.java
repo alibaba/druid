@@ -52,7 +52,9 @@ public enum SQLParserFeature {
 
     Spark,
     Presto,
-    MySQLSupportStandardComment;
+    MySQLSupportStandardComment,
+
+    Template;
 
     SQLParserFeature() {
         mask = (1 << ordinal());

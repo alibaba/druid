@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -21,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SQLResourceTest {
-    protected final static String testDelimiter = "------------------------------------------------------------------------------------------------------------------------";
-    protected final static String partDelimiter = "--------------------";
+    protected final static String DELIMITER_LONG = "------------------------------------------------------------------------------------------------------------------------";
+    protected final static String DELIMITER_SHORT = "--------------------";
 
     protected final DbType dbType;
 
@@ -50,13 +51,13 @@ public class SQLResourceTest {
         Arrays.sort(files, Comparator.comparing(File::getName));
 
         for (File file : files) {
-            System.out.println(testDelimiter);
+            System.out.println(DELIMITER_LONG);
             System.out.println("## BEGIN parse sql, file " + file);
-            System.out.println(testDelimiter);
+            System.out.println(DELIMITER_LONG);
 
             String sql = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             System.out.println(sql);
-            System.out.println(partDelimiter);
+            System.out.println(DELIMITER_SHORT);
 
             SQLStatementParser stmtParser = SQLParserUtils.createSQLStatementParser(sql, dbType);
 
@@ -97,17 +98,17 @@ public class SQLResourceTest {
     }
 
     protected void fileTest(File file) throws IOException {
-        System.out.println(testDelimiter);
+        System.out.println(DELIMITER_LONG);
         System.out.println();
         System.out.println("## BEGIN parse sql, file " + file);
-        System.out.println(testDelimiter);
+        System.out.println(DELIMITER_LONG);
         System.out.println();
 
         String string = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        String[] tests = string.split(testDelimiter);
+        String[] tests = string.split(DELIMITER_LONG);
         for (int i = 0; i < tests.length; i++) {
             String test = tests[i].trim();
-            String[] parts = test.split(partDelimiter);
+            String[] parts = test.split(DELIMITER_SHORT);
             assertEquals(2, parts.length);
 
             String sql = parts[0].trim();
@@ -116,15 +117,18 @@ public class SQLResourceTest {
             System.out.println();
             System.out.println(sql);
             System.out.println();
-            System.out.println(partDelimiter +  " [" + (i + 1) + "/" + tests.length + "] " + dbType);
+            System.out.println(DELIMITER_SHORT +  " [" + (i + 1) + "/" + tests.length + "] " + dbType);
             System.out.println();
 
-            String result = SQLUtils.format(sql, dbType);
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+            SQLStatement stmt = parser.parseStatement();
+            assertEquals(Token.EOF, parser.getLexer().token());
+            String result = SQLUtils.toSQLString(stmt, dbType).trim();
             assertEquals(expected, result);
 
             System.out.println(result);
             System.out.println();
-            System.out.println(testDelimiter);
+            System.out.println(DELIMITER_LONG);
         }
     }
 }

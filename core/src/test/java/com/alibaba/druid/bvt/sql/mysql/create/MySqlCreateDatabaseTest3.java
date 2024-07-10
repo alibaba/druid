@@ -35,6 +35,6 @@ public class MySqlCreateDatabaseTest3 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE user CHARACTER SET utf8 COLLATE utf8_general_ci", output);
+        Assert.assertEquals("CREATE DATABASE user CHARACTER SET utf8 COLLATE utf8_general_ci;", output);
     }
 }

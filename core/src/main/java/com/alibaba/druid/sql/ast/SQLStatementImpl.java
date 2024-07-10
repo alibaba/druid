@@ -84,6 +84,13 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
         throw new UnsupportedOperationException(this.getClass().getName());
     }
 
+    protected void cloneTo(SQLStatementImpl x) {
+        super.cloneTo(x);
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
+        x.headHints = headHints;
+    }
+
     public List<SQLCommentHint> getHeadHintsDirect() {
         return headHints;
     }

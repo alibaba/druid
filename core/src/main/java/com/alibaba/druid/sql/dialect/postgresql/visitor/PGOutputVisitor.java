@@ -141,47 +141,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             x.getInto().accept(this);
         }
 
-        if (x.getFrom() != null) {
-            println();
-            print0(ucase ? "FROM " : "from ");
-            if (x.getCommentsAfaterFrom() != null) {
-                printAfterComments(x.getCommentsAfaterFrom());
-                println();
-            }
-            x.getFrom().accept(this);
-        }
-
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            printWhere(where);
-        }
-
-        if (x.getGroupBy() != null) {
-            println();
-            x.getGroupBy().accept(this);
-        }
-
-//        if (x.getWindow() != null) {
-//            println();
-//            x.getWindow().accept(this);
-//        }
-
-        final List<SQLWindow> windows = x.getWindows();
-        if (windows != null && windows.size() > 0) {
-            println();
-            print0(ucase ? "WINDOW " : "window ");
-            printAndAccept(windows, ", ");
-        }
-
-        if (x.getOrderBy() != null) {
-            println();
-            x.getOrderBy().accept(this);
-        }
-
-        if (x.getLimit() != null) {
-            println();
-            x.getLimit().accept(this);
-        }
+        printFrom(x);
+        printWhere(x);
+        printGroupBy(x);
+        printWindow(x);
+        printOrderBy(x);
+        printLimit(x);
 
         if (x.getFetch() != null) {
             println();
@@ -550,21 +515,99 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(PGStartTransactionStatement x) {
         if (x.isUseBegin()) {
-            print0(ucase ? "BFGIN" : "begin");
+            print0(ucase ? "BEGIN" : "begin");
             return false;
         }
         print0(ucase ? "START TRANSACTION" : "start transaction");
         return false;
     }
+
     @Override
     public boolean visit(PGDoStatement x) {
         print0(ucase ? "DO " : "do ");
-        x.getFuncName().accept(this);
-        println();
-        print0(ucase ? "BEGIN" : "begin");
         x.getBlock().accept(this);
-        print0(ucase ? "END " : "end ");
-        x.getFuncName().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLBlockStatement x) {
+        if (x.isDollarQuoted()) {
+            print(x.getDollarQuoteTagName() == null ? "$$" : "$" + x.getDollarQuoteTagName() + "$");
+            println();
+        }
+
+        if (x.getLabelName() != null) {
+            print0(x.getLabelName());
+            println();
+        }
+
+        if (!x.getParameters().isEmpty()) {
+            this.indentCount++;
+            if (x.getParent() instanceof SQLCreateProcedureStatement) {
+                SQLCreateProcedureStatement procedureStatement = (SQLCreateProcedureStatement) x.getParent();
+                if (procedureStatement.isCreate()) {
+                    printIndent();
+                }
+            }
+            if (!(x.getParent() instanceof SQLCreateProcedureStatement
+                    || x.getParent() instanceof SQLCreateFunctionStatement
+                    || x.getParent() instanceof OracleFunctionDataType
+                    || x.getParent() instanceof OracleProcedureDataType)
+            ) {
+                print0(ucase ? "DECLARE" : "declare");
+                println();
+            }
+
+            for (int i = 0, size = x.getParameters().size(); i < size; ++i) {
+                if (i != 0) {
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+                print(';');
+            }
+
+            this.indentCount--;
+            println();
+        }
+        if (x.isHaveBeginEnd()) {
+            print0(ucase ? "BEGIN" : "begin");
+        }
+        this.indentCount++;
+
+        for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
+            println();
+            SQLStatement stmt = x.getStatementList().get(i);
+            stmt.accept(this);
+        }
+        this.indentCount--;
+
+        SQLStatement exception = x.getException();
+        if (exception != null) {
+            println();
+            exception.accept(this);
+        }
+
+        println();
+        if (x.isHaveBeginEnd()) {
+            // END [label];
+            if (x.getEndLabel() != null) {
+                print0(ucase ? "END " : "end ");
+                print0(x.getEndLabel());
+                print(';');
+            } else {
+                print0(ucase ? "END;" : "end;");
+            }
+
+            if (x.isDollarQuoted()) {
+                println();
+                print(x.getDollarQuoteTagName() == null ? "$$" : "$" + x.getDollarQuoteTagName() + "$");
+                if (x.getLanguage() != null) {
+                    print0(" LANGUAGE " + x.getLanguage());
+                }
+                print(';');
+            }
+        }
         return false;
     }
 
@@ -693,14 +736,14 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         print0(ucase ? " PASSWORD " : " password ");
 
-        SQLExpr passoword = x.getPassword();
+        SQLExpr password = x.getPassword();
 
-        if (passoword instanceof SQLIdentifierExpr) {
+        if (password instanceof SQLIdentifierExpr) {
             print('\'');
-            passoword.accept(this);
+            password.accept(this);
             print('\'');
         } else {
-            passoword.accept(this);
+            password.accept(this);
         }
         return false;
     }
@@ -962,13 +1005,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(OracleIntervalExpr x) {
         if (x.getValue() instanceof SQLLiteralExpr || x.getValue() instanceof SQLVariantRefExpr) {
             print0(ucase ? "INTERVAL " : "interval ");
-            x.getValue().accept(this);
-            print(' ');
-        } else {
-            print('(');
-            x.getValue().accept(this);
-            print0(") ");
         }
+        x.getValue().accept(this);
+        print(' ');
 
         print0(x.getType().name());
 
@@ -2825,14 +2864,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         return false;
     }
 
-    protected void printCreateTableOptions(SQLCreateTableStatement x) {
-        List<SQLAssignItem> options = x.getTableOptions();
-        if (options.isEmpty()) {
-            return;
-        }
+    @Override
+    protected void printTableOptionsPrefix(SQLCreateTableStatement x) {
         println();
         print0(ucase ? "WITH (" : "with (");
-        printAndAccept(options, ", ");
-        print(')');
+        incrementIndent();
+        println();
+    }
+
+    protected boolean legacyCube() {
+        return true;
     }
 }

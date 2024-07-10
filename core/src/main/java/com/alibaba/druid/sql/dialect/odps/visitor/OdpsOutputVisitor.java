@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -47,6 +48,15 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         builtInFunctions.add("GREATEST");
 
         groupItemSingleLine = true;
+    }
+
+    public OdpsOutputVisitor() {
+        this(new StringBuilder());
+    }
+
+    public OdpsOutputVisitor(boolean ucase) {
+        this(new StringBuilder());
+        config(VisitorFeature.OutputUCase, ucase);
     }
 
     public OdpsOutputVisitor(StringBuilder appender) {
@@ -210,7 +220,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             location.accept(this);
         }
 
-        this.printTblProperties(x);
+        this.printTableOptions(x);
 
         if (x.getLifeCycle() != null) {
             println();
@@ -465,44 +475,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         printSelectList(x.getSelectList());
 
-        SQLTableSource from = x.getFrom();
-        if (from != null) {
-            println();
-            print0(ucase ? "FROM " : "from ");
-            if (x.getCommentsAfaterFrom() != null) {
-                printAfterComments(x.getCommentsAfaterFrom());
-                println();
-            }
-            from.accept(this);
-        }
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            printWhere(where);
-        }
-
-        if (x.getGroupBy() != null) {
-            println();
-            x.getGroupBy().accept(this);
-        }
-
-        final List<SQLWindow> windows = x.getWindows();
-        if (windows != null && windows.size() > 0) {
-            println();
-            print0(ucase ? "WINDOW " : "window ");
-            printAndAccept(windows, ", ");
-        }
-
-        SQLExpr qualify = x.getQualify();
-        if (qualify != null) {
-            println();
-            print0(ucase ? "QUALIFY " : "qualify ");
-            qualify.accept(this);
-        }
-
-        if (x.getOrderBy() != null) {
-            println();
-            x.getOrderBy().accept(this);
-        }
+        printFrom(x);
+        printWhere(x);
+        printGroupBy(x);
+        printWindow(x);
+        printQualify(x);
+        printOrderBy(x);
 
         SQLZOrderBy zorderBy = x.getZOrderBy();
         if (zorderBy != null) {
@@ -531,10 +509,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             printAndAccept(clusterBy, ", ");
         }
 
-        if (x.getLimit() != null) {
-            println();
-            x.getLimit().accept(this);
-        }
+        printLimit(x);
 
         return false;
     }

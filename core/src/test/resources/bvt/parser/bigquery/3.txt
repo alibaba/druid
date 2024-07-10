@@ -1,0 +1,5 @@
+SELECT * except(f1)
+FROM t1
+--------------------
+SELECT * EXCEPT(f1)
+FROM t1

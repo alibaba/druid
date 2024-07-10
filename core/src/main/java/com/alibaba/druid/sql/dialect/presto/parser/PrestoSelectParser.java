@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.presto.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -72,6 +73,13 @@ public class PrestoSelectParser extends SQLSelectParser {
             queryBlock.addBeforeComment(this.lexer.readAndResetComments());
         }
 
+        if (lexer.token() == Token.TABLE) {
+            lexer.nextToken();
+            queryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
+            queryBlock.setFrom(parseTableSource());
+            return queryRest(queryBlock, acceptUnion);
+        }
+
         this.accept(Token.SELECT);
 
         if (this.lexer.token() == Token.HINT) {
@@ -80,20 +88,6 @@ public class PrestoSelectParser extends SQLSelectParser {
 
         if (this.lexer.token() == Token.COMMENT) {
             this.lexer.nextToken();
-        }
-
-        if (DbType.informix == this.dbType) {
-            if (this.lexer.identifierEquals(FnvHash.Constants.SKIP)) {
-                this.lexer.nextToken();
-                SQLExpr offset = this.exprParser.primary();
-                queryBlock.setOffset(offset);
-            }
-
-            if (this.lexer.identifierEquals(FnvHash.Constants.FIRST)) {
-                this.lexer.nextToken();
-                SQLExpr first = this.exprParser.primary();
-                queryBlock.setFirst(first);
-            }
         }
 
         if (this.lexer.token() == Token.DISTINCT) {

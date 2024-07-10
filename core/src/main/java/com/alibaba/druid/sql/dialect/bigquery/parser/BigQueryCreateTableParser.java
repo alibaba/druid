@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 
 public class BigQueryCreateTableParser extends SQLCreateTableParser {
     public BigQueryCreateTableParser(String sql) {
@@ -49,11 +50,18 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
-            if (lexer.nextIfIdentifier("CLUSTERED")) {
+            if (lexer.nextIfIdentifier("CLUSTER")) {
                 accept(Token.BY);
-                SQLSelectOrderByItem item = exprParser.parseSelectOrderByItem();
-                item.setParent(stmt);
-                stmt.getClusteredBy().add(item);
+                for (;;) {
+                    SQLSelectOrderByItem item = exprParser.parseSelectOrderByItem();
+                    item.setParent(stmt);
+                    stmt.getClusteredBy().add(item);
+                    if (lexer.nextIf(Token.COMMA)) {
+                        continue;
+                    }
+                    break;
+                }
+                continue;
             }
 
             if (lexer.nextIfIdentifier("OPTIONS")) {
@@ -66,7 +74,32 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
+            if (lexer.nextIfIdentifier(FnvHash.Constants.LIFECYCLE)) {
+                lexer.nextIf(Token.EQ);
+                stmt.setLifeCycle(this.exprParser.primary());
+
+                continue;
+            }
+
+            if (lexer.nextIf(Token.AS)) {
+                stmt.setSelect(
+                        this.createSQLSelectParser().select()
+                );
+                continue;
+            }
+
             break;
+        }
+    }
+
+    protected void createTableBefore(SQLCreateTableStatement createTable) {
+        if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")) {
+            createTable.setType(SQLCreateTableStatement.Type.TEMPORARY);
+        }
+
+        if (lexer.nextIf(Token.OR)) {
+            accept(Token.REPLACE);
+            createTable.setReplace(true);
         }
     }
 }

@@ -15,11 +15,16 @@
  */
 package com.alibaba.druid.sql.dialect.presto.visitor;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterSchemaStatement;
+import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoDeallocatePrepareStatement;
+import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoExecuteStatement;
+import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoPrepareStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.math.BigDecimal;
@@ -32,8 +37,12 @@ import java.util.List;
  * @since 2022-01-07
  */
 public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVisitor {
+    {
+        dbType = DbType.presto;
+    }
+
     public PrestoOutputVisitor(StringBuilder appender) {
-        super(appender);
+        super(appender, DbType.presto);
     }
 
     public PrestoOutputVisitor(StringBuilder appender, boolean parameterized) {
@@ -126,4 +135,52 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVi
         x.getNewName().accept(this);
         return false;
     }
+
+    @Override
+    protected void printTableOptionsPrefix(SQLCreateTableStatement x) {
+        println();
+        print0(ucase ? "WITH (" : "with (");
+        incrementIndent();
+        println();
+    }
+
+    @Override
+    public boolean visit(SQLArrayExpr x) {
+        print0(ucase ? "ARRAY[" : "array[");
+        printAndAccept(x.getValues(), ", ");
+        print(']');
+        return false;
+    }
+
+    @Override
+    public boolean visit(PrestoPrepareStatement x) {
+        print0(ucase ? "PREPARE " : "prepare ");
+        x.getName().accept(this);
+        print0(ucase ? " FROM " : " from ");
+        if (x.getSelect() != null) {
+            x.getSelect().accept(this);
+        } else if (x.getInsert() != null) {
+            x.getInsert().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(PrestoExecuteStatement x) {
+        print0(ucase ? "EXECUTE " : "execute ");
+        x.getStatementName().accept(this);
+        if (x.getParameters().size() > 0) {
+            print0(ucase ? " USING " : " using ");
+            printAndAccept(x.getParameters(), ", ");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(PrestoDeallocatePrepareStatement x) {
+        print0(ucase ? "DEALLOCATE PREPARE " : "deallocate prepare ");
+        x.getStatementName().accept(this);
+        return false;
+    }
+
 }

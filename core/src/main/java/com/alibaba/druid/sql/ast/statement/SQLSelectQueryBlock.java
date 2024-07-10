@@ -717,71 +717,75 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            for (int i = 0; i < this.selectList.size(); i++) {
-                SQLSelectItem item = this.selectList.get(i);
-                if (item != null) {
-                    item.accept(visitor);
-                }
-            }
-
-            if (this.from != null) {
-                this.from.accept(visitor);
-            }
-
-            if (this.windows != null) {
-                for (int i = 0; i < windows.size(); i++) {
-                    SQLWindow item = windows.get(i);
-                    item.accept(visitor);
-                }
-            }
-
-            if (this.into != null) {
-                this.into.accept(visitor);
-            }
-
-            if (this.where != null) {
-                this.where.accept(visitor);
-            }
-
-            if (this.startWith != null) {
-                this.startWith.accept(visitor);
-            }
-
-            if (this.connectBy != null) {
-                this.connectBy.accept(visitor);
-            }
-
-            if (this.groupBy != null) {
-                this.groupBy.accept(visitor);
-            }
-
-            if (this.orderBy != null) {
-                this.orderBy.accept(visitor);
-            }
-
-            if (this.distributeBy != null) {
-                for (int i = 0; i < distributeBy.size(); i++) {
-                    SQLSelectOrderByItem item = distributeBy.get(i);
-                    item.accept(visitor);
-                }
-            }
-
-            if (this.sortBy != null) {
-                for (int i = 0; i < sortBy.size(); i++) {
-                    SQLSelectOrderByItem item = sortBy.get(i);
-                    item.accept(visitor);
-                }
-            }
-
-            if (this.waitTime != null) {
-                this.waitTime.accept(visitor);
-            }
-
-            if (this.limit != null) {
-                this.limit.accept(visitor);
-            }
+            acceptChild(visitor);
         }
         visitor.endVisit(this);
+    }
+
+    protected void acceptChild(SQLASTVisitor visitor) {
+        for (int i = 0; i < this.selectList.size(); i++) {
+            SQLSelectItem item = this.selectList.get(i);
+            if (item != null) {
+                item.accept(visitor);
+            }
+        }
+
+        if (this.from != null) {
+            this.from.accept(visitor);
+        }
+
+        if (this.windows != null) {
+            for (int i = 0; i < windows.size(); i++) {
+                SQLWindow item = windows.get(i);
+                item.accept(visitor);
+            }
+        }
+
+        if (this.into != null) {
+            this.into.accept(visitor);
+        }
+
+        if (this.where != null) {
+            this.where.accept(visitor);
+        }
+
+        if (this.startWith != null) {
+            this.startWith.accept(visitor);
+        }
+
+        if (this.connectBy != null) {
+            this.connectBy.accept(visitor);
+        }
+
+        if (this.groupBy != null) {
+            this.groupBy.accept(visitor);
+        }
+
+        if (this.orderBy != null) {
+            this.orderBy.accept(visitor);
+        }
+
+        if (this.distributeBy != null) {
+            for (int i = 0; i < distributeBy.size(); i++) {
+                SQLSelectOrderByItem item = distributeBy.get(i);
+                item.accept(visitor);
+            }
+        }
+
+        if (this.sortBy != null) {
+            for (int i = 0; i < sortBy.size(); i++) {
+                SQLSelectOrderByItem item = sortBy.get(i);
+                item.accept(visitor);
+            }
+        }
+
+        if (this.waitTime != null) {
+            this.waitTime.accept(visitor);
+        }
+
+        if (this.limit != null) {
+            this.limit.accept(visitor);
+        }
     }
 
     @Override

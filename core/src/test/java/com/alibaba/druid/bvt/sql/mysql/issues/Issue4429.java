@@ -34,6 +34,6 @@ public class Issue4429 {
         assertFalse(tableMap.isEmpty());
 
         assertEquals("SELECT GROUP_CONCAT(DISTINCT v ORDER BY v ASC SEPARATOR ';')\n" +
-                "FROM t", stmt.toString());
+                "FROM t;", stmt.toString());
     }
 }
