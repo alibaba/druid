@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
+import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKStatVisitor;
@@ -59,6 +60,8 @@ import com.alibaba.druid.sql.dialect.oscar.visitor.OscarOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.SparkOutputVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
@@ -170,7 +173,7 @@ public class SQLUtils {
     }
 
     public static String toAntsparkString(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, DbType.antspark, option);
+        return toSQLString(sqlObject, DbType.spark, option);
     }
 
     public static String toMySqlString(SQLObject sqlObject) {
@@ -546,8 +549,8 @@ public class SQLUtils {
                 return new AdsOutputVisitor(out);
             case blink:
                 return new BlinkOutputVisitor(out);
-//            case antspark:
-//                return new AntsparkOutputVisitor(out);
+            case spark:
+                return new SparkOutputVisitor(out);
             case presto:
             case trino:
                 return new PrestoOutputVisitor(out);
@@ -557,6 +560,8 @@ public class SQLUtils {
                 return new OscarOutputVisitor(out);
             case starrocks:
                 return new StarRocksOutputVisitor(out);
+            case bigquery:
+                return new BigQueryOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }
@@ -593,6 +598,8 @@ public class SQLUtils {
             case elastic_search:
                 return new MySqlSchemaStatVisitor(repository);
             case postgresql:
+            case greenplum:
+            case edb:
                 return new PGSchemaStatVisitor(repository);
             case sqlserver:
             case jtds:
@@ -605,8 +612,8 @@ public class SQLUtils {
                 return new H2SchemaStatVisitor(repository);
             case hive:
                 return new HiveSchemaStatVisitor(repository);
-//            case antspark:
-//                return new AntsparkSchemaStatVisitor(repository);
+            case spark:
+                return new SparkSchemaStatVisitor(repository);
             case clickhouse:
                 return new CKStatVisitor(repository);
             default:
@@ -2027,6 +2034,15 @@ public class SQLUtils {
             return ((SQLReplaceable) parent).replace(expr, target);
         }
 
+        return false;
+    }
+
+    public static boolean replaceInParent(SQLSelect cmp, SQLSelect dest) {
+        SQLObject parent = cmp.getParent();
+        if (parent instanceof SQLSelectStatement) {
+            ((SQLSelectStatement) parent).setSelect(dest);
+            return true;
+        }
         return false;
     }
 
