@@ -1,5 +1,7 @@
 package com.alibaba.druid.sql.dialect.bigquery.ast;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAliasedExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
@@ -90,5 +92,9 @@ public class BigQuerySelectAsStruct
         if (from != null) {
             x.setFrom(from.clone());
         }
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, DbType.bigquery);
     }
 }

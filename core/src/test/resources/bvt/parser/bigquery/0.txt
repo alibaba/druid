@@ -1,3 +1,7 @@
+SELECT SAFE_CAST("apple" AS INT64) AS not_a_number;
+--------------------
+SELECT SAFE_CAST("apple" AS INT64) AS not_a_number;
+------------------------------------------------------------------------------------------------------------------------
 SELECT
 ARRAY_AGG(
   table ORDER BY ts DESC LIMIT 1

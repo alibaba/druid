@@ -15,6 +15,8 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.alibaba.druid.util.FnvHash.fnv1a_64_lower;
+
 public class BigQueryExprParser extends SQLExprParser {
     private static final String[] AGGREGATE_FUNCTIONS;
     private static final long[] AGGREGATE_FUNCTIONS_CODES;
@@ -22,10 +24,10 @@ public class BigQueryExprParser extends SQLExprParser {
     static {
         String[] strings = {"ARRAY_AGG", "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
                 "ROWNUMBER"};
-        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS_CODES = fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
-            long hash = FnvHash.fnv1a_64_lower(str);
+            long hash = fnv1a_64_lower(str);
             int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
             AGGREGATE_FUNCTIONS[index] = str;
         }
@@ -51,6 +53,8 @@ public class BigQueryExprParser extends SQLExprParser {
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
+    static final long SAFE_CAST = fnv1a_64_lower("SAFE_CAST");
+
     protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
@@ -61,6 +65,20 @@ public class BigQueryExprParser extends SQLExprParser {
                     struct.setSource(identifierExpr.getSourceLine(), identifierExpr.getSourceColumn());
                 }
                 return struct;
+            }
+
+            if (hashCode64 == SAFE_CAST && acceptLPAREN) {
+                SQLCastExpr castExpr = new SQLCastExpr();
+                lexer.nextToken();
+                castExpr.setExpr(
+                        expr());
+                castExpr.setTry(true);
+                accept(Token.AS);
+                castExpr.setDataType(
+                        parseDataType()
+                );
+                accept(Token.RPAREN);
+                return castExpr;
             }
         }
         return super.methodRest(expr, acceptLPAREN);

@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.bigquery.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
@@ -237,6 +238,21 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
             print0(ucase ? "AS " : "as ");
             as.accept(this);
         }
+        return false;
+    }
+
+    public boolean visit(SQLCastExpr x) {
+        tryPrintLparen(x);
+        if (x.isTry()) {
+            print0(ucase ? "SAFE_CAST(" : "safe_cast(");
+        } else {
+            print0(ucase ? "CAST(" : "cast(");
+        }
+        x.getExpr().accept(this);
+        print0(ucase ? " AS " : " as ");
+        x.getDataType().accept(this);
+        print0(")");
+        tryPrintRparen(x);
         return false;
     }
 }
