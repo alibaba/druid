@@ -5353,7 +5353,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         List<SQLListExpr> values = x.getValues();
         for (int i = 0; i < values.size(); ++i) {
             if (i != 0) {
-                print(", ");
+                print(",");
                 println();
             }
             SQLListExpr list = values.get(i);

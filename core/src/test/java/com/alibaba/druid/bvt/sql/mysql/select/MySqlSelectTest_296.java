@@ -34,9 +34,9 @@ public class MySqlSelectTest_296
         assertEquals("SELECT x, array_agg(y ORDER BY y), array_agg(y ORDER BY y) FILTER (WHERE y > 1)\n" +
                 "\t, count(*)\n" +
                 "FROM (\n" +
-                "\tVALUES (1, 3), \n" +
-                "\t(1, 1), \n" +
-                "\t(2, 3), \n" +
+                "\tVALUES (1, 3),\n" +
+                "\t(1, 1),\n" +
+                "\t(2, 3),\n" +
                 "\t(2, 4)\n" +
                 ") AS t (x, y)\n" +
                 "GROUP BY GROUPING SETS ((), (x))", stmt.toString());

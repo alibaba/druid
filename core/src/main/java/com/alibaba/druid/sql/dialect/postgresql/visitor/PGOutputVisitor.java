@@ -172,7 +172,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "ONLY " : "only ");
         }
 
-        printlnAndAccept(x.getTableSources(), ", ");
+        printlnAndAccept(x.getTableSources(), ",");
 
         if (x.getRestartIdentity() != null) {
             if (x.getRestartIdentity().booleanValue()) {
@@ -251,7 +251,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getValues() != null) {
             println();
             print0(ucase ? "VALUES " : "values ");
-            printlnAndAccept(x.getValuesList(), ", ");
+            printlnAndAccept(x.getValuesList(), ",");
         } else {
             if (x.getQuery() != null) {
                 println();

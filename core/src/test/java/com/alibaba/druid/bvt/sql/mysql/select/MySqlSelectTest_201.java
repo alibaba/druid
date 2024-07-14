@@ -48,8 +48,8 @@ public class MySqlSelectTest_201 extends MysqlTest {
             Assert.assertEquals("SELECT *\n" +
                             "FROM test_type2\n" +
                             "\tINNER JOIN (\n" +
-                            "\t\tVALUES (1, 'a'), \n" +
-                            "\t\t(2, 'b'), \n" +
+                            "\t\tVALUES (1, 'a'),\n" +
+                            "\t\t(2, 'b'),\n" +
                             "\t\t(3, 'c')\n" +
                             "\t) AS t (id, name) ON v_int = t.id;", //
                     output);
