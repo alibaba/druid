@@ -202,6 +202,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                             continue;
                         }
                         break;
+
                     }
                     accept(Token.RPAREN);
                 }
@@ -459,7 +460,9 @@ public class SQLServerStatementParser extends SQLStatementParser {
         accept(Token.IF);
 
         SQLIfStatement stmt = new SQLIfStatement();
+
         stmt.setCondition(this.exprParser.expr());
+
         this.parseStatementList(stmt.getStatements(), 1, stmt);
 
         if (lexer.token() == Token.SEMI) {
@@ -482,7 +485,9 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         if (lexer.identifierEquals("TRANSACTION") || lexer.identifierEquals("TRAN")) {
             lexer.nextToken();
+
             SQLStartTransactionStatement startTrans = new SQLStartTransactionStatement(dbType);
+
             if (lexer.token() == Token.IDENTIFIER) {
                 SQLName name = this.exprParser.name();
                 startTrans.setName(name);
@@ -492,6 +497,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         SQLBlockStatement block = new SQLBlockStatement();
         parseStatementList(block.getStatementList());
+
         accept(Token.END);
 
         return block;
@@ -499,6 +505,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
     public SQLStatement parseCommit() {
         acceptIdentifier("COMMIT");
+
         SQLCommitStatement stmt = new SQLCommitStatement();
 
         if (lexer.identifierEquals("WORK")) {
@@ -520,6 +527,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 stmt.setDelayedDurability(this.exprParser.expr());
                 accept(Token.RPAREN);
             }
+
         }
 
         return stmt;
@@ -540,6 +548,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.VARIANT) {
                 stmt.setName(this.exprParser.expr());
             }
+
         }
 
         return stmt;
