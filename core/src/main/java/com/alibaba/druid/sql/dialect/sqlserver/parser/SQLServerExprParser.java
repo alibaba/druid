@@ -168,17 +168,13 @@ public class SQLServerExprParser extends SQLExprParser {
                 lexer.nextToken();
             }
 
-            if (lexer.token() == Token.LITERAL_INT) {
-                top.setExpr(lexer.integerValue().intValue());
-                lexer.nextToken();
-            } else {
-                top.setExpr(primary());
-            }
+            top.setExpr(expr());
 
             if (paren) {
                 accept(Token.RPAREN);
             }
 
+            top.setParentheses(paren);
             if (lexer.token() == Token.PERCENT) {
                 lexer.nextToken();
                 top.setPercent(true);

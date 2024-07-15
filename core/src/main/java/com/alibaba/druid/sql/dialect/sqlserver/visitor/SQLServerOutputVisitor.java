@@ -79,7 +79,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         boolean paren = false;
 
-        if (x.getParent() instanceof SQLServerUpdateStatement || x.getParent() instanceof SQLServerInsertStatement) {
+        if (x.getParent() instanceof SQLServerUpdateStatement || x.getParent() instanceof SQLServerInsertStatement || x.isParentheses()) {
             paren = true;
             print('(');
         }
@@ -106,6 +106,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerInsertStatement x) {
+        if (x.getWith() != null) {
+            x.getWith().accept(this);
+            println();
+        }
         print0(ucase ? "INSERT " : "insert ");
 
         if (x.getTop() != null) {
