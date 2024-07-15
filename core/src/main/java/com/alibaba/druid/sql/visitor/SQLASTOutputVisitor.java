@@ -1336,16 +1336,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printChars(String text) {
-         if (text == null) {
-             print0(ucase ? "NULL" : "null");
-         } else {
-             print('\'');
-             int index = text.indexOf('\'');
-             if (index >= 0) {
-                 text = text.replaceAll("'", "''");
-             }
-             print0(text);
-             print('\'');
+        if (text == null) {
+            print0(ucase ? "NULL" : "null");
+        } else {
+            print('\'');
+            int index = text.indexOf('\'');
+            if (index >= 0) {
+                text = text.replaceAll("'", "''");
+            }
+            print0(text);
+            print('\'');
         }
     }
 
