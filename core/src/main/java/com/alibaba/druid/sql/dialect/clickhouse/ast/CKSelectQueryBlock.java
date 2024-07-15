@@ -16,6 +16,10 @@ public class CKSelectQueryBlock extends SQLSelectQueryBlock {
     private SQLExpr preWhere;
     private SQLExpr sample;
     private SQLExpr format;
+    private boolean isFinal;
+    private boolean withTotals;
+    private boolean withFill;
+    private boolean withTies;
     private List<SQLAssignItem> settings = new ArrayList<>();
 
     public SQLExpr getPreWhere() {
@@ -54,5 +58,36 @@ public class CKSelectQueryBlock extends SQLSelectQueryBlock {
 
     public void setSettings(List<SQLAssignItem> x) {
         this.settings = x;
+    }
+
+    public boolean isFinal() {
+        return isFinal;
+    }
+    public void setFinal(boolean aFinal) {
+        isFinal = aFinal;
+    }
+
+    public boolean isWithTotals() {
+        return withTotals;
+    }
+
+    public void setWithTotals(boolean withTotals) {
+        this.withTotals = withTotals;
+    }
+
+    public boolean isWithFill() {
+        return withFill;
+    }
+
+    public void setWithFill(boolean withFill) {
+        this.withFill = withFill;
+    }
+
+    public boolean isWithTies() {
+        return withTies;
+    }
+
+    public void setWithTies(boolean withTies) {
+        this.withTies = withTies;
     }
 }
