@@ -1,3 +1,0 @@
-refresh materialized view v1
----------------------------
-REFRESH MATERIALIZED VIEW v1

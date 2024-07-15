@@ -80,7 +80,7 @@ public class MySqlSelectTest_292_lateral extends MysqlTest {
 
         assertEquals("SELECT numbers, n, a\n" +
                 "FROM (\n" +
-                "\tVALUES (ARRAY[2, 5]), \n" +
+                "\tVALUES (ARRAY[2, 5]),\n" +
                 "\t(ARRAY[7, 8, 9])\n" +
                 ") AS x (numbers)\n" +
                 "\tCROSS JOIN UNNEST(numbers) WITH ORDINALITY AS t (n, a);", stmt.toString());

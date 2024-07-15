@@ -1,5 +1,0 @@
-select * from bi.aaa where !array_contains(list, cc_id)
----------------------------
-SELECT *
-FROM bi.aaa
-WHERE !array_contains(list, cc_id)

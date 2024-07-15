@@ -17,16 +17,14 @@ public class AdsCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable() {
         SQLCreateTableStatement stmt = newCreateStatement();
 
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                stmt.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            stmt.addBeforeComment(lexer.readAndResetComments());
         }
+
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals(FnvHash.Constants.DIMENSION)) {
             lexer.nextToken();

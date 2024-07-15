@@ -44,8 +44,8 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         return new OracleCreateTableStatement();
     }
 
-    public OracleCreateTableStatement parseCreateTable(boolean acceptCreate) {
-        OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCreateTable(acceptCreate);
+    public OracleCreateTableStatement parseCreateTable() {
+        OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCreateTable();
 
         if (lexer.token() == Token.OF) {
             lexer.nextToken();
@@ -541,7 +541,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         return partitionByList;
     }
 
-    protected SQLTableElement parseCreateTableSupplementalLogingProps() {
+    protected SQLTableElement parseCreateTableSupplementalLoggingProps() {
         acceptIdentifier("SUPPLEMENTAL");
         acceptIdentifier("LOG");
 

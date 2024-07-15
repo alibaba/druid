@@ -57,4 +57,17 @@ public class SQLExprStatement extends SQLStatementImpl implements SQLReplaceable
         }
         return false;
     }
+
+    public SQLExprStatement clone() {
+        SQLExprStatement x = new SQLExprStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    protected void cloneTo(SQLExprStatement x) {
+        super.cloneTo(x);
+        if (x.getExpr() != null) {
+            x.setExpr(x.getExpr().clone());
+        }
+    }
 }

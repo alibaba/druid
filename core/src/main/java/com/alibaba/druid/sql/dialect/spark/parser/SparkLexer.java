@@ -42,6 +42,7 @@ public class SparkLexer extends HiveLexer {
         map.put("FALSE", Token.FALSE);
         map.put("RLIKE", Token.RLIKE);
         map.put("CONSTRAINT", Token.CONSTRAINT);
+        map.put("CACHE", Token.CACHE);
 
         DEFAULT_ANTSPARK_KEYWORDS = new Keywords(map);
     }

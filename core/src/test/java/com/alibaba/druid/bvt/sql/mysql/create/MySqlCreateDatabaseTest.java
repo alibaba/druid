@@ -81,7 +81,7 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test4 CHARACTER SET utf8", output);
+        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test4 CHARACTER SET utf8;", output);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test5 CHARACTER SET utf8 COLLATE utf8_general_ci", output);
+        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test5 CHARACTER SET utf8 COLLATE utf8_general_ci;", output);
     }
 
     @Test
@@ -109,6 +109,6 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test6 CHARACTER SET utf8 COLLATE utf8_general_ci", output);
+        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test6 CHARACTER SET utf8 COLLATE utf8_general_ci;", output);
     }
 }

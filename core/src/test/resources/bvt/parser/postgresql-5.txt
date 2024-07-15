@@ -1,5 +1,0 @@
-select * from com_demo order by sex asc nulls first
----------------------------
-SELECT *
-FROM com_demo
-ORDER BY sex ASC NULLS FIRST

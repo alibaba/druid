@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
@@ -126,6 +127,7 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
     public static class Field extends SQLObjectImpl {
         private SQLName name;
         private SQLDataType dataType;
+        private final List<SQLAssignItem> options = new ArrayList<SQLAssignItem>();
         private String comment;
 
         public Field(SQLName name, SQLDataType dataType) {
@@ -151,6 +153,10 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
                 x.setParent(this);
             }
             this.name = x;
+        }
+
+        public List<SQLAssignItem> getOptions() {
+            return options;
         }
 
         public SQLDataType getDataType() {

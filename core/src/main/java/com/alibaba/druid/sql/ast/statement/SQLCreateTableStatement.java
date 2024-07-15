@@ -24,8 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSynonymStatement;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
-import com.alibaba.druid.sql.semantic.SemanticException;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.ListDG;
@@ -196,8 +196,12 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.type = type;
     }
 
-    public static enum Type {
-        GLOBAL_TEMPORARY, LOCAL_TEMPORARY, TEMPORARY, SHADOW, TRANSACTIONAL
+    public enum Type {
+        GLOBAL_TEMPORARY,
+        LOCAL_TEMPORARY,
+        TEMPORARY,
+        SHADOW,
+        TRANSACTIONAL
     }
 
     public List<SQLTableElement> getTableElementList() {
@@ -1615,7 +1619,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                 SQLTableElement old = columnMap.put(nameHashCode64, item);
                 if (old != null) {
                     if (throwException) {
-                        throw new SemanticException("Table contains duplicate column names : "
+                        throw new ParserException("Table contains duplicate column names : "
                                 + SQLUtils.normalize(columnName.getSimpleName()));
                     }
                     return true;

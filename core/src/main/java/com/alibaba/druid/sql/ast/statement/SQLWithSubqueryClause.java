@@ -75,6 +75,7 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         protected SQLSelect subQuery;
         protected SQLStatement returningStatement;
         protected SQLExpr expr;
+        protected boolean prefixAlias;
 
         public Entry() {
         }
@@ -106,6 +107,7 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
 
             x.alias = alias;
             x.expr = expr;
+            x.prefixAlias = prefixAlias;
         }
 
         @Override
@@ -206,6 +208,14 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
                 }
             }
             return null;
+        }
+
+        public boolean isPrefixAlias() {
+            return prefixAlias;
+        }
+
+        public void setPrefixAlias(boolean prefixAlias) {
+            this.prefixAlias = prefixAlias;
         }
 
         @Override

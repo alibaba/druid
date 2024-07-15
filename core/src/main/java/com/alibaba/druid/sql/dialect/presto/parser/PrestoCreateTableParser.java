@@ -46,25 +46,18 @@ public class PrestoCreateTableParser extends SQLCreateTableParser {
             comments = lexer.readAndResetComments();
         }
 
-        SQLCreateTableStatement stmt = parseCreateTable(true);
+        PrestoCreateTableStatement createTable = newCreateStatement();
         if (comments != null) {
-            stmt.addBeforeComment(comments);
+            createTable.addBeforeComment(comments);
         }
 
-        return stmt;
-    }
-
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
-        PrestoCreateTableStatement createTable = newCreateStatement();
         createTable.setDbType(getDbType());
 
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                createTable.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            createTable.addBeforeComment(lexer.readAndResetComments());
         }
+
+        accept(Token.CREATE);
 
         accept(Token.TABLE);
 
