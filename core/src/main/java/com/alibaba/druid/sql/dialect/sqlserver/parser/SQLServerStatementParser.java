@@ -201,8 +201,8 @@ public class SQLServerStatementParser extends SQLStatementParser {
                             }
                             continue;
                         }
-                        break;
 
+                        break;
                     }
                     accept(Token.RPAREN);
                 }
