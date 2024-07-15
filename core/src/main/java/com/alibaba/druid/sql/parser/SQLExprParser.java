@@ -2580,7 +2580,7 @@ public class SQLExprParser extends SQLParser {
                 case NULL:
                 case CURSOR:
                 case FETCH:
-                case BITMAP:
+//                case BITMAP:
                 case DATABASE:
                     if (dbType == DbType.odps || dbType == DbType.starrocks) {
                         identName = lexer.stringVal();

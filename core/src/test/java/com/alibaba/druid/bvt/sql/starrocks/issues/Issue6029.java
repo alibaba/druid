@@ -1,10 +1,18 @@
-package com.alibaba.druid.sql.dialect.starrocks.parser;
+package com.alibaba.druid.bvt.sql.starrocks.issues;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class StarRocksCreateTableParserTest extends TestCase {
+/**
+ * @Author: Ekko
+ * @Date: 2024-07-12 17:29
+ * @see <a href="https://github.com/alibaba/druid/issues/6029>Issue来源</a>
+ * @see <a href="https://docs.starrocks.io/zh/docs/sql-reference/sql-statements/data-definition/CREATE_TABLE/">CREATE TABLE</a>
+ */
+public class Issue6029 {
+
     static final String[] caseList = new String[]{
             // 1.普通建表语句
             "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
@@ -203,7 +211,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "\t\"table\" = \"mysql_table_test\"\n" +
                     ")",
 
-           // 9. 数据模型列只有一列
+            // 9. 数据模型列只有一列
             "CREATE TABLE `olap_5e61d03d605641ebafd100c809dbf15c` (\n" +
                     "\t`a` int(11) NULL,\n" +
                     "\t`b` text NULL,\n" +
@@ -220,8 +228,8 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ")"
     };
 
-
-    public void testCreateTable() {
+    @Test
+    public void test_parse_create() {
         for (int i = 0; i < caseList.length; i++) {
             final String sql = caseList[i];
             final StarRocksStatementParser starRocksStatementParser = new StarRocksStatementParser(sql);
@@ -229,7 +237,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
             final SQLCreateTableStatement parsed = sqlCreateTableParser.parseCreateTable();
             final String result = parsed.toString();
             System.out.println(result);
-//            assertEquals("第 " + (i + 1) + "个用例验证失败", sql, result);
         }
     }
+
 }

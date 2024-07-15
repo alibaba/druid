@@ -91,19 +91,24 @@ public class StarRocksExprParser extends SQLExprParser {
             SQLCharExpr bitmap = new StarRocksCharExpr(lexer.stringVal());
             column.setBitmap(bitmap);
             lexer.nextToken();
-            accept(Token.COMMENT);
-            SQLCharExpr indexComment = new StarRocksCharExpr(lexer.stringVal());
-            column.setIndexComment(indexComment);
-            lexer.nextToken();
+
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+                SQLCharExpr indexComment = new StarRocksCharExpr(lexer.stringVal());
+                column.setIndexComment(indexComment);
+                lexer.nextToken();
+            }
+
         }
 
         return super.parseColumnRest(column);
     }
+
     @Override
     public SQLPartition parsePartition() {
         if (lexer.identifierEquals(FnvHash.Constants.DBPARTITION)
-            || lexer.identifierEquals(FnvHash.Constants.TBPARTITION)
-            || lexer.identifierEquals(FnvHash.Constants.SUBPARTITION)) {
+                || lexer.identifierEquals(FnvHash.Constants.TBPARTITION)
+                || lexer.identifierEquals(FnvHash.Constants.SUBPARTITION)) {
             lexer.nextToken();
         } else {
             accept(Token.PARTITION);
@@ -164,7 +169,7 @@ public class StarRocksExprParser extends SQLExprParser {
                 SQLExpr minRows = this.primary();
                 partitionDef.setMaxRows(minRows);
             } else if (lexer.identifierEquals(FnvHash.Constants.ENGINE) || //
-                (storage = (lexer.token() == Token.STORAGE || lexer.identifierEquals(FnvHash.Constants.STORAGE)))) {
+                    (storage = (lexer.token() == Token.STORAGE || lexer.identifierEquals(FnvHash.Constants.STORAGE)))) {
                 if (storage) {
                     lexer.nextToken();
                 }
