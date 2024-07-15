@@ -24,6 +24,7 @@ public class SQLServerTop extends SQLServerObjectImpl implements SQLReplaceable 
     private SQLExpr expr;
     private boolean percent;
     private boolean withTies;
+    private boolean parentheses;
 
     public SQLServerTop() {
     }
@@ -61,6 +62,14 @@ public class SQLServerTop extends SQLServerObjectImpl implements SQLReplaceable 
 
     public void setWithTies(boolean withTies) {
         this.withTies = withTies;
+    }
+
+    public boolean isParentheses() {
+        return parentheses;
+    }
+
+    public void setParentheses(boolean parentheses) {
+        this.parentheses = parentheses;
     }
 
     @Override
