@@ -698,7 +698,7 @@ public class SQLStatementParser extends SQLParser {
             stmt.setCluster(cluster);
         }
 
-        if (lexer.identifierEquals("FINAL")) {
+        if (lexer.token() == FINAL) {
             lexer.nextToken();
             stmt.setFinal(true);
         }

@@ -227,4 +227,36 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
         }
         printExpr(where, parameterized);
     }
+
+    @Override
+    protected void printFrom(SQLSelectQueryBlock x) {
+        super.printFrom(x);
+        if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isFinal()) {
+            print0(ucase ? " FINAL" : " final");
+        }
+    }
+
+    @Override
+    protected void printGroupBy(SQLSelectQueryBlock x) {
+        super.printGroupBy(x);
+        if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isWithTotals()) {
+            print0(ucase ? " WITH TOTALS" : " with totals");
+        }
+    }
+
+    @Override
+    protected void printOrderBy(SQLSelectQueryBlock x) {
+        super.printOrderBy(x);
+        if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isWithFill()) {
+            print0(ucase ? " WITH FILL" : " with fill");
+        }
+    }
+
+    @Override
+    protected void printLimit(SQLSelectQueryBlock x) {
+        super.printLimit(x);
+        if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isWithTies()) {
+            print0(ucase ? " WITH TIES" : " with ties");
+        }
+    }
 }

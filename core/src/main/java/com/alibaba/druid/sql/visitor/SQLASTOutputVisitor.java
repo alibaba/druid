@@ -2740,8 +2740,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? " ROWS ONLY" : " rows only");
             }
         } else {
-            println();
-            limit.accept(this);
+            printLimit(x);
         }
     }
 
