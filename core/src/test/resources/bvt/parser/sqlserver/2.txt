@@ -3,9 +3,9 @@ SELECT COUNT(1) WITHIN GROUP (ORDER BY BaseRate) OVER (PARTITION BY DepartmentNa
 SELECT COUNT(1) WITHIN GROUP (ORDER BY BaseRate) OVER (PARTITION BY DepartmentName ) AS MedianCont
 FROM dbo.DimEmployee
 ------------------------------------------------------------------------------------------------------------------------
-SELECT TOP (2 + 1) 1
+SELECT TOP (3) 1
 --------------------
-SELECT TOP (2 + 1) 1
+SELECT TOP (3) 1
 ------------------------------------------------------------------------------------------------------------------------
 WITH cte AS (SELECT 1 AS one) INSERT INTO foo.bar SELECT * FROM cte
 --------------------
