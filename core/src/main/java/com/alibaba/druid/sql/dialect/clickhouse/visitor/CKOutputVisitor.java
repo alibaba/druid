@@ -101,11 +101,24 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
             orderBy.accept(this);
         }
 
+        SQLPrimaryKey primaryKey = x.getPrimaryKey();
+        if (primaryKey != null) {
+            println();
+            primaryKey.accept(this);
+        }
+
         SQLExpr sampleBy = x.getSampleBy();
         if (sampleBy != null) {
             println();
             print0(ucase ? "SAMPLE BY " : "sample by ");
             sampleBy.accept(this);
+        }
+
+        SQLExpr ttl = x.getTtl();
+        if (ttl != null) {
+            println();
+            print0(ucase ? "TTL " : "ttl ");
+            ttl.accept(this);
         }
 
         List<SQLAssignItem> settings = x.getSettings();

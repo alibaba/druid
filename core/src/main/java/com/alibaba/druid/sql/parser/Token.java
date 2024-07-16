@@ -292,6 +292,7 @@ public enum Token {
     PREWHERE("PREWHERE"),
     SETTINGS("SETTINGS"),
     FINAL("FINAL"),
+    TTL("TTL"),
 
     // Teradata
     SEL("SEL"),
