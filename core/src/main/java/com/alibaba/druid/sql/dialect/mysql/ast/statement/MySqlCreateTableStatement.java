@@ -262,7 +262,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         super.simplify();
     }
 
-    public void showCoumns(StringBuilder out) throws IOException {
+    public void showColumns(StringBuilder out) throws IOException {
         this.accept(new MySqlShowColumnOutpuVisitor(out));
     }
 

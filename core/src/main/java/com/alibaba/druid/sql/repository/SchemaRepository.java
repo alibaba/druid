@@ -492,7 +492,7 @@ public class SchemaRepository {
                                 .append("' doesn't exist\n");
                     } else {
                         MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
-                        createTableStmt.showCoumns(buf);
+                        createTableStmt.showColumns(buf);
                     }
                 } else if (stmt instanceof SQLShowCreateTableStatement) {
                     SQLShowCreateTableStatement showCreateTableStmt = (SQLShowCreateTableStatement) stmt;
