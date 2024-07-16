@@ -1399,6 +1399,7 @@ public class SQLSelectParser extends SQLParser {
             }
         }
     }
+    protected void parseJoinHint(SQLJoinTableSource join){}
 
     public SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         parseTableSourceSample(tableSource);
@@ -1652,6 +1653,8 @@ public class SQLSelectParser extends SQLParser {
                     isBrace = true;
                 }
             }
+
+            parseJoinHint(join);
 
             SQLTableSource rightTableSource = null;
             if (lexer.token == Token.LPAREN) {
