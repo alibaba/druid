@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement.Type;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
@@ -3808,12 +3807,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "PARTITION OF " : "partition of ");
             partitionOf.accept(this);
         }
-        SQLPartitionBy partitionBy = x.getPartitioning();
-        if (partitionBy != null) {
-            println();
-            print0(ucase ? "PARTITION BY " : "partition by ");
-            partitionBy.accept(this);
-        }
+        printPartitionBy(x);
         printTableOptions(x);
 
         SQLName tablespace = x.getTablespace();
@@ -3841,6 +3835,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    protected void printPartitionBy(SQLCreateTableStatement x) {
+        SQLPartitionBy partitionBy = x.getPartitioning();
+        if (partitionBy == null) {
+            return;
+        }
+        println();
+        print0(ucase ? "PARTITION BY " : "partition by ");
+        partitionBy.accept(this);
+    }
+
     protected void printClusteredBy(SQLCreateTableStatement x) {
         List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
         if (clusteredBy.isEmpty()) {
@@ -3858,24 +3862,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
         print0(ucase ? "CREATE " : "create ");
 
-        if (x.isExternal()) {
-            print0(ucase ? "EXTERNAL " : "external ");
-        }
-
-        final SQLCreateTableStatement.Type tableType = x.getType();
-        if (SQLCreateTableStatement.Type.GLOBAL_TEMPORARY.equals(tableType)) {
-            print0(ucase ? "GLOBAL TEMPORARY " : "global temporary ");
-        } else if (SQLCreateTableStatement.Type.LOCAL_TEMPORARY.equals(tableType)) {
-            print0(ucase ? "LOCAL TEMPORARY " : "local temporary ");
-        } else if (SQLCreateTableStatement.Type.SHADOW.equals(tableType)) {
-            print0(ucase ? "SHADOW " : "shadow ");
-        } else if (Type.TRANSACTIONAL.equals(tableType)) {
-            print0(ucase ? "TRANSACTIONAL " : "transactional ");
-        }
-
-        if (x.isDimension()) {
-            print0(ucase ? "DIMENSION " : "dimension ");
-        }
+        printCreateTableFeatures(x);
 
         print0(ucase ? "TABLE " : "table ");
 
@@ -10146,19 +10133,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(' ');
         }
 
-        if (x.isDimension()) {
-            print0(ucase ? "DIMENSION " : "dimension ");
-        }
+        printCreateTableFeatures(x);
 
-        if (SQLCreateTableStatement.Type.GLOBAL_TEMPORARY.equals(x.getType())) {
-            print0(ucase ? "TEMPORARY TABLE " : "temporary table ");
-        } else if (SQLCreateTableStatement.Type.SHADOW.equals(x.getType())) {
-            print0(ucase ? "SHADOW TABLE " : "shadow table ");
-        } else if (x.isExternal()) {
-            print0(ucase ? "EXTERNAL TABLE " : "external table ");
-        } else {
-            print0(ucase ? "TABLE " : "table ");
-        }
+        print0(ucase ? "TABLE " : "table ");
 
         if (x.isIfNotExists()) {
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
@@ -10235,12 +10212,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
-        SQLPartitionBy partitionBy = x.getPartitioning();
-        if (partitionBy != null) {
-            println();
-            print0(ucase ? "PARTITION BY " : "partition by ");
-            partitionBy.accept(this);
-        }
+        printPartitionBy(x);
 
         List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
         if (clusteredBy.size() > 0) {
@@ -10351,6 +10323,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             hint.accept(this);
         }
         return false;
+    }
+
+    protected void printCreateTableFeatures(SQLCreateTableStatement x) {
+        SQLCreateTableStatement.Feature[] features = {
+                SQLCreateTableStatement.Feature.Global,
+                SQLCreateTableStatement.Feature.Local,
+                SQLCreateTableStatement.Feature.Temporary,
+                SQLCreateTableStatement.Feature.Shadow,
+                SQLCreateTableStatement.Feature.External,
+                SQLCreateTableStatement.Feature.Transactional,
+                SQLCreateTableStatement.Feature.Dimension
+        };
+
+        for (SQLCreateTableStatement.Feature feature : features) {
+            if (x.isEnabled(feature)) {
+                String name = feature.name();
+                print0(ucase ? name.toUpperCase() : name.toLowerCase());
+                print(' ');
+            }
+        }
     }
 
     @Override
@@ -11105,17 +11097,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "CREATE " : "create ");
         }
 
-        if (x.isExternal()) {
-            print0(ucase ? "EXTERNAL " : "external ");
-        }
+        printCreateTableFeatures(x);
 
-        final SQLCreateTableStatement.Type tableType = x.getType();
-        if (SQLCreateTableStatement.Type.TEMPORARY.equals(tableType)) {
-            print0(ucase ? "TEMPORARY " : "temporary ");
-        }
-        if (Type.TRANSACTIONAL.equals(tableType)) {
-            print0(ucase ? "TRANSACTIONAL " : "transactional ");
-        }
         print0(ucase ? "TABLE " : "table ");
 
         if (x.isIfNotExists()) {

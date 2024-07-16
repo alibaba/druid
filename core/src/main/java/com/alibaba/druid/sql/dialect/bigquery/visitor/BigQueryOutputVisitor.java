@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -24,35 +25,18 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
     }
 
     protected void printPartitionedBy(SQLCreateTableStatement x) {
-        List<SQLColumnDefinition> partitionColumns = x.getPartitionColumns();
-        int partitionSize = partitionColumns.size();
-        if (partitionSize == 0) {
+        List<SQLExpr> partitionBy;
+        if (!(x instanceof BigQueryCreateTableStatement)) {
+            return;
+        } else {
+            partitionBy = ((BigQueryCreateTableStatement) x).getPartitionBy();
+        }
+        if (partitionBy.isEmpty()) {
             return;
         }
-
         println();
-        print0(ucase ? "PARTITION BY (" : "partition by (");
-        this.indentCount++;
-        println();
-        for (int i = 0; i < partitionSize; ++i) {
-            SQLColumnDefinition column = partitionColumns.get(i);
-            printPartitoinedByColumn(column);
-
-            if (i != partitionSize - 1) {
-                print(',');
-            }
-            if (this.isPrettyFormat() && column.hasAfterComment()) {
-                print(' ');
-                printlnComment(column.getAfterCommentsDirect());
-            }
-
-            if (i != partitionSize - 1) {
-                println();
-            }
-        }
-        this.indentCount--;
-        println();
-        print(')');
+        print0(ucase ? "PARTITION BY " : "partition by ");
+        printAndAccept(((BigQueryCreateTableStatement) x).getPartitionBy(), ",");
     }
 
     protected void printPartitoinedByColumn(SQLColumnDefinition column) {

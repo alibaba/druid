@@ -134,21 +134,23 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
     protected void createTableBefore(SQLCreateTableStatement createTable) {
         if (lexer.nextIfIdentifier("GLOBAL")) {
+            createTable.config(SQLCreateTableStatement.Feature.Global);
             if (lexer.nextIfIdentifier("TEMPORARY")) {
-                createTable.setType(SQLCreateTableStatement.Type.GLOBAL_TEMPORARY);
+                createTable.config(SQLCreateTableStatement.Feature.Temporary);
             } else {
                 throw new ParserException("syntax error " + lexer.info());
             }
         } else if (lexer.nextIfIdentifier("LOCAL")) {
+            createTable.config(SQLCreateTableStatement.Feature.Local);
             if (lexer.nextIfIdentifier("TEMPORARY")) {
-                createTable.setType(SQLCreateTableStatement.Type.LOCAL_TEMPORARY);
+                createTable.config(SQLCreateTableStatement.Feature.Temporary);
             } else {
                 throw new ParserException("syntax error. " + lexer.info());
             }
         }
 
         if (lexer.nextIfIdentifier(FnvHash.Constants.DIMENSION)) {
-            createTable.setDimension(true);
+            createTable.config(SQLCreateTableStatement.Feature.Dimension);
         }
     }
 
@@ -157,7 +159,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             accept(Token.NOT);
             accept(Token.EXISTS);
 
-            createTable.setIfNotExiists(true);
+            createTable.setIfNotExists(true);
         }
     }
 
@@ -194,7 +196,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             } else if (Token.BY.equals(lexer.token())) {
                 lexer.reset(mark);
                 SQLPartitionBy partitionClause = parsePartitionBy();
-                stmt.setPartitioning(partitionClause);
+                stmt.setPartitionBy(partitionClause);
             }
         }
 
@@ -208,7 +210,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             } else if (Token.BY.equals(lexer.token())) {
                 lexer.reset(mark);
                 SQLPartitionBy partitionClause = parsePartitionBy();
-                stmt.setPartitioning(partitionClause);
+                stmt.setPartitionBy(partitionClause);
             }
         }
     }

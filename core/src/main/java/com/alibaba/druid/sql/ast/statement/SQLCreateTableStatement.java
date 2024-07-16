@@ -34,8 +34,7 @@ import com.alibaba.druid.util.lang.Consumer;
 import java.util.*;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
-    protected boolean ifNotExists;
-    protected Type type;
+    protected int features;
     protected SQLExprTableSource tableSource;
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
@@ -49,7 +48,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected Boolean logging;
 
     protected SQLName tablespace;
-    protected SQLPartitionBy partitioning;
+    protected SQLPartitionBy partitionBy;
     protected SQLPartitionOf partitionOf;
     protected SQLPartitionBy localPartitioning;
     protected SQLExpr storedAs;
@@ -58,7 +57,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     protected boolean onCommitPreserveRows;
     protected boolean onCommitDeleteRows;
-    protected boolean external;
 
     // for odps & hive
     protected SQLExternalRecordFormat rowFormat;
@@ -74,7 +72,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected boolean replace;
     protected boolean ignore;
     protected boolean single; // polardbx
-    protected boolean dimension;
     protected SQLExpr engine;
 
     protected SQLExpr lifeCycle;
@@ -103,7 +100,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, like);
 
         this.acceptChild(v, tablespace);
-        this.acceptChild(v, partitioning);
+        this.acceptChild(v, partitionBy);
         this.acceptChild(v, localPartitioning);
         this.acceptChild(v, storedAs);
         this.acceptChild(v, storedBy);
@@ -188,20 +185,24 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         setTableSource(new SQLExprTableSource(name));
     }
 
-    public Type getType() {
-        return type;
+    public void config(Feature feature) {
+        config(feature, true);
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public boolean isEnabled(Feature feature) {
+        return feature.isEnabled(this.features);
     }
 
-    public enum Type {
-        GLOBAL_TEMPORARY,
-        LOCAL_TEMPORARY,
-        TEMPORARY,
-        SHADOW,
-        TRANSACTIONAL
+    public void config(Feature feature, boolean state) {
+        this.features = feature.config(this.features, state);
+    }
+
+    public boolean isTemporary() {
+        return Feature.Temporary.isEnabled(features);
+    }
+
+    public void setTemporary(boolean value) {
+        this.features = Feature.Temporary.config(features, value);
     }
 
     public List<SQLTableElement> getTableElementList() {
@@ -285,11 +286,11 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public boolean isIfNotExists() {
-        return ifNotExists;
+        return Feature.IfNotExists.isEnabled(features);
     }
 
-    public void setIfNotExiists(boolean ifNotExists) {
-        this.ifNotExists = ifNotExists;
+    public void setIfNotExists(boolean value) {
+        this.features = Feature.IfNotExists.config(this.features, value);
     }
 
     public SQLExprTableSource getInherits() {
@@ -357,19 +358,19 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public SQLPartitionBy getPartitioning() {
-        return partitioning;
+        return partitionBy;
     }
 
     public SQLPartitionBy getLocalPartitioning() {
         return this.localPartitioning;
     }
 
-    public void setPartitioning(SQLPartitionBy partitioning) {
-        if (partitioning != null) {
-            partitioning.setParent(this);
+    public void setPartitionBy(SQLPartitionBy partitionBy) {
+        if (partitionBy != null) {
+            partitionBy.setParent(this);
         }
 
-        this.partitioning = partitioning;
+        this.partitionBy = partitionBy;
     }
 
     public SQLPartitionOf getPartitionOf() {
@@ -1222,9 +1223,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public void cloneTo(SQLCreateTableStatement x) {
-        x.setExternal(external);
-        x.ifNotExists = ifNotExists;
-        x.type = type;
+        x.features = features;
 
         if (tableSource != null) {
             x.setTableSource(tableSource.clone());
@@ -1254,8 +1253,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             x.setComment(comment.clone());
         }
 
-        if (partitioning != null) {
-            x.setPartitioning(partitioning.clone());
+        if (partitionBy != null) {
+            x.setPartitionBy(partitionBy.clone());
         }
 
         if (like != null) {
@@ -1269,8 +1268,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             x.setTablespace(tablespace.clone());
         }
 
-        if (partitioning != null) {
-            x.setPartitioning(partitioning.clone());
+        if (partitionBy != null) {
+            x.setPartitionBy(partitionBy.clone());
         }
 
         if (localPartitioning != null) {
@@ -1329,7 +1328,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         x.buckets = buckets;
         x.shards = shards;
-        x.dimension = dimension;
 
     }
 
@@ -1401,11 +1399,11 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     // for odps & hive
     public boolean isExternal() {
-        return external;
+        return Feature.External.isEnabled(features);
     }
 
     public void setExternal(boolean external) {
-        this.external = external;
+        this.features = Feature.External.config(this.features, external);
     }
 
     public ClusteringType getClusteringType() {
@@ -1487,11 +1485,11 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public boolean isDimension() {
-        return dimension;
+        return Feature.Dimension.isEnabled(features);
     }
 
     public void setDimension(boolean dimension) {
-        this.dimension = dimension;
+        this.features = Feature.Dimension.config(features, dimension);
     }
 
     public SQLExpr getLocation() {
@@ -1654,5 +1652,37 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             x.setParent(this);
         }
         this.lifeCycle = x;
+    }
+
+    public enum Feature {
+        Temporary(1),
+        Global(1 << 1),
+        Local(1 << 2),
+        OrReplace(1 << 3),
+        IfNotExists(1 << 4),
+        External(1 << 5),
+        Transactional(1 << 6),
+        Shadow(1 << 7),
+        Dimension(1 << 8);
+
+        public final int mask;
+
+        Feature(int mask) {
+            this.mask = mask;
+        }
+
+        public boolean isEnabled(long features) {
+            return (features & mask) != 0;
+        }
+
+        public int config(int features, boolean state) {
+            if (state) {
+                features |= this.mask;
+            } else {
+                features &= ~this.mask;
+            }
+
+            return features;
+        }
     }
 }

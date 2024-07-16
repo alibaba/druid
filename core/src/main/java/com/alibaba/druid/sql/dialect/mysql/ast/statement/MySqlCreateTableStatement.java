@@ -498,8 +498,8 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void cloneTo(MySqlCreateTableStatement x) {
         super.cloneTo(x);
-        if (partitioning != null) {
-            x.setPartitioning(partitioning.clone());
+        if (partitionBy != null) {
+            x.setPartitionBy(partitionBy.clone());
         }
         if (localPartitioning != null) {
             x.setLocalPartitioning(localPartitioning.clone());

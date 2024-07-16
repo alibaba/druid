@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement.Type;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.parser.*;
@@ -35,19 +34,16 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
     }
 
     protected void createTableBefore(SQLCreateTableStatement stmt) {
-        if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier(FnvHash.Constants.EXTERNAL)) {
             stmt.setExternal(true);
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.TEMPORARY)) {
-            lexer.nextToken();
-            stmt.setType(SQLCreateTableStatement.Type.TEMPORARY);
+        if (lexer.nextIfIdentifier(FnvHash.Constants.TEMPORARY)) {
+            stmt.setTemporary(true);
         }
 
-        if (lexer.stringVal().equalsIgnoreCase("TRANSACTIONAL")) {
-            lexer.nextToken();
-            stmt.setType(Type.TRANSACTIONAL);
+        if (lexer.nextIfIdentifier("TRANSACTIONAL")) {
+            stmt.config(SQLCreateTableStatement.Feature.Transactional);
         }
     }
 

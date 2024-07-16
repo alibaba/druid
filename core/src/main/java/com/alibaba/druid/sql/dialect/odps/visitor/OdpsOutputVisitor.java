@@ -78,9 +78,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         print0(ucase ? "CREATE " : "create ");
 
-        if (x.isExternal()) {
-            print0(ucase ? "EXTERNAL " : "external ");
-        }
+        printCreateTableFeatures(x);
 
         if (x.isIfNotExists()) {
             print0(ucase ? "TABLE IF NOT EXISTS " : "table if not exists ");

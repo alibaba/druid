@@ -40,8 +40,7 @@ public class BlinkCreateTableParser extends SQLCreateTableParser {
 
         accept(Token.CREATE);
 
-        if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier(FnvHash.Constants.EXTERNAL)) {
             stmt.setExternal(true);
         }
 
@@ -52,7 +51,7 @@ public class BlinkCreateTableParser extends SQLCreateTableParser {
             accept(Token.NOT);
             accept(Token.EXISTS);
 
-            stmt.setIfNotExiists(true);
+            stmt.setIfNotExists(true);
         }
 
         stmt.setName(this.exprParser.name());

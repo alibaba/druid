@@ -65,7 +65,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             accept(Token.NOT);
             accept(Token.EXISTS);
 
-            createTable.setIfNotExiists(true);
+            createTable.setIfNotExists(true);
         }
 
         createTable.setName(this.exprParser.name());
@@ -175,7 +175,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.token() == Token.PARTITION) {
             SQLPartitionBy partitionClause = parsePartitionBy();
-            createTable.setPartitioning(partitionClause);
+            createTable.setPartitionBy(partitionClause);
         }
         parseCreateTableRest(createTable);
 

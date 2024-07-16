@@ -66,7 +66,7 @@ public class PrestoCreateTableParser extends SQLCreateTableParser {
             accept(Token.NOT);
             accept(Token.EXISTS);
 
-            createTable.setIfNotExiists(true);
+            createTable.setIfNotExists(true);
         }
 
         createTable.setName(this.exprParser.name());

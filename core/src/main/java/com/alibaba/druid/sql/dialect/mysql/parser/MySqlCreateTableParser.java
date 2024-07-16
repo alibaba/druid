@@ -94,12 +94,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         }
         accept(Token.CREATE);
 
-        if (lexer.identifierEquals("TEMPORARY")) {
-            lexer.nextToken();
-            stmt.setType(SQLCreateTableStatement.Type.GLOBAL_TEMPORARY);
-        } else if (lexer.identifierEquals("SHADOW")) {
-            lexer.nextToken();
-            stmt.setType(SQLCreateTableStatement.Type.SHADOW);
+        if (lexer.nextIfIdentifier("TEMPORARY")) {
+            stmt.config(SQLCreateTableStatement.Feature.Temporary);
+        } else if (lexer.nextIfIdentifier("SHADOW")) {
+            stmt.config(SQLCreateTableStatement.Feature.Shadow);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.DIMENSION)) {
@@ -123,7 +121,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             accept(Token.NOT);
             accept(Token.EXISTS);
 
-            stmt.setIfNotExiists(true);
+            stmt.setIfNotExists(true);
         }
 
         stmt.setName(this.exprParser.name());
@@ -832,7 +830,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
             if (lexer.token() == Token.PARTITION) {
                 SQLPartitionBy partitionClause = parsePartitionBy();
-                stmt.setPartitioning(partitionClause);
+                stmt.setPartitionBy(partitionClause);
                 continue;
             }
 
