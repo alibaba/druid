@@ -18,11 +18,7 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSizeExpr;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLTableSampling;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
@@ -142,7 +138,7 @@ public class PGSelectParser extends SQLSelectParser {
 
         for (; ; ) {
             if (lexer.token() == Token.LIMIT) {
-                SQLLimit limit = new SQLLimit();
+                SQLLimit limit = getOrInitLimit(queryBlock);
 
                 lexer.nextToken();
                 if (lexer.token() == Token.ALL) {
@@ -152,13 +148,9 @@ public class PGSelectParser extends SQLSelectParser {
                     limit.setRowCount(expr());
                 }
 
-                queryBlock.setLimit(limit);
             } else if (lexer.token() == Token.OFFSET) {
-                SQLLimit limit = queryBlock.getLimit();
-                if (limit == null) {
-                    limit = new SQLLimit();
-                    queryBlock.setLimit(limit);
-                }
+                SQLLimit limit = getOrInitLimit(queryBlock);
+
                 lexer.nextToken();
                 SQLExpr offset = expr();
                 limit.setOffset(offset);
@@ -242,6 +234,15 @@ public class PGSelectParser extends SQLSelectParser {
         }
 
         return queryRest(queryBlock, acceptUnion);
+    }
+
+    private SQLLimit getOrInitLimit(SQLSelectQueryBlock queryBlock) {
+        SQLLimit limit = queryBlock.getLimit();
+        if (limit == null) {
+            limit = new SQLLimit();
+            queryBlock.setLimit(limit);
+        }
+        return limit;
     }
 
     public SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
