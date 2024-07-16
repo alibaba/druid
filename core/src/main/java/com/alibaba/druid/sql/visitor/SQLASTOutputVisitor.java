@@ -4319,6 +4319,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    protected void printJoinHint(SQLJoinTableSource x){}
     @Override
     public boolean visit(SQLJoinTableSource x) {
         SQLCommentHint hint = x.getHint();
@@ -4367,6 +4368,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             printJoinType(joinType);
         }
+        printJoinHint(x);
         print(' ');
 
         SQLTableSource right = x.getRight();

@@ -35,6 +35,7 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.holo.visitor.HoloOutputVisitor;
+import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaOutputVisitor;
 import com.alibaba.druid.sql.dialect.infomix.visitor.InformixOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
@@ -562,6 +563,8 @@ public class SQLUtils {
                 return new StarRocksOutputVisitor(out);
             case bigquery:
                 return new BigQueryOutputVisitor(out);
+            case impala:
+                return new ImpalaOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }
