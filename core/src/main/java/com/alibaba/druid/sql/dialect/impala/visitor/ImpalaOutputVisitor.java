@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.impala.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 
@@ -24,6 +25,10 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor {
             for (SQLHint joinHint : x.getHints()) {
                 if (joinHint instanceof SQLCommentHint) {
                     print0((joinHint).toString());
+                } else if (joinHint instanceof SQLExprHint) {
+                    print0("[");
+                    joinHint.accept(this);
+                    print0("]");
                 }
             }
         }
