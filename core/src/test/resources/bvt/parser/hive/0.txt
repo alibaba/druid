@@ -88,7 +88,7 @@ WITH A AS (
 			)
 		SELECT *
 		FROM A1
-	), 
+	),
 	B AS (
 		SELECT *
 		FROM aaa1226.t123
@@ -122,7 +122,7 @@ WITH A AS (
 			)
 		SELECT *
 		FROM A1
-	), 
+	),
 	B AS (
 		SELECT *
 		FROM aaa1226.123

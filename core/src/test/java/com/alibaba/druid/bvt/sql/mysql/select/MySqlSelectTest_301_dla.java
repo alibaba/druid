@@ -160,11 +160,11 @@ public class MySqlSelectTest_301_dla
                 "\t\tFROM `attendance_log`\n" +
                 "\t\tWHERE `createdAt` >= unix_timestamp('20190828') * 1000\n" +
                 "\t\t\tAND `createdAt` < unix_timestamp(date_add('20190828', 1)) * 1000\n" +
-                "\t), \n" +
+                "\t),\n" +
                 "\t`consecutive_counted_log` AS (\n" +
                 "\t\tSELECT *, count_if(`event` = `prev_event`) OVER (PARTITION BY `uuid`, `op_group`, `event` ORDER BY `seq` ASC) AS `consecutive_count`\n" +
                 "\t\tFROM `contextual_log`\n" +
-                "\t), \n" +
+                "\t),\n" +
                 "\t`log_metrics` AS (\n" +
                 "\t\tSELECT `uuid`, `key`\n" +
                 "\t\t\t, regexp_substr(`key`, '^C(\\\\d+)\\\\.([LER])(\\\\d+)(?:\\\\.([SD]))?(?:\\\\.(\\\\d+))?(?:\\\\.(\\\\d+))?(?:\\\\.([QC])(\\\\d+))?$', 1) AS `course_id`\n" +

@@ -370,15 +370,24 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(PGFunctionTableSource x) {
         x.getExpr().accept(this);
 
-        if (x.getAlias() != null) {
-            print0(ucase ? " AS " : " as ");
-            print0(x.getAlias());
+        String alias = x.getAlias();
+        List<SQLParameter> parameters = x.getParameters();
+        if (alias != null || !x.getParameters().isEmpty()) {
+            print0(ucase ? " AS" : " as");
         }
 
-        if (x.getParameters().size() > 0) {
+        if (alias != null) {
+            print(' ');
+            print0(alias);
+        }
+
+        if (!parameters.isEmpty()) {
+            incrementIndent();
+            println();
             print('(');
-            printAndAccept(x.getParameters(), ", ");
+            printAndAccept(parameters, ", ");
             print(')');
+            decrementIndent();
         }
 
         return false;

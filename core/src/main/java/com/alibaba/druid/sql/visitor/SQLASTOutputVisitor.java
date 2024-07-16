@@ -5645,7 +5645,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "RECURSIVE " : "recursive ");
         }
         this.indentCount++;
-        printlnAndAccept(x.getEntries(), ", ");
+        printlnAndAccept(x.getEntries(), ",");
         this.indentCount--;
         return false;
     }

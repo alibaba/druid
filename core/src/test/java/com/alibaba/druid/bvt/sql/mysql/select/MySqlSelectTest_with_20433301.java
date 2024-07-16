@@ -72,7 +72,7 @@ public class MySqlSelectTest_with_20433301 extends MysqlTest {
                 "\t\t\tAND scd_is_valid = 1\n" +
                 "\t\t\tAND scd_status = 4\n" +
                 "\t\tGROUP BY cinema_id\n" +
-                "\t), \n" +
+                "\t),\n" +
                 "\tdetail AS (\n" +
                 "\t\tSELECT show_id, cinema_id, count(1) AS scheduleCnt\n" +
                 "\t\t\t, sum(hall_seat_cnt) AS hall_seat_cnt, sum(sold_seat_cnt) AS sold_seat_cnt\n" +
