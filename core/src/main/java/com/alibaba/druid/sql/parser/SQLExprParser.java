@@ -4996,6 +4996,13 @@ public class SQLExprParser extends SQLParser {
                 column.addConstraint(ref);
                 return parseColumnRest(column);
             }
+            case TTL: {
+                lexer.nextToken();
+                SQLColumnTTL sqlColumnTTL = new SQLColumnTTL(dbType);
+                sqlColumnTTL.setExpr(expr());
+                column.addConstraint(sqlColumnTTL);
+                return parseColumnRest(column);
+            }
             case CONSTRAINT:
                 lexer.nextToken();
 

@@ -36,6 +36,7 @@ public class CKLexer extends Lexer {
         map.put("FORMAT", Token.FORMAT);
         map.put("SETTINGS", Token.SETTINGS);
         map.put("FINAL", Token.FINAL);
+        map.put("TTL", Token.TTL);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }

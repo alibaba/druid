@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -15,7 +16,11 @@ public class CKCreateTableStatement extends SQLCreateTableStatement {
     protected final List<SQLAssignItem> settings = new ArrayList<SQLAssignItem>();
     private SQLOrderBy orderBy;
     private SQLExpr partitionBy;
+
+    private SQLPrimaryKey primaryKey;
     private SQLExpr sampleBy;
+
+    private SQLExpr ttl;
 
     public CKCreateTableStatement() {
         super(DbType.clickhouse);
@@ -59,6 +64,28 @@ public class CKCreateTableStatement extends SQLCreateTableStatement {
 
     public List<SQLAssignItem> getSettings() {
         return settings;
+    }
+
+    public SQLPrimaryKey getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(SQLPrimaryKey primaryKey) {
+        if (primaryKey != null) {
+            primaryKey.setParent(this);
+        }
+        this.primaryKey = primaryKey;
+    }
+
+    public SQLExpr getTtl() {
+        return ttl;
+    }
+
+    public void setTtl(SQLExpr ttl) {
+        if (ttl != null) {
+            ttl.setParent(this);
+        }
+        this.ttl = ttl;
     }
 
     @Override
