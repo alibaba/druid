@@ -48,7 +48,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\tVIEW view_audit_enroll\n" +
                         "AS\n" +
                         "SELECT a.enroll_id AS \"enrollId\"\n" +
-                        "\t, CASE \n" +
+                        "\t, CASE\n" +
                         "\t\tWHEN ((\n" +
                         "\t\t\t\tSELECT audit\n" +
                         "\t\t\t\tFROM actvty_audit\n" +
@@ -58,7 +58,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\tTHEN '县站已审核'\n" +
                         "\t\tELSE NULL\n" +
                         "\tEND AS \"countyAudit\"\n" +
-                        "\t, CASE \n" +
+                        "\t, CASE\n" +
                         "\t\tWHEN ((\n" +
                         "\t\t\t\tSELECT audit\n" +
                         "\t\t\t\tFROM actvty_audit\n" +
@@ -68,7 +68,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\tTHEN '市馆已审核'\n" +
                         "\t\tELSE NULL\n" +
                         "\tEND AS \"cityAudit\"\n" +
-                        "\t, CASE \n" +
+                        "\t, CASE\n" +
                         "\t\tWHEN ((\n" +
                         "\t\t\t\tSELECT audit\n" +
                         "\t\t\t\tFROM actvty_audit\n" +
@@ -88,7 +88,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\tview view_audit_enroll\n" +
                         "as\n" +
                         "select a.enroll_id as \"enrollId\"\n" +
-                        "\t, case \n" +
+                        "\t, case\n" +
                         "\t\twhen ((\n" +
                         "\t\t\t\tselect audit\n" +
                         "\t\t\t\tfrom actvty_audit\n" +
@@ -98,7 +98,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\tthen '县站已审核'\n" +
                         "\t\telse null\n" +
                         "\tend as \"countyAudit\"\n" +
-                        "\t, case \n" +
+                        "\t, case\n" +
                         "\t\twhen ((\n" +
                         "\t\t\t\tselect audit\n" +
                         "\t\t\t\tfrom actvty_audit\n" +
@@ -108,7 +108,7 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\tthen '市馆已审核'\n" +
                         "\t\telse null\n" +
                         "\tend as \"cityAudit\"\n" +
-                        "\t, case \n" +
+                        "\t, case\n" +
                         "\t\twhen ((\n" +
                         "\t\t\t\tselect audit\n" +
                         "\t\t\t\tfrom actvty_audit\n" +

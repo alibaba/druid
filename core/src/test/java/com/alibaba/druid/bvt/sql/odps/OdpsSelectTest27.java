@@ -28,13 +28,13 @@ public class OdpsSelectTest27 extends TestCase {
         // 1095288847322
         String sql = "select case when aaa < 0.1 then 2 else 1 end as abc\n" +
                 "from bigdata_xy.dual;";//
-        assertEquals("SELECT CASE \n" +
+        assertEquals("SELECT CASE\n" +
                 "\t\tWHEN aaa < 0.1 THEN 2\n" +
                 "\t\tELSE 1\n" +
                 "\tEND AS abc\n" +
                 "FROM bigdata_xy.dual;", SQLUtils.formatOdps(sql));
 
-        assertEquals("select case \n" +
+        assertEquals("select case\n" +
                 "\t\twhen aaa < 0.1 then 2\n" +
                 "\t\telse 1\n" +
                 "\tend as abc\n" +

@@ -61,7 +61,7 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t\t\t, sum(swrs_count) AS acd_totle\n" +
                     "\t\t\tFROM (\n" +
                     "\t\t\t\tSELECT xzqh, sglx\n" +
-                    "\t\t\t\t\t, CASE \n" +
+                    "\t\t\t\t\t, CASE\n" +
                     "\t\t\t\t\t\tWHEN (swrs7 < 3) THEN '1'\n" +
                     "\t\t\t\t\t\tWHEN (swrs7 < 5) THEN '2'\n" +
                     "\t\t\t\t\t\tWHEN (swrs7 <= 9) THEN '3'\n" +
@@ -110,7 +110,7 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t\t\t, sum(swrs_count) as acd_totle\n" +
                     "\t\t\tfrom (\n" +
                     "\t\t\t\tselect xzqh, sglx\n" +
-                    "\t\t\t\t\t, case \n" +
+                    "\t\t\t\t\t, case\n" +
                     "\t\t\t\t\t\twhen (swrs7 < 3) then '1'\n" +
                     "\t\t\t\t\t\twhen (swrs7 < 5) then '2'\n" +
                     "\t\t\t\t\t\twhen (swrs7 <= 9) then '3'\n" +

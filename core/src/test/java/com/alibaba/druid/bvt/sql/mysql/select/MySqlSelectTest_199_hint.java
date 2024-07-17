@@ -285,11 +285,11 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT w_state, i_item_id\n"
-                    + "\t, sum((CASE \n"
+                    + "\t, sum((CASE\n"
                     + "\t\tWHEN (CAST(d_date AS DATE) < CAST('2000-03-11' AS DATE)) THEN (cs_sales_price - COALESCE(cr_refunded_cash, 0))\n"
                     + "\t\tELSE 0\n"
                     + "\tEND)) AS sales_before\n"
-                    + "\t, sum((CASE \n"
+                    + "\t, sum((CASE\n"
                     + "\t\tWHEN (CAST(d_date AS DATE) >= CAST('2000-03-11' AS DATE)) THEN (cs_sales_price - COALESCE(cr_refunded_cash, 0))\n"
                     + "\t\tELSE 0\n"
                     + "\tEND)) AS sales_after\n"

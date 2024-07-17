@@ -107,7 +107,7 @@ public class DB2InsertTest_1 extends DB2Test {
                         "\t, 1\n" +
                         "FROM (\n" +
                         "\tSELECT LATN_ID\n" +
-                        "\t\t, CASE \n" +
+                        "\t\t, CASE\n" +
                         "\t\t\tWHEN BUREAU_KEY = 116 THEN 46\n" +
                         "\t\t\tELSE BUREAU_KEY\n" +
                         "\t\tEND AS BUREAU_KEY, SUM(COALESCE(USER_CNT_ADD, 0)) AS ADD_SUM\n" +
@@ -115,13 +115,13 @@ public class DB2InsertTest_1 extends DB2Test {
                         "\tFROM MK.M_USER_COUNT_FACT_CDMA\n" +
                         "\tWHERE THE_DATE BETWEEN SUBSTR('{THISMONTH}', 1, 4) CONCAT '-01-01' AND '{THISMONTH}'\n" +
                         "\t\tAND PAG_FLAG = 0\n" +
-                        "\tGROUP BY LATN_ID, CASE \n" +
+                        "\tGROUP BY LATN_ID, CASE\n" +
                         "\t\t\tWHEN BUREAU_KEY = 116 THEN 46\n" +
                         "\t\t\tELSE BUREAU_KEY\n" +
                         "\t\tEND\n" +
                         "\tUNION ALL\n" +
                         "\tSELECT LATN_ID\n" +
-                        "\t\t, CASE \n" +
+                        "\t\t, CASE\n" +
                         "\t\t\tWHEN BUREAU_KEY = 116 THEN 46\n" +
                         "\t\t\tELSE BUREAU_KEY\n" +
                         "\t\tEND AS BUREAU_KEY, 0 AS ADD_SUM\n" +
@@ -130,13 +130,13 @@ public class DB2InsertTest_1 extends DB2Test {
                         "\tFROM MK.M_USER_COUNT_FACT_CDMA\n" +
                         "\tWHERE THE_DATE = '{THISMONTH}'\n" +
                         "\t\tAND PAG_FLAG = 0\n" +
-                        "\tGROUP BY LATN_ID, CASE \n" +
+                        "\tGROUP BY LATN_ID, CASE\n" +
                         "\t\t\tWHEN BUREAU_KEY = 116 THEN 46\n" +
                         "\t\t\tELSE BUREAU_KEY\n" +
                         "\t\tEND\n" +
                         "\tUNION ALL\n" +
                         "\tSELECT LATN_ID\n" +
-                        "\t\t, CASE \n" +
+                        "\t\t, CASE\n" +
                         "\t\t\tWHEN BUREAU_KEY = 116 THEN 46\n" +
                         "\t\t\tELSE BUREAU_KEY\n" +
                         "\t\tEND AS BUREAU_KEY, 0 AS ADD_SUM, 0 AS USER_ACCT\n" +
@@ -144,7 +144,7 @@ public class DB2InsertTest_1 extends DB2Test {
                         "\tFROM MK.M_USER_COUNT_FACT_CDMA\n" +
                         "\tWHERE THE_DATE = DATE(SUBSTR('{THISMONTH}', 1, 4) CONCAT '-01-01') - 1 MONTHS\n" +
                         "\t\tAND PAG_FLAG = 0\n" +
-                        "\tGROUP BY LATN_ID, CASE \n" +
+                        "\tGROUP BY LATN_ID, CASE\n" +
                         "\t\t\tWHEN BUREAU_KEY = 116 THEN 46\n" +
                         "\t\t\tELSE BUREAU_KEY\n" +
                         "\t\tEND\n" +

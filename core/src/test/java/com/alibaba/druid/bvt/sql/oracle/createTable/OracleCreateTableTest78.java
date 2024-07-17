@@ -114,7 +114,7 @@ public class OracleCreateTableTest78 extends OracleTest {
                         "\t, TCP_CUST_CUSTOMER.Name AS sCustomerName, TCP_EPM.EPM_TB_CONTRACT_EX.sServiceProviderID AS sServiceProviderID, TCP_CUST_ENUM.DESC_ AS sServiceProviderName, EPM_TBL_CONTRACT.MASTERPRODUCT AS nMainProductID, TCP_FND_PRODUCT.CN_NAME AS sMainProductName\n" +
                         "\t, EPM_TBL_CONTRACT.CONTRACTTYPE AS sContractType, TCP_FND_LOOKUP_CODE.MEANING AS sContractTypeText, EPM_TBL_CONTRACT.Contrctkind AS sContractKind, TCP_FND_LOOKUP_CODE1.MEANING AS sContractKindText, TCP_EPM.EPM_TB_CONTRACT_EX.sIsFirstChecked AS sIsFirstChecked\n" +
                         "\t, TCP_EPM.EPM_TB_CONTRACT_EX.sIsLastChecked AS sIsLastChecked\n" +
-                        "\t, CASE \n" +
+                        "\t, CASE\n" +
                         "\t\tWHEN (\n" +
                         "\t\t\t\tSELECT count(*)\n" +
                         "\t\t\t\tFROM EPM_TBL_ENGINE_PROJECT, EPM_TBL_SUBCONTRACT_DISPATCH\n" +
@@ -124,7 +124,7 @@ public class OracleCreateTableTest78 extends OracleTest {
                         "\t\tTHEN '/'\n" +
                         "\t\tELSE '&'\n" +
                         "\tEND AS sIsOutSource\n" +
-                        "\t, CASE \n" +
+                        "\t, CASE\n" +
                         "\t\tWHEN (\n" +
                         "\t\t\t\tSELECT count(*)\n" +
                         "\t\t\t\tFROM TCP_EPM.EPM_TBL_RECONSIGN_RECONSIGN\n" +

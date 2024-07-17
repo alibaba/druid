@@ -51,63 +51,63 @@ public class MySqlSelectTest_106_hints extends MysqlTest {
 
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
 
-        assertEquals("SELECT sum(CASE \n" +
+        assertEquals("SELECT sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 1 THEN 1\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS oneCustomersNum\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 1 THEN a.payment\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS onceMoney\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 1 THEN a.interval_day\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS oneIntervalDay\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 2 THEN 1\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS twoCustomersNum\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 2 THEN a.payment\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS twoMoney\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 2 THEN a.interval_day\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS twoIntervalDay\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 3 THEN 1\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS threeCustomersNum\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 3 THEN a.payment\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS threeMoney\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 3 THEN a.interval_day\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS threeIntervalDay\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 4 THEN 1\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS fourCustomersNum\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 4 THEN a.payment\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS fourMoney\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 4 THEN a.interval_day\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS fourIntervalDay\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 5 THEN 1\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS fiveCustomersNum\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 5 THEN a.payment\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS fiveMoney\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN a.purchase_times = 5 THEN a.interval_day\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) AS fiveIntervalDay\n" +

@@ -72,30 +72,30 @@ public class MySqlSelectTest_187 extends MysqlTest {
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("SELECT coach_id, tournament_name, tournament_id, season_id, season\n" +
                         "\t, count(1) AS num\n" +
-                        "\t, sum(CASE \n" +
+                        "\t, sum(CASE\n" +
                         "\t\tWHEN wdl = 0 THEN 1\n" +
                         "\t\tELSE 0\n" +
                         "\tEND) AS loss\n" +
-                        "\t, sum(CASE \n" +
+                        "\t, sum(CASE\n" +
                         "\t\tWHEN wdl = 1 THEN 1\n" +
                         "\t\tELSE 0\n" +
                         "\tEND) AS draw\n" +
-                        "\t, sum(CASE \n" +
+                        "\t, sum(CASE\n" +
                         "\t\tWHEN wdl = 3 THEN 1\n" +
                         "\t\tELSE 0\n" +
                         "\tEND) AS win\n" +
                         "FROM (\n" +
                         "\tSELECT a.coach_id, b.team_id, a.home_team_id, a.away_team_id, a.tournament_id\n" +
                         "\t\t, a.tournament_name, a.season_id, a.season, a.result\n" +
-                        "\t\t, CASE \n" +
+                        "\t\t, CASE\n" +
                         "\t\t\tWHEN b.team_id = a.home_team_id THEN \n" +
-                        "\t\t\t\t(CASE \n" +
+                        "\t\t\t\t(CASE\n" +
                         "\t\t\t\t\tWHEN CONVERT(SUBSTRING(a.result, 1, LOCATE(':', a.result) - 1), SIGNED) > CONVERT(SUBSTRING(a.result, LOCATE(':', a.result) + 1, CHAR_LENGTH(a.result)), SIGNED) THEN 3\n" +
                         "\t\t\t\t\tWHEN CONVERT(SUBSTRING(a.result, 1, LOCATE(':', a.result) - 1), SIGNED) < CONVERT(SUBSTRING(a.result, LOCATE(':', a.result) + 1, CHAR_LENGTH(a.result)), SIGNED) THEN 0\n" +
                         "\t\t\t\t\tELSE 1\n" +
                         "\t\t\t\tEND)\n" +
                         "\t\t\tWHEN b.team_id = a.away_team_id THEN \n" +
-                        "\t\t\t\t(CASE \n" +
+                        "\t\t\t\t(CASE\n" +
                         "\t\t\t\t\tWHEN CONVERT(SUBSTRING(a.result, 1, LOCATE(':', a.result) - 1), SIGNED) > CONVERT(SUBSTRING(a.result, LOCATE(':', a.result) + 1, CHAR_LENGTH(a.result)), SIGNED) THEN 0\n" +
                         "\t\t\t\t\tWHEN CONVERT(SUBSTRING(a.result, 1, LOCATE(':', a.result) - 1), SIGNED) < CONVERT(SUBSTRING(a.result, LOCATE(':', a.result) + 1, CHAR_LENGTH(a.result)), SIGNED) THEN 3\n" +
                         "\t\t\t\t\tELSE 1\n" +

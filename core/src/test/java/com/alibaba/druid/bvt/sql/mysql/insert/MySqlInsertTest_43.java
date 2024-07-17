@@ -92,7 +92,7 @@ public class MySqlInsertTest_43 extends TestCase {
                 "\tFROM sales_order t1\n" +
                 "\t\tJOIN (\n" +
                 "\t\t\tSELECT t2_1.warehouse_id, t2_1.external_batch_code\n" +
-                "\t\t\t\t, (CASE \n" +
+                "\t\t\t\t, (CASE\n" +
                 "\t\t\t\t\tWHEN t2_2.operation_type = 2\n" +
                 "\t\t\t\t\t\tOR t2_2.operation_type IS NULL\n" +
                 "\t\t\t\t\tTHEN '2'\n" +

@@ -546,7 +546,7 @@ public class MySqlSelectTest_304_adb_hints
                 SQLParserFeature.EnableMultiUnion);
 
         assertEquals("SELECT o_year\n" +
-                "\t, sum(CASE \n" +
+                "\t, sum(CASE\n" +
                 "\t\tWHEN nation = 'BRAZIL' THEN volume\n" +
                 "\t\tELSE 0\n" +
                 "\tEND) / sum(volume) AS mkt_share\n" +

@@ -138,7 +138,7 @@ public class MySqlSelectTest_288 extends MysqlTest {
                 "(SELECT 'android', server_id, imei, app_version\n" +
                 "\t, lower(sdk_channel) AS channel, city_id, province_id\n" +
                 "\t, country_id, '' AS device_brand, device_model, resolution\n" +
-                "\t, CASE \n" +
+                "\t, CASE\n" +
                 "\t\tWHEN is_app_new = 2 THEN 'new'\n" +
                 "\t\tELSE 'active'\n" +
                 "\tEND AS user_type\n" +
@@ -149,7 +149,7 @@ public class MySqlSelectTest_288 extends MysqlTest {
                 "\t\t, max(app_version) OVER (PARTITION BY t.server_id ) AS app_version, sdk_channel\n" +
                 "\t\t, row_number() OVER (PARTITION BY t.server_id ORDER BY time DESC) AS row_num, city_id, province_id\n" +
                 "\t\t, country_id, device_model, resolution\n" +
-                "\t\t, CASE \n" +
+                "\t\t, CASE\n" +
                 "\t\t\tWHEN t1.server_id IS NOT NULL THEN 2\n" +
                 "\t\t\tELSE 1\n" +
                 "\t\tEND AS is_app_new, 0 AS is_back, 0 AS is_first_launch\n" +
@@ -177,7 +177,7 @@ public class MySqlSelectTest_288 extends MysqlTest {
                 "(SELECT 'ios', d.server_id, idfa, app_version\n" +
                 "\t, COALESCE(last_channel, channel) AS channel, city_id\n" +
                 "\t, province_id, country_id, '' AS device_brand, device_model, resolution\n" +
-                "\t, CASE \n" +
+                "\t, CASE\n" +
                 "\t\tWHEN is_app_new = 2 THEN 'new'\n" +
                 "\t\tELSE 'active'\n" +
                 "\tEND AS user_type\n" +
@@ -188,7 +188,7 @@ public class MySqlSelectTest_288 extends MysqlTest {
                 "\t\tSELECT t.server_id, idfa, max(app_version) OVER (PARTITION BY t.server_id ) AS app_version\n" +
                 "\t\t\t, row_number() OVER (PARTITION BY t.server_id ORDER BY time DESC) AS row_num, city_id, province_id\n" +
                 "\t\t\t, country_id, device_model, resolution\n" +
-                "\t\t\t, CASE \n" +
+                "\t\t\t, CASE\n" +
                 "\t\t\t\tWHEN t1.server_id IS NOT NULL THEN 2\n" +
                 "\t\t\t\tELSE 1\n" +
                 "\t\t\tEND AS is_app_new\n" +

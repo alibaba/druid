@@ -1175,10 +1175,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print('(');
         }
         this.indentCount++;
-        print0(ucase ? "CASE " : "case ");
+        print0(ucase ? "CASE" : "case");
 
         SQLExpr valueExpr = x.getValueExpr();
         if (valueExpr != null) {
+            print(' ');
             printExpr(valueExpr, parameterized);
         }
 

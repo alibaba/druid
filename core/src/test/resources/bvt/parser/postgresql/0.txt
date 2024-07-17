@@ -1,3 +1,794 @@
+SELECT xxx FROM table_test limit 5 OFFSET 10;
+--------------------
+SELECT xxx
+FROM table_test
+LIMIT 5 OFFSET 10;
+------------------------------------------------------------------------------------------------------------------------
+SELECT xxx FROM table_test OFFSET 10 ROWS FETCH FIRST 5 rows only;
+--------------------
+SELECT xxx
+FROM table_test
+OFFSET 10
+FETCH FIRST 5 ROWS ONLY;
+------------------------------------------------------------------------------------------------------------------------
+select * from mc_job a inner join (mc_role b inner join mc_source c on b.id = c.id) as tem2 on tem2.user_id = a.id;
+--------------------
+SELECT *
+FROM mc_job a
+	INNER JOIN (mc_role b
+		INNER JOIN mc_source c ON b.id = c.id) AS tem2 ON tem2.user_id = a.id;
+------------------------------------------------------------------------------------------------------------------------
+select
+    COUNT(1) res
+    from TB_EXPERIENCE exp
+    where exp.creatdate>DATE_SUB(CURDATE(), interval 1 MONTH)
+    and exp.cstatus = 1
+--------------------
+SELECT COUNT(1) AS res
+FROM TB_EXPERIENCE exp
+WHERE exp.creatdate > DATE_SUB(CURDATE(), INTERVAL '1' MONTH)
+	AND exp.cstatus = 1
+------------------------------------------------------------------------------------------------------------------------
+select * from xxx_point point inner join xxx_cc cc on point.id = cc.point_id
+--------------------
+SELECT *
+FROM xxx_point point
+	INNER JOIN xxx_cc cc ON point.id = cc.point_id
+------------------------------------------------------------------------------------------------------------------------
+select 1 from t_user u
+join (
+    WITH RECURSIVE users AS (
+        select id from t_user limit 1
+    ) select id from users
+) t on u.id = t.id;
+--------------------
+SELECT 1
+FROM t_user u
+	JOIN (
+		WITH RECURSIVE users AS (
+				SELECT id
+				FROM t_user
+				LIMIT 1
+			)
+		SELECT id
+		FROM users
+	) t ON u.id = t.id;
+------------------------------------------------------------------------------------------------------------------------
+select u.id, (
+    WITH RECURSIVE users AS (
+        select id from t_user limit 1
+    ) select id from users
+) from t_user u
+limit 1;
+--------------------
+SELECT u.id
+	, (
+		WITH RECURSIVE users AS (
+				SELECT id
+				FROM t_user
+				LIMIT 1
+			)
+		SELECT id
+		FROM users
+	)
+FROM t_user u
+LIMIT 1;
+------------------------------------------------------------------------------------------------------------------------
+select PERCENTILE_CONT(0.5) WITHIN GROUP ( ORDER BY m asc ) from
+(
+select distinct extract(month from paidon) as m from core_order where paidon between '2019-1-01' and '2019-5-01' order by m asc
+)a
+--------------------
+SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY m ASC)
+FROM (
+	SELECT DISTINCT extract(month FROM paidon) AS m
+	FROM core_order
+	WHERE paidon BETWEEN '2019-1-01' AND '2019-5-01'
+	ORDER BY m ASC
+) a
+------------------------------------------------------------------------------------------------------------------------
+select field from table where field like 'aa''a';
+--------------------
+SELECT field
+FROM table
+WHERE field LIKE 'aa''a';
+------------------------------------------------------------------------------------------------------------------------
+select '[{"a":"foo"},{"b":"bar"},{"c":"baz"}]'::json->2
+--------------------
+SELECT '[{"a":"foo"},{"b":"bar"},{"c":"baz"}]'::json -> 2
+------------------------------------------------------------------------------------------------------------------------
+SELECT count(*) FROM phoenix_task_inst where dag_inst_id = 302537384 AND cycle_time >= '2018-08-14 09:00:00'
+AND  cycle_time < '2018-08-14 10:00:00'
+-- select  count(*)  from phoenix_task_relation WHERE child_dag_inst_id = 302537384
+-- select dag_inst_id,gmtdate,flow_id,dag_type,root_node_id,app_id,create_time from \"phoenix_dag_inst\" where project_env = 'PROD' AND dag_type = 0 AND root_node_id=1  order by gmtdate DESC limit 10;
+--------------------
+SELECT count(*)
+FROM phoenix_task_inst
+WHERE dag_inst_id = 302537384
+	AND cycle_time >= '2018-08-14 09:00:00'
+	AND cycle_time < '2018-08-14 10:00:00' -- select  count(*)  from phoenix_task_relation WHERE child_dag_inst_id = 302537384
+-- select dag_inst_id,gmtdate,flow_id,dag_type,root_node_id,app_id,create_time from \"phoenix_dag_inst\" where project_env = 'PROD' AND dag_type = 0 AND root_node_id=1  order by gmtdate DESC limit 10;
+------------------------------------------------------------------------------------------------------------------------
+-- select  count(*)  from phoenix_task_relation WHERE child_dag_inst_id = 302537384
+select 1
+--------------------
+-- select  count(*)  from phoenix_task_relation WHERE child_dag_inst_id = 302537384
+SELECT 1
+------------------------------------------------------------------------------------------------------------------------
+select son_id,parent_id from ((select son_id,parent_id from lance_temp limit 10) union all (select son_id,parent_id from lance_temp limit 10)) a;
+--------------------
+SELECT son_id, parent_id
+FROM (
+	(SELECT son_id, parent_id
+	FROM lance_temp
+	LIMIT 10)
+	UNION ALL
+	(SELECT son_id, parent_id
+	FROM lance_temp
+	LIMIT 10)
+) a;
+------------------------------------------------------------------------------------------------------------------------
+SELECT COUNTRY_CODE,AREA_CODE,CITY_CODE,PARK_CODE,PARK_CN,PARK_EN,
+SUM(case when EVNT_BIG_TYPE_CODE = 'SAFETY_INCIDENT' then EVNT_NUM else 0 end) AS SAFE_INCIDENT,
+SUM(case when EVNT_BIG_TYPE_CODE = 'FIRE_INCIDENT' then EVNT_NUM else 0 end) AS FIRE_INCIDENT
+FROM dm.dm_ioc_event_type_h_sf
+WHERE CALCULATE_TIME >= (CURRENT_DATE - INTERVAL '1' MONTH)
+AND PARK_CODE = '101001001083'
+GROUP BY COUNTRY_CODE,AREA_CODE,CITY_CODE,PARK_CODE,PARK_CN,PARK_EN;
+--------------------
+SELECT COUNTRY_CODE, AREA_CODE, CITY_CODE, PARK_CODE, PARK_CN
+	, PARK_EN
+	, SUM(CASE
+		WHEN EVNT_BIG_TYPE_CODE = 'SAFETY_INCIDENT' THEN EVNT_NUM
+		ELSE 0
+	END) AS SAFE_INCIDENT
+	, SUM(CASE
+		WHEN EVNT_BIG_TYPE_CODE = 'FIRE_INCIDENT' THEN EVNT_NUM
+		ELSE 0
+	END) AS FIRE_INCIDENT
+FROM dm.dm_ioc_event_type_h_sf
+WHERE CALCULATE_TIME >= (CURRENT_DATE - INTERVAL '1' MONTH)
+	AND PARK_CODE = '101001001083'
+GROUP BY COUNTRY_CODE, AREA_CODE, CITY_CODE, PARK_CODE, PARK_CN, PARK_EN;
+------------------------------------------------------------------------------------------------------------------------
+select a.*, avg(a.nv_roe_lag) over() as nv_roe_avg, avg(a.idx_roe_lag) over (order by a.stat_date) as idx_roe_avg,avg(a.if300_roe_lag) over() as if300_roe_avg, avg(a.ih50_roe_lag) over() as ih50_roe_avg,avg(a.ic500_roe_lag) over() as ic500_roe_avg,
+max(a.nv_retrace) over (order by a.stat_date) as nv_retrace_max, max(a.idx_retrace) over (order by a.stat_date) as idx_retrace_max,max(a.if300_retrace) over (order by a.stat_date) as if300_retrace_max,max(a.ih50_retrace) over (order by a.stat_date) as ih50_retrace_max, max(a.ic500_retrace) over (order by a.stat_date) as ic500_retrace_max,
+case when a.nv_flag>=0 then sum(1) over (order by a.stat_date) else sum(0) over (order by a.stat_date) end as nv_flag_up,count(1) filter(where a.nv_flag<=0) over (order by a.stat_date) as nv_flag_down,
+count(1) filter(where a.idx_flag>=0) over (order by a.stat_date) as idx_flag_up,count(1) filter(where a.idx_flag<=0) over (order by a.stat_date) as idx_flag_down,
+count(1) filter(where a.if300_flag>=0) over (order by a.stat_date) as if300_flag_up,count(1) filter(where a.if300_flag<=0) over (order by a.stat_date) as if300_flag_down,
+count(1) filter(where a.ih50_flag>=0) over (order by a.stat_date) as ih50_flag_up,count(1) filter(where a.ih50_flag<=0) over (order by a.stat_date) as ih50_flag_down,
+count(1) filter(where a.ic500_flag>=0) over (order by a.stat_date) as ic500_flag_up,count(1) filter(where a.ic500_flag<=0) over (order by a.stat_date) as ic500_flag_down,
+count(1) filter(where a.idx_roe_lag>0) over (order by a.stat_date) as idx_win_cnt,count(1) filter(where a.idx_roe_lag>a.idx_roe_lag) over (order by a.stat_date) as idx_win_idx_cnt,
+count(1) filter(where a.nv_roe_lag>0) over (order by a.stat_date) as nv_win_cnt,count(1) filter(where a.nv_roe_lag>a.idx_roe_lag) over (order by a.stat_date) as nv_win_idx_cnt,
+count(1) filter(where a.if300_roe_lag>0) over (order by a.stat_date) as if300_win_cnt,count(1) filter(where a.if300_roe_lag>a.idx_roe_lag) over (order by a.stat_date) as if300_win_idx_cnt,
+count(1) filter(where a.ih50_roe_lag>0) over (order by a.stat_date) as ih50_win_cnt,count(1) filter(where a.ih50_roe_lag>a.idx_roe_lag) over (order by a.stat_date) as ih50_win_idx_cnt,
+count(1) filter(where a.ic500_roe_lag>0) over (order by a.stat_date) as ic500_win_cnt,count(1) filter(where a.ic500_roe_lag>a.idx_roe_lag) over (order by a.stat_date) as ic500_win_idx_cnt,
+--根据所有输入点(X,Y)利用最小二乘法计算一个线性方程式。然后返回该直线的斜率
+regr_slope(a.nv_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as nv_beta,regr_slope(a.idx_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as idx_beta,regr_slope(a.if300_roe_lag, a.idx_roe_lag) over (order by a.stat_date) as if300_beta,regr_slope(a.ih50_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as ih50_beta,regr_slope(a.ic500_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as ic500_beta,
+--根据所有输入点(X,Y)利用最小二乘法计算一个线性方程式。然后返回该直线的Y轴截距
+regr_intercept(a.nv_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as nv_alpha,regr_intercept(a.idx_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as idx_alpha,regr_intercept(a.if300_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as if300_alpha,regr_intercept(a.ih50_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as ih50_alpha,regr_intercept(a.ic500_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as ic500_alpha,
+--相关系数
+corr(a.nv_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as nv_corr,corr(a.idx_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as idx_corr,corr(a.if300_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as if300_corr,corr(a.ih50_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as ih50_corr,corr(a.ic500_roe_lag,a.idx_roe_lag) over (order by a.stat_date) as ic500_corr,
+--样本标准差
+stddev_samp(a.nv_roe_lag) over (order by a.stat_date) as nv_stddev,stddev_samp(a.idx_roe_lag) over (order by a.stat_date) as idx_stddev,stddev_samp(a.if300_roe_lag) over (order by a.stat_date) as if300_stddev,stddev_samp(a.ih50_roe_lag) over (order by a.stat_date) as ih50_stddev,stddev_samp(a.ic500_roe_lag) over (order by a.stat_date) as ic500_stddev,
+stddev_samp(a.nv_roe_lag-a.idx_roe_lag) over (order by a.stat_date) as nv_stderr,stddev_samp(a.idx_roe_lag-a.idx_roe_lag) over (order by a.stat_date) as idx_stderr,stddev_samp(a.if300_roe_lag-a.idx_roe_lag) over (order by a.stat_date) as if300_stderr,stddev_samp(a.ih50_roe_lag-a.idx_roe_lag) over (order by a.stat_date) as ih50_stderr,stddev_samp(a.ic500_roe_lag-a.idx_roe_lag) over (order by a.stat_date) as ic500_stderr
+from nv_a a
+--------------------
+SELECT a.*, avg(a.nv_roe_lag) OVER () AS nv_roe_avg
+	, avg(a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_roe_avg
+	, avg(a.if300_roe_lag) OVER () AS if300_roe_avg
+	, avg(a.ih50_roe_lag) OVER () AS ih50_roe_avg
+	, avg(a.ic500_roe_lag) OVER () AS ic500_roe_avg
+	, max(a.nv_retrace) OVER (ORDER BY a.stat_date) AS nv_retrace_max
+	, max(a.idx_retrace) OVER (ORDER BY a.stat_date) AS idx_retrace_max
+	, max(a.if300_retrace) OVER (ORDER BY a.stat_date) AS if300_retrace_max
+	, max(a.ih50_retrace) OVER (ORDER BY a.stat_date) AS ih50_retrace_max
+	, max(a.ic500_retrace) OVER (ORDER BY a.stat_date) AS ic500_retrace_max
+	, CASE
+		WHEN a.nv_flag >= 0 THEN sum(1) OVER (ORDER BY a.stat_date)
+		ELSE sum(0) OVER (ORDER BY a.stat_date)
+	END AS nv_flag_up, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.nv_flag <= 0) AS nv_flag_down
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.idx_flag >= 0) AS idx_flag_up
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.idx_flag <= 0) AS idx_flag_down
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.if300_flag >= 0) AS if300_flag_up
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.if300_flag <= 0) AS if300_flag_down
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_flag >= 0) AS ih50_flag_up
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_flag <= 0) AS ih50_flag_down
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_flag >= 0) AS ic500_flag_up
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_flag <= 0) AS ic500_flag_down
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.idx_roe_lag > 0) AS idx_win_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.idx_roe_lag > a.idx_roe_lag) AS idx_win_idx_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.nv_roe_lag > 0) AS nv_win_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.nv_roe_lag > a.idx_roe_lag) AS nv_win_idx_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.if300_roe_lag > 0) AS if300_win_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.if300_roe_lag > a.idx_roe_lag) AS if300_win_idx_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_roe_lag > 0) AS ih50_win_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_roe_lag > a.idx_roe_lag) AS ih50_win_idx_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_roe_lag > 0) AS ic500_win_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_roe_lag > a.idx_roe_lag) AS ic500_win_idx_cnt
+	, regr_slope(a.nv_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_beta
+	, regr_slope(a.idx_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_beta
+	, regr_slope(a.if300_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS if300_beta
+	, regr_slope(a.ih50_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ih50_beta
+	, regr_slope(a.ic500_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_beta
+	, regr_intercept(a.nv_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_alpha
+	, regr_intercept(a.idx_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_alpha
+	, regr_intercept(a.if300_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS if300_alpha
+	, regr_intercept(a.ih50_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ih50_alpha
+	, regr_intercept(a.ic500_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_alpha
+	, corr(a.nv_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_corr
+	, corr(a.idx_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_corr
+	, corr(a.if300_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS if300_corr
+	, corr(a.ih50_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ih50_corr
+	, corr(a.ic500_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_corr
+	, stddev_samp(a.nv_roe_lag) OVER (ORDER BY a.stat_date) AS nv_stddev
+	, stddev_samp(a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_stddev
+	, stddev_samp(a.if300_roe_lag) OVER (ORDER BY a.stat_date) AS if300_stddev
+	, stddev_samp(a.ih50_roe_lag) OVER (ORDER BY a.stat_date) AS ih50_stddev
+	, stddev_samp(a.ic500_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_stddev
+	, stddev_samp(a.nv_roe_lag - a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_stderr
+	, stddev_samp(a.idx_roe_lag - a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_stderr
+	, stddev_samp(a.if300_roe_lag - a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS if300_stderr
+	, stddev_samp(a.ih50_roe_lag - a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ih50_stderr
+	, stddev_samp(a.ic500_roe_lag - a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_stderr
+FROM nv_a a
+------------------------------------------------------------------------------------------------------------------------
+select a.*, stddev_samp(a.idx_yield_day) over(order by a.action_date rows between 60 preceding and current row) as idx_volatility from idx_a a
+--------------------
+SELECT a.*, stddev_samp(a.idx_yield_day) OVER (ORDER BY a.action_date ROWS BETWEEN 60 PRECEDING AND CURRENT ROW) AS idx_volatility
+FROM idx_a a
+------------------------------------------------------------------------------------------------------------------------
+select a.*, (a.swanav-lead(a.swanav,1,null::numeric) over w)/lead(a.swanav,1,null::numeric) over w as roe_lag
+    from ffund.ffund_eval_prod_nv a
+    where a.prod_id='D20171206191156525S0034R234'
+    and a.stat_date>='0000-00-00'
+    and a.stat_date<='9999-99-99'
+    and a.nav>0 and a.swanav>0
+    window w as (order by a.stat_date desc)
+--------------------
+SELECT a.*
+	, (a.swanav - lead(a.swanav, 1, NULL::numeric) OVER w) / lead(a.swanav, 1, NULL::numeric) OVER w AS roe_lag
+FROM ffund.ffund_eval_prod_nv a
+WHERE a.prod_id = 'D20171206191156525S0034R234'
+	AND a.stat_date >= '0000-00-00'
+	AND a.stat_date <= '9999-99-99'
+	AND a.nav > 0
+	AND a.swanav > 0
+WINDOW w AS (ORDER BY a.stat_date DESC)
+------------------------------------------------------------------------------------------------------------------------
+SELECT string_agg(a, ',' ORDER BY a) FROM table;
+--------------------
+SELECT string_agg(a, ',' ORDER BY a)
+FROM table;
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+
+        job_id,
+        task_id,
+        process_id,
+        job_type,
+        job_status,
+        execute_server,
+        execute_result,
+        execute_times,
+        execute_begin,
+        execute_end,
+        timeout_advice,
+        create_time,
+        update_time,
+        opr_user,
+        opr_time
+        FROM robot_job j
+        WHERE j.job_status = 1 AND j.timeout_advice = 0
+        AND ( j.execute_begin <= NOW()-cast( ? as interval)*60)
+--------------------
+SELECT job_id, task_id, process_id, job_type, job_status
+	, execute_server, execute_result, execute_times, execute_begin, execute_end
+	, timeout_advice, create_time, update_time, opr_user, opr_time
+FROM robot_job j
+WHERE j.job_status = 1
+	AND j.timeout_advice = 0
+	AND (j.execute_begin <= NOW() - CAST(? AS interval) * 60)
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+        CASE
+        WHEN POSITION ('市区' IN area_string) > 0 THEN 1
+        WHEN POSITION ('郊区' IN area_string) > 0 THEN 2
+        WHEN POSITION ('无市郊区规划信息' IN area_string) > 0 THEN 9
+        ELSE -1 END
+FROM
+        (
+                SELECT ARRAY_TO_STRING(ARRAY (
+                                SELECT DISTINCT area_info FROM md_mesh WHERE mesh IN (
+                                                        SELECT regexp_split_to_table(?, ',')
+                                        )),',') AS area_string
+        ) t
+--------------------
+SELECT CASE
+		WHEN POSITION('市区' IN area_string) > 0 THEN 1
+		WHEN POSITION('郊区' IN area_string) > 0 THEN 2
+		WHEN POSITION('无市郊区规划信息' IN area_string) > 0 THEN 9
+		ELSE -1
+	END
+FROM (
+	SELECT ARRAY_TO_STRING(ARRAY(
+			SELECT DISTINCT area_info
+			FROM md_mesh
+			WHERE mesh IN (
+				SELECT regexp_split_to_table(?, ',')
+			)
+		), ',') AS area_string
+) t
+------------------------------------------------------------------------------------------------------------------------
+SELECT sum(salary) OVER w, avg(salary) OVER w
+ FROM empsalary
+ WINDOW w AS (PARTITION BY depname ORDER BY salary DESC);
+--------------------
+SELECT sum(salary) OVER w, avg(salary) OVER w
+FROM empsalary
+WINDOW w AS (PARTITION BY depname ORDER BY salary DESC);
+------------------------------------------------------------------------------------------------------------------------
+SELECT m.task_id
+ FROM wf_task_main m
+ WHERE task_status = 101 AND del_flag = 0 AND now()-inner_qc_create_time > cast( ? as interval )
+--------------------
+SELECT m.task_id
+FROM wf_task_main m
+WHERE task_status = 101
+	AND del_flag = 0
+	AND now() - inner_qc_create_time > CAST(? AS interval)
+------------------------------------------------------------------------------------------------------------------------
+select * from public.newtable
+where EXTRACT(EPOCH FROM timestamptz (column1)) >= EXTRACT(EPOCH FROM timestamptz '2017-09-10 00:00:00')
+limit 10 offset 0
+--------------------
+SELECT *
+FROM public.newtable
+WHERE EXTRACT (EPOCH FROM timestamptz(column1)) >= EXTRACT (EPOCH FROM TIMESTAMP  WITH TIME ZONE '2017-09-10 00:00:00')
+LIMIT 10 OFFSET 0
+------------------------------------------------------------------------------------------------------------------------
+select '[1,2,3]'::jsonb ?| array['1']
+--------------------
+SELECT '[1,2,3]'::jsonb ?| array['1']
+------------------------------------------------------------------------------------------------------------------------
+select * from a where a.id in (VALUES (4096), (4097))
+--------------------
+SELECT *
+FROM a
+WHERE a.id IN (VALUES ((4096), (4097))
+------------------------------------------------------------------------------------------------------------------------
+select array_to_string(array ( select jsonb_array_elements ( '[{"aa":"123","bb":"123"},{"aa":"12356","bb":"12356"}]') ->> 'aa' ) ,',') as aa
+--------------------
+SELECT array_to_string(array(
+		SELECT jsonb_array_elements('[{"aa":"123","bb":"123"},{"aa":"12356","bb":"12356"}]') ->> 'aa'
+	), ',') AS aa
+------------------------------------------------------------------------------------------------------------------------
+select int4(varbit(4) '1010');
+--------------------
+SELECT int4(varbit(4) '1010');
+------------------------------------------------------------------------------------------------------------------------
+SELECT COL1 from TABLE where NID = ANY(ARRAY[1,2,3])
+--------------------
+SELECT COL1
+FROM TABLE
+WHERE NID = ANY(ARRAY[1, 2, 3])
+------------------------------------------------------------------------------------------------------------------------
+select id,sum(uv[1]) uv1,sum(uv[2]) uv2
+from xxxxx where a in
+                     (
+                        ?
+                     )
+ and ta->'taAge' ??|
+
+                         '{
+                            1
+                         ,
+                            2
+                         ,
+                            3
+                         }'
+group by id
+--------------------
+SELECT id, sum(uv[1]) AS uv1, sum(uv[2]) AS uv2
+FROM xxxxx
+WHERE a IN (?)
+	AND ta -> 'taAge' ??| '{
+                            1
+                         ,
+                            2
+                         ,
+                            3
+                         }'
+GROUP BY id
+------------------------------------------------------------------------------------------------------------------------
+SELECT ts#, file#, block#, cols, IFNULL(size$, -1), pctfree$, pctused$
+      , initrans, maxtrans, hashkeys, func, extind
+      , avgchn, IFNULL(degree, 1)
+      , IFNULL(instances, 1)
+      , IFNULL(flags, 0)
+      , IFNULL(spare1, 0)
+    FROM clu$
+    WHERE obj# ='633'
+--------------------
+SELECT ts#, file#, block#, cols
+	, IFNULL(size$, -1), pctfree$
+	, pctused$, initrans, maxtrans, hashkeys, func
+	, extind, avgchn, IFNULL(degree, 1)
+	, IFNULL(instances, 1)
+	, IFNULL(flags, 0)
+	, IFNULL(spare1, 0)
+FROM clu$
+WHERE obj# = '633'
+------------------------------------------------------------------------------------------------------------------------
+SELECT to_char((CreateDate || ' ' || CAST (HourArgment AS VARCHAR) || ':00:00') :: TIMESTAMP,'YYYY-MM-DD HH24') "intoTime " FROM analyzedata.StatTime AS cs WHERE 1 = 1 AND cs.CreateDate >= to_date( '2017-08-31 00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) AND cs.CreateDate <= to_date( '2017-08-31 23:00:00', 'YYYY-MM-DD HH24:MI:SS' ) GROUP BY to_char(( CreateDate || ' ' || CAST (HourArgment AS VARCHAR) || ':00:00') :: TIMESTAMP, 'YYYY-MM-DD HH24')
+--------------------
+SELECT to_char((CreateDate || ' ' || CAST(HourArgment AS VARCHAR) || ':00:00')::TIMESTAMP, 'YYYY-MM-DD HH24') AS "intoTime "
+FROM analyzedata.StatTime cs
+WHERE 1 = 1
+	AND cs.CreateDate >= to_date('2017-08-31 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+	AND cs.CreateDate <= to_date('2017-08-31 23:00:00', 'YYYY-MM-DD HH24:MI:SS')
+GROUP BY to_char((CreateDate || ' ' || CAST(HourArgment AS VARCHAR) || ':00:00')::TIMESTAMP, 'YYYY-MM-DD HH24')
+------------------------------------------------------------------------------------------------------------------------
+select b.*,st_astext(p.pos) as pos,st_astext(p.polygon) as polygon
+    from ts_biz as b join (
+       select * from ts_polygon
+       where type in (?) and st_intersects(st_transform(ST_GeomFromText(?, 4326),26986),st_transform(polygon,26986))
+    ) as p
+       on b.objid=p.objid and b.type=p.type and (b.cp_code=p.cp_code or (b.cp_code is null and p.cp_code is null))
+    where b.cp_code=(?) or b.cp_code is null
+--------------------
+SELECT b.*, st_astext(p.pos) AS pos, st_astext(p.polygon) AS polygon
+FROM ts_biz b
+	JOIN (
+		SELECT *
+		FROM ts_polygon
+		WHERE type IN (?)
+			AND st_intersects(st_transform(ST_GeomFromText(?, 4326), 26986), st_transform(polygon, 26986))
+	) p
+	ON b.objid = p.objid
+		AND b.type = p.type
+		AND (b.cp_code = p.cp_code
+			OR (b.cp_code IS NULL
+				AND p.cp_code IS NULL))
+WHERE b.cp_code = ?
+	OR b.cp_code IS NULL
+------------------------------------------------------------------------------------------------------------------------
+select gid, kind, mapid, poi_id, telephone, admincode, x, y, zipcode, name, address, street, number,geom from public.v_poi order by public.v_poi.geom <-> st_point(?,?) limit 1
+--------------------
+SELECT gid, kind, mapid, poi_id, telephone
+	, admincode, x, y, zipcode, name
+	, address, street, number, geom
+FROM public.v_poi
+ORDER BY public.v_poi.geom <-> st_point(?, ?)
+LIMIT 1
+------------------------------------------------------------------------------------------------------------------------
+select * from t where gmt = #{time}::timestamp with time zone
+--------------------
+SELECT *
+FROM t
+WHERE gmt = #{time}::timestamp WITH TIME ZONE
+------------------------------------------------------------------------------------------------------------------------
+select * from t where gmt = #{time}::timestamp without time zone
+--------------------
+SELECT *
+FROM t
+WHERE gmt = #{time}::timestamp WITHOUT TIME ZONE
+------------------------------------------------------------------------------------------------------------------------
+SELECT TMP_PAGE.*, ROWNUM ROW_ID FROM ( SELECT M.*, A.*
+FROM T_EW_MERCHANT M LEFT JOIN LP_ADDRESS A
+ON
+M.ADDRESS_KEY = A.KEY
+ WHERE M.MERCHANT_CODE LIKE '%'||?||'%'
+ OR
+ M.MERCHANT_NAME LIKE '%'||?||'%'
+ OR M.MERCHANT_NAME LIKE
+ '%'||?||'%'
+ OR M.CERTIFICATE LIKE
+ '%'||?||'%'
+ OR M.OWNER
+ LIKE
+ '%'||?||'%'
+ OR A.COUNTRY LIKE
+ '%'||?||'%'
+ OR
+ A.PROVINCE LIKE
+ '%'||?||'%'
+ OR A.CITY LIKE
+ '%'||?||'%'
+ OR A.COUNTY LIKE
+ '%'||?||'%'
+ OR A.STREET_AREA LIKE
+ '%'||?||'%'
+ OR A.DETAILE LIKE
+ '%'||?||'%'
+ OR A.ZIPCODE
+ LIKE
+ '%'||?||'%' ) TMP_PAGE WHERE ROWNUM <= 10
+--------------------
+SELECT TMP_PAGE.*, ROWNUM AS ROW_ID
+FROM (
+	SELECT M.*, A.*
+	FROM T_EW_MERCHANT M
+		LEFT JOIN LP_ADDRESS A ON M.ADDRESS_KEY = A.KEY
+	WHERE M.MERCHANT_CODE LIKE '%' || ? || '%'
+		OR M.MERCHANT_NAME LIKE '%' || ? || '%'
+		OR M.MERCHANT_NAME LIKE '%' || ? || '%'
+		OR M.CERTIFICATE LIKE '%' || ? || '%'
+		OR M.OWNER LIKE '%' || ? || '%'
+		OR A.COUNTRY LIKE '%' || ? || '%'
+		OR A.PROVINCE LIKE '%' || ? || '%'
+		OR A.CITY LIKE '%' || ? || '%'
+		OR A.COUNTY LIKE '%' || ? || '%'
+		OR A.STREET_AREA LIKE '%' || ? || '%'
+		OR A.DETAILE LIKE '%' || ? || '%'
+		OR A.ZIPCODE LIKE '%' || ? || '%'
+) TMP_PAGE
+WHERE ROWNUM <= 10
+------------------------------------------------------------------------------------------------------------------------
+delete from itsm_system_role_menu where menu_id in(
+    with RECURSIVE menuTemp(menu_id,parent_id)
+    as (
+    select menu_id ,parent_id from itsm_system_menu where menu_id in
+    (
+    'M00006'
+    )
+    union all
+    select a.menu_id ,a.parent_id from itsm_system_menu as a INNER JOIN menuTemp b on a.parent_id=b.menu_id
+    )
+    select menu_id from menuTemp);
+--------------------
+DELETE FROM itsm_system_role_menu
+WHERE menu_id IN (
+		WITH RECURSIVE menuTemp (menu_id, parent_id) AS (
+				SELECT menu_id, parent_id
+				FROM itsm_system_menu
+				WHERE menu_id IN ('M00006')
+				UNION ALL
+				SELECT a.menu_id, a.parent_id
+				FROM itsm_system_menu a
+					INNER JOIN menuTemp b ON a.parent_id = b.menu_id
+			)
+		SELECT menu_id
+		FROM menuTemp
+	);
+------------------------------------------------------------------------------------------------------------------------
+WITH sel AS (SELECT
+           unnest(ARRAY [4275]) AS gdid,
+           unnest(ARRAY [1])    AS gdnumber)
+    UPDATE goods_detail
+    SET gd_number = gd_number - gdnumber FROM sel
+    WHERE gd_id = gdid;
+--------------------
+WITH sel AS (
+		SELECT unnest(ARRAY[4275]) AS gdid, unnest(ARRAY[1]) AS gdnumber
+	)
+UPDATE goods_detail
+SET gd_number = gd_number - gdnumber
+FROM sel
+WHERE gd_id = gdid;
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    "result" ->> 'PROD_TYPE_NAME' ,
+    "result" ->> 'IMAGES'
+    FROM
+    mobile_info_cnmo
+--------------------
+SELECT "result" ->> 'PROD_TYPE_NAME', "result" ->> 'IMAGES'
+FROM mobile_info_cnmo
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    u.userid,
+    u.phonenumber,
+    u.cdate,
+    u.udate,
+    u.wechatid,
+    u.wechatnickname,
+    u.wechattime,
+    b. ID,
+    b.username serviceStaffName,
+    u.appid,
+    s. ID servicegroupid,
+    n.total_amount blackNumber
+    FROM
+    users u
+    LEFT JOIN user_servicegroup s ON u.userid = s.userid
+    LEFT JOIN jcs_user_base b ON s.servicestaffid = b. ID
+    LEFT JOIN jcs_user_purchase_record r ON u.userid = r.user_id
+    LEFT JOIN user_black_article_number n ON u.userid = n.userid
+    WHERE
+    u.isactive = TRUE
+    ORDER BY
+    n.total_amount DESC NULLS LAST
+--------------------
+SELECT u.userid, u.phonenumber, u.cdate, u.udate, u.wechatid
+	, u.wechatnickname, u.wechattime, b.ID, b.username AS serviceStaffName, u.appid
+	, s.ID AS servicegroupid, n.total_amount AS blackNumber
+FROM users u
+	LEFT JOIN user_servicegroup s ON u.userid = s.userid
+	LEFT JOIN jcs_user_base b ON s.servicestaffid = b.ID
+	LEFT JOIN jcs_user_purchase_record r ON u.userid = r.user_id
+	LEFT JOIN user_black_article_number n ON u.userid = n.userid
+WHERE u.isactive = true
+ORDER BY n.total_amount DESC NULLS LAST
+------------------------------------------------------------------------------------------------------------------------
+SELECT count(1) FROM t_user WHERE property ?& 'name'
+--------------------
+SELECT count(1)
+FROM t_user
+WHERE property ?& 'name'
+------------------------------------------------------------------------------------------------------------------------
+SELECT count(1) FROM t_user WHERE property ?| 'name'
+--------------------
+SELECT count(1)
+FROM t_user
+WHERE property ?| 'name'
+------------------------------------------------------------------------------------------------------------------------
+SELECT count(1) FROM t_user WHERE property ?? 'name'
+--------------------
+SELECT count(1)
+FROM t_user
+WHERE property ?? 'name'
+------------------------------------------------------------------------------------------------------------------------
+select task_id from mod_period_time where task_id in (SELECT task_id as b FROM mod_period_time order by task_id desc limit 1)
+--------------------
+SELECT task_id
+FROM mod_period_time
+WHERE task_id IN (
+	SELECT task_id AS b
+	FROM mod_period_time
+	ORDER BY task_id DESC
+	LIMIT 1
+)
+------------------------------------------------------------------------------------------------------------------------
+UPDATE sys_account AS a SET online = 2 FROM auto_handler_online o WHERE a.id = o.account_id AND a.online != 2
+--------------------
+UPDATE sys_account a
+SET online = 2
+FROM auto_handler_online o
+WHERE a.id = o.account_id
+	AND a.online != 2
+------------------------------------------------------------------------------------------------------------------------
+select polygon '((0,0),(1,1))' ~= polygon '((1,1),(0,0))'
+--------------------
+SELECT polygon '((0,0),(1,1))' ~= polygon '((1,1),(0,0))'
+------------------------------------------------------------------------------------------------------------------------
+select '{1,2,3}'::int[] <@ '{1,2,3}'::int[]
+--------------------
+SELECT '{1,2,3}'::int[] <@ '{1,2,3}'::int[]
+------------------------------------------------------------------------------------------------------------------------
+select '{1,2,3}'::int[] @> '{1,2,3}'::int[]
+--------------------
+SELECT '{1,2,3}'::int[] @> '{1,2,3}'::int[]
+------------------------------------------------------------------------------------------------------------------------
+select '{1,2,3}'::int[] && '{1,2,3}'::int[]
+--------------------
+SELECT '{1,2,3}'::int[] && '{1,2,3}'::int[]
+------------------------------------------------------------------------------------------------------------------------
+select date '2001-09-28'
+--------------------
+SELECT DATE '2001-09-28'
+------------------------------------------------------------------------------------------------------------------------
+select 'thomas' !~* '.*thomas.*'
+--------------------
+SELECT 'thomas' !~* '.*thomas.*'
+------------------------------------------------------------------------------------------------------------------------
+select 'thomas' !~ '.*thomas.*'
+--------------------
+SELECT 'thomas' !~ '.*thomas.*'
+------------------------------------------------------------------------------------------------------------------------
+select 'thomas' ~* '.*thomas.*'
+--------------------
+SELECT 'thomas' ~* '.*thomas.*'
+------------------------------------------------------------------------------------------------------------------------
+select 'thomas' ~ '.*thomas.*'
+--------------------
+SELECT 'thomas' ~ '.*thomas.*'
+------------------------------------------------------------------------------------------------------------------------
+select 'abc' SIMILAR TO '%(b|d)%'
+--------------------
+SELECT 'abc' SIMILAR TO '%(b|d)%'
+------------------------------------------------------------------------------------------------------------------------
+select * from dual where name ilike '%mi%'
+--------------------
+SELECT *
+FROM dual
+WHERE name ILIKE '%mi%'
+------------------------------------------------------------------------------------------------------------------------
+SELECT 'a fat cat sat on a mat'::tsvector @@ 'cat & rat'::tsquery
+--------------------
+SELECT 'a fat cat sat on a mat'::tsvector @@ 'cat & rat'::tsquery
+------------------------------------------------------------------------------------------------------------------------
+select '{"a": {"b":{"c": "foo"}}}'::json #>> '{a,b}' from dual
+--------------------
+SELECT '{"a": {"b":{"c": "foo"}}}'::json #>> '{a,b}'
+FROM dual
+------------------------------------------------------------------------------------------------------------------------
+select '{"a": {"b":{"c": "foo"}}}'::json #> '{a,b}' from dual
+--------------------
+SELECT '{"a": {"b":{"c": "foo"}}}'::json #> '{a,b}'
+FROM dual
+------------------------------------------------------------------------------------------------------------------------
+select '[{"a":"foo"},{"b":"bar"},{"c":"baz"}]'::json->>2 from dual
+--------------------
+SELECT '[{"a":"foo"},{"b":"bar"},{"c":"baz"}]'::json ->> 2
+FROM dual
+------------------------------------------------------------------------------------------------------------------------
+select '[{"a":"foo"},{"b":"bar"},{"c":"baz"}]'::json->2 from dual
+--------------------
+SELECT '[{"a":"foo"},{"b":"bar"},{"c":"baz"}]'::json -> 2
+FROM dual
+------------------------------------------------------------------------------------------------------------------------
+select COALESCE((SELECT project_deduct_mandays from mytable_01 limit 1)) from t
+--------------------
+SELECT COALESCE((
+		SELECT project_deduct_mandays
+		FROM mytable_01
+		LIMIT 1
+	))
+FROM t
+------------------------------------------------------------------------------------------------------------------------
+select wm_concat(article_id) over() from t_nds_web_article
+--------------------
+SELECT wm_concat(article_id) OVER ()
+FROM t_nds_web_article
+------------------------------------------------------------------------------------------------------------------------
+select id, login_name, name, password, salt, roles, register_date from user WHERE ( name like ? ) limit ? offset ?
+--------------------
+SELECT id, login_name, name, password, salt
+	, roles, register_date
+FROM user
+WHERE (name LIKE ?)
+LIMIT ? OFFSET ?
+------------------------------------------------------------------------------------------------------------------------
+SELECT i.relname, d.indisunique, a.attname
+      FROM pg_class t, pg_class i, pg_index d, pg_attribute
+     WHERE i.relkind = 'i'
+       AND d.indexrelid = i.oid
+       AND d.indisprimary = 'f'
+       AND t.oid = d.indrelid
+       AND t.relname = 'schema_migrations'
+       AND a.attrelid = t.oid
+       AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+          OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+          OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+          OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+          OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+    ORDER BY i.relname
+--------------------
+SELECT i.relname, d.indisunique, a.attname
+FROM pg_class t, pg_class i, pg_index d, pg_attribute
+WHERE i.relkind = 'i'
+	AND d.indexrelid = i.oid
+	AND d.indisprimary = 'f'
+	AND t.oid = d.indrelid
+	AND t.relname = 'schema_migrations'
+	AND a.attrelid = t.oid
+	AND (d.indkey[0] = a.attnum
+		OR d.indkey[1] = a.attnum
+		OR d.indkey[2] = a.attnum
+		OR d.indkey[3] = a.attnum
+		OR d.indkey[4] = a.attnum
+		OR d.indkey[5] = a.attnum
+		OR d.indkey[6] = a.attnum
+		OR d.indkey[7] = a.attnum
+		OR d.indkey[8] = a.attnum
+		OR d.indkey[9] = a.attnum)
+ORDER BY i.relname
+------------------------------------------------------------------------------------------------------------------------
+with a(a1,b1) as (select * from b) select * from a
+--------------------
+WITH a (a1, b1) AS (
+		SELECT *
+		FROM b
+	)
+SELECT *
+FROM a
+------------------------------------------------------------------------------------------------------------------------
+SELECT DISTINCT(type) FROM dbmis2_databases
+--------------------
+SELECT DISTINCT type
+FROM dbmis2_databases
+------------------------------------------------------------------------------------------------------------------------
 update  WORK.TABLE1 t
     set open_date = cast(to_char(a.d_opentimestamp, 'yyyMMdd') as int4)
     from WORK.TABLE2 a

@@ -95,7 +95,7 @@ public class OracleSelectTest77 extends OracleTest {
                     "\t, d.id AS customer_id, d.name AS customer_name, a.salesrep_id\n" +
                     "FROM tcc_cpr.tcc_cpr_contract_headers a\n" +
                     "LEFT JOIN tcc_cpr.virtual_value2004 b ON a.contract_header_id = b.contract_header_id\n" +
-                    "\tAND b.template_id = CASE \n" +
+                    "\tAND b.template_id = CASE\n" +
                     "\t\tWHEN a.contract_category = 'SALES' THEN 1\n" +
                     "\t\tWHEN a.contract_category = 'INTERNATIONAL' THEN 49\n" +
                     "\tEND\n" +

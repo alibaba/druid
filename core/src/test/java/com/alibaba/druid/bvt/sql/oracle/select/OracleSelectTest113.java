@@ -47,20 +47,20 @@ public class OracleSelectTest113 extends OracleTest {
                     "\t, pkg_unit.getDwmcById(dw) AS dwmc\n" +
                     "FROM (\n" +
                     "\tSELECT count(1) AS zs\n" +
-                    "\t\t, count(CASE \n" +
+                    "\t\t, count(CASE\n" +
                     "\t\t\tWHEN l.tbbz = '1' THEN 1\n" +
                     "\t\tEND) AS ybl\n" +
-                    "\t\t, count(CASE \n" +
+                    "\t\t, count(CASE\n" +
                     "\t\t\tWHEN l.tbbz = '3' THEN 1\n" +
                     "\t\tEND) AS wxbl\n" +
-                    "\t\t, count(CASE \n" +
+                    "\t\t, count(CASE\n" +
                     "\t\t\tWHEN s.a_ajfl = '10'\n" +
                     "\t\t\t\tAND nvl(l.blsj, SYSDATE) - l.lrsj > 1\n" +
                     "\t\t\t\tAND l.lrsj > to_date('20150713', 'yyyymmdd')\n" +
                     "\t\t\t\tAND l.tbbz != '3'\n" +
                     "\t\t\tTHEN 1\n" +
                     "\t\tEND) AS xscs\n" +
-                    "\t\t, count(CASE \n" +
+                    "\t\t, count(CASE\n" +
                     "\t\t\tWHEN s.a_ajfl = '20'\n" +
                     "\t\t\t\tAND nvl(l.blsj, SYSDATE) - l.lrsj > 3\n" +
                     "\t\t\t\tAND l.lrsj > to_date('20150713', 'yyyymmdd')\n" +

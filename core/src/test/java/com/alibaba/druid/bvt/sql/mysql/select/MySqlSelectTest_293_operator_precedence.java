@@ -140,7 +140,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
         SQLStatement stmt = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);
 
-        assertEquals("SELECT +CASE \n" +
+        assertEquals("SELECT +CASE\n" +
                 "\t\tWHEN 33 NOT BETWEEN -+16 AND (+COUNT(*) + COUNT(*) / -COALESCE(-27, (-MAX(ALL 41)) / 24 * --95 - -80 + -COUNT(*) * CAST(NULL AS DECIMAL) / +76 - -+74 * -49 + --25) * 89 * -"
             + "NULLIF(--SUM(DISTINCT +57), COUNT(*)) - 29 - +MAX(--43) - ++MAX(DISTINCT +90) + CASE -+26\n" +
                 "\t\t\t\t\tWHEN NULLIF(5, +589999 * MIN(67) + COUNT(*) * 8) * 47 + CAST(NULL AS SIGNED) THEN 57\n" +
