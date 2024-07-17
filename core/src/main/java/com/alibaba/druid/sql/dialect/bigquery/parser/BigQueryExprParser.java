@@ -22,8 +22,26 @@ public class BigQueryExprParser extends SQLExprParser {
     private static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = {"ARRAY_AGG", "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                "ROWNUMBER"};
+        String[] strings = {
+                "ANY_VALUE",
+                "ARRAY_AGG",
+                "ARRAY_CONCAT_AGG",
+                "AVG",
+                "BIT_AND",
+                "BIT_OR",
+                "BIT_XOR",
+                "COUNT",
+                "COUNTIF",
+                "GROUPING",
+                "LOGICAL_AND",
+                "LOGICAL_OR",
+                "MAX",
+                "MAX_BY",
+                "MIN",
+                "MIN_BY",
+                "STRING_AGG",
+                "SUM"
+        };
         AGGREGATE_FUNCTIONS_CODES = fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {

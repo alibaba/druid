@@ -53,6 +53,8 @@ public class MySqlExprParser extends SQLExprParser {
                 "COUNT",
                 "GROUP_CONCAT",
                 "LISTAGG",
+                "JSON_ARRAYAGG",
+                "JSON_OBJECTAGG",
                 "MAX",
                 "MIN",
                 "STD",
@@ -60,10 +62,9 @@ public class MySqlExprParser extends SQLExprParser {
                 "STDDEV_POP",
                 "STDDEV_SAMP",
                 "SUM",
+                "VAR_POP",
                 "VAR_SAMP",
                 "VARIANCE",
-                "JSON_ARRAYAGG",
-                "JSON_OBJECTAGG",
         };
 
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
