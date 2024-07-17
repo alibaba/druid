@@ -1,0 +1,32 @@
+CREATE TABLE example1 (
+  timestamp DATETIME,
+  x UInt32 TTL now() + INTERVAL '1' MONTH,
+  y String TTL timestamp + INTERVAL '1' DAY,
+  z String
+)
+ENGINE=MergeTree
+ORDER BY tuple()
+--------------------
+CREATE TABLE example1 (
+	timestamp DATETIME,
+	x UInt32  TTL now() + INTERVAL '1' MONTH,
+	y String  TTL timestamp + INTERVAL '1' DAY,
+	z String
+) ENGINE = MergeTree
+ORDER BY tuple()
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE test (id UInt64, timestamp DateTime64, data String, max_hits UInt64, sum_hits UInt64) ENGINE = MergeTree
+     PRIMARY KEY (id, toStartOfDay(timestamp), timestamp)
+     TTL timestamp + INTERVAL 1 DAY
+     SETTINGS max_hits = max(max_hits), sum_hits = sum(sum_hits)
+--------------------
+CREATE TABLE test (
+	id UInt64,
+	timestamp DateTime64,
+	data String,
+	max_hits UInt64,
+	sum_hits UInt64
+) ENGINE = MergeTree
+PRIMARY KEY (id, toStartOfDay(timestamp), timestamp)
+TTL timestamp + INTERVAL 1 DAY
+SETTINGS max_hits = max(max_hits), sum_hits = sum(sum_hits)

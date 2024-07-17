@@ -32,7 +32,8 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     protected boolean orReplace;
     protected SQLName name;
     protected SQLStatement block;
-    protected List<SQLParameter> parameters = new ArrayList<SQLParameter>();
+    protected List<SQLParameter> parameters = new ArrayList<>();
+    protected List<SQLAssignItem> options = new ArrayList<>();
 
     // for oracle
     private String javaCallSpec;
@@ -143,6 +144,10 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
             authid.setParent(this);
         }
         this.authid = authid;
+    }
+
+    public List<SQLAssignItem> getOptions() {
+        return options;
     }
 
     public String getLanguage() {

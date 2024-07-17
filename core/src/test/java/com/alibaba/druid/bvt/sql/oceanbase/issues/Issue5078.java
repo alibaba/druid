@@ -38,7 +38,7 @@ public class Issue5078 {
                 parser = SQLParserUtils.createSQLStatementParser(newSql, dbType);
                 statement = parser.parseStatement();
                 System.out.println(dbType + "再次解析对象得到sql===" + Issue5421.normalizeSql(statement.toString()));
-                assertEquals(sql, Issue5421.normalizeSql(statement.toString()) + ";");
+                assertEquals(sql, Issue5421.normalizeSql(statement.toString()));
             }
         }
     }

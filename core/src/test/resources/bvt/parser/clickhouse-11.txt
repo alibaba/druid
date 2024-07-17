@@ -1,3 +1,0 @@
-drop table if exists mintapi_errro_events_count_h_local;
----------------------------
-DROP TABLE IF EXISTS mintapi_errro_events_count_h_local;

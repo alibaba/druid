@@ -29,16 +29,14 @@ public class SparkCreateTableParser extends HiveCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable() {
         SparkCreateTableStatement stmt = new SparkCreateTableStatement();
 
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                stmt.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            stmt.addBeforeComment(lexer.readAndResetComments());
         }
+
+        accept(Token.CREATE);
 
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();
@@ -47,7 +45,7 @@ public class SparkCreateTableParser extends HiveCreateTableParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.TEMPORARY)) {
             lexer.nextToken();
-            stmt.setType(SQLCreateTableStatement.Type.TEMPORARY);
+            stmt.setTemporary(true);
         }
 
         accept(Token.TABLE);
@@ -57,7 +55,7 @@ public class SparkCreateTableParser extends HiveCreateTableParser {
             accept(Token.NOT);
             accept(Token.EXISTS);
 
-            stmt.setIfNotExiists(true);
+            stmt.setIfNotExists(true);
         }
 
         stmt.setName(this.exprParser.name());

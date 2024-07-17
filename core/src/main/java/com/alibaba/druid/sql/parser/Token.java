@@ -267,6 +267,7 @@ public enum Token {
     LITERAL_HEX,
     LITERAL_CHARS,
     LITERAL_NCHARS,
+    LITERAL_TEXT_BLOCK,
 
     CODE, // odps
 
@@ -289,6 +290,9 @@ public enum Token {
 
     // clickhouse
     PREWHERE("PREWHERE"),
+    SETTINGS("SETTINGS"),
+    FINAL("FINAL"),
+    TTL("TTL"),
 
     // Teradata
     SEL("SEL"),
@@ -309,7 +313,7 @@ public enum Token {
 
     // StarRocks
     BIGINT("BIGINT"),
-    BITMAP("BITMAP"),
+//    BITMAP("BITMAP"),
 
     LPAREN("("),
     RPAREN(")"),

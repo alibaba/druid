@@ -34,96 +34,11 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
-        DB2CreateTableStatement createTable = newCreateStatement();
-
-        if (acceptCreate) {
-            if (lexer.hasComment() && lexer.isKeepComments()) {
-                createTable.addBeforeComment(lexer.readAndResetComments());
-            }
-
-            accept(Token.CREATE);
-        }
-
-        if (lexer.identifierEquals("GLOBAL")) {
-            lexer.nextToken();
-
-            if (lexer.identifierEquals("TEMPORARY")) {
-                lexer.nextToken();
-                createTable.setType(SQLCreateTableStatement.Type.GLOBAL_TEMPORARY);
-            } else {
-                throw new ParserException("syntax error " + lexer.info());
-            }
-        } else if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("LOCAL")) {
-            lexer.nextToken();
-            if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("TEMPORAY")) {
-                lexer.nextToken();
-                createTable.setType(SQLCreateTableStatement.Type.LOCAL_TEMPORARY);
-            } else {
-                throw new ParserException("syntax error. " + lexer.info());
-            }
-        }
-
-        accept(Token.TABLE);
-
-        createTable.setName(this.exprParser.name());
-
-        if (lexer.token() == Token.LPAREN) {
-            lexer.nextToken();
-
-            for (; ; ) {
-                Token token = lexer.token();
-                if (token == Token.IDENTIFIER //
-                        || token == Token.LITERAL_ALIAS) {
-                    SQLColumnDefinition column = this.exprParser.parseColumn();
-                    createTable.getTableElementList().add(column);
-                } else if (token == Token.PRIMARY //
-                        || token == Token.UNIQUE //
-                        || token == Token.CHECK //
-                        || token == Token.CONSTRAINT
-                        || token == Token.FOREIGN) {
-                    SQLConstraint constraint = this.exprParser.parseConstaint();
-                    constraint.setParent(createTable);
-                    createTable.getTableElementList().add((SQLTableElement) constraint);
-                } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO " + lexer.info());
-                } else {
-                    SQLColumnDefinition column = this.exprParser.parseColumn();
-                    createTable.getTableElementList().add(column);
-                }
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-
-                    if (lexer.token() == Token.RPAREN) { // compatible for sql server
-                        break;
-                    }
-                    continue;
-                }
-
-                break;
-            }
-
-            accept(Token.RPAREN);
-
-            if (lexer.identifierEquals("INHERITS")) {
-                lexer.nextToken();
-                accept(Token.LPAREN);
-                SQLName inherits = this.exprParser.name();
-                createTable.setInherits(new SQLExprTableSource(inherits));
-                accept(Token.RPAREN);
-            }
-        }
-
-        if (lexer.token() == Token.AS) {
-            lexer.nextToken();
-            SQLSelect select = this.createSQLSelectParser().select();
-            createTable.setSelect(select);
-        }
-
+    @Override
+    protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
+        DB2CreateTableStatement createTable = (DB2CreateTableStatement) stmt;
         for (; ; ) {
-            if (lexer.identifierEquals(FnvHash.Constants.DATA)) {
-                lexer.nextToken();
+            if (lexer.nextIfIdentifier(FnvHash.Constants.DATA)) {
                 acceptIdentifier("CAPTURE");
 
                 if (lexer.identifierEquals(FnvHash.Constants.NONE)) {
@@ -133,11 +48,8 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                 }
 
                 throw new ParserException("TODO " + lexer.info());
-            } else if (lexer.token() == Token.IN) {
-                lexer.nextToken();
-
-                if (lexer.token() == Token.DATABASE) {
-                    lexer.nextToken();
+            } else if (lexer.nextIf(Token.IN)) {
+                if (lexer.nextIf(Token.DATABASE)) {
                     SQLName database = this.exprParser.name();
                     createTable.setDatabase(database);
                 } else if (lexer.identifierEquals("tablespace")) {
@@ -148,33 +60,26 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                 }
 
                 continue;
-            } else if (lexer.identifierEquals(FnvHash.Constants.PARTITIONING)) {
+            } else if (lexer.nextIfIdentifier(FnvHash.Constants.PARTITIONING)) {
                 SQLPartitionByHash partitionBy = new SQLPartitionByHash();
 
-                lexer.nextToken();
                 accept(Token.KEY);
                 accept(Token.LPAREN);
                 this.exprParser.exprList(partitionBy.getColumns(), partitionBy);
                 accept(Token.RPAREN);
                 accept(Token.USING);
                 acceptIdentifier("HASHING");
-                createTable.setPartitioning(partitionBy);
+                createTable.setPartitionBy(partitionBy);
                 continue;
-            } else if (lexer.identifierEquals(FnvHash.Constants.VALIDPROC)) {
-                lexer.nextToken();
+            } else if (lexer.nextIfIdentifier(FnvHash.Constants.VALIDPROC)) {
                 SQLName validproc = this.exprParser.name();
                 createTable.setValidproc(validproc);
                 continue;
-            } else if (lexer.identifierEquals(FnvHash.Constants.COMPRESS)) {
-                lexer.nextToken();
+            } else if (lexer.nextIfIdentifier(FnvHash.Constants.COMPRESS)) {
                 createTable.setCompress(true);
-
-                if (lexer.identifierEquals(FnvHash.Constants.YES)) {
-                    lexer.nextToken();
-                }
+                lexer.nextIfIdentifier(FnvHash.Constants.YES);
                 continue;
-            } else if (lexer.token() == Token.INDEX) {
-                lexer.nextToken();
+            } else if (lexer.nextIf(Token.INDEX)) {
                 accept(Token.IN);
                 SQLName indexIn = this.exprParser.name();
                 createTable.setIndexIn(indexIn);
@@ -182,8 +87,6 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
             }
             break;
         }
-
-        return createTable;
     }
 
     protected DB2CreateTableStatement newCreateStatement() {

@@ -32,7 +32,7 @@ public class Issue5702 {
                 SQLStatement statement = parser.parseStatement();
                 System.out.println(dbType + "原始的sql===" + sql);
                 System.out.println(dbType + "归一化的sql===" + Issue5421.normalizeSql(sql));
-                String newSql = statement.toString() + ";";
+                String newSql = statement.toString();
                 System.out.println(dbType + "生成的sql===" + newSql);
                 System.out.println(dbType + "生成的sql归一化===" + Issue5421.normalizeSql(newSql));
                 parser = SQLParserUtils.createSQLStatementParser(newSql, dbType);

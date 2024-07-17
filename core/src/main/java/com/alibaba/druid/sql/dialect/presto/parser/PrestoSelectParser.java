@@ -19,6 +19,8 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -69,6 +71,13 @@ public class PrestoSelectParser extends SQLSelectParser {
 
         if (this.lexer.hasComment() && this.lexer.isKeepComments()) {
             queryBlock.addBeforeComment(this.lexer.readAndResetComments());
+        }
+
+        if (lexer.token() == Token.TABLE) {
+            lexer.nextToken();
+            queryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
+            queryBlock.setFrom(parseTableSource());
+            return queryRest(queryBlock, acceptUnion);
         }
 
         this.accept(Token.SELECT);

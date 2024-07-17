@@ -41,8 +41,8 @@ public class MergeStatFilterTest3 extends TestCase {
     }
 
     public void test_merge() throws Exception {
-        String sqllist = Utils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql.txt")));
-        String[] ss = sqllist.split("--");
+        String sqllist = Utils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql/16.txt")));
+        String[] ss = sqllist.split("--------------------");
         for (String sql : ss) {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();

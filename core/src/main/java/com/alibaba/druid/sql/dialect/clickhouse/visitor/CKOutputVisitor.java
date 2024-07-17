@@ -25,6 +25,22 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
 
     @Override
     public boolean visit(SQLWithSubqueryClause.Entry x) {
+        if (x.isPrefixAlias()) {
+            print0(x.getAlias());
+            print(' ');
+            print0(ucase ? "AS " : "as ");
+            printWithExpr(x);
+        } else {
+            printWithExpr(x);
+            print(' ');
+            print0(ucase ? "AS " : "as ");
+            print0(x.getAlias());
+        }
+
+        return false;
+    }
+
+    private void printWithExpr(SQLWithSubqueryClause.Entry x) {
         if (x.getExpr() != null) {
             x.getExpr().accept(this);
         } else if (x.getSubQuery() != null) {
@@ -39,11 +55,6 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
             println();
             print(')');
         }
-        print(' ');
-        print0(ucase ? "AS " : "as ");
-        print0(x.getAlias());
-
-        return false;
     }
 
     public boolean visit(SQLStructDataType x) {
@@ -90,11 +101,24 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
             orderBy.accept(this);
         }
 
+        SQLPrimaryKey primaryKey = x.getPrimaryKey();
+        if (primaryKey != null) {
+            println();
+            primaryKey.accept(this);
+        }
+
         SQLExpr sampleBy = x.getSampleBy();
         if (sampleBy != null) {
             println();
             print0(ucase ? "SAMPLE BY " : "sample by ");
             sampleBy.accept(this);
+        }
+
+        SQLExpr ttl = x.getTtl();
+        if (ttl != null) {
+            println();
+            print0(ucase ? "TTL " : "ttl ");
+            ttl.accept(this);
         }
 
         List<SQLAssignItem> settings = x.getSettings();
@@ -175,6 +199,23 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
         return false;
     }
 
+    @Override
+    protected void printAfterFetch(SQLSelectQueryBlock queryBlock) {
+        if (queryBlock instanceof CKSelectQueryBlock) {
+            CKSelectQueryBlock ckSelectQueryBlock = ((CKSelectQueryBlock) queryBlock);
+            if (!ckSelectQueryBlock.getSettings().isEmpty()) {
+                println();
+                print0(ucase ? "SETTINGS " : "settings ");
+                printAndAccept(ckSelectQueryBlock.getSettings(), ", ");
+            }
+            if (ckSelectQueryBlock.getFormat() != null) {
+                println();
+                print0(ucase ? "FORMAT " : "format ");
+                ckSelectQueryBlock.getFormat().accept(this);
+            }
+        }
+    }
+
     protected void printWhere(SQLSelectQueryBlock queryBlock) {
         if (queryBlock instanceof CKSelectQueryBlock) {
             SQLExpr preWhere = ((CKSelectQueryBlock) queryBlock).getPreWhere();
@@ -198,5 +239,37 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
             printlnComments(beforeComments);
         }
         printExpr(where, parameterized);
+    }
+
+    @Override
+    protected void printFrom(SQLSelectQueryBlock x) {
+        super.printFrom(x);
+        if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isFinal()) {
+            print0(ucase ? " FINAL" : " final");
+        }
+    }
+
+    @Override
+    protected void printGroupBy(SQLSelectQueryBlock x) {
+        super.printGroupBy(x);
+        if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isWithTotals()) {
+            print0(ucase ? " WITH TOTALS" : " with totals");
+        }
+    }
+
+    @Override
+    protected void printOrderBy(SQLSelectQueryBlock x) {
+        super.printOrderBy(x);
+        if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isWithFill()) {
+            print0(ucase ? " WITH FILL" : " with fill");
+        }
+    }
+
+    @Override
+    protected void printLimit(SQLSelectQueryBlock x) {
+        super.printLimit(x);
+        if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isWithTies()) {
+            print0(ucase ? " WITH TIES" : " with ties");
+        }
     }
 }

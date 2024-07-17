@@ -1,0 +1,57 @@
+CREATE TABLE IF NOT EXISTS test_dim_segment
+(
+aid bigint
+,segment_id bigint
+,segment_name text
+,ds text not null
+)
+PARTITION BY LIST(ds);
+
+--------------------
+CREATE TABLE IF NOT EXISTS test_dim_segment (
+	aid bigint,
+	segment_id bigint,
+	segment_name text,
+	ds text NOT NULL
+)
+PARTITION BY LIST (ds);
+------------------------------------------------------------------------------------------------------------------------
+MERGE INTO CustomerAccount CA
+USING (Select CustomerId, TransactionValue From RecentTransactions) AS T
+ON CA.CustomerId = T.CustomerId
+WHEN NOT MATCHED THEN
+  INSERT (CustomerId, Balance)
+  VALUES (T.CustomerId, T.TransactionValue)
+WHEN MATCHED THEN
+  UPDATE SET Balance = Balance + TransactionValue;
+--------------------
+MERGE INTO CustomerAccount CA
+USING (
+	SELECT CustomerId, TransactionValue
+	FROM RecentTransactions
+) T ON CA.CustomerId = T.CustomerId 
+WHEN NOT MATCHED THEN INSERT (CustomerId, Balance) VALUES (T.CustomerId, T.TransactionValue)
+WHEN MATCHED THEN UPDATE SET Balance = Balance + TransactionValue;
+------------------------------------------------------------------------------------------------------------------------
+WITH RECURSIVE employee_recursive(distance, employee_name, manager_name) AS (
+    SELECT 1, employee_name, manager_name
+    FROM employee
+    WHERE manager_name = 'Mary'
+  UNION ALL
+    SELECT er.distance + 1, e.employee_name, e.manager_name
+    FROM employee_recursive er, employee e
+    WHERE er.employee_name = e.manager_name
+  )
+SELECT distance, employee_name FROM employee_recursive;
+--------------------
+WITH RECURSIVE employee_recursive (distance, employee_name, manager_name) AS (
+		SELECT 1, employee_name, manager_name
+		FROM employee
+		WHERE manager_name = 'Mary'
+		UNION ALL
+		SELECT er.distance + 1, e.employee_name, e.manager_name
+		FROM employee_recursive er, employee e
+		WHERE er.employee_name = e.manager_name
+	)
+SELECT distance, employee_name
+FROM employee_recursive;

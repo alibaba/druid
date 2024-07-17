@@ -44,8 +44,8 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         return new OracleCreateTableStatement();
     }
 
-    public OracleCreateTableStatement parseCreateTable(boolean acceptCreate) {
-        OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCreateTable(acceptCreate);
+    public OracleCreateTableStatement parseCreateTable() {
+        OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCreateTable();
 
         if (lexer.token() == Token.OF) {
             lexer.nextToken();
@@ -211,7 +211,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 if (lexer.identifierEquals("RANGE")) {
                     SQLPartitionByRange partitionByRange = this.getExprParser().partitionByRange();
                     this.getExprParser().partitionClauseRest(partitionByRange);
-                    stmt.setPartitioning(partitionByRange);
+                    stmt.setPartitionBy(partitionByRange);
                     continue;
                 } else if (lexer.identifierEquals("HASH")) {
                     SQLPartitionByHash partitionByHash = this.getExprParser().partitionByHash();
@@ -232,12 +232,12 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                             throw new ParserException("TODO : " + lexer.info());
                         }
                     }
-                    stmt.setPartitioning(partitionByHash);
+                    stmt.setPartitionBy(partitionByHash);
                     continue;
                 } else if (lexer.identifierEquals("LIST")) {
                     SQLPartitionByList partitionByList = partitionByList();
                     this.getExprParser().partitionClauseRest(partitionByList);
-                    stmt.setPartitioning(partitionByList);
+                    stmt.setPartitionBy(partitionByList);
                     continue;
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
@@ -541,7 +541,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         return partitionByList;
     }
 
-    protected SQLTableElement parseCreateTableSupplementalLogingProps() {
+    protected SQLTableElement parseCreateTableSupplementalLoggingProps() {
         acceptIdentifier("SUPPLEMENTAL");
         acceptIdentifier("LOG");
 

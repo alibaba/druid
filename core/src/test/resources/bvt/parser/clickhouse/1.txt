@@ -1,0 +1,91 @@
+WITH aa AS (SELECT 1) SELECT * FROM aa
+--------------------
+WITH aa AS (
+	SELECT 1
+	)
+SELECT *
+FROM aa
+------------------------------------------------------------------------------------------------------------------------
+WITH '2019-08-01 15:23:00' as ts_upper_bound
+SELECT *
+FROM hits
+WHERE
+    EventDate = toDate(ts_upper_bound) AND
+    EventTime <= ts_upper_bound
+--------------------
+WITH '2019-08-01 15:23:00' AS ts_upper_bound
+SELECT *
+FROM hits
+WHERE EventDate = toDate(ts_upper_bound)
+	AND EventTime <= ts_upper_bound
+------------------------------------------------------------------------------------------------------------------------
+WITH sum(bytes) as s
+SELECT
+    formatReadableSize(s),
+    table
+FROM system.parts
+GROUP BY table
+ORDER BY s
+--------------------
+WITH sum(bytes) AS s
+SELECT formatReadableSize(s), table
+FROM system.parts
+GROUP BY table
+ORDER BY s
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+            sum(r[1]) AS r1,
+            sum(r[2]) AS r2
+        FROM
+        (
+        WITH subtractDays(toDate('2021-01-19'), 1) AS day
+        SELECT
+            retention(toDate(created) = day,
+            toDate(created) = '2021-01-19'
+        ) AS r
+        FROM user_action_logs
+        WHERE toDate(created) IN(day, '2021-01-19')
+        GROUP BY member_id
+        )
+--------------------
+SELECT sum(r[1]) AS r1, sum(r[2]) AS r2
+FROM (
+	WITH subtractDays(toDate('2021-01-19'), 1) AS day
+	SELECT retention(toDate(created) = day, toDate(created) = '2021-01-19') AS r
+	FROM user_action_logs
+	WHERE toDate(created) IN (day, '2021-01-19')
+	GROUP BY member_id
+)
+------------------------------------------------------------------------------------------------------------------------
+WITH 'x' AS foo SELECT foo
+--------------------
+WITH 'x' AS foo
+SELECT foo
+------------------------------------------------------------------------------------------------------------------------
+WITH ['c'] AS field_names SELECT field_names
+--------------------
+WITH ['c'] AS field_names
+SELECT field_names
+------------------------------------------------------------------------------------------------------------------------
+WITH (SELECT foo) AS bar SELECT bar + 5
+--------------------
+WITH (
+		SELECT foo
+	) AS bar
+SELECT bar + 5
+------------------------------------------------------------------------------------------------------------------------
+WITH test1 AS (SELECT i + 1, j + 1 FROM test1) SELECT * FROM test1
+--------------------
+WITH test1 AS (
+	SELECT i + 1, j + 1
+	FROM test1
+	)
+SELECT *
+FROM test1
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM x LIMIT 10 SETTINGS max_results = 100, result = 'break'
+--------------------
+SELECT *
+FROM x
+LIMIT 10
+SETTINGS max_results = 100, result = 'break'

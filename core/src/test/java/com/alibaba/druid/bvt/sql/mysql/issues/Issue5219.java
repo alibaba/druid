@@ -53,7 +53,7 @@ public class Issue5219 {
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 SQLStatement statement = parser.parseStatement();
                 System.out.println("原始的sql===" + sql);
-                String newSql=statement.toString().replace("\n","").replace('\'','"')+";";
+                String newSql=statement.toString().replace("\n","").replace('\'','"');
                 System.out.println("生成的sql===" + newSql);
                 assertTrue(newSql.equalsIgnoreCase(sql));
                 SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);

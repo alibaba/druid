@@ -1,0 +1,442 @@
+update  WORK.TABLE1 t
+    set open_date = cast(to_char(a.d_opentimestamp, 'yyyMMdd') as int4)
+    from WORK.TABLE2 a
+    where t.acco=a.acco
+    and t.sys='KEY';
+--------------------
+UPDATE WORK.TABLE1 t
+SET open_date = CAST(to_char(a.d_opentimestamp, 'yyyMMdd') AS int4)
+FROM WORK.TABLE2 a
+WHERE t.acco = a.acco
+	AND t.sys = 'KEY';
+------------------------------------------------------------------------------------------------------------------------
+(select id,name from t1) union (select id,name from t2)
+--------------------
+(SELECT id, name
+FROM t1)
+UNION
+(SELECT id, name
+FROM t2)
+------------------------------------------------------------------------------------------------------------------------
+WITH t AS (
+        UPDATE products SET price = price * 1.05
+        RETURNING *
+    )
+    SELECT * FROM t;
+--------------------
+WITH t AS (
+		UPDATE products
+		SET price = price * 1.05
+		RETURNING *
+	)
+SELECT *
+FROM t;
+------------------------------------------------------------------------------------------------------------------------
+WITH t AS (
+        UPDATE products SET price = price * 1.05
+        RETURNING *
+    )
+    SELECT * FROM products;
+--------------------
+WITH t AS (
+		UPDATE products
+		SET price = price * 1.05
+		RETURNING *
+	)
+SELECT *
+FROM products;
+------------------------------------------------------------------------------------------------------------------------
+WITH RECURSIVE t(n) AS (
+        SELECT 1
+      UNION ALL
+        SELECT n+1 FROM t
+    )
+    SELECT n FROM t LIMIT 100;
+--------------------
+WITH RECURSIVE t (n) AS (
+		SELECT 1
+		UNION ALL
+		SELECT n + 1
+		FROM t
+	)
+SELECT n
+FROM t
+LIMIT 100;
+------------------------------------------------------------------------------------------------------------------------
+WITH RECURSIVE search_graph(id, link, data, depth, path, cycle) AS (
+            SELECT g.id, g.link, g.data, 1,
+              ARRAY[ROW(g.f1, g.f2)],
+              false
+            FROM graph g
+          UNION ALL
+            SELECT g.id, g.link, g.data, sg.depth + 1,
+              path || ROW(g.f1, g.f2),
+              ROW(g.f1, g.f2) = ANY(path)
+            FROM graph g, search_graph sg
+            WHERE g.id = sg.link AND NOT cycle
+    )
+    SELECT * FROM search_graph;
+--------------------
+WITH RECURSIVE search_graph (id, link, data, depth, path, cycle) AS (
+		SELECT g.id, g.link, g.data, 1, ARRAY[ROW(g.f1, g.f2)]
+			, false
+		FROM graph g
+		UNION ALL
+		SELECT g.id, g.link, g.data, sg.depth + 1
+			, path || ROW(g.f1, g.f2)
+			, ROW(g.f1, g.f2) = ANY(path)
+		FROM graph g, search_graph sg
+		WHERE g.id = sg.link
+			AND NOT cycle
+	)
+SELECT *
+FROM search_graph;
+------------------------------------------------------------------------------------------------------------------------
+WITH RECURSIVE search_graph(id, link, data, depth, path, cycle) AS (
+            SELECT g.id, g.link, g.data, 1,
+              ARRAY[g.id],
+              false
+            FROM graph g
+          UNION ALL
+            SELECT g.id, g.link, g.data, sg.depth + 1,
+              path || g.id,
+              g.id = ANY(path)
+            FROM graph g, search_graph sg
+            WHERE g.id = sg.link AND NOT cycle
+    )
+    SELECT * FROM search_graph;
+--------------------
+WITH RECURSIVE search_graph (id, link, data, depth, path, cycle) AS (
+		SELECT g.id, g.link, g.data, 1, ARRAY[g.id]
+			, false
+		FROM graph g
+		UNION ALL
+		SELECT g.id, g.link, g.data, sg.depth + 1
+			, path || g.id
+			, g.id = ANY(path)
+		FROM graph g, search_graph sg
+		WHERE g.id = sg.link
+			AND NOT cycle
+	)
+SELECT *
+FROM search_graph;
+------------------------------------------------------------------------------------------------------------------------
+WITH RECURSIVE search_graph(id, link, data, depth) AS (
+            SELECT g.id, g.link, g.data, 1
+            FROM graph g
+          UNION ALL
+            SELECT g.id, g.link, g.data, sg.depth + 1
+            FROM graph g, search_graph sg
+            WHERE g.id = sg.link
+    )
+    SELECT * FROM search_graph;
+--------------------
+WITH RECURSIVE search_graph (id, link, data, depth) AS (
+		SELECT g.id, g.link, g.data, 1
+		FROM graph g
+		UNION ALL
+		SELECT g.id, g.link, g.data, sg.depth + 1
+		FROM graph g, search_graph sg
+		WHERE g.id = sg.link
+	)
+SELECT *
+FROM search_graph;
+------------------------------------------------------------------------------------------------------------------------
+WITH RECURSIVE included_parts(sub_part, part, quantity) AS (
+        SELECT sub_part, part, quantity FROM parts WHERE part = 'our_product'
+      UNION ALL
+        SELECT p.sub_part, p.part, p.quantity
+        FROM included_parts pr, parts p
+        WHERE p.part = pr.sub_part
+      )
+    SELECT sub_part, SUM(quantity) as total_quantity
+    FROM included_parts
+    GROUP BY sub_part
+--------------------
+WITH RECURSIVE included_parts (sub_part, part, quantity) AS (
+		SELECT sub_part, part, quantity
+		FROM parts
+		WHERE part = 'our_product'
+		UNION ALL
+		SELECT p.sub_part, p.part, p.quantity
+		FROM included_parts pr, parts p
+		WHERE p.part = pr.sub_part
+	)
+SELECT sub_part, SUM(quantity) AS total_quantity
+FROM included_parts
+GROUP BY sub_part
+------------------------------------------------------------------------------------------------------------------------
+WITH RECURSIVE t(n) AS (
+    VALUES (1)
+  UNION ALL
+    SELECT n+1 FROM t WHERE n < 100
+)
+SELECT sum(n) FROM t;
+--------------------
+WITH RECURSIVE t (n) AS (
+		VALUES (1)
+		UNION ALL
+		SELECT n + 1
+		FROM t
+		WHERE n < 100
+	)
+SELECT sum(n)
+FROM t;
+------------------------------------------------------------------------------------------------------------------------
+WITH new_values (host, gmt_last_report) AS (   VALUES('127.0.0.1', now())  ),   upsert AS (   UPDATE dataphin.od_host m   SET gmt_last_report = nv.gmt_last_report   FROM new_values nv   WHERE m.host = nv.host   RETURNING m.*  ) INSERT INTO dataphin.od_host (host, gmt_last_report) SELECT host, gmt_last_report FROM new_values WHERE NOT EXISTS (  SELECT 1  FROM upsert up  WHERE up.host = new_values.host )
+--------------------
+WITH new_values (host, gmt_last_report) AS (
+		VALUES ('127.0.0.1', now())
+	),
+	upsert AS (
+		UPDATE dataphin.od_host m
+		SET gmt_last_report = nv.gmt_last_report
+		FROM new_values nv
+		WHERE m.host = nv.host
+		RETURNING m.*
+	)
+INSERT INTO dataphin.od_host (host, gmt_last_report)
+SELECT host, gmt_last_report
+FROM new_values
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM upsert up
+	WHERE up.host = new_values.host
+)
+------------------------------------------------------------------------------------------------------------------------
+WITH new_values (host, gmt_last_report) AS (   VALUES('127.0.0.1', now())  ),   upsert AS (   UPDATE dataphin.od_host m   SET gmt_last_report = nv.gmt_last_report   FROM new_values nv   WHERE m.host = nv.host   RETURNING m.*  ) INSERT INTO dataphin.od_host (host, gmt_last_report) SELECT host, gmt_last_report FROM new_values WHERE NOT EXISTS (  SELECT 1  FROM upsert up  WHERE up.host = new_values.host )
+--------------------
+WITH new_values (host, gmt_last_report) AS (
+		VALUES ('127.0.0.1', now())
+	),
+	upsert AS (
+		UPDATE dataphin.od_host m
+		SET gmt_last_report = nv.gmt_last_report
+		FROM new_values nv
+		WHERE m.host = nv.host
+		RETURNING m.*
+	)
+INSERT INTO dataphin.od_host (host, gmt_last_report)
+SELECT host, gmt_last_report
+FROM new_values
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM upsert up
+	WHERE up.host = new_values.host
+)
+------------------------------------------------------------------------------------------------------------------------
+WITH regional_sales AS (
+            SELECT region, SUM(amount) AS total_sales
+            FROM orders
+            GROUP BY region
+         ), top_regions AS (
+            SELECT region
+            FROM regional_sales
+            WHERE total_sales > (SELECT SUM(total_sales)/10 FROM regional_sales)
+         )
+    SELECT region,
+           product,
+           SUM(quantity) AS product_units,
+           SUM(amount) AS product_sales
+    FROM orders
+    WHERE region IN (SELECT region FROM top_regions)
+    GROUP BY region, product;
+--------------------
+WITH regional_sales AS (
+		SELECT region, SUM(amount) AS total_sales
+		FROM orders
+		GROUP BY region
+	),
+	top_regions AS (
+		SELECT region
+		FROM regional_sales
+		WHERE total_sales > (
+			SELECT SUM(total_sales) / 10
+			FROM regional_sales
+		)
+	)
+SELECT region, product, SUM(quantity) AS product_units
+	, SUM(amount) AS product_sales
+FROM orders
+WHERE region IN (
+	SELECT region
+	FROM top_regions
+)
+GROUP BY region, product;
+------------------------------------------------------------------------------------------------------------------------
+select "xxx"::varchar as xx from xxx;
+--------------------
+SELECT "xxx"::varchar AS xx
+FROM xxx;
+------------------------------------------------------------------------------------------------------------------------
+SELECT nextval('passport_id_seq'::regclass) as id
+--------------------
+SELECT nextval('passport_id_seq'::regclass) AS id
+------------------------------------------------------------------------------------------------------------------------
+SELECT res.restaurant_id, row_number()
+    over (order by ST_Distance(res.restaurant_point,GeomFromEWKT(?))*111.12 ) as row_id
+    FROM restaurant res where res.city_id = ? and res.is_delete =false and res.restaurant_id <1000000 limit 10
+--------------------
+SELECT res.restaurant_id, row_number() OVER (ORDER BY ST_Distance(res.restaurant_point, GeomFromEWKT(?)) * 111.12) AS row_id
+FROM restaurant res
+WHERE res.city_id = ?
+	AND res.is_delete = false
+	AND res.restaurant_id < 1000000
+LIMIT 10
+------------------------------------------------------------------------------------------------------------------------
+select id, name, beanId, "algLable.id", "algLable.name"
+    , "algLable.schemaName", "algLable.tableName", "algLable.fieldName"
+     from cnres.function_select_algmodule_rule()
+     as a( id text,name text,beanId text, "algLable.id" text,"algLable.name" text
+    , "algLable.schemaName" text,"algLable.tableName" text, "algLable.fieldName" text)
+--------------------
+SELECT id, name, beanId, "algLable.id", "algLable.name"
+	, "algLable.schemaName", "algLable.tableName", "algLable.fieldName"
+FROM cnres.function_select_algmodule_rule() AS a
+	(id text, name text, beanId text, "algLable.id" text, "algLable.name" text, "algLable.schemaName" text, "algLable.tableName" text, "algLable.fieldName" text)
+------------------------------------------------------------------------------------------------------------------------
+select id, name, parameters, "algModuleRule.id", "algModuleRule.name"
+    , "algModuleRule.assembleType", "algModuleRule.algmIds", "algModuleRule.subAlgmIds"
+    , "algModuleRule.algmRatio", "algModuleRule.algmMaxRatio", "algModuleRule.objectType"
+    , "cateRule.id", "cateRule.name", "cateRule.assembleType", "cateRule.algmIds"
+    , "cateRule.algmRatio", "cateRule.algmMaxRatio", "appObject.id","appObject.name"
+    , "appObject.beanId"
+    from cnres.function_select_irecom_scene()
+     as a( id text,name text,parameters text, "algModuleRule.id" text,"algModuleRule.name" text
+        , "algModuleRule.assembleType" text,"algModuleRule.algmIds" text
+        , "algModuleRule.subAlgmIds" text,"algModuleRule.algmRatio" text
+        , "algModuleRule.algmMaxRatio" text, "algModuleRule.objectType" text
+        , "cateRule.id" text, "cateRule.name" text, "cateRule.assembleType" text
+        , "cateRule.algmIds" text, "cateRule.algmRatio" text, "cateRule.algmMaxRatio" text
+        , "appObject.id" text,"appObject.name" text, "appObject.beanId" text)
+--------------------
+SELECT id, name, parameters, "algModuleRule.id", "algModuleRule.name"
+	, "algModuleRule.assembleType", "algModuleRule.algmIds", "algModuleRule.subAlgmIds", "algModuleRule.algmRatio", "algModuleRule.algmMaxRatio"
+	, "algModuleRule.objectType", "cateRule.id", "cateRule.name", "cateRule.assembleType", "cateRule.algmIds"
+	, "cateRule.algmRatio", "cateRule.algmMaxRatio", "appObject.id", "appObject.name", "appObject.beanId"
+FROM cnres.function_select_irecom_scene() AS a
+	(id text, name text, parameters text, "algModuleRule.id" text, "algModuleRule.name" text, "algModuleRule.assembleType" text, "algModuleRule.algmIds" text, "algModuleRule.subAlgmIds" text, "algModuleRule.algmRatio" text, "algModuleRule.algmMaxRatio" text, "algModuleRule.objectType" text, "cateRule.id" text, "cateRule.name" text, "cateRule.assembleType" text, "cateRule.algmIds" text, "cateRule.algmRatio" text, "cateRule.algmMaxRatio" text, "appObject.id" text, "appObject.name" text, "appObject.beanId" text)
+------------------------------------------------------------------------------------------------------------------------
+select count(distinct h.user_id)
+     FROM dblink (
+    'dbname=dz_statistics host=127.0.0.1 user=xxx  password= xxx ',
+    'select user_id from user_product_view_history where create_time > ''2019-10-04 00:00:00''')
+    AS h (user_id VARCHAR(32))
+    left join
+    core_order o
+    on h.user_id=o.buyer_id
+--------------------
+SELECT count(DISTINCT h.user_id)
+FROM dblink('dbname=dz_statistics host=127.0.0.1 user=xxx  password= xxx ', 'select user_id from user_product_view_history where create_time > ''2019-10-04 00:00:00''') AS h
+	(user_id VARCHAR(32))
+	LEFT JOIN core_order o ON h.user_id = o.buyer_id
+------------------------------------------------------------------------------------------------------------------------
+select fromUserId, toMemberId, rank, tag
+    from cnres.function_get_re_cni_myali_acion_fct0(?)
+    as (
+fromUserId character varying(128),
+toMemberId character varying(128),
+rank numeric,
+tag character varying(128)
+);
+--------------------
+SELECT fromUserId, toMemberId, rank, tag
+FROM cnres.function_get_re_cni_myali_acion_fct0(?) AS
+	(fromUserId character varying(128), toMemberId character varying(128), rank numeric, tag character varying(128));
+------------------------------------------------------------------------------------------------------------------------
+SELECT rs.* FROM (
+    WITH RECURSIVE r AS(
+    SELECT *
+    FROM t_e_shopcatalog
+    WHERE parentcatalogid= (SELECT catalogid FROM t_e_shopcatalog where catalogname='学习分类' and parentcatalogid='0')
+    UNION ALL
+    SELECT t_e_shopcatalog.*
+    FROM t_e_shopcatalog, r
+    WHERE t_e_shopcatalog.parentcatalogid = r.catalogid )
+    SELECT * FROM r )rs WHERE 1=1
+--------------------
+SELECT rs.*
+FROM (
+	WITH RECURSIVE r AS (
+			SELECT *
+			FROM t_e_shopcatalog
+			WHERE parentcatalogid = (
+				SELECT catalogid
+				FROM t_e_shopcatalog
+				WHERE catalogname = '学习分类'
+					AND parentcatalogid = '0'
+			)
+			UNION ALL
+			SELECT t_e_shopcatalog.*
+			FROM t_e_shopcatalog, r
+			WHERE t_e_shopcatalog.parentcatalogid = r.catalogid
+		)
+	SELECT *
+	FROM r
+) rs
+WHERE 1 = 1
+------------------------------------------------------------------------------------------------------------------------
+select  offerId,          offerIds
+from  cnres.function_select_get_p4p_offer_by_sps('\'1160160508\',\'1085432755\',\'971765217\'')
+  as a(    offerId character varying(256),    offerIds character varying(4000)   )
+--------------------
+SELECT offerId, offerIds
+FROM cnres.function_select_get_p4p_offer_by_sps('\''1160160508\'',\''1085432755\'',\''971765217\''') AS a
+	(offerId character varying(256), offerIds character varying(4000))
+------------------------------------------------------------------------------------------------------------------------
+SELECT TITLE_ID,WEB_ID,MENU_TYPE_ID,MENU_ID,TITLE
+    ,SOURCE,INFO,RECOMMEND_FLAG,CREATE_TIME,CREATE_IP,CREATE_ACCENDANT_ID
+    ,LAST_UPD_TIME,LAST_UPD_IP,LAST_UPD_ACCENDANT_ID,'http://cmp2.test.com/cmps' AS STR_BASE_URL
+    ,'html' AS STR_SUFFIX FROM WEB_DATA_TITLE_LIST
+     WHERE WEB_ID=? AND MENU_ID=? AND MENU_TYPE_ID=? ORDER BY RECOMMEND_FLAG DESC ,LAST_UPD_TIME DESC  OFFSET ? LIMIT ?
+--------------------
+SELECT TITLE_ID, WEB_ID, MENU_TYPE_ID, MENU_ID, TITLE
+	, SOURCE, INFO, RECOMMEND_FLAG, CREATE_TIME, CREATE_IP
+	, CREATE_ACCENDANT_ID, LAST_UPD_TIME, LAST_UPD_IP, LAST_UPD_ACCENDANT_ID
+	, 'http://cmp2.test.com/cmps' AS STR_BASE_URL, 'html' AS STR_SUFFIX
+FROM WEB_DATA_TITLE_LIST
+WHERE WEB_ID = ?
+	AND MENU_ID = ?
+	AND MENU_TYPE_ID = ?
+ORDER BY RECOMMEND_FLAG DESC, LAST_UPD_TIME DESC
+LIMIT ?
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 NATURAL INNER JOIN t2;
+--------------------
+SELECT *
+FROM t1 NATURAL
+	INNER JOIN t2;
+------------------------------------------------------------------------------------------------------------------------
+(select * from a) union select * from b
+--------------------
+(SELECT *
+FROM a)
+UNION
+SELECT *
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 CROSS JOIN t2;
+--------------------
+SELECT *
+FROM t1
+	CROSS JOIN t2;
+------------------------------------------------------------------------------------------------------------------------
+select    categoryId ,   offerIds    from cnres.function_select_get_spt_p4p_offer_list      ('    1031918   ,    1031919   ,    1037004   ')       as a(categoryId numeric,offerIds character varying(4000))
+--------------------
+SELECT categoryId, offerIds
+FROM cnres.function_select_get_spt_p4p_offer_list('    1031918   ,    1031919   ,    1037004   ') AS a
+	(categoryId numeric, offerIds character varying(4000))
+------------------------------------------------------------------------------------------------------------------------
+SELECT * INTO films_recent FROM films WHERE date_prod >= '2002-01-01';
+--------------------
+SELECT *
+INTO films_recent
+FROM films
+WHERE date_prod >= '2002-01-01';
+------------------------------------------------------------------------------------------------------------------------
+select pkvalue from dbtpktable where tablename = 'taturvisit' for update
+--------------------
+SELECT pkvalue
+FROM dbtpktable
+WHERE tablename = 'taturvisit'
+FOR UPDATE

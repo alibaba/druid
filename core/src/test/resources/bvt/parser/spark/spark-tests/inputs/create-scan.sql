@@ -1,0 +1,1 @@
+CREATE SCAN scan1 ON table_name USING batch OPTIONS ('key'='value');

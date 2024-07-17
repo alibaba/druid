@@ -1,0 +1,572 @@
+grant all on database::TestDataBase to User1
+--------------------
+GRANT ALL ON DATABASE::TestDataBase TO User1
+------------------------------------------------------------------------------------------------------------------------
+GRANT CONTROL ON USER::Wanida TO RolandX
+--------------------
+GRANT CONTROL ON USER::Wanida TO RolandX
+------------------------------------------------------------------------------------------------------------------------
+GRANT IMPERSONATE ON USER::HamithaL TO AccountsPayable17
+--------------------
+GRANT IMPERSONATE ON USER::HamithaL TO AccountsPayable17
+------------------------------------------------------------------------------------------------------------------------
+alter table st_jklsxxb enable constraint FK_ST_xxx_REFERENCE_ST_xxx
+--------------------
+ALTER TABLE st_jklsxxb
+	ENABLE CONSTRAINT FK_ST_xxx_REFERENCE_ST_xxx
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE dependencies ALTER COLUMN id bigint
+--------------------
+ALTER TABLE dependencies
+	ALTER COLUMN id bigint
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE st_jklsxxb ADD PRIMARY KEY (id)
+--------------------
+ALTER TABLE st_jklsxxb
+	ADD PRIMARY KEY (id)
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE extensions ADD [core] bit
+--------------------
+ALTER TABLE extensions
+	ADD [core] bit
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE extensions DROP COLUMN [category]
+--------------------
+ALTER TABLE extensions
+	DROP COLUMN [category]
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE project_measures DROP COLUMN diff_value_1, diff_value_2, diff_value_3
+--------------------
+ALTER TABLE project_measures
+	DROP COLUMN diff_value_1, diff_value_2, diff_value_3
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE MyTable ALTER COLUMN NullCOl NVARCHAR(20) NOT NULL
+--------------------
+ALTER TABLE MyTable
+	ALTER COLUMN NullCOl NVARCHAR(20) NOT NULL
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE dbo.doc_exa ADD column_b VARCHAR(20) NULL
+--------------------
+ALTER TABLE dbo.doc_exa
+	ADD column_b VARCHAR(20) NULL
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE dbo.doc_exb DROP COLUMN column_b 
+--------------------
+ALTER TABLE dbo.doc_exb
+	DROP COLUMN column_b
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE dbo.doc_exy ALTER COLUMN column_a DECIMAL (5, 2)
+--------------------
+ALTER TABLE dbo.doc_exy
+	ALTER COLUMN column_a DECIMAL(5, 2)
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE dbo.doc_exc ADD column_b VARCHAR(20) NULL CONSTRAINT exb_unique UNIQUE
+--------------------
+ALTER TABLE dbo.doc_exc
+	ADD column_b VARCHAR(20) NULL CONSTRAINT exb_unique UNIQUE
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE dbo.doc_exd WITH NOCHECK ADD CONSTRAINT exd_check CHECK (column_a > 1)
+--------------------
+ALTER TABLE dbo.doc_exd
+	WITH NOCHECK ADD CONSTRAINT exd_check CHECK (column_a > 1)
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE kpiTarget ADD deleted tinyint DEFAULT 0
+--------------------
+ALTER TABLE kpiTarget
+	ADD deleted tinyint DEFAULT 0
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE N_MerchantBase ADD  CONSTRAINT DF_N_MerchantBase_UnUsedCouponMoney  DEFAULT ((0)) FOR [UnUsedCouponMoney]
+--------------------
+ALTER TABLE N_MerchantBase
+	ADD CONSTRAINT DF_N_MerchantBase_UnUsedCouponMoney DEFAULT 0 FOR [UnUsedCouponMoney]
+------------------------------------------------------------------------------------------------------------------------
+alter table SSHE.dbo.TUSER drop constraint UK_084c17821a8f47e8b31fbb126b6
+--------------------
+ALTER TABLE SSHE.dbo.TUSER
+	DROP CONSTRAINT UK_084c17821a8f47e8b31fbb126b6
+------------------------------------------------------------------------------------------------------------------------
+COMMIT WORK
+--------------------
+COMMIT WORK
+------------------------------------------------------------------------------------------------------------------------
+COMMIT TRAN
+--------------------
+COMMIT TRANSACTION
+------------------------------------------------------------------------------------------------------------------------
+COMMIT TRANSACTION @tran_name_variable  WITH ( DELAYED_DURABILITY = OFF )
+--------------------
+COMMIT TRANSACTION @tran_name_variable WITH ( DELAYED_DURABILITY = OFF )
+------------------------------------------------------------------------------------------------------------------------
+CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])
+--------------------
+CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])
+------------------------------------------------------------------------------------------------------------------------
+CREATE UNIQUE CLUSTERED INDEX Idx1 ON t1(c)
+--------------------
+CREATE UNIQUE CLUSTERED INDEX Idx1 ON t1 (c)
+------------------------------------------------------------------------------------------------------------------------
+CREATE NONCLUSTERED INDEX IX_SalesPerson_SalesQuota_SalesYTD ON Sales.SalesPerson (SalesQuota, SalesYTD)
+--------------------
+CREATE NONCLUSTERED INDEX IX_SalesPerson_SalesQuota_SalesYTD ON Sales.SalesPerson (SalesQuota, SalesYTD)
+------------------------------------------------------------------------------------------------------------------------
+CREATE UNIQUE NONCLUSTERED INDEX ACT_IDX_EVENT_DEF_UNIQ ON FLW_EVENT_DEFINITION(KEY_, VERSION_, TENANT_ID_)
+--------------------
+CREATE UNIQUE NONCLUSTERED INDEX ACT_IDX_EVENT_DEF_UNIQ ON FLW_EVENT_DEFINITION (KEY_, VERSION_, TENANT_ID_)
+------------------------------------------------------------------------------------------------------------------------
+declare @is_updated bit
+--------------------
+DECLARE @is_updated bit
+------------------------------------------------------------------------------------------------------------------------
+DECLARE @Group nvarchar(50), @Sales money=1
+--------------------
+DECLARE @Group nvarchar(50), @Sales money = 1
+------------------------------------------------------------------------------------------------------------------------
+DECLARE @cursor CURSOR
+--------------------
+DECLARE @cursor CURSOR
+------------------------------------------------------------------------------------------------------------------------
+DECLARE @MyTableVar table( EmpID int NOT NULL, OldVacationHours int, NewVacationHours int, ModifiedDate datetime)
+--------------------
+DECLARE @MyTableVar TABLE (
+	EmpID int NOT NULL,
+	OldVacationHours int,
+	NewVacationHours int,
+	ModifiedDate datetime
+)
+------------------------------------------------------------------------------------------------------------------------
+DROP INDEX async_measure_snapshots.async_m_s_snapshot_id
+--------------------
+DROP INDEX async_measure_snapshots.async_m_s_snapshot_id
+------------------------------------------------------------------------------------------------------------------------
+DROP INDEX IX_ProductVendor_VendorID     ON Purchasing.ProductVendor
+--------------------
+DROP INDEX IX_ProductVendor_VendorID ON Purchasing.ProductVendor
+------------------------------------------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS test
+--------------------
+DROP TABLE IF EXISTS test
+------------------------------------------------------------------------------------------------------------------------
+EXEC sp_rename 'rules.temp_plugin_config_key', 'plugin_config_key'
+--------------------
+EXEC sp_rename 'rules.temp_plugin_config_key', 'plugin_config_key'
+------------------------------------------------------------------------------------------------------------------------
+EXEC @returnstatus = dbo.ufnGetSalesOrderStatusText @Status = 2
+--------------------
+EXEC @returnstatus = dbo.ufnGetSalesOrderStatusText @Status = 2
+------------------------------------------------------------------------------------------------------------------------
+EXEC sp_rename @P0 OUT
+--------------------
+EXEC sp_rename @P0 OUT
+------------------------------------------------------------------------------------------------------------------------
+if @is_exists is null begin  insert into Inventory_1 (co_id,sku_id,order_lock) values (@0,@1,@2) end else begin insert into Inventory_2 (co_id,sku_id,order_lock) values (@0,@1,@2) end 
+--------------------
+IF @is_exists IS NULL
+	BEGIN
+		INSERT INTO Inventory_1 (co_id, sku_id, order_lock)
+		VALUES (@0, @1, @2);
+	END
+ELSE
+	BEGIN
+		INSERT INTO Inventory_2 (co_id, sku_id, order_lock)
+		VALUES (@0, @1, @2);
+	END
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO Cities (Location)VALUES ( CONVERT(Point, '12.3:46.2') )
+--------------------
+INSERT INTO Cities (Location)
+VALUES (CONVERT(Point, '12.3:46.2'))
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO Cities (Location)VALUES ( dbo.CreateNewPoint(x, y) )
+--------------------
+INSERT INTO Cities (Location)
+VALUES (dbo.CreateNewPoint(x, y))
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO test (name)VALUES (N'a'), (N'b'), (N'c')
+--------------------
+INSERT INTO test (name)
+VALUES (N'a'),
+(N'b'),
+(N'c')
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO Production.UnitMeasure VALUES (N'F2', N'Square Feet', GETDATE())
+--------------------
+INSERT INTO Production.UnitMeasure
+VALUES (N'F2', N'Square Feet', GETDATE())
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO dbo.AO_B9A0F0_APPLIED_TEMPLATE DEFAULT VALUES
+--------------------
+INSERT INTO dbo.AO_B9A0F0_APPLIED_TEMPLATE DEFAULT VALUES
+------------------------------------------------------------------------------------------------------------------------
+insert into t(a,b) values ('a1','b1'),('a2','b2'),('a3','b3')
+--------------------
+INSERT INTO t (a, b)
+VALUES ('a1', 'b1'),
+('a2', 'b2'),
+('a3', 'b3')
+------------------------------------------------------------------------------------------------------------------------
+insert into t(a,b) values ('a1','b1'),('a2','b2'),('a3','b3'),('a4','b4')
+--------------------
+INSERT INTO t (a, b)
+VALUES ('a1', 'b1'),
+('a2', 'b2'),
+('a3', 'b3'),
+('a4', 'b4')
+------------------------------------------------------------------------------------------------------------------------
+INSERT [dbo].[SurveyAnswer]([CustomerId], [QuestionId], [OptionId], [CreateTime], [LastUpdateTime]) VALUES (@0, @1, @2, @3, @4)
+--------------------
+INSERT INTO [dbo].[SurveyAnswer] ([CustomerId], [QuestionId], [OptionId], [CreateTime], [LastUpdateTime])
+VALUES (@0, @1, @2, @3, @4)
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO MMS_SETTLEMENT_COM(handler,handleTime,MID,MERCHANTNAME,TOTALAMT,ACTUALAMT,     paymentMoney,STATUS,SERIAL_NUM,REMARKS)SELECT 'admin',getdate(),MID,MERCHANTNAME,SUM(CONVERT(DECIMAL(18,2),isnull(TOTALAMT,0)))  TOTALAMT,SUM(CONVERT(DECIMAL(18,2),isnull(ACTUALAMT,0))) ACTUALAMT,SUM(CONVERT(DECIMAL(18,2), isnull(paymentMoney,0))) paymentMoney,2,126,( SELECT REMARKS+''  FROM MMS_SETTLEMENT_COM  WHERE MID=A.MID  FOR XML PATH('')) AS REMARKS FROM MMS_SETTLEMENT_COM A WHERE ID IN (304,305,306,297,108,184) GROUP BY MID ,MERCHANTNAME
+--------------------
+INSERT INTO MMS_SETTLEMENT_COM
+	(handler, handleTime, MID, MERCHANTNAME, TOTALAMT
+	, ACTUALAMT, paymentMoney, STATUS, SERIAL_NUM, REMARKS)
+SELECT 'admin', getdate(), MID, MERCHANTNAME
+	, SUM(CONVERT(DECIMAL(18, 2), isnull(TOTALAMT, 0))) AS TOTALAMT
+	, SUM(CONVERT(DECIMAL(18, 2), isnull(ACTUALAMT, 0))) AS ACTUALAMT
+	, SUM(CONVERT(DECIMAL(18, 2), isnull(paymentMoney, 0))) AS paymentMoney
+	, 2, 126
+	, (
+		SELECT REMARKS + ''
+		FROM MMS_SETTLEMENT_COM
+		WHERE MID = A.MID
+		FOR XML PATH('')
+	) AS REMARKS
+FROM MMS_SETTLEMENT_COM A
+WHERE ID IN (304, 305, 306, 297, 108, 184)
+GROUP BY MID, MERCHANTNAME
+------------------------------------------------------------------------------------------------------------------------
+INSERT Production.ScrapReason OUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate INTO @MyTableVar VALUES (N'Operator error', GETDATE())
+--------------------
+INSERT INTO Production.ScrapReason
+OUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate
+	INTO @MyTableVar
+VALUES (N'Operator error', GETDATE())
+------------------------------------------------------------------------------------------------------------------------
+INSERT TOP(5)INTO dbo.EmployeeSales  OUTPUT inserted.EmployeeID, inserted.FirstName, inserted.LastName, inserted.YearlySales SELECT sp.BusinessEntityID, c.LastName, c.FirstName, sp.SalesYTD FROM Sales.SalesPerson AS sp INNER JOIN Person.Person AS c ON sp.BusinessEntityID = c.BusinessEntityID WHERE sp.SalesYTD > 250000.00 ORDER BY sp.SalesYTD DESC
+--------------------
+INSERT TOP (5) INTO dbo.EmployeeSales
+OUTPUT inserted.EmployeeID, inserted.FirstName, inserted.LastName, inserted.YearlySales
+SELECT sp.BusinessEntityID, c.LastName, c.FirstName, sp.SalesYTD
+FROM Sales.SalesPerson sp
+INNER JOIN Person.Person c ON sp.BusinessEntityID = c.BusinessEntityID
+WHERE sp.SalesYTD > 250000.00
+ORDER BY sp.SalesYTD DESC
+------------------------------------------------------------------------------------------------------------------------
+insert into dashboard_role_res (res_id, role_id,res_type) values (?, ? ,?) ,  (?, ? ,?)
+--------------------
+INSERT INTO dashboard_role_res (res_id, role_id, res_type)
+VALUES (?, ?, ?),
+(?, ?, ?)
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO DataDB..TBL_TEST_7 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+--------------------
+INSERT INTO DataDB..TBL_TEST_7
+VALUES (?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?)
+------------------------------------------------------------------------------------------------------------------------
+MERGE INTO tb_device_category t1
+USING ( select distinct device_category, factory_id from temp_device where device_category is not null
+) t2
+on (t1.name = t2.device_category and t1.factory_id = t2.factory_id)
+WHEN NOT MATCHED THEN
+INSERT (name, factory_id) values (t2.device_category, t2.factory_id)
+--------------------
+MERGE INTO tb_device_category t1
+USING (
+	SELECT DISTINCT device_category, factory_id
+	FROM temp_device
+	WHERE device_category IS NOT NULL
+) t2 ON (t1.name = t2.device_category
+AND t1.factory_id = t2.factory_id) 
+WHEN NOT MATCHED THEN INSERT (name, factory_id) VALUES (t2.device_category, t2.factory_id)
+------------------------------------------------------------------------------------------------------------------------
+ROLLBACK WORK
+--------------------
+ROLLBACK WORK
+------------------------------------------------------------------------------------------------------------------------
+ROLLBACK TRAN
+--------------------
+ROLLBACK TRANSACTION
+------------------------------------------------------------------------------------------------------------------------
+ROLLBACK TRANSACTION @tran_name_variable
+--------------------
+ROLLBACK TRANSACTION @tran_name_variable
+------------------------------------------------------------------------------------------------------------------------
+SELECT c.FirstName, c.LastName    ,ROW_NUMBER() OVER(ORDER BY SalesYTD DESC) AS 'Row Number'    ,s.SalesYTD, a.PostalCode FROM Sales.SalesPerson s     INNER JOIN Person.Contact c         ON s.SalesPersonID = c.ContactID    INNER JOIN Person.Address a         ON a.AddressID = c.ContactID WHERE TerritoryID IS NOT NULL     AND SalesYTD <> 0
+--------------------
+SELECT c.FirstName, c.LastName, ROW_NUMBER() OVER (ORDER BY SalesYTD DESC) AS "Row Number", s.SalesYTD
+	, a.PostalCode
+FROM Sales.SalesPerson s
+	INNER JOIN Person.Contact c ON s.SalesPersonID = c.ContactID
+	INNER JOIN Person.Address a ON a.AddressID = c.ContactID
+WHERE TerritoryID IS NOT NULL
+	AND SalesYTD <> 0
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM (   SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate Desc, FAlertLevel, FAlertType)  AS RowNumber, *        from monitor_business   where FRemoveAlert = ? ) AS temp_table   WHERE RowNumber BETWEEN ? AND ?
+--------------------
+SELECT *
+FROM (
+	SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate DESC, FAlertLevel, FAlertType) AS RowNumber, *
+	FROM monitor_business
+	WHERE FRemoveAlert = ?
+) temp_table
+WHERE RowNumber BETWEEN ? AND ?
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM (   SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate Desc, FAlertLevel, FAlertType)  AS RowNumber, *        from monitor_business   where FRemoveAlert = ? ) AS temp_table   WHERE RowNumber NOT BETWEEN ? AND ?
+--------------------
+SELECT *
+FROM (
+	SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate DESC, FAlertLevel, FAlertType) AS RowNumber, *
+	FROM monitor_business
+	WHERE FRemoveAlert = ?
+) temp_table
+WHERE RowNumber NOT BETWEEN ? AND ?
+------------------------------------------------------------------------------------------------------------------------
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+--------------------
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+------------------------------------------------------------------------------------------------------------------------
+SET FMTONLY ON
+--------------------
+SET FMTONLY ON
+------------------------------------------------------------------------------------------------------------------------
+SET STATISTICS XML OFF
+--------------------
+SET STATISTICS XML OFF
+------------------------------------------------------------------------------------------------------------------------
+SET @state = N'Oregon'
+--------------------
+SET @state = N'Oregon'
+------------------------------------------------------------------------------------------------------------------------
+BEGIN TRAN T1
+--------------------
+BEGIN TRANSACTION T1
+------------------------------------------------------------------------------------------------------------------------
+SELECT TOP 10 * FROM T
+--------------------
+SELECT TOP 10 *
+FROM T
+------------------------------------------------------------------------------------------------------------------------
+SELECT TOP ? * FROM T
+--------------------
+SELECT TOP ? *
+FROM T
+------------------------------------------------------------------------------------------------------------------------
+update reg_student_charge_item set FAmountReceived = b.amount   from reg_student_charge_item a    ,(          select a.FId,                         case when sum(b.FChargeAmount) is null then 0                         else sum(b.FChargeAmount)                   end as amount            from reg_student_charge_item a            left join reg_student_charge_daybook b on a.FId = b.FChargeItemId           where a.FId=?    group by a.FId     ) b where a.FId = b.FId and a.FId = ?
+--------------------
+UPDATE reg_student_charge_item
+SET FAmountReceived = b.amount
+FROM reg_student_charge_item a, (
+		SELECT a.FId
+			, CASE 
+				WHEN sum(b.FChargeAmount) IS NULL THEN 0
+				ELSE sum(b.FChargeAmount)
+			END AS amount
+		FROM reg_student_charge_item a
+			LEFT JOIN reg_student_charge_daybook b ON a.FId = b.FChargeItemId
+		WHERE a.FId = ?
+		GROUP BY a.FId
+	) b
+WHERE a.FId = b.FId
+	AND a.FId = ?
+------------------------------------------------------------------------------------------------------------------------
+UPDATE dbo.Table2 SET dbo.Table2.ColB = dbo.Table2.ColB + dbo.Table1.ColB FROM dbo.Table2     INNER JOIN dbo.Table1     ON (dbo.Table2.ColA = dbo.Table1.ColA)
+--------------------
+UPDATE dbo.Table2
+SET dbo.Table2.ColB = dbo.Table2.ColB + dbo.Table1.ColB
+FROM dbo.Table2
+	INNER JOIN dbo.Table1 ON (dbo.Table2.ColA = dbo.Table1.ColA)
+------------------------------------------------------------------------------------------------------------------------
+UPDATE Cities SET Location = CONVERT(Point, '12.3:46.2') WHERE Name = 'Anchorage'
+--------------------
+UPDATE Cities
+SET Location = CONVERT(Point, '12.3:46.2')
+WHERE Name = 'Anchorage'
+------------------------------------------------------------------------------------------------------------------------
+UPDATE Sales.SalesPerson SET SalesYTD = SalesYTD +     (SELECT SUM(so.SubTotal)      FROM Sales.SalesOrderHeader AS so     WHERE so.OrderDate = (SELECT MAX(OrderDate)                           FROM Sales.SalesOrderHeader AS so2                           WHERE so2.SalesPersonID =                                  so.SalesPersonID)     AND Sales.SalesPerson.SalesPersonID = so.SalesPersonID     GROUP BY so.SalesPersonID)
+--------------------
+UPDATE Sales.SalesPerson
+SET SalesYTD = SalesYTD + (
+	SELECT SUM(so.SubTotal)
+	FROM Sales.SalesOrderHeader so
+	WHERE so.OrderDate = (
+			SELECT MAX(OrderDate)
+			FROM Sales.SalesOrderHeader so2
+			WHERE so2.SalesPersonID = so.SalesPersonID
+		)
+		AND Sales.SalesPerson.SalesPersonID = so.SalesPersonID
+	GROUP BY so.SalesPersonID
+)
+------------------------------------------------------------------------------------------------------------------------
+UPDATE TOP (10) HumanResources.Employee SET VacationHours = VacationHours * 1.25
+--------------------
+UPDATE TOP (10) HumanResources.Employee
+SET VacationHours = VacationHours * 1.25
+------------------------------------------------------------------------------------------------------------------------
+UPDATE TOP (10) HumanResources.Employee SET VacationHours = VacationHours * 1.25, ModifiedDate = GETDATE()  OUTPUT inserted.BusinessEntityID, deleted.VacationHours, inserted.VacationHours, inserted.ModifiedDate INTO @MyTableVar
+--------------------
+UPDATE TOP (10) HumanResources.Employee
+SET VacationHours = VacationHours * 1.25, ModifiedDate = GETDATE()
+OUTPUT inserted.BusinessEntityID, deleted.VacationHours, inserted.VacationHours, inserted.ModifiedDate
+	INTO @MyTableVar
+------------------------------------------------------------------------------------------------------------------------
+update clients set name =N'小明',age =1
+--------------------
+UPDATE clients
+SET name = N'小明', age = 1
+------------------------------------------------------------------------------------------------------------------------
+WAITFOR TIME '22:20'
+--------------------
+WAITFOR TIME '22:20'
+------------------------------------------------------------------------------------------------------------------------
+WAITFOR DELAY '02:00'
+--------------------
+WAITFOR DELAY '02:00'
+------------------------------------------------------------------------------------------------------------------------
+CREATE VIEW [Current Product List] AS
+SELECT ProductID,ProductName
+FROM Products
+WHERE Discontinued=No
+--------------------
+CREATE VIEW [Current Product List]
+AS
+SELECT ProductID, ProductName
+FROM Products
+WHERE Discontinued = No
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE [projects] ([id] int NOT NULL IDENTITY(1, 1) PRIMARY KEY, [name] NVARCHAR(256), [description] NVARCHAR(2000), [enabled] bit DEFAULT 1 NOT NULL, [scope] NVARCHAR(3), [qualifier] NVARCHAR(3), [kee] NVARCHAR(400), [root_id] int, [profile_id] int, [language] NVARCHAR(5), [copy_resource_id] int, [long_name] NVARCHAR(256)) 
+--------------------
+CREATE TABLE [projects] (
+	[id] int NOT NULL PRIMARY KEY IDENTITY (1, 1),
+	[name] NVARCHAR(256),
+	[description] NVARCHAR(2000),
+	[enabled] bit DEFAULT 1 NOT NULL,
+	[scope] NVARCHAR(3),
+	[qualifier] NVARCHAR(3),
+	[kee] NVARCHAR(400),
+	[root_id] int,
+	[profile_id] int,
+	[language] NVARCHAR(5),
+	[copy_resource_id] int,
+	[long_name] NVARCHAR(256)
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE #Test (C1 nvarchar(10), C2 nvarchar(50), C3 datetime)
+--------------------
+CREATE TABLE #Test (
+	C1 nvarchar(10),
+	C2 nvarchar(50),
+	C3 datetime
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE dbo.cwd_directory (ID NUMERIC NOT NULL, directory_name NVARCHAR(255), lower_directory_name NVARCHAR(255), created_date DATETIME, updated_date DATETIME, active int, description NVARCHAR(255), impl_class NVARCHAR(255), lower_impl_class NVARCHAR(255), directory_type NVARCHAR(60), directory_position NUMERIC, CONSTRAINT PK_cwd_directory PRIMARY KEY (ID))
+--------------------
+CREATE TABLE dbo.cwd_directory (
+	ID NUMERIC NOT NULL,
+	directory_name NVARCHAR(255),
+	lower_directory_name NVARCHAR(255),
+	created_date DATETIME,
+	updated_date DATETIME,
+	active int,
+	description NVARCHAR(255),
+	impl_class NVARCHAR(255),
+	lower_impl_class NVARCHAR(255),
+	directory_type NVARCHAR(60),
+	directory_position NUMERIC,
+	CONSTRAINT PK_cwd_directory PRIMARY KEY (ID)
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE dbo.customfieldoption (ID NUMERIC NOT NULL, CUSTOMFIELD NUMERIC, CUSTOMFIELDCONFIG NUMERIC, PARENTOPTIONID NUMERIC, SEQUENCE NUMERIC, customvalue NVARCHAR(255), optiontype NVARCHAR(60), disabled NVARCHAR(60), CONSTRAINT PK_customfieldoption PRIMARY KEY (ID))
+--------------------
+CREATE TABLE dbo.customfieldoption (
+	ID NUMERIC NOT NULL,
+	CUSTOMFIELD NUMERIC,
+	CUSTOMFIELDCONFIG NUMERIC,
+	PARENTOPTIONID NUMERIC,
+	SEQUENCE NUMERIC,
+	customvalue NVARCHAR(255),
+	optiontype NVARCHAR(60),
+	disabled NVARCHAR(60),
+	CONSTRAINT PK_customfieldoption PRIMARY KEY (ID)
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE dbo.AO_563AEE_ACTOR_ENTITY (    FULL_NAME VARCHAR(255),    ID INTEGER IDENTITY(1,1) NOT NULL,    PROFILE_PAGE_URI VARCHAR(767),    PROFILE_PICTURE_URI VARCHAR(767),    USERNAME VARCHAR(255),)
+--------------------
+CREATE TABLE dbo.AO_563AEE_ACTOR_ENTITY (
+	FULL_NAME VARCHAR(255),
+	ID INTEGER DEFAULT NULL IDENTITY (1, 1),
+	PROFILE_PAGE_URI VARCHAR(767),
+	PROFILE_PICTURE_URI VARCHAR(767),
+	USERNAME VARCHAR(255)
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE dbo.AO_E8B6CC_ISSUE_MAPPING_V2 (    AUTHOR VARCHAR(255),    BRANCH VARCHAR(255),    "DATE" DATETIME,    FILES_DATA NTEXT,    ID INTEGER IDENTITY(1,1) NOT NULL,    ISSUE_ID VARCHAR(255),    MESSAGE NTEXT,    NODE VARCHAR(255),    PARENTS_DATA VARCHAR(255),    RAW_AUTHOR VARCHAR(255),    RAW_NODE VARCHAR(255),    REPOSITORY_ID INTEGER CONSTRAINT df_AO_E8B6CC_ISSUE_MAPPING_V2_REPOSITORY_ID DEFAULT 0,    VERSION INTEGER,CONSTRAINT pk_AO_E8B6CC_ISSUE_MAPPING_V2_ID PRIMARY KEY(ID))
+--------------------
+CREATE TABLE dbo.AO_E8B6CC_ISSUE_MAPPING_V2 (
+	AUTHOR VARCHAR(255),
+	BRANCH VARCHAR(255),
+	"DATE" DATETIME,
+	FILES_DATA NTEXT,
+	ID INTEGER DEFAULT NULL IDENTITY (1, 1),
+	ISSUE_ID VARCHAR(255),
+	MESSAGE NTEXT,
+	NODE VARCHAR(255),
+	PARENTS_DATA VARCHAR(255),
+	RAW_AUTHOR VARCHAR(255),
+	RAW_NODE VARCHAR(255),
+	REPOSITORY_ID INTEGER DEFAULT 0,
+	VERSION INTEGER,
+	CONSTRAINT pk_AO_E8B6CC_ISSUE_MAPPING_V2_ID PRIMARY KEY (ID)
+)
+------------------------------------------------------------------------------------------------------------------------
+create table leave_jpa ( id bigint identity not null,  user_id varchar(255),  primary key (id))
+--------------------
+CREATE TABLE leave_jpa (
+	id bigint DEFAULT NULL IDENTITY,
+	user_id varchar(255),
+	PRIMARY KEY (id)
+)
+------------------------------------------------------------------------------------------------------------------------
+create table ACT_RU_VARIABLE ( ID_ nvarchar(64) not null, DOUBLE_ double precision, LONG_ numeric(19,0), TEXT_ nvarchar(4000), primary key (ID_))
+--------------------
+CREATE TABLE ACT_RU_VARIABLE (
+	ID_ nvarchar(64) NOT NULL,
+	DOUBLE_ DOUBLE PRECISION,
+	LONG_ numeric(19, 0),
+	TEXT_ nvarchar(4000),
+	PRIMARY KEY (ID_)
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE [dbo].[users2](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[email] [varchar](255) NOT NULL,
+	[name] [varchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)
+)
+--------------------
+CREATE TABLE [dbo].[users2] (
+	[id] [bigint] DEFAULT NULL IDENTITY (1, 1),
+	[email] [varchar](255) NOT NULL,
+	[name] [varchar](255) NOT NULL,
+	PRIMARY KEY CLUSTERED ([id] ASC)
+)
+
+
+
+
+
+
+
+
+
+

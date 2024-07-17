@@ -821,6 +821,7 @@ public final class FnvHash {
         long PROCESSLIST = fnv1a_64_lower("PROCESSLIST");
         long MPP = fnv1a_64_lower("MPP");
         long SERDE = fnv1a_64_lower("SERDE");
+        long SERDEPROPERTIES = fnv1a_64_lower("SERDEPROPERTIES");
         long SORT = fnv1a_64_lower("SORT");
         long ZORDER = fnv1a_64_lower("ZORDER");
         long FIELDS = fnv1a_64_lower("FIELDS");
@@ -1150,5 +1151,6 @@ public final class FnvHash {
         long THAN = fnv1a_64_lower("THAN");
         long PROPERTIES = fnv1a_64_lower("PROPERTIES");
         long SINGLE = fnv1a_64_lower("SINGLE");
+        long RANDOM = fnv1a_64_lower("RANDOM");
     }
 }

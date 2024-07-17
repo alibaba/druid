@@ -1,0 +1,209 @@
+CREATE TABLE if not exists iteblog_06(
+    name struct<guo:string,sheng:string,shi:string>, value string
+)
+--------------------
+CREATE TABLE IF NOT EXISTS iteblog_06 (
+	name STRUCT<guo:string, sheng:string, shi:string>,
+	value string
+)
+------------------------------------------------------------------------------------------------------------------------
+create table ads_data.sale_detail_one23
+like  ads_data.sale_detail_one1
+STORED AS parquet
+--------------------
+CREATE TABLE ads_data.sale_detail_one23
+LIKE ads_data.sale_detail_one1
+STORED AS parquet
+------------------------------------------------------------------------------------------------------------------------
+create external table `ods.ods_dc_test_df` ( `id` bigint comment 'id',  `name` string comment '名称' )
+comment '测试表' partitioned by ( `dt` string )
+row format serde 'org.apache.hadoop.hive.ql.io.parquet.serde.parquethiveserde'
+stored as inputformat 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+          outputformat 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+location 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+ tblproperties ( parquet.compression = 'snappy' , transient_lastDdlTime = '1603362950' )
+--------------------
+CREATE EXTERNAL TABLE `ods.ods_dc_test_df` (
+	`id` bigint COMMENT 'id',
+	`name` string COMMENT '名称'
+)
+COMMENT '测试表'
+PARTITIONED BY (
+	`dt` string
+)
+ROW FORMAT
+	SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.parquethiveserde'
+STORED AS
+	INPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+	OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+TBLPROPERTIES (
+	'parquet.compression' = 'snappy',
+	'transient_lastDdlTime' = '1603362950'
+)
+------------------------------------------------------------------------------------------------------------------------
+create table default.sale_detail_6781 like default.sale_detail_1119 STORED AS parquet
+--------------------
+CREATE TABLE default.sale_detail_6781
+LIKE default.sale_detail_1119
+STORED AS parquet
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE tb_a ADD COLUMNS ( a bigint )
+--------------------
+ALTER TABLE tb_a
+	ADD COLUMNS (a bigint)
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE tb_a ADD COLUMNS ( a bigint )
+--------------------
+ALTER TABLE tb_a
+	ADD COLUMNS (a bigint)
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO tb_a VALUES ( 1 )
+--------------------
+INSERT INTO TABLE tb_a
+VALUES (1)
+------------------------------------------------------------------------------------------------------------------------
+WITH A AS (
+ WITH A1 AS (
+ SELECT *
+ FROM aaa1226.t123
+ LIMIT 1
+ )
+ SELECT *
+ FROM A1
+ ),
+ B AS (
+ SELECT *
+ FROM aaa1226.t123
+ LIMIT 1
+ )
+SELECT *
+FROM A, B
+--------------------
+WITH A AS (
+		WITH A1 AS (
+				SELECT *
+				FROM aaa1226.t123
+				LIMIT 1
+			)
+		SELECT *
+		FROM A1
+	),
+	B AS (
+		SELECT *
+		FROM aaa1226.t123
+		LIMIT 1
+	)
+SELECT *
+FROM A, B
+------------------------------------------------------------------------------------------------------------------------
+WITH A AS (
+ WITH A1 AS (
+ SELECT *
+ FROM aaa1226.123
+ LIMIT 1
+ )
+ SELECT *
+ FROM A1
+ ),
+ B AS (
+ SELECT *
+ FROM aaa1226.123
+ LIMIT 1
+ )
+SELECT *
+FROM A, B
+--------------------
+WITH A AS (
+		WITH A1 AS (
+				SELECT *
+				FROM aaa1226.123
+				LIMIT 1
+			)
+		SELECT *
+		FROM A1
+	),
+	B AS (
+		SELECT *
+		FROM aaa1226.123
+		LIMIT 1
+	)
+SELECT *
+FROM A, B
+------------------------------------------------------------------------------------------------------------------------
+SELECT account_id FROM taobao_logs.x_view WHERE ip = '192.168.1.1' AND dt = '2021-04-14'
+--------------------
+SELECT account_id
+FROM taobao_logs.x_view
+WHERE ip = '192.168.1.1'
+	AND dt = '2021-04-14'
+------------------------------------------------------------------------------------------------------------------------
+SELECT account_id FROM taobao_office.cloud_yunpan WHERE dt='2021-04-12' AND target='update'
+--------------------
+SELECT account_id
+FROM taobao_office.cloud_yunpan
+WHERE dt = '2021-04-12'
+	AND target = 'update'
+------------------------------------------------------------------------------------------------------------------------
+select * from zhangkk_user check where check.user_id = 1
+--------------------
+SELECT *
+FROM zhangkk_user check
+WHERE check.user_id = 1
+------------------------------------------------------------------------------------------------------------------------
+select * from bi.aaa where !array_contains(list, cc_id)
+--------------------
+SELECT *
+FROM bi.aaa
+WHERE !array_contains(list, cc_id)
+------------------------------------------------------------------------------------------------------------------------
+from (select name,address from test1) t1 left join (select name,school from test2) t2 on t2.name = t1.name
+insert overwrite table tt1
+select name,address,school insert overwrite table tt2 select name,address
+--------------------
+FROM (
+	SELECT name, address
+	FROM test1
+) t1
+	LEFT JOIN (
+		SELECT name, school
+		FROM test2
+	) t2
+	ON t2.name = t1.name
+INSERT OVERWRITE TABLE tt1
+SELECT name, address, school
+INSERT OVERWRITE TABLE tt2
+SELECT name, address
+------------------------------------------------------------------------------------------------------------------------
+set test.url=xx.test.com:8808
+--------------------
+SET test.url = xx.test.com:8808
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE bi.bi_xxx_external SET LOCATION 'hdfs://nameservice1/user/hive/warehouse/bi.db/bi_xxx/pt=aaa'
+--------------------
+ALTER TABLE bi.bi_xxx_external
+	SET LOCATION 'hdfs://nameservice1/user/hive/warehouse/bi.db/bi_xxx/pt=aaa'
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE test_tab SET SERDE 'org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe'
+--------------------
+ALTER TABLE test_tab
+	SET SERDE 'org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe'
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE dbx.tab1 SET SERDE 'org.apache.hadoop' WITH SERDEPROPERTIES ('k' = 'v', 'kay' = 'vee')
+--------------------
+ALTER TABLE dbx.tab1
+	SET SERDE 'org.apache.hadoop'
+	WITH SERDEPROPERTIES ('k' = 'v', 'kay' = 'vee')
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE table_name SET fileformat orc
+--------------------
+ALTER TABLE table_name
+	SET FILEFORMAT orc
+------------------------------------------------------------------------------------------------------------------------
+show schemas
+--------------------
+SHOW DATABASES
+------------------------------------------------------------------------------------------------------------------------
+show functions
+--------------------
+SHOW FUNCTIONS

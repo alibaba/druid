@@ -28,7 +28,7 @@ public class AdsStatementParser extends SQLStatementParser {
 
     public SQLCreateTableStatement parseCreateTable() {
         AdsCreateTableParser parser = new AdsCreateTableParser(this.exprParser);
-        return parser.parseCreateTable(true);
+        return parser.parseCreateTable();
     }
 
     public SQLStatement parseShow() {

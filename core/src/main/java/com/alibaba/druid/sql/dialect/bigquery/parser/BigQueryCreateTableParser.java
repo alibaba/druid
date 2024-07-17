@@ -1,14 +1,13 @@
 package com.alibaba.druid.sql.dialect.bigquery.parser;
 
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 
 public class BigQueryCreateTableParser extends SQLCreateTableParser {
     public BigQueryCreateTableParser(String sql) {
@@ -19,41 +18,32 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
+    protected SQLCreateTableStatement newCreateStatement() {
+        return new BigQueryCreateTableStatement();
+    }
+
+    protected void parseCreateTableRest(SQLCreateTableStatement x) {
+        BigQueryCreateTableStatement stmt = (BigQueryCreateTableStatement) x;
         for (;;) {
-            if (lexer.token() == Token.PARTITION) {
-                lexer.nextToken();
+            if (lexer.nextIf(Token.PARTITION)) {
                 accept(Token.BY);
 
-                boolean brace = lexer.nextIf(Token.LPAREN);
-                for (; ; ) {
-                    SQLName name;
-                    name = exprParser.name();
-                    if (name instanceof SQLIdentifierExpr
-                            && ((SQLIdentifierExpr) name).getName().equalsIgnoreCase("DATE")
-                            && lexer.nextIf(Token.LPAREN)
-                    ) {
-                        name = exprParser.name();
-                        accept(Token.RPAREN);
-                        name.putAttribute("function", "DATE");
-                    }
-                    stmt.addPartitionColumn(new SQLColumnDefinition(name));
+                this.exprParser.exprList(stmt.getPartitionBy(), stmt);
+                continue;
+            }
+
+            if (lexer.nextIfIdentifier("CLUSTER")) {
+                accept(Token.BY);
+                for (;;) {
+                    SQLSelectOrderByItem item = exprParser.parseSelectOrderByItem();
+                    item.setParent(stmt);
+                    stmt.getClusteredBy().add(item);
                     if (lexer.nextIf(Token.COMMA)) {
                         continue;
                     }
                     break;
                 }
-                if (brace) {
-                    accept(Token.RPAREN);
-                }
                 continue;
-            }
-
-            if (lexer.nextIfIdentifier("CLUSTERED")) {
-                accept(Token.BY);
-                SQLSelectOrderByItem item = exprParser.parseSelectOrderByItem();
-                item.setParent(stmt);
-                stmt.getClusteredBy().add(item);
             }
 
             if (lexer.nextIfIdentifier("OPTIONS")) {
@@ -66,7 +56,31 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
+            if (lexer.nextIfIdentifier(FnvHash.Constants.LIFECYCLE)) {
+                lexer.nextIf(Token.EQ);
+                stmt.setLifeCycle(this.exprParser.primary());
+
+                continue;
+            }
+
+            if (lexer.nextIf(Token.AS)) {
+                stmt.setSelect(
+                        this.createSQLSelectParser().select()
+                );
+                continue;
+            }
+
             break;
+        }
+    }
+
+    protected void createTableBefore(SQLCreateTableStatement createTable) {
+        if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")) {
+            createTable.setTemporary(true);
+        }
+
+        if (lexer.nextIf(Token.OR)) {
+            createTable.config(SQLCreateTableStatement.Feature.OrReplace);
         }
     }
 }

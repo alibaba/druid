@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.db2.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -121,12 +120,7 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
             validproc.accept(this);
         }
 
-        SQLPartitionBy partitionBy = x.getPartitioning();
-        if (partitionBy != null) {
-            println();
-            print0(ucase ? "PARTITION BY " : "partition by ");
-            partitionBy.accept(this);
-        }
+        printPartitionBy(x);
 
         Boolean compress = x.getCompress();
         if (compress != null) {

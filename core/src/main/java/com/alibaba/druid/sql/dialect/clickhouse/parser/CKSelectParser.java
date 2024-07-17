@@ -1,6 +1,10 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
@@ -17,6 +21,7 @@ public class CKSelectParser
         super(exprParser, selectListCache);
     }
 
+    @Override
     public SQLWithSubqueryClause parseWith() {
         SQLWithSubqueryClause withQueryClause = new SQLWithSubqueryClause();
         if (lexer.hasComment() && lexer.isKeepComments()) {
@@ -33,31 +38,24 @@ public class CKSelectParser
         for (; ; ) {
             SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
             entry.setParent(withQueryClause);
+            SQLExpr sqlExpr = exprParser.expr();
 
-            if (lexer.token() == Token.LPAREN) {
-                lexer.nextToken();
-
-                switch (lexer.token()) {
-                    case SELECT:
-                    case LPAREN:
-                    case WITH:
-                    case FROM:
-                        entry.setSubQuery(select());
-                        break;
-                    default:
-                        break;
-                }
-
+            if (sqlExpr instanceof SQLIdentifierExpr) {
+                String alias = ((SQLIdentifierExpr) sqlExpr).getName();
+                accept(Token.AS);
+                accept(Token.LPAREN);
+                entry.setSubQuery(select());
+                entry.setPrefixAlias(true);
+                entry.setAlias(alias);
                 accept(Token.RPAREN);
             } else {
-                throw new ParserException("TODO");
+                entry.setExpr(sqlExpr);
+                accept(Token.AS);
+                String alias = this.lexer.stringVal();
+                lexer.nextToken();
+                entry.setPrefixAlias(false);
+                entry.setAlias(alias);
             }
-
-            accept(Token.AS);
-
-            String alias = this.lexer.stringVal();
-            lexer.nextToken();
-            entry.setAlias(alias);
 
             withQueryClause.addEntry(entry);
 
@@ -72,15 +70,91 @@ public class CKSelectParser
         return withQueryClause;
     }
 
+    @Override
     protected SQLSelectQueryBlock createSelectQueryBlock() {
         return new CKSelectQueryBlock();
     }
 
+    @Override
     public void parseWhere(SQLSelectQueryBlock queryBlock) {
         if (lexer.nextIf(Token.PREWHERE)) {
             SQLExpr preWhere = exprParser.expr();
             ((CKSelectQueryBlock) queryBlock).setPreWhere(preWhere);
         }
         super.parseWhere(queryBlock);
+    }
+
+    @Override
+    public void parseFrom(SQLSelectQueryBlock queryBlock) {
+        super.parseFrom(queryBlock);
+        if (lexer.token() == Token.FINAL) {
+            lexer.nextToken();
+            ((CKSelectQueryBlock) queryBlock).setFinal(true);
+        } else {
+            ((CKSelectQueryBlock) queryBlock).setFinal(false);
+        }
+    }
+
+    @Override
+    protected void afterParseFetchClause(SQLSelectQueryBlock queryBlock) {
+        if (queryBlock instanceof CKSelectQueryBlock) {
+            CKSelectQueryBlock ckSelectQueryBlock = (CKSelectQueryBlock) queryBlock;
+            if (lexer.token() == Token.SETTINGS) {
+                lexer.nextToken();
+                for (; ; ) {
+                    SQLAssignItem item = this.exprParser.parseAssignItem();
+                    ckSelectQueryBlock.getSettings().add(item);
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+            }
+
+            if (lexer.token() == Token.FORMAT) {
+                lexer.nextToken();
+                ckSelectQueryBlock.setFormat(expr());
+            }
+        }
+    }
+
+    @Override
+    protected void afterParseLimitClause(SQLSelectQueryBlock queryBlock) {
+        if (queryBlock instanceof CKSelectQueryBlock) {
+            if (lexer.token() == Token.WITH) {
+                lexer.nextToken();
+                acceptIdentifier("TIES");
+                ((CKSelectQueryBlock) queryBlock).setWithTies(true);
+            }
+        }
+    }
+
+    @Override
+    protected void parseOrderByWith(SQLSelectGroupByClause groupBy, SQLSelectQueryBlock queryBlock) {
+        Lexer.SavePoint mark = lexer.mark();
+        lexer.nextToken();
+
+        if (lexer.identifierEquals(FnvHash.Constants.CUBE)) {
+            lexer.nextToken();
+            groupBy.setWithCube(true);
+        } else if (lexer.identifierEquals(FnvHash.Constants.ROLLUP)) {
+            lexer.nextToken();
+            groupBy.setWithRollUp(true);
+        } else if (lexer.identifierEquals("TOTALS")) {
+            lexer.nextToken();
+            ((CKSelectQueryBlock) queryBlock).setWithTotals(true);
+        } else {
+            lexer.reset(mark);
+        }
+    }
+
+    @Override
+    protected void parseAfterOrderBy(SQLSelectQueryBlock queryBlock) {
+        if (lexer.token() == Token.WITH && DbType.clickhouse == dbType) {
+            lexer.nextToken();
+            acceptIdentifier("FILL");
+            ((CKSelectQueryBlock) queryBlock).setWithFill(true);
+        }
     }
 }

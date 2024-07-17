@@ -80,6 +80,8 @@ public enum DbType {
 
     bigquery(1L << 48),
 
+    impala(1L << 49),
+
     ingres(0),
     cloudscape(0),
     timesten(0),

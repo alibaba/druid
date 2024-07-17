@@ -23,6 +23,6 @@ public class Issue1769 extends TestCase {
 
         System.out.println(v.getParameters());
         System.out.println(v.getTables());
-        assertEquals("SELECT id FROM test WHERE type = ? AND name = ? AND orderId IN (?)", out.toString());
+        assertEquals("SELECT id FROM test WHERE type = ? AND name = ? AND orderId IN (?);", out.toString());
     }
 }

@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -43,6 +44,11 @@ public class CKCreateTableParser extends SQLCreateTableParser {
             ckStmt.setOrderBy(orderBy);
         }
 
+        if (lexer.token() == Token.PRIMARY) {
+            SQLPrimaryKey sqlPrimaryKey = this.exprParser.parsePrimaryKey();
+            ckStmt.setPrimaryKey(sqlPrimaryKey);
+        }
+
         if (lexer.identifierEquals("SAMPLE")) {
             lexer.nextToken();
             accept(Token.BY);
@@ -50,7 +56,13 @@ public class CKCreateTableParser extends SQLCreateTableParser {
             ckStmt.setSampleBy(expr);
         }
 
-        if (lexer.identifierEquals("SETTINGS")) {
+        if (lexer.token() == Token.TTL) {
+            lexer.nextToken();
+            SQLExpr expr = this.exprParser.expr();
+            ckStmt.setTtl(expr);
+        }
+
+        if (lexer.token() == Token.SETTINGS) {
             lexer.nextToken();
             for (; ; ) {
                 SQLAssignItem item = this.exprParser.parseAssignItem();

@@ -43,7 +43,7 @@ public class MySqlSelectTest_129_ads extends MysqlTest {
                 "\t\tFROM ads_add_rtb_monitor_minute\n" +
                 "\t\tWHERE thedate BETWEEN CAST(20180109 AS bigint) AND CAST(20180109 AS bigint)\n" +
                 "\t\tGROUP BY hour_id, minute_id\n" +
-                "\t), \n" +
+                "\t),\n" +
                 "\tavg_table AS (\n" +
                 "\t\tWITH sum_table AS (\n" +
                 "\t\t\t\tSELECT thedate, minute_id\n" +

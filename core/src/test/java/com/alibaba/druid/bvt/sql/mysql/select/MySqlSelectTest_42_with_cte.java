@@ -65,7 +65,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
             Assert.assertEquals("WITH cte1 AS (\n" +
                             "\t\tSELECT a, b\n" +
                             "\t\tFROM table1\n" +
-                            "\t), \n" +
+                            "\t),\n" +
                             "\tcte2 AS (\n" +
                             "\t\tSELECT c, d\n" +
                             "\t\tFROM table2\n" +
@@ -81,7 +81,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
             Assert.assertEquals("with cte1 as (\n" +
                             "\t\tselect a, b\n" +
                             "\t\tfrom table1\n" +
-                            "\t), \n" +
+                            "\t),\n" +
                             "\tcte2 as (\n" +
                             "\t\tselect c, d\n" +
                             "\t\tfrom table2\n" +
@@ -98,7 +98,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
             Assert.assertEquals("WITH cte1 AS (\n" +
                             "\t\tSELECT a, b\n" +
                             "\t\tFROM table1\n" +
-                            "\t), \n" +
+                            "\t),\n" +
                             "\tcte2 AS (\n" +
                             "\t\tSELECT c, d\n" +
                             "\t\tFROM table2\n" +

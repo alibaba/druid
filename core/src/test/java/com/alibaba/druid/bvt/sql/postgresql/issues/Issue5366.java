@@ -78,7 +78,7 @@ public class Issue5366 {
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 SQLStatement statement = parser.parseStatement();
                 System.out.println(dbType + "生成的sql===" + statement);
-                String newSql = statement.toString()+";";
+                String newSql = statement.toString();
                 String normalizeNewSql = normalizeSql(newSql);
                 assertEquals(normalizeSql.toLowerCase(),normalizeNewSql.toLowerCase());
                 SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);

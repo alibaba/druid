@@ -37,7 +37,7 @@ public class OracleSubqueryFactoringTest extends TestCase {
                 "\t\tFROM employees e, departments d\n" +
                 "\t\tWHERE e.department_id = d.department_id\n" +
                 "\t\tGROUP BY department_name\n" +
-                "\t), \n" +
+                "\t),\n" +
                 "\tavg_cost AS (\n" +
                 "\t\tSELECT SUM(dept_total) / COUNT(*) AS avg\n" +
                 "\t\tFROM dept_costs\n" +

@@ -65,4 +65,5 @@ public class StarRocksStatementParser extends SQLStatementParser {
 
         return stmt;
     }
+
 }
