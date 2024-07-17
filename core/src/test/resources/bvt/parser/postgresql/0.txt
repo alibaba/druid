@@ -399,7 +399,7 @@ WHERE WEB_ID = ?
 	AND MENU_ID = ?
 	AND MENU_TYPE_ID = ?
 ORDER BY RECOMMEND_FLAG DESC, LAST_UPD_TIME DESC
-LIMIT ?
+LIMIT ? OFFSET ?
 ------------------------------------------------------------------------------------------------------------------------
 SELECT * FROM t1 NATURAL INNER JOIN t2;
 --------------------

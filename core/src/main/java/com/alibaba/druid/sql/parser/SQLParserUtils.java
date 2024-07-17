@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.ads.parser.AdsStatementParser;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryExprParser;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryLexer;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryStatementParser;
@@ -167,8 +166,6 @@ public class SQLParserUtils {
                 return new PrestoStatementParser(sql, features);
             case bigquery:
                 return new BigQueryStatementParser(sql, features);
-            case ads:
-                return new AdsStatementParser(sql);
             case spark:
                 return new SparkStatementParser(sql);
             case clickhouse:
