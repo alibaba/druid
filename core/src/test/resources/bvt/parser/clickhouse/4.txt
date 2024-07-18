@@ -1,0 +1,28 @@
+select col from a left semi join b on a.id = b.id
+--------------------
+SELECT col
+FROM a
+	LEFT SEMI JOIN b ON a.id = b.id
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE replicated_orders (
+                    order_id UInt64 CODEC(ZSTD),
+                    customer_id LowCardinality(UInt32),
+                    order_date Date,
+                    product_id LowCardinality(UInt32),
+                    quantity Int32,
+                    price Decimal(10, 2)
+                )
+                ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+                PARTITION BY order_date
+                ORDER BY (order_date, customer_id, order_id)
+--------------------
+CREATE TABLE replicated_orders (
+	order_id UInt64 CODEC(ZSTD),
+	customer_id LowCardinality(UInt32),
+	order_date Date,
+	product_id LowCardinality(UInt32),
+	quantity Int32,
+	price Decimal(10, 2)
+) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+PARTITION BY order_date
+ORDER BY (order_date, customer_id, order_id)
