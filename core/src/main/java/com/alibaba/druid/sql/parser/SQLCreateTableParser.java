@@ -176,13 +176,6 @@ public class SQLCreateTableParser extends SQLDDLParser {
     }
 
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
-        if (lexer.token == Token.WITH && DbType.postgresql == dbType) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            parseAssignItems(stmt.getTableOptions(), stmt, false);
-            accept(Token.RPAREN);
-        }
-
         if (lexer.nextIf(Token.TABLESPACE)) {
             stmt.setTablespace(
                     this.exprParser.name()

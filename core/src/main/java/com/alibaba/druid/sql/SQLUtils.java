@@ -33,7 +33,7 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
-import com.alibaba.druid.sql.dialect.holo.visitor.HoloOutputVisitor;
+import com.alibaba.druid.sql.dialect.hologres.visitor.HologresOutputVisitor;
 import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaOutputVisitor;
 import com.alibaba.druid.sql.dialect.infomix.visitor.InformixOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
@@ -527,7 +527,7 @@ public class SQLUtils {
             case edb:
                 return new PGOutputVisitor(out);
             case hologres:
-                return new HoloOutputVisitor(out);
+                return new HologresOutputVisitor(out);
             case sqlserver:
             case jtds:
                 return new SQLServerOutputVisitor(out);

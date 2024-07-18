@@ -1,19 +1,18 @@
-package com.alibaba.druid.sql.dialect.holo.parser;
+package com.alibaba.druid.sql.dialect.hologres.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
-public class HoloExprParser
+public class HologresExprParser
         extends PGExprParser {
-    public HoloExprParser(String sql, SQLParserFeature... features) {
-        super(new HoloLexer(sql, features));
-        this.lexer.nextToken();
+    public HologresExprParser(String sql, SQLParserFeature... features) {
+        super(sql, features);
         dbType = DbType.hologres;
     }
 
-    public HoloExprParser(Lexer lexer) {
+    public HologresExprParser(Lexer lexer) {
         super(lexer);
         dbType = DbType.hologres;
     }
