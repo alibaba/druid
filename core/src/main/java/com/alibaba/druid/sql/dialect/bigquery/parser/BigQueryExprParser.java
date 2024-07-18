@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCharExpr;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -233,6 +234,23 @@ public class BigQueryExprParser extends SQLExprParser {
                     }
                     expr = func;
                 }
+            }
+        }
+        if (expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
+            String ident = identifierExpr.getName();
+            if (ident.equalsIgnoreCase("b") && lexer.token() == Token.LITERAL_CHARS) {
+                String charValue = lexer.stringVal();
+                lexer.nextToken();
+                expr = new SQLBinaryExpr(charValue);
+            } else if (ident.equalsIgnoreCase("r") && lexer.token() == Token.LITERAL_CHARS) {
+                String charValue = lexer.stringVal();
+                lexer.nextToken();
+                expr = new BigQueryCharExpr(charValue, "r");
+            } else if (ident.equalsIgnoreCase("json") && lexer.token() == Token.LITERAL_CHARS) {
+                String charValue = lexer.stringVal();
+                lexer.nextToken();
+                expr = new BigQueryCharExpr(charValue, "JSON", true);
             }
         }
 
