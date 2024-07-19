@@ -4,9 +4,10 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class ClickhouseColumnCodec extends ClickhouseColumnConstraint {
+public class ClickhouseColumnTTL extends ClickhouseColumnConstraint{
     private SQLExpr expr;
-    public ClickhouseColumnCodec() {
+
+    public ClickhouseColumnTTL() {
         super();
     }
     public SQLExpr getExpr() {
@@ -16,6 +17,7 @@ public class ClickhouseColumnCodec extends ClickhouseColumnConstraint {
     public void setExpr(SQLExpr expr) {
         this.expr = expr;
     }
+
     @Override
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof CKVisitor) {
@@ -27,10 +29,9 @@ public class ClickhouseColumnCodec extends ClickhouseColumnConstraint {
         }
     }
 
-    @Override
-    public ClickhouseColumnCodec clone() {
-        ClickhouseColumnCodec clickhouseColumnCodec = (ClickhouseColumnCodec) super.clone();
-        clickhouseColumnCodec.setExpr(expr.clone());
-        return clickhouseColumnCodec;
+    public ClickhouseColumnTTL clone() {
+        ClickhouseColumnTTL clickhouseColumnTTL = (ClickhouseColumnTTL) super.clone();
+        clickhouseColumnTTL.setExpr(expr.clone());
+        return clickhouseColumnTTL;
     }
 }

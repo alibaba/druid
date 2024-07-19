@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseColumnCodec;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseColumnTTL;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -83,16 +84,26 @@ public class CKExprParser extends SQLExprParser {
 
     @Override
     protected SQLColumnDefinition parseColumnSpecific(SQLColumnDefinition column) {
-        if (lexer.token() == Token.CODEC) {
-            lexer.nextToken();
-            accept(LPAREN);
-            SQLExpr codecExpr = expr();
-            accept(RPAREN);
-            ClickhouseColumnCodec sqlColumnCodec = new ClickhouseColumnCodec();
-            sqlColumnCodec.setExpr(codecExpr);
-            column.addConstraint(sqlColumnCodec);
-            return parseColumnRest(column);
+        switch (lexer.token()) {
+            case CODEC: {
+                lexer.nextToken();
+                accept(LPAREN);
+                SQLExpr codecExpr = expr();
+                accept(RPAREN);
+                ClickhouseColumnCodec sqlColumnCodec = new ClickhouseColumnCodec();
+                sqlColumnCodec.setExpr(codecExpr);
+                column.addConstraint(sqlColumnCodec);
+                return parseColumnRest(column);
+                }
+            case TTL: {
+                lexer.nextToken();
+                ClickhouseColumnTTL clickhouseColumnTTL = new ClickhouseColumnTTL();
+                clickhouseColumnTTL.setExpr(expr());
+                column.addConstraint(clickhouseColumnTTL);
+                return parseColumnRest(column);
+            }
+            default:
+                return column;
         }
-        return column;
     }
 }
