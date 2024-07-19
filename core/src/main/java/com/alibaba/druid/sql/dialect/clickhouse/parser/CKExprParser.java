@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.dialect.clickhouse.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseColumnCodec;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -25,6 +27,9 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
+
+import static com.alibaba.druid.sql.parser.Token.LPAREN;
+import static com.alibaba.druid.sql.parser.Token.RPAREN;
 
 public class CKExprParser extends SQLExprParser {
     private static final String[] AGGREGATE_FUNCTIONS;
@@ -74,5 +79,20 @@ public class CKExprParser extends SQLExprParser {
         }
 
         return super.primaryRest(expr);
+    }
+
+    @Override
+    protected SQLColumnDefinition parseColumnSpecific(SQLColumnDefinition column) {
+        if (lexer.token() == Token.CODEC) {
+            lexer.nextToken();
+            accept(LPAREN);
+            SQLExpr codecExpr = expr();
+            accept(RPAREN);
+            ClickhouseColumnCodec sqlColumnCodec = new ClickhouseColumnCodec();
+            sqlColumnCodec.setExpr(codecExpr);
+            column.addConstraint(sqlColumnCodec);
+            return parseColumnRest(column);
+        }
+        return column;
     }
 }

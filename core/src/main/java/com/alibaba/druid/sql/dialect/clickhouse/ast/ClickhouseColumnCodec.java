@@ -1,14 +1,13 @@
-package com.alibaba.druid.sql.ast.statement;
+package com.alibaba.druid.sql.dialect.clickhouse.ast;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLColumnCodec extends SQLConstraintImpl implements SQLColumnConstraint {
+public class ClickhouseColumnCodec extends ClickhouseColumnConstraint {
     private SQLExpr expr;
-    public SQLColumnCodec(DbType dbType) {
-        this.dbType = dbType;
+    public ClickhouseColumnCodec() {
+        super();
     }
     public SQLExpr getExpr() {
         return expr;
@@ -27,9 +26,10 @@ public class SQLColumnCodec extends SQLConstraintImpl implements SQLColumnConstr
         }
     }
 
-    public SQLColumnCodec clone() {
-        SQLColumnCodec sqlColumnCodec = new SQLColumnCodec(dbType);
-        super.cloneTo(sqlColumnCodec);
-        return sqlColumnCodec;
+    @Override
+    public ClickhouseColumnCodec clone() {
+        ClickhouseColumnCodec clickhouseColumnCodec = (ClickhouseColumnCodec) super.clone();
+        clickhouseColumnCodec.setExpr(expr.clone());
+        return clickhouseColumnCodec;
     }
 }
