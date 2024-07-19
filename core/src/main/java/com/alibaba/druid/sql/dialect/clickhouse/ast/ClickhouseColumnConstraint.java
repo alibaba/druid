@@ -12,6 +12,7 @@ public class ClickhouseColumnConstraint extends SQLConstraintImpl implements SQL
     @Override
     protected void accept0(SQLASTVisitor v) {}
 
+    @Override
     public ClickhouseColumnConstraint clone() {
         ClickhouseColumnConstraint clickhouseColumnConstraint = new ClickhouseColumnConstraint();
         super.cloneTo(clickhouseColumnConstraint);
