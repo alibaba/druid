@@ -293,6 +293,7 @@ public enum Token {
     SETTINGS("SETTINGS"),
     FINAL("FINAL"),
     TTL("TTL"),
+    CODEC("CODEC"),
 
     // Teradata
     SEL("SEL"),

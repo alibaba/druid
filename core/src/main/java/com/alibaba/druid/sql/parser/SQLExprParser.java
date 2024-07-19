@@ -4940,6 +4940,9 @@ public class SQLExprParser extends SQLParser {
         return column;
     }
 
+    protected SQLColumnDefinition parseColumnSpecific(SQLColumnDefinition column) {
+        return column;
+    }
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         switch (lexer.token) {
             case DEFAULT:
@@ -4994,13 +4997,6 @@ public class SQLExprParser extends SQLParser {
             case REFERENCES: {
                 SQLColumnReference ref = parseReference();
                 column.addConstraint(ref);
-                return parseColumnRest(column);
-            }
-            case TTL: {
-                lexer.nextToken();
-                SQLColumnTTL sqlColumnTTL = new SQLColumnTTL(dbType);
-                sqlColumnTTL.setExpr(expr());
-                column.addConstraint(sqlColumnTTL);
                 return parseColumnRest(column);
             }
             case CONSTRAINT:
@@ -5182,7 +5178,7 @@ public class SQLExprParser extends SQLParser {
                 }
                 return parseColumnRest(column);
             default:
-                break;
+                return parseColumnSpecific(column);
         }
 
         return column;

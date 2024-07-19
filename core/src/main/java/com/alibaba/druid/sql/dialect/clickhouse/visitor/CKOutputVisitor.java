@@ -6,6 +6,8 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKAlterTableUpdateStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateTableStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseColumnCodec;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseColumnTTL;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
@@ -196,6 +198,20 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
             x.getWhere().accept(this);
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(ClickhouseColumnCodec x) {
+        print0(ucase ? "CODEC(" : "codec(");
+        printExpr(x.getExpr());
+        print(")");
+        return false;
+    }
+
+    public boolean visit(ClickhouseColumnTTL x) {
+        print0(ucase ? " TTL " : " ttl ");
+        printExpr(x.getExpr());
         return false;
     }
 
