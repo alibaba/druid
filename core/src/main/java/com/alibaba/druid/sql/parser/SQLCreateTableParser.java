@@ -62,6 +62,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
         createTableBeforeName(createTable);
         createTable.setName(
                 this.exprParser.name());
+        createTableAfterName(createTable);
         createTableBody(createTable);
         createTableQuery(createTable);
         parseCreateTableRest(createTable);
@@ -162,6 +163,8 @@ public class SQLCreateTableParser extends SQLDDLParser {
             createTable.setIfNotExists(true);
         }
     }
+
+    protected void createTableAfterName(SQLCreateTableStatement createTable) {}
 
     protected void createTableAfter(SQLCreateTableStatement stmt) {
         if (lexer.nextIfIdentifier(FnvHash.Constants.INHERITS)) {

@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateTableStatement;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -75,6 +76,23 @@ public class CKCreateTableParser extends SQLCreateTableParser {
                 }
 
                 break;
+            }
+        }
+    }
+
+    @Override
+    protected void createTableAfterName(SQLCreateTableStatement createTable) {
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            acceptIdentifier("CLUSTER");
+            if (lexer.token() == Token.IDENTIFIER) {
+                String clusterName = lexer.stringVal();
+                CKCreateTableStatement ckStmt = (CKCreateTableStatement) createTable;
+                ckStmt.setOnClusterName(clusterName);
+                lexer.nextToken();
+            } else {
+                setErrorEndPos(lexer.pos());
+                throw new ParserException("syntax error, expect IDENTIFIER, actual " + lexer.token() + ", " + lexer.info());
             }
         }
     }

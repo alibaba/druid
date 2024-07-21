@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseColumnCodec;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.ClickhouseColumnTTL;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.StringUtils;
 
 import java.util.List;
 
@@ -286,6 +287,17 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
         super.printLimit(x);
         if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isWithTies()) {
             print0(ucase ? " WITH TIES" : " with ties");
+        }
+    }
+
+    @Override
+    protected void printCreateTableAfterName(SQLCreateTableStatement x) {
+        if (x instanceof CKCreateTableStatement) {
+            CKCreateTableStatement ckStmt = (CKCreateTableStatement) x;
+            if (!StringUtils.isEmpty(ckStmt.getOnClusterName())) {
+                print0(ucase ? " ON CLUSTER " : " on cluster ");
+                print(ckStmt.getOnClusterName());
+            }
         }
     }
 }
