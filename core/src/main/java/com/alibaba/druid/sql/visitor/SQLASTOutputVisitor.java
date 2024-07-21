@@ -3860,6 +3860,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print(')');
     }
 
+    protected void printCreateTableAfterName(SQLCreateTableStatement x) {}
+
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
         print0(ucase ? "CREATE " : "create ");
 
@@ -3874,6 +3876,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printTableSourceExpr(
                 x.getTableSource()
                 .getExpr());
+
+        printCreateTableAfterName(x);
 
         printTableElements(x.getTableElementList());
 
