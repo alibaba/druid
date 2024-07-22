@@ -15,3 +15,62 @@ WITH cte AS (
 INSERT INTO foo.bar
 SELECT *
 FROM cte
+------------------------------------------------------------------------------------------------------------------------
+SELECT email FROM emailTable
+                WHERE user_id=3
+                ORDER BY Id
+                OFFSET 10 ROWS
+                FETCH FIRST 10 ROWS ONLY
+--------------------
+SELECT email
+FROM emailTable
+WHERE user_id = 3
+ORDER BY Id
+OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY
+------------------------------------------------------------------------------------------------------------------------
+SELECT email FROM emailTable
+        WHERE user_id=3
+        ORDER BY Id
+        LIMIT 10 OFFSET 10
+--------------------
+SELECT email
+FROM emailTable
+WHERE user_id = 3
+ORDER BY Id
+OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+         Store_Code AS Store,
+         Date_Key,
+         Om_Code,
+         Om_Name,
+         Oc_Code,
+         Oc_Name,
+         Do_Code,
+         Do_Name,
+         Region,
+         City,
+         Store_Name,
+         Sales_Amount
+     INTO  #Rule1
+         FROM  #Master
+             WHERE Order_Count > 1
+--------------------
+SELECT Store_Code AS Store, Date_Key, Om_Code, Om_Name, Oc_Code
+	, Oc_Name, Do_Code, Do_Name, Region, City
+	, Store_Name, Sales_Amount
+INTO #Rule1
+FROM #Master
+WHERE Order_Count > 1
+------------------------------------------------------------------------------------------------------------------------
+SELECT a,b, count(1) FROM b group by a,b with rollup
+--------------------
+SELECT a, b, count(1)
+FROM b
+GROUP BY a, b WITH ROLLUP
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM FactResellerSales OPTION ( LABEL = 'q17' )
+--------------------
+SELECT *
+FROM FactResellerSales
+OPTION(LABEL = 'q17')

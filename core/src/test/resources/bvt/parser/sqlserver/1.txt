@@ -365,7 +365,7 @@ UPDATE reg_student_charge_item
 SET FAmountReceived = b.amount
 FROM reg_student_charge_item a, (
 		SELECT a.FId
-			, CASE 
+			, CASE
 				WHEN sum(b.FChargeAmount) IS NULL THEN 0
 				ELSE sum(b.FChargeAmount)
 			END AS amount

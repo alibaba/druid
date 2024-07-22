@@ -43,6 +43,6 @@ public class SqlServerResourceTest extends SQLResourceTest {
 
     @Test
     public void sqlserver_parse() throws Exception {
-        fileTest(2, 999, i -> "bvt/parser/sqlserver/" + i + ".txt");
+        fileTest(0, 999, i -> "bvt/parser/sqlserver/" + i + ".txt");
     }
 }
