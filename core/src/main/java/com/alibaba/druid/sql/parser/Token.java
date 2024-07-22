@@ -254,6 +254,7 @@ public enum Token {
 
     ARRAY("ARRAY"),
     DISTRIBUTE("DISTRIBUTE"),
+    OPTION("OPTION"),
 
     // hive
 

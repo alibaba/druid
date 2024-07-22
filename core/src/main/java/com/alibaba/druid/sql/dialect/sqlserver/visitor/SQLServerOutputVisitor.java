@@ -66,6 +66,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         printGroupBy(x);
         printOrderBy(x);
         printFetchFirst(x);
+        printAfterFetch(x);
 
         return false;
     }
@@ -559,5 +560,18 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         print0(ucase ? "ADD " : "add ");
         printAndAccept(x.getColumns(), ", ");
         return false;
+    }
+
+    @Override
+    protected void printAfterFetch(SQLSelectQueryBlock queryBlock) {
+        if (queryBlock instanceof SQLServerSelectQueryBlock) {
+            SQLServerSelectQueryBlock sqlServerSelectQueryBlock = ((SQLServerSelectQueryBlock) queryBlock);
+            if (!sqlServerSelectQueryBlock.getOptions().isEmpty()) {
+                println();
+                print0(ucase ? "OPTION(" : "option(");
+                printAndAccept(sqlServerSelectQueryBlock.getOptions(), ", ");
+                print0(")");
+            }
+        }
     }
 }

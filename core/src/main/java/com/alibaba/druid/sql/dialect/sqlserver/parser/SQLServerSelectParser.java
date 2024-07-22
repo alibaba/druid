@@ -197,4 +197,25 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
         return super.parseTableSourceRest(tableSource);
     }
+
+    @Override
+    protected void afterParseFetchClause(SQLSelectQueryBlock queryBlock) {
+        if (queryBlock instanceof SQLServerSelectQueryBlock) {
+            SQLServerSelectQueryBlock sqlServerSelectQueryBlock = (SQLServerSelectQueryBlock) queryBlock;
+            if (lexer.token() == Token.OPTION) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                for (; ; ) {
+                    SQLAssignItem item = this.exprParser.parseAssignItem();
+                    sqlServerSelectQueryBlock.getOptions().add(item);
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+                accept(Token.RPAREN);
+            }
+        }
+    }
 }

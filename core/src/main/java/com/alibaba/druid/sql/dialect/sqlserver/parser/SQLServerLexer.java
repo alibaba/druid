@@ -46,6 +46,7 @@ public class SQLServerLexer extends Lexer {
         map.put("MERGE", Token.MERGE);
         map.put("USING", Token.USING);
         map.put("MATCHED", Token.MATCHED);
+        map.put("OPTION", Token.OPTION);
 
         DEFAULT_SQL_SERVER_KEYWORDS = new Keywords(map);
     }
