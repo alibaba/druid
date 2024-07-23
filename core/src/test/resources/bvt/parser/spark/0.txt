@@ -1,0 +1,120 @@
+select year, q1, q2, q3, q4 from (select year, quarter, sales from sales) as s pivot ( sum(sales) as sales for quarter in ( 1 as q1, 2 as q2, 3 as q3, 4 as q4) )
+--------------------
+SELECT year, q1, q2, q3, q4
+FROM (
+	SELECT year, quarter, sales
+	FROM sales
+) s
+PIVOT (sum(sales) AS sales FOR quarter IN (1 AS q1, 2 AS q2, 3 AS q3, 4 AS q4))
+------------------------------------------------------------------------------------------------------------------------
+select year, q1_sales, q2_sales, q3_sales, q4_sales from (select year, quarter, sales from sales) as s pivot ( sum(sales) as sales for quarter in ( 1 as q1, 2 as q2, 3 as q3, 4 as q4) )
+--------------------
+SELECT year, q1_sales, q2_sales, q3_sales, q4_sales
+FROM (
+	SELECT year, quarter, sales
+	FROM sales
+) s
+PIVOT (sum(sales) AS sales FOR quarter IN (1 AS q1, 2 AS q2, 3 AS q3, 4 AS q4))
+------------------------------------------------------------------------------------------------------------------------
+select year, q1_total, q1_avg, q2_total, q2_avg, q3_total, q3_avg, q4_total, q4_avg from (select year, quarter, sales from sales) as s pivot ( sum(sales) as total, avg(sales) as avg for quarter in ( 1 as q1, 2 as q2, 3 as q3, 4 as q4) )
+--------------------
+SELECT year, q1_total, q1_avg, q2_total, q2_avg
+	, q3_total, q3_avg, q4_total, q4_avg
+FROM (
+	SELECT year, quarter, sales
+	FROM sales
+) s
+PIVOT (sum(sales) AS total, avg(sales) AS avg FOR quarter IN (1 AS q1, 2 AS q2, 3 AS q3, 4 AS q4))
+------------------------------------------------------------------------------------------------------------------------
+select year, q1_total, q1_avg, q2_total, q2_avg, q3_total, q3_avg, q4_total, q4_avg from (select year, quarter, sales from sales) as s pivot ( sum(sales) as total, avg(sales) as avg for quarter in ( 1 as q1, 2 as q2, 3 as q3, 4 as q4) )
+--------------------
+SELECT year, q1_total, q1_avg, q2_total, q2_avg
+	, q3_total, q3_avg, q4_total, q4_avg
+FROM (
+	SELECT year, quarter, sales
+	FROM sales
+) s
+PIVOT (sum(sales) AS total, avg(sales) AS avg FOR quarter IN (1 AS q1, 2 AS q2, 3 AS q3, 4 AS q4))
+------------------------------------------------------------------------------------------------------------------------
+select * from oncall_for_unpivot unpivot ( ( name, email, phone ) for precedence in
+    ( ( name1, email1, phone1 ) as primary, ( name2, email2, phone2 ) as secondary ) )
+--------------------
+SELECT *
+FROM oncall_for_unpivot
+UNPIVOT ( (name, email, phone) FOR precedence IN ((name1, email1, phone1) AS primary, (name2, email2, phone2) AS secondary))
+------------------------------------------------------------------------------------------------------------------------
+select year, q1_east, q1_west, q2_east, q2_west, q3_east, q3_west, q4_east, q4_west from sales pivot ( sum(sales) as sales
+for ( quarter, region ) in ( (1, 'east') as q1_east, (1, 'west') as q1_west, (2, 'east') as q2_east,
+(2, 'west') as q2_west, (3, 'east') as q3_east, (3, 'west') as q3_west, (4, 'east') as q4_east, (4, 'west') as q4_west) )
+--------------------
+SELECT year, q1_east, q1_west, q2_east, q2_west
+	, q3_east, q3_west, q4_east, q4_west
+FROM sales
+PIVOT (sum(sales) AS sales FOR (quarter, region) IN ((1, 'east') AS q1_east, (1, 'west') AS q1_west, (2, 'east') AS q2_east, (2, 'west') AS q2_west, (3, 'east') AS q3_east, (3, 'west') AS q3_west, (4, 'east') AS q4_east, (4, 'west') AS q4_west))
+------------------------------------------------------------------------------------------------------------------------
+select q1, q2, qq from (select year, region, 10 as q1, q2, q3 as qq,
+                        q4_sales from sales pivot ( sum(sales) as sales for quarter in ( 1 as q1, 2 as q2, 3 as q3, 4 as q4) ))
+--------------------
+SELECT q1, q2, qq
+FROM (
+	SELECT year, region, 10 AS q1, q2, q3 AS qq
+		, q4_sales
+	FROM sales
+	PIVOT (sum(sales) AS sales FOR quarter IN (1 AS q1, 2 AS q2, 3 AS q3, 4 AS q4))
+)
+------------------------------------------------------------------------------------------------------------------------
+SELECT year, q1_east_sales, q1_west_sales, q2_east_sales, q2_west_sales, q3_east_sales, q3_west_sales, q4_east_sales,
+q4_west_sales FROM sales PIVOT ( sum(sales) AS sales FOR ( quarter, region ) IN ( (1, 'east') AS q1_east,
+(1, 'west') AS q1_west, (2, 'east') AS q2_east, (2, 'west') AS q2_west, (3, 'east') AS q3_east, (3, 'west') AS q3_west,
+(4, 'east') AS q4_east, (4, 'west') AS q4_west) )
+--------------------
+SELECT year, q1_east_sales, q1_west_sales, q2_east_sales, q2_west_sales
+	, q3_east_sales, q3_west_sales, q4_east_sales, q4_west_sales
+FROM sales
+PIVOT (sum(sales) AS sales FOR (quarter, region) IN ((1, 'east') AS q1_east, (1, 'west') AS q1_west, (2, 'east') AS q2_east, (2, 'west') AS q2_west, (3, 'east') AS q3_east, (3, 'west') AS q3_west, (4, 'east') AS q4_east, (4, 'west') AS q4_west))
+------------------------------------------------------------------------------------------------------------------------
+select * from sales_for_unpivot unpivot include nulls ( sales for quarter in ( q1 as `Jan-Mar`, q2 as `Apr-Jun`, q3 as `Jul-Sep`, sales_for_unpivot.q4 as `Oct-Dec` ) )
+--------------------
+SELECT *
+FROM sales_for_unpivot
+UNPIVOT INCLUDE NULLS (sales FOR quarter IN (q1 AS `Jan-Mar`, q2 AS `Apr-Jun`, q3 AS `Jul-Sep`, sales_for_unpivot.q4 AS `Oct-Dec`))
+------------------------------------------------------------------------------------------------------------------------
+select * from oncall_for_unpivot unpivot ( ( name, email, phone ) for precedence in ( ( name1, email1, phone1 ) as primary, ( name2, email2, phone2 ) as secondary ) )
+--------------------
+SELECT *
+FROM oncall_for_unpivot
+UNPIVOT ( (name, email, phone) FOR precedence IN ((name1, email1, phone1) AS primary, (name2, email2, phone2) AS secondary))
+------------------------------------------------------------------------------------------------------------------------
+select * from values(1, 2) as t1(c1, c2) , values(3, 4) as t2(c3, c4)
+--------------------
+SELECT *
+FROM (VALUES (1, 2)) AS t1 (c1, c2), (VALUES (3, 4)) AS t2 (c3, c4)
+------------------------------------------------------------------------------------------------------------------------
+select t2.* from values(1, 2) as t1(c1, c2) , values(3, 4) as t2(c3, c4)
+--------------------
+SELECT t2.*
+FROM (VALUES (1, 2)) AS t1 (c1, c2), (VALUES (3, 4)) AS t2 (c3, c4)
+------------------------------------------------------------------------------------------------------------------------
+select * except(c4) from values(1, 2) as t1(c1, c2) , values(3, 4) as t2(c3, c4)
+--------------------
+SELECT * EXCEPT(c4)
+FROM (VALUES (1, 2)) AS t1 (c1, c2), (VALUES (3, 4)) AS t2 (c3, c4)
+------------------------------------------------------------------------------------------------------------------------
+select * except(c2.b) from values(1, named_struct('a', 2, 'b', 3)) as t(c1, c2)
+--------------------
+SELECT * EXCEPT(c2.b)
+FROM (VALUES (1, named_struct('a', 2, 'b', 3))) AS t (c1, c2)
+------------------------------------------------------------------------------------------------------------------------
+select * from t distribute by a sort by c, d desc limit 10 offset 10
+--------------------
+SELECT *
+FROM t
+DISTRIBUTE BY a
+SORT BY c, d DESC
+LIMIT 10 OFFSET 10
+------------------------------------------------------------------------------------------------------------------------
+select age, name from person cluster by age
+--------------------
+SELECT age, name
+FROM person
+CLUSTER BY age
