@@ -1509,6 +1509,8 @@ public class SQLSelectParser extends SQLParser {
                     break;
             }
 
+        } else if (identifierEquals("PIVOT") || identifierEquals("UNPIVOT")) {
+            parsePivot(tableSource);
         }
 
         SQLJoinTableSource.JoinType joinType = null;
@@ -2326,9 +2328,6 @@ public class SQLSelectParser extends SQLParser {
 
             accept(Token.IN);
             accept(Token.LPAREN);
-            if (lexer.token() == (Token.LPAREN)) {
-                throw new ParserException("TODO. " + lexer.info());
-            }
 
             if (lexer.token() == (Token.SELECT)) {
                 throw new ParserException("TODO. " + lexer.info());
@@ -2348,7 +2347,6 @@ public class SQLSelectParser extends SQLParser {
             }
 
             accept(Token.RPAREN);
-
             accept(Token.RPAREN);
 
             tableSource.setUnpivot(unPivot);
