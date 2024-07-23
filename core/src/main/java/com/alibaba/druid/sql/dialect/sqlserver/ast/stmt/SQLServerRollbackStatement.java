@@ -38,8 +38,6 @@ public class SQLServerRollbackStatement extends SQLRollbackStatement implements 
     public void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof SQLServerASTVisitor) {
             accept0((SQLServerASTVisitor) visitor);
-        } else {
-            super.accept0(visitor);
         }
     }
 

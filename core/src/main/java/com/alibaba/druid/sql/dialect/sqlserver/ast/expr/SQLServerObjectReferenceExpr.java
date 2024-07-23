@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Collections;
@@ -61,6 +62,13 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
             return database;
         }
         return server;
+    }
+
+    @Override
+    public void accept0(SQLASTVisitor v) {
+        if (v instanceof SQLServerASTVisitor) {
+            accept0((SQLServerASTVisitor) v);
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,13 @@ public class SQLServerOutput extends SQLServerObjectImpl {
     protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
 
     protected final List<SQLSelectItem> selectList = new ArrayList<SQLSelectItem>();
+
+    @Override
+    public void accept0(SQLASTVisitor v) {
+        if (v instanceof SQLServerASTVisitor) {
+            accept0((SQLServerASTVisitor) v);
+        }
+    }
 
     @Override
     public void accept0(SQLServerASTVisitor visitor) {

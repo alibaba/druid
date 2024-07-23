@@ -17,7 +17,13 @@ package com.alibaba.druid.sql.dialect.sqlserver.ast;
 
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.dialect.transact.ast.TransactSQLObject;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface SQLServerObject extends TransactSQLObject {
-    public void accept0(SQLServerASTVisitor visitor);
+    default void accept0(SQLASTVisitor v) {
+        if (v instanceof SQLServerASTVisitor) {
+            accept0((SQLServerASTVisitor) v);
+        }
+    }
+    void accept0(SQLServerASTVisitor visitor);
 }

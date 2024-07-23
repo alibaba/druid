@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLServerTop extends SQLServerObjectImpl implements SQLReplaceable {
     private SQLExpr expr;
@@ -70,6 +71,13 @@ public class SQLServerTop extends SQLServerObjectImpl implements SQLReplaceable 
 
     public void setParentheses(boolean parentheses) {
         this.parentheses = parentheses;
+    }
+
+    @Override
+    public void accept0(SQLASTVisitor v) {
+        if (v instanceof SQLServerASTVisitor) {
+            accept0((SQLServerASTVisitor) v);
+        }
     }
 
     @Override
