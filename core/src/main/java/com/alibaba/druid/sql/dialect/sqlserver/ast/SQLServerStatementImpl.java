@@ -26,8 +26,10 @@ public abstract class SQLServerStatementImpl extends SQLStatementImpl implements
     }
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((SQLServerASTVisitor) visitor);
+    public void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof SQLServerASTVisitor) {
+            accept0((SQLServerASTVisitor) visitor);
+        }
     }
 
     public abstract void accept0(SQLServerASTVisitor visitor);
