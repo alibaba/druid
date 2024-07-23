@@ -1,0 +1,787 @@
+SELECT      distinct a.id "id",    a.col "col",     a.position "position",     a.panel_id "panelId"   
+FROM     view_position_info a 
+LEFT JOIN view_portal b ON a.panel_id = b.panel_id      
+LEFT JOIN view_portal_panel c 
+ON a.panel_id = c.panel_id   
+WHERE     b.user_id = ? and     ((b.is_grid='y' and c.param_name='is_hidden' and c.param_value='false') or      b.is_grid  != 'y')   
+ORDER BY    a.col ASC, a.position ASC 
+--------------------
+SELECT DISTINCT a.id AS "id", a.col AS "col", a.position AS "position", a.panel_id AS "panelId"
+FROM view_position_info a
+	LEFT JOIN view_portal b ON a.panel_id = b.panel_id
+	LEFT JOIN view_portal_panel c ON a.panel_id = c.panel_id
+WHERE b.user_id = ?
+	AND ((b.is_grid = 'y'
+			AND c.param_name = 'is_hidden'
+			AND c.param_value = 'false')
+		OR b.is_grid != 'y')
+ORDER BY a.col ASC, a.position ASC
+------------------------------------------------------------------------------------------------------------------------
+   SELECT     id, item_type 'itemType', item_id 'itemId', item_name 'itemName', app_id 'appId'
+   , sequence, refresh_intv "refreshIntv"   
+   FROM     view_portal_info   
+   WHERE 1=1          
+   AND item_type = ?                   
+   AND app_id = ?                         
+   ORDER BY sequence desc         
+   LIMIT ?, ?  
+--------------------
+SELECT id, item_type AS 'itemType', item_id AS 'itemId', item_name AS 'itemName', app_id AS 'appId'
+	, sequence, refresh_intv AS "refreshIntv"
+FROM view_portal_info
+WHERE 1 = 1
+	AND item_type = ?
+	AND app_id = ?
+ORDER BY sequence DESC
+LIMIT ?, ?
+------------------------------------------------------------------------------------------------------------------------
+   SELECT    id "id",    username "username",    password "password",    name "name",    staff_num "staffNumber",    
+   wangwang "wangwang",    email "email",    mobile "mobile",    
+   is_deleted "isDeleted",    is_admin "isAdmin",    gmt_create "gmtCreate"   
+   FROM    sys_user               
+   LIMIT    ?, ?     
+--------------------
+SELECT id AS "id", username AS "username", password AS "password", name AS "name", staff_num AS "staffNumber"
+	, wangwang AS "wangwang", email AS "email", mobile AS "mobile", is_deleted AS "isDeleted", is_admin AS "isAdmin"
+	, gmt_create AS "gmtCreate"
+FROM sys_user
+LIMIT ?, ?
+------------------------------------------------------------------------------------------------------------------------
+SELECT COUNT(*) FROM (SELECT COUNT(*) FROM m_web_uri_m5 
+WHERE monitor_item_id = ? AND app_num = ? AND inst_num = ? AND service_tag = ? AND monitor_item_id = ? 
+AND collect_date >= ? AND collect_date < ? 
+AND (1=0 OR c_URI in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83)) 
+GROUP BY c_URI) A    
+--------------------
+SELECT COUNT(*)
+FROM (
+	SELECT COUNT(*)
+	FROM m_web_uri_m5
+	WHERE monitor_item_id = ?
+		AND app_num = ?
+		AND inst_num = ?
+		AND service_tag = ?
+		AND monitor_item_id = ?
+		AND collect_date >= ?
+		AND collect_date < ?
+		AND (1 = 0
+			OR c_URI IN (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83))
+	GROUP BY c_URI
+) A
+------------------------------------------------------------------------------------------------------------------------
+   select s.*,d.*   
+   from server s   
+   left join device_base d on   s.device_base_id= d.id   
+   left join logic_site l on l.id = d.logic_site_id   
+   where s.gmt_modify > ? and l.site_name = "开发测试"  
+--------------------
+SELECT s.*, d.*
+FROM server s
+	LEFT JOIN device_base d ON s.device_base_id = d.id
+	LEFT JOIN logic_site l ON l.id = d.logic_site_id
+WHERE s.gmt_modify > ?
+	AND l.site_name = '开发测试'
+------------------------------------------------------------------------------------------------------------------------
+SELECT /*+ use_hash(a b e) index(e)*/Count(*)  		    
+FROM q_matchrelation a,q_offerdetail b,q_keyword e , Q_ADCREATIVE f 		  	
+WHERE a.offerid=b.offerid  			    
+	AND a.keywordid = e.keywordid 			    
+	AND a.offerid=f.offerid  			    
+	AND a.issuspect='1' 			     		 		    			     		
+ORDER BY e.word_alias,a.createtime DESC 		     
+--------------------
+SELECT /*+ use_hash(a b e) index(e)*/ Count(*)
+FROM q_matchrelation a, q_offerdetail b, q_keyword e, Q_ADCREATIVE f
+WHERE a.offerid = b.offerid
+	AND a.keywordid = e.keywordid
+	AND a.offerid = f.offerid
+	AND a.issuspect = '1'
+ORDER BY e.word_alias, a.createtime DESC
+------------------------------------------------------------------------------------------------------------------------
+select count(*) 		
+from (
+	(select a.activity_offer_id adResourceId, 			       
+		a.title adResourceName, 			       
+		a.b2boffer_url adResourceURL, 			       
+		a.custid, 			       
+		b.memberid, 			       
+		c.position_name positionName, 			       
+		c.charge_setting feeRegulation, 			       
+		a.priority_weight priorityWeight, 			       
+		a.audit_state adResourceState, 			       
+		0 adResourceType, 			       
+		a.gmt_create, 			       
+		a.refuse_remark 			
+	from q_activity_offer_enroll a,q_custinfo b,q_activity_position c 			
+	where a.custid = b.custid 			      
+	and a.activity_position_id = c.activity_position_id 			      
+	and c.activity_id = ?) 			
+	union all 			
+	(select a.reg_position_id adResourceId, 			       
+		b.custname adResourceName, 			       
+		null adResourceURL, 			       
+		a.custid, 			       
+		b.memberid,  			       
+		c.position_name positionName, 			       
+		c.charge_setting feeRegulation, 			       
+		null priorityWeight, 			       
+		a.audit_state adResourceState, 			       
+		1 adResourceType, 			       
+		a.gmt_create, 			       a.refuse_remark 			
+	from q_activity_custom_enroll a,q_custinfo b,q_activity_position c 			
+	where a.custid = b.custid 			      
+		and a.activity_position_id = c.activity_position_id 			      
+		and c.activity_id = ?)) a 		 			 			 			 			 		 	
+--------------------
+SELECT count(*)
+FROM (
+	(SELECT a.activity_offer_id AS adResourceId, a.title AS adResourceName, a.b2boffer_url AS adResourceURL, a.custid, b.memberid
+		, c.position_name AS positionName, c.charge_setting AS feeRegulation, a.priority_weight AS priorityWeight, a.audit_state AS adResourceState, 0 AS adResourceType
+		, a.gmt_create, a.refuse_remark
+	FROM q_activity_offer_enroll a, q_custinfo b, q_activity_position c
+	WHERE a.custid = b.custid
+		AND a.activity_position_id = c.activity_position_id
+		AND c.activity_id = ?)
+	UNION ALL
+	(SELECT a.reg_position_id AS adResourceId, b.custname AS adResourceName, NULL AS adResourceURL, a.custid, b.memberid
+		, c.position_name AS positionName, c.charge_setting AS feeRegulation, NULL AS priorityWeight, a.audit_state AS adResourceState, 1 AS adResourceType
+		, a.gmt_create, a.refuse_remark
+	FROM q_activity_custom_enroll a, q_custinfo b, q_activity_position c
+	WHERE a.custid = b.custid
+		AND a.activity_position_id = c.activity_position_id
+		AND c.activity_id = ?)
+) a
+------------------------------------------------------------------------------------------------------------------------
+insert into accontexchangeinfo a 			 
+	(a.id,a.sourceid,a.batchno,a.applicant,a.out_uid,a.in_uid,a.moneytype,a.amount,a.remark,a.gmt_create,a.gmt_modified) 			
+	values 			
+(
+	SEQ_ACCONTEXCHANGEINFO.nextval,?,?,?,?,?,?,?,?,SYSDATE,SYSDATE)
+--------------------
+INSERT INTO accontexchangeinfo a (a.id, a.sourceid, a.batchno, a.applicant, a.out_uid
+	, a.in_uid, a.moneytype, a.amount, a.remark, a.gmt_create
+	, a.gmt_modified)
+VALUES (SEQ_ACCONTEXCHANGEINFO.NEXTVAL, ?, ?, ?, ?
+	, ?, ?, ?, ?, SYSDATE
+	, SYSDATE)
+------------------------------------------------------------------------------------------------------------------------
+SELECT a.examine_id examineId,a.examine_name examineName,a.level_limit levelLimit 				
+FROM c_examinepaper a,
+	(SELECT examine_id FROM c_examinepaper WHERE level_limit=? AND status=1
+	MINUS
+	SELECT DISTINCT examine_id FROM course) b             
+WHERE a.examine_id = b.examine_id 		 	
+--------------------
+SELECT a.examine_id AS examineId, a.examine_name AS examineName, a.level_limit AS levelLimit
+FROM c_examinepaper a, (
+		SELECT examine_id
+		FROM c_examinepaper
+		WHERE level_limit = ?
+			AND status = 1
+		MINUS
+		SELECT DISTINCT examine_id
+		FROM course
+	) b
+WHERE a.examine_id = b.examine_id
+------------------------------------------------------------------------------------------------------------------------
+SELECT a.id AS "appId", a.name AS "appName", b.number AS "instanceNumber", b.hostname AS "hostname", c.name AS "monitorItemName" , d.id AS "alarmRuleStatusId", d.name AS "alarmRuleName", d.current_status AS "alarmRuleStatus", d.last_change_time AS "lastChangeTimeOfAlarmRule" FROM mi_alarm_rule_status d LEFT JOIN monitor_item_status c ON d.mi_status_id = c.id LEFT JOIN instance b ON b.number = c.inst_num AND b.app_num = c.app_num AND b.hostname = c.hostname LEFT JOIN app a ON a.number = b.app_num WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? 
+OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? ORDER BY lastChangeTimeOfAlarmRule DESC LIMIT ?, ?
+--------------------
+SELECT a.id AS "appId", a.name AS "appName", b.number AS "instanceNumber", b.hostname AS "hostname", c.name AS "monitorItemName"
+	, d.id AS "alarmRuleStatusId", d.name AS "alarmRuleName", d.current_status AS "alarmRuleStatus", d.last_change_time AS "lastChangeTimeOfAlarmRule"
+FROM mi_alarm_rule_status d
+	LEFT JOIN monitor_item_status c ON d.mi_status_id = c.id
+	LEFT JOIN instance b
+	ON b.number = c.inst_num
+		AND b.app_num = c.app_num
+		AND b.hostname = c.hostname
+	LEFT JOIN app a ON a.number = b.app_num
+WHERE 1 = 0
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+	OR a.id = ?
+ORDER BY lastChangeTimeOfAlarmRule DESC
+LIMIT ?, ?
+------------------------------------------------------------------------------------------------------------------------
+UPDATE AVATAR_CASE SET GMT_MODIFIED=sysdate,STATUS = ?,SYS_DECISION = ?,MANUAL_DECISION = ?,OPERATOR=? , MEMO = ? where id in ( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? )
+--------------------
+UPDATE AVATAR_CASE
+SET GMT_MODIFIED = sysdate, STATUS = ?, SYS_DECISION = ?, MANUAL_DECISION = ?, OPERATOR = ?, MEMO = ?
+WHERE id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+------------------------------------------------------------------------------------------------------------------------
+SELECT 5 & ~1
+--------------------
+SELECT 5 & ~1
+------------------------------------------------------------------------------------------------------------------------
+SELECT 4 >> 2
+--------------------
+SELECT 4 >> 2
+------------------------------------------------------------------------------------------------------------------------
+SELECT 'Monty!' REGEXP '.*'
+--------------------
+SELECT 'Monty!' REGEXP '.*'
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO m_browser_common_base_aggr
+            (gmt_create,
+             gmt_modify,
+             collect_date_str,
+             page_id,
+             geo_type,
+             geo_value,
+             count_load_time,
+             min_load_time,
+             max_load_time,
+             avg_load_time)
+SELECT Now()
+       gmt_create,
+       Now()
+       gmt_modify,
+       "2012-04-08"       collect_date_str,
+       pageId                                                          page_id,
+       "all_country"                                                              AS
+       geo_type,
+       '(ALLCOUNTRIES)'                                                AS
+       geo_value,
+       Count(IF(loadTime IS NULL
+                 OR loadTime < 0
+                                OR loadTime >= 30000, NULL, loadTime))
+       count_load_time,
+       Min(IF(loadTime IS NULL
+               OR loadTime < 0
+                              OR loadTime >= 30000, NULL, loadTime))
+       min_load_time,
+       Max(IF(loadTime IS NULL
+               OR loadTime < 0
+                              OR loadTime >= 30000, NULL, loadTime))
+       max_load_time,
+       Sum(IF(loadTime IS NULL
+               OR loadTime < 0
+                              OR loadTime >= 30000, NULL, loadTime)) /
+       Count(IF(loadTime IS NULL
+                 OR loadTime < 0
+                                OR loadTime >= 30000, NULL, loadTime))
+       avg_load_time
+FROM   m_browser_common
+WHERE  collect_date >= '2012-04-08'
+       AND collect_date < '2012-04-09'
+       AND pageId IS NOT NULL
+       AND country_code IS NOT NULL
+AND pageId= 'SOURCING_HOME'
+GROUP  BY pageId
+--------------------
+INSERT INTO m_browser_common_base_aggr (gmt_create, gmt_modify, collect_date_str, page_id, geo_type
+	, geo_value, count_load_time, min_load_time, max_load_time, avg_load_time)
+SELECT Now() AS gmt_create, Now() AS gmt_modify, '2012-04-08' AS collect_date_str, pageId AS page_id, 'all_country' AS geo_type
+	, '(ALLCOUNTRIES)' AS geo_value
+	, Count(IF(loadTime IS NULL
+		OR loadTime < 0
+		OR loadTime >= 30000, NULL, loadTime)) AS count_load_time
+	, Min(IF(loadTime IS NULL
+		OR loadTime < 0
+		OR loadTime >= 30000, NULL, loadTime)) AS min_load_time
+	, Max(IF(loadTime IS NULL
+		OR loadTime < 0
+		OR loadTime >= 30000, NULL, loadTime)) AS max_load_time
+	, Sum(IF(loadTime IS NULL
+		OR loadTime < 0
+		OR loadTime >= 30000, NULL, loadTime)) / Count(IF(loadTime IS NULL
+		OR loadTime < 0
+		OR loadTime >= 30000, NULL, loadTime)) AS avg_load_time
+FROM m_browser_common
+WHERE collect_date >= '2012-04-08'
+	AND collect_date < '2012-04-09'
+	AND pageId IS NOT NULL
+	AND country_code IS NOT NULL
+	AND pageId = 'SOURCING_HOME'
+GROUP BY pageId
+------------------------------------------------------------------------------------------------------------------------
+SELECT a.id AS 888appId, a.name AS 999appName
+--------------------
+SELECT a.id AS 888appId, a.name AS 999appName
+------------------------------------------------------------------------------------------------------------------------
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `druidtestdb` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+--------------------
+CREATE DATABASE IF NOT EXISTS `druidtestdb` CHARACTER SET utf8 COLLATE utf8_bin;
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `t12` (
+  `c1` int DEFAULT NULL,
+  `c2` int DEFAULT NULL,
+  `c3` int DEFAULT NULL,
+  CONSTRAINT `c12_positive` CHECK ((`c2` > 0)) /*!80016 NOT ENFORCED */,
+  CONSTRAINT `c21_nonzero` CHECK ((`c1` <> 0)),
+  CONSTRAINT `t12_chk_1` CHECK ((`c1` <> `c2`)),
+  CONSTRAINT `t12_chk_2` CHECK ((`c1` > 10)),
+  CONSTRAINT `t12_chk_3` CHECK ((`c3` < 100)),
+  CONSTRAINT `t12_chk_4` CHECK ((`c1` > `c3`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+--------------------
+CREATE TABLE `t12` (
+	`c1` int DEFAULT NULL,
+	`c2` int DEFAULT NULL,
+	`c3` int DEFAULT NULL,
+	CONSTRAINT `c12_positive` CHECK (`c2` > 0) NOT ENFORCED,
+	CONSTRAINT `c21_nonzero` CHECK (`c1` <> 0),
+	CONSTRAINT `t12_chk_1` CHECK (`c1` <> `c2`),
+	CONSTRAINT `t12_chk_2` CHECK (`c1` > 10),
+	CONSTRAINT `t12_chk_3` CHECK (`c3` < 100),
+	CONSTRAINT `t12_chk_4` CHECK (`c1` > `c3`)
+) ENGINE = InnoDB CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM table_name WHERE ref = ? AND flag = 0 LIMIT ? FOR UPDATE SKIP LOCKED
+--------------------
+SELECT *
+FROM table_name
+WHERE ref = ?
+	AND flag = 0
+LIMIT ?
+FOR UPDATE SKIP LOCKED
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM parent WHERE NAME = 'Jones' FOR SHARE
+--------------------
+SELECT *
+FROM parent
+WHERE NAME = 'Jones'
+FOR SHARE
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO ex VALUES
+     ROW(CURRENT_TIMESTAMP),
+     ROW('2020-07-31 21:44:30-08:00');
+--------------------
+INSERT INTO ex
+VALUES (CURRENT_TIMESTAMP),
+	('2020-07-31 21:44:30-08:00');
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO name () VALUES ();
+--------------------
+INSERT INTO name
+VALUES ();
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+table_schema AS tableSchema,
+table_name AS tableName,
+table_rows AS tableRows,
+AVG_ROW_LENGTH AS avgRowLength,
+ROUND((data_length / 1024 / 1024 / 1024), 2) AS dataSize,
+ROUND((index_length / 1024 / 1024 / 1024), 2) AS indexSize,
+ROUND((data_length + index_length) / 1024 / 1024 / 1024, 2) AS tableSpace,
+ROUND((data_free /(data_length + index_length)) * 100, 2) AS pctFree
+FROM
+information_schema.TABLES
+WHERE
+table_schema NOT IN ('mysql', 'performance_schema', 'retl', 'test')
+ORDER BY
+table_rows DESC
+LIMIT
+10
+--------------------
+SELECT table_schema AS tableSchema, table_name AS tableName, table_rows AS tableRows, AVG_ROW_LENGTH AS avgRowLength
+	, ROUND((data_length / 1024 / 1024 / 1024), 2) AS dataSize
+	, ROUND((index_length / 1024 / 1024 / 1024), 2) AS indexSize
+	, ROUND((data_length + index_length) / 1024 / 1024 / 1024, 2) AS tableSpace
+	, ROUND((data_free / (data_length + index_length)) * 100, 2) AS pctFree
+FROM information_schema.TABLES
+WHERE table_schema NOT IN ('mysql', 'performance_schema', 'retl', 'test')
+ORDER BY table_rows DESC
+LIMIT 10
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+		b.t50teamtype AS "teamType",
+		c.did AS "deptDid",
+		c.deptname AS "deptName",
+		a.tid AS "tid",
+		b.t50name AS "teamName",
+		b.t50name AS "t50Name",
+       	a.pid AS "t01Pid",
+       	a.psnname AS "t01PsnName",
+       	d.t02othername AS "t02OtherName",
+       	a.t01identity AS "t01Identity",
+       	a.t01idcardtype AS "t01IdCardType",
+       	a.t01personid AS "t01PersonId",
+       	a.t01sex AS "t01Sex",
+       	to_char(a.t01birthday,'yyyy-mm-dd') AS "t01Birthday",
+        d.t02publicist AS "t02Publicist",
+       	d.t02marriaged AS "t02Marriaged",
+       	d.t02health AS "t02Health",
+       	d.t02nation AS "t02Nation",
+       	d.t02native AS "t02Native",
+       	d.t02school AS "t02School",
+       	to_char(d.t02graduate,'yyyy-mm-dd') AS "t02Graduate",
+       	d.t02major AS "t02Major",
+       	d.t02education AS "t02Education",
+		d.t02address AS "t02Address",
+		d.t02zipcode AS "t02ZipCode",
+		d.t02homephone AS "t02HomePhone",
+		d.t02mobilephone AS "t02MobilePhone",
+		d.t02email AS "t02Email",
+		d.t02crime AS "t02Crime",
+       	to_char(a.t01probationdate,'yyyy-mm-dd') AS "t01ProbationDate",
+       	to_char(a.t01engagedate,'yyyy-mm-dd') AS "t01EngageDate",
+       	to_char(a.t01dutydate,'yyyy-mm-dd') AS "t01DutyDate",
+		a.t01actrank AS "t01ActRank",
+		a.t01areatype AS "t01AreaType",
+		'团险' AS "t02Channel",
+		'团险部' AS "deptExType",
+		d.t02punish AS "t02Punish",
+		d.t02source AS "t02Source",
+		a.t01recrutetype AS "t01RecruteType",
+		a.t01recommend AS "t01Recommend",
+		a.t01engage AS "t01Engage",
+		d.t02cityadvice AS "t02CityAdvice",
+		d.t02citydetail AS "t02CityDetail",
+		d.t02branchadvice AS "t02BranchAdvice",
+		d.t02branchdetail AS "t02BranchDetail",
+		d.t02detail AS "t02Detail",
+		(select workplacename from t_workplaceinfo where workplaceno = a.t01zcno) AS "zcInfo",
+		a.t01centercode AS "centerInfo",
+		(select centername from t_centerinfo where centercode = a.t01centercode) as "centerName",
+		a.t01status AS "t01Status",
+		to_char(t09.t09statdate,'yyyy-mm-dd') AS "t09StatDate",
+		to_char(t09.t09approvaldate,'yyyy-mm-dd') AS "t09ApprovalDate",
+		t16.t16accountid AS "t16AccountId",
+		c.t29cardtype as "t29CardType",
+        c.t29qualifyid as "t29QualifyId",
+		a.t01erpnumber AS "t01ErpNumber",
+		(select
+			br.brhname
+		from
+			t_branch br,t_bidrelat bi
+		where
+			bi.superbid=br.bid and bi.superlev=2 and bi.bdid=c.did and rownum=1) AS "cityDept",
+		(select
+			br.brhname
+		from
+			t_branch br,t_bidrelat bi
+		where
+			bi.superbid=br.bid and bi.superlev=3 and bi.bdid=c.did and rownum=1) AS "countryDept",
+		a.t01zcno AS "zcNo",
+		b.t50deptrank AS "teamLevel",
+		b2.tid AS "sup1tid",
+		b2.t50name AS "sup1t50Name",
+		b2.t50deptrank AS "sup1teamLevel",
+		b3.tid AS "sup2tid",
+		b3.t50name AS "sup2t50Name"
+	FROM
+       	t01_psn a
+		LEFT JOIN
+     		t02_psninfo d
+		ON
+     		a.pid = d.pid
+		LEFT JOIN
+          	(SELECT
+               	t09.pid, max(t09.t09statdate) as t09statdate, max(t09.t09approvaldate) as t09approvaldate
+          	FROM
+               	t09_psndiminfo t09
+          	GROUP BY
+               	t09.pid) t09
+		ON
+     		t09.pid = a.pid
+		LEFT JOIN
+          	(SELECT
+               	a.pid, b.t16accountid
+          	FROM
+               	(SELECT
+                    t16.pid, max(t16.t16enddate) maxenddate
+                FROM
+                    t16_psnaccount t16
+                WHERE
+                    sysdate BETWEEN t16.t16startdate and t16.t16enddate
+                GROUP BY
+                    t16.pid) a
+          		LEFT JOIN
+                	t16_psnaccount b
+          		ON
+                	a.maxenddate = b.t16enddate and a.pid = b.pid) t16
+		ON
+      		t16.pid = a.pid
+		LEFT JOIN
+       (select
+       		pid,
+       		to_char(substr(listagg(t29cardtype) within group(order by t29cardtype), instr(listagg(t29cardtype) within group(order by t29cardtype), ',') + 1)) t29cardtype,
+       		to_char(listagg(t29qualifyid) within group(order by t29qualifyid)) t29qualifyid
+         from
+              T29_PSNQUALCARD
+          where
+            T29CARDTYPE = '02' and sysdate between T29STARTDATE and T29ENDDATE AND pid is not null
+          group by
+             pid
+          ) c
+       ON
+          a.pid = c.pid,
+		t50_tdept b
+		left join
+			t50_tdept b2
+		on
+			b.t50superior = b2.tid
+		left join
+			t50_tdept b3
+		on
+			b2.t50superior = b3.tid, t_dept c
+		WHERE
+			a.tid = b.tid AND a.did = c.did
+			AND a.t01persontype = ?
+			AND c.did IN
+			 (
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 ,
+				?
+			 )
+			AND a.t01status = ?
+		group by
+		a.pid,a.psnname,d.t02othername,a.t01persontype,a.tid,a.t01status,b.t50name,
+		c.did,c.deptname,a.t01identity,a.t01personid,a.t01sex,a.t01birthday,
+		d.t02publicist,d.t02marriaged,d.t02health,d.t02nation,
+		d.t02native,d.t02school,d.t02graduate,d.t02major,d.t02education,d.t02address,
+		d.t02zipcode,d.t02email, d.t02homephone,d.t02mobilephone,d.t02crime,a.t01probationdate,
+		a.t01engagedate,a.t01dutydate,a.t01actrank,a.t01areatype,a.t01erpnumber,
+		d.t02channel,d.t02punish,d.t02source,a.t01recrutetype,a.t01recommend,
+		a.t01engage,d.t02cityadvice,d.t02citydetail,d.t02branchadvice,d.t02branchdetail,
+		d.t02detail,a.t01centercode,t09statdate,t09approvaldate,t16.t16accountid,a.t01idcardtype,a.t01zcno,
+		c.t29cardtype,c.t29qualifyid, b.t50deptrank,b.t50deptrank, b2.tid, b2.t50name, b2.t50deptrank, b3.tid,
+		b3.t50name,b.t50teamtype
+		ORDER BY
+		"deptDid", "tid", "t01Pid"
+--------------------
+SELECT b.t50teamtype AS "teamType", c.did AS "deptDid", c.deptname AS "deptName", a.tid AS "tid", b.t50name AS "teamName"
+	, b.t50name AS "t50Name", a.pid AS "t01Pid", a.psnname AS "t01PsnName", d.t02othername AS "t02OtherName", a.t01identity AS "t01Identity"
+	, a.t01idcardtype AS "t01IdCardType", a.t01personid AS "t01PersonId", a.t01sex AS "t01Sex"
+	, to_char(a.t01birthday, 'yyyy-mm-dd') AS "t01Birthday", d.t02publicist AS "t02Publicist"
+	, d.t02marriaged AS "t02Marriaged", d.t02health AS "t02Health", d.t02nation AS "t02Nation", d.t02native AS "t02Native", d.t02school AS "t02School"
+	, to_char(d.t02graduate, 'yyyy-mm-dd') AS "t02Graduate", d.t02major AS "t02Major"
+	, d.t02education AS "t02Education", d.t02address AS "t02Address", d.t02zipcode AS "t02ZipCode", d.t02homephone AS "t02HomePhone", d.t02mobilephone AS "t02MobilePhone"
+	, d.t02email AS "t02Email", d.t02crime AS "t02Crime", to_char(a.t01probationdate, 'yyyy-mm-dd') AS "t01ProbationDate"
+	, to_char(a.t01engagedate, 'yyyy-mm-dd') AS "t01EngageDate"
+	, to_char(a.t01dutydate, 'yyyy-mm-dd') AS "t01DutyDate", a.t01actrank AS "t01ActRank"
+	, a.t01areatype AS "t01AreaType", '团险' AS "t02Channel", '团险部' AS "deptExType", d.t02punish AS "t02Punish", d.t02source AS "t02Source"
+	, a.t01recrutetype AS "t01RecruteType", a.t01recommend AS "t01Recommend", a.t01engage AS "t01Engage", d.t02cityadvice AS "t02CityAdvice", d.t02citydetail AS "t02CityDetail"
+	, d.t02branchadvice AS "t02BranchAdvice", d.t02branchdetail AS "t02BranchDetail", d.t02detail AS "t02Detail"
+	, (
+		SELECT workplacename
+		FROM t_workplaceinfo
+		WHERE workplaceno = a.t01zcno
+	) AS "zcInfo", a.t01centercode AS "centerInfo"
+	, (
+		SELECT centername
+		FROM t_centerinfo
+		WHERE centercode = a.t01centercode
+	) AS "centerName", a.t01status AS "t01Status", to_char(t09.t09statdate, 'yyyy-mm-dd') AS "t09StatDate"
+	, to_char(t09.t09approvaldate, 'yyyy-mm-dd') AS "t09ApprovalDate", t16.t16accountid AS "t16AccountId"
+	, c.t29cardtype AS "t29CardType", c.t29qualifyid AS "t29QualifyId", a.t01erpnumber AS "t01ErpNumber"
+	, (
+		SELECT br.brhname
+		FROM t_branch br, t_bidrelat bi
+		WHERE bi.superbid = br.bid
+			AND bi.superlev = 2
+			AND bi.bdid = c.did
+			AND rownum = 1
+	) AS "cityDept"
+	, (
+		SELECT br.brhname
+		FROM t_branch br, t_bidrelat bi
+		WHERE bi.superbid = br.bid
+			AND bi.superlev = 3
+			AND bi.bdid = c.did
+			AND rownum = 1
+	) AS "countryDept", a.t01zcno AS "zcNo", b.t50deptrank AS "teamLevel", b2.tid AS "sup1tid", b2.t50name AS "sup1t50Name"
+	, b2.t50deptrank AS "sup1teamLevel", b3.tid AS "sup2tid", b3.t50name AS "sup2t50Name"
+FROM (t01_psn a
+	LEFT JOIN t02_psninfo d ON a.pid = d.pid
+	LEFT JOIN (
+		SELECT t09.pid, max(t09.t09statdate) AS t09statdate, max(t09.t09approvaldate) AS t09approvaldate
+		FROM t09_psndiminfo t09
+		GROUP BY t09.pid
+	) t09
+	ON t09.pid = a.pid
+	LEFT JOIN (
+		SELECT a.pid, b.t16accountid
+		FROM (
+			SELECT t16.pid, max(t16.t16enddate) AS maxenddate
+			FROM t16_psnaccount t16
+			WHERE sysdate BETWEEN t16.t16startdate AND t16.t16enddate
+			GROUP BY t16.pid
+		) a
+			LEFT JOIN t16_psnaccount b
+			ON a.maxenddate = b.t16enddate
+				AND a.pid = b.pid
+	) t16
+	ON t16.pid = a.pid
+	LEFT JOIN (
+		SELECT pid
+			, to_char(substr(listagg(t29cardtype) WITHIN GROUP ( ORDER BY t29cardtype), instr(listagg(t29cardtype) WITHIN GROUP ( ORDER BY t29cardtype), ',') + 1)) AS t29cardtype
+			, to_char(listagg(t29qualifyid) WITHIN GROUP ( ORDER BY t29qualifyid)) AS t29qualifyid
+		FROM T29_PSNQUALCARD
+		WHERE T29CARDTYPE = '02'
+			AND sysdate BETWEEN T29STARTDATE AND T29ENDDATE
+			AND pid IS NOT NULL
+		GROUP BY pid
+	) c
+	ON a.pid = c.pid, t50_tdept b)
+	LEFT JOIN t50_tdept b2 ON b.t50superior = b2.tid
+	LEFT JOIN t50_tdept b3 ON b2.t50superior = b3.tid, t_dept c
+WHERE a.tid = b.tid
+	AND a.did = c.did
+	AND a.t01persontype = ?
+	AND c.did IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	AND a.t01status = ?
+GROUP BY a.pid, a.psnname, d.t02othername, a.t01persontype, a.tid, a.t01status, b.t50name, c.did, c.deptname, a.t01identity, a.t01personid, a.t01sex, a.t01birthday, d.t02publicist, d.t02marriaged, d.t02health, d.t02nation, d.t02native, d.t02school, d.t02graduate, d.t02major, d.t02education, d.t02address, d.t02zipcode, d.t02email, d.t02homephone, d.t02mobilephone, d.t02crime, a.t01probationdate, a.t01engagedate, a.t01dutydate, a.t01actrank, a.t01areatype, a.t01erpnumber, d.t02channel, d.t02punish, d.t02source, a.t01recrutetype, a.t01recommend, a.t01engage, d.t02cityadvice, d.t02citydetail, d.t02branchadvice, d.t02branchdetail, d.t02detail, a.t01centercode, t09statdate, t09approvaldate, t16.t16accountid, a.t01idcardtype, a.t01zcno, c.t29cardtype, c.t29qualifyid, b.t50deptrank, b.t50deptrank, b2.tid, b2.t50name, b2.t50deptrank, b3.tid, b3.t50name, b.t50teamtype
+ORDER BY "deptDid", "tid", "t01Pid"
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE product_order (
+    no INT NOT NULL AUTO_INCREMENT,
+    product_category INT NOT NULL,
+    product_id INT NOT NULL,
+    customer_id INT NOT NULL,
+    total_price DECIMAL(5,2),
+    PRIMARY KEY(no),
+    INDEX (product_category, product_id),
+    UNIQUE INDEX idx_cust_id (customer_id)
+) ENGINE=INNODB ;
+--------------------
+CREATE TABLE product_order (
+	no INT NOT NULL AUTO_INCREMENT,
+	product_category INT NOT NULL,
+	product_id INT NOT NULL,
+	customer_id INT NOT NULL,
+	total_price DECIMAL(5, 2),
+	PRIMARY KEY (no),
+	INDEX(product_category, product_id),
+	UNIQUE INDEX idx_cust_id (customer_id)
+) ENGINE = INNODB;
+------------------------------------------------------------------------------------------------------------------------
+select unique a.optdeptno,b.systypeno,a.optid pid
+       from t_char2opt a ,t_character b
+     where a.cserno = b.cserno
+       and b.t_code IN('NQAMIS','NQSZIS')
+--------------------
+SELECT UNIQUE a.optdeptno, b.systypeno, a.optid AS pid
+FROM t_char2opt a, t_character b
+WHERE a.cserno = b.cserno
+	AND b.t_code IN ('NQAMIS', 'NQSZIS')

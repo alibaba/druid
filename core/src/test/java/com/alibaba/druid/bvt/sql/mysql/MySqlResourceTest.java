@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.clickhouse;
+package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
 import org.junit.Test;
 
-public class CKResourceTest extends SQLResourceTest {
-    public CKResourceTest() {
-        super(DbType.clickhouse);
+public class MySqlResourceTest extends SQLResourceTest {
+    public MySqlResourceTest() {
+        super(DbType.mysql);
     }
 
     @Test
-    public void clickhouse_parse() throws Exception {
-        fileTest(0, 999, i -> "bvt/parser/clickhouse/" + i + ".txt");
+    public void mysql_parse() throws Exception {
+        fileTest(0, 999, i -> "bvt/parser/mysql/" + i + ".txt");
     }
 
 }
