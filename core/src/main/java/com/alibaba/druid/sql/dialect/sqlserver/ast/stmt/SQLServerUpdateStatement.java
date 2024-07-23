@@ -55,7 +55,9 @@ public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLS
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
-        this.accept0((SQLServerASTVisitor) visitor);
+        if (visitor instanceof SQLServerASTVisitor) {
+            accept0((SQLServerASTVisitor) visitor);
+        }
     }
 
     @Override
