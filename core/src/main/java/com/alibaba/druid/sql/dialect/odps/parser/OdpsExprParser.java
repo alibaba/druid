@@ -77,11 +77,6 @@ public class OdpsExprParser extends SQLExprParser {
         this.lexer.nextToken();
     }
 
-    public OdpsExprParser(String sql, boolean skipComments, boolean keepComments) {
-        this(new OdpsLexer(sql, skipComments, keepComments));
-        this.lexer.nextToken();
-    }
-
     protected SQLExpr parseAliasExpr(String alias) {
         String chars = alias.substring(1, alias.length() - 1);
         return new SQLCharExpr(chars);

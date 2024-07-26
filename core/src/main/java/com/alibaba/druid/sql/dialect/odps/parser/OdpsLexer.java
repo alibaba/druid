@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.odps.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
 import com.alibaba.druid.sql.parser.*;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import static com.alibaba.druid.sql.parser.CharTypes.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
-public class OdpsLexer extends Lexer {
+public class OdpsLexer extends HiveLexer {
     public static final Keywords DEFAULT_ODPS_KEYWORDS;
 
     static {
@@ -67,26 +68,6 @@ public class OdpsLexer extends Lexer {
         }
     }
 
-    public OdpsLexer(String input, boolean skipComment, boolean keepComments) {
-        super(input, skipComment);
-
-        init();
-
-        dbType = DbType.odps;
-        this.skipComment = skipComment;
-        this.keepComments = keepComments;
-        super.keywords = DEFAULT_ODPS_KEYWORDS;
-    }
-
-    public OdpsLexer(String input, CommentHandler commentHandler) {
-        super(input, commentHandler);
-
-        init();
-
-        dbType = DbType.odps;
-        super.keywords = DEFAULT_ODPS_KEYWORDS;
-    }
-
     private void init() {
         if (ch == '】' || ch == ' ' || ch == '，' || ch == '：' || ch == '、' || ch == '\u200C' || ch == '；') {
             ch = charAt(++pos);
@@ -100,10 +81,6 @@ public class OdpsLexer extends Lexer {
                 ch = charAt(++pos);
             }
         }
-    }
-
-    public void scanComment() {
-        scanHiveComment();
     }
 
     public void scanIdentifier() {
