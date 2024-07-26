@@ -12,10 +12,14 @@ CREATE TABLE blink_demo (
 	id text
 );
 ------------------------------------------------------------------------------------------------------------------------
-create schema schemaname;
+create schema schemaname
 --------------------
-CREATE SCHEMA schemaname;
+CREATE SCHEMA schemaname
 ------------------------------------------------------------------------------------------------------------------------
-set search_path to schemaname;
+set search_path to schemaname
 --------------------
-SET search_path TO schemaname;
+SET search_path TO schemaname
+------------------------------------------------------------------------------------------------------------------------
+select DATEADD(DATE '1970-01-01', 14238, 'dd')
+--------------------
+SELECT DATEADD(DATE '1970-01-01', 14238, 'dd')

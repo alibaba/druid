@@ -138,7 +138,7 @@ public enum DbType {
     }
 
     public static boolean isPostgreSQLDbStyle(DbType dbType) {
-        return dbType == DbType.postgresql || dbType == DbType.edb || dbType == DbType.greenplum;
+        return dbType == DbType.postgresql || dbType == DbType.edb || dbType == DbType.greenplum || dbType == DbType.hologres;
     }
     public final boolean equals(String other) {
         return this == of(other);
