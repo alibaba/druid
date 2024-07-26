@@ -142,3 +142,75 @@ SELECT *
 FROM tournament
 ORDER BY 2, 3
 LIMIT 10
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE SEQ_XXX INCREMENT BY 2
+--------------------
+ALTER SEQUENCE SEQ_XXX INCREMENT BY 2
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE customers_seq MAXVALUE 1500
+--------------------
+ALTER SEQUENCE customers_seq MAXVALUE 1500
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE customers_seq CYCLE CACHE 5
+--------------------
+ALTER SEQUENCE customers_seq CYCLE CACHE 5
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE s1 MINVALUE 10 RESTART
+--------------------
+ALTER SEQUENCE s1 MINVALUE 10 RESTART
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE s1 MINVALUE 10 RESTART 10
+--------------------
+ALTER SEQUENCE s1 MINVALUE 10 RESTART WITH 10
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE s1 MINVALUE 10 RESTART with 10
+--------------------
+ALTER SEQUENCE s1 MINVALUE 10 RESTART WITH 10
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE s1 MINVALUE 10 RESTART = 10
+--------------------
+ALTER SEQUENCE s1 MINVALUE 10 RESTART WITH 10
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE seq1 CHANGE TO SIMPLE WITH CACHE START WITH 1000000
+--------------------
+ALTER SEQUENCE seq1 CHANGE TO SIMPLE WITH CACHE START WITH 1000000
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE seq1 CHANGE TO SIMPLE START WITH 1000000
+--------------------
+ALTER SEQUENCE seq1 CHANGE TO SIMPLE START WITH 1000000
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE seq1 CHANGE TO GROUP START WITH 1000000
+--------------------
+ALTER SEQUENCE seq1 CHANGE TO GROUP START WITH 1000000
+------------------------------------------------------------------------------------------------------------------------
+ALTER SEQUENCE seq1 CHANGE TO TIME START WITH 1000000
+--------------------
+ALTER SEQUENCE seq1 CHANGE TO TIME START WITH 1000000
+------------------------------------------------------------------------------------------------------------------------
+ALTER DATABASE `#mysql50#a-b-c` UPGRADE DATA DIRECTORY NAME
+--------------------
+ALTER DATABASE `#mysql50#a-b-c` UPGRADE DATA DIRECTORY NAME
+------------------------------------------------------------------------------------------------------------------------
+ALTER DATABASE db1_test SET k1='v1' k2='v2'
+--------------------
+ALTER DATABASE db1_test SET k1 = 'v1', k2 = 'v2'
+------------------------------------------------------------------------------------------------------------------------
+ALTER DATABASE db1_test KILL LOADDATA 'lddt_xxxxx_123'
+--------------------
+ALTER DATABASE db1_test KILL LOADDATA 'lddt_xxxxx_123'
+------------------------------------------------------------------------------------------------------------------------
+alter database test CHARACTER SET='big5' COLLATE='big5_chinese_ci'
+--------------------
+ALTER DATABASE test CHARACTER SET = 'big5' COLLATE big5_chinese_ci
+------------------------------------------------------------------------------------------------------------------------
+ALTER DATABASE logical_db SET read_only=1
+--------------------
+ALTER DATABASE logical_db SET read_only = 1
+------------------------------------------------------------------------------------------------------------------------
+ALTER DATABASE logical_db SET read_only=1 ON physical_db
+--------------------
+ALTER DATABASE logical_db SET read_only = 1 ON physical_db
+------------------------------------------------------------------------------------------------------------------------
+ALTER DATABASE logical_db SET READ_ONLY=1 ,TIME=10 ON physical_db
+--------------------
+ALTER DATABASE logical_db SET READ_ONLY = 1, TIME = 10 ON physical_db
