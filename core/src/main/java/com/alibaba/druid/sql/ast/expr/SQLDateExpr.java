@@ -207,6 +207,7 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
             DbType.presto,
             DbType.trino,
             DbType.postgresql,
+            DbType.hologres,
             DbType.ads,
             DbType.hive,
             DbType.odps,

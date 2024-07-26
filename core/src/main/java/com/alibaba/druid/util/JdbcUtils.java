@@ -1004,6 +1004,7 @@ public final class JdbcUtils implements JdbcConstants {
             case polardb:
             case greenplum:
             case gaussdb:
+            case hologres:
                 return true;
             default:
                 return false;

@@ -8,7 +8,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 public class HoloExprParser
         extends PGExprParser {
     public HoloExprParser(String sql, SQLParserFeature... features) {
-        super(sql, features);
+        super(new HoloLexer(sql, features));
+        this.lexer.nextToken();
         dbType = DbType.hologres;
     }
 
