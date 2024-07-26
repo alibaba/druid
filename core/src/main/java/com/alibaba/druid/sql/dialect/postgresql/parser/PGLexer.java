@@ -230,4 +230,34 @@ public class PGLexer extends Lexer {
         stringVal = addSymbol();
         token = Token.VARIANT;
     }
+
+    protected void nextTokenQues() {
+        if (ch == '?') {
+            scanChar();
+            if (ch == '|') {
+                scanChar();
+                token = Token.QUESQUESBAR;
+            } else {
+                token = Token.QUESQUES;
+            }
+        } else if (ch == '|') {
+            scanChar();
+            if (ch == '|') {
+                unscan();
+                token = Token.QUES;
+            } else {
+                token = Token.QUESBAR;
+            }
+        } else if (ch == '&') {
+            scanChar();
+            token = Token.QUESAMP;
+        } else {
+            token = Token.QUES;
+        }
+    }
+
+    @Override
+    protected boolean supportScanVariableGreaterThan() {
+        return true;
+    }
 }
