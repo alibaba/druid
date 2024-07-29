@@ -15,7 +15,12 @@ public class ClickhouseColumnConstraint extends SQLConstraintImpl implements SQL
     @Override
     public ClickhouseColumnConstraint clone() {
         ClickhouseColumnConstraint clickhouseColumnConstraint = new ClickhouseColumnConstraint();
-        super.cloneTo(clickhouseColumnConstraint);
+        this.cloneTo(clickhouseColumnConstraint);
         return clickhouseColumnConstraint;
+    }
+
+    public void cloneTo(ClickhouseColumnConstraint x) {
+        super.cloneTo(x);
+        x.dbType = dbType;
     }
 }
