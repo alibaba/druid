@@ -29,7 +29,8 @@ public class ClickhouseColumnCodec extends ClickhouseColumnConstraint {
 
     @Override
     public ClickhouseColumnCodec clone() {
-        ClickhouseColumnCodec clickhouseColumnCodec = (ClickhouseColumnCodec) super.clone();
+        ClickhouseColumnCodec clickhouseColumnCodec = new ClickhouseColumnCodec();
+        super.cloneTo(clickhouseColumnCodec);
         clickhouseColumnCodec.setExpr(expr.clone());
         return clickhouseColumnCodec;
     }

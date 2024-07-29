@@ -30,7 +30,8 @@ public class ClickhouseColumnTTL extends ClickhouseColumnConstraint{
     }
 
     public ClickhouseColumnTTL clone() {
-        ClickhouseColumnTTL clickhouseColumnTTL = (ClickhouseColumnTTL) super.clone();
+        ClickhouseColumnTTL clickhouseColumnTTL = new ClickhouseColumnTTL();
+        super.cloneTo(clickhouseColumnTTL);
         clickhouseColumnTTL.setExpr(expr.clone());
         return clickhouseColumnTTL;
     }
