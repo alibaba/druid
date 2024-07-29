@@ -27,9 +27,22 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class OdpsLexer extends HiveLexer {
-    public static final Keywords DEFAULT_ODPS_KEYWORDS;
+    public OdpsLexer(String input, SQLParserFeature... features) {
+        super(input);
 
-    static {
+        init();
+
+        dbType = DbType.odps;
+        this.skipComment = true;
+        this.keepComments = false;
+
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -50,22 +63,7 @@ public class OdpsLexer extends HiveLexer {
         map.put("QUALIFY", Token.QUALIFY);
         map.put("；", Token.SEMI);
 
-        DEFAULT_ODPS_KEYWORDS = new Keywords(map);
-    }
-
-    public OdpsLexer(String input, SQLParserFeature... features) {
-        super(input);
-
-        init();
-
-        dbType = DbType.odps;
-        super.keywords = DEFAULT_ODPS_KEYWORDS;
-        this.skipComment = true;
-        this.keepComments = false;
-
-        for (SQLParserFeature feature : features) {
-            config(feature, true);
-        }
+        return new Keywords(map);
     }
 
     private void init() {

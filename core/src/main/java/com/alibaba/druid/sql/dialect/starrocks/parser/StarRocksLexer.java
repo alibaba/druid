@@ -10,22 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StarRocksLexer extends Lexer {
-    public static final Keywords DEFAULT_STARROCKS_KEYWORDS;
-
-    static {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
-//        map.put("BITMAP", Token.BITMAP);
+        //        map.put("BITMAP", Token.BITMAP);
         map.put("USING", Token.USING);
         map.put("PARTITION", Token.PARTITION);
 
-        DEFAULT_STARROCKS_KEYWORDS = new Keywords(map);
-    }
-
-    {
-        dbType = DbType.starrocks;
+        return new Keywords(map);
     }
 
     public StarRocksLexer(String input) {
@@ -34,13 +29,13 @@ public class StarRocksLexer extends Lexer {
 
     public StarRocksLexer(char[] input, int inputLength, boolean skipComment) {
         super(input, inputLength, skipComment);
-        super.keywords = DEFAULT_STARROCKS_KEYWORDS;
+        dbType = DbType.starrocks;
     }
 
     public StarRocksLexer(String input, SQLParserFeature... features) {
         super(input, true);
         this.keepComments = true;
-        super.keywords = DEFAULT_STARROCKS_KEYWORDS;
+        dbType = DbType.starrocks;
 
         for (SQLParserFeature feature : features) {
             config(feature, true);
@@ -51,6 +46,6 @@ public class StarRocksLexer extends Lexer {
         super(input, skipComment);
         this.skipComment = skipComment;
         this.keepComments = keepComments;
-        super.keywords = DEFAULT_STARROCKS_KEYWORDS;
+        dbType = DbType.starrocks;
     }
 }

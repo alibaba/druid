@@ -28,9 +28,8 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 public class MySqlLexer extends Lexer {
     public static SymbolTable quoteTable = new SymbolTable(8192);
 
-    public static final Keywords DEFAULT_MYSQL_KEYWORDS;
-
-    static {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -66,16 +65,12 @@ public class MySqlLexer extends Lexer {
         map.put("RLIKE", Token.RLIKE);
         map.put("FULLTEXT", Token.FULLTEXT);
 
-        DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
-    }
-
-    {
-        dbType = DbType.mysql;
+        return new Keywords(map);
     }
 
     public MySqlLexer(char[] input, int inputLength, boolean skipComment) {
         super(input, inputLength, skipComment);
-        super.keywords = DEFAULT_MYSQL_KEYWORDS;
+        this.dbType = DbType.mysql;
     }
 
     public MySqlLexer(String input) {
@@ -85,7 +80,7 @@ public class MySqlLexer extends Lexer {
     public MySqlLexer(String input, SQLParserFeature... features) {
         super(input, true);
         this.keepComments = true;
-        super.keywords = DEFAULT_MYSQL_KEYWORDS;
+        this.dbType = DbType.mysql;
 
         for (SQLParserFeature feature : features) {
             config(feature, true);
@@ -96,7 +91,7 @@ public class MySqlLexer extends Lexer {
         super(input, skipComment);
         this.skipComment = skipComment;
         this.keepComments = keepComments;
-        super.keywords = DEFAULT_MYSQL_KEYWORDS;
+        this.dbType = DbType.mysql;
     }
 
     public void scanSharp() {

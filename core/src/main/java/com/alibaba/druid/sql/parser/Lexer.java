@@ -55,7 +55,7 @@ public class Lexer {
 
     protected Token token;
 
-    protected Keywords keywords = Keywords.DEFAULT_KEYWORDS;
+    protected Keywords keywords;
 
     protected String stringVal;
     protected long hashLCase; // fnv1a_64
@@ -109,6 +109,9 @@ public class Lexer {
         } else if (DbType.dm == dbType) {
             this.keywords = Keywords.DM_KEYWORDS;
         }
+    }
+    protected Keywords loadKeywords() {
+        return Keywords.DEFAULT_KEYWORDS;
     }
 
     public boolean isKeepSourceLocation() {
@@ -257,6 +260,7 @@ public class Lexer {
             ch = charAt(++pos);
         }
         initLexerSettings();
+        this.keywords = loadKeywords();
     }
 
     protected void initLexerSettings() {

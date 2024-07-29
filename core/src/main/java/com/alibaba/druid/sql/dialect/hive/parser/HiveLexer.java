@@ -31,9 +31,8 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class HiveLexer extends Lexer {
-    public static final Keywords DEFAULT_KEYWORDS;
-
-    static {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -50,7 +49,7 @@ public class HiveLexer extends Lexer {
         map.put("PARTITIONED", Token.PARTITIONED);
         map.put("PARTITION", Token.PARTITION);
         map.put("OVERWRITE", Token.OVERWRITE);
-//        map.put("SORT", Token.SORT);
+        //        map.put("SORT", Token.SORT);
         map.put("IF", Token.IF);
         map.put("TRUE", Token.TRUE);
         map.put("FALSE", Token.FALSE);
@@ -58,7 +57,7 @@ public class HiveLexer extends Lexer {
         map.put("CONSTRAINT", Token.CONSTRAINT);
         map.put("DIV", Token.DIV);
 
-        DEFAULT_KEYWORDS = new Keywords(map);
+        return new Keywords(map);
     }
 
     public HiveLexer(String input) {
@@ -67,7 +66,6 @@ public class HiveLexer extends Lexer {
         this.keepComments = true;
         dbType = DbType.hive;
         this.features |= SQLParserFeature.SupportUnicodeCodePoint.mask;
-        super.keywords = DEFAULT_KEYWORDS;
     }
 
     public HiveLexer(String input, SQLParserFeature... features) {
@@ -75,7 +73,6 @@ public class HiveLexer extends Lexer {
         dbType = DbType.hive;
         this.skipComment = true;
         this.keepComments = true;
-        super.keywords = DEFAULT_KEYWORDS;
         this.features |= SQLParserFeature.SupportUnicodeCodePoint.mask;
         for (SQLParserFeature feature : features) {
             config(feature, true);
