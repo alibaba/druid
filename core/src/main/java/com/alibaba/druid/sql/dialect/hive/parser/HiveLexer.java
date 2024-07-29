@@ -237,10 +237,6 @@ public class HiveLexer extends Lexer {
         }
     }
 
-    protected boolean supportScanHiveCommentDoubleSpace() {
-        return false;
-    }
-
     public void scanComment() {
         if (ch != '/' && ch != '-') {
             throw new IllegalStateException();
@@ -257,7 +253,7 @@ public class HiveLexer extends Lexer {
             bufPos = 0;
             scanChar();
 
-            if (supportScanHiveCommentDoubleSpace() && ch == ' ') {
+            if (this.lexerSettings.isEnableScanHiveCommentDoubleSpace() && ch == ' ') {
                 mark = pos;
                 bufPos = 0;
                 scanChar();
@@ -387,12 +383,9 @@ public class HiveLexer extends Lexer {
     }
 
     @Override
-    protected boolean supportNextTokenColon() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanAliasU() {
-        return true;
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.lexerSettings.setEnableNextTokenColon(true);
+        this.lexerSettings.setEnableScanAliasU(true);
     }
 }

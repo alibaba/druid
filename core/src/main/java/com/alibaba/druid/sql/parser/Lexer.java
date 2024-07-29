@@ -84,6 +84,7 @@ public class Lexer {
     protected int startPos;
     protected int posLine;
     protected int posColumn;
+    protected LexerSettings lexerSettings;
 
     public Lexer(String input) {
         this(input, (CommentHandler) null);
@@ -255,6 +256,11 @@ public class Lexer {
             }
             ch = charAt(++pos);
         }
+        initLexerSettings();
+    }
+
+    protected void initLexerSettings() {
+        this.lexerSettings = new LexerSettings();
     }
 
     public Lexer(char[] input, int inputLength, boolean skipComment) {
@@ -681,25 +687,6 @@ public class Lexer {
 
         nextToken();
     }
-    protected boolean supportScanSQLTypeBlockComment() {
-        return false;
-    }
-
-    protected boolean supportScanSQLTypeWithSemi() {
-        return false;
-    }
-
-    protected boolean supportScanSQLTypeWithFunction() {
-        return false;
-    }
-
-    protected boolean supportScanSQLTypeWithBegin() {
-        return false;
-    }
-
-    protected boolean supportScanSQLTypeWithAt() {
-        return false;
-    }
 
     public final SQLType scanSQLType() {
         _loop:
@@ -721,7 +708,7 @@ public class Lexer {
                 } else if (pos + 2 < text.length()
                         && text.charAt(pos + 1) == ' '
                         && text.charAt(pos + 2) == '*'
-                        && supportScanSQLTypeBlockComment()
+                        && lexerSettings.isEnableScanSQLTypeBlockComment()
                 ) {
                     int index = text.indexOf("* /", pos + 3);
                     if (index == -1) {
@@ -734,7 +721,7 @@ public class Lexer {
                 }
             }
 
-            if (supportScanSQLTypeWithSemi()) {
+            if (lexerSettings.isEnableScanSQLTypeWithSemi()) {
                 while (ch == ';') {
                     ch = charAt(++pos);
 
@@ -993,17 +980,13 @@ public class Lexer {
             return SQLType.ADD;
         } else if (hashCode == FnvHash.Constants.IF) {
             return SQLType.SCRIPT;
-        } else if (hashCode == FnvHash.Constants.FUNCTION) {
-            if (supportScanSQLTypeWithFunction()) {
-                return SQLType.SCRIPT;
-            }
-        } else if (hashCode == FnvHash.Constants.BEGIN) {
-            if (supportScanSQLTypeWithBegin()) {
-                return SQLType.SCRIPT;
-            }
+        } else if (hashCode == FnvHash.Constants.FUNCTION && lexerSettings.isEnableScanSQLTypeWithFunction()) {
+            return SQLType.SCRIPT;
+        } else if (hashCode == FnvHash.Constants.BEGIN && lexerSettings.isEnableScanSQLTypeWithBegin()) {
+            return SQLType.SCRIPT;
         } else if (ch == '@') {
             nextToken();
-            if (token == VARIANT && supportScanSQLTypeWithAt()) {
+            if (token == VARIANT && lexerSettings.isEnableScanSQLTypeWithAt()) {
                 nextToken();
 
                 if (token == TABLE) {
@@ -1253,17 +1236,10 @@ public class Lexer {
         return false;
     }
 
-    protected boolean supportNextTokenColon() {
-        return false;
-    }
-
     protected void nextTokenQues() {
         token = Token.QUES;
     }
 
-    protected boolean supportNextTokenPrefixN() {
-        return false;
-    }
     public final void nextToken() {
         startPos = pos;
         bufPos = 0;
@@ -1391,7 +1367,7 @@ public class Lexer {
                         scanChar();
                         token = COLONCOLON;
                     } else {
-                        if (isEnabled(SQLParserFeature.TDDLHint) || supportNextTokenColon()) {
+                        if (isEnabled(SQLParserFeature.TDDLHint) || lexerSettings.isEnableNextTokenColon()) {
                             token = COLON;
                             return;
                         }
@@ -1516,7 +1492,7 @@ public class Lexer {
                     }
 
                     if (ch == '\\' && charAt(pos + 1) == 'N'
-                            && supportNextTokenPrefixN()) {
+                            && lexerSettings.isEnableNextTokenPrefixN()) {
                         scanChar();
                         scanChar();
                         token = Token.NULL;
@@ -1814,10 +1790,6 @@ public class Lexer {
         }
     }
 
-    protected boolean supportScanString2PutDoubleBackslash() {
-        return false;
-    }
-
     protected final void scanString2_d() {
         {
             boolean hasSpecial = false;
@@ -1929,13 +1901,13 @@ public class Lexer {
                         putChar((char) 0x1A); // ctrl + Z
                         break;
                     case '%':
-                        if (supportScanString2PutDoubleBackslash()) {
+                        if (lexerSettings.isEnableScanString2PutDoubleBackslash()) {
                             putChar('\\');
                         }
                         putChar('%');
                         break;
                     case '_':
-                        if (supportScanString2PutDoubleBackslash()) {
+                        if (lexerSettings.isEnableScanString2PutDoubleBackslash()) {
                             putChar('\\');
                         }
                         putChar('_');
@@ -1985,9 +1957,6 @@ public class Lexer {
         }
     }
 
-    protected boolean supportScanAliasU() {
-        return false;
-    }
     protected void scanAlias() {
         final char quote = ch;
         {
@@ -2088,7 +2057,7 @@ public class Lexer {
                         putChar((char) 0x1A); // ctrl + Z
                         break;
                     case 'u':
-                        if (supportScanAliasU()) {
+                        if (lexerSettings.isEnableScanAliasU()) {
                             char c1 = charAt(++pos);
                             char c2 = charAt(++pos);
                             char c3 = charAt(++pos);
@@ -2139,23 +2108,8 @@ public class Lexer {
         scanVariable();
     }
 
-    protected boolean supportScanVariableAt() {
-        return false;
-    }
-
-    protected boolean supportScanVariableGreaterThan() {
-        return false;
-    }
-
-    protected boolean supportScanVariableMoveToSemi() {
-        return false;
-    }
-
-    protected boolean supportScanVariableSkipIdentifiers() {
-        return false;
-    }
     public void scanVariable() {
-        if (ch != ':' && ch != '#' && ch != '$' && !(ch == '@' && supportScanVariableAt())) {
+        if (ch != ':' && ch != '#' && ch != '$' && !(ch == '@' && lexerSettings.isEnableScanVariableAt())) {
             throw new ParserException("illegal variable. " + info());
         }
 
@@ -2164,7 +2118,7 @@ public class Lexer {
         char ch;
 
         final char c1 = charAt(pos + 1);
-        if (c1 == '>' && supportScanVariableGreaterThan()) {
+        if (c1 == '>' && lexerSettings.isEnableScanVariableGreaterThan()) {
             pos += 2;
             token = Token.MONKEYS_AT_GT;
             this.ch = charAt(++pos);
@@ -2221,7 +2175,7 @@ public class Lexer {
             char endChar = ch;
             this.ch = charAt(pos);
 
-            if (supportScanVariableMoveToSemi() && !isWhitespace(endChar)) {
+            if (lexerSettings.isEnableScanVariableMoveToSemi() && !isWhitespace(endChar)) {
                 while (isIdentifierChar(this.ch) && ch != ';' && ch != '；') {
                     ++pos;
                     bufPos++;
@@ -2255,7 +2209,7 @@ public class Lexer {
 
             this.ch = charAt(pos);
 
-            if (supportScanVariableSkipIdentifiers()) {
+            if (lexerSettings.isEnableScanVariableSkipIdentifiers()) {
                 while (isIdentifierChar(this.ch)) {
                     ++pos;
                     bufPos++;
@@ -2598,21 +2552,13 @@ public class Lexer {
         }
     }
 
-    protected boolean supportScanNumberPrefixB() {
-        return true;
-    }
-
-    protected boolean supportScanNumberCommonProcess() {
-        return true;
-    }
-
     public void scanNumber() {
         mark = pos;
         numberSale = 0;
         numberExp = false;
         bufPos = 0;
 
-        if (ch == '0' && charAt(pos + 1) == 'b' && supportScanNumberPrefixB()) {
+        if (ch == '0' && charAt(pos + 1) == 'b' && lexerSettings.isEnableScanNumberPrefixB()) {
             int i = 2;
             int mark = pos + 2;
             for (; ; ++i) {
@@ -2712,7 +2658,7 @@ public class Lexer {
         if (ch != '`') {
             if (isFirstIdentifierChar(ch)
                     && ch != '）'
-                    && !(ch == 'b' && bufPos == 1 && charAt(pos - 1) == '0' && supportScanNumberCommonProcess())
+                    && !(ch == 'b' && bufPos == 1 && charAt(pos - 1) == '0' && lexerSettings.isEnableScanNumberCommonProcess())
             ) {
                 bufPos++;
                 boolean brace = false;

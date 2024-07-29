@@ -394,7 +394,8 @@ public class OracleLexer extends Lexer {
     }
 
     @Override
-    protected boolean supportScanSQLTypeWithBegin() {
-        return true;
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.lexerSettings.setEnableScanSQLTypeWithBegin(true);
     }
 }

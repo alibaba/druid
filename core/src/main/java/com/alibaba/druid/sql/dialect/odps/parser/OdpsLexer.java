@@ -396,62 +396,19 @@ public class OdpsLexer extends HiveLexer {
     }
 
     @Override
-    protected boolean supportScanSQLTypeBlockComment() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanSQLTypeWithSemi() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportNextTokenColon() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanSQLTypeWithFunction() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanSQLTypeWithBegin() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanSQLTypeWithAt() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanVariableAt() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanVariableMoveToSemi() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanVariableSkipIdentifiers() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanHiveCommentDoubleSpace() {
-        return true;
-    }
-
-    @Override
-    protected boolean supportScanNumberPrefixB() {
-        return false;
-    }
-
-    @Override
-    protected boolean supportScanNumberCommonProcess() {
-        return false;
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.lexerSettings.setEnableScanSQLTypeBlockComment(true);
+        this.lexerSettings.setEnableScanSQLTypeWithSemi(true);
+        this.lexerSettings.setEnableScanSQLTypeWithFunction(true);
+        this.lexerSettings.setEnableScanSQLTypeWithBegin(true);
+        this.lexerSettings.setEnableScanSQLTypeWithAt(true);
+        this.lexerSettings.setEnableScanVariableAt(true);
+        this.lexerSettings.setEnableScanVariableMoveToSemi(true);
+        this.lexerSettings.setEnableScanVariableSkipIdentifiers(true);
+        this.lexerSettings.setEnableScanNumberPrefixB(false);
+        this.lexerSettings.setEnableScanNumberCommonProcess(false);
+        this.lexerSettings.setEnableScanAliasU(false);
+        this.lexerSettings.setEnableScanHiveCommentDoubleSpace(true);
     }
 }

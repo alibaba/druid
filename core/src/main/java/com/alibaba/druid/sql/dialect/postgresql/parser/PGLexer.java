@@ -257,7 +257,8 @@ public class PGLexer extends Lexer {
     }
 
     @Override
-    protected boolean supportScanVariableGreaterThan() {
-        return true;
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.lexerSettings.setEnableScanVariableGreaterThan(true);
     }
 }

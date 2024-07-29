@@ -957,7 +957,8 @@ public class MySqlLexer extends Lexer {
     }
 
     @Override
-    protected boolean supportNextTokenPrefixN() {
-        return true;
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.lexerSettings.setEnableNextTokenPrefixN(true);
     }
 }
