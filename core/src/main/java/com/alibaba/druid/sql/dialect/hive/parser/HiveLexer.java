@@ -382,6 +382,7 @@ public class HiveLexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
+        this.lexerSettings.setEnableScanSQLTypeWithFrom(true);
         this.lexerSettings.setEnableNextTokenColon(true);
         this.lexerSettings.setEnableScanAliasU(true);
     }

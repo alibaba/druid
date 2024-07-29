@@ -455,7 +455,6 @@ public class MySqlLexer extends Lexer {
     }
 
     @Override
-
     protected final void scanString() {
         {
             boolean hasSpecial = false;
@@ -955,5 +954,6 @@ public class MySqlLexer extends Lexer {
     protected void initLexerSettings() {
         super.initLexerSettings();
         this.lexerSettings.setEnableNextTokenPrefixN(true);
+        this.lexerSettings.setEnableScanString2PutDoubleBackslash(true);
     }
 }

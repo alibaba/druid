@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.parser;
 public class LexerSettings {
     private boolean enableScanSQLTypeBlockComment;
     private boolean enableScanSQLTypeWithSemi;
+    private boolean enableScanSQLTypeWithFrom;
     private boolean enableScanSQLTypeWithFunction;
     private boolean enableScanSQLTypeWithBegin;
     private boolean enableScanSQLTypeWithAt;
@@ -19,6 +20,7 @@ public class LexerSettings {
     public LexerSettings() {
         this.enableScanSQLTypeBlockComment = false;
         this.enableScanSQLTypeWithSemi = false;
+        this.enableScanSQLTypeWithFrom = false;
         this.enableScanSQLTypeWithFunction = false;
         this.enableScanSQLTypeWithBegin = false;
         this.enableScanSQLTypeWithAt = false;
@@ -49,6 +51,14 @@ public class LexerSettings {
 
     public void setEnableScanSQLTypeWithSemi(boolean enableScanSQLTypeWithSemi) {
         this.enableScanSQLTypeWithSemi = enableScanSQLTypeWithSemi;
+    }
+
+    public boolean isEnableScanSQLTypeWithFrom() {
+        return enableScanSQLTypeWithFrom;
+    }
+
+    public void setEnableScanSQLTypeWithFrom(boolean enableScanSQLTypeWithFrom) {
+        this.enableScanSQLTypeWithFrom = enableScanSQLTypeWithFrom;
     }
 
     public boolean isEnableScanSQLTypeWithFunction() {
