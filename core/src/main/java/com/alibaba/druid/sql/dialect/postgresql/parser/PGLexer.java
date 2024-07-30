@@ -25,9 +25,8 @@ import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class PGLexer extends Lexer {
-    public static final Keywords DEFAULT_PG_KEYWORDS;
-
-    static {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -73,14 +72,13 @@ public class PGLexer extends Lexer {
         map.put("INTERVAL", Token.INTERVAL);
         map.put("LANGUAGE", Token.LANGUAGE);
 
-        DEFAULT_PG_KEYWORDS = new Keywords(map);
+        return new Keywords(map);
     }
 
     public PGLexer(String input, SQLParserFeature... features) {
         super(input, true);
         this.keepComments = true;
-        super.keywords = DEFAULT_PG_KEYWORDS;
-        super.dbType = DbType.postgresql;
+        dbType = DbType.postgresql;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
@@ -229,5 +227,36 @@ public class PGLexer extends Lexer {
 
         stringVal = addSymbol();
         token = Token.VARIANT;
+    }
+
+    protected void nextTokenQues() {
+        if (ch == '?') {
+            scanChar();
+            if (ch == '|') {
+                scanChar();
+                token = Token.QUESQUESBAR;
+            } else {
+                token = Token.QUESQUES;
+            }
+        } else if (ch == '|') {
+            scanChar();
+            if (ch == '|') {
+                unscan();
+                token = Token.QUES;
+            } else {
+                token = Token.QUESBAR;
+            }
+        } else if (ch == '&') {
+            scanChar();
+            token = Token.QUESAMP;
+        } else {
+            token = Token.QUES;
+        }
+    }
+
+    @Override
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.lexerSettings.setEnableScanVariableGreaterThan(true);
     }
 }

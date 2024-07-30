@@ -10,18 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BigQueryLexer extends Lexer {
-    public static final Keywords DEFAULT_BIG_QUERY_KEYWORDS;
-
-    static {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
-//        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+        //        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("ALL", Token.ALL);
         map.put("AND", Token.AND);
         map.put("ANY", Token.ANY);
         map.put("ALTER", Token.ALTER);
-//        map.put("ARRAY", Token.ARRAY);
+        //        map.put("ARRAY", Token.ARRAY);
         map.put("AS", Token.AS);
         map.put("ASC", Token.ASC);
         map.put("BETWEEN", Token.BETWEEN);
@@ -98,19 +97,14 @@ public class BigQueryLexer extends Lexer {
         map.put("WINDOW", Token.WINDOW);
         map.put("WITH", Token.WITH);
 
-        DEFAULT_BIG_QUERY_KEYWORDS = new Keywords(map);
-    }
-
-    {
-        dbType = DbType.bigquery;
+        return new Keywords(map);
     }
 
     public BigQueryLexer(String input, SQLParserFeature... features) {
         super(input);
-        dbType = DbType.hive;
+        dbType = DbType.bigquery;
         this.skipComment = true;
         this.keepComments = true;
-        super.keywords = DEFAULT_BIG_QUERY_KEYWORDS;
         this.features |= SQLParserFeature.SupportUnicodeCodePoint.mask;
         for (SQLParserFeature feature : features) {
             config(feature, true);

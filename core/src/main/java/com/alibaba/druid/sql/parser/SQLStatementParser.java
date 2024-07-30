@@ -6177,11 +6177,7 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.ch == '\'') { // for performance
                 lexer.bufPos = 0;
-                if (dbType == DbType.mysql) {
-                    lexer.scanString2();
-                } else {
-                    lexer.scanString();
-                }
+                lexer.scanString();
             } else if (lexer.ch == '0') {
                 lexer.bufPos = 0;
                 if (lexer.charAt(lexer.pos + 1) == 'x') {
@@ -6418,11 +6414,7 @@ public class SQLStatementParser extends SQLParser {
 
                         if (lexer.ch == '\'') { // for performance
                             lexer.bufPos = 0;
-                            if (dbType == DbType.mysql) {
-                                lexer.scanString2();
-                            } else {
-                                lexer.scanString();
-                            }
+                            lexer.scanString();
                         } else if (lexer.ch == '0') {
                             lexer.bufPos = 0;
                             if (lexer.charAt(lexer.pos + 1) == 'x') {
@@ -6506,11 +6498,7 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.ch == '\'') { // for performance
                 lexer.bufPos = 0;
-                if (dbType == DbType.mysql) {
-                    lexer.scanString2();
-                } else {
-                    lexer.scanString();
-                }
+                lexer.scanString();
             } else if (lexer.ch == '0') {
                 lexer.bufPos = 0;
                 if (lexer.charAt(lexer.pos + 1) == 'x') {
@@ -6721,11 +6709,7 @@ public class SQLStatementParser extends SQLParser {
                     if (lexer.token == Token.COMMA) {
                         if (lexer.ch == '\'') { // for performance
                             lexer.bufPos = 0;
-                            if (dbType == DbType.mysql) {
-                                lexer.scanString2();
-                            } else {
-                                lexer.scanString();
-                            }
+                            lexer.scanString();
                         } else if (lexer.ch == '0') {
                             lexer.bufPos = 0;
                             if (lexer.charAt(lexer.pos + 1) == 'x') {
@@ -6802,11 +6786,7 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.ch == '\'') { // for performance
                 lexer.bufPos = 0;
-                if (dbType == DbType.mysql) {
-                    lexer.scanString2();
-                } else {
-                    lexer.scanString();
-                }
+                lexer.scanString();
             } else if (lexer.ch == '0') {
                 lexer.bufPos = 0;
                 if (lexer.charAt(lexer.pos + 1) == 'x') {
@@ -6972,11 +6952,7 @@ public class SQLStatementParser extends SQLParser {
 
                         if (lexer.ch == '\'') { // for performance
                             lexer.bufPos = 0;
-                            if (dbType == DbType.mysql) {
-                                lexer.scanString2();
-                            } else {
-                                lexer.scanString();
-                            }
+                            lexer.scanString();
                         } else if (lexer.ch == '0') {
                             lexer.bufPos = 0;
                             if (lexer.charAt(lexer.pos + 1) == 'x') {

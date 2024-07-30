@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.odps.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
 import com.alibaba.druid.sql.parser.*;
 
 import java.util.HashMap;
@@ -24,10 +25,23 @@ import java.util.Map;
 import static com.alibaba.druid.sql.parser.CharTypes.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
-public class OdpsLexer extends Lexer {
-    public static final Keywords DEFAULT_ODPS_KEYWORDS;
+public class OdpsLexer extends HiveLexer {
+    public OdpsLexer(String input, SQLParserFeature... features) {
+        super(input);
 
-    static {
+        init();
+
+        dbType = DbType.odps;
+        this.skipComment = true;
+        this.keepComments = false;
+
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -48,42 +62,7 @@ public class OdpsLexer extends Lexer {
         map.put("QUALIFY", Token.QUALIFY);
         map.put("；", Token.SEMI);
 
-        DEFAULT_ODPS_KEYWORDS = new Keywords(map);
-    }
-
-    public OdpsLexer(String input, SQLParserFeature... features) {
-        super(input);
-
-        init();
-
-        dbType = DbType.odps;
-        super.keywords = DEFAULT_ODPS_KEYWORDS;
-        this.skipComment = true;
-        this.keepComments = false;
-
-        for (SQLParserFeature feature : features) {
-            config(feature, true);
-        }
-    }
-
-    public OdpsLexer(String input, boolean skipComment, boolean keepComments) {
-        super(input, skipComment);
-
-        init();
-
-        dbType = DbType.odps;
-        this.skipComment = skipComment;
-        this.keepComments = keepComments;
-        super.keywords = DEFAULT_ODPS_KEYWORDS;
-    }
-
-    public OdpsLexer(String input, CommentHandler commentHandler) {
-        super(input, commentHandler);
-
-        init();
-
-        dbType = DbType.odps;
-        super.keywords = DEFAULT_ODPS_KEYWORDS;
+        return new Keywords(map);
     }
 
     private void init() {
@@ -99,10 +78,6 @@ public class OdpsLexer extends Lexer {
                 ch = charAt(++pos);
             }
         }
-    }
-
-    public void scanComment() {
-        scanHiveComment();
     }
 
     public void scanIdentifier() {
@@ -262,7 +237,20 @@ public class OdpsLexer extends Lexer {
         scanVariable();
     }
 
-    protected final void scanString() {
-        scanString2();
+    @Override
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.lexerSettings.setEnableScanSQLTypeBlockComment(true);
+        this.lexerSettings.setEnableScanSQLTypeWithSemi(true);
+        this.lexerSettings.setEnableScanSQLTypeWithFunction(true);
+        this.lexerSettings.setEnableScanSQLTypeWithBegin(true);
+        this.lexerSettings.setEnableScanSQLTypeWithAt(true);
+        this.lexerSettings.setEnableScanVariableAt(true);
+        this.lexerSettings.setEnableScanVariableMoveToSemi(true);
+        this.lexerSettings.setEnableScanVariableSkipIdentifiers(true);
+        this.lexerSettings.setEnableScanNumberPrefixB(false);
+        this.lexerSettings.setEnableScanNumberCommonProcess(false);
+        this.lexerSettings.setEnableScanAliasU(false);
+        this.lexerSettings.setEnableScanHiveCommentDoubleSpace(true);
     }
 }

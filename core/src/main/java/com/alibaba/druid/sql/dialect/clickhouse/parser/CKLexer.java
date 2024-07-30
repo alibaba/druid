@@ -10,9 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CKLexer extends Lexer {
-    public static final Keywords DEFAULT_KEYWORDS;
-
-    static {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -39,18 +38,15 @@ public class CKLexer extends Lexer {
         map.put("TTL", Token.TTL);
         map.put("CODEC", Token.CODEC);
 
-        DEFAULT_KEYWORDS = new Keywords(map);
+        return new Keywords(map);
     }
-
     public CKLexer(String input) {
         super(input);
         dbType = DbType.clickhouse;
-        super.keywords = DEFAULT_KEYWORDS;
     }
 
     public CKLexer(String input, SQLParserFeature... features) {
         super(input);
-        super.keywords = DEFAULT_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
