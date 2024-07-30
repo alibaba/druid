@@ -2038,6 +2038,12 @@ public class SQLUtils {
         if (parent instanceof SQLSelectStatement) {
             ((SQLSelectStatement) parent).setSelect(dest);
             return true;
+        } else if (parent instanceof SQLSubqueryTableSource) {
+            ((SQLSubqueryTableSource) parent).setSelect(dest);
+            return true;
+        } else if (parent instanceof SQLInsertStatement) {
+            ((SQLInsertStatement) parent).setQuery(dest);
+            return true;
         }
         return false;
     }
