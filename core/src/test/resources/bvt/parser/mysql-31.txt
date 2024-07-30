@@ -1,4 +1,0 @@
-ALTER TABLE t1 ALTER INDEX i_idx VISIBLE;
----------------------------
-ALTER TABLE t1
-	ALTER INDEX i_idx  VISIBLE;

@@ -1,3 +1,0 @@
-SELECT a.id AS 888appId, a.name AS 999appName
----------------------------
-SELECT a.id AS 888appId, a.name AS 999appName

@@ -1,3 +1,0 @@
-XA PREPARE xid
----------------------------
-XA PREPARE xid

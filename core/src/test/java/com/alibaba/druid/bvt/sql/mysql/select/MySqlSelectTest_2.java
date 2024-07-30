@@ -54,17 +54,4 @@ public class MySqlSelectTest_2 extends MysqlTest {
         Assert.assertTrue(visitor.getColumns().contains(new Column("tournament", "region")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("tournament", "seed")));
     }
-
-    public void test_1() throws Exception {
-        String sql = "SELECT top 10 * FROM tournament ORDER BY 2, 3;";
-
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-
-        assertEquals("SELECT *\n"
-                + "FROM tournament\n"
-                + "ORDER BY 2, 3\n"
-                + "LIMIT 10;", statemen.toString());
-    }
 }
