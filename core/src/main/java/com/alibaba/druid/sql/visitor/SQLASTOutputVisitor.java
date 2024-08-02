@@ -11174,6 +11174,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 printAndAccept(skewedByOn, ",");
                 print(')');
             }
+            if (x.isSkewedByStoreAsDirectories()) {
+                print(ucase ? " STORED AS DIRECTORIES" : " stored as directories");
+            }
         }
 
         SQLExternalRecordFormat format = x.getRowFormat();
