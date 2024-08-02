@@ -30,6 +30,7 @@ import java.util.Map;
 public class HiveCreateTableStatement extends SQLCreateTableStatement {
     protected List<SQLExpr> skewedBy = new ArrayList<SQLExpr>();
     protected List<SQLExpr> skewedByOn = new ArrayList<SQLExpr>();
+    protected boolean skewedByStoreAsDirectories;
     protected Map<String, SQLObject> serdeProperties = new LinkedHashMap<String, SQLObject>();
 
     protected boolean likeQuery; // for DLA
@@ -137,6 +138,14 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
     public void addSkewedByOn(SQLExpr item) {
         item.setParent(this);
         this.skewedByOn.add(item);
+    }
+
+    public void setSkewedByStoreAsDirectories(boolean skewedByStoreAsDirectories) {
+        this.skewedByStoreAsDirectories = skewedByStoreAsDirectories;
+    }
+
+    public boolean isSkewedByStoreAsDirectories() {
+        return skewedByStoreAsDirectories;
     }
 
     public Map<String, SQLObject> getSerdeProperties() {

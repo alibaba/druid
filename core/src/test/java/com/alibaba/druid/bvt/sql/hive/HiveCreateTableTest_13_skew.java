@@ -46,7 +46,7 @@ public class HiveCreateTableTest_13_skew extends OracleTest {
                     "\tkey STRING,\n" +
                     "\tvalue STRING\n" +
                     ")\n" +
-                    "SKEWED BY (key) ON (1,5,6)\n" +
+                    "SKEWED BY (key) ON (1,5,6) " +
                     "STORED AS DIRECTORIES;", text);
         }
 

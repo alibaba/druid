@@ -180,6 +180,21 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
+            parseSortedBy(stmt);
+        }
+
+        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
+            accept(Token.INTO);
+            if (lexer.token() == Token.LITERAL_INT) {
+                stmt.setBuckets(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                throw new ParserException("into buckets must be integer. " + lexer.info());
+            }
+            acceptIdentifier("BUCKETS");
+        }
+
         if (lexer.nextIfIdentifier(FnvHash.Constants.SKEWED)) {
             accept(Token.BY);
             accept(Token.LPAREN);
@@ -205,30 +220,11 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
                 break;
             }
             accept(Token.RPAREN);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
-            parseSortedBy(stmt);
-        }
-
-        if (lexer.token() == Token.ROW
-                || lexer.identifierEquals(FnvHash.Constants.ROW)) {
-            parseRowFormat(stmt);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
-            parseSortedBy(stmt);
-        }
-
-        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
-            accept(Token.INTO);
-            if (lexer.token() == Token.LITERAL_INT) {
-                stmt.setBuckets(lexer.integerValue().intValue());
-                lexer.nextToken();
-            } else {
-                throw new ParserException("into buckets must be integer. " + lexer.info());
+            if (lexer.nextIfIdentifier(FnvHash.Constants.STORED)) {
+                accept(Token.AS);
+                acceptIdentifier("DIRECTORIES");
+                stmt.setSkewedByStoreAsDirectories(true);
             }
-            acceptIdentifier("BUCKETS");
         }
 
         if (lexer.token() == Token.ROW

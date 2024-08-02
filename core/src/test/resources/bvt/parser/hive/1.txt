@@ -1,0 +1,47 @@
+CREATE EXTERNAL TABLE `ods.ods_dc_test_df` (
+	`id` bigint COMMENT 'id' CHECK (`id` > 0) DEFAULT 5,
+	`name` string COMMENT '名称' NOT NULL,
+	PRIMARY KEY(`id`), CONSTRAINT c1 CHECK (`id` < 100)
+)
+COMMENT '测试表'
+PARTITIONED BY (
+	`dt` string
+)
+CLUSTERED BY(dt) SORTED BY (name ASC) INTO 4 BUCKETS
+SKEWED BY(dt) ON ('2020-01-01','2020-01-02') STORED AS DIRECTORIES
+ROW FORMAT
+SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.parquethiveserde'
+STORED AS
+	INPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+	OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+TBLPROPERTIES (
+	'parquet.compression' = 'snappy',
+	'transient_lastDdlTime' = '1603362950'
+)
+--------------------
+CREATE EXTERNAL TABLE `ods.ods_dc_test_df` (
+	`id` bigint DEFAULT 5
+		CHECK (`id` > 0) COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY (`id`),
+	CONSTRAINT c1 CHECK (`id` < 100)
+)
+COMMENT '测试表'
+PARTITIONED BY (
+	`dt` string
+)
+CLUSTERED BY (dt)
+SORTED BY (name ASC)
+INTO 4 BUCKETS
+SKEWED BY (dt) ON ('2020-01-01','2020-01-02') STORED AS DIRECTORIES
+ROW FORMAT
+	SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.parquethiveserde'
+STORED AS
+	INPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+	OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+TBLPROPERTIES (
+	'parquet.compression' = 'snappy',
+	'transient_lastDdlTime' = '1603362950'
+)
