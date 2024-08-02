@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -162,7 +161,7 @@ public class SQLSelectParser extends SQLParser {
                         break;
                 }
 
-                if (lexer.token == Token.SEMI && dbType == DbType.odps) {
+                if (lexer.token == Token.SEMI && this.lexer.settings.isEnableQueryRestSemi()) {
                     break;
                 }
 
@@ -187,7 +186,7 @@ public class SQLSelectParser extends SQLParser {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
 
-                    if (lexer.token == Token.UNION && dbType == DbType.odps) {
+                    if (lexer.token == Token.UNION && this.lexer.settings.isEnableTwoConsecutiveUnion()) {
                         continue; // skip
                     }
 
@@ -453,7 +452,7 @@ public class SQLSelectParser extends SQLParser {
             queryBlock.addBeforeComment(lexer.readAndResetComments());
         }
 
-        if (lexer.token() == Token.TABLE && dbType == DbType.spark) {
+        if (lexer.token() == Token.TABLE && this.lexer.settings.isEnableQueryTable()) {
             lexer.nextToken();
             queryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
             queryBlock.setFrom(parseTableSource());
@@ -880,7 +879,7 @@ public class SQLSelectParser extends SQLParser {
                 Lexer.SavePoint mark = lexer.mark();
                 lexer.nextToken();
                 if (!lexer.identifierEquals(FnvHash.Constants.GROUPING)) {
-                    if (dbType == DbType.odps || dbType == DbType.hive || dbType == DbType.spark) {
+                    if (this.lexer.settings.isEnableGroupByAll()) {
                         lexer.reset(mark);
                     } else {
                         throw new ParserException("group by all syntax error. " + lexer.info());
@@ -937,7 +936,7 @@ public class SQLSelectParser extends SQLParser {
                 accept(Token.RPAREN);
                 groupBy.setParen(true);
 
-                if (lexer.token == Token.COMMA && dbType == DbType.odps) {
+                if (lexer.token == Token.COMMA && this.lexer.settings.isEnableRewriteGroupByCubeRollupToFunction()) {
                     lexer.nextToken();
                     SQLMethodInvokeExpr func = new SQLMethodInvokeExpr(groupBy.isWithCube() ? "CUBE" : "ROLLUP");
                     func.getArguments().addAll(groupBy.getItems());
@@ -1002,7 +1001,7 @@ public class SQLSelectParser extends SQLParser {
                 groupBy.setWithRollUp(true);
             }
 
-            if (DbType.mysql == dbType
+            if (this.lexer.settings.isEnableGroupByPostDesc()
                     && lexer.token == Token.DESC) {
                 lexer.nextToken(); // skip
             }
@@ -1077,7 +1076,7 @@ public class SQLSelectParser extends SQLParser {
             item = this.exprParser.expr();
         }
 
-        if (DbType.mysql == dbType) {
+        if (this.lexer.settings.isEnableGroupByItemOrder()) {
             if (lexer.token == Token.DESC) {
                 lexer.nextToken(); // skip
                 item = new MySqlOrderingExpr(item, SQLOrderingSpecification.DESC);
@@ -1169,7 +1168,7 @@ public class SQLSelectParser extends SQLParser {
                 SQLSelectQuery selectQuery = select.getQuery();
                 selectQuery.setParenthesized(true);
 
-                boolean acceptUnion = !(selectQuery instanceof SQLUnionQuery) && dbType != DbType.odps;
+                boolean acceptUnion = !(selectQuery instanceof SQLUnionQuery) && this.lexer.settings.isEnableAcceptUnion();
                 SQLSelectQuery query = queryRest(selectQuery, acceptUnion);
                 if (query instanceof SQLUnionQuery) {
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
@@ -1521,7 +1520,7 @@ public class SQLSelectParser extends SQLParser {
         }
 
         boolean asof = false;
-        if (lexer.identifierEquals(FnvHash.Constants.ASOF) && dbType == DbType.clickhouse) {
+        if (lexer.identifierEquals(FnvHash.Constants.ASOF) && this.lexer.settings.isEnableAsofJoin()) {
             lexer.nextToken();
             asof = true;
         }
@@ -1539,7 +1538,7 @@ public class SQLSelectParser extends SQLParser {
         }
 
         boolean global = false;
-        if (dbType == DbType.clickhouse) {
+        if (this.lexer.settings.isEnableGlobalJoin()) {
             if (lexer.token == Token.GLOBAL) {
                 lexer.nextToken();
                 global = true;
@@ -1570,7 +1569,7 @@ public class SQLSelectParser extends SQLParser {
                     joinType = natural ? SQLJoinTableSource.JoinType.NATURAL_LEFT_JOIN : SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;
                 }
 
-                if (dbType == DbType.odps && lexer.token == Token.IDENTIFIER && lexer.stringVal().startsWith("join@")) {
+                if (this.lexer.settings.isEnableJoinAt() && lexer.token == Token.IDENTIFIER && lexer.stringVal().startsWith("join@")) {
                     lexer.stringVal = lexer.stringVal().substring(5);
                     break;
                 }
@@ -1662,8 +1661,8 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
                 if (lexer.token == Token.SELECT
-                        || (lexer.token == Token.WITH && dbType == DbType.mysql)
-                        || (lexer.token == Token.FROM && (dbType == DbType.odps || dbType == DbType.hive))) {
+                        || (lexer.token == Token.WITH && this.lexer.settings.isEnableJoinRightTableWith())
+                        || (lexer.token == Token.FROM && this.lexer.settings.isEnableJoinRightTableFrom())) {
                     SQLSelect select = this.select();
                     rightTableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                 } else {
@@ -1817,7 +1816,7 @@ public class SQLSelectParser extends SQLParser {
                     lexer.nextToken();
 
                     if (lexer.token != Token.ON) {
-                        if (dbType == DbType.clickhouse && rightTableSource instanceof SQLExprTableSource) {
+                        if (this.lexer.settings.isEnableJoinRightTableAlias() && rightTableSource instanceof SQLExprTableSource) {
                             SQLExprTableSource exprTableSource = (SQLExprTableSource) rightTableSource;
                             exprTableSource.setNeedAsTokenForAlias(true);
                         }
@@ -1883,7 +1882,7 @@ public class SQLSelectParser extends SQLParser {
 
             if (!natural) {
                 if (!StringUtils.isEmpty(tableSource.getAlias())
-                        && tableSource.aliasHashCode64() == FnvHash.Constants.NATURAL && DbType.mysql == dbType) {
+                        && tableSource.aliasHashCode64() == FnvHash.Constants.NATURAL && this.lexer.settings.isEnablePostNaturalJoin()) {
                     tableSource.setAlias(null);
                     natural = true;
                     if (natural && join.getJoinType() == SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN) {
@@ -1905,14 +1904,14 @@ public class SQLSelectParser extends SQLParser {
                 join.setCondition(joinOn);
 
                 while (lexer.token == Token.ON
-                        && dbType == DbType.mysql) {
+                        && this.lexer.settings.isEnableMultipleJoinOn()) {
                     lexer.nextToken();
 
                     SQLExpr joinOn2 = expr();
                     join.addCondition(joinOn2);
                 }
 
-                if (dbType == DbType.odps && lexer.identifierEquals(FnvHash.Constants.USING)) {
+                if (this.lexer.settings.isEnableUDJ() && lexer.identifierEquals(FnvHash.Constants.USING)) {
                     SQLJoinTableSource.UDJ udj = new SQLJoinTableSource.UDJ();
                     lexer.nextToken();
                     udj.setFunction(this.exprParser.name());

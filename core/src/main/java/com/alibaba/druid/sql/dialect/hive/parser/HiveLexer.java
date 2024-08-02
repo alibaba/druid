@@ -250,7 +250,7 @@ public class HiveLexer extends Lexer {
             bufPos = 0;
             scanChar();
 
-            if (this.lexerSettings.isEnableScanHiveCommentDoubleSpace() && ch == ' ') {
+            if (this.settings.isEnableScanHiveCommentDoubleSpace() && ch == ' ') {
                 mark = pos;
                 bufPos = 0;
                 scanChar();
@@ -382,8 +382,19 @@ public class HiveLexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.lexerSettings.setEnableScanSQLTypeWithFrom(true);
-        this.lexerSettings.setEnableNextTokenColon(true);
-        this.lexerSettings.setEnableScanAliasU(true);
+        this.settings.setEnableScanSQLTypeWithFrom(true);
+        this.settings.setEnableNextTokenColon(true);
+        this.settings.setEnableScanAliasU(true);
+        this.settings.setEnableJoinRightTableFrom(true);
+        this.settings.setEnableGroupByAll(true);
+        this.settings.setEnableSQLDateExpr(true);
+        this.settings.setEnablePrimaryBangBangSupport(false);
+        this.settings.setEnableParseAssignItemRparenCommaSetReturn(true);
+        this.settings.setEnableTableAliasLock(true);
+        this.settings.setEnableTableAliasPartition(true);
+        this.settings.setEnableAsSkip(true);
+        this.settings.setEnableAsSequence(true);
+        this.settings.setEnableAsDatabase(true);
+        this.settings.setEnableAsDefault(true);
     }
 }

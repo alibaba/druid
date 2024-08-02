@@ -51,4 +51,14 @@ public class CKLexer extends Lexer {
             config(feature, true);
         }
     }
+
+    @Override
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.settings.setEnableAsofJoin(true);
+        this.settings.setEnableGlobalJoin(true);
+        this.settings.setEnableJoinRightTableAlias(true);
+        this.settings.setEnableParseLimitBy(true);
+        this.settings.setEnableTableAliasAsof(true);
+    }
 }

@@ -55,4 +55,10 @@ public class DB2Lexer extends Lexer {
             config(feature, true);
         }
     }
+
+    @Override
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.settings.setEnableParseAssignItemSkip(true);
+    }
 }

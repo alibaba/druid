@@ -59,6 +59,143 @@ public class HiveExprParser extends SQLExprParser {
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
+    @Override
+    protected SQLExpr primaryCommon(SQLExpr sqlExpr) {
+        sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+        lexer.nextToken();
+        return sqlExpr;
+    }
+    @Override
+    protected String doRestSpecific(SQLExpr expr) {
+        String name = null;
+        if ((lexer.token() == Token.LITERAL_INT || lexer.token() == Token.LITERAL_FLOAT)) {
+            name = lexer.numberString();
+            lexer.nextToken();
+        }
+        return name;
+    }
+
+    @Override
+    protected SQLExpr relationalRestEqeq(SQLExpr expr) {
+        Lexer.SavePoint mark = lexer.mark();
+        lexer.nextToken();
+        SQLExpr rightExp;
+        try {
+            if (lexer.token() == Token.SEMI) {
+                lexer.reset(mark);
+                return expr;
+            }
+            rightExp = bitOr();
+        } catch (EOFParserException e) {
+            throw new ParserException("EOF, " + expr + "=", e);
+        }
+
+        if (lexer.token() == Token.COLONEQ) {
+            lexer.nextToken();
+            SQLExpr colonExpr = expr();
+            rightExp = new SQLBinaryOpExpr(rightExp, SQLBinaryOperator.Assignment, colonExpr, dbType);
+        }
+        return new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, dbType);
+    }
+
+    @Override
+    protected SQLExpr parseAssignItemOnColon(SQLExpr sqlExpr) {
+        if (lexer.token() == Token.COLON) {
+            lexer.nextToken();
+            String str = sqlExpr.toString() + ':';
+            str += lexer.numberString();
+            lexer.nextToken();
+            sqlExpr = new SQLIdentifierExpr(str);
+        }
+        return sqlExpr;
+    }
+
+    @Override
+    protected SQLExpr parseSelectItemRest(String ident, long hash_lower) {
+        SQLExpr expr = null;
+        if (lexer.identifierEquals(FnvHash.Constants.COLLATE)
+                && lexer.stringVal().charAt(0) != '`'
+        ) {
+            lexer.nextToken();
+            String collate = lexer.stringVal();
+            lexer.nextToken();
+
+            SQLBinaryOpExpr binaryExpr = new SQLBinaryOpExpr(
+                    new SQLIdentifierExpr(ident),
+                    SQLBinaryOperator.COLLATE,
+                    new SQLIdentifierExpr(collate), dbType
+            );
+            expr = binaryExpr;
+
+        } else if (FnvHash.Constants.TIMESTAMP == hash_lower
+                && lexer.stringVal().charAt(0) != '`'
+                && lexer.token() == Token.LITERAL_CHARS) {
+            String literal = lexer.stringVal();
+            lexer.nextToken();
+
+            SQLTimestampExpr ts = new SQLTimestampExpr(literal);
+            expr = ts;
+
+            if (lexer.identifierEquals(FnvHash.Constants.AT)) {
+                Lexer.SavePoint mark = lexer.mark();
+                lexer.nextToken();
+
+                String timeZone = null;
+                if (lexer.identifierEquals(FnvHash.Constants.TIME)) {
+                    lexer.nextToken();
+                    if (lexer.identifierEquals(FnvHash.Constants.ZONE)) {
+                        lexer.nextToken();
+                        timeZone = lexer.stringVal();
+                        lexer.nextToken();
+                    }
+                }
+                if (timeZone == null) {
+                    lexer.reset(mark);
+                } else {
+                    ts.setTimeZone(timeZone);
+                }
+            }
+        } else if (FnvHash.Constants.DATETIME == hash_lower
+                && lexer.stringVal().charAt(0) != '`'
+                && lexer.token() == Token.LITERAL_CHARS) {
+            String literal = lexer.stringVal();
+            lexer.nextToken();
+
+            SQLDateTimeExpr ts = new SQLDateTimeExpr(literal);
+            expr = ts;
+        } else if (FnvHash.Constants.CURRENT_DATE == hash_lower
+                && ident.charAt(0) != '`'
+                && lexer.token() != Token.LPAREN) {
+            expr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.CURRENT_DATE);
+
+        } else if (FnvHash.Constants.CURRENT_TIMESTAMP == hash_lower
+                && ident.charAt(0) != '`'
+                && lexer.token() != Token.LPAREN) {
+            expr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.CURRENT_TIMESTAMP);
+
+        } else if (FnvHash.Constants.CURRENT_TIME == hash_lower
+                && ident.charAt(0) != '`'
+                && lexer.token() != Token.LPAREN) {
+            expr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.CURRENT_TIME);
+
+        } else if (FnvHash.Constants.CURDATE == hash_lower
+                && ident.charAt(0) != '`'
+                && lexer.token() != Token.LPAREN) {
+            expr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.CURDATE);
+
+        } else if (FnvHash.Constants.LOCALTIME == hash_lower
+                && ident.charAt(0) != '`'
+                && lexer.token() != Token.LPAREN) {
+            expr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.LOCALTIME);
+
+        } else if (FnvHash.Constants.LOCALTIMESTAMP == hash_lower
+                && ident.charAt(0) != '`'
+                && lexer.token() != Token.LPAREN) {
+            expr = new SQLCurrentTimeExpr(SQLCurrentTimeExpr.Type.LOCALTIMESTAMP);
+        }
+        return expr;
+    }
+
     public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.token() == Token.COLON) {
             lexer.nextToken();

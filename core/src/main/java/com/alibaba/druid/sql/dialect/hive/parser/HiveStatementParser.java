@@ -29,6 +29,8 @@ import com.alibaba.druid.util.FnvHash.Constants;
 
 import java.util.List;
 
+import static com.alibaba.druid.sql.parser.Token.LPAREN;
+
 public class HiveStatementParser extends SQLStatementParser {
     {
         dbType = DbType.hive;
@@ -50,7 +52,7 @@ public class HiveStatementParser extends SQLStatementParser {
         super(exprParser);
     }
 
-    public HiveSelectParser createSQLSelectParser() {
+    public SQLSelectParser createSQLSelectParser() {
         return new HiveSelectParser(this.exprParser, selectListCache);
     }
 
@@ -587,5 +589,54 @@ public class HiveStatementParser extends SQLStatementParser {
     @Override
     public HiveExprParser getExprParser() {
         return (HiveExprParser) exprParser;
+    }
+
+    @Override
+    protected boolean alterTableAfterNameRest(SQLAlterTableStatement stmt) {
+        if (lexer.identifierEquals(Constants.RECOVER)) {
+            lexer.nextToken();
+            acceptIdentifier("PARTITIONS");
+            stmt.addItem(new SQLAlterTableRecoverPartitions());
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean alterTableSetRest(SQLAlterTableStatement stmt) {
+        if (lexer.identifierEquals("FILEFORMAT")) {
+            lexer.nextToken();
+            SQLAlterTableSetFileFormat item = new SQLAlterTableSetFileFormat();
+            item.setValue(this.exprParser.primary());
+            stmt.addItem(item);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void parseCreateTableSupportSchema() {
+        if (lexer.token() == Token.SCHEMA) {
+            lexer.nextToken();
+        } else {
+            accept(Token.DATABASE);
+        }
+    }
+
+    @Override
+    protected boolean parseAlterTableAddColumnBefore() {
+        if (lexer.identifierEquals("COLUMNS")) {
+            lexer.nextToken();
+            if (lexer.token() == LPAREN) {
+                lexer.nextToken();
+                return true;
+            }
+        } else if (lexer.token() == LPAREN) {
+            lexer.nextToken();
+            return true;
+        }
+        return false;
     }
 }

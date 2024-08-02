@@ -240,17 +240,38 @@ public class OdpsLexer extends HiveLexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.lexerSettings.setEnableScanSQLTypeBlockComment(true);
-        this.lexerSettings.setEnableScanSQLTypeWithSemi(true);
-        this.lexerSettings.setEnableScanSQLTypeWithFunction(true);
-        this.lexerSettings.setEnableScanSQLTypeWithBegin(true);
-        this.lexerSettings.setEnableScanSQLTypeWithAt(true);
-        this.lexerSettings.setEnableScanVariableAt(true);
-        this.lexerSettings.setEnableScanVariableMoveToSemi(true);
-        this.lexerSettings.setEnableScanVariableSkipIdentifiers(true);
-        this.lexerSettings.setEnableScanNumberPrefixB(false);
-        this.lexerSettings.setEnableScanNumberCommonProcess(false);
-        this.lexerSettings.setEnableScanAliasU(false);
-        this.lexerSettings.setEnableScanHiveCommentDoubleSpace(true);
+        this.settings.setEnableScanSQLTypeBlockComment(true);
+        this.settings.setEnableScanSQLTypeWithSemi(true);
+        this.settings.setEnableScanSQLTypeWithFunction(true);
+        this.settings.setEnableScanSQLTypeWithBegin(true);
+        this.settings.setEnableScanSQLTypeWithAt(true);
+        this.settings.setEnableScanVariableAt(true);
+        this.settings.setEnableScanVariableMoveToSemi(true);
+        this.settings.setEnableScanVariableSkipIdentifiers(true);
+        this.settings.setEnableScanNumberPrefixB(false);
+        this.settings.setEnableScanNumberCommonProcess(false);
+        this.settings.setEnableScanAliasU(false);
+        this.settings.setEnableScanHiveCommentDoubleSpace(true);
+        this.settings.setEnableAcceptUnion(false);
+        this.settings.setEnableQueryRestSemi(true);
+        this.settings.setEnableJoinAt(true);
+        this.settings.setEnableUDJ(true);
+        this.settings.setEnableTwoConsecutiveUnion(true);
+        this.settings.setEnableRewriteGroupByCubeRollupToFunction(true);
+        this.settings.setEnablePrimaryTwoConsecutiveSet(true);
+        this.settings.setEnableParseAllIdentifier(true);
+        this.settings.setEnablePrimaryRestCommaAfterLparen(true);
+        this.settings.setEnableInRestSpecificOperation(true);
+        this.settings.setEnableParseAssignItemEqSemiReturn(true);
+        this.settings.setEnableParseAssignItemEqeq(true);
+        this.settings.setEnableParseStatementListSelectUnsupportedSyntax(false);
+        this.settings.setEnableParseStatementListLparenContinue(true);
+        this.settings.setEnableParseRevokeFromUser(true);
+        this.settings.setEnableParseCreateSql(true);
+        this.settings.setEnableTableAliasConnectWhere(true);
+        this.settings.setEnableTableAliasTable(true);
+        this.settings.setEnableTableAliasBetween(true);
+        this.settings.setEnableTableAliasRest(true);
+        this.settings.setEnableAliasLiteralFloat(true);
     }
 }

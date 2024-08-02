@@ -50,4 +50,12 @@ public class SparkLexer extends HiveLexer {
         super(input);
         dbType = DbType.spark;
     }
+
+    @Override
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.settings.setEnableQueryTable(true);
+        this.settings.setEnableParseSelectItemPrefixX(true);
+        this.settings.setEnableJoinRightTableFrom(false);
+    }
 }

@@ -257,6 +257,8 @@ public class PGLexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.lexerSettings.setEnableScanVariableGreaterThan(true);
+        this.settings.setEnableScanVariableGreaterThan(true);
+        this.settings.setEnableSQLDateExpr(true);
+        this.settings.setEnableParseStatementListWhen(true);
     }
 }

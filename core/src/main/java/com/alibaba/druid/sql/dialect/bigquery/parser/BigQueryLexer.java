@@ -133,4 +133,10 @@ public class BigQueryLexer extends Lexer {
         }
         super.scanAlias();
     }
+
+    @Override
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.settings.setEnableSQLDateExpr(true);
+    }
 }

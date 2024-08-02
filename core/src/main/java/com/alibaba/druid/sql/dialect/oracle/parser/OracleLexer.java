@@ -396,6 +396,11 @@ public class OracleLexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.lexerSettings.setEnableScanSQLTypeWithBegin(true);
+        this.settings.setEnableScanSQLTypeWithBegin(true);
+        this.settings.setEnableSQLDateExpr(true);
+        this.settings.setEnableSQLTimestampExpr(false);
+        this.settings.setEnablePrimaryVariantColon(true);
+        this.settings.setEnableCreateTableBodySupplemental(true);
+        this.settings.setEnableAsCommaFrom(true);
     }
 }

@@ -42,4 +42,10 @@ public class PrestoLexer extends Lexer {
             config(feature, true);
         }
     }
+
+    @Override
+    protected void initLexerSettings() {
+        super.initLexerSettings();
+        this.settings.setEnableSQLDateExpr(true);
+    }
 }

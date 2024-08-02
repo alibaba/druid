@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.SQLPartitionByRange;
 import com.alibaba.druid.sql.ast.SQLPartitionOf;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -189,6 +190,16 @@ public class PGCreateTableParser extends SQLCreateTableParser {
             return partitionOf;
         } else {
             throw new ParserException("TODO " + lexer.info());
+        }
+    }
+
+    @Override
+    protected void parseCreateTableRestWith(SQLCreateTableStatement stmt) {
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            parseAssignItems(stmt.getTableOptions(), stmt, false);
+            accept(Token.RPAREN);
         }
     }
 }

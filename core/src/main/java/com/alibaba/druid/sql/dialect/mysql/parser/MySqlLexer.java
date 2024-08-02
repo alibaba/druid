@@ -953,7 +953,21 @@ public class MySqlLexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.lexerSettings.setEnableNextTokenPrefixN(true);
-        this.lexerSettings.setEnableScanString2PutDoubleBackslash(true);
+        this.settings.setEnableNextTokenPrefixN(true);
+        this.settings.setEnableScanString2PutDoubleBackslash(true);
+        this.settings.setEnableJoinRightTableWith(true);
+        this.settings.setEnablePostNaturalJoin(true);
+        this.settings.setEnableMultipleJoinOn(true);
+        this.settings.setEnableGroupByPostDesc(true);
+        this.settings.setEnableGroupByItemOrder(true);
+        this.settings.setEnableSQLDateExpr(true);
+        this.settings.setEnablePrimaryLbraceOdbcEscape(true);
+        this.settings.setEnableAdditiveRestPipesAsConcat(false);
+        this.settings.setEnableParseSelectItemPrefixX(true);
+        this.settings.setEnableParseStatementListUpdatePlanCache(true);
+        this.settings.setEnableParseStatementListRollbackReturn(true);
+        this.settings.setEnableParseStatementListCommitReturn(true);
+        this.settings.setEnableParseDropTableTables(true);
+        this.settings.setEnableAsSequence(true);
     }
 }

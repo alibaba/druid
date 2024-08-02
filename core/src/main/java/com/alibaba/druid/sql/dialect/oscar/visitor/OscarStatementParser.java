@@ -282,7 +282,7 @@ public class OscarStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OscarDropSchemaStatement parseDropSchema() {
+    public OscarDropSchemaStatement parseDropSchema(boolean physical) {
         OscarDropSchemaStatement stmt = new OscarDropSchemaStatement();
 
         if (lexer.token() == Token.SCHEMA) {
