@@ -124,7 +124,7 @@ public class DialectFeature {
 
         EnableScanNumberPrefixB(1L << 10),
 
-        EnableScanNumberCommonProcess(1 << 11),
+        EnableScanNumberCommonProcess(1L << 11),
 
         EnableScanVariableAt(1L << 12),
 
