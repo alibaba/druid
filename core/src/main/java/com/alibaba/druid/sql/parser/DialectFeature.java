@@ -102,41 +102,45 @@ public class DialectFeature {
     }
 
     public enum LexerFeature {
-        EnableScanSQLTypeBlockComment(1),
+        EnableScanSQLTypeBlockComment(1L),
 
-        EnableScanSQLTypeWithSemi(1 << 1),
+        EnableScanSQLTypeWithSemi(1L << 1),
 
-        EnableScanSQLTypeWithFrom(1 << 2),
+        EnableScanSQLTypeWithFrom(1L << 2),
 
-        EnableScanSQLTypeWithFunction(1 << 3),
+        EnableScanSQLTypeWithFunction(1L << 3),
 
-        EnableScanSQLTypeWithBegin(1 << 4),
+        EnableScanSQLTypeWithBegin(1L << 4),
 
-        EnableScanSQLTypeWithAt(1 << 4),
+        EnableScanSQLTypeWithAt(1L << 5),
 
-        EnableNextTokenColon(1 << 5),
+        EnableNextTokenColon(1L << 6),
 
-        EnableNextTokenPrefixN(1 << 6),
+        EnableNextTokenPrefixN(1L << 7),
 
-        EnableScanString2PutDoubleBackslash(1 << 7),
+        EnableScanString2PutDoubleBackslash(1L << 8),
 
-        EnableScanAliasU(1 << 8),
+        EnableScanAliasU(1L << 9),
 
-        EnableScanNumberPrefixB(1 << 9),
+        EnableScanNumberPrefixB(1L << 10),
 
-        EnableScanNumberCommonProcess(1 << 10),
+        EnableScanNumberCommonProcess(1 << 11),
 
-        EnableScanVariableAt(1 << 11),
+        EnableScanVariableAt(1L << 12),
 
-        EnableScanVariableGreaterThan(1 << 12),
+        EnableScanVariableGreaterThan(1L << 13),
 
-        EnableScanVariableSkipIdentifiers(1 << 13),
+        EnableScanVariableSkipIdentifiers(1L << 14),
 
-        EnableScanVariableMoveToSemi(1 << 14),
+        EnableScanVariableMoveToSemi(1L << 15),
 
-        EnableScanHiveCommentDoubleSpace(1 << 15);
+        EnableScanHiveCommentDoubleSpace(1L << 16);
 
         private final long mask;
+
+        public long getMask() {
+            return mask;
+        }
 
         LexerFeature(long mask) {
             this.mask = mask;
@@ -274,6 +278,10 @@ public class DialectFeature {
 
         ParserFeature(long mask) {
             this.mask = mask;
+        }
+
+        public long getMask() {
+            return mask;
         }
 
         public boolean isEnabled(long features) {
