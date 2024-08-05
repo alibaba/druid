@@ -396,11 +396,11 @@ public class OracleLexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.settings.setEnableScanSQLTypeWithBegin(true);
-        this.settings.setEnableSQLDateExpr(true);
-        this.settings.setEnableSQLTimestampExpr(false);
-        this.settings.setEnablePrimaryVariantColon(true);
-        this.settings.setEnableCreateTableBodySupplemental(true);
-        this.settings.setEnableAsCommaFrom(true);
+        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithBegin, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLDateExpr, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLTimestampExpr, false);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnablePrimaryVariantColon, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableCreateTableBodySupplemental, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsCommaFrom, true);
     }
 }

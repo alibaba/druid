@@ -540,7 +540,7 @@ public class SQLExprParser extends SQLParser {
                     sqlExpr = cast;
                 } else if (hash_lower == FnvHash.Constants.DATE
                         && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
-                        && (this.lexer.settings.isEnableSQLDateExpr())) {
+                        && (this.lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableSQLDateExpr))) {
                     String literal = lexer.token == Token.LITERAL_CHARS ? lexer.stringVal() : "?";
                     lexer.nextToken();
                     SQLDateExpr dateExpr = new SQLDateExpr();
@@ -548,7 +548,7 @@ public class SQLExprParser extends SQLParser {
                     sqlExpr = dateExpr;
                 } else if (hash_lower == FnvHash.Constants.TIMESTAMP
                         && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
-                        && this.lexer.settings.isEnableSQLTimestampExpr()) {
+                        && this.lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableSQLTimestampExpr)) {
                     SQLTimestampExpr dateExpr = new SQLTimestampExpr(lexer.stringVal());
                     lexer.nextToken();
                     sqlExpr = dateExpr;
@@ -645,7 +645,7 @@ public class SQLExprParser extends SQLParser {
                 String varName = lexer.stringVal();
                 lexer.nextToken();
 
-                if (varName.equals(":") && lexer.token == Token.IDENTIFIER && this.lexer.settings.isEnablePrimaryVariantColon()) {
+                if (varName.equals(":") && lexer.token == Token.IDENTIFIER && this.lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnablePrimaryVariantColon)) {
                     String part2 = lexer.stringVal();
                     lexer.nextToken();
                     varName += part2;
@@ -1074,7 +1074,7 @@ public class SQLExprParser extends SQLParser {
                 );
                 break;
             case BANGBANG: {
-                if (!this.lexer.settings.isEnablePrimaryBangBangSupport()) {
+                if (!this.lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnablePrimaryBangBangSupport)) {
                     throw new ParserException(lexer.info());
                 }
                 lexer.nextToken();
@@ -1141,7 +1141,7 @@ public class SQLExprParser extends SQLParser {
             case SET: {
                 Lexer.SavePoint savePoint = lexer.mark();
                 lexer.nextToken();
-                if (lexer.token == Token.SET && this.lexer.settings.isEnablePrimaryTwoConsecutiveSet()) {
+                if (lexer.token == Token.SET && this.lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnablePrimaryTwoConsecutiveSet)) {
                     lexer.nextToken();
                 }
                 if (lexer.token() == Token.LPAREN) {
@@ -1182,7 +1182,7 @@ public class SQLExprParser extends SQLParser {
                 } else if (lexer.identifierEquals(FnvHash.Constants.FN)) {
                     lexer.nextToken();
                     sqlExpr = this.expr();
-                } else if (this.lexer.settings.isEnablePrimaryLbraceOdbcEscape()) {
+                } else if (this.lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnablePrimaryLbraceOdbcEscape)) {
                     sqlExpr = this.expr(); // {identifier expr} is ODBC escape syntax and is accepted for ODBC compatibility.
                 } else {
                     throw new ParserException("ERROR. " + lexer.info());
@@ -1305,7 +1305,7 @@ public class SQLExprParser extends SQLParser {
             case LIMIT:
                 return new SQLIdentifierExpr(str);
             case IDENTIFIER:
-                if (this.lexer.settings.isEnableParseAllIdentifier()) {
+                if (this.lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableParseAllIdentifier)) {
                     return new SQLIdentifierExpr(str);
                 }
                 break;
@@ -1563,7 +1563,7 @@ public class SQLExprParser extends SQLParser {
                 if (lexer.token == Token.LPAREN) {
                     lexer.nextToken();
 
-                    if (lexer.token == Token.COMMA && this.lexer.settings.isEnablePrimaryRestCommaAfterLparen()) {
+                    if (lexer.token == Token.COMMA && this.lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnablePrimaryRestCommaAfterLparen)) {
                         lexer.nextToken();
                     }
 
@@ -3112,7 +3112,7 @@ public class SQLExprParser extends SQLParser {
 
                         if (item instanceof SQLCharExpr
                                 && lexer.token == Token.LITERAL_CHARS
-                                && lexer.settings.isEnableInRestSpecificOperation()
+                                && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableInRestSpecificOperation)
                         ) {
                             continue;
                         }
@@ -3120,7 +3120,7 @@ public class SQLExprParser extends SQLParser {
                         if (lexer.token == Token.COMMA) {
                             lexer.nextTokenValue();
 
-                            if (lexer.token == Token.RPAREN && lexer.settings.isEnableInRestSpecificOperation()) {
+                            if (lexer.token == Token.RPAREN && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableInRestSpecificOperation)) {
                                 break;
                             }
                             continue;
@@ -3265,7 +3265,7 @@ public class SQLExprParser extends SQLParser {
 
             operator = SQLBinaryOperator.Add;
         } else if ((token == Token.BARBAR || token == Token.CONCAT)
-                && (isEnabled(SQLParserFeature.PipesAsConcat) || lexer.settings.isEnableAdditiveRestPipesAsConcat())) {
+                && (isEnabled(SQLParserFeature.PipesAsConcat) || lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableAdditiveRestPipesAsConcat))) {
             lexer.nextToken();
             operator = SQLBinaryOperator.Concat;
         } else if (token == Token.SUB) {
@@ -5172,22 +5172,22 @@ public class SQLExprParser extends SQLParser {
             item.setValue(new SQLIdentifierExpr("ON"));
             return item;
         } else if ((lexer.token == Token.RPAREN || lexer.token == Token.COMMA || lexer.token == Token.SET)
-                && lexer.settings.isEnableParseAssignItemRparenCommaSetReturn()) {
+                && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableParseAssignItemRparenCommaSetReturn)) {
             return item;
         } else {
             if (lexer.token == Token.EQ) {
                 parseAssignItemEq(parent);
-                if (lexer.token == Token.SEMI && lexer.settings.isEnableParseAssignItemEqSemiReturn()) {
+                if (lexer.token == Token.SEMI && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableParseAssignItemEqSemiReturn)) {
                     return item;
                 }
-            } else if (lexer.settings.isEnableParseAssignItemSkip()
+            } else if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableParseAssignItemSkip)
                     || lexer.token == Token.QUES
                     || lexer.token == Token.LITERAL_CHARS
                     || lexer.token == Token.LITERAL_ALIAS
                     || lexer.identifierEquals("utf8mb4")
             ) {
                 // skip
-            } else if (lexer.token == Token.EQEQ && lexer.settings.isEnableParseAssignItemEqeq()) {
+            } else if (lexer.token == Token.EQEQ && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableParseAssignItemEqeq)) {
                 lexer.nextToken();
             } else {
                 accept(Token.EQ);
@@ -5569,7 +5569,7 @@ public class SQLExprParser extends SQLParser {
         Token token = lexer.token;
         int startPos = lexer.startPos;
         if (token == Token.IDENTIFIER
-                && !(lexer.hashLCase() == -5808529385363204345L && lexer.charAt(lexer.pos) == '\'' && (lexer.settings.isEnableParseSelectItemPrefixX())) // x'123' X'123'
+                && !(lexer.hashLCase() == -5808529385363204345L && lexer.charAt(lexer.pos) == '\'' && (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableParseSelectItemPrefixX))) // x'123' X'123'
         ) {
             int sourceLine = -1, sourceColumn = -1;
             if (lexer.isKeepSourceLocation()) {
@@ -5593,7 +5593,7 @@ public class SQLExprParser extends SQLParser {
             } else if (FnvHash.Constants.DATE == hash_lower
                     && lexer.stringVal().charAt(0) != '`'
                     && lexer.token == Token.LITERAL_CHARS
-                    && (this.lexer.settings.isEnableSQLDateExpr())
+                    && (this.lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableSQLDateExpr))
             ) {
                 String literal = lexer.stringVal();
                 lexer.nextToken();
@@ -6066,7 +6066,7 @@ public class SQLExprParser extends SQLParser {
             limit.setRowCount(temp);
         }
 
-        if (lexer.token == Token.BY && lexer.settings.isEnableParseLimitBy()) {
+        if (lexer.token == Token.BY && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableParseLimitBy)) {
             lexer.nextToken();
 
             for (; ; ) {

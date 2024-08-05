@@ -953,21 +953,21 @@ public class MySqlLexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.settings.setEnableNextTokenPrefixN(true);
-        this.settings.setEnableScanString2PutDoubleBackslash(true);
-        this.settings.setEnableJoinRightTableWith(true);
-        this.settings.setEnablePostNaturalJoin(true);
-        this.settings.setEnableMultipleJoinOn(true);
-        this.settings.setEnableGroupByPostDesc(true);
-        this.settings.setEnableGroupByItemOrder(true);
-        this.settings.setEnableSQLDateExpr(true);
-        this.settings.setEnablePrimaryLbraceOdbcEscape(true);
-        this.settings.setEnableAdditiveRestPipesAsConcat(false);
-        this.settings.setEnableParseSelectItemPrefixX(true);
-        this.settings.setEnableParseStatementListUpdatePlanCache(true);
-        this.settings.setEnableParseStatementListRollbackReturn(true);
-        this.settings.setEnableParseStatementListCommitReturn(true);
-        this.settings.setEnableParseDropTableTables(true);
-        this.settings.setEnableAsSequence(true);
+        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableNextTokenPrefixN, true);
+        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanString2PutDoubleBackslash, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinRightTableWith, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnablePostNaturalJoin, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableMultipleJoinOn, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableGroupByPostDesc, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableGroupByItemOrder, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLDateExpr, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnablePrimaryLbraceOdbcEscape, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAdditiveRestPipesAsConcat, false);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseSelectItemPrefixX, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseStatementListUpdatePlanCache, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseStatementListRollbackReturn, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseStatementListCommitReturn, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseDropTableTables, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsSequence, true);
     }
 }

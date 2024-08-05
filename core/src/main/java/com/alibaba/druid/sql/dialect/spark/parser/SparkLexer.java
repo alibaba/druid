@@ -6,6 +6,7 @@ package com.alibaba.druid.sql.dialect.spark.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -54,8 +55,8 @@ public class SparkLexer extends HiveLexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.settings.setEnableQueryTable(true);
-        this.settings.setEnableParseSelectItemPrefixX(true);
-        this.settings.setEnableJoinRightTableFrom(false);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableQueryTable, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseSelectItemPrefixX, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinRightTableFrom, true);
     }
 }

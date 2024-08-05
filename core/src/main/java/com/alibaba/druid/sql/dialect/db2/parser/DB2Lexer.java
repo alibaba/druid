@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -59,6 +60,6 @@ public class DB2Lexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.settings.setEnableParseAssignItemSkip(true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseAssignItemSkip, true);
     }
 }

@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -55,10 +56,10 @@ public class CKLexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.settings.setEnableAsofJoin(true);
-        this.settings.setEnableGlobalJoin(true);
-        this.settings.setEnableJoinRightTableAlias(true);
-        this.settings.setEnableParseLimitBy(true);
-        this.settings.setEnableTableAliasAsof(true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsofJoin, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableGlobalJoin, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinRightTableAlias, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseLimitBy, true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableTableAliasAsof, true);
     }
 }

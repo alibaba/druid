@@ -93,7 +93,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             for (; ; ) {
                 Token token = lexer.token;
                 if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
-                        && lexer.settings.isEnableCreateTableBodySupplemental()) {
+                        && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableCreateTableBodySupplemental)) {
                     SQLTableElement element = this.parseCreateTableSupplementalLoggingProps();
                     element.setParent(createTable);
                     createTable.getTableElementList().add(element);

@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.presto.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -46,6 +47,6 @@ public class PrestoLexer extends Lexer {
     @Override
     protected void initLexerSettings() {
         super.initLexerSettings();
-        this.settings.setEnableSQLDateExpr(true);
+        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLDateExpr, true);
     }
 }
