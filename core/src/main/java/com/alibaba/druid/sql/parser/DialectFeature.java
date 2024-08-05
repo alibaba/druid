@@ -7,54 +7,78 @@ public class DialectFeature {
 
     public DialectFeature() {
         lexerFeature = 0L;
-        configFeature(LexerFeature.EnableScanNumberPrefixB, true);
-        configFeature(LexerFeature.EnableScanNumberCommonProcess, true);
-
         parserFeature = 0L;
-        configFeature(ParserFeature.EnableAcceptUnion, true);
-        configFeature(ParserFeature.EnableSQLTimestampExpr, true);
-        configFeature(ParserFeature.EnablePrimaryBangBangSupport, true);
-        configFeature(ParserFeature.EnableAdditiveRestPipesAsConcat, true);
-        configFeature(ParserFeature.EnableParseStatementListSelectUnsupportedSyntax, true);
+        configFeature(
+                LexerFeature.ScanNumberPrefixB,
+                LexerFeature.ScanNumberCommonProcess,
+                ParserFeature.AcceptUnion,
+                ParserFeature.SQLTimestampExpr,
+                ParserFeature.PrimaryBangBangSupport,
+                ParserFeature.AdditiveRestPipesAsConcat,
+                ParserFeature.ParseStatementListSelectUnsupportedSyntax
+        );
     }
 
-    public void configFeature(LexerFeature feature, boolean state) {
-        this.lexerFeature = feature.config(this.lexerFeature, state);
+    public void configFeature(Feature feature, boolean state) {
+        if (feature instanceof LexerFeature) {
+            this.lexerFeature = feature.config(this.lexerFeature, state);
+        } else if (feature instanceof ParserFeature) {
+            this.parserFeature = feature.config(this.parserFeature, state);
+        } else {
+            throw new ParserException("Unsupported feature type.");
+        }
     }
 
-    public void configFeature(ParserFeature feature, boolean state) {
-        this.parserFeature = feature.config(this.parserFeature, state);
+    public void configFeature(Feature... features) {
+        for (Feature feature : features) {
+            configFeature(feature, true);
+        }
     }
 
-    public boolean isEnabled(LexerFeature feature) {
-        return feature.isEnabled(this.lexerFeature);
+    public void unconfigFeature(Feature... features) {
+        for (Feature feature : features) {
+            configFeature(feature, false);
+        }
     }
 
-    public boolean isEnabled(ParserFeature feature) {
-        return feature.isEnabled(this.parserFeature);
+    public boolean isEnabled(Feature feature) {
+        if (feature instanceof LexerFeature) {
+            return feature.isEnabled(this.lexerFeature);
+        } else if (feature instanceof ParserFeature) {
+            return feature.isEnabled(this.parserFeature);
+        } else {
+            throw new ParserException("Unsupported feature type.");
+        }
     }
 
-    public enum LexerFeature {
-        EnableScanSQLTypeBlockComment(1L),
-        EnableScanSQLTypeWithSemi(1L << 1),
-        EnableScanSQLTypeWithFrom(1L << 2),
-        EnableScanSQLTypeWithFunction(1L << 3),
-        EnableScanSQLTypeWithBegin(1L << 4),
-        EnableScanSQLTypeWithAt(1L << 5),
-        EnableNextTokenColon(1L << 6),
-        EnableNextTokenPrefixN(1L << 7),
-        EnableScanString2PutDoubleBackslash(1L << 8),
-        EnableScanAliasU(1L << 9),
-        EnableScanNumberPrefixB(1L << 10),
-        EnableScanNumberCommonProcess(1L << 11),
-        EnableScanVariableAt(1L << 12),
-        EnableScanVariableGreaterThan(1L << 13),
-        EnableScanVariableSkipIdentifiers(1L << 14),
-        EnableScanVariableMoveToSemi(1L << 15),
-        EnableScanHiveCommentDoubleSpace(1L << 16);
+    public interface Feature {
+        boolean isEnabled(long features);
+        long config(long features, boolean state);
+        long getMask();
+    }
+
+    public enum LexerFeature implements Feature {
+        ScanSQLTypeBlockComment(1L),
+        ScanSQLTypeWithSemi(1L << 1),
+        ScanSQLTypeWithFrom(1L << 2),
+        ScanSQLTypeWithFunction(1L << 3),
+        ScanSQLTypeWithBegin(1L << 4),
+        ScanSQLTypeWithAt(1L << 5),
+        NextTokenColon(1L << 6),
+        NextTokenPrefixN(1L << 7),
+        ScanString2PutDoubleBackslash(1L << 8),
+        ScanAliasU(1L << 9),
+        ScanNumberPrefixB(1L << 10),
+        ScanNumberCommonProcess(1L << 11),
+        ScanVariableAt(1L << 12),
+        ScanVariableGreaterThan(1L << 13),
+        ScanVariableSkipIdentifiers(1L << 14),
+        ScanVariableMoveToSemi(1L << 15),
+        ScanHiveCommentDoubleSpace(1L << 16);
 
         private final long mask;
 
+        @Override
         public long getMask() {
             return mask;
         }
@@ -63,10 +87,12 @@ public class DialectFeature {
             this.mask = mask;
         }
 
+        @Override
         public boolean isEnabled(long features) {
             return (features & mask) != 0;
         }
 
+        @Override
         public long config(long features, boolean state) {
             if (state) {
                 features |= this.mask;
@@ -78,63 +104,63 @@ public class DialectFeature {
         }
     }
 
-    public enum ParserFeature {
-        EnableAcceptUnion(1L),
-        EnableQueryRestSemi(1L << 1),
-        EnableAsofJoin(1L << 2),
-        EnableGlobalJoin(1L << 3),
-        EnableJoinAt(1L << 4),
-        EnableJoinRightTableWith(1L << 5),
-        EnableJoinRightTableFrom(1L << 6),
-        EnableJoinRightTableAlias(1L << 7),
-        EnablePostNaturalJoin(1L << 8),
-        EnableMultipleJoinOn(1L << 9),
-        EnableUDJ(1L << 10),
-        EnableTwoConsecutiveUnion(1L << 11),
-        EnableQueryTable(1L << 12),
-        EnableGroupByAll(1L << 13),
-        EnableRewriteGroupByCubeRollupToFunction(1L << 14),
-        EnableGroupByPostDesc(1L << 15),
-        EnableGroupByItemOrder(1L << 16),
-        EnableSQLDateExpr(1L << 17),
-        EnableSQLTimestampExpr(1L << 18),
-        EnablePrimaryVariantColon(1L << 19),
-        EnablePrimaryBangBangSupport(1L << 20),
-        EnablePrimaryTwoConsecutiveSet(1L << 21),
-        EnablePrimaryLbraceOdbcEscape(1L << 22),
-        EnableParseAllIdentifier(1L << 23),
-        EnablePrimaryRestCommaAfterLparen(1L << 24),
-        EnableInRestSpecificOperation(1L << 25),
-        EnableAdditiveRestPipesAsConcat(1L << 26),
-        EnableParseAssignItemRparenCommaSetReturn(1L << 27),
-        EnableParseAssignItemEqSemiReturn(1L << 28),
-        EnableParseAssignItemSkip(1L << 29),
-        EnableParseAssignItemEqeq(1L << 30),
-        EnableParseSelectItemPrefixX(1L << 31),
-        EnableParseLimitBy(1L << 32),
-        EnableParseStatementListWhen(1L << 33),
-        EnableParseStatementListSelectUnsupportedSyntax(1L << 34),
-        EnableParseStatementListUpdatePlanCache(1L << 35),
-        EnableParseStatementListRollbackReturn(1L << 36),
-        EnableParseStatementListCommitReturn(1L << 37),
-        EnableParseStatementListLparenContinue(1L << 38),
-        EnableParseRevokeFromUser(1L << 39),
-        EnableParseDropTableTables(1L << 40),
-        EnableParseCreateSql(1L << 41),
-        EnableCreateTableBodySupplemental(1L << 42),
-        EnableTableAliasConnectWhere(1L << 43),
-        EnableTableAliasAsof(1L << 44),
-        EnableTableAliasLock(1L << 45),
-        EnableTableAliasPartition(1L << 46),
-        EnableTableAliasTable(1L << 47),
-        EnableTableAliasBetween(1L << 48),
-        EnableTableAliasRest(1L << 49),
-        EnableAsCommaFrom(1L << 50),
-        EnableAsSkip(1L << 51),
-        EnableAsSequence(1L << 52),
-        EnableAsDatabase(1L << 53),
-        EnableAsDefault(1L << 54),
-        EnableAliasLiteralFloat(1L << 55);
+    public enum ParserFeature implements Feature {
+        AcceptUnion(1L),
+        QueryRestSemi(1L << 1),
+        AsofJoin(1L << 2),
+        GlobalJoin(1L << 3),
+        JoinAt(1L << 4),
+        JoinRightTableWith(1L << 5),
+        JoinRightTableFrom(1L << 6),
+        JoinRightTableAlias(1L << 7),
+        PostNaturalJoin(1L << 8),
+        MultipleJoinOn(1L << 9),
+        UDJ(1L << 10),
+        TwoConsecutiveUnion(1L << 11),
+        QueryTable(1L << 12),
+        GroupByAll(1L << 13),
+        RewriteGroupByCubeRollupToFunction(1L << 14),
+        GroupByPostDesc(1L << 15),
+        GroupByItemOrder(1L << 16),
+        SQLDateExpr(1L << 17),
+        SQLTimestampExpr(1L << 18),
+        PrimaryVariantColon(1L << 19),
+        PrimaryBangBangSupport(1L << 20),
+        PrimaryTwoConsecutiveSet(1L << 21),
+        PrimaryLbraceOdbcEscape(1L << 22),
+        ParseAllIdentifier(1L << 23),
+        PrimaryRestCommaAfterLparen(1L << 24),
+        InRestSpecificOperation(1L << 25),
+        AdditiveRestPipesAsConcat(1L << 26),
+        ParseAssignItemRparenCommaSetReturn(1L << 27),
+        ParseAssignItemEqSemiReturn(1L << 28),
+        ParseAssignItemSkip(1L << 29),
+        ParseAssignItemEqeq(1L << 30),
+        ParseSelectItemPrefixX(1L << 31),
+        ParseLimitBy(1L << 32),
+        ParseStatementListWhen(1L << 33),
+        ParseStatementListSelectUnsupportedSyntax(1L << 34),
+        ParseStatementListUpdatePlanCache(1L << 35),
+        ParseStatementListRollbackReturn(1L << 36),
+        ParseStatementListCommitReturn(1L << 37),
+        ParseStatementListLparenContinue(1L << 38),
+        ParseRevokeFromUser(1L << 39),
+        ParseDropTableTables(1L << 40),
+        ParseCreateSql(1L << 41),
+        CreateTableBodySupplemental(1L << 42),
+        TableAliasConnectWhere(1L << 43),
+        TableAliasAsof(1L << 44),
+        TableAliasLock(1L << 45),
+        TableAliasPartition(1L << 46),
+        TableAliasTable(1L << 47),
+        TableAliasBetween(1L << 48),
+        TableAliasRest(1L << 49),
+        AsCommaFrom(1L << 50),
+        AsSkip(1L << 51),
+        AsSequence(1L << 52),
+        AsDatabase(1L << 53),
+        AsDefault(1L << 54),
+        AliasLiteralFloat(1L << 55);
 
         private final long mask;
 
@@ -142,14 +168,17 @@ public class DialectFeature {
             this.mask = mask;
         }
 
+        @Override
         public long getMask() {
             return mask;
         }
 
+        @Override
         public boolean isEnabled(long features) {
             return (features & mask) != 0;
         }
 
+        @Override
         public long config(long features, boolean state) {
             if (state) {
                 features |= this.mask;

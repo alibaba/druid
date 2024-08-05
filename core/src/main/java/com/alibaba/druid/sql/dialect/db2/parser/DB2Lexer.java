@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
-import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -23,6 +22,8 @@ import com.alibaba.druid.sql.parser.Token;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.ParseAssignItemSkip;
 
 public class DB2Lexer extends Lexer {
     @Override
@@ -60,6 +61,6 @@ public class DB2Lexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseAssignItemSkip, true);
+        this.dialectFeature.configFeature(ParseAssignItemSkip);
     }
 }

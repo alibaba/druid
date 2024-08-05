@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OdpsLexer extends HiveLexer {
@@ -240,39 +242,42 @@ public class OdpsLexer extends HiveLexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeBlockComment, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithSemi, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithFunction, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithBegin, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithAt, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanVariableAt, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanVariableMoveToSemi, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanVariableSkipIdentifiers, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanNumberPrefixB, false);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanNumberCommonProcess, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanAliasU, false);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanHiveCommentDoubleSpace, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAcceptUnion, false);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableQueryRestSemi, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinAt, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableUDJ, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableTwoConsecutiveUnion, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableRewriteGroupByCubeRollupToFunction, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnablePrimaryTwoConsecutiveSet, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseAllIdentifier, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnablePrimaryRestCommaAfterLparen, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableInRestSpecificOperation, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseAssignItemEqSemiReturn, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseAssignItemEqeq, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseStatementListSelectUnsupportedSyntax,
-                false);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseStatementListLparenContinue, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseRevokeFromUser, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseCreateSql, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableTableAliasConnectWhere, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableTableAliasTable, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableTableAliasBetween, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableTableAliasRest, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAliasLiteralFloat, true);
+        this.dialectFeature.configFeature(
+                ScanSQLTypeBlockComment,
+                ScanSQLTypeWithSemi,
+                ScanSQLTypeWithFunction,
+                ScanSQLTypeWithBegin,
+                ScanSQLTypeWithAt,
+                ScanVariableAt,
+                ScanVariableMoveToSemi,
+                ScanVariableSkipIdentifiers,
+                ScanNumberCommonProcess,
+                ScanHiveCommentDoubleSpace,
+                QueryRestSemi,
+                JoinAt,
+                UDJ,
+                TwoConsecutiveUnion,
+                RewriteGroupByCubeRollupToFunction,
+                PrimaryTwoConsecutiveSet,
+                ParseAllIdentifier,
+                PrimaryRestCommaAfterLparen,
+                InRestSpecificOperation,
+                ParseAssignItemEqSemiReturn,
+                ParseAssignItemEqeq,
+                ParseStatementListLparenContinue,
+                ParseRevokeFromUser,
+                ParseCreateSql,
+                TableAliasConnectWhere,
+                TableAliasTable,
+                TableAliasBetween,
+                TableAliasRest,
+                AliasLiteralFloat
+        );
+        this.dialectFeature.unconfigFeature(
+                ParseStatementListSelectUnsupportedSyntax,
+                ScanNumberPrefixB,
+                ScanAliasU,
+                AcceptUnion
+        );
     }
 }

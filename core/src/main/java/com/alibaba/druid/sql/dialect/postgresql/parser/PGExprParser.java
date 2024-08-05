@@ -231,9 +231,6 @@ public class PGExprParser extends SQLExprParser {
             sqlExpr.setParent(listExpr);
             do {
                 lexer.nextToken();
-                if (lexer.token() == Token.SET && dbType == DbType.odps) {
-                    break;
-                }
                 SQLExpr listItem = this.expr();
                 listItem.setParent(listExpr);
                 listExpr.addItem(listItem);

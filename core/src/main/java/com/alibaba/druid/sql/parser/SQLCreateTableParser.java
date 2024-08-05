@@ -25,7 +25,7 @@ import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
 
-import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.EnableCreateTableBodySupplemental;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.CreateTableBodySupplemental;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.Template;
 
 public class SQLCreateTableParser extends SQLDDLParser {
@@ -94,7 +94,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             for (; ; ) {
                 Token token = lexer.token;
                 if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
-                        && dialectFeatureEnabled(EnableCreateTableBodySupplemental)) {
+                        && dialectFeatureEnabled(CreateTableBodySupplemental)) {
                     SQLTableElement element = this.parseCreateTableSupplementalLoggingProps();
                     element.setParent(createTable);
                     createTable.getTableElementList().add(element);
@@ -176,11 +176,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
         }
     }
 
-    protected void parseCreateTableRestWith(SQLCreateTableStatement stmt) {
-    }
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
-        parseCreateTableRestWith(stmt);
-
         if (lexer.nextIf(Token.TABLESPACE)) {
             stmt.setTablespace(
                     this.exprParser.name()

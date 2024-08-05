@@ -201,14 +201,4 @@ public class PGCreateTableParser extends SQLCreateTableParser {
             throw new ParserException("TODO " + lexer.info());
         }
     }
-
-    @Override
-    protected void parseCreateTableRestWith(SQLCreateTableStatement stmt) {
-        if (lexer.token() == Token.WITH) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            parseAssignItems(stmt.getTableOptions(), stmt, false);
-            accept(Token.RPAREN);
-        }
-    }
 }

@@ -1,7 +1,6 @@
 package com.alibaba.druid.sql.dialect.bigquery.parser;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -9,6 +8,8 @@ import com.alibaba.druid.sql.parser.Token;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.SQLDateExpr;
 
 public class BigQueryLexer extends Lexer {
     @Override
@@ -138,6 +139,6 @@ public class BigQueryLexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLDateExpr, true);
+        this.dialectFeature.configFeature(SQLDateExpr);
     }
 }

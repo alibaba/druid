@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OracleLexer extends Lexer {
@@ -396,11 +398,13 @@ public class OracleLexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithBegin, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLDateExpr, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLTimestampExpr, false);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnablePrimaryVariantColon, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableCreateTableBodySupplemental, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsCommaFrom, true);
+        this.dialectFeature.configFeature(
+                ScanSQLTypeWithBegin,
+                SQLDateExpr,
+                PrimaryVariantColon,
+                CreateTableBodySupplemental,
+                AsCommaFrom
+        );
+        this.dialectFeature.unconfigFeature(SQLTimestampExpr);
     }
 }

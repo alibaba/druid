@@ -163,7 +163,7 @@ public class SQLStatementParser extends SQLParser {
                         SQLStatement stmt = statementList.get(statementList.size() - 1);
                         stmt.addAfterComment(lexer.readAndResetComments());
                     }
-                    if (END == lexer.token && dialectFeatureEnabled(EnableParseStatementListWhen)) {
+                    if (END == lexer.token && dialectFeatureEnabled(ParseStatementListWhen)) {
                         Lexer.SavePoint savePoint = lexer.mark();
                         lexer.nextToken();
                         if (lexer.token == Token.IF) {
@@ -224,7 +224,7 @@ public class SQLStatementParser extends SQLParser {
                             && statementList.size() > 0
                             && statementList.get(statementList.size() - i) instanceof MySqlHintStatement) {
                         hintStatement = (MySqlHintStatement) statementList.get(statementList.size() - i);
-                    } else if (i > 0 && dialectFeatureEnabled(EnableParseStatementListSelectUnsupportedSyntax) && !semi
+                    } else if (i > 0 && dialectFeatureEnabled(ParseStatementListSelectUnsupportedSyntax) && !semi
                             && !(statementList.size() > 0 && statementList.get(statementList.size() - i).isAfterSemi())
                     ) {
                         throw new ParserException("syntax error. " + lexer.info());
@@ -250,7 +250,7 @@ public class SQLStatementParser extends SQLParser {
                     //FOR ADS
                     Lexer.SavePoint savePoint = lexer.mark();
                     lexer.nextToken();
-                    if (dialectFeatureEnabled(EnableParseStatementListUpdatePlanCache) && lexer.identifierEquals("PLANCACHE")) {
+                    if (dialectFeatureEnabled(ParseStatementListUpdatePlanCache) && lexer.identifierEquals("PLANCACHE")) {
                         lexer.nextToken();
                         if (lexer.token == Token.SELECT) {
                             MySqlUpdatePlanCacheStatement stmt = new MySqlUpdatePlanCacheStatement();
@@ -546,7 +546,7 @@ public class SQLStatementParser extends SQLParser {
                 statementList.add(stmt);
 
                 if (parent instanceof SQLBlockStatement
-                        && dialectFeatureEnabled(EnableParseStatementListRollbackReturn)) {
+                        && dialectFeatureEnabled(ParseStatementListRollbackReturn)) {
                     return;
                 }
 
@@ -566,7 +566,7 @@ public class SQLStatementParser extends SQLParser {
                 statementList.add(stmt);
 
                 if (parent instanceof SQLBlockStatement
-                        && dialectFeatureEnabled(EnableParseStatementListCommitReturn)) {
+                        && dialectFeatureEnabled(ParseStatementListCommitReturn)) {
                     return;
                 }
 
@@ -613,7 +613,7 @@ public class SQLStatementParser extends SQLParser {
                     parenCount++;
                 } while (lexer.token == Token.LPAREN);
 
-                if (lexer.token == RPAREN && parenCount == 1 && dialectFeatureEnabled(EnableParseStatementListLparenContinue)) {
+                if (lexer.token == RPAREN && parenCount == 1 && dialectFeatureEnabled(ParseStatementListLparenContinue)) {
                     lexer.nextToken();
                     continue;
                 }
@@ -1905,7 +1905,7 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token == Token.FROM) {
             lexer.nextToken();
             for (; ; ) {
-                if (lexer.token() == Token.USER && dialectFeatureEnabled(EnableParseRevokeFromUser)) {
+                if (lexer.token() == Token.USER && dialectFeatureEnabled(ParseRevokeFromUser)) {
                     lexer.nextToken();
                 }
                 SQLExpr user = parseUser();
@@ -3154,7 +3154,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token == TABLE) {
             lexer.nextToken();
-        } else if (lexer.identifierEquals(Constants.TABLES) && dialectFeatureEnabled(EnableParseDropTableTables)) {
+        } else if (lexer.identifierEquals(Constants.TABLES) && dialectFeatureEnabled(ParseDropTableTables)) {
             lexer.nextToken();
         } else {
             throw new ParserException("expected token: TABLE.");
@@ -3957,7 +3957,7 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.identifierEquals(Constants.TABLEGROUP)) {
                     lexer.reset(mark);
                     return parseCreateTableGroup();
-                } else if (lexer.identifierEquals(Constants.SQL) && dialectFeatureEnabled(EnableParseCreateSql)) {
+                } else if (lexer.identifierEquals(Constants.SQL) && dialectFeatureEnabled(ParseCreateSql)) {
                     lexer.reset(mark);
                     return parseCreateFunction();
                 } else if (lexer.identifierEquals(Constants.DIMENSION)) {

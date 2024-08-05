@@ -6,13 +6,13 @@ package com.alibaba.druid.sql.dialect.spark.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
-import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Token;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 /**
  * @author peiheng.qph
  * @version $Id: AntsparkLexer.java, v 0.1 2018年09月14日 15:04 peiheng.qph Exp $
@@ -55,8 +55,10 @@ public class SparkLexer extends HiveLexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableQueryTable, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseSelectItemPrefixX, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinRightTableFrom, true);
+        this.dialectFeature.configFeature(
+                QueryTable,
+                ParseSelectItemPrefixX,
+                JoinRightTableFrom
+        );
     }
 }

@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
@@ -953,21 +955,25 @@ public class MySqlLexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableNextTokenPrefixN, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanString2PutDoubleBackslash, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinRightTableWith, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnablePostNaturalJoin, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableMultipleJoinOn, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableGroupByPostDesc, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableGroupByItemOrder, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLDateExpr, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnablePrimaryLbraceOdbcEscape, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAdditiveRestPipesAsConcat, false);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseSelectItemPrefixX, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseStatementListUpdatePlanCache, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseStatementListRollbackReturn, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseStatementListCommitReturn, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseDropTableTables, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsSequence, true);
+        this.dialectFeature.configFeature(
+                NextTokenPrefixN,
+                ScanString2PutDoubleBackslash,
+                JoinRightTableWith,
+                PostNaturalJoin,
+                MultipleJoinOn,
+                GroupByPostDesc,
+                GroupByItemOrder,
+                SQLDateExpr,
+                PrimaryLbraceOdbcEscape,
+                ParseSelectItemPrefixX,
+                ParseStatementListUpdatePlanCache,
+                ParseStatementListRollbackReturn,
+                ParseStatementListCommitReturn,
+                ParseDropTableTables,
+                AsSequence
+        );
+        this.dialectFeature.unconfigFeature(
+                AdditiveRestPipesAsConcat
+        );
     }
 }

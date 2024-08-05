@@ -85,7 +85,7 @@ public class SQLParser {
                 || token == Token.SELECT
                 || token == Token.FROM
                 || token == Token.WHERE) {
-            if (token == Token.WHERE && dialectFeatureEnabled(EnableTableAliasConnectWhere)) {
+            if (token == Token.WHERE && dialectFeatureEnabled(TableAliasConnectWhere)) {
                 return null;
             }
 
@@ -173,7 +173,7 @@ public class SQLParser {
                         return null;
                     }
                     return ident;
-                } else if (hash == FnvHash.Constants.ASOF && dialectFeatureEnabled(EnableTableAliasAsof)) {
+                } else if (hash == FnvHash.Constants.ASOF && dialectFeatureEnabled(TableAliasAsof)) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
                     if (lexer.token == Token.LEFT || lexer.token == Token.JOIN) {
@@ -245,14 +245,14 @@ public class SQLParser {
                 case DROP:
                 case FETCH:
                 case LOCK:
-                    if (dialectFeatureEnabled(EnableTableAliasLock)) {
+                    if (dialectFeatureEnabled(TableAliasLock)) {
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
                         return strVal;
                     }
                     break;
                 case PARTITION:
-                    if (dialectFeatureEnabled(EnableTableAliasPartition)) {
+                    if (dialectFeatureEnabled(TableAliasPartition)) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -264,7 +264,7 @@ public class SQLParser {
                     }
                     break;
                 case TABLE:
-                    if (dialectFeatureEnabled(EnableTableAliasTable)) {
+                    if (dialectFeatureEnabled(TableAliasTable)) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -324,7 +324,7 @@ public class SQLParser {
                 case EXCEPT:
                 case LIMIT:
                 case BETWEEN:
-                    if (dialectFeatureEnabled(EnableTableAliasBetween)) {
+                    if (dialectFeatureEnabled(TableAliasBetween)) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -373,7 +373,7 @@ public class SQLParser {
         }
 
         if (must) {
-            if (dialectFeatureEnabled(EnableTableAliasRest)) {
+            if (dialectFeatureEnabled(TableAliasRest)) {
                 switch (lexer.token) {
                     case GROUP:
                     case ORDER: {
@@ -453,7 +453,7 @@ public class SQLParser {
             }
 
             // for oracle
-            if (dialectFeatureEnabled(EnableAsCommaFrom) && (lexer.token == Token.COMMA || lexer.token == Token.FROM)) {
+            if (dialectFeatureEnabled(AsCommaFrom) && (lexer.token == Token.COMMA || lexer.token == Token.FROM)) {
                 return null;
             }
 
@@ -483,7 +483,7 @@ public class SQLParser {
         } else if (lexer.token == Token.IDENTIFIER) {
             alias = lexer.stringVal();
             boolean skip = false;
-            if (dialectFeatureEnabled(EnableAsSkip)) {
+            if (dialectFeatureEnabled(AsSkip)) {
                 skip = "TBLPROPERTIES".equalsIgnoreCase(alias);
             }
             if (skip) {
@@ -567,7 +567,7 @@ public class SQLParser {
                 }
                 case CLOSE:
                 case SEQUENCE:
-                    if (dialectFeatureEnabled(EnableAsSequence)) {
+                    if (dialectFeatureEnabled(AsSequence)) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         break;
@@ -587,7 +587,7 @@ public class SQLParser {
                 case RIGHT:
                 case LEFT:
                 case DATABASE:
-                    if (dialectFeatureEnabled(EnableAsDatabase)) {
+                    if (dialectFeatureEnabled(AsDatabase)) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         break;
@@ -597,7 +597,7 @@ public class SQLParser {
                 case ORDER:
                 case DISTRIBUTE:
                 case DEFAULT:
-                    if (dialectFeatureEnabled(EnableAsDefault)) {
+                    if (dialectFeatureEnabled(AsDefault)) {
                         Lexer.SavePoint mark = lexer.mark();
                         alias = lexer.stringVal();
                         lexer.nextToken();
@@ -641,7 +641,7 @@ public class SQLParser {
         } else if (lexer.token == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
-        } else if (lexer.token == Token.LITERAL_FLOAT && dialectFeatureEnabled(EnableAliasLiteralFloat)) {
+        } else if (lexer.token == Token.LITERAL_FLOAT && dialectFeatureEnabled(AliasLiteralFloat)) {
             String numStr = lexer.numberString();
             lexer.nextToken();
             if (lexer.token == Token.IDENTIFIER) {

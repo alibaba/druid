@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.hive.parser;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
@@ -28,7 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
-import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.EnableScanHiveCommentDoubleSpace;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
@@ -252,7 +252,7 @@ public class HiveLexer extends Lexer {
             bufPos = 0;
             scanChar();
 
-            if (dialectFeatureEnabled(EnableScanHiveCommentDoubleSpace) && ch == ' ') {
+            if (dialectFeatureEnabled(ScanHiveCommentDoubleSpace) && ch == ' ') {
                 mark = pos;
                 bufPos = 0;
                 scanChar();
@@ -384,19 +384,23 @@ public class HiveLexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithFrom, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableNextTokenColon, true);
-        this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanAliasU, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinRightTableFrom, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableGroupByAll, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLDateExpr, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnablePrimaryBangBangSupport, false);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseAssignItemRparenCommaSetReturn, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableTableAliasLock, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableTableAliasPartition, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsSkip, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsSequence, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsDatabase, true);
-        this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsDefault, true);
+        this.dialectFeature.configFeature(
+                ScanSQLTypeWithFrom,
+                NextTokenColon,
+                ScanAliasU,
+                JoinRightTableFrom,
+                GroupByAll,
+                SQLDateExpr,
+                ParseAssignItemRparenCommaSetReturn,
+                TableAliasLock,
+                TableAliasPartition,
+                AsSkip,
+                AsSequence,
+                AsDatabase,
+                AsDefault
+        );
+        this.dialectFeature.unconfigFeature(
+                PrimaryBangBangSupport
+        );
     }
 }
