@@ -58,8 +58,8 @@ public class DB2Lexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
+    protected void initDialectFeature() {
+        super.initDialectFeature();
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseAssignItemSkip, true);
     }
 }

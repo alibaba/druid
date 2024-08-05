@@ -53,8 +53,8 @@ public class SparkLexer extends HiveLexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
+    protected void initDialectFeature() {
+        super.initDialectFeature();
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableQueryTable, true);
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableParseSelectItemPrefixX, true);
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinRightTableFrom, true);

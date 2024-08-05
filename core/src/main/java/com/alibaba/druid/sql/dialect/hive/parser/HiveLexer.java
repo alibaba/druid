@@ -381,8 +381,8 @@ public class HiveLexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
+    protected void initDialectFeature() {
+        super.initDialectFeature();
         this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithFrom, true);
         this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableNextTokenColon, true);
         this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanAliasU, true);

@@ -136,8 +136,8 @@ public class BigQueryLexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
+    protected void initDialectFeature() {
+        super.initDialectFeature();
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLDateExpr, true);
     }
 }

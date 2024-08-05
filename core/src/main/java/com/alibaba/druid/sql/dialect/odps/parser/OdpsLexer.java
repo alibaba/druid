@@ -238,8 +238,8 @@ public class OdpsLexer extends HiveLexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
+    protected void initDialectFeature() {
+        super.initDialectFeature();
         this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeBlockComment, true);
         this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithSemi, true);
         this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithFunction, true);

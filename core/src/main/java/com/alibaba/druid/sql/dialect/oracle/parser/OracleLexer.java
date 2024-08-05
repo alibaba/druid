@@ -394,8 +394,8 @@ public class OracleLexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
+    protected void initDialectFeature() {
+        super.initDialectFeature();
         this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanSQLTypeWithBegin, true);
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLDateExpr, true);
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableSQLTimestampExpr, false);

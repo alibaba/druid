@@ -54,8 +54,8 @@ public class CKLexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
+    protected void initDialectFeature() {
+        super.initDialectFeature();
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableAsofJoin, true);
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableGlobalJoin, true);
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinRightTableAlias, true);

@@ -259,11 +259,11 @@ public class Lexer {
             }
             ch = charAt(++pos);
         }
-        initLexerSettings();
+        initDialectFeature();
         this.keywords = loadKeywords();
     }
 
-    protected void initLexerSettings() {
+    protected void initDialectFeature() {
         this.dialectFeature = new DialectFeature();
     }
 

@@ -951,8 +951,8 @@ public class MySqlLexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
+    protected void initDialectFeature() {
+        super.initDialectFeature();
         this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableNextTokenPrefixN, true);
         this.dialectFeature.configFeature(DialectFeature.LexerFeature.EnableScanString2PutDoubleBackslash, true);
         this.dialectFeature.configFeature(DialectFeature.ParserFeature.EnableJoinRightTableWith, true);
