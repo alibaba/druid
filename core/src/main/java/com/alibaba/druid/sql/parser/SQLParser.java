@@ -22,6 +22,8 @@ import com.alibaba.druid.util.StringUtils;
 
 import java.util.TimeZone;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
+
 public class SQLParser {
     protected final Lexer lexer;
     protected DbType dbType;
@@ -83,7 +85,7 @@ public class SQLParser {
                 || token == Token.SELECT
                 || token == Token.FROM
                 || token == Token.WHERE) {
-            if (token == Token.WHERE && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableTableAliasConnectWhere)) {
+            if (token == Token.WHERE && dialectFeatureEnabled(EnableTableAliasConnectWhere)) {
                 return null;
             }
 
@@ -171,7 +173,7 @@ public class SQLParser {
                         return null;
                     }
                     return ident;
-                } else if (hash == FnvHash.Constants.ASOF && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableTableAliasAsof)) {
+                } else if (hash == FnvHash.Constants.ASOF && dialectFeatureEnabled(EnableTableAliasAsof)) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
                     if (lexer.token == Token.LEFT || lexer.token == Token.JOIN) {
@@ -243,14 +245,14 @@ public class SQLParser {
                 case DROP:
                 case FETCH:
                 case LOCK:
-                    if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableTableAliasLock)) {
+                    if (dialectFeatureEnabled(EnableTableAliasLock)) {
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
                         return strVal;
                     }
                     break;
                 case PARTITION:
-                    if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableTableAliasPartition)) {
+                    if (dialectFeatureEnabled(EnableTableAliasPartition)) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -262,7 +264,7 @@ public class SQLParser {
                     }
                     break;
                 case TABLE:
-                    if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableTableAliasTable)) {
+                    if (dialectFeatureEnabled(EnableTableAliasTable)) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -322,7 +324,7 @@ public class SQLParser {
                 case EXCEPT:
                 case LIMIT:
                 case BETWEEN:
-                    if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableTableAliasBetween)) {
+                    if (dialectFeatureEnabled(EnableTableAliasBetween)) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -371,7 +373,7 @@ public class SQLParser {
         }
 
         if (must) {
-            if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableTableAliasRest)) {
+            if (dialectFeatureEnabled(EnableTableAliasRest)) {
                 switch (lexer.token) {
                     case GROUP:
                     case ORDER: {
@@ -451,7 +453,7 @@ public class SQLParser {
             }
 
             // for oracle
-            if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableAsCommaFrom) && (lexer.token == Token.COMMA || lexer.token == Token.FROM)) {
+            if (dialectFeatureEnabled(EnableAsCommaFrom) && (lexer.token == Token.COMMA || lexer.token == Token.FROM)) {
                 return null;
             }
 
@@ -481,7 +483,7 @@ public class SQLParser {
         } else if (lexer.token == Token.IDENTIFIER) {
             alias = lexer.stringVal();
             boolean skip = false;
-            if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableAsSkip)) {
+            if (dialectFeatureEnabled(EnableAsSkip)) {
                 skip = "TBLPROPERTIES".equalsIgnoreCase(alias);
             }
             if (skip) {
@@ -565,7 +567,7 @@ public class SQLParser {
                 }
                 case CLOSE:
                 case SEQUENCE:
-                    if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableAsSequence)) {
+                    if (dialectFeatureEnabled(EnableAsSequence)) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         break;
@@ -585,7 +587,7 @@ public class SQLParser {
                 case RIGHT:
                 case LEFT:
                 case DATABASE:
-                    if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableAsDatabase)) {
+                    if (dialectFeatureEnabled(EnableAsDatabase)) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         break;
@@ -595,7 +597,7 @@ public class SQLParser {
                 case ORDER:
                 case DISTRIBUTE:
                 case DEFAULT:
-                    if (lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableAsDefault)) {
+                    if (dialectFeatureEnabled(EnableAsDefault)) {
                         Lexer.SavePoint mark = lexer.mark();
                         alias = lexer.stringVal();
                         lexer.nextToken();
@@ -639,7 +641,7 @@ public class SQLParser {
         } else if (lexer.token == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
-        } else if (lexer.token == Token.LITERAL_FLOAT && lexer.dialectFeature.isEnabled(DialectFeature.ParserFeature.EnableAliasLiteralFloat)) {
+        } else if (lexer.token == Token.LITERAL_FLOAT && dialectFeatureEnabled(EnableAliasLiteralFloat)) {
             String numStr = lexer.numberString();
             lexer.nextToken();
             if (lexer.token == Token.IDENTIFIER) {
@@ -923,5 +925,9 @@ public class SQLParser {
 
     protected SQLCreateTableStatement newCreateStatement() {
         return new SQLCreateTableStatement(dbType);
+    }
+
+    protected boolean dialectFeatureEnabled(DialectFeature.ParserFeature feature) {
+        return this.lexer.dialectFeature.isEnabled(feature);
     }
 }
