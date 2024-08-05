@@ -1,3 +1,31 @@
+CREATE TABLE public.tb0 (
+    id text NOT NULL,
+    name text NOT NULL,
+    class text NOT NULL,
+    in_time timestamptz NOT NULL,
+    PRIMARY KEY (id)
+)
+WITH (
+    orientation = 'column',
+    clustering_key = 'class',
+    bitmap_columns = 'name',
+  	event_time_column = 'in_time'
+);
+--------------------
+CREATE TABLE public.tb0 (
+	id text NOT NULL,
+	name text NOT NULL,
+	class text NOT NULL,
+	in_time timestamptz NOT NULL,
+	PRIMARY KEY (id)
+)
+WITH (
+	'orientation' = 'column',
+	'clustering_key' = 'class',
+	'bitmap_columns' = 'name',
+	'event_time_column' = 'in_time'
+);
+------------------------------------------------------------------------------------------------------------------------
 ALTER SCHEMA oldschema RENAME TO newschema;
 --------------------
 ALTER SCHEMA oldschema RENAME TO newschema;

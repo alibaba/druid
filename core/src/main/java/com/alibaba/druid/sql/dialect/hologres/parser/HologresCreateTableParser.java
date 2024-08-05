@@ -1,12 +1,12 @@
-package com.alibaba.druid.sql.dialect.holo.parser;
+package com.alibaba.druid.sql.dialect.hologres.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 
-public class HoloCreateTableParser
+public class HologresCreateTableParser
         extends PGCreateTableParser {
-    public HoloCreateTableParser(SQLExprParser exprParser) {
+    public HologresCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
         dbType = DbType.hologres;
     }

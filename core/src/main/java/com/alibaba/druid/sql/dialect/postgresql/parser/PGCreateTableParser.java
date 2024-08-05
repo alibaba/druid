@@ -30,6 +30,15 @@ public class PGCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
+    protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
+        if (lexer.nextIf(Token.WITH)) {
+            accept(Token.LPAREN);
+            parseAssignItems(stmt.getTableOptions(), stmt, false);
+            accept(Token.RPAREN);
+        }
+        super.parseCreateTableRest(stmt);
+    }
+
     public SQLPartitionBy parsePartitionBy() {
         lexer.nextToken();
         accept(Token.BY);

@@ -1,13 +1,13 @@
-package com.alibaba.druid.sql.dialect.holo.parser;
+package com.alibaba.druid.sql.dialect.hologres.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSelectParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectListCache;
 
-public class HoloSelectParser
+public class HologresSelectParser
         extends PGSelectParser {
-    public HoloSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
+    public HologresSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
         super(exprParser, selectListCache);
         dbType = DbType.hologres;
     }

@@ -80,6 +80,7 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.nextIf(Token.OR)) {
+            accept(Token.REPLACE);
             createTable.config(SQLCreateTableStatement.Feature.OrReplace);
         }
     }
