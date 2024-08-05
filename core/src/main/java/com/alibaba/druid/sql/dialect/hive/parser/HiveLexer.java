@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.EnableScanHiveCommentDoubleSpace;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
@@ -251,7 +252,7 @@ public class HiveLexer extends Lexer {
             bufPos = 0;
             scanChar();
 
-            if (this.dialectFeature.isEnabled(DialectFeature.LexerFeature.EnableScanHiveCommentDoubleSpace) && ch == ' ') {
+            if (dialectFeatureEnabled(EnableScanHiveCommentDoubleSpace) && ch == ' ') {
                 mark = pos;
                 bufPos = 0;
                 scanChar();

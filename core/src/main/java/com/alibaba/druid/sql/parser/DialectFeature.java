@@ -12,6 +12,7 @@ public class DialectFeature {
 
         parserFeature = 0L;
         configFeature(ParserFeature.EnableAcceptUnion, true);
+        configFeature(ParserFeature.EnableSQLTimestampExpr, true);
         configFeature(ParserFeature.EnablePrimaryBangBangSupport, true);
         configFeature(ParserFeature.EnableAdditiveRestPipesAsConcat, true);
         configFeature(ParserFeature.EnableParseStatementListSelectUnsupportedSyntax, true);
