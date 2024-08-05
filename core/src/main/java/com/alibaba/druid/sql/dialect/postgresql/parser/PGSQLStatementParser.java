@@ -26,10 +26,11 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.JdbcUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.alibaba.druid.sql.parser.Token.RESTRICT;
 
 public class PGSQLStatementParser extends SQLStatementParser {
     public static final String TIME_ZONE = "TIME ZONE";
@@ -282,7 +283,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public PGDropSchemaStatement parseDropSchema() {
+    public PGDropSchemaStatement parseDropSchema(boolean physical) {
         PGDropSchemaStatement stmt = new PGDropSchemaStatement();
 
         if (lexer.token() == Token.SCHEMA) {
@@ -774,7 +775,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             lexer.nextToken();
             values.add(this.exprParser.primary());
             lexer.nextToken();
-        } else if (JdbcUtils.isPgsqlDbType(dbType) && ("schema".equalsIgnoreCase(parameter) || "names".equalsIgnoreCase(parameter))) {
+        } else if ("schema".equalsIgnoreCase(parameter) || "names".equalsIgnoreCase(parameter)) {
             paramExpr = new SQLIdentifierExpr(parameter);
             lexer.nextToken();
             String value = lexer.stringVal();
@@ -1105,5 +1106,41 @@ public class PGSQLStatementParser extends SQLStatementParser {
         }
         stmt.setPassword(this.exprParser.primary());
         return stmt;
+    }
+
+    @Override
+    protected boolean alterTableAfterNameRest(SQLAlterTableStatement stmt) {
+        if (lexer.identifierEquals("CHANGEOWNER") && lexer.identifierEquals("OWNER")) {
+            alterTableOwner(stmt);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void alterTableAlterComma() {
+        if (lexer.token() == Token.COMMA) {
+            lexer.nextToken();
+        }
+    }
+
+    @Override
+    public void parseAlterDropRest(SQLAlterTableStatement stmt, SQLAlterTableDropColumnItem item) {
+        item.getColumns().add(this.exprParser.name());
+
+        if (lexer.token() == Token.CASCADE) {
+            item.setCascade(true);
+            lexer.nextToken();
+        }
+        if (RESTRICT == lexer.token()) {
+            item.setRestrict(true);
+            lexer.nextToken();
+        }
+        stmt.addItem(item);
+
+        if (lexer.token() == Token.COMMA) {
+            lexer.nextToken();
+        }
     }
 }

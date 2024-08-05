@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class PGLexer extends Lexer {
@@ -255,8 +257,12 @@ public class PGLexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
-        this.lexerSettings.setEnableScanVariableGreaterThan(true);
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(
+                ScanVariableGreaterThan,
+                SQLDateExpr,
+                ParseStatementListWhen
+        );
     }
 }

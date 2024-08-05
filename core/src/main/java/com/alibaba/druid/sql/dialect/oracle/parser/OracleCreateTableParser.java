@@ -634,4 +634,9 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
     public OracleExprParser getExprParser() {
         return (OracleExprParser) exprParser;
     }
+
+    @Override
+    protected SQLSelect createTableQueryRest() {
+        return new OracleSelectParser(this.exprParser).select();
+    }
 }

@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OdpsLexer extends HiveLexer {
@@ -238,19 +240,44 @@ public class OdpsLexer extends HiveLexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
-        this.lexerSettings.setEnableScanSQLTypeBlockComment(true);
-        this.lexerSettings.setEnableScanSQLTypeWithSemi(true);
-        this.lexerSettings.setEnableScanSQLTypeWithFunction(true);
-        this.lexerSettings.setEnableScanSQLTypeWithBegin(true);
-        this.lexerSettings.setEnableScanSQLTypeWithAt(true);
-        this.lexerSettings.setEnableScanVariableAt(true);
-        this.lexerSettings.setEnableScanVariableMoveToSemi(true);
-        this.lexerSettings.setEnableScanVariableSkipIdentifiers(true);
-        this.lexerSettings.setEnableScanNumberPrefixB(false);
-        this.lexerSettings.setEnableScanNumberCommonProcess(false);
-        this.lexerSettings.setEnableScanAliasU(false);
-        this.lexerSettings.setEnableScanHiveCommentDoubleSpace(true);
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(
+                ScanSQLTypeBlockComment,
+                ScanSQLTypeWithSemi,
+                ScanSQLTypeWithFunction,
+                ScanSQLTypeWithBegin,
+                ScanSQLTypeWithAt,
+                ScanVariableAt,
+                ScanVariableMoveToSemi,
+                ScanVariableSkipIdentifiers,
+                ScanNumberCommonProcess,
+                ScanHiveCommentDoubleSpace,
+                QueryRestSemi,
+                JoinAt,
+                UDJ,
+                TwoConsecutiveUnion,
+                RewriteGroupByCubeRollupToFunction,
+                PrimaryTwoConsecutiveSet,
+                ParseAllIdentifier,
+                PrimaryRestCommaAfterLparen,
+                InRestSpecificOperation,
+                ParseAssignItemEqSemiReturn,
+                ParseAssignItemEqeq,
+                ParseStatementListLparenContinue,
+                ParseRevokeFromUser,
+                ParseCreateSql,
+                TableAliasConnectWhere,
+                TableAliasTable,
+                TableAliasBetween,
+                TableAliasRest,
+                AliasLiteralFloat
+        );
+        this.dialectFeature.unconfigFeature(
+                ParseStatementListSelectUnsupportedSyntax,
+                ScanNumberPrefixB,
+                ScanAliasU,
+                AcceptUnion
+        );
     }
 }

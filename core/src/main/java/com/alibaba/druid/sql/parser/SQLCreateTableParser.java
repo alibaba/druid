@@ -15,18 +15,17 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.SQLPartitionOf;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.CreateTableBodySupplemental;
 import static com.alibaba.druid.sql.parser.SQLParserFeature.Template;
 
 public class SQLCreateTableParser extends SQLDDLParser {
@@ -70,6 +69,10 @@ public class SQLCreateTableParser extends SQLDDLParser {
         return createTable;
     }
 
+    protected SQLSelect createTableQueryRest() {
+        return this.createSQLSelectParser().select();
+    }
+
     protected void createTableQuery(SQLCreateTableStatement createTable) {
         if (lexer.nextIf(Token.AS)) {
             SQLSelect select;
@@ -79,10 +82,8 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 select = new SQLSelect(
                         new SQLSelectQueryTemplate(lexer.stringVal));
                 lexer.nextToken();
-            } else if (DbType.oracle == dbType) {
-                select = new OracleSelectParser(this.exprParser).select();
             } else {
-                select = this.createSQLSelectParser().select();
+                select = createTableQueryRest();
             }
             createTable.setSelect(select);
         }
@@ -93,7 +94,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             for (; ; ) {
                 Token token = lexer.token;
                 if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
-                        && DbType.oracle == dbType) {
+                        && dialectFeatureEnabled(CreateTableBodySupplemental)) {
                     SQLTableElement element = this.parseCreateTableSupplementalLoggingProps();
                     element.setParent(createTable);
                     createTable.getTableElementList().add(element);

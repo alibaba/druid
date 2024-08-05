@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OracleLexer extends Lexer {
@@ -394,8 +396,15 @@ public class OracleLexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
-        this.lexerSettings.setEnableScanSQLTypeWithBegin(true);
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(
+                ScanSQLTypeWithBegin,
+                SQLDateExpr,
+                PrimaryVariantColon,
+                CreateTableBodySupplemental,
+                AsCommaFrom
+        );
+        this.dialectFeature.unconfigFeature(SQLTimestampExpr);
     }
 }

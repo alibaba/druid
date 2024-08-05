@@ -19,14 +19,20 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+
+import static com.alibaba.druid.sql.parser.Token.LPAREN;
+import static com.alibaba.druid.sql.parser.Token.RPAREN;
 
 public class H2StatementParser extends SQLStatementParser {
     public H2StatementParser(String sql) {
@@ -107,5 +113,17 @@ public class H2StatementParser extends SQLStatementParser {
                 break;
             }
         }
+    }
+
+    @Override
+    protected void alterTableAddRestSpecific(SQLAlterTableStatement stmt) {
+        if (lexer.token() == LPAREN) {
+            lexer.nextToken();
+            SQLAlterTableAddColumn item = parseAlterTableAddColumn();
+            stmt.addItem(item);
+            accept(RPAREN);
+            return;
+        }
+        throw new ParserException("TODO " + lexer.info());
     }
 }

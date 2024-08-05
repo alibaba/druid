@@ -9,6 +9,8 @@ import com.alibaba.druid.sql.parser.Token;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
+
 public class CKLexer extends Lexer {
     @Override
     protected Keywords loadKeywords() {
@@ -50,5 +52,17 @@ public class CKLexer extends Lexer {
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
+    }
+
+    @Override
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(
+                AsofJoin,
+                GlobalJoin,
+                JoinRightTableAlias,
+                ParseLimitBy,
+                TableAliasAsof
+        );
     }
 }

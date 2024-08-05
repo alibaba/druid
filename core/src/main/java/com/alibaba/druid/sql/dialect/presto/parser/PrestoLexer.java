@@ -9,6 +9,8 @@ import com.alibaba.druid.sql.parser.Token;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.SQLDateExpr;
+
 public class PrestoLexer extends Lexer {
     @Override
     protected Keywords loadKeywords() {
@@ -41,5 +43,11 @@ public class PrestoLexer extends Lexer {
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
+    }
+
+    @Override
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(SQLDateExpr);
     }
 }

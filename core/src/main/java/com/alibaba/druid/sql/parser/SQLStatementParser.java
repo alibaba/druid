@@ -27,11 +27,8 @@ import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.FullTextType;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAlterTableSetChangeLogs;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAlterTableSetFileFormat;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.FnvHash;
@@ -46,6 +43,7 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.Token.*;
 
 public class SQLStatementParser extends SQLParser {
@@ -165,7 +163,7 @@ public class SQLStatementParser extends SQLParser {
                         SQLStatement stmt = statementList.get(statementList.size() - 1);
                         stmt.addAfterComment(lexer.readAndResetComments());
                     }
-                    if (END == lexer.token && dbType == DbType.postgresql) {
+                    if (END == lexer.token && dialectFeatureEnabled(ParseStatementListWhen)) {
                         Lexer.SavePoint savePoint = lexer.mark();
                         lexer.nextToken();
                         if (lexer.token == Token.IF) {
@@ -226,7 +224,7 @@ public class SQLStatementParser extends SQLParser {
                             && statementList.size() > 0
                             && statementList.get(statementList.size() - i) instanceof MySqlHintStatement) {
                         hintStatement = (MySqlHintStatement) statementList.get(statementList.size() - i);
-                    } else if (i > 0 && dbType != DbType.odps && !semi
+                    } else if (i > 0 && dialectFeatureEnabled(ParseStatementListSelectUnsupportedSyntax) && !semi
                             && !(statementList.size() > 0 && statementList.get(statementList.size() - i).isAfterSemi())
                     ) {
                         throw new ParserException("syntax error. " + lexer.info());
@@ -252,7 +250,7 @@ public class SQLStatementParser extends SQLParser {
                     //FOR ADS
                     Lexer.SavePoint savePoint = lexer.mark();
                     lexer.nextToken();
-                    if (dbType == DbType.mysql && lexer.identifierEquals("PLANCACHE")) {
+                    if (dialectFeatureEnabled(ParseStatementListUpdatePlanCache) && lexer.identifierEquals("PLANCACHE")) {
                         lexer.nextToken();
                         if (lexer.token == Token.SELECT) {
                             MySqlUpdatePlanCacheStatement stmt = new MySqlUpdatePlanCacheStatement();
@@ -548,7 +546,7 @@ public class SQLStatementParser extends SQLParser {
                 statementList.add(stmt);
 
                 if (parent instanceof SQLBlockStatement
-                        && DbType.mysql == dbType) {
+                        && dialectFeatureEnabled(ParseStatementListRollbackReturn)) {
                     return;
                 }
 
@@ -568,7 +566,7 @@ public class SQLStatementParser extends SQLParser {
                 statementList.add(stmt);
 
                 if (parent instanceof SQLBlockStatement
-                        && DbType.mysql == dbType) {
+                        && dialectFeatureEnabled(ParseStatementListCommitReturn)) {
                     return;
                 }
 
@@ -615,7 +613,7 @@ public class SQLStatementParser extends SQLParser {
                     parenCount++;
                 } while (lexer.token == Token.LPAREN);
 
-                if (lexer.token == RPAREN && parenCount == 1 && dbType == DbType.odps) {
+                if (lexer.token == RPAREN && parenCount == 1 && dialectFeatureEnabled(ParseStatementListLparenContinue)) {
                     lexer.nextToken();
                     continue;
                 }
@@ -821,14 +819,7 @@ public class SQLStatementParser extends SQLParser {
                 }
                 break;
             case SCHEMA:
-                if (dbType == DbType.postgresql) {
-                    stmt = parseDropSchema();
-                } else {
-                    stmt = parseDropDatabaseOrSchema(false);
-                    if (physical) {
-                        ((SQLDropDatabaseStatement) stmt).setPhysical(physical);
-                    }
-                }
+                stmt = parseDropSchema(physical);
                 break;
             case FUNCTION:
                 SQLDropFunctionStatement dropFunc = parseDropFunction(false);
@@ -1914,7 +1905,7 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token == Token.FROM) {
             lexer.nextToken();
             for (; ; ) {
-                if (lexer.token() == Token.USER && this.dbType == DbType.odps) {
+                if (lexer.token() == Token.USER && dialectFeatureEnabled(ParseRevokeFromUser)) {
                     lexer.nextToken();
                 }
                 SQLExpr user = parseUser();
@@ -2119,13 +2110,10 @@ public class SQLStatementParser extends SQLParser {
     protected void alterTableBefore(SQLAlterTableStatement stmt) {
     }
 
+    protected boolean alterTableAfterNameRest(SQLAlterTableStatement stmt) {
+        return true;
+    }
     protected SQLAlterStatement alterTableAfterName(SQLAlterTableStatement stmt) {
-        if (lexer.token == ON && dbType == DbType.clickhouse) {
-            lexer.nextToken();
-            acceptIdentifier("CLUSTER");
-            stmt.setOn(this.exprParser.name());
-        }
-
         _for:
         for (; ; ) {
             switch (lexer.token) {
@@ -2181,9 +2169,6 @@ public class SQLStatementParser extends SQLParser {
                         stmt.addItem(parseAlterTableRename());
                     } else if (lexer.identifierEquals("TOUCH")) {
                         alterTableTouch(stmt);
-                    } else if (lexer.identifierEquals("CHANGEOWNER")
-                            || DbType.postgresql == dbType && lexer.identifierEquals("OWNER")) {
-                        alterTableOwner(stmt);
                     } else if (lexer.identifierEquals(Constants.ARCHIVE)) {
                         alterTableAchive(stmt);
                     } else if (lexer.identifierEquals(Constants.UNARCHIVE)) {
@@ -2195,34 +2180,6 @@ public class SQLStatementParser extends SQLParser {
                         SQLAlterTableSubpartitionAvailablePartitionNum item = new SQLAlterTableSubpartitionAvailablePartitionNum();
                         item.setNumber(num);
                         stmt.addItem(item);
-                    } else if (DbType.odps == dbType && lexer.identifierEquals("MERGE")) {
-                        alterTableMerge(stmt);
-                    } else if (DbType.odps == dbType
-                            && (lexer.identifierEquals(Constants.RANGE)
-                            || lexer.identifierEquals(Constants.CLUSTERED))
-                    ) {
-                        if (lexer.identifierEquals(Constants.RANGE)) {
-                            lexer.nextToken();
-                            acceptIdentifier("CLUSTERED");
-                            stmt.setRange(true);
-                        } else {
-                            lexer.nextToken();
-                        }
-                        accept(Token.BY);
-
-                        accept(Token.LPAREN);
-                        for (; ; ) {
-                            SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
-                            stmt.addClusteredByItem(item);
-                            if (lexer.token() == Token.COMMA) {
-                                lexer.nextToken();
-                                continue;
-                            }
-                            break;
-                        }
-                        accept(Token.RPAREN);
-                    } else if (DbType.odps == dbType && lexer.identifierEquals(Constants.SORTED)) {
-                        alterTableSorted(stmt);
                     } else if ((stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) && lexer.token == Token.INTO) {
                         lexer.nextToken();
 
@@ -2241,16 +2198,10 @@ public class SQLStatementParser extends SQLParser {
                             acceptIdentifier("SHARDS");
                             stmt.setShards(num);
                         }
-                    } else if (DbType.hive == dbType && lexer.identifierEquals(Constants.RECOVER)) {
-                        lexer.nextToken();
-                        acceptIdentifier("PARTITIONS");
-                        stmt.addItem(new SQLAlterTableRecoverPartitions());
-                    } else if (dbType == DbType.odps && lexer.token == Token.NOT) {
-                        lexer.nextToken();
-                        acceptIdentifier("CLUSTERED");
-                        stmt.setNotClustered(true);
                     } else {
-                        break _for;
+                        if (alterTableAfterNameRest(stmt)) {
+                            break _for;
+                        }
                     }
                     break;
             }
@@ -2270,7 +2221,7 @@ public class SQLStatementParser extends SQLParser {
         throw new ParserException("TODO " + lexer.info());
     }
 
-    private void alterTableSorted(SQLAlterTableStatement stmt) {
+    protected void alterTableSorted(SQLAlterTableStatement stmt) {
         lexer.nextToken();
         accept(Token.BY);
 
@@ -2287,7 +2238,7 @@ public class SQLStatementParser extends SQLParser {
         accept(Token.RPAREN);
     }
 
-    private void alterTableMerge(SQLAlterTableStatement stmt) {
+    protected void alterTableMerge(SQLAlterTableStatement stmt) {
         lexer.nextToken();
 
         boolean ifExists = false;
@@ -2358,7 +2309,7 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
-    private void alterTableOwner(SQLAlterTableStatement stmt) {
+    protected void alterTableOwner(SQLAlterTableStatement stmt) {
         lexer.nextToken();
         accept(TO);
         SQLName name = this.exprParser.name();
@@ -2499,6 +2450,9 @@ public class SQLStatementParser extends SQLParser {
         stmt.addItem(alterTablePartition);
     }
 
+    protected boolean alterTableSetRest(SQLAlterTableStatement stmt) {
+        return true;
+    }
     protected void alterTableSet(SQLAlterTableStatement stmt) {
         accept(SET);
         if (lexer.token == TABLESPACE) {
@@ -2530,22 +2484,6 @@ public class SQLStatementParser extends SQLParser {
             alterTableSetTblProperties(stmt);
         } else if (lexer.identifierEquals("SERDEPROPERTIES")) {
             alterTableSetSerdeProperties(stmt);
-        } else if (lexer.identifierEquals("CHANGELOGS") && dbType == DbType.odps) {
-            lexer.nextToken();
-            OdpsAlterTableSetChangeLogs item = new OdpsAlterTableSetChangeLogs();
-            item.setValue(this.exprParser.primary());
-            stmt.addItem(item);
-        } else if (lexer.identifierEquals("FILEFORMAT") && dbType == DbType.odps) {
-            lexer.nextToken();
-            OdpsAlterTableSetFileFormat item = new OdpsAlterTableSetFileFormat();
-            item.setValue(this.exprParser.primary());
-            stmt.addItem(item);
-        } else if (lexer.identifierEquals("FILEFORMAT") && (dbType == DbType.hive
-            || dbType == DbType.spark)) {
-            lexer.nextToken();
-            SQLAlterTableSetFileFormat item = new SQLAlterTableSetFileFormat();
-            item.setValue(this.exprParser.primary());
-            stmt.addItem(item);
         } else if (lexer.identifierEquals(FnvHash.Constants.SERDE)) {
             lexer.nextToken();
             SQLAlterTableSetSerde setTableSerde = new SQLAlterTableSetSerde();
@@ -2570,7 +2508,9 @@ public class SQLStatementParser extends SQLParser {
             }
             stmt.addItem(setTableSerde);
         } else {
-            throw new ParserException("TODO " + lexer.info());
+            if (alterTableSetRest(stmt)) {
+                throw new ParserException("TODO " + lexer.info());
+            }
         }
     }
 
@@ -2752,18 +2692,14 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
+    protected void alterTableAlterComma() {
+    }
     private void alterTableAlter(SQLAlterTableStatement stmt) {
         lexer.nextToken();
         if (lexer.token == Token.COLUMN) {
             SQLAlterTableAlterColumn alterColumn = parseAlterColumn();
             stmt.addItem(alterColumn);
-
-            if (dbType == DbType.postgresql) {
-                if (lexer.token == Token.COMMA) {
-                    lexer.nextToken();
-                    return;
-                }
-            }
+            alterTableAlterComma();
         } else if (lexer.token == Token.LITERAL_ALIAS) {
             SQLAlterTableAlterColumn alterColumn = parseAlterColumn();
             stmt.addItem(alterColumn);
@@ -2904,6 +2840,10 @@ public class SQLStatementParser extends SQLParser {
         stmt.addItem(item);
     }
 
+    protected void alterTableAddRestSpecific(SQLAlterTableStatement stmt) {
+        throw new ParserException("TODO " + lexer.info());
+    }
+
     protected void alterTableAddRest(SQLAlterTableStatement stmt) {
         acceptIdentifier("ADD");
         if (lexer.token == Token.IDENTIFIER) {
@@ -2911,21 +2851,7 @@ public class SQLStatementParser extends SQLParser {
             stmt.addItem(item);
             return;
         }
-
-        if (lexer.token == LPAREN) {
-            if (dbType == DbType.h2) {
-                lexer.nextToken();
-                SQLAlterTableAddColumn item = parseAlterTableAddColumn();
-                stmt.addItem(item);
-                accept(RPAREN);
-                return;
-            }
-        } else if (lexer.token == LITERAL_ALIAS && dbType == DbType.sqlserver) {
-            SQLAlterTableAddColumn item = parseAlterTableAddColumn();
-            stmt.addItem(item);
-            return;
-        }
-        throw new ParserException("TODO " + lexer.info());
+        alterTableAddRestSpecific(stmt);
     }
 
     protected void alterTableAddPartition(SQLAlterTableStatement stmt) {
@@ -3023,6 +2949,27 @@ public class SQLStatementParser extends SQLParser {
         return alterColumn;
     }
 
+    public void parseAlterDropRest(SQLAlterTableStatement stmt, SQLAlterTableDropColumnItem item) {
+        boolean paren = false;
+        if (lexer.token == LPAREN) {
+            lexer.nextToken();
+            paren = true;
+        }
+        this.exprParser.names(item.getColumns());
+        if (paren) {
+            accept(RPAREN);
+        }
+
+        if (lexer.token == Token.CASCADE) {
+            item.setCascade(true);
+            lexer.nextToken();
+        }
+        if (RESTRICT == lexer.token) {
+            item.setRestrict(true);
+            lexer.nextToken();
+        }
+        stmt.addItem(item);
+    }
     public void parseAlterDrop(SQLAlterTableStatement stmt) {
         lexer.nextToken();
 
@@ -3061,36 +3008,7 @@ public class SQLStatementParser extends SQLParser {
                 item.setIfExists(true);
             }
 
-            if (DbType.isPostgreSQLDbStyle(dbType)) {
-                item.getColumns().add(
-                        this.exprParser.name());
-            } else {
-                boolean paren = false;
-                if (lexer.token == LPAREN) {
-                    lexer.nextToken();
-                    paren = true;
-                }
-                this.exprParser.names(item.getColumns());
-                if (paren) {
-                    accept(RPAREN);
-                }
-            }
-
-            if (lexer.token == Token.CASCADE) {
-                item.setCascade(true);
-                lexer.nextToken();
-            }
-            if (RESTRICT == lexer.token) {
-                item.setRestrict(true);
-                lexer.nextToken();
-            }
-            stmt.addItem(item);
-
-            if (dbType == DbType.postgresql) {
-                if (lexer.token == Token.COMMA) {
-                    lexer.nextToken();
-                }
-            }
+            parseAlterDropRest(stmt, item);
         } else if (lexer.token == Token.LITERAL_ALIAS) {
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
             this.exprParser.names(item.getColumns());
@@ -3236,7 +3154,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token == TABLE) {
             lexer.nextToken();
-        } else if (lexer.identifierEquals(Constants.TABLES) && dbType == DbType.mysql) {
+        } else if (lexer.identifierEquals(Constants.TABLES) && dialectFeatureEnabled(ParseDropTableTables)) {
             lexer.nextToken();
         } else {
             throw new ParserException("expected token: TABLE.");
@@ -3381,8 +3299,12 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
-    protected SQLDropStatement parseDropSchema() {
-        throw new ParserException("TODO " + lexer.info());
+    protected SQLDropStatement parseDropSchema(boolean physical) {
+        SQLDropStatement stmt = parseDropDatabaseOrSchema(false);
+        if (physical) {
+            ((SQLDropDatabaseStatement) stmt).setPhysical(physical);
+        }
+        return stmt;
     }
 
     protected SQLDropStatement parseDropDatabaseOrSchema(boolean acceptDrop) {
@@ -4035,7 +3957,7 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.identifierEquals(Constants.TABLEGROUP)) {
                     lexer.reset(mark);
                     return parseCreateTableGroup();
-                } else if (lexer.identifierEquals(Constants.SQL) && dbType == DbType.odps) {
+                } else if (lexer.identifierEquals(Constants.SQL) && dialectFeatureEnabled(ParseCreateSql)) {
                     lexer.reset(mark);
                     return parseCreateFunction();
                 } else if (lexer.identifierEquals(Constants.DIMENSION)) {
@@ -4184,6 +4106,12 @@ public class SQLStatementParser extends SQLParser {
         throw new ParserException("TODO " + lexer.token);
     }
 
+    protected void parseCreateMaterializedViewRest(SQLCreateMaterializedViewStatement stmt) {
+        if (lexer.token == Token.PARTITION) {
+            SQLPartitionBy partitionBy = this.exprParser.parsePartitionBy();
+            stmt.setPartitionBy(partitionBy);
+        }
+    }
     public SQLStatement parseCreateMaterializedView() {
         accept(Token.CREATE);
         acceptIdentifier("MATERIALIZED");
@@ -4200,193 +4128,7 @@ public class SQLStatementParser extends SQLParser {
 
         stmt.setName(this.exprParser.name());
 
-        if (this.dbType == DbType.mysql) {
-            stmt.setDbType(DbType.mysql);
-
-            if (lexer.token == Token.LPAREN) {
-                lexer.nextToken();
-                for (; ; ) {
-                    Token token = lexer.token;
-
-                    if (lexer.identifierEquals(Constants.CLUSTERED)) {
-                        lexer.nextToken();
-                        if (lexer.token() == Token.KEY) {
-                            MySqlKey clsKey = new MySqlKey();
-                            this.exprParser.parseIndex(clsKey.getIndexDefinition());
-                            clsKey.setIndexType("CLUSTERED");
-                            clsKey.setParent(stmt);
-                            stmt.getTableElementList().add(clsKey);
-
-                            if (lexer.token() == Token.COMMA) {
-                                lexer.nextToken();
-                                continue;
-                            }
-                        } else if (lexer.token() == Token.INDEX) {
-                            MySqlTableIndex idx = new MySqlTableIndex();
-                            this.exprParser.parseIndex(idx.getIndexDefinition());
-                            idx.setIndexType("CLUSTERED");
-                            idx.setParent(stmt);
-                            stmt.getTableElementList().add(idx);
-
-                            if (lexer.token() == Token.RPAREN) {
-                                break;
-                            } else if (lexer.token() == Token.COMMA) {
-                                lexer.nextToken();
-                                continue;
-                            }
-                        }
-                    }
-
-                    if (token == Token.IDENTIFIER) {
-                        SQLColumnDefinition column = this.exprParser.parseColumn(stmt);
-                        stmt.getTableElementList().add((SQLTableElement) column);
-                    } else if (token == Token.PRIMARY //
-                            || token == Token.UNIQUE //
-                            || token == Token.CHECK //
-                            || token == Token.CONSTRAINT
-                            || token == Token.FOREIGN) {
-                        SQLConstraint constraint = this.exprParser.parseConstaint();
-                        constraint.setParent(stmt);
-                        stmt.getTableElementList().add((SQLTableElement) constraint);
-                    } else if (lexer.token() == (Token.INDEX)) {
-                        MySqlTableIndex idx = new MySqlTableIndex();
-                        this.exprParser.parseIndex(idx.getIndexDefinition());
-
-                        idx.setParent(stmt);
-                        stmt.getTableElementList().add(idx);
-                    } else if (lexer.token() == (Token.KEY)) {
-                        Lexer.SavePoint savePoint = lexer.mark();
-                        lexer.nextToken();
-
-                        boolean isColumn = false;
-                        if (lexer.identifierEquals(Constants.VARCHAR)) {
-                            isColumn = true;
-                        }
-                        lexer.reset(savePoint);
-
-                        if (isColumn) {
-                            stmt.getTableElementList().add(this.exprParser.parseColumn());
-                        } else {
-                            SQLName name = null;
-                            if (lexer.token() == Token.IDENTIFIER) {
-                                name = this.exprParser.name();
-                            }
-
-                            MySqlKey key = new MySqlKey();
-                            this.exprParser.parseIndex(key.getIndexDefinition());
-
-                            if (name != null) {
-                                key.setName(name);
-                            }
-                            key.setParent(stmt);
-                            stmt.getTableElementList().add(key);
-                        }
-                        continue;
-                    }
-                    if (lexer.token == COMMA) {
-                        lexer.nextToken();
-                        continue;
-                    }
-                    break;
-                }
-                accept(Token.RPAREN);
-            }
-
-            for (; ; ) {
-                if (lexer.identifierEquals(Constants.DISTRIBUTED)) {
-                    lexer.nextToken();
-                    accept(Token.BY);
-                    if (lexer.identifierEquals(Constants.HASH)) {
-                        lexer.nextToken();
-                        accept(Token.LPAREN);
-                        for (; ; ) {
-                            SQLName name = this.exprParser.name();
-                            stmt.getDistributedBy().add(name);
-                            if (lexer.token() == Token.COMMA) {
-                                lexer.nextToken();
-                                continue;
-                            }
-                            break;
-                        }
-                        accept(Token.RPAREN);
-                        stmt.setDistributedByType(new SQLIdentifierExpr("HASH"));
-                    } else if (lexer.identifierEquals(Constants.DUPLICATE)) {
-                        lexer.nextToken();
-                        accept(Token.LPAREN);
-                        for (; ; ) {
-                            SQLName name = this.exprParser.name();
-                            stmt.getDistributedBy().add(name);
-                            if (lexer.token() == Token.COMMA) {
-                                lexer.nextToken();
-                                continue;
-                            }
-                            break;
-                        }
-                        accept(Token.RPAREN);
-                        stmt.setDistributedByType(new SQLIdentifierExpr("DUPLICATE"));
-                    } else if (lexer.identifierEquals(Constants.BROADCAST)) {
-                        lexer.nextToken();
-                        stmt.setDistributedByType(new SQLIdentifierExpr("BROADCAST"));
-                    }
-                    continue;
-                } else if (lexer.identifierEquals("INDEX_ALL")) {
-                    lexer.nextToken();
-                    accept(Token.EQ);
-                    if (lexer.token() == Token.LITERAL_CHARS) {
-                        if ("Y".equalsIgnoreCase(lexer.stringVal())) {
-                            lexer.nextToken();
-                            stmt.addOption("INDEX_ALL", new SQLCharExpr("Y"));
-                        } else if ("N".equalsIgnoreCase(lexer.stringVal())) {
-                            lexer.nextToken();
-                            stmt.addOption("INDEX_ALL", new SQLCharExpr("N"));
-                        } else {
-                            throw new ParserException("INDEX_ALL accept parameter ['Y' or 'N'] only.");
-                        }
-                    }
-                    continue;
-                } else if (lexer.identifierEquals(Constants.ENGINE)) {
-                    lexer.nextToken();
-                    if (lexer.token() == Token.EQ) {
-                        lexer.nextToken();
-                    }
-                    SQLExpr expr = this.exprParser.expr();
-                    stmt.addOption("ENGINE", expr);
-                    continue;
-                } else if (lexer.token == Token.PARTITION) {
-                    SQLPartitionBy partitionBy = this.exprParser.parsePartitionBy();
-                    stmt.setPartitionBy(partitionBy);
-                    continue;
-                } else if (lexer.token() == Token.COMMENT) {
-                    lexer.nextToken();
-                    if (lexer.token() == Token.EQ) {
-                        lexer.nextToken();
-                    }
-                    stmt.setComment(this.exprParser.expr());
-                    continue;
-                }
-                break;
-            }
-        } else if (dbType == DbType.odps) {
-            if (lexer.identifierEquals(Constants.LIFECYCLE)) {
-                lexer.nextToken();
-                stmt.setLifyCycle(
-                        this.exprParser.primary()
-                );
-            }
-
-            if (lexer.token == Token.PARTITIONED) {
-                lexer.nextToken();
-                accept(ON);
-                accept(LPAREN);
-                this.exprParser.names(stmt.getPartitionedOn(), stmt);
-                accept(RPAREN);
-            }
-        } else {
-            if (lexer.token == Token.PARTITION) {
-                SQLPartitionBy partitionBy = this.exprParser.parsePartitionBy();
-                stmt.setPartitionBy(partitionBy);
-            }
-        }
+        parseCreateMaterializedViewRest(stmt);
 
         for (; ; ) {
             if (exprParser instanceof OracleExprParser) {
@@ -4673,6 +4415,9 @@ public class SQLStatementParser extends SQLParser {
         return parseCreateDatabase();
     }
 
+    public void parseCreateTableSupportSchema() {
+        accept(Token.DATABASE);
+    }
     public SQLStatement parseCreateDatabase() {
         accept(CREATE);
         SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement(dbType);
@@ -4685,12 +4430,7 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
         }
 
-        if (lexer.token == Token.SCHEMA && (dbType == DbType.hive
-                || dbType == DbType.presto || dbType == DbType.trino)) {
-            lexer.nextToken();
-        } else {
-            accept(Token.DATABASE);
-        }
+        parseCreateTableSupportSchema();
 
         if (lexer.token == Token.IF || lexer.identifierEquals("IF")) {
             lexer.nextToken();
@@ -4935,6 +4675,8 @@ public class SQLStatementParser extends SQLParser {
         return new SQLSelectParser(exprParser);
     }
 
+    public void parseUpdateStatementPartition(SQLUpdateStatement updateStatement) {
+    }
     public SQLUpdateStatement parseUpdateStatement() {
         SQLUpdateStatement updateStatement = createUpdateStatement();
 
@@ -4945,11 +4687,7 @@ public class SQLStatementParser extends SQLParser {
             updateStatement.setTableSource(tableSource);
         }
 
-        if (dbType == DbType.odps && lexer.token == PARTITION) {
-            lexer.nextToken();
-            updateStatement.setPartitions(new ArrayList<>());
-            this.exprParser.parseAssignItem(updateStatement.getPartitions(), updateStatement);
-        }
+        parseUpdateStatementPartition(updateStatement);
 
         parseUpdateSet(updateStatement);
 
@@ -4961,12 +4699,12 @@ public class SQLStatementParser extends SQLParser {
         return updateStatement;
     }
 
+    protected void parseUpdateSetComma() {
+    }
     protected void parseUpdateSet(SQLUpdateStatement update) {
         accept(Token.SET);
 
-        if (lexer.token == COMMA && dbType == DbType.odps) {
-            lexer.nextToken();
-        }
+        parseUpdateSetComma();
 
         for (; ; ) {
             SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
@@ -5022,6 +4760,10 @@ public class SQLStatementParser extends SQLParser {
                 .parseCreateTable();
     }
 
+    public void parseCreateViewAfterName(SQLCreateViewStatement createView) {
+    }
+    public void parseCreateViewAtDataType(SQLColumnDefinition column, SQLName expr) {
+    }
     public SQLCreateViewStatement parseCreateView() {
         SQLCreateViewStatement createView = new SQLCreateViewStatement(getDbType());
 
@@ -5079,23 +4821,7 @@ public class SQLStatementParser extends SQLParser {
         }
 
         createView.setName(exprParser.name());
-
-        if (dbType == DbType.clickhouse) {
-            if (lexer.token == Token.ON) {
-                lexer.nextToken();
-                acceptIdentifier("CLUSTER");
-                createView.setOnCluster(true);
-            }
-
-            if (lexer.token == LITERAL_CHARS) {
-                SQLName to = this.exprParser.name();
-                createView.setTo(to);
-            } else if (lexer.token == TO) {
-                lexer.nextToken();
-                SQLName to = this.exprParser.name();
-                createView.setTo(to);
-            }
-        }
+        parseCreateViewAfterName(createView);
 
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
@@ -5112,9 +4838,7 @@ public class SQLStatementParser extends SQLParser {
                     SQLName expr = this.exprParser.name();
                     column.setName(expr);
 
-                    if (dbType == DbType.odps && expr.getSimpleName().startsWith("@")) {
-                        column.setDataType(this.exprParser.parseDataType());
-                    }
+                    parseCreateViewAtDataType(column, expr);
 
                     this.exprParser.parseColumnRest(column);
 
@@ -5251,22 +4975,11 @@ public class SQLStatementParser extends SQLParser {
         );
     }
 
+    protected boolean parseAlterTableAddColumnBefore() {
+        return false;
+    }
     protected SQLAlterTableAddColumn parseAlterTableAddColumn() {
-        boolean odps = DbType.odps == dbType || DbType.hive == dbType;
-
-        boolean columns = false;
-        if (odps) {
-            if (lexer.identifierEquals("COLUMNS")) {
-                lexer.nextToken();
-                if (lexer.token == LPAREN) {
-                    lexer.nextToken();
-                    columns = true;
-                }
-            } else if (lexer.token == LPAREN) {
-                lexer.nextToken();
-                columns = true;
-            }
-        }
+        boolean columns = parseAlterTableAddColumnBefore();
 
         SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
 
@@ -5296,7 +5009,7 @@ public class SQLStatementParser extends SQLParser {
             break;
         }
 
-        if (odps && columns) {
+        if (columns) {
             accept(Token.RPAREN);
         }
 
@@ -5373,6 +5086,11 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
+    public void parseExplainFormatPartition(SQLExplainStatement explain) {
+    }
+
+    public void parseExplainFormatType(SQLExplainStatement explain) {
+    }
     public SQLExplainStatement parseExplain() {
         accept(Token.EXPLAIN);
         if (lexer.identifierEquals("PLAN")) {
@@ -5409,32 +5127,9 @@ public class SQLStatementParser extends SQLParser {
             explain.setAuthorization(true);
         }
 
-        if (DbType.mysql == dbType) {
-            if (lexer.identifierEquals("FORMAT")
-                    || lexer.identifierEquals("PARTITIONS")) {
-                explain.setType(lexer.stringVal);
-                lexer.nextToken();
-            }
-        }
-
-        if (DbType.mysql == dbType || DbType.ads == dbType || DbType.presto == dbType || DbType.trino == dbType) {
-            if (lexer.token == Token.LPAREN) {
-                lexer.nextToken();
-
-                if (lexer.identifierEquals("FORMAT")) {
-                    lexer.nextToken();
-                    lexer.nextToken();
-                } else if (lexer.identifierEquals("TYPE")) {
-                    lexer.nextToken();
-                    lexer.nextToken();
-                }
-
-                accept(Token.RPAREN);
-            }
-        }
-
+        parseExplainFormatPartition(explain);
+        parseExplainFormatType(explain);
         explain.setStatement(parseStatement());
-
         return explain;
     }
 
@@ -6015,6 +5710,9 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
+    protected void parseWithQuerySkip() {
+    }
+
     public SQLWithSubqueryClause parseWithQuery() {
         SQLWithSubqueryClause withQueryClause = new SQLWithSubqueryClause();
         if (lexer.hasComment() && lexer.isKeepComments()) {
@@ -6049,14 +5747,7 @@ public class SQLStatementParser extends SQLParser {
                     }
 
                     SQLName name = exprParser.name();
-                    if (dbType == DbType.odps) {
-                        if (lexer.identifierEquals(Constants.STRING)
-                                || lexer.identifierEquals(Constants.INT)
-                                || lexer.identifierEquals(Constants.BIGINT)
-                        ) {
-                            lexer.nextToken(); // skip
-                        }
-                    }
+                    parseWithQuerySkip();
                     name.setParent(entry);
                     entry.getColumns().add(name);
                     if (lexer.token == COMMA) {

@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
@@ -951,9 +953,27 @@ public class MySqlLexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
-        this.lexerSettings.setEnableNextTokenPrefixN(true);
-        this.lexerSettings.setEnableScanString2PutDoubleBackslash(true);
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(
+                NextTokenPrefixN,
+                ScanString2PutDoubleBackslash,
+                JoinRightTableWith,
+                PostNaturalJoin,
+                MultipleJoinOn,
+                GroupByPostDesc,
+                GroupByItemOrder,
+                SQLDateExpr,
+                PrimaryLbraceOdbcEscape,
+                ParseSelectItemPrefixX,
+                ParseStatementListUpdatePlanCache,
+                ParseStatementListRollbackReturn,
+                ParseStatementListCommitReturn,
+                ParseDropTableTables,
+                AsSequence
+        );
+        this.dialectFeature.unconfigFeature(
+                AdditiveRestPipesAsConcat
+        );
     }
 }

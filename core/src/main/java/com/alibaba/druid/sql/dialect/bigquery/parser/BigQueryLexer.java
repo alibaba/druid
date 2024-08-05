@@ -9,6 +9,8 @@ import com.alibaba.druid.sql.parser.Token;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.SQLDateExpr;
+
 public class BigQueryLexer extends Lexer {
     @Override
     protected Keywords loadKeywords() {
@@ -132,5 +134,11 @@ public class BigQueryLexer extends Lexer {
             }
         }
         super.scanAlias();
+    }
+
+    @Override
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(SQLDateExpr);
     }
 }

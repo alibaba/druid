@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
@@ -250,7 +252,7 @@ public class HiveLexer extends Lexer {
             bufPos = 0;
             scanChar();
 
-            if (this.lexerSettings.isEnableScanHiveCommentDoubleSpace() && ch == ' ') {
+            if (dialectFeatureEnabled(ScanHiveCommentDoubleSpace) && ch == ' ') {
                 mark = pos;
                 bufPos = 0;
                 scanChar();
@@ -380,10 +382,25 @@ public class HiveLexer extends Lexer {
     }
 
     @Override
-    protected void initLexerSettings() {
-        super.initLexerSettings();
-        this.lexerSettings.setEnableScanSQLTypeWithFrom(true);
-        this.lexerSettings.setEnableNextTokenColon(true);
-        this.lexerSettings.setEnableScanAliasU(true);
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(
+                ScanSQLTypeWithFrom,
+                NextTokenColon,
+                ScanAliasU,
+                JoinRightTableFrom,
+                GroupByAll,
+                SQLDateExpr,
+                ParseAssignItemRparenCommaSetReturn,
+                TableAliasLock,
+                TableAliasPartition,
+                AsSkip,
+                AsSequence,
+                AsDatabase,
+                AsDefault
+        );
+        this.dialectFeature.unconfigFeature(
+                PrimaryBangBangSupport
+        );
     }
 }
