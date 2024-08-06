@@ -38,6 +38,17 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         super(appender, parameterized);
     }
 
+    @Override
+    protected void printEngine(SQLCreateTableStatement x) {
+        if (x instanceof StarRocksCreateTableStatement) {
+            SQLExpr engine = ((StarRocksCreateTableStatement) x).getEngine();
+            if (engine != null) {
+                print0(ucase ? " ENGINE = " : " engine = ");
+                engine.accept(this);
+            }
+        }
+    }
+
     public boolean visit(StarRocksCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
 

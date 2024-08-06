@@ -190,7 +190,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             if (lexer.token() == Token.EQ) {
                 lexer.nextToken();
             }
-            stmt.setEngine(
+            srStmt.setEngine(
                     this.exprParser.expr()
             );
         }

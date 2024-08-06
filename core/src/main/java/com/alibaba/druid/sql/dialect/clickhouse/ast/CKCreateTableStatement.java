@@ -22,6 +22,7 @@ public class CKCreateTableStatement extends SQLCreateTableStatement {
 
     private SQLExpr ttl;
     private String onClusterName;
+    private SQLExpr engine;
 
     public CKCreateTableStatement() {
         super(DbType.clickhouse);
@@ -95,6 +96,17 @@ public class CKCreateTableStatement extends SQLCreateTableStatement {
 
     public void setOnClusterName(String onClusterName) {
         this.onClusterName = onClusterName;
+    }
+
+    public SQLExpr getEngine() {
+        return engine;
+    }
+
+    public void setEngine(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.engine = x;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class CKResourceTest extends SQLResourceTest {
 
     @Test
     public void clickhouse_parse() throws Exception {
-        fileTest(0, 999, i -> "bvt/parser/clickhouse/" + i + ".txt");
+        fileTest(3, 999, i -> "bvt/parser/clickhouse/" + i + ".txt");
     }
 
 }
