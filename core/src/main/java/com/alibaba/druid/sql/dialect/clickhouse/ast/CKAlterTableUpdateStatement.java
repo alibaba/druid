@@ -4,7 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -41,8 +41,8 @@ public class CKAlterTableUpdateStatement extends CKAlterTableStatement {
 
     @Override
     protected void accept0(SQLASTVisitor v) {
-        if (v instanceof CKVisitor) {
-            CKVisitor vv = (CKVisitor) v;
+        if (v instanceof CKASTVisitor) {
+            CKASTVisitor vv = (CKASTVisitor) v;
             if (vv.visit(this)) {
                 acceptChild(vv, this.getTableName());
                 acceptChild(vv, this.getClusterName());

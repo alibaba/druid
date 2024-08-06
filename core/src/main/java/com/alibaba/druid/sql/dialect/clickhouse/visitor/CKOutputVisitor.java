@@ -13,7 +13,7 @@ import com.alibaba.druid.util.StringUtils;
 
 import java.util.List;
 
-public class CKOutputVisitor extends SQLASTOutputVisitor implements CKVisitor {
+public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor {
     public CKOutputVisitor(StringBuilder appender) {
         super(appender, DbType.clickhouse);
     }

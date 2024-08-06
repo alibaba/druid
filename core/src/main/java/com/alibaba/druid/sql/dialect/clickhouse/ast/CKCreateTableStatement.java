@@ -6,7 +6,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -99,8 +99,8 @@ public class CKCreateTableStatement extends SQLCreateTableStatement {
 
     @Override
     protected void accept0(SQLASTVisitor v) {
-        if (v instanceof CKVisitor) {
-            CKVisitor vv = (CKVisitor) v;
+        if (v instanceof CKASTVisitor) {
+            CKASTVisitor vv = (CKASTVisitor) v;
             if (vv.visit(this)) {
                 acceptChild(vv);
             }
