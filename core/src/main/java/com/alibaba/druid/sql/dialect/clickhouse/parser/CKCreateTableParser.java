@@ -28,7 +28,7 @@ public class CKCreateTableParser extends SQLCreateTableParser {
             if (lexer.token() == Token.EQ) {
                 lexer.nextToken();
             }
-            stmt.setEngine(
+            ckStmt.setEngine(
                     this.exprParser.expr()
             );
         }

@@ -401,8 +401,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     protected void printFrom(SQLSelectQueryBlock x) {
         println();
         print0(ucase ? "FROM " : "from ");
-        if (x.getCommentsAfaterFrom() != null) {
-            printAfterComments(x.getCommentsAfaterFrom());
+        if (x.getCommentsAfterFrom() != null) {
+            printAfterComments(x.getCommentsAfterFrom());
             println();
         }
         SQLTableSource from = x.getFrom();

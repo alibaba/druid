@@ -72,7 +72,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected boolean replace;
     protected boolean ignore;
     protected boolean single; // polardbx
-    protected SQLExpr engine;
 
     protected SQLExpr lifeCycle;
 
@@ -1626,17 +1625,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
 
         return false;
-    }
-
-    public SQLExpr getEngine() {
-        return engine;
-    }
-
-    public void setEngine(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.engine = x;
     }
 
     public DDLObjectType getDDLObjectType() {

@@ -300,4 +300,15 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
             }
         }
     }
+
+    @Override
+    protected void printEngine(SQLCreateTableStatement x) {
+        if (x instanceof CKCreateTableStatement) {
+            SQLExpr engine = ((CKCreateTableStatement) x).getEngine();
+            if (engine != null) {
+                print0(ucase ? " ENGINE = " : " engine = ");
+                engine.accept(this);
+            }
+        }
+    }
 }

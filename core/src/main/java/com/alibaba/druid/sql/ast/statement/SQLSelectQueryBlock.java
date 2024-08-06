@@ -34,7 +34,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     protected final List<SQLSelectItem> selectList = new ArrayList<SQLSelectItem>();
 
     protected SQLTableSource from;
-    protected List<String> commentsAfaterFrom;
+    protected List<String> commentsAfterFrom;
 
     protected SQLExprTableSource into;
     protected SQLExpr where;
@@ -497,12 +497,12 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         this.setFrom(new SQLSelect(queryBlock), alias);
     }
 
-    public List<String> getCommentsAfaterFrom() {
-        return commentsAfaterFrom;
+    public List<String> getCommentsAfterFrom() {
+        return commentsAfterFrom;
     }
 
-    public void setCommentsAfaterFrom(List<String> commentsAfaterFrom) {
-        this.commentsAfaterFrom = commentsAfaterFrom;
+    public void setCommentsAfterFrom(List<String> commentsAfterFrom) {
+        this.commentsAfterFrom = commentsAfterFrom;
     }
 
     public void setFrom(SQLSelect select, String alias) {

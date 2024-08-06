@@ -2642,8 +2642,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 && ((SQLLateralViewTableSource) from).getTableSource() == null;
         if (!printFrom) {
             print0(ucase ? "FROM " : "from ");
-            if (x.getCommentsAfaterFrom() != null) {
-                printAfterComments(x.getCommentsAfaterFrom());
+            if (x.getCommentsAfterFrom() != null) {
+                printAfterComments(x.getCommentsAfterFrom());
                 println();
             }
         }
@@ -3799,6 +3799,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print(')');
     }
 
+    protected void printEngine(SQLCreateTableStatement x) {
+    }
+
     public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, false);
 
@@ -3817,13 +3820,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "TABLESPACE " : "tablespace ");
             tablespace.accept(this);
         }
-
-        SQLExpr engine = x.getEngine();
-        if (engine != null) {
-            print0(ucase ? " ENGINE = " : " engine = ");
-            engine.accept(this);
-        }
-
+        printEngine(x);
         SQLSelect select = x.getSelect();
         if (select != null) {
             println();

@@ -1149,7 +1149,7 @@ public class SQLSelectParser extends SQLParser {
 
         lexer.nextToken();
         if (lexer.hasComment()) {
-            queryBlock.setCommentsAfaterFrom(lexer.readAndResetComments());
+            queryBlock.setCommentsAfterFrom(lexer.readAndResetComments());
         }
         queryBlock.setFrom(
                 parseTableSource(true));

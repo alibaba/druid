@@ -1406,8 +1406,8 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         println();
         print0(ucase ? "FROM " : "from ");
         if (x.getFrom() != null) {
-            if (x.getCommentsAfaterFrom() != null) {
-                printAfterComments(x.getCommentsAfaterFrom());
+            if (x.getCommentsAfterFrom() != null) {
+                printAfterComments(x.getCommentsAfterFrom());
                 println();
             }
             x.getFrom().accept(this);

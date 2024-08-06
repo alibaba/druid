@@ -31,6 +31,7 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
     protected boolean lessThan;
     protected boolean fixedRange;
     protected boolean startEnd;
+    protected SQLExpr engine;
 
     protected final List<SQLExpr> orderBy = new ArrayList<>();
 
@@ -185,6 +186,17 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
 
     public List<SQLExpr> getPartitionBy() {
         return partitionBy;
+    }
+
+    public SQLExpr getEngine() {
+        return engine;
+    }
+
+    public void setEngine(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.engine = x;
     }
 
     @Override
