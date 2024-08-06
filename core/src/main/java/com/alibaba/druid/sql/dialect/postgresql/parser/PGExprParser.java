@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.ast.SQLCurrentTimeExpr;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -221,24 +219,6 @@ public class PGExprParser extends SQLExprParser {
     protected void parseDataTypeDouble(StringBuilder typeName) {
         typeName.append(' ').append(lexer.stringVal());
         lexer.nextToken();
-    }
-
-    @Override
-    protected void parseAssignItemOnComma(SQLExpr sqlExpr, SQLAssignItem item, SQLObject parent) {
-        if (lexer.token() == Token.COMMA) {
-            SQLListExpr listExpr = new SQLListExpr();
-            listExpr.addItem(sqlExpr);
-            sqlExpr.setParent(listExpr);
-            do {
-                lexer.nextToken();
-                SQLExpr listItem = this.expr();
-                listItem.setParent(listExpr);
-                listExpr.addItem(listItem);
-            } while (lexer.token() == Token.COMMA);
-            item.setValue(listExpr);
-        } else {
-            item.setValue(sqlExpr);
-        }
     }
 
     @Override

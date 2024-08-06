@@ -16,6 +16,20 @@ CREATE TABLE IF NOT EXISTS test_dim_segment (
 )
 PARTITION BY LIST (ds);
 ------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE distributors (
+    did     integer,
+    name    varchar(40)
+)
+WITH (fillfactor=70);
+--------------------
+CREATE TABLE distributors (
+	did integer,
+	name varchar(40)
+)
+WITH (
+	fillfactor = 70
+);
+------------------------------------------------------------------------------------------------------------------------
 MERGE INTO CustomerAccount CA
 USING (Select CustomerId, TransactionValue From RecentTransactions) AS T
 ON CA.CustomerId = T.CustomerId

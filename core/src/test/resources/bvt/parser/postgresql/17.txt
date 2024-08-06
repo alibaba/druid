@@ -373,7 +373,7 @@ CREATE TABLE "public"."city" (
 	"name" varchar(32) NOT NULL
 )
 WITH (
-	'OIDS' = false
+	OIDS = false
 );
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE KTV.KTV_FUNCTION_ROLE_20151211 (
