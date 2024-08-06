@@ -2880,4 +2880,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     protected boolean legacyCube() {
         return true;
     }
+
+    protected void printTableOption(SQLExpr name, SQLExpr value, int index) {
+        if (index != 0) {
+            print(",");
+            println();
+        }
+        String key = name.toString();
+        print0(key);
+        print0(" = ");
+        value.accept(this);
+    }
 }
