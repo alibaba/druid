@@ -1,7 +1,7 @@
 package com.alibaba.druid.sql.dialect.clickhouse.ast;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKVisitor;
+import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class ClickhouseColumnTTL extends ClickhouseColumnConstraint{
@@ -20,8 +20,8 @@ public class ClickhouseColumnTTL extends ClickhouseColumnConstraint{
 
     @Override
     protected void accept0(SQLASTVisitor v) {
-        if (v instanceof CKVisitor) {
-            CKVisitor vv = (CKVisitor) v;
+        if (v instanceof CKASTVisitor) {
+            CKASTVisitor vv = (CKASTVisitor) v;
             if (vv.visit(this)) {
                 acceptChild(vv, expr);
             }

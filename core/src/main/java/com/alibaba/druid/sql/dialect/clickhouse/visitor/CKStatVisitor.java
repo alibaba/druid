@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class CKStatVisitor extends SchemaStatVisitor implements CKVisitor {
+public class CKStatVisitor extends SchemaStatVisitor implements CKASTVisitor {
     {
         dbType = DbType.spark;
     }
