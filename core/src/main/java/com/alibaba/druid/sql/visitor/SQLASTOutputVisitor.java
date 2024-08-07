@@ -3842,6 +3842,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         partitionBy.accept(this);
     }
 
+    protected void printSortedBy(List<SQLSelectOrderByItem> sortedBy) {
+        if (sortedBy.size() > 0) {
+            println();
+            print0(ucase ? "SORTED BY (" : "sorted by (");
+            printAndAccept(sortedBy, ", ");
+            print(')');
+        }
+    }
+
     protected void printClusteredBy(SQLCreateTableStatement x) {
         List<SQLSelectOrderByItem> clusteredBy = x.getClusteredBy();
         if (clusteredBy.isEmpty()) {
@@ -5936,12 +5945,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
-        if (sortedBy.size() > 0) {
-            println();
-            print0(ucase ? "SORTED BY (" : "sorted by (");
-            printAndAccept(sortedBy, ", ");
-            print(')');
-        }
+        printSortedBy(sortedBy);
 
         int buckets = x.getBuckets();
         if (buckets > 0) {
@@ -7894,10 +7898,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isKey()) {
             print0(ucase ? "KEY" : "key");
         }
-
-        print('(');
-        printAndAccept(x.getColumns(), ", ");
-        print(')');
+        if (!x.getColumns().isEmpty()) {
+            print('(');
+            printAndAccept(x.getColumns(), ", ");
+            print(')');
+        }
 
         printPartitionsCountAndSubPartitions(x);
 
@@ -7921,7 +7926,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    private void printSQLPartitions(List<SQLPartition> partitions) {
+    protected void printSQLPartitions(List<SQLPartition> partitions) {
         int partitionsSize = partitions.size();
         if (partitionsSize > 0) {
             print0(" (");

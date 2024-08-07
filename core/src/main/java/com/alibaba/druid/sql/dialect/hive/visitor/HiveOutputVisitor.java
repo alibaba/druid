@@ -519,10 +519,12 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
 
     @Override
     public boolean visit(SQLCreateTableStatement x) {
-        printCreateTable((HiveCreateTableStatement) x, true);
+        printCreateTable((HiveCreateTableStatement) x, true, true);
         return false;
     }
-    protected void printCreateTable(HiveCreateTableStatement x, boolean printSelect) {
+
+    protected void printCreateTable(HiveCreateTableStatement x, boolean printSelect,
+                                    boolean printCommentAdvance) {
         final SQLObject parent = x.getParent();
 
         if (x.hasBeforeComment()) {
@@ -561,7 +563,9 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             using.accept(this);
         }
 
-        printComment(x.getComment());
+        if (printCommentAdvance) {
+            printComment(x.getComment());
+        }
 
         List<SQLAssignItem> mappedBy = x.getMappedBy();
         if (mappedBy != null && mappedBy.size() > 0) {
@@ -581,12 +585,7 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             print(')');
         }
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
-        if (sortedBy.size() > 0) {
-            println();
-            print0(ucase ? "SORTED BY (" : "sorted by (");
-            printAndAccept(sortedBy, ", ");
-            print(')');
-        }
+        printSortedBy(sortedBy);
         int buckets = x.getBuckets();
         if (buckets > 0) {
             println();
@@ -611,7 +610,10 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
                 print(ucase ? " STORED AS DIRECTORIES" : " stored as directories");
             }
         }
-
+        if (!printCommentAdvance) {
+            printComment(x.getComment());
+        }
+        printPartitionBy(x);
         SQLExternalRecordFormat format = x.getRowFormat();
         SQLExpr storedBy = x.getStoredBy();
         if (format != null) {
@@ -665,6 +667,7 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             printExpr(location, parameterized);
         }
 
+        printCached(x);
         printTableOptions(x);
         printLifeCycle(x.getLifeCycle());
 
@@ -680,5 +683,9 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             println();
             visit(select);
         }
+    }
+
+    protected void printCached(SQLCreateTableStatement x) {
+        // do nothing
     }
 }

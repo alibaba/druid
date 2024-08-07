@@ -25,6 +25,9 @@ public class SQLPartitionValue extends OracleSegmentAttributesImpl {
     protected Operator operator;
     protected final List<SQLExpr> items = new ArrayList<SQLExpr>();
 
+    public SQLPartitionValue() {
+    }
+
     public SQLPartitionValue(Operator operator) {
         super();
         this.operator = operator;
@@ -45,8 +48,10 @@ public class SQLPartitionValue extends OracleSegmentAttributesImpl {
         return operator;
     }
 
-    public static enum Operator {
+    public enum Operator {
         LessThan,
+        LessThanEqual,
+        Equal,
         In,
         List
     }

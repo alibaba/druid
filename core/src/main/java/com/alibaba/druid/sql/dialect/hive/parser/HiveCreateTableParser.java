@@ -399,7 +399,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         }
     }
 
-    private void parseSortedBy(HiveCreateTableStatement stmt) {
+    protected void parseSortedBy(HiveCreateTableStatement stmt) {
         lexer.nextToken();
         accept(Token.BY);
         accept(Token.LPAREN);
@@ -415,7 +415,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         accept(Token.RPAREN);
     }
 
-    private void parseRowFormat(HiveCreateTableStatement stmt) {
+    protected void parseRowFormat(HiveCreateTableStatement stmt) {
         SQLExternalRecordFormat format = this.getExprParser().parseRowFormat();
         stmt.setRowFormat(format);
         parseCreateTableWithSerderPropertie(stmt);

@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.impala.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveSelectParser;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -20,5 +21,10 @@ public class ImpalaStatementParser extends HiveStatementParser {
 
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new ImpalaCreateTableParser(this.exprParser);
+    }
+
+    public SQLCreateTableStatement parseCreateTable() {
+        SQLCreateTableParser parser = new ImpalaCreateTableParser(this.exprParser);
+        return parser.parseCreateTable();
     }
 }
