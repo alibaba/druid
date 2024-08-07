@@ -1,0 +1,72 @@
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY HASH PARTITIONS 16
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY HASH  PARTITIONS 16
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY HASH (`id`) PARTITIONS 16
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY HASH (`id`) PARTITIONS 16
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY HASH (`id`,`name`) PARTITIONS 16
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY HASH (`id`, `name`) PARTITIONS 16
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)
+
