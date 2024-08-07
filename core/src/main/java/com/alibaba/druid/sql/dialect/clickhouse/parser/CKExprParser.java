@@ -30,8 +30,10 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
+import com.google.common.collect.Lists;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.alibaba.druid.sql.parser.Token.LPAREN;
 import static com.alibaba.druid.sql.parser.Token.RPAREN;
@@ -39,6 +41,7 @@ import static com.alibaba.druid.sql.parser.Token.RPAREN;
 public class CKExprParser extends SQLExprParser {
     private static final String[] AGGREGATE_FUNCTIONS;
     private static final long[] AGGREGATE_FUNCTIONS_CODES;
+    private static final List<String> NESTED_DATA_TYPE;
 
     static {
         String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
@@ -50,6 +53,7 @@ public class CKExprParser extends SQLExprParser {
             int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
             AGGREGATE_FUNCTIONS[index] = str;
         }
+        NESTED_DATA_TYPE = Lists.newArrayList("array", "tuple", "nullable", "lowcardinality", "variant");
     }
 
     public CKExprParser(String sql) {
@@ -66,6 +70,7 @@ public class CKExprParser extends SQLExprParser {
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
+        this.nestedDataType = NESTED_DATA_TYPE;
     }
 
     protected SQLExpr parseAliasExpr(String alias) {

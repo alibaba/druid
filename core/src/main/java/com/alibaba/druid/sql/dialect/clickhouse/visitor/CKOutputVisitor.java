@@ -311,4 +311,19 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
             }
         }
     }
+
+    @Override
+    public boolean visit(SQLMapDataType x) {
+        print0(ucase ? "MAP(" : "map(");
+
+        SQLDataType keyType = x.getKeyType();
+        SQLDataType valueType = x.getValueType();
+
+        keyType.accept(this);
+        print0(", ");
+
+        valueType.accept(this);
+        print(')');
+        return false;
+    }
 }

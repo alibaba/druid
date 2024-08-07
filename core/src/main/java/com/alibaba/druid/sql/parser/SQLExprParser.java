@@ -31,6 +31,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
@@ -40,6 +41,7 @@ public class SQLExprParser extends SQLParser {
     public static final String[] AGGREGATE_FUNCTIONS;
 
     public static final long[] AGGREGATE_FUNCTIONS_CODES;
+    private static final List<String> NESTED_DATA_TYPE;
 
     static {
         String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM"};
@@ -50,11 +52,12 @@ public class SQLExprParser extends SQLParser {
             int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
             AGGREGATE_FUNCTIONS[index] = str;
         }
+        NESTED_DATA_TYPE = Collections.singletonList("array");
     }
 
     protected String[] aggregateFunctions = AGGREGATE_FUNCTIONS;
-
     protected long[] aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
+    protected List<String> nestedDataType = NESTED_DATA_TYPE;
 
     protected boolean allowIdentifierMethod = true;
 
@@ -2138,6 +2141,9 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final void exprList(Collection<SQLExpr> exprCol, SQLObject parent) {
+        exprList(exprCol, parent, false);
+    }
+    public final void exprList(Collection<SQLExpr> exprCol, SQLObject parent, boolean isNestDataType) {
         if (lexer.token == Token.RPAREN
                 || lexer.token == Token.RBRACKET
                 || lexer.token == Token.SEMI) {
@@ -2150,7 +2156,7 @@ public class SQLExprParser extends SQLParser {
 
         for (; ; ) {
             SQLExpr expr;
-            if (lexer.token == Token.ROW && parent instanceof SQLDataType) {
+            if ((lexer.token == Token.ROW || (isNestDataType && lexer.token == IDENTIFIER)) && parent instanceof SQLDataType) {
                 SQLDataType dataType = this.parseDataType();
                 expr = new SQLDataTypeRefExpr(dataType);
             } else {
@@ -4101,7 +4107,7 @@ public class SQLExprParser extends SQLParser {
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
                 SQLArrayDataType array = new SQLArrayDataType(null, dbType);
-                this.exprList(array.getArguments(), array);
+                this.exprList(array.getArguments(), array, true);
                 accept(Token.RPAREN);
                 return array;
             }
@@ -4121,7 +4127,7 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
-                this.exprList(array.getArguments(), array);
+                this.exprList(array.getArguments(), array, true);
                 accept(Token.RPAREN);
             }
 
@@ -4434,10 +4440,18 @@ public class SQLExprParser extends SQLParser {
         return struct;
     }
 
+    protected void parseDataTypeParams(Collection<SQLExpr> exprCol, SQLDataType parent) {
+        if (nestedDataType.contains(parent.getName().toLowerCase())) {
+            exprList(exprCol, parent, true);
+        } else {
+            exprList(exprCol, parent);
+        }
+    }
+
     protected SQLDataType parseDataTypeRest(SQLDataType dataType) {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
-            exprList(dataType.getArguments(), dataType);
+            parseDataTypeParams(dataType.getArguments(), dataType);
             accept(Token.RPAREN);
         }
 
