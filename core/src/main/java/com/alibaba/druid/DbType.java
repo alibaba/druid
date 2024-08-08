@@ -82,6 +82,8 @@ public enum DbType {
 
     impala(1L << 49),
 
+    lealone(1L << 50),
+
     ingres(0),
     cloudscape(0),
     timesten(0),
