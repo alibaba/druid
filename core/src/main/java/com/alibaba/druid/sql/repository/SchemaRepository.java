@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
@@ -713,11 +712,6 @@ public class SchemaRepository {
             return false;
         }
 
-        public boolean visit(HiveCreateTableStatement x) {
-            acceptCreateTable(x);
-            return false;
-        }
-
         public boolean visit(MySqlCreateTableStatement x) {
             acceptCreateTable(x);
             return false;
@@ -912,11 +906,6 @@ public class SchemaRepository {
         }
 
         public boolean visit(SQLCreateTableStatement x) {
-            acceptCreateTable(x);
-            return false;
-        }
-
-        public boolean visit(HiveCreateTableStatement x) {
             acceptCreateTable(x);
             return false;
         }
