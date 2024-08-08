@@ -29,7 +29,6 @@ import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
@@ -1573,11 +1572,6 @@ public class SQLUtils {
                     }
 
                     @Override
-                    public boolean visit(HiveCreateTableStatement x) {
-                        return false;
-                    }
-
-                    @Override
                     public boolean visit(OdpsCreateTableStatement x) {
                         return false;
                     }
@@ -1626,11 +1620,6 @@ public class SQLUtils {
 
                     @Override
                     public boolean visit(SQLCreateTableStatement x) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean visit(HiveCreateTableStatement x) {
                         return false;
                     }
 

@@ -45,3 +45,26 @@ TBLPROPERTIES (
 	'parquet.compression' = 'snappy',
 	'transient_lastDdlTime' = '1603362950'
 )
+------------------------------------------------------------------------------------------------------------------------
+create external table if not exists test.test (
+  key string,
+) row format serde 'org.apache.hadoop.hive.hbase.HBaseSerDe' stored by 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+with
+  serdeproperties (
+    'hbase.columns.mapping' = ':key,1111'
+  ) tblproperties (
+    'hbase.table.name' = '11111'
+  )
+--------------------  
+CREATE EXTERNAL TABLE IF NOT EXISTS test.test (
+	key string
+)
+ROW FORMAT
+	SERDE 'org.apache.hadoop.hive.hbase.HBaseSerDe'
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES (
+	'hbase.columns.mapping' = ':key,1111'
+)
+TBLPROPERTIES (
+	'hbase.table.name' = '11111'
+)

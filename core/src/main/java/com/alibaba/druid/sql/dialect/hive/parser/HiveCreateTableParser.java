@@ -100,6 +100,30 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         }
     }
 
+    protected void parseCreateTableWithSerderPropertie(HiveCreateTableStatement stmt) {
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            acceptIdentifier("SERDEPROPERTIES");
+
+            accept(Token.LPAREN);
+
+            for (; ; ) {
+                String key = lexer.stringVal();
+                lexer.nextToken();
+                accept(Token.EQ);
+                SQLExpr value = this.exprParser.primary();
+                stmt.getSerdeProperties().put(key, value);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+
+            accept(Token.RPAREN);
+        }
+    }
+
     protected void parseCreateTableRest(SQLCreateTableStatement createTable) {
         HiveCreateTableStatement stmt = (HiveCreateTableStatement) createTable;
         if (lexer.nextIfIdentifier(FnvHash.Constants.ENGINE)) {
@@ -242,6 +266,8 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
                 accept(Token.BY);
                 SQLName name = this.exprParser.name();
                 stmt.setStoredBy(name);
+
+                parseCreateTableWithSerderPropertie(stmt);
             } else {
                 accept(Token.AS);
 
@@ -392,28 +418,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
     private void parseRowFormat(HiveCreateTableStatement stmt) {
         SQLExternalRecordFormat format = this.getExprParser().parseRowFormat();
         stmt.setRowFormat(format);
-
-        if (lexer.token() == Token.WITH) {
-            lexer.nextToken();
-            acceptIdentifier("SERDEPROPERTIES");
-
-            accept(Token.LPAREN);
-
-            for (; ; ) {
-                String name = lexer.stringVal();
-                lexer.nextToken();
-                accept(Token.EQ);
-                SQLExpr value = this.exprParser.primary();
-                stmt.getSerdeProperties().put(name, value);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-                break;
-            }
-
-            accept(Token.RPAREN);
-        }
+        parseCreateTableWithSerderPropertie(stmt);
     }
 
     @Override
