@@ -158,6 +158,7 @@ public class SQLParserUtils {
             case jtds:
                 return new SQLServerStatementParser(sql, features);
             case h2:
+            case lealone:
                 return new H2StatementParser(sql, features);
             case blink:
                 return new BlinkStatementParser(sql, features);
@@ -208,6 +209,7 @@ public class SQLParserUtils {
                 return parser;
             }
             case h2:
+            case lealone:
                 return new H2ExprParser(sql, features);
             case postgresql:
             case greenplum:
@@ -270,6 +272,7 @@ public class SQLParserUtils {
                 return lexer;
             }
             case h2:
+            case lealone:
                 return new H2Lexer(sql, features);
             case postgresql:
             case greenplum:

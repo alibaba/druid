@@ -134,6 +134,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             case mariadb:
             case tidb:
             case h2:
+            case lealone:
             case presto:
             case trino:
                 if (config == null) {

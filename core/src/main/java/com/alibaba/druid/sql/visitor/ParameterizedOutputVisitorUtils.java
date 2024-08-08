@@ -418,6 +418,7 @@ public class ParameterizedOutputVisitorUtils {
             case elastic_search:
                 return new MySqlOutputVisitor(out, true);
             case h2:
+            case lealone:
                 return new H2OutputVisitor(out, true);
             case informix:
                 return new InformixOutputVisitor(out, true);
