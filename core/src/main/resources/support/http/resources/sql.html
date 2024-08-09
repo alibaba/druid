@@ -38,6 +38,7 @@
                 <tr>
                     <th width="10">N</th>
                     <th><a id="th-SQL">SQL</a></th>
+                    <th><a id="th-Name">数据源</a></th>
                     <th width="50"><a id="th-ExecuteCount" class="lang" langKey="ExecuteCount">ExecCount</a></th>
                     <th width="60"><a id="th-TotalTime" class="lang" langKey="ExecuteTimeMillis">ExecTime</a></th>
                     <th width="50" class="langTitle" langKey="MaxTimespanDesc" title="Execute Time Millis Max"><a
@@ -178,6 +179,7 @@
                     html += "<tr>";
                     html += "<td>" + (i + 1) + "</td>";
                     html += "<td>" + '<a data-dismiss="alert"  title="' + newStatSQL + '" target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 60) + '</a>' + "</td>";
+                    html += "<td>" + replace(stat.Name) + "</td>";
                     html += "<td>" + replace(stat.ExecuteCount) + "</td>";
                     html += "<td>" + replace(stat.TotalTime) + "</td>";
 
