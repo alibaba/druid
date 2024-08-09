@@ -15,8 +15,6 @@ import java.util.List;
 public class CKCreateTableStatement extends SQLCreateTableStatement {
     protected final List<SQLAssignItem> settings = new ArrayList<SQLAssignItem>();
     private SQLOrderBy orderBy;
-    private SQLExpr partitionBy;
-
     private SQLPrimaryKey primaryKey;
     private SQLExpr sampleBy;
 
@@ -38,18 +36,6 @@ public class CKCreateTableStatement extends SQLCreateTableStatement {
         }
 
         this.orderBy = x;
-    }
-
-    public SQLExpr getPartitionBy() {
-        return partitionBy;
-    }
-
-    public void setPartitionBy(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-
-        this.partitionBy = x;
     }
 
     public SQLExpr getSampleBy() {

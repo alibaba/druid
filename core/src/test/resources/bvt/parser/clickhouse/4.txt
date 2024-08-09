@@ -65,3 +65,36 @@ CREATE TABLE db.replicated_orders ON CLUSTER test (
 ) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
 PARTITION BY order_date
 ORDER BY (order_date, customer_id, order_id)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE replicated_orders (
+                    order_id UInt64 CODEC(ZSTD),
+                    customer_id LowCardinality(UInt32),
+                    order_date Date,
+                    product_id LowCardinality(UInt32),
+                    quantity Int32,
+                    price Decimal(10, 2),
+                    array1 Array(UInt8),
+                    tuple1 Tuple(UInt8, String),
+                    map1 Map(String, UInt64),
+                    variant1 Variant(String, Array(UInt8)),
+                    null1 Nullable(String)
+                )
+                ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+                PARTITION BY order_date, quantity
+                ORDER BY (order_date, customer_id, order_id)
+--------------------
+CREATE TABLE replicated_orders (
+	order_id UInt64 CODEC(ZSTD),
+	customer_id LowCardinality(UInt32),
+	order_date Date,
+	product_id LowCardinality(UInt32),
+	quantity Int32,
+	price Decimal(10, 2),
+	array1 Array(UInt8),
+	tuple1 Tuple(UInt8, String),
+	map1 MAP(String, UInt64),
+	variant1 Variant(String, Array(UInt8)),
+	null1 Nullable(String)
+) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+PARTITION BY (order_date, quantity)
+ORDER BY (order_date, customer_id, order_id)            
