@@ -159,6 +159,7 @@ public class PagerUtils {
             case mariadb:
             case tidb:
             case h2:
+            case lealone:
             case ads:
             case clickhouse:
                 return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
