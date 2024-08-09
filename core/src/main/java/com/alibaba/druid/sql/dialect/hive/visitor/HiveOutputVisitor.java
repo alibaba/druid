@@ -518,9 +518,17 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
     }
 
     @Override
-    public boolean visit(SQLCreateTableStatement x) {
-        printCreateTable((HiveCreateTableStatement) x, true, true);
+    public boolean visit(HiveCreateTableStatement x) {
+        printCreateTable(x, true, true);
         return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        if (x instanceof HiveCreateTableStatement) {
+            return visit((HiveCreateTableStatement) x);
+        }
+        return super.visit(x);
     }
 
     protected void printCreateTable(HiveCreateTableStatement x, boolean printSelect,

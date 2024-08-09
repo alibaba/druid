@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateFunctionStatement;
+import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -72,5 +73,12 @@ public interface HiveASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(HiveAddJarStatement x) {
+    }
+
+    default boolean visit(HiveCreateTableStatement x) {
+        return true;
+    }
+
+    default void endVisit(HiveCreateTableStatement x) {
     }
 }

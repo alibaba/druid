@@ -12,7 +12,7 @@ import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 
 import java.util.List;
 
-public class ImpalaOutputVisitor extends HiveOutputVisitor {
+public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTVisitor {
     public ImpalaOutputVisitor(StringBuilder appender) {
         super(appender);
         dbType = DbType.impala;
@@ -58,11 +58,18 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor {
     }
 
     @Override
-    public boolean visit(SQLCreateTableStatement x) {
-        printCreateTable((ImpalaCreateTableStatement) x, true, false);
+    public boolean visit(ImpalaCreateTableStatement x) {
+        printCreateTable(x, true, false);
         return false;
     }
 
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        if (x instanceof ImpalaCreateTableStatement) {
+            return visit((ImpalaCreateTableStatement) x);
+        }
+        return super.visit(x);
+    }
     @Override
     protected void printSortedBy(List<SQLSelectOrderByItem> sortedBy) {
         if (sortedBy.size() > 0) {
