@@ -63,6 +63,15 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         super(appender, DbType.odps);
     }
 
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        if (x instanceof OdpsCreateTableStatement) {
+            return visit((OdpsCreateTableStatement) x);
+        }
+        return super.visit(x);
+    }
+
+    @Override
     public boolean visit(OdpsCreateTableStatement x) {
         List<SQLCommentHint> headHints = x.getHeadHintsDirect();
         if (headHints != null) {
