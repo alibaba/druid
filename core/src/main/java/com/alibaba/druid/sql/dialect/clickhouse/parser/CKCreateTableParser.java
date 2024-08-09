@@ -2,6 +2,8 @@ package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.sql.ast.SQLPartitionByList;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -21,6 +23,30 @@ public class CKCreateTableParser extends SQLCreateTableParser {
         return new CKCreateTableStatement();
     }
 
+    @Override
+    public SQLPartitionBy parsePartitionBy() {
+        lexer.nextToken();
+        accept(Token.BY);
+        SQLPartitionBy sqlPartitionBy = new SQLPartitionByList();
+        boolean hasParen = false;
+        if (lexer.nextIf(Token.LPAREN)) {
+            hasParen = true;
+        }
+        for (; ; ) {
+            sqlPartitionBy.addColumn(this.exprParser.expr());
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        if (hasParen) {
+            accept(Token.RPAREN);
+        }
+
+        return sqlPartitionBy;
+    }
+
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
         CKCreateTableStatement ckStmt = (CKCreateTableStatement) stmt;
         if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
@@ -34,10 +60,7 @@ public class CKCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.token() == Token.PARTITION) {
-            lexer.nextToken();
-            accept(Token.BY);
-            SQLExpr expr = this.exprParser.expr();
-            ckStmt.setPartitionBy(expr);
+            ckStmt.setPartitionBy(parsePartitionBy());
         }
 
         if (lexer.token() == Token.ORDER) {

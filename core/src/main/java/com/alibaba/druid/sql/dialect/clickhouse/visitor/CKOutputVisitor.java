@@ -88,15 +88,30 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
     }
 
     @Override
+    public boolean visit(SQLPartitionByList x) {
+        if (x.getColumns().size() == 1) {
+            x.getColumns().get(0).accept(this);
+        } else {
+            print('(');
+            printAndAccept(x.getColumns(), ", ");
+            print0(")");
+        }
+
+        printPartitionsCountAndSubPartitions(x);
+
+        printSQLPartitions(x.getPartitions());
+        return false;
+    }
+    @Override
     public boolean visit(CKCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
 
-        SQLExpr partitionBy = x.getPartitionBy();
-        if (partitionBy != null) {
-            println();
-            print0(ucase ? "PARTITION BY " : "partition by ");
-            partitionBy.accept(this);
-        }
+//        SQLPartitionBy partitionBy = x.getPartitioning();
+//        if (partitionBy != null) {
+//            println();
+//            print0(ucase ? "PARTITION BY " : "partition by ");
+//            partitionBy.accept(this);
+//        }
 
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {

@@ -3810,6 +3810,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "PARTITION OF " : "partition of ");
             partitionOf.accept(this);
         }
+        printEngine(x);
         printPartitionBy(x);
         printTableOptions(x);
 
@@ -3819,7 +3820,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "TABLESPACE " : "tablespace ");
             tablespace.accept(this);
         }
-        printEngine(x);
         SQLSelect select = x.getSelect();
         if (select != null) {
             println();
