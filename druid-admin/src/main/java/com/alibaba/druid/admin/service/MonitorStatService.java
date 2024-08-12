@@ -153,6 +153,10 @@ public class MonitorStatService implements DruidStatServiceMBean {
             return JSON.toJSONString(monitorProperties.getApplications());
         }
 
+        if (url.equals("/basic.json")){
+            return getBasicStatData();
+        }
+
         if (url.equals("/datasource.json")) {
             String serviceName = StringUtils.subString(url, "serviceName=", "&sql-");
             Integer id = StringUtils.subStringToInteger(url, "datasource-", ".");
@@ -223,6 +227,38 @@ public class MonitorStatService implements DruidStatServiceMBean {
         }
 
         return returnJSONResult(RESULT_CODE_ERROR, "Do not support this request, please contact with administrator.");
+    }
+
+    /**
+     * 获取首页数据
+     * @return basic.json数据
+     */
+    private String getBasicStatData() {
+        Map<String, ServiceNode> allNodeMap = getAllServiceNodeMap();
+
+        BasicResult lastResult = new BasicResult();
+        List<BasicResult.ContentBean> contentBeans = new ArrayList<>();
+        for (String nodeKey : allNodeMap.keySet()) {
+            ServiceNode serviceNode = allNodeMap.get(nodeKey);
+            String serviceName = serviceNode.getServiceName();
+
+            String url = "http://" + serviceNode.getAddress() + ":" + serviceNode.getPort() + "/druid/basic.json";
+            log.info("request url: " + url);
+            BasicResult basicResult = HttpUtil.get(url, lastResult.getClass());
+            if (basicResult != null){
+                List<BasicResult.ContentBean> content = basicResult.getContent();
+                if (content != null){
+                    for (BasicResult.ContentBean contentBean : content) {
+                        contentBean.setName(serviceName);
+                        contentBean.setServiceId(serviceNode.getId());
+                    }
+                    contentBeans.addAll(content);
+                }
+
+            }
+        }
+        lastResult.setContent(contentBeans);
+        return JSON.toJSONString(lastResult);
     }
 
     public static String returnJSONResult(int resultCode, Object content) {

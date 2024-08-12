@@ -5,86 +5,105 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+		<script src="js/doT.js" type="text/javascript" charset="utf8"></script>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
     	<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
-		
-    	<div class="container">
-          				<h3>
-          					Stat Index
-          					<a href="basic.json" target="_blank" class="lang" langKey="ViewJSONAPI">View JSON API</a>
-          				</h3>
+
+	<div class="container">
+		<div class="row-fluid">
+			<div class="span12">
+				<h3>
+					Stat Index
+					<a href="basic.json" target="_blank" class="lang" langKey="ViewJSONAPI">View JSON API</a>
+				</h3>
+			</div>
+		</div>
+
+		<script id="basic-tmpl" type="text/template">
+			<ul class="nav nav-tabs" id="basicTab">
+				{{~ it.Content :basicNow:i  }}
+				<li class="{{=i==0?'active':''}}" id="basicTab-li-{{=i}}">
+					<a href="index.html#dstab{{=i}}">{{=basicNow.name}}</a>
+				</li>
+				{{~ }}
+			</ul>
+			<div class="tab-content">
+				{{~ it.Content :basicNow:i  }}
+				<div class="tab-pane {{=i==0?'active':''}}" id="dstab{{=i}}">
 						<table id="dataTable" style="background-color: #fff" class="table table-bordered responsive-utilities">
 							<tr>
 								<td valign="top" class="td_lable lang" langKey="StartTime" style="min-width:80px"> StartTime</td>
-								<td id="StartTime"></td>
+								<td class="StartTime">{{=basicNow.StartTime}}</td>
 							</tr>
 							<tr >
 								<td valign="top" width="100" class="td_lable lang"  langKey="Version">
 									Version
 								</td>
-								<td id="DruidVersion" width="90%"></td>
+								<td class="DruidVersion" width="90%">{{=basicNow.Version}}</td>
 							</tr>
 							<tr >
 								<td valign="top" class="td_lable lang" langKey="Drivers"> Drivers </td>
-								<td id="DruidDrivers"> </td>
+								<td class="DruidDrivers">
+									{{~ basicNow.Drivers :value:index  }}
+									{{=value}}<br>
+									{{~ }}
+								</td>
 							</tr>
 							<tr >
 								<td valign="top" class="td_lable lang" langKey="ResetEnable"> ResetEnable </td>
-								<td id="ResetEnable"></td>
+								<td class="ResetEnable">{{=basicNow.ResetEnable}}</td>
 							</tr>
 							<tr >
 								<td valign="top" class="td_lable lang" langKey="ResetCount"> ResetCount </td>
-								<td id="ResetCount"></td>
+								<td class="ResetCount">{{=basicNow.ResetCount}}</td>
 							</tr>
 							<tr >
 								<td valign="top" class="td_lable lang" langKey="JavaVersion"> JavaVersion </td>
-								<td id="JavaVersion"></td>
+								<td class="JavaVersion">{{=basicNow.JavaVersion}}</td>
 							</tr>
 							<tr >
 								<td valign="top" class="td_lable lang" langKey="JavaVMName"> JavaVMName </td>
-								<td id="JavaVMName"></td>
+								<td class="JavaVMName">{{=basicNow.JavaVMName}}</td>
 							</tr>
 							<tr>
 								<td valign="top" class="td_lable lang" langKey="JavaClassPath"> JavaClassPath </td>
-								<td id="JavaClassPath"></td>
+								<td class="JavaClassPath">{{=basicNow.JavaClassPath}}</td>
 							</tr>
 						</table>
-          			</div>
+				</div>
+				{{~ }}
+			</div>
+		</script>
+	</div>
 		<script type="text/javascript">
 			$.namespace("druid.index");
-			druid.index = function () {  
+			druid.index = function () {
 				return  {
 					init : function() {
 						druid.common.buildHead(0);
 						this.ajaxRequestForBasicInfo();
 					},
-					
+
 					ajaxRequestForBasicInfo : function() {
 						$.ajax({
 							type: 'POST',
 							url: "basic.json",
 							success: function(data) {
-								$("#DruidVersion").text(data.Content.Version)
-								var driversList = data.Content.Drivers;
-								if (driversList) {
-									var driverHtml = '';
-									for ( var i = 0; i < driversList.length; i++) {
-										var driver = driversList[i];
-										driverHtml += driver + '<br/>';
-									}
-									$("#DruidDrivers").html(driverHtml);
-								}
-								$("#ResetEnable").text(data.Content.ResetEnable)
-								$("#ResetCount").text(data.Content.ResetCount)
-								$("#JavaVersion").text(data.Content.JavaVersion)
-								$("#JavaVMName").text(data.Content.JavaVMName)
-								var splittor = /^[a-zA-Z]:\\/g.test(data.Content.JavaClassPath) ? ";" : ":";
-								$("#JavaClassPath").html(data.Content.JavaClassPath.split(splittor).join("<br/>"))
-								$("#StartTime").text(data.Content.StartTime)
-								
+								var tmpl = $('#basic-tmpl').html();
+								var doTtmpl = doT.template(tmpl);
+								var contentHtml = doTtmpl(data);
+								console.log('contentHtml' + contentHtml)
+								$(".span12 h3").after(contentHtml);
+
+								$('#basicTab a').click(function (e) {
+									e.preventDefault();
+									$(this).tab('show');
+								});
+
 								druid.lang.trigger();
 							},
 							dataType: "json"
@@ -92,7 +111,7 @@
 					}
 				}
 			}();
-			
+
 			$(document).ready(function() {
 				druid.index.init();
 			});
