@@ -396,7 +396,7 @@ public class MonitorStatService implements DruidStatServiceMBean {
                 List<DataSourceResult.ContentBean> nodeContent = dataSourceResult.getContent();
                 if (nodeContent != null) {
                     for (DataSourceResult.ContentBean contentBean : nodeContent) {
-                        contentBean.setName(serviceName);
+                        contentBean.setName(serviceName + " ( " + contentBean.getName() + " ) ");
                         contentBean.setServiceId(serviceNode.getId());
                     }
                     contentBeans.addAll(nodeContent);
