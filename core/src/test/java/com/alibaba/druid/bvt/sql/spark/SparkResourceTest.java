@@ -18,4 +18,9 @@ public class SparkResourceTest extends SQLResourceTest {
     public void test() throws Exception {
         fileParse("bvt/parser/spark/spark-tests/inputs");
     }
+
+    @Test
+    public void spark_parse() throws Exception {
+        fileTest(0, 999, i -> "bvt/parser/spark/" + i + ".txt");
+    }
 }

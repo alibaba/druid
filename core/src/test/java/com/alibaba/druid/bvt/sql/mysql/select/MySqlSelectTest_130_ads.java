@@ -77,7 +77,7 @@ public class MySqlSelectTest_130_ads extends MysqlTest {
                 "\t\t\t\tSELECT avg(sum_imp) AS avg_imp, avg(sum_revenue) AS avg_revenue\n" +
                 "\t\t\t\t\t, stddev(sum_imp) AS stddev_imp, stddev(sum_revenue) AS stddev_revenue\n" +
                 "\t\t\t\tFROM sum_table\n" +
-                "\t\t\t), \n" +
+                "\t\t\t),\n" +
                 "\t\t\tnow_table AS (\n" +
                 "\t\t\t\tSELECT comm_date, sum(event_show15s) / 1000.0 AS now_imp\n" +
                 "\t\t\t\t\t, sum(event_revenue) / 100000.0 AS now_revenue\n" +

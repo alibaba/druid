@@ -1,0 +1,86 @@
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	`gender` string NOT NULL COMMENT '性别',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY RANGE (`gender`) (partition value = '男', partition value = '女')
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	`gender` string NOT NULL COMMENT '性别',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY RANGE (`gender`) (
+	 PARTITION VALUE = '男',
+	 PARTITION VALUE = '女'
+)
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	`gender` string NOT NULL COMMENT '性别',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY RANGE (`id`,`gender`) (partition value = (0, '男'), partition value = (1,'女'))
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	`gender` string NOT NULL COMMENT '性别',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY RANGE (`id`, `gender`) (
+	 PARTITION VALUE = (0, '男'),
+	 PARTITION VALUE = (1, '女')
+)
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	`gender` string NOT NULL COMMENT '性别',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY RANGE (`id`,`gender`) (partition value = (0, '男'), partition value = (1,'女'))
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	`gender` string NOT NULL COMMENT '性别',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY RANGE (`id`, `gender`) (
+	 PARTITION VALUE = (0, '男'),
+	 PARTITION VALUE = (1, '女')
+)
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)

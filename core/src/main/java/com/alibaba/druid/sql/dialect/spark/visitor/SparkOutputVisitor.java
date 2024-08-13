@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
@@ -36,13 +37,20 @@ public class SparkOutputVisitor extends HiveOutputVisitor implements SparkVisito
     }
 
     //add using statment
+
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        if (x instanceof SparkCreateTableStatement) {
+            return visit((SparkCreateTableStatement) x);
+        }
+        return super.visit(x);
+    }
+
     @Override
     public boolean visit(SparkCreateTableStatement x) {
         print0(ucase ? "CREATE " : "create ");
 
-        if (x.isExternal()) {
-            print0(ucase ? "EXTERNAL " : "external ");
-        }
+        printCreateTableFeatures(x);
 
         if (x.isIfNotExists()) {
             print0(ucase ? "TABLE IF NOT EXISTS " : "table if not exists ");

@@ -25,9 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class H2Lexer extends Lexer {
-    public static final Keywords DEFAULT_H2_KEYWORDS;
-
-    static {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -42,17 +41,15 @@ public class H2Lexer extends Lexer {
         map.put("LIMIT", Token.LIMIT);
         map.put("IF", Token.IF);
 
-        DEFAULT_H2_KEYWORDS = new Keywords(map);
+        return new Keywords(map);
     }
 
     public H2Lexer(String input) {
         super(input, null, DbType.h2);
-        super.keywords = DEFAULT_H2_KEYWORDS;
     }
 
     public H2Lexer(String input, SQLParserFeature... features) {
         super(input, null, DbType.h2);
-        super.keywords = DEFAULT_H2_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }

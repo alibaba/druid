@@ -370,15 +370,24 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(PGFunctionTableSource x) {
         x.getExpr().accept(this);
 
-        if (x.getAlias() != null) {
-            print0(ucase ? " AS " : " as ");
-            print0(x.getAlias());
+        String alias = x.getAlias();
+        List<SQLParameter> parameters = x.getParameters();
+        if (alias != null || !x.getParameters().isEmpty()) {
+            print0(ucase ? " AS" : " as");
         }
 
-        if (x.getParameters().size() > 0) {
+        if (alias != null) {
+            print(' ');
+            print0(alias);
+        }
+
+        if (!parameters.isEmpty()) {
+            incrementIndent();
+            println();
             print('(');
-            printAndAccept(x.getParameters(), ", ");
+            printAndAccept(parameters, ", ");
             print(')');
+            decrementIndent();
         }
 
         return false;
@@ -1397,8 +1406,8 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         println();
         print0(ucase ? "FROM " : "from ");
         if (x.getFrom() != null) {
-            if (x.getCommentsAfaterFrom() != null) {
-                printAfterComments(x.getCommentsAfaterFrom());
+            if (x.getCommentsAfterFrom() != null) {
+                printAfterComments(x.getCommentsAfterFrom());
                 println();
             }
             x.getFrom().accept(this);
@@ -1912,11 +1921,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "MONITORING" : "monitoring");
         }
 
-        if (x.getPartitioning() != null) {
-            println();
-            print0(ucase ? "PARTITION BY " : "partition by ");
-            x.getPartitioning().accept(this);
-        }
+        printPartitionBy(x);
 
         if (x.getCluster() != null) {
             println();
@@ -2874,5 +2879,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     protected boolean legacyCube() {
         return true;
+    }
+
+    protected void printTableOption(SQLExpr name, SQLExpr value, int index) {
+        if (index != 0) {
+            print(",");
+            println();
+        }
+        String key = name.toString();
+        print0(key);
+        print0(" = ");
+        value.accept(this);
     }
 }

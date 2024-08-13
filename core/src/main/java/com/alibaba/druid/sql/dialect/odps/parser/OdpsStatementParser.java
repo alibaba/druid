@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
@@ -30,22 +31,31 @@ import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.alibaba.druid.sql.parser.Token.COMMA;
 import static com.alibaba.druid.sql.parser.Token.IDENTIFIER;
+import static com.alibaba.druid.sql.parser.Token.LPAREN;
+import static com.alibaba.druid.sql.parser.Token.ON;
 import static com.alibaba.druid.sql.parser.Token.OVERWRITE;
+import static com.alibaba.druid.sql.parser.Token.PARTITION;
+import static com.alibaba.druid.sql.parser.Token.RPAREN;
 
-public class OdpsStatementParser extends SQLStatementParser {
+public class OdpsStatementParser extends HiveStatementParser {
     public OdpsStatementParser(String sql) {
         super(new OdpsExprParser(sql));
+        dbType = DbType.odps;
     }
 
     public OdpsStatementParser(String sql, SQLParserFeature... features) {
         super(new OdpsExprParser(sql, features));
+        dbType = DbType.odps;
     }
 
     public OdpsStatementParser(SQLExprParser exprParser) {
         super(exprParser);
+        dbType = DbType.odps;
     }
 
     public SQLSelectStatement parseSelect() {
@@ -1619,5 +1629,113 @@ public class OdpsStatementParser extends SQLStatementParser {
         OdpsCopyStmt stmt = new OdpsCopyStmt();
         stmt.setArguments(arguments);
         return stmt;
+    }
+
+    @Override
+    protected boolean alterTableAfterNameRest(SQLAlterTableStatement stmt) {
+        if (lexer.identifierEquals("MERGE")) {
+            alterTableMerge(stmt);
+        } else if ((lexer.identifierEquals(FnvHash.Constants.RANGE)
+                || lexer.identifierEquals(FnvHash.Constants.CLUSTERED))
+        ) {
+            if (lexer.identifierEquals(FnvHash.Constants.RANGE)) {
+                lexer.nextToken();
+                acceptIdentifier("CLUSTERED");
+                stmt.setRange(true);
+            } else {
+                lexer.nextToken();
+            }
+            accept(Token.BY);
+
+            accept(Token.LPAREN);
+            for (; ; ) {
+                SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+                stmt.addClusteredByItem(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            accept(Token.RPAREN);
+        } else if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
+            alterTableSorted(stmt);
+        } else if (dbType == DbType.odps && lexer.token() == Token.NOT) {
+            lexer.nextToken();
+            acceptIdentifier("CLUSTERED");
+            stmt.setNotClustered(true);
+        } else {
+            return true;
+        }
+        return super.alterTableAfterNameRest(stmt);
+    }
+
+    @Override
+    protected boolean alterTableSetRest(SQLAlterTableStatement stmt) {
+        if (lexer.identifierEquals("CHANGELOGS")) {
+            lexer.nextToken();
+            OdpsAlterTableSetChangeLogs item = new OdpsAlterTableSetChangeLogs();
+            item.setValue(this.exprParser.primary());
+            stmt.addItem(item);
+        } else if (lexer.identifierEquals("FILEFORMAT")) {
+            lexer.nextToken();
+            OdpsAlterTableSetFileFormat item = new OdpsAlterTableSetFileFormat();
+            item.setValue(this.exprParser.primary());
+            stmt.addItem(item);
+        } else {
+            return super.alterTableSetRest(stmt);
+        }
+        return false;
+    }
+
+    @Override
+    protected void parseCreateMaterializedViewRest(SQLCreateMaterializedViewStatement stmt) {
+        if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
+            lexer.nextToken();
+            stmt.setLifyCycle(
+                    this.exprParser.primary()
+            );
+        }
+
+        if (lexer.token() == Token.PARTITIONED) {
+            lexer.nextToken();
+            accept(ON);
+            accept(LPAREN);
+            this.exprParser.names(stmt.getPartitionedOn(), stmt);
+            accept(RPAREN);
+        }
+    }
+
+    @Override
+    public void parseUpdateStatementPartition(SQLUpdateStatement updateStatement) {
+        if (lexer.token() == PARTITION) {
+            lexer.nextToken();
+            updateStatement.setPartitions(new ArrayList<>());
+            this.exprParser.parseAssignItem(updateStatement.getPartitions(), updateStatement);
+        }
+    }
+
+    @Override
+    protected void parseUpdateSetComma() {
+        if (lexer.token() == COMMA) {
+            lexer.nextToken();
+        }
+    }
+
+    @Override
+    public void parseCreateViewAtDataType(SQLColumnDefinition column, SQLName expr) {
+        if (expr.getSimpleName().startsWith("@")) {
+            column.setDataType(this.exprParser.parseDataType());
+        }
+    }
+
+    @Override
+    protected void parseWithQuerySkip() {
+        if (lexer.identifierEquals(FnvHash.Constants.STRING)
+                || lexer.identifierEquals(FnvHash.Constants.INT)
+                || lexer.identifierEquals(FnvHash.Constants.BIGINT)
+        ) {
+            lexer.nextToken(); // skip
+        }
     }
 }

@@ -55,7 +55,7 @@ public class MySqlSelectTest_273 extends MysqlTest {
         assertEquals("/*+ engine= MPP, dump-header= [DUMP DATA]*/\n" +
                 "SELECT t3.sim_aid AS __aid\n" +
                 "FROM (\n" +
-                "\tSELECT CASE \n" +
+                "\tSELECT CASE\n" +
                 "\t\t\tWHEN t2.__aid IS NOT NULL THEN floor(t1.s * 1.05)\n" +
                 "\t\t\tELSE t1.s\n" +
                 "\t\tEND AS sum_score, t1.sim_aid AS sim_aid\n" +

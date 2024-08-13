@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.MySqlUtils;
@@ -199,25 +198,6 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
     @Override
     public List<SQLObject> getChildren() {
         return Collections.emptyList();
-    }
-
-    public static long supportDbTypes = DbType.of(
-            DbType.mysql,
-            DbType.oracle,
-            DbType.presto,
-            DbType.trino,
-            DbType.postgresql,
-            DbType.ads,
-            DbType.hive,
-            DbType.odps,
-            DbType.mariadb,
-            DbType.bigquery,
-            DbType.spark,
-            DbType.tidb
-    );
-
-    public static boolean isSupport(DbType dbType) {
-        return (dbType.mask & supportDbTypes) != 0;
     }
 
     public static boolean check(String str) {

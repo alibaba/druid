@@ -1,3 +1,21 @@
+CREATE TABLE
+  mydataset.newtable (transaction_id INT64, transaction_ts TIMESTAMP)
+PARTITION BY
+  TIMESTAMP_TRUNC(transaction_ts, DAY)
+  OPTIONS (
+    partition_expiration_days = 3,
+    require_partition_filter = TRUE);
+--------------------
+CREATE TABLE mydataset.newtable (
+	transaction_id INT64,
+	transaction_ts TIMESTAMP
+)
+PARTITION BY TIMESTAMP_TRUNC(transaction_ts, DAY)
+OPTIONS (
+	'partition_expiration_days' = 3,
+	'require_partition_filter' = true
+);
+------------------------------------------------------------------------------------------------------------------------
 SELECT SAFE_CAST("apple" AS INT64) AS not_a_number;
 --------------------
 SELECT SAFE_CAST("apple" AS INT64) AS not_a_number;
@@ -44,10 +62,8 @@ CLUSTER BY latest_status_name
 AS
   select 1;
 --------------------
-CREATE TABLE xxx
-PARTITION BY (
-	DATE(partitiontime)
-)
+CREATE TEMPORARY TABLE xxx
+PARTITION BY date(partitiontime)
 CLUSTER BY latest_status_name
 AS
 SELECT 1;
@@ -99,9 +115,7 @@ CREATE TABLE mydataset.myclusteredtable (
 	customer_id STRING,
 	transaction_amount NUMERIC
 )
-PARTITION BY (
-	DATE(_PARTITIONTIME)
-)
+PARTITION BY DATE(_PARTITIONTIME)
 CLUSTER BY customer_id
 OPTIONS (
 	'partition_expiration_days' = 3,

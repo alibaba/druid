@@ -1,0 +1,100 @@
+select col from a left semi join b on a.id = b.id
+--------------------
+SELECT col
+FROM a
+	LEFT SEMI JOIN b ON a.id = b.id
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE replicated_orders (
+                    order_id UInt64 CODEC(ZSTD),
+                    customer_id LowCardinality(UInt32),
+                    order_date Date,
+                    product_id LowCardinality(UInt32),
+                    quantity Int32,
+                    price Decimal(10, 2),
+                    array1 Array(UInt8),
+                    tuple1 Tuple(UInt8, String),
+                    map1 Map(String, UInt64),
+                    variant1 Variant(String, Array(UInt8)),
+                    null1 Nullable(String)
+                )
+                ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+                PARTITION BY order_date
+                ORDER BY (order_date, customer_id, order_id)
+--------------------
+CREATE TABLE replicated_orders (
+	order_id UInt64 CODEC(ZSTD),
+	customer_id LowCardinality(UInt32),
+	order_date Date,
+	product_id LowCardinality(UInt32),
+	quantity Int32,
+	price Decimal(10, 2),
+	array1 Array(UInt8),
+	tuple1 Tuple(UInt8, String),
+	map1 MAP(String, UInt64),
+	variant1 Variant(String, Array(UInt8)),
+	null1 Nullable(String)
+) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+PARTITION BY order_date
+ORDER BY (order_date, customer_id, order_id)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE db.replicated_orders on cluster test (
+                    order_id UInt64 CODEC(ZSTD) comment 'orderId',
+                    customer_id LowCardinality(UInt32),
+                    order_date Date not null ttl order_date + interval 1 hour,
+                    product_id LowCardinality(UInt32) default 0,
+                    quantity Int32,
+                    price Decimal(10, 2),
+                    size_bytes Int64,
+                    unhexed String,
+                    size String
+                )
+                ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+                PARTITION BY order_date -- 按年月分区
+                ORDER BY (order_date, customer_id, order_id)
+--------------------
+CREATE TABLE db.replicated_orders ON CLUSTER test (
+	order_id UInt64 CODEC(ZSTD) COMMENT 'orderId',
+	customer_id LowCardinality(UInt32),
+	order_date Date NOT NULL  TTL order_date + INTERVAL 1 HOUR,
+	product_id LowCardinality(UInt32) DEFAULT 0,
+	quantity Int32,
+	price Decimal(10, 2),
+	size_bytes Int64,
+	unhexed String,
+	size String
+) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+PARTITION BY order_date
+ORDER BY (order_date, customer_id, order_id)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE replicated_orders (
+                    order_id UInt64 CODEC(ZSTD),
+                    customer_id LowCardinality(UInt32),
+                    order_date Date,
+                    product_id LowCardinality(UInt32),
+                    quantity Int32,
+                    price Decimal(10, 2),
+                    array1 Array(UInt8),
+                    tuple1 Tuple(UInt8, String),
+                    map1 Map(String, UInt64),
+                    variant1 Variant(String, Array(UInt8)),
+                    null1 Nullable(String)
+                )
+                ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+                PARTITION BY order_date, quantity
+                ORDER BY (order_date, customer_id, order_id)
+--------------------
+CREATE TABLE replicated_orders (
+	order_id UInt64 CODEC(ZSTD),
+	customer_id LowCardinality(UInt32),
+	order_date Date,
+	product_id LowCardinality(UInt32),
+	quantity Int32,
+	price Decimal(10, 2),
+	array1 Array(UInt8),
+	tuple1 Tuple(UInt8, String),
+	map1 MAP(String, UInt64),
+	variant1 Variant(String, Array(UInt8)),
+	null1 Nullable(String)
+) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
+PARTITION BY (order_date, quantity)
+ORDER BY (order_date, customer_id, order_id)            

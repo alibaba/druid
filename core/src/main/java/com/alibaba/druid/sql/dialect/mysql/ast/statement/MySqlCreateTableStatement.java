@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExprImpl;
@@ -103,42 +102,9 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {
             accept0((MySqlASTVisitor) visitor);
-        } else if (visitor instanceof AdsOutputVisitor) {
-            accept0((AdsOutputVisitor) visitor);
         } else {
             super.accept0(visitor);
         }
-    }
-
-    public void accept0(AdsOutputVisitor visitor) {
-        if (visitor.visit(this)) {
-            for (int i = 0; i < hints.size(); i++) {
-                final SQLCommentHint hint = hints.get(i);
-                if (hint != null) {
-                    hint.accept(visitor);
-                }
-            }
-
-            if (tableSource != null) {
-                tableSource.accept(visitor);
-            }
-
-            for (int i = 0; i < tableElementList.size(); i++) {
-                final SQLTableElement element = tableElementList.get(i);
-                if (element != null) {
-                    element.accept(visitor);
-                }
-            }
-
-            if (like != null) {
-                like.accept(visitor);
-            }
-
-            if (select != null) {
-                select.accept(visitor);
-            }
-        }
-        visitor.endVisit(this);
     }
 
     public void accept0(MySqlASTVisitor visitor) {
@@ -262,7 +228,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         super.simplify();
     }
 
-    public void showCoumns(StringBuilder out) throws IOException {
+    public void showColumns(StringBuilder out) throws IOException {
         this.accept(new MySqlShowColumnOutpuVisitor(out));
     }
 
@@ -498,8 +464,8 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void cloneTo(MySqlCreateTableStatement x) {
         super.cloneTo(x);
-        if (partitioning != null) {
-            x.setPartitioning(partitioning.clone());
+        if (partitionBy != null) {
+            x.setPartitionBy(partitionBy.clone());
         }
         if (localPartitioning != null) {
             x.setLocalPartitioning(localPartitioning.clone());

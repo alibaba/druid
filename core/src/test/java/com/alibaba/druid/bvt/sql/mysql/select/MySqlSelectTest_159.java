@@ -68,31 +68,31 @@ public class MySqlSelectTest_159 extends MysqlTest {
                 "\t\t, round(成本汇总.正向营销费用 / 100, 6) AS 正向营销费用\n" +
                 "\t\t, round(成本汇总.逆向营销费用 / 100, 6) AS 逆向营销费用\n" +
                 "\tFROM (\n" +
-                "\t\tSELECT CASE \n" +
+                "\t\tSELECT CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN channel\n" +
                 "\t\t\t\tELSE CAST(-1 AS bigint)\n" +
                 "\t\t\tEND AS 渠道\n" +
-                "\t\t\t, CASE \n" +
+                "\t\t\t, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN group_name\n" +
                 "\t\t\t\tELSE '-'\n" +
                 "\t\t\tEND AS 大组\n" +
-                "\t\t\t, CASE \n" +
+                "\t\t\t, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN city\n" +
                 "\t\t\t\tELSE '-1'\n" +
                 "\t\t\tEND AS 城市\n" +
-                "\t\t\t, CASE \n" +
+                "\t\t\t, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN supplier_code\n" +
                 "\t\t\t\tELSE '-'\n" +
                 "\t\t\tEND AS 供应商ID\n" +
-                "\t\t\t, CASE \n" +
+                "\t\t\t, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN supplier_name\n" +
                 "\t\t\t\tELSE '-'\n" +
                 "\t\t\tEND AS 供应商名称\n" +
-                "\t\t\t, CASE \n" +
+                "\t\t\t, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN CAST(brand_id AS bigint)\n" +
                 "\t\t\t\tELSE CAST(-1 AS bigint)\n" +
                 "\t\t\tEND AS 品牌ID\n" +
-                "\t\t\t, CASE \n" +
+                "\t\t\t, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN brand_name\n" +
                 "\t\t\t\tELSE '-'\n" +
                 "\t\t\tEND AS 品牌名称\n" +
@@ -119,25 +119,25 @@ public class MySqlSelectTest_159 extends MysqlTest {
                 "\t\t\tAND brand_id = '119079'\n" +
                 "\t\t\tAND stat_date >= '20170401'\n" +
                 "\t\t\tAND stat_date <= '20180228'\n" +
-                "\t\tGROUP BY 1, CASE \n" +
+                "\t\tGROUP BY 1, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN channel\n" +
                 "\t\t\t\tELSE CAST(-1 AS bigint)\n" +
-                "\t\t\tEND, CASE \n" +
+                "\t\t\tEND, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN group_name\n" +
                 "\t\t\t\tELSE '-'\n" +
-                "\t\t\tEND, CASE \n" +
+                "\t\t\tEND, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN city\n" +
                 "\t\t\t\tELSE '-1'\n" +
-                "\t\t\tEND, CASE \n" +
+                "\t\t\tEND, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN supplier_code\n" +
                 "\t\t\t\tELSE '-'\n" +
-                "\t\t\tEND, CASE \n" +
+                "\t\t\tEND, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN supplier_name\n" +
                 "\t\t\t\tELSE '-'\n" +
-                "\t\t\tEND, CASE \n" +
+                "\t\t\tEND, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN CAST(brand_id AS bigint)\n" +
                 "\t\t\t\tELSE CAST(-1 AS bigint)\n" +
-                "\t\t\tEND, CASE \n" +
+                "\t\t\tEND, CASE\n" +
                 "\t\t\t\tWHEN '0' <> '0' THEN brand_name\n" +
                 "\t\t\t\tELSE '-'\n" +
                 "\t\t\tEND\n" +
@@ -181,31 +181,31 @@ public class MySqlSelectTest_159 extends MysqlTest {
                         "\t\t, round(成本汇总.正向营销费用 / ?, ?) AS 正向营销费用\n" +
                         "\t\t, round(成本汇总.逆向营销费用 / ?, ?) AS 逆向营销费用\n" +
                         "\tFROM (\n" +
-                        "\t\tSELECT CASE \n" +
+                        "\t\tSELECT CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN channel\n" +
                         "\t\t\t\tELSE CAST(? AS bigint)\n" +
                         "\t\t\tEND AS 渠道\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN group_name\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 大组\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN city\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 城市\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN supplier_code\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 供应商ID\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN supplier_name\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 供应商名称\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN CAST(brand_id AS bigint)\n" +
                         "\t\t\t\tELSE CAST(? AS bigint)\n" +
                         "\t\t\tEND AS 品牌ID\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN brand_name\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 品牌名称\n" +
@@ -232,25 +232,25 @@ public class MySqlSelectTest_159 extends MysqlTest {
                         "\t\t\tAND brand_id = ?\n" +
                         "\t\t\tAND stat_date >= ?\n" +
                         "\t\t\tAND stat_date <= ?\n" +
-                        "\t\tGROUP BY 1, CASE \n" +
+                        "\t\tGROUP BY 1, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN channel\n" +
                         "\t\t\t\tELSE CAST(? AS bigint)\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN group_name\n" +
                         "\t\t\t\tELSE ?\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN city\n" +
                         "\t\t\t\tELSE ?\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN supplier_code\n" +
                         "\t\t\t\tELSE ?\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN supplier_name\n" +
                         "\t\t\t\tELSE ?\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN CAST(brand_id AS bigint)\n" +
                         "\t\t\t\tELSE CAST(? AS bigint)\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN brand_name\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND\n" +
@@ -296,31 +296,31 @@ public class MySqlSelectTest_159 extends MysqlTest {
                         "\t\t, round(成本汇总.正向营销费用 / ?, ?) AS 正向营销费用\n" +
                         "\t\t, round(成本汇总.逆向营销费用 / ?, ?) AS 逆向营销费用\n" +
                         "\tFROM (\n" +
-                        "\t\tSELECT CASE \n" +
+                        "\t\tSELECT CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN channel\n" +
                         "\t\t\t\tELSE CAST(? AS bigint)\n" +
                         "\t\t\tEND AS 渠道\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN group_name\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 大组\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN city\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 城市\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN supplier_code\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 供应商ID\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN supplier_name\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 供应商名称\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN CAST(brand_id AS bigint)\n" +
                         "\t\t\t\tELSE CAST(? AS bigint)\n" +
                         "\t\t\tEND AS 品牌ID\n" +
-                        "\t\t\t, CASE \n" +
+                        "\t\t\t, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN brand_name\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND AS 品牌名称\n" +
@@ -347,25 +347,25 @@ public class MySqlSelectTest_159 extends MysqlTest {
                         "\t\t\tAND brand_id = ?\n" +
                         "\t\t\tAND stat_date >= ?\n" +
                         "\t\t\tAND stat_date <= ?\n" +
-                        "\t\tGROUP BY 1, CASE \n" +
+                        "\t\tGROUP BY 1, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN channel\n" +
                         "\t\t\t\tELSE CAST(? AS bigint)\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN group_name\n" +
                         "\t\t\t\tELSE ?\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN city\n" +
                         "\t\t\t\tELSE ?\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN supplier_code\n" +
                         "\t\t\t\tELSE ?\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN supplier_name\n" +
                         "\t\t\t\tELSE ?\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN CAST(brand_id AS bigint)\n" +
                         "\t\t\t\tELSE CAST(? AS bigint)\n" +
-                        "\t\t\tEND, CASE \n" +
+                        "\t\t\tEND, CASE\n" +
                         "\t\t\t\tWHEN ? <> ? THEN brand_name\n" +
                         "\t\t\t\tELSE ?\n" +
                         "\t\t\tEND\n" +

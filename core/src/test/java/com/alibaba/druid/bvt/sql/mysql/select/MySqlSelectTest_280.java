@@ -39,30 +39,30 @@ public class MySqlSelectTest_280 extends MysqlTest {
                 .parseSingleStatement(sql, DbType.mysql);
 
         assertEquals("SELECT date(created_at) AS 创建日期, count(DISTINCT task_id) AS 整体维修创建量\n" +
-                "\t, count(DISTINCT CASE \n" +
+                "\t, count(DISTINCT CASE\n" +
                 "\t\tWHEN order_type = '客户预约' THEN task_id\n" +
                 "\tEND) AS 预约报修创建量\n" +
-                "\t, count(DISTINCT CASE \n" +
+                "\t, count(DISTINCT CASE\n" +
                 "\t\tWHEN order_type = '客户预约' THEN task_id\n" +
                 "\tEND) / count(DISTINCT task_id) AS 预约维修创建比例\n" +
-                "\t, count(DISTINCT CASE \n" +
+                "\t, count(DISTINCT CASE\n" +
                 "\t\tWHEN hour(created_at) >= 9\n" +
                 "\t\t\tAND hour(created_at) < 21\n" +
                 "\t\t\tAND order_type = '客户预约'\n" +
                 "\t\tTHEN task_id\n" +
                 "\tEND) AS 预约维修工作时间创建量\n" +
-                "\t, count(CASE \n" +
+                "\t, count(CASE\n" +
                 "\t\tWHEN hour(created_at) >= 9\n" +
                 "\t\t\tAND hour(created_at) < 21\n" +
                 "\t\t\tAND timestampdiff(MINUTE, created_at, assign_at) <= 30\n" +
                 "\t\tTHEN task_id\n" +
                 "\tEND) AS 预约维修工作时间及时受理量\n" +
-                "\t, count(CASE \n" +
+                "\t, count(CASE\n" +
                 "\t\tWHEN hour(created_at) >= 9\n" +
                 "\t\t\tAND hour(created_at) < 21\n" +
                 "\t\t\tAND timestampdiff(MINUTE, created_at, assign_at) <= 30\n" +
                 "\t\tTHEN task_id\n" +
-                "\tEND) / count(DISTINCT CASE \n" +
+                "\tEND) / count(DISTINCT CASE\n" +
                 "\t\tWHEN hour(created_at) >= 9\n" +
                 "\t\t\tAND hour(created_at) < 21\n" +
                 "\t\t\tAND order_type = '客户预约'\n" +

@@ -19,7 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.ads.visitor.AdsOutputVisitor;
 import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
@@ -30,11 +29,11 @@ import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
-import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
-import com.alibaba.druid.sql.dialect.holo.visitor.HoloOutputVisitor;
+import com.alibaba.druid.sql.dialect.hologres.visitor.HologresOutputVisitor;
+import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaOutputVisitor;
 import com.alibaba.druid.sql.dialect.infomix.visitor.InformixOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
@@ -72,8 +71,6 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.*;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +80,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class SQLUtils {
-    public static final Charset UTF8 = StandardCharsets.UTF_8;
-
     private static final SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
             SQLParserFeature.KeepComments,
             SQLParserFeature.EnableSQLBinaryOpExprGroup
@@ -531,7 +526,7 @@ public class SQLUtils {
             case edb:
                 return new PGOutputVisitor(out);
             case hologres:
-                return new HoloOutputVisitor(out);
+                return new HologresOutputVisitor(out);
             case sqlserver:
             case jtds:
                 return new SQLServerOutputVisitor(out);
@@ -545,8 +540,6 @@ public class SQLUtils {
                 return new InformixOutputVisitor(out);
             case hive:
                 return new HiveOutputVisitor(out);
-            case ads:
-                return new AdsOutputVisitor(out);
             case blink:
                 return new BlinkOutputVisitor(out);
             case spark:
@@ -562,6 +555,8 @@ public class SQLUtils {
                 return new StarRocksOutputVisitor(out);
             case bigquery:
                 return new BigQueryOutputVisitor(out);
+            case impala:
+                return new ImpalaOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }
@@ -1577,11 +1572,6 @@ public class SQLUtils {
                     }
 
                     @Override
-                    public boolean visit(HiveCreateTableStatement x) {
-                        return false;
-                    }
-
-                    @Override
                     public boolean visit(OdpsCreateTableStatement x) {
                         return false;
                     }
@@ -1630,11 +1620,6 @@ public class SQLUtils {
 
                     @Override
                     public boolean visit(SQLCreateTableStatement x) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean visit(HiveCreateTableStatement x) {
                         return false;
                     }
 
@@ -2041,6 +2026,12 @@ public class SQLUtils {
         SQLObject parent = cmp.getParent();
         if (parent instanceof SQLSelectStatement) {
             ((SQLSelectStatement) parent).setSelect(dest);
+            return true;
+        } else if (parent instanceof SQLSubqueryTableSource) {
+            ((SQLSubqueryTableSource) parent).setSelect(dest);
+            return true;
+        } else if (parent instanceof SQLInsertStatement) {
+            ((SQLInsertStatement) parent).setQuery(dest);
             return true;
         }
         return false;

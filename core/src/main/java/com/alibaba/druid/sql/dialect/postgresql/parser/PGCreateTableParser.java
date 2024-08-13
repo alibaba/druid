@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.SQLPartitionByRange;
 import com.alibaba.druid.sql.ast.SQLPartitionOf;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -27,6 +28,37 @@ public class PGCreateTableParser extends SQLCreateTableParser {
 
     public PGCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
+    }
+
+    protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
+        // For partition of/by for PG
+        for (int i = 0; i < 2; i++) {
+            if (lexer.token() == Token.PARTITION) {
+                Lexer.SavePoint mark = lexer.mark();
+                lexer.nextToken();
+                if (Token.OF.equals(lexer.token())) {
+                    lexer.reset(mark);
+                    SQLPartitionOf partitionOf = parsePartitionOf();
+                    stmt.setPartitionOf(partitionOf);
+                } else if (Token.BY.equals(lexer.token())) {
+                    lexer.reset(mark);
+                    SQLPartitionBy partitionClause = parsePartitionBy();
+                    stmt.setPartitionBy(partitionClause);
+                }
+            }
+        }
+
+        if (lexer.nextIf(Token.WITH)) {
+            accept(Token.LPAREN);
+            parseAssignItems(stmt.getTableOptions(), stmt, false);
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.nextIf(Token.TABLESPACE)) {
+            stmt.setTablespace(
+                    this.exprParser.name()
+            );
+        }
     }
 
     public SQLPartitionBy parsePartitionBy() {

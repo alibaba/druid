@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.ads.parser.AdsStatementParser;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryExprParser;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryLexer;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryStatementParser;
@@ -40,9 +39,12 @@ import com.alibaba.druid.sql.dialect.h2.parser.H2StatementParser;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveExprParser;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
-import com.alibaba.druid.sql.dialect.holo.parser.HoloExprParser;
-import com.alibaba.druid.sql.dialect.holo.parser.HoloLexer;
-import com.alibaba.druid.sql.dialect.holo.parser.HoloStatementParser;
+import com.alibaba.druid.sql.dialect.hologres.parser.HologresExprParser;
+import com.alibaba.druid.sql.dialect.hologres.parser.HologresLexer;
+import com.alibaba.druid.sql.dialect.hologres.parser.HologresStatementParser;
+import com.alibaba.druid.sql.dialect.impala.parser.ImpalaExprParser;
+import com.alibaba.druid.sql.dialect.impala.parser.ImpalaLexer;
+import com.alibaba.druid.sql.dialect.impala.parser.ImpalaStatementParser;
 import com.alibaba.druid.sql.dialect.infomix.parser.InformixStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
@@ -143,7 +145,7 @@ public class SQLParserUtils {
             case gaussdb:
                 return new PGSQLStatementParser(sql, features);
             case hologres:
-                return new HoloStatementParser(sql, features);
+                return new HologresStatementParser(sql, features);
             case sqlserver:
             case jtds:
                 return new SQLServerStatementParser(sql, features);
@@ -164,8 +166,6 @@ public class SQLParserUtils {
                 return new PrestoStatementParser(sql, features);
             case bigquery:
                 return new BigQueryStatementParser(sql, features);
-            case ads:
-                return new AdsStatementParser(sql);
             case spark:
                 return new SparkStatementParser(sql);
             case clickhouse:
@@ -174,6 +174,8 @@ public class SQLParserUtils {
                 return new StarRocksStatementParser(sql);
             case informix:
                 return new InformixStatementParser(sql, features);
+            case impala:
+                return new ImpalaStatementParser(sql, features);
             default:
                 return new SQLStatementParser(sql, dbType, features);
         }
@@ -203,7 +205,7 @@ public class SQLParserUtils {
             case gaussdb:
                 return new PGExprParser(sql, features);
             case hologres:
-                return new HoloExprParser(sql, features);
+                return new HologresExprParser(sql, features);
             case sqlserver:
             case jtds:
                 return new SQLServerExprParser(sql, features);
@@ -226,6 +228,8 @@ public class SQLParserUtils {
                 return new OscarExprParser(sql, features);
             case starrocks:
                 return new StarRocksExprParser(sql, features);
+            case impala:
+                return new ImpalaExprParser(sql, features);
             default:
                 return new SQLExprParser(sql, dbType, features);
         }
@@ -258,7 +262,7 @@ public class SQLParserUtils {
             case edb:
                 return new PGLexer(sql, features);
             case hologres:
-                return new HoloLexer(sql, features);
+                return new HologresLexer(sql, features);
             case db2:
                 return new DB2Lexer(sql, features);
             case odps:
@@ -280,6 +284,8 @@ public class SQLParserUtils {
                 return new HiveLexer(sql, features);
             case bigquery:
                 return new BigQueryLexer(sql, features);
+            case impala:
+                return new ImpalaLexer(sql, features);
             default: {
                 Lexer lexer = new Lexer(sql, null, dbType);
                 for (SQLParserFeature feature : features) {

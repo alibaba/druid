@@ -23,10 +23,11 @@ import com.alibaba.druid.sql.parser.Token;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DB2Lexer extends Lexer {
-    public static final Keywords DEFAULT_DB2_KEYWORDS;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.ParseAssignItemSkip;
 
-    static {
+public class DB2Lexer extends Lexer {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -43,19 +44,23 @@ public class DB2Lexer extends Lexer {
         map.put("USING", Token.USING);
         map.put("MATCHED", Token.MATCHED);
 
-        DEFAULT_DB2_KEYWORDS = new Keywords(map);
+        return new Keywords(map);
     }
 
     public DB2Lexer(String input) {
         super(input);
-        super.keywords = DEFAULT_DB2_KEYWORDS;
     }
 
     public DB2Lexer(String input, SQLParserFeature... features) {
         super(input);
-        super.keywords = DEFAULT_DB2_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
+    }
+
+    @Override
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(ParseAssignItemSkip);
     }
 }

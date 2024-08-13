@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
 
 import java.util.HashMap;
@@ -24,9 +25,8 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.IDENTIFIER;
 
 public class SQLServerLexer extends Lexer {
-    public static final Keywords DEFAULT_SQL_SERVER_KEYWORDS;
-
-    static {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -46,23 +46,24 @@ public class SQLServerLexer extends Lexer {
         map.put("MERGE", Token.MERGE);
         map.put("USING", Token.USING);
         map.put("MATCHED", Token.MATCHED);
+        map.put("OPTION", Token.OPTION);
 
-        DEFAULT_SQL_SERVER_KEYWORDS = new Keywords(map);
+        return new Keywords(map);
     }
 
     public SQLServerLexer(char[] input, int inputLength, boolean skipComment) {
         super(input, inputLength, skipComment);
-        super.keywords = DEFAULT_SQL_SERVER_KEYWORDS;
+        dbType = DbType.sqlserver;
     }
 
     public SQLServerLexer(String input) {
         super(input);
-        super.keywords = DEFAULT_SQL_SERVER_KEYWORDS;
+        dbType = DbType.sqlserver;
     }
 
     public SQLServerLexer(String input, SQLParserFeature... features) {
         super(input);
-        super.keywords = DEFAULT_SQL_SERVER_KEYWORDS;
+        dbType = DbType.sqlserver;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }

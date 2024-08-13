@@ -22,6 +22,8 @@ import com.alibaba.druid.util.StringUtils;
 
 import java.util.TimeZone;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
+
 public class SQLParser {
     protected final Lexer lexer;
     protected DbType dbType;
@@ -83,7 +85,7 @@ public class SQLParser {
                 || token == Token.SELECT
                 || token == Token.FROM
                 || token == Token.WHERE) {
-            if (token == Token.WHERE && dbType == DbType.odps) {
+            if (token == Token.WHERE && dialectFeatureEnabled(TableAliasConnectWhere)) {
                 return null;
             }
 
@@ -171,7 +173,7 @@ public class SQLParser {
                         return null;
                     }
                     return ident;
-                } else if (hash == FnvHash.Constants.ASOF && dbType == DbType.clickhouse) {
+                } else if (hash == FnvHash.Constants.ASOF && dialectFeatureEnabled(TableAliasAsof)) {
                     Lexer.SavePoint mark = lexer.mark();
                     lexer.nextToken();
                     if (lexer.token == Token.LEFT || lexer.token == Token.JOIN) {
@@ -243,14 +245,14 @@ public class SQLParser {
                 case DROP:
                 case FETCH:
                 case LOCK:
-                    if (dbType == DbType.odps || dbType == DbType.hive) {
+                    if (dialectFeatureEnabled(TableAliasLock)) {
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
                         return strVal;
                     }
                     break;
                 case PARTITION:
-                    if (dbType == DbType.odps || dbType == DbType.hive) {
+                    if (dialectFeatureEnabled(TableAliasPartition)) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -262,7 +264,7 @@ public class SQLParser {
                     }
                     break;
                 case TABLE:
-                    if (dbType == DbType.odps) {
+                    if (dialectFeatureEnabled(TableAliasTable)) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -322,7 +324,7 @@ public class SQLParser {
                 case EXCEPT:
                 case LIMIT:
                 case BETWEEN:
-                    if (dbType == DbType.odps) {
+                    if (dialectFeatureEnabled(TableAliasBetween)) {
                         Lexer.SavePoint mark = lexer.mark();
                         String strVal = lexer.stringVal();
                         lexer.nextToken();
@@ -371,7 +373,7 @@ public class SQLParser {
         }
 
         if (must) {
-            if (dbType == DbType.odps) {
+            if (dialectFeatureEnabled(TableAliasRest)) {
                 switch (lexer.token) {
                     case GROUP:
                     case ORDER: {
@@ -451,7 +453,7 @@ public class SQLParser {
             }
 
             // for oracle
-            if (dbType == DbType.oracle && (lexer.token == Token.COMMA || lexer.token == Token.FROM)) {
+            if (dialectFeatureEnabled(AsCommaFrom) && (lexer.token == Token.COMMA || lexer.token == Token.FROM)) {
                 return null;
             }
 
@@ -481,7 +483,7 @@ public class SQLParser {
         } else if (lexer.token == Token.IDENTIFIER) {
             alias = lexer.stringVal();
             boolean skip = false;
-            if (dbType == DbType.hive || dbType == DbType.odps) {
+            if (dialectFeatureEnabled(AsSkip)) {
                 skip = "TBLPROPERTIES".equalsIgnoreCase(alias);
             }
             if (skip) {
@@ -565,7 +567,7 @@ public class SQLParser {
                 }
                 case CLOSE:
                 case SEQUENCE:
-                    if (dbType == DbType.mysql || dbType == DbType.odps || dbType == DbType.hive) {
+                    if (dialectFeatureEnabled(AsSequence)) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         break;
@@ -585,7 +587,7 @@ public class SQLParser {
                 case RIGHT:
                 case LEFT:
                 case DATABASE:
-                    if (dbType == DbType.odps || dbType == DbType.hive) {
+                    if (dialectFeatureEnabled(AsDatabase)) {
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         break;
@@ -595,7 +597,7 @@ public class SQLParser {
                 case ORDER:
                 case DISTRIBUTE:
                 case DEFAULT:
-                    if (dbType == DbType.odps || dbType == DbType.hive) {
+                    if (dialectFeatureEnabled(AsDefault)) {
                         Lexer.SavePoint mark = lexer.mark();
                         alias = lexer.stringVal();
                         lexer.nextToken();
@@ -639,7 +641,7 @@ public class SQLParser {
         } else if (lexer.token == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
-        } else if (lexer.token == Token.LITERAL_FLOAT && dbType == DbType.odps) {
+        } else if (lexer.token == Token.LITERAL_FLOAT && dialectFeatureEnabled(AliasLiteralFloat)) {
             String numStr = lexer.numberString();
             lexer.nextToken();
             if (lexer.token == Token.IDENTIFIER) {
@@ -923,5 +925,9 @@ public class SQLParser {
 
     protected SQLCreateTableStatement newCreateStatement() {
         return new SQLCreateTableStatement(dbType);
+    }
+
+    protected boolean dialectFeatureEnabled(DialectFeature.ParserFeature feature) {
+        return this.lexer.dialectFeature.isEnabled(feature);
     }
 }

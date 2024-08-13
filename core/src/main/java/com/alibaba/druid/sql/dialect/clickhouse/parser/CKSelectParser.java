@@ -1,6 +1,5 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
@@ -151,7 +150,7 @@ public class CKSelectParser
 
     @Override
     protected void parseAfterOrderBy(SQLSelectQueryBlock queryBlock) {
-        if (lexer.token() == Token.WITH && DbType.clickhouse == dbType) {
+        if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             acceptIdentifier("FILL");
             ((CKSelectQueryBlock) queryBlock).setWithFill(true);

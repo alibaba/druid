@@ -1,0 +1,81 @@
+CREATE EXTERNAL TABLE `ods.ods_dc_test_df` (
+	`id` bigint DEFAULT 5 CHECK (`id` > 0) COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称' ,
+	PRIMARY KEY(`id`), CONSTRAINT c1 CHECK (`id` < 100)
+)
+PARTITIONED BY (
+	`dt` string COMMENT 'date'
+)
+SORT BY (name)
+COMMENT '测试表'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+WITH SERDEPROPERTIES('serialization.format'=',', 'field.delim'=',')
+STORED AS PARQUET
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+CACHED IN 'default' WITH REPLICATION = 3
+TBLPROPERTIES (
+	'parquet.compression' = 'snappy',
+	'transient_lastDdlTime' = '1603362950'
+)
+--------------------
+CREATE EXTERNAL TABLE `ods.ods_dc_test_df` (
+	`id` bigint DEFAULT 5
+		CHECK (`id` > 0) COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY (`id`),
+	CONSTRAINT c1 CHECK (`id` < 100)
+)
+PARTITIONED BY (
+	`dt` string COMMENT 'date'
+)
+SORT BY (name)
+COMMENT '测试表'
+ROW FORMAT DELIMITED
+	FIELDS TERMINATED BY '\t'
+WITH SERDEPROPERTIES (
+	'serialization.format' = ',',
+	'field.delim' = ','
+)
+STORED AS PARQUET
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+CACHED IN 'default' WITH REPLICATION = 3
+TBLPROPERTIES (
+	'parquet.compression' = 'snappy',
+	'transient_lastDdlTime' = '1603362950'
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTERNAL TABLE IF NOT EXISTS `ods.ods_dc_test_df` (
+	`id` bigint DEFAULT 5 CHECK (`id` > 0) COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称'
+)
+STORED AS PARQUET
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+UNCACHED
+--------------------
+CREATE EXTERNAL TABLE IF NOT EXISTS `ods.ods_dc_test_df` (
+	`id` bigint DEFAULT 5
+		CHECK (`id` > 0) COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称'
+)
+STORED AS PARQUET
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+UNCACHED
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTERNAL TABLE IF NOT EXISTS `ods.ods_dc_test_df` (
+	`id` bigint DEFAULT 5 CHECK (`id` > 0) COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称'
+)
+STORED AS PARQUET
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+AS SELECT * FROM `ods.ods_dc_df`
+--------------------
+CREATE EXTERNAL TABLE IF NOT EXISTS `ods.ods_dc_test_df` (
+	`id` bigint DEFAULT 5
+		CHECK (`id` > 0) COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称'
+)
+STORED AS PARQUET
+LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
+AS
+SELECT *
+FROM `ods.ods_dc_df`

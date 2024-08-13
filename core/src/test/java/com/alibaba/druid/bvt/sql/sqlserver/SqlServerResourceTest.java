@@ -17,24 +17,7 @@ package com.alibaba.druid.bvt.sql.sqlserver;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
-import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.List;
-
 
 public class SqlServerResourceTest extends SQLResourceTest {
     public SqlServerResourceTest() {
@@ -43,6 +26,6 @@ public class SqlServerResourceTest extends SQLResourceTest {
 
     @Test
     public void sqlserver_parse() throws Exception {
-        fileTest(2, 999, i -> "bvt/parser/sqlserver/" + i + ".txt");
+        fileTest(0, 999, i -> "bvt/parser/sqlserver/" + i + ".txt");
     }
 }

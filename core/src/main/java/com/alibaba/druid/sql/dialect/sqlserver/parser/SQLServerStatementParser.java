@@ -29,6 +29,8 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Collection;
 import java.util.List;
 
+import static com.alibaba.druid.sql.parser.Token.LITERAL_ALIAS;
+
 public class SQLServerStatementParser extends SQLStatementParser {
     public SQLServerStatementParser(String sql) {
         super(new SQLServerExprParser(sql));
@@ -624,5 +626,14 @@ public class SQLServerStatementParser extends SQLStatementParser {
         } else {
             throw new ParserException("TODO : " + lexer.info());
         }
+    }
+
+    protected void alterTableAddRestSpecific(SQLAlterTableStatement stmt) {
+        if (lexer.token() == LITERAL_ALIAS) {
+            SQLAlterTableAddColumn item = parseAlterTableAddColumn();
+            stmt.addItem(item);
+            return;
+        }
+        throw new ParserException("TODO " + lexer.info());
     }
 }

@@ -1,14 +1,20 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKAlterTableUpdateStatement;
 import com.alibaba.druid.sql.parser.*;
 
 import static com.alibaba.druid.sql.parser.Token.ALTER;
+import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
+import static com.alibaba.druid.sql.parser.Token.ON;
 import static com.alibaba.druid.sql.parser.Token.TABLE;
+import static com.alibaba.druid.sql.parser.Token.TO;
 
 public class CKStatementParser extends SQLStatementParser {
     public CKStatementParser(String sql) {
@@ -78,5 +84,35 @@ public class CKStatementParser extends SQLStatementParser {
 
         lexer.reset(mark);
         return super.alterTable();
+    }
+
+    @Override
+    protected SQLAlterStatement alterTableAfterName(SQLAlterTableStatement stmt) {
+        if (lexer.token() == ON) {
+            lexer.nextToken();
+            acceptIdentifier("CLUSTER");
+            stmt.setOn(this.exprParser.name());
+        }
+        return super.alterTableAfterName(stmt);
+    }
+
+    @Override
+    public void parseCreateViewAfterName(SQLCreateViewStatement createView) {
+        if (dbType == DbType.clickhouse) {
+            if (lexer.token() == Token.ON) {
+                lexer.nextToken();
+                acceptIdentifier("CLUSTER");
+                createView.setOnCluster(true);
+            }
+
+            if (lexer.token() == LITERAL_CHARS) {
+                SQLName to = this.exprParser.name();
+                createView.setTo(to);
+            } else if (lexer.token() == TO) {
+                lexer.nextToken();
+                SQLName to = this.exprParser.name();
+                createView.setTo(to);
+            }
+        }
     }
 }

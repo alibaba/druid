@@ -27,7 +27,7 @@ public class MySqlCreateProcedureTest16 extends MysqlTest {
     public void test_0() {
         String sql = "CREATE PROCEDURE drop_tab_index (IN db varchar(50),IN tb_name varchar(512),IN idx_type varchar(50),IN idx_name varchar(512))\n" +
                 "BEGIN\n" +
-                "    CASE \n" +
+                "    CASE\n" +
                 "        WHEN idx_type='PRIMARY' OR idx_type='primary' THEN\n" +
                 "            IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA=db AND table_name=tb_name AND INDEX_NAME='PRIMARY') THEN\n" +
                 "                SET @alter_sql=concat(\"ALTER TABLE \",db,\".\",tb_name,\" DROP PRIMARY KEY\");\n" +

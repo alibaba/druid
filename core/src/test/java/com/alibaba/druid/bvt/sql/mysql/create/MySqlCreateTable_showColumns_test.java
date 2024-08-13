@@ -58,7 +58,7 @@ public class MySqlCreateTable_showColumns_test extends MysqlTest {
 
 
         StringBuilder buf = new StringBuilder();
-        stmt.showCoumns(buf);
+        stmt.showColumns(buf);
 
         assertEquals("+--------------+---------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type          | Null | Key | Default             | Extra                       |\n" +

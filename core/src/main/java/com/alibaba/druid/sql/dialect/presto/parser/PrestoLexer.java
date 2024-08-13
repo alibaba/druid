@@ -9,10 +9,11 @@ import com.alibaba.druid.sql.parser.Token;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PrestoLexer extends Lexer {
-    public static final Keywords DEFAULT_PHOENIX_KEYWORDS;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.SQLDateExpr;
 
-    static {
+public class PrestoLexer extends Lexer {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -33,18 +34,20 @@ public class PrestoLexer extends Lexer {
 
         map.put("IF", Token.IF);
 
-        DEFAULT_PHOENIX_KEYWORDS = new Keywords(map);
-    }
-
-    {
-        dbType = DbType.presto;
+        return new Keywords(map);
     }
 
     public PrestoLexer(String input, SQLParserFeature... features) {
         super(input);
-        super.keywords = DEFAULT_PHOENIX_KEYWORDS;
+        this.dbType = DbType.presto;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
+    }
+
+    @Override
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(SQLDateExpr);
     }
 }

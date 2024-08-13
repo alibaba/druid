@@ -1,0 +1,107 @@
+CREATE TABLE `ods.kudu_table_1` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY RANGE (`id`) (partition 0 <= values <= 49,partition 50 <= values <= 100)
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table_1` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY RANGE (`id`) (
+	 PARTITION 0 <= VALUES <= 49,
+	 PARTITION 50 <= VALUES <= 100
+)
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `ods.kudu_table_2` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY RANGE (`id`) (partition 0 < values < 49,partition 50 < values < 100)
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table_2` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY RANGE (`id`) (
+	 PARTITION 0 < VALUES < 49,
+	 PARTITION 50 < VALUES < 100
+)
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `ods.kudu_table_3` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY RANGE (`id`) (partition 0 < values <= 49,partition 50 <= values < 100)
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table_3` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY RANGE (`id`) (
+	 PARTITION 0 < VALUES <= 49,
+	 PARTITION 50 <= VALUES < 100
+)
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY(`id`)
+)
+PARTITION BY RANGE (`id`) (partition values < 0, partition 50 < values)
+STORED AS KUDU
+TBLPROPERTIES(
+      'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+      'kudu.num_tablet_replicas' = '1'
+)
+--------------------
+CREATE TABLE `ods.kudu_table` (
+	`id` bigint COMMENT 'id',
+	`name` string NOT NULL COMMENT '名称',
+	PRIMARY KEY (`id`)
+)
+PARTITION BY RANGE (`id`) (
+	 PARTITION VALUES < 0,
+	 PARTITION 50 < VALUES
+)
+STORED AS KUDU
+TBLPROPERTIES (
+	'kudu.master_addresses' = 'emr-header-1:7051,emr-header-2:7051,emr-header-3:7051',
+	'kudu.num_tablet_replicas' = '1'
+)

@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatementImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,13 @@ public class SQLServerExecStatement extends SQLServerStatementImpl implements SQ
 
         public void setType(boolean type) {
             this.type = type;
+        }
+
+        @Override
+        public void accept0(SQLASTVisitor v) {
+            if (v instanceof SQLServerASTVisitor) {
+                ((SQLServerASTVisitor) v).visit(this);
+            }
         }
 
         @Override

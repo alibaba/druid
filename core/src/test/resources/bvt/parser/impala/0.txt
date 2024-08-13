@@ -1,0 +1,33 @@
+SELECT a AS A FROM B AS b LEFT JOIN /* +shuffle */  ( select c from D d join E e on d.id=e.id where e.id = 'test' group by 1,2 ) f on b.id=f.id WHERE 1=1  GROUP BY a HAVING 1=1 limit 2000000
+--------------------
+SELECT a AS A
+FROM B b
+	LEFT JOIN /*+shuffle */ (
+		SELECT c
+		FROM D d
+			JOIN E e ON d.id = e.id
+		WHERE e.id = 'test'
+		GROUP BY 1, 2
+	) f
+	ON b.id = f.id
+WHERE 1 = 1
+GROUP BY a
+HAVING 1 = 1
+LIMIT 2000000
+------------------------------------------------------------------------------------------------------------------------
+SELECT a AS A FROM B AS b LEFT JOIN [shuffle]  ( select c from D d join E e on d.id=e.id where e.id = 'test' group by 1,2 ) f on b.id=f.id WHERE 1=1  GROUP BY a HAVING 1=1 limit 2000000
+--------------------
+SELECT a AS A
+FROM B b
+	LEFT JOIN [shuffle] (
+		SELECT c
+		FROM D d
+			JOIN E e ON d.id = e.id
+		WHERE e.id = 'test'
+		GROUP BY 1, 2
+	) f
+	ON b.id = f.id
+WHERE 1 = 1
+GROUP BY a
+HAVING 1 = 1
+LIMIT 2000000

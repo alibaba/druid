@@ -1,10 +1,8 @@
 package com.alibaba.druid.sql.dialect.bigquery.parser;
 
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -20,33 +18,17 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
+    protected SQLCreateTableStatement newCreateStatement() {
+        return new BigQueryCreateTableStatement();
+    }
+
+    protected void parseCreateTableRest(SQLCreateTableStatement x) {
+        BigQueryCreateTableStatement stmt = (BigQueryCreateTableStatement) x;
         for (;;) {
-            if (lexer.token() == Token.PARTITION) {
-                lexer.nextToken();
+            if (lexer.nextIf(Token.PARTITION)) {
                 accept(Token.BY);
 
-                boolean brace = lexer.nextIf(Token.LPAREN);
-                for (; ; ) {
-                    SQLName name;
-                    name = exprParser.name();
-                    if (name instanceof SQLIdentifierExpr
-                            && ((SQLIdentifierExpr) name).getName().equalsIgnoreCase("DATE")
-                            && lexer.nextIf(Token.LPAREN)
-                    ) {
-                        name = exprParser.name();
-                        accept(Token.RPAREN);
-                        name.putAttribute("function", "DATE");
-                    }
-                    stmt.addPartitionColumn(new SQLColumnDefinition(name));
-                    if (lexer.nextIf(Token.COMMA)) {
-                        continue;
-                    }
-                    break;
-                }
-                if (brace) {
-                    accept(Token.RPAREN);
-                }
+                this.exprParser.exprList(stmt.getPartitionBy(), stmt);
                 continue;
             }
 
@@ -94,12 +76,12 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
 
     protected void createTableBefore(SQLCreateTableStatement createTable) {
         if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")) {
-            createTable.setType(SQLCreateTableStatement.Type.TEMPORARY);
+            createTable.setTemporary(true);
         }
 
         if (lexer.nextIf(Token.OR)) {
             accept(Token.REPLACE);
-            createTable.setReplace(true);
+            createTable.config(SQLCreateTableStatement.Feature.OrReplace);
         }
     }
 }

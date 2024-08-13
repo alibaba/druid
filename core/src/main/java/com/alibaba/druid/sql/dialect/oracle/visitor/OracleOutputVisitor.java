@@ -401,8 +401,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     protected void printFrom(SQLSelectQueryBlock x) {
         println();
         print0(ucase ? "FROM " : "from ");
-        if (x.getCommentsAfaterFrom() != null) {
-            printAfterComments(x.getCommentsAfaterFrom());
+        if (x.getCommentsAfterFrom() != null) {
+            printAfterComments(x.getCommentsAfterFrom());
             println();
         }
         SQLTableSource from = x.getFrom();
@@ -1725,11 +1725,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "MONITORING" : "monitoring");
         }
 
-        if (x.getPartitioning() != null) {
-            println();
-            print0(ucase ? "PARTITION BY " : "partition by ");
-            x.getPartitioning().accept(this);
-        }
+        printPartitionBy(x);
 
         if (x.getCluster() != null) {
             println();

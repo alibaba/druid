@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement.Type;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.parser.*;
@@ -35,19 +34,16 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
     }
 
     protected void createTableBefore(SQLCreateTableStatement stmt) {
-        if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier(FnvHash.Constants.EXTERNAL)) {
             stmt.setExternal(true);
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.TEMPORARY)) {
-            lexer.nextToken();
-            stmt.setType(SQLCreateTableStatement.Type.TEMPORARY);
+        if (lexer.nextIfIdentifier(FnvHash.Constants.TEMPORARY)) {
+            stmt.setTemporary(true);
         }
 
-        if (lexer.stringVal().equalsIgnoreCase("TRANSACTIONAL")) {
-            lexer.nextToken();
-            stmt.setType(Type.TRANSACTIONAL);
+        if (lexer.nextIfIdentifier("TRANSACTIONAL")) {
+            stmt.config(SQLCreateTableStatement.Feature.Transactional);
         }
     }
 
@@ -101,6 +97,30 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             }
             SQLSelect select = this.createSQLSelectParser().select();
             stmt.setSelect(select);
+        }
+    }
+
+    protected void parseCreateTableWithSerderPropertie(HiveCreateTableStatement stmt) {
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            acceptIdentifier("SERDEPROPERTIES");
+
+            accept(Token.LPAREN);
+
+            for (; ; ) {
+                String key = lexer.stringVal();
+                lexer.nextToken();
+                accept(Token.EQ);
+                SQLExpr value = this.exprParser.primary();
+                stmt.getSerdeProperties().put(key, value);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+
+            accept(Token.RPAREN);
         }
     }
 
@@ -184,6 +204,21 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
+            parseSortedBy(stmt);
+        }
+
+        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
+            accept(Token.INTO);
+            if (lexer.token() == Token.LITERAL_INT) {
+                stmt.setBuckets(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                throw new ParserException("into buckets must be integer. " + lexer.info());
+            }
+            acceptIdentifier("BUCKETS");
+        }
+
         if (lexer.nextIfIdentifier(FnvHash.Constants.SKEWED)) {
             accept(Token.BY);
             accept(Token.LPAREN);
@@ -209,30 +244,11 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
                 break;
             }
             accept(Token.RPAREN);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
-            parseSortedBy(stmt);
-        }
-
-        if (lexer.token() == Token.ROW
-                || lexer.identifierEquals(FnvHash.Constants.ROW)) {
-            parseRowFormat(stmt);
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.SORTED)) {
-            parseSortedBy(stmt);
-        }
-
-        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
-            accept(Token.INTO);
-            if (lexer.token() == Token.LITERAL_INT) {
-                stmt.setBuckets(lexer.integerValue().intValue());
-                lexer.nextToken();
-            } else {
-                throw new ParserException("into buckets must be integer. " + lexer.info());
+            if (lexer.nextIfIdentifier(FnvHash.Constants.STORED)) {
+                accept(Token.AS);
+                acceptIdentifier("DIRECTORIES");
+                stmt.setSkewedByStoreAsDirectories(true);
             }
-            acceptIdentifier("BUCKETS");
         }
 
         if (lexer.token() == Token.ROW
@@ -250,6 +266,8 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
                 accept(Token.BY);
                 SQLName name = this.exprParser.name();
                 stmt.setStoredBy(name);
+
+                parseCreateTableWithSerderPropertie(stmt);
             } else {
                 accept(Token.AS);
 
@@ -381,7 +399,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         }
     }
 
-    private void parseSortedBy(HiveCreateTableStatement stmt) {
+    protected void parseSortedBy(HiveCreateTableStatement stmt) {
         lexer.nextToken();
         accept(Token.BY);
         accept(Token.LPAREN);
@@ -397,31 +415,10 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
         accept(Token.RPAREN);
     }
 
-    private void parseRowFormat(HiveCreateTableStatement stmt) {
+    protected void parseRowFormat(HiveCreateTableStatement stmt) {
         SQLExternalRecordFormat format = this.getExprParser().parseRowFormat();
         stmt.setRowFormat(format);
-
-        if (lexer.token() == Token.WITH) {
-            lexer.nextToken();
-            acceptIdentifier("SERDEPROPERTIES");
-
-            accept(Token.LPAREN);
-
-            for (; ; ) {
-                String name = lexer.stringVal();
-                lexer.nextToken();
-                accept(Token.EQ);
-                SQLExpr value = this.exprParser.primary();
-                stmt.getSerdeProperties().put(name, value);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-                break;
-            }
-
-            accept(Token.RPAREN);
-        }
+        parseCreateTableWithSerderPropertie(stmt);
     }
 
     @Override

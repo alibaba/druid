@@ -17,12 +17,17 @@ package com.alibaba.druid.sql.dialect.sqlserver.ast;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLServerSelectQueryBlock extends SQLSelectQueryBlock {
     private SQLServerTop top;
+    private List<SQLAssignItem> options = new ArrayList<>();
 
     public SQLServerSelectQueryBlock() {
         dbType = DbType.sqlserver;
@@ -30,6 +35,10 @@ public class SQLServerSelectQueryBlock extends SQLSelectQueryBlock {
 
     public SQLServerTop getTop() {
         return top;
+    }
+
+    public List<SQLAssignItem> getOptions() {
+        return options;
     }
 
     public void setTop(SQLServerTop top) {

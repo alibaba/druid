@@ -9,10 +9,11 @@ import com.alibaba.druid.sql.parser.Token;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CKLexer extends Lexer {
-    public static final Keywords DEFAULT_KEYWORDS;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 
-    static {
+public class CKLexer extends Lexer {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<String, Token>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -36,21 +37,32 @@ public class CKLexer extends Lexer {
         map.put("FORMAT", Token.FORMAT);
         map.put("SETTINGS", Token.SETTINGS);
         map.put("FINAL", Token.FINAL);
+        map.put("TTL", Token.TTL);
+        map.put("CODEC", Token.CODEC);
 
-        DEFAULT_KEYWORDS = new Keywords(map);
+        return new Keywords(map);
     }
-
     public CKLexer(String input) {
         super(input);
         dbType = DbType.clickhouse;
-        super.keywords = DEFAULT_KEYWORDS;
     }
 
     public CKLexer(String input, SQLParserFeature... features) {
         super(input);
-        super.keywords = DEFAULT_KEYWORDS;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
+    }
+
+    @Override
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(
+                AsofJoin,
+                GlobalJoin,
+                JoinRightTableAlias,
+                ParseLimitBy,
+                TableAliasAsof
+        );
     }
 }

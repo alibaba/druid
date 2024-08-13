@@ -69,7 +69,7 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
                 accept(Token.RPAREN);
                 accept(Token.USING);
                 acceptIdentifier("HASHING");
-                createTable.setPartitioning(partitionBy);
+                createTable.setPartitionBy(partitionBy);
                 continue;
             } else if (lexer.nextIfIdentifier(FnvHash.Constants.VALIDPROC)) {
                 SQLName validproc = this.exprParser.name();

@@ -75,12 +75,12 @@ public class MySqlSelectTest_294_dla extends MysqlTest {
                 "\t) n\n" +
                 "\t\tLEFT JOIN (\n" +
                 "\t\t\tSELECT os_p, server_id\n" +
-                "\t\t\t\t, sum(CASE \n" +
+                "\t\t\t\t, sum(CASE\n" +
                 "\t\t\t\t\tWHEN function_type = 'gjmy' THEN select_pic_cnt\n" +
                 "\t\t\t\t\tWHEN function_type IN ('zp', 'ps', 'video', 'fxgj', 'film') THEN take_pic_cnt\n" +
                 "\t\t\t\t\tELSE 0\n" +
                 "\t\t\t\tEND) AS tp_guanjian_cnt\n" +
-                "\t\t\t\t, sum(CASE \n" +
+                "\t\t\t\t, sum(CASE\n" +
                 "\t\t\t\t\tWHEN function_type != 'qita' THEN save_cnt\n" +
                 "\t\t\t\t\tELSE 0\n" +
                 "\t\t\t\tEND) AS svp_cnt\n" +

@@ -1,4 +1,0 @@
-ALTER TABLE t1 ADD INDEX k_idx (k) INVISIBLE;
----------------------------
-ALTER TABLE t1
-	ADD INDEX k_idx (k) INVISIBLE;

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLIndex;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
-import com.alibaba.druid.sql.dialect.ads.visitor.AdsVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -34,18 +33,7 @@ public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTable
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {
             accept0((MySqlASTVisitor) visitor);
-        } else if (visitor instanceof AdsVisitor) {
-            accept0((AdsVisitor) visitor);
         }
-    }
-
-    protected void accept0(AdsVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, this.getName());
-            acceptChild(visitor, this.getColumns());
-            acceptChild(visitor, this.getName());
-        }
-        visitor.endVisit(this);
     }
 
     protected void accept0(MySqlASTVisitor visitor) {

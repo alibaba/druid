@@ -82,7 +82,7 @@ public class OracleSelectTest101 extends OracleTest {
             String text = SQLUtils.toOracleString(stmt);
 //@todo 这里的注释信息断言暂时去掉
             assertEquals("SELECT e.area_name AS 区域, e.department_user_id AS 店铺代码, e.department_name AS 店铺名称, a.card_id AS 会员卡号, a.vip_name AS 姓名\n" +
-                    "\t, (CASE \n" +
+                    "\t, (CASE\n" +
                     "\t\tWHEN a.vip_sex = '1' THEN '男'\n" +
                     "\t\tWHEN a.vip_sex = '2' THEN '女'\n" +
                     "\t\tELSE '保密'\n" +

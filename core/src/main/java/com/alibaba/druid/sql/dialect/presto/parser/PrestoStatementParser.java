@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -510,5 +511,31 @@ public class PrestoStatementParser extends SQLStatementParser {
         stmt.setStatementName(statementName);
 
         return stmt;
+    }
+
+    @Override
+    public void parseCreateTableSupportSchema() {
+        if (lexer.token() == Token.SCHEMA) {
+            lexer.nextToken();
+        } else {
+            accept(Token.DATABASE);
+        }
+    }
+
+    @Override
+    public void parseExplainFormatType(SQLExplainStatement explain) {
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+
+            if (lexer.identifierEquals("FORMAT")) {
+                lexer.nextToken();
+                lexer.nextToken();
+            } else if (lexer.identifierEquals("TYPE")) {
+                lexer.nextToken();
+                lexer.nextToken();
+            }
+
+            accept(Token.RPAREN);
+        }
     }
 }

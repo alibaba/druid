@@ -366,6 +366,8 @@ public final class FnvHash {
         long SQL_BIG_RESULT = fnv1a_64_lower("SQL_BIG_RESULT");
         long SQL_BUFFER_RESULT = fnv1a_64_lower("SQL_BUFFER_RESULT");
         long CACHE = fnv1a_64_lower("CACHE");
+        long CACHED = fnv1a_64_lower("CACHED");
+        long UNCACHED = fnv1a_64_lower("UNCACHED");
         long SQL_CACHE = fnv1a_64_lower("SQL_CACHE");
         long SQL_NO_CACHE = fnv1a_64_lower("SQL_NO_CACHE");
         long SQL_CALC_FOUND_ROWS = fnv1a_64_lower("SQL_CALC_FOUND_ROWS");

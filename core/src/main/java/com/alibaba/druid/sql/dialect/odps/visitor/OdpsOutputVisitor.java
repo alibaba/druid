@@ -63,6 +63,15 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         super(appender, DbType.odps);
     }
 
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        if (x instanceof OdpsCreateTableStatement) {
+            return visit((OdpsCreateTableStatement) x);
+        }
+        return super.visit(x);
+    }
+
+    @Override
     public boolean visit(OdpsCreateTableStatement x) {
         List<SQLCommentHint> headHints = x.getHeadHintsDirect();
         if (headHints != null) {
@@ -78,9 +87,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
         print0(ucase ? "CREATE " : "create ");
 
-        if (x.isExternal()) {
-            print0(ucase ? "EXTERNAL " : "external ");
-        }
+        printCreateTableFeatures(x);
 
         if (x.isIfNotExists()) {
             print0(ucase ? "TABLE IF NOT EXISTS " : "table if not exists ");

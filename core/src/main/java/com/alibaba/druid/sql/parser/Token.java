@@ -254,6 +254,7 @@ public enum Token {
 
     ARRAY("ARRAY"),
     DISTRIBUTE("DISTRIBUTE"),
+    OPTION("OPTION"),
 
     // hive
 
@@ -292,6 +293,8 @@ public enum Token {
     PREWHERE("PREWHERE"),
     SETTINGS("SETTINGS"),
     FINAL("FINAL"),
+    TTL("TTL"),
+    CODEC("CODEC"),
 
     // Teradata
     SEL("SEL"),

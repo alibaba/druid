@@ -1,0 +1,53 @@
+CREATE TABLE public.tb0 (
+    id text NOT NULL,
+    name text NOT NULL,
+    class text NOT NULL,
+    in_time timestamptz NOT NULL,
+    PRIMARY KEY (id)
+)
+WITH (
+    orientation = 'column',
+    clustering_key = 'class',
+    bitmap_columns = 'name',
+  	event_time_column = 'in_time'
+);
+--------------------
+CREATE TABLE public.tb0 (
+	id text NOT NULL,
+	name text NOT NULL,
+	class text NOT NULL,
+	in_time timestamptz NOT NULL,
+	PRIMARY KEY (id)
+)
+WITH (
+	orientation = 'column',
+	clustering_key = 'class',
+	bitmap_columns = 'name',
+	event_time_column = 'in_time'
+);
+------------------------------------------------------------------------------------------------------------------------
+ALTER SCHEMA oldschema RENAME TO newschema;
+--------------------
+ALTER SCHEMA oldschema RENAME TO newschema;
+------------------------------------------------------------------------------------------------------------------------
+select current_schema();
+--------------------
+SELECT current_schema();
+------------------------------------------------------------------------------------------------------------------------
+create table blink_demo (id text);
+--------------------
+CREATE TABLE blink_demo (
+	id text
+);
+------------------------------------------------------------------------------------------------------------------------
+create schema schemaname
+--------------------
+CREATE SCHEMA schemaname
+------------------------------------------------------------------------------------------------------------------------
+set search_path to schemaname
+--------------------
+SET search_path TO schemaname
+------------------------------------------------------------------------------------------------------------------------
+select DATEADD(DATE '1970-01-01', 14238, 'dd')
+--------------------
+SELECT DATEADD(DATE '1970-01-01', 14238, 'dd')

@@ -80,6 +80,8 @@ public enum DbType {
 
     bigquery(1L << 48),
 
+    impala(1L << 49),
+
     ingres(0),
     cloudscape(0),
     timesten(0),
@@ -136,7 +138,7 @@ public enum DbType {
     }
 
     public static boolean isPostgreSQLDbStyle(DbType dbType) {
-        return dbType == DbType.postgresql || dbType == DbType.edb || dbType == DbType.greenplum;
+        return dbType == DbType.postgresql || dbType == DbType.edb || dbType == DbType.greenplum || dbType == DbType.hologres;
     }
     public final boolean equals(String other) {
         return this == of(other);

@@ -1,0 +1,638 @@
+REVOKE ALL ON accounts FROM PUBLIC;
+--------------------
+REVOKE ALL ON accounts FROM PUBLIC;
+------------------------------------------------------------------------------------------------------------------------
+GRANT UPDATE ON accounts TO joe;
+--------------------
+GRANT UPDATE ON accounts TO joe;
+------------------------------------------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS t_report_1_19
+--------------------
+DROP TABLE IF EXISTS t_report_1_19
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products ALTER COLUMN product_no SET NOT NULL;
+--------------------
+ALTER TABLE products
+	ALTER COLUMN product_no SET NOT NULL;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products ALTER COLUMN price SET DEFAULT 7.77;
+--------------------
+ALTER TABLE products
+	ALTER COLUMN price SET DEFAULT 7.77;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products RENAME COLUMN product_no TO product_number;
+--------------------
+ALTER TABLE products
+	RENAME COLUMN product_no TO product_number;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products RENAME TO items;
+--------------------
+ALTER TABLE products
+	RENAME TO items;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products ALTER COLUMN product_no DROP NOT NULL;
+--------------------
+ALTER TABLE products
+	ALTER COLUMN product_no DROP NOT NULL;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products ALTER COLUMN price DROP DEFAULT;
+--------------------
+ALTER TABLE products
+	ALTER COLUMN price DROP DEFAULT;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products DROP CONSTRAINT some_name;
+--------------------
+ALTER TABLE products
+	DROP CONSTRAINT some_name;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products DROP COLUMN description CASCADE;
+--------------------
+ALTER TABLE products
+	DROP COLUMN description CASCADE;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products DROP COLUMN description;
+--------------------
+ALTER TABLE products
+	DROP COLUMN description;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE organizations ALTER COLUMN guarded TYPE BOOLEAN, ALTER COLUMN guarded DROP NOT NULL
+--------------------
+ALTER TABLE organizations
+	ALTER COLUMN guarded TYPE BOOLEAN,
+	ALTER COLUMN guarded DROP NOT NULL
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products ADD CONSTRAINT some_name UNIQUE (product_no);
+--------------------
+ALTER TABLE products
+	ADD CONSTRAINT some_name UNIQUE (product_no);
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products ADD FOREIGN KEY (product_group_id) REFERENCES product_groups;
+--------------------
+ALTER TABLE products
+	ADD FOREIGN KEY (product_group_id)
+		REFERENCES product_groups;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE t_user ADD column aaa VARCHAR(10)
+--------------------
+ALTER TABLE t_user
+	ADD COLUMN aaa VARCHAR(10)
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products ADD COLUMN description text CHECK (description <> '');
+--------------------
+ALTER TABLE products
+	ADD COLUMN description text
+		CHECK (description <> '');
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products ADD COLUMN description text;
+--------------------
+ALTER TABLE products
+	ADD COLUMN description text;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE products ADD CHECK (name <> '');
+--------------------
+ALTER TABLE products
+	ADD CHECK (name <> '');
+------------------------------------------------------------------------------------------------------------------------
+SET a=1,2
+--------------------
+SET a TO 1, 2
+------------------------------------------------------------------------------------------------------------------------
+SET a=1
+--------------------
+SET a TO 1
+------------------------------------------------------------------------------------------------------------------------
+SET search_path =  my_schema, public;
+--------------------
+SET search_path TO my_schema, public;
+------------------------------------------------------------------------------------------------------------------------
+SET search_path TO my_schema, public;
+--------------------
+SET search_path TO my_schema, public;
+------------------------------------------------------------------------------------------------------------------------
+SET configuration_parameter TO DEFAULT;
+--------------------
+SET configuration_parameter TO DEFAULT;
+------------------------------------------------------------------------------------------------------------------------
+SET TIME ZONE 'Europe/Rome';
+--------------------
+SET TIME ZONE 'Europe/Rome';
+------------------------------------------------------------------------------------------------------------------------
+insert into wf_task_geom
+    (task_id,geom_in_gds,polygon,lseg)
+     values
+    (?,ST_GeomFromText(?,4326),?,?)
+--------------------
+INSERT INTO wf_task_geom (task_id, geom_in_gds, polygon, lseg)
+VALUES (?, ST_GeomFromText(?, 4326), ?, ?)
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO profile_group_execution(
+     gmt_create, gmt_modified ,
+    group_id, mode, sql, status, count, error_msg, error_code
+    )
+    VALUES (
+    now(), now(), ?, ?, ?, ?, ?, ?, ?
+    )
+    RETURNING
+    id,
+     gmt_create, gmt_modified
+    ,
+    group_id, mode, sql, status, count, error_msg, error_code
+--------------------
+INSERT INTO profile_group_execution
+	(gmt_create, gmt_modified, group_id, mode, sql
+	, status, count, error_msg, error_code)
+VALUES (now(), now(), ?, ?, ?
+	, ?, ?, ?, ?)
+RETURNING (id, gmt_create, gmt_modified, group_id, mode, sql, status, count, error_msg, error_code)
+------------------------------------------------------------------------------------------------------------------------
+insert into test1 as xx (tid,tid1,tvalue)
+    values (1,1,1),(2,2,2)
+    on conflict(tid,tid1) do update
+    set tvalue = xx.tvalue + excluded.tvalue;
+--------------------
+INSERT INTO test1 xx (tid, tid1, tvalue)
+VALUES (1, 1, 1),
+(2, 2, 2)
+ON CONFLICT (tid, tid1) DO UPDATE SET tvalue = xx.tvalue + excluded.tvalue;
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO test VALUES (B'10'::bit(3), B'101');
+--------------------
+INSERT INTO test
+VALUES (B'10'::bit(3), B'101');
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO test VALUES (B'101', B'00');
+--------------------
+INSERT INTO test
+VALUES (B'101', B'00');
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO distributors (did, dname) VALUES (10, 'Conrad International')
+    ON CONFLICT (did) WHERE is_active DO NOTHING;
+--------------------
+INSERT INTO distributors (did, dname)
+VALUES (10, 'Conrad International')
+ON CONFLICT (did) WHERE is_active DO NOTHING;
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO distributors (did, dname) VALUES (9, 'Antwerp Design')
+    ON CONFLICT ON CONSTRAINT distributors_pkey DO NOTHING;
+--------------------
+INSERT INTO distributors (did, dname)
+VALUES (9, 'Antwerp Design')
+ON CONFLICT ON CONSTRAINT distributors_pkey DO NOTHING;
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO products (product_no, name, price) VALUES
+   (1, 'Cheese', 9.99),
+   (2, 'Bread', 1.99),
+   (3, 'Milk', 2.99);
+--------------------
+INSERT INTO products (product_no, name, price)
+VALUES (1, 'Cheese', 9.99),
+(2, 'Bread', 1.99),
+(3, 'Milk', 2.99);
+------------------------------------------------------------------------------------------------------------------------
+insert into test(k,v) values (1,2) ON CONFLICT (k) DO UPDATE SET v = EXCLUDED.v;
+--------------------
+INSERT INTO test (k, v)
+VALUES (1, 2)
+ON CONFLICT (k) DO UPDATE SET v = EXCLUDED.v;
+------------------------------------------------------------------------------------------------------------------------
+WITH upd AS (
+  UPDATE employees SET sales_count = sales_count + 1 WHERE id =
+    (SELECT sales_person FROM accounts WHERE name = 'Acme Corporation')
+    RETURNING *
+)
+INSERT INTO employees_log SELECT *, current_timestamp FROM upd;
+--------------------
+WITH upd AS (
+		UPDATE employees
+		SET sales_count = sales_count + 1
+		WHERE id = (
+				SELECT sales_person
+				FROM accounts
+				WHERE name = 'Acme Corporation'
+			)
+		RETURNING *
+	)
+INSERT INTO employees_log
+SELECT *, current_timestamp
+FROM upd;
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO distributors (did, dname) VALUES (DEFAULT, 'XYZ Widgets') RETURNING did;
+--------------------
+INSERT INTO distributors (did, dname)
+VALUES (DEFAULT, 'XYZ Widgets')
+RETURNING did;
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO films SELECT * FROM tmp_films WHERE date_prod < '2004-05-07';
+--------------------
+INSERT INTO films
+SELECT *
+FROM tmp_films
+WHERE date_prod < '2004-05-07';
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO films (code, title, did, date_prod, kind) VALUES
+    ('B6717', 'Tampopo', 110, '1985-02-10', 'Comedy'),
+('HG120', 'The Dinner Game', 140, DEFAULT, 'Comedy');
+--------------------
+INSERT INTO films (code, title, did, date_prod, kind)
+VALUES ('B6717', 'Tampopo', 110, '1985-02-10', 'Comedy'),
+('HG120', 'The Dinner Game', 140, DEFAULT, 'Comedy');
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO films (code, title, did, date_prod, kind) VALUES ('T_601', 'Yojimbo', 106, '1961-06-16', 'Drama');
+--------------------
+INSERT INTO films (code, title, did, date_prod, kind)
+VALUES ('T_601', 'Yojimbo', 106, '1961-06-16', 'Drama');
+------------------------------------------------------------------------------------------------------------------------
+insert into test01 DEFAULT VALUES
+--------------------
+INSERT INTO test01
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO films VALUES ('UA502', 'Bananas', 105, '1971-07-13', 'Comedy', '82 minutes');
+--------------------
+INSERT INTO films
+VALUES ('UA502', 'Bananas', 105, '1971-07-13', 'Comedy'
+	, '82 minutes');
+------------------------------------------------------------------------------------------------------------------------
+DELETE FROM ecc_cpr.ccg_gts_Boardlw i
+WHERE i.contract_header_id = ?
+--------------------
+DELETE FROM ecc_cpr.ccg_gts_Boardlw AS i
+WHERE i.contract_header_id = ?
+------------------------------------------------------------------------------------------------------------------------
+WITH RECURSIVE included_parts(sub_part, part) AS (
+    SELECT sub_part, part FROM parts WHERE part = 'our_product'
+  UNION ALL
+    SELECT p.sub_part, p.part
+    FROM included_parts pr, parts p
+    WHERE p.part = pr.sub_part
+  )
+DELETE FROM parts
+  WHERE part IN (SELECT part FROM included_parts);
+--------------------
+WITH RECURSIVE included_parts (sub_part, part) AS (
+		SELECT sub_part, part
+		FROM parts
+		WHERE part = 'our_product'
+		UNION ALL
+		SELECT p.sub_part, p.part
+		FROM included_parts pr, parts p
+		WHERE p.part = pr.sub_part
+	)
+DELETE FROM parts
+WHERE part IN (
+		SELECT part
+		FROM included_parts
+	);
+------------------------------------------------------------------------------------------------------------------------
+WITH t AS (
+    DELETE FROM foo
+)
+DELETE FROM bar;
+--------------------
+WITH t AS (
+		DELETE FROM foo
+	)
+DELETE FROM bar;
+------------------------------------------------------------------------------------------------------------------------
+WITH moved_rows AS (
+    DELETE FROM products
+    WHERE
+        "date" >= '2010-10-01' AND
+        "date" < '2010-11-01'
+    RETURNING *
+)
+INSERT INTO products_log
+SELECT * FROM moved_rows;
+--------------------
+WITH moved_rows AS (
+		DELETE FROM products
+		WHERE "date" >= '2010-10-01'
+			AND "date" < '2010-11-01'
+		RETURNING *
+	)
+INSERT INTO products_log
+SELECT *
+FROM moved_rows;
+------------------------------------------------------------------------------------------------------------------------
+DELETE FROM films USING producers  WHERE producer_id = producers.id AND producers.name = 'foo';
+--------------------
+DELETE FROM films
+USING producers
+WHERE producer_id = producers.id
+	AND producers.name = 'foo';
+------------------------------------------------------------------------------------------------------------------------
+DELETE FROM films WHERE producer_id IN (SELECT id FROM producers WHERE name = 'foo');
+--------------------
+DELETE FROM films
+WHERE producer_id IN (
+		SELECT id
+		FROM producers
+		WHERE name = 'foo'
+	);
+------------------------------------------------------------------------------------------------------------------------
+DELETE FROM tasks WHERE status = 'DONE' RETURNING *;
+--------------------
+DELETE FROM tasks
+WHERE status = 'DONE'
+RETURNING *;
+------------------------------------------------------------------------------------------------------------------------
+DELETE FROM tasks WHERE CURRENT OF c_tasks;
+--------------------
+DELETE FROM tasks
+WHERE CURRENT OF c_tasks;
+------------------------------------------------------------------------------------------------------------------------
+commit;
+--------------------
+COMMIT;
+------------------------------------------------------------------------------------------------------------------------
+DELETE FROM films USING producers WHERE producer_id = producers.id AND producers.name = 'foo';
+--------------------
+DELETE FROM films
+USING producers
+WHERE producer_id = producers.id
+	AND producers.name = 'foo';
+------------------------------------------------------------------------------------------------------------------------
+CREATE index fact_pageview_sum_p_day_id_idx ON fact_pageview_sum USING btree (p_day_id);
+--------------------
+CREATE INDEX fact_pageview_sum_p_day_id_idx ON fact_pageview_sum USING btree (p_day_id);
+------------------------------------------------------------------------------------------------------------------------
+COMMENT ON COLUMN "public"."city"."name" IS '城市名';
+--------------------
+COMMENT ON COLUMN "public"."city"."name" IS '城市名';
+------------------------------------------------------------------------------------------------------------------------
+COMMENT ON TABLE "public"."city" IS '城市';
+--------------------
+COMMENT ON TABLE "public"."city" IS '城市';
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE "public"."city" (
+  "id" varchar(6) COLLATE "default" NOT NULL,
+  "name" varchar(32) COLLATE "default" NOT NULL
+) WITH (OIDS=FALSE);
+--------------------
+CREATE TABLE "public"."city" (
+	"id" varchar(6) NOT NULL,
+	"name" varchar(32) NOT NULL
+)
+WITH (
+	OIDS = false
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE KTV.KTV_FUNCTION_ROLE_20151211 (
+    URL VARCHAR(150),
+    FUNCTION VARCHAR(1002),
+    ROLE VARCHAR(100),
+    "COUNT" VARCHAR(102)
+)
+--------------------
+CREATE TABLE KTV.KTV_FUNCTION_ROLE_20151211 (
+	URL VARCHAR(150),
+	FUNCTION VARCHAR(1002),
+	ROLE VARCHAR(100),
+	"COUNT" VARCHAR(102)
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE KTV.ALI_KTV_LEADS_AREA_FIX_TBD (
+ID VARCHAR(200) NOT NULL,
+TYPE VARCHAR(200),
+CONSTRAINT idx_ALI_KTV_LEADS_AREA_FIX_TBD_PK0 PRIMARY KEY (ID)
+)
+--------------------
+CREATE TABLE KTV.ALI_KTV_LEADS_AREA_FIX_TBD (
+	ID VARCHAR(200) NOT NULL,
+	TYPE VARCHAR(200),
+	CONSTRAINT idx_ALI_KTV_LEADS_AREA_FIX_TBD_PK0 PRIMARY KEY (ID)
+)
+------------------------------------------------------------------------------------------------------------------------
+create table test(id bigint, TYPE varchar(20))
+--------------------
+CREATE TABLE test (
+	id bigint,
+	TYPE varchar(20)
+)
+------------------------------------------------------------------------------------------------------------------------
+create table if not exists test_site_data_select_111 AS select * from postman_trace_info_one  where lng>0 and lat>0  and site_id='17814' ;
+--------------------
+CREATE TABLE IF NOT EXISTS test_site_data_select_111
+AS
+SELECT *
+FROM postman_trace_info_one
+WHERE lng > 0
+	AND lat > 0
+	AND site_id = '17814';
+------------------------------------------------------------------------------------------------------------------------
+create table test_site_data_select_111 AS select * from postman_trace_info_one  where lng>0 and lat>0  and site_id='17814' ;
+--------------------
+CREATE TABLE test_site_data_select_111
+AS
+SELECT *
+FROM postman_trace_info_one
+WHERE lng > 0
+	AND lat > 0
+	AND site_id = '17814';
+------------------------------------------------------------------------------------------------------------------------
+create table xxx as select * from xxx
+--------------------
+CREATE TABLE xxx
+AS
+SELECT *
+FROM xxx
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE products (
+  state           char(2)
+) INHERITS (cities);
+--------------------
+CREATE TABLE products (
+	state char(2)
+) INHERITS (cities);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE products (
+    product_no integer,
+    name text,
+    price numeric CHECK (price > 0)
+);
+--------------------
+CREATE TABLE products (
+	product_no integer,
+	name text,
+	price numeric
+		CHECK (price > 0)
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE products (
+    product_no integer,
+    name text,
+    price numeric DEFAULT nextval('products_product_no_seq')
+);
+--------------------
+CREATE TABLE products (
+	product_no integer,
+	name text,
+	price numeric DEFAULT nextval('products_product_no_seq')
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE products (
+    product_no integer,
+    name text,
+    price numeric DEFAULT 9.99
+);
+--------------------
+CREATE TABLE products (
+	product_no integer,
+	name text,
+	price numeric DEFAULT 9.99
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE products (
+    product_no integer,
+    name text,
+    price numeric
+);
+--------------------
+CREATE TABLE products (
+	product_no integer,
+	name text,
+	price numeric
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE my_first_table (
+    first_column text,
+    second_column integer
+)
+--------------------
+CREATE TABLE my_first_table (
+	first_column text,
+	second_column integer
+)
+------------------------------------------------------------------------------------------------------------------------
+create index if not exists idx_json_data_path on yida_entity_instance using gin(json_data jsonb_path_ops)
+--------------------
+CREATE INDEX IF NOT EXISTS idx_json_data_path ON yida_entity_instance USING gin (json_data jsonb_path_ops)
+------------------------------------------------------------------------------------------------------------------------
+CREATE INDEX if not exists "calculate_measure_dataset_id_idx" ON "calculate_measure" USING btree ("dataset_id");
+--------------------
+CREATE INDEX IF NOT EXISTS "calculate_measure_dataset_id_idx" ON "calculate_measure" USING btree ("dataset_id");
+------------------------------------------------------------------------------------------------------------------------
+CREATE UNIQUE INDEX "test_idx" ON "public"."city" USING btree ("name");
+--------------------
+CREATE UNIQUE INDEX "test_idx" ON "public"."city" USING btree ("name");
+------------------------------------------------------------------------------------------------------------------------
+SELECT Count(*) FROM tb_abc AS t1 WHERE ((t1.a_id = 'global_a_id') AND (t1.owner = 'global_bc'));
+--------------------
+SELECT Count(*)
+FROM tb_abc t1
+WHERE ((t1.a_id = 'global_a_id')
+	AND (t1.owner = 'global_bc'));
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE foo (fooid int, foosubid int, fooname text);
+--------------------
+CREATE TABLE foo (
+	fooid int,
+	foosubid int,
+	fooname text
+);
+------------------------------------------------------------------------------------------------------------------------
+DROP FUNCTION oe.SecondMax
+--------------------
+DROP FUNCTION oe.SecondMax
+------------------------------------------------------------------------------------------------------------------------
+create sequence SEQ_CONTRACT_OPER_ID
+    INCREMENT BY 1
+    START WITH 1
+    NOMAXVALUE
+    NOCYCLE
+    CACHE 10
+--------------------
+CREATE SEQUENCE SEQ_CONTRACT_OPER_ID START WITH 1 INCREMENT BY 1 NO MAXVALUE NO CYCLE CACHE 10
+------------------------------------------------------------------------------------------------------------------------
+CONNECT to db_2
+--------------------
+CONNECT TO db_2
+------------------------------------------------------------------------------------------------------------------------
+begin
+--------------------
+BEGIN
+------------------------------------------------------------------------------------------------------------------------
+start transaction;
+--------------------
+START TRANSACTION;
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE issues
+    ADD COLUMN issue_creation_date_ms BIGINT NULL,
+    ADD COLUMN issue_update_date_ms BIGINT NULL,
+    ADD COLUMN issue_close_date_ms BIGINT NULL,
+    ADD COLUMN tags VARCHAR (4000) NULL,
+    ADD COLUMN component_uuid VARCHAR (50) NULL,
+    ADD COLUMN project_uuid VARCHAR (50) NULL
+--------------------
+ALTER TABLE issues
+	ADD COLUMN issue_creation_date_ms BIGINT NULL,
+	ADD COLUMN issue_update_date_ms BIGINT NULL,
+	ADD COLUMN issue_close_date_ms BIGINT NULL,
+	ADD COLUMN tags VARCHAR(4000) NULL,
+	ADD COLUMN component_uuid VARCHAR(50) NULL,
+	ADD COLUMN project_uuid VARCHAR(50) NULL
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE "reviews" DROP "review_type"
+--------------------
+ALTER TABLE "reviews"
+	DROP COLUMN "review_type"
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE "measure_data" ALTER "measure_id" DROP NOT NULL
+--------------------
+ALTER TABLE "measure_data"
+	ALTER COLUMN "measure_id" DROP NOT NULL
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE dependencies ALTER COLUMN id TYPE bigint
+--------------------
+ALTER TABLE dependencies
+	ALTER COLUMN id TYPE bigint
+------------------------------------------------------------------------------------------------------------------------
+DROP TABLE films, distributors;
+--------------------
+DROP TABLE films, distributors;
+------------------------------------------------------------------------------------------------------------------------
+SET search_path = "public","$user", public
+--------------------
+SET search_path TO "public", "$user", public
+------------------------------------------------------------------------------------------------------------------------
+SET ROLE 'postgres'
+--------------------
+SET ROLE TO 'postgres'
+------------------------------------------------------------------------------------------------------------------------
+SHOW max_identifier_length
+--------------------
+SHOW max_identifier_length
+------------------------------------------------------------------------------------------------------------------------
+update student a set grade = tmp.grade from (values (1, 'A')) as tmp(id, grade) where a.id = tmp.id
+--------------------
+UPDATE student a
+SET grade = tmp.grade
+FROM (VALUES (1, 'A')) AS tmp (id, grade)
+WHERE a.id = tmp.id
+------------------------------------------------------------------------------------------------------------------------
+TRUNCATE othertable CASCADE;
+--------------------
+TRUNCATE TABLE othertable CASCADE;
+------------------------------------------------------------------------------------------------------------------------
+TRUNCATE bigtable, fattable RESTART IDENTITY;
+--------------------
+TRUNCATE TABLE bigtable,
+fattable RESTART IDENTITY;
+------------------------------------------------------------------------------------------------------------------------
+show transaction_read_only;
+--------------------
+SHOW transaction_read_only;
+------------------------------------------------------------------------------------------------------------------------
+show all;
+--------------------
+SHOW ALL;
+------------------------------------------------------------------------------------------------------------------------
+delete from account a using (values (1), (7)) as tmp(id) WHERE a.id = tmp.id
+--------------------
+DELETE FROM account AS a
+USING (VALUES (1), (7)) AS tmp (id)
+WHERE a.id = tmp.id
+------------------------------------------------------------------------------------------------------------------------
+SET standard_conforming_strings=on
+--------------------
+SET standard_conforming_strings TO on
+

@@ -15,18 +15,20 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OracleLexer extends Lexer {
-    public static final Keywords DEFAULT_ORACLE_KEYWORDS;
-
-    static {
+    @Override
+    protected Keywords loadKeywords() {
         Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("BEGIN", Token.BEGIN);
@@ -53,7 +55,7 @@ public class OracleLexer extends Lexer {
         map.put("MERGE", Token.MERGE);
 
         map.put("MODE", Token.MODE);
-//        map.put("MODEL", Token.MODEL);
+        //        map.put("MODEL", Token.MODEL);
         map.put("NOWAIT", Token.NOWAIT);
         map.put("OF", Token.OF);
         map.put("PRIOR", Token.PRIOR);
@@ -114,26 +116,26 @@ public class OracleLexer extends Lexer {
         map.put("（", Token.LPAREN);
         map.put("）", Token.RPAREN);
 
-        DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
+        return new Keywords(map);
     }
 
     public OracleLexer(char[] input, int inputLength, boolean skipComment) {
         super(input, inputLength, skipComment);
-        super.keywords = DEFAULT_ORACLE_KEYWORDS;
+        dbType = DbType.oracle;
     }
 
     public OracleLexer(String input) {
         super(input);
         this.skipComment = true;
         this.keepComments = true;
-        super.keywords = DEFAULT_ORACLE_KEYWORDS;
+        dbType = DbType.oracle;
     }
 
     public OracleLexer(String input, SQLParserFeature... features) {
         super(input);
         this.skipComment = true;
         this.keepComments = true;
-        super.keywords = DEFAULT_ORACLE_KEYWORDS;
+        dbType = DbType.oracle;
 
         for (SQLParserFeature feature : features) {
             config(feature, true);
@@ -393,4 +395,16 @@ public class OracleLexer extends Lexer {
         }
     }
 
+    @Override
+    protected void initDialectFeature() {
+        super.initDialectFeature();
+        this.dialectFeature.configFeature(
+                ScanSQLTypeWithBegin,
+                SQLDateExpr,
+                PrimaryVariantColon,
+                CreateTableBodySupplemental,
+                AsCommaFrom
+        );
+        this.dialectFeature.unconfigFeature(SQLTimestampExpr);
+    }
 }

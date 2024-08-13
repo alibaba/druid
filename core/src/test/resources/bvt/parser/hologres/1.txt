@@ -1,0 +1,30 @@
+CREATE TABLE replicated_orders (
+  order_id BIGINT NOT NULL,
+  customer_id INTEGER,
+  order_date DATE,
+  product_id INTEGER,
+  quantity INTEGER,
+  price DECIMAL(10, 2),
+  PRIMARY KEY (order_date, customer_id, order_id)
+)
+PARTITION BY LIST(order_date)
+WITH (orientation='column',
+distribution_key='order_date',
+clustering_key='order_date'
+);
+--------------------
+CREATE TABLE replicated_orders (
+	order_id BIGINT NOT NULL,
+	customer_id INTEGER,
+	order_date DATE,
+	product_id INTEGER,
+	quantity INTEGER,
+	price DECIMAL(10, 2),
+	PRIMARY KEY (order_date, customer_id, order_id)
+)
+PARTITION BY LIST (order_date)
+WITH (
+	orientation = 'column',
+	distribution_key = 'order_date',
+	clustering_key = 'order_date'
+);

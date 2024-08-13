@@ -54,17 +54,17 @@ public class OracleSelectTest68 extends OracleTest {
 
             assertEquals("INSERT INTO SB_ZZS_LDSK_2016\n" +
                     "SELECT DJXH, :B1\n" +
-                    "\t, NVL(SUM(CASE \n" +
+                    "\t, NVL(SUM(CASE\n" +
                     "\t\tWHEN ZZSLX = '2'\n" +
                     "\t\t\tAND LDLX = '1'\n" +
                     "\t\tTHEN LDSE\n" +
                     "\tEND), 0) AS SQLDSE_BQ\n" +
-                    "\t, NVL(SUM(CASE \n" +
+                    "\t, NVL(SUM(CASE\n" +
                     "\t\tWHEN ZZSLX = '1'\n" +
                     "\t\t\tAND LDLX = '1'\n" +
                     "\t\tTHEN LDSE\n" +
                     "\tEND), 0) AS SQLDSE_LJ\n" +
-                    "\t, NVL(SUM(CASE \n" +
+                    "\t, NVL(SUM(CASE\n" +
                     "\t\tWHEN LDLX = '2' THEN LDSE\n" +
                     "\tEND), 0) AS SQLDSE_JZ\n" +
                     "\t, 0, 0, 0, SYSDATE\n" +
@@ -109,17 +109,17 @@ public class OracleSelectTest68 extends OracleTest {
 
             Assert.assertEquals("insert into SB_ZZS_LDSK_2016\n" +
                     "select DJXH, :B1\n" +
-                    "\t, NVL(sum(case \n" +
+                    "\t, NVL(sum(case\n" +
                     "\t\twhen ZZSLX = '2'\n" +
                     "\t\t\tand LDLX = '1'\n" +
                     "\t\tthen LDSE\n" +
                     "\tend), 0) as SQLDSE_BQ\n" +
-                    "\t, NVL(sum(case \n" +
+                    "\t, NVL(sum(case\n" +
                     "\t\twhen ZZSLX = '1'\n" +
                     "\t\t\tand LDLX = '1'\n" +
                     "\t\tthen LDSE\n" +
                     "\tend), 0) as SQLDSE_LJ\n" +
-                    "\t, NVL(sum(case \n" +
+                    "\t, NVL(sum(case\n" +
                     "\t\twhen LDLX = '2' then LDSE\n" +
                     "\tend), 0) as SQLDSE_JZ\n" +
                     "\t, 0, 0, 0, sysdate\n" +

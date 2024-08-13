@@ -314,7 +314,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             this.acceptChild(visitor, tablespace);
             this.acceptChild(visitor, select);
             this.acceptChild(visitor, storage);
-            this.acceptChild(visitor, partitioning);
+            this.acceptChild(visitor, partitionBy);
         }
         visitor.endVisit(this);
     }

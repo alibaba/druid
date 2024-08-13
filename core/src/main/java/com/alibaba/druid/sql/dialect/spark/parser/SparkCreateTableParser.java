@@ -45,7 +45,7 @@ public class SparkCreateTableParser extends HiveCreateTableParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.TEMPORARY)) {
             lexer.nextToken();
-            stmt.setType(SQLCreateTableStatement.Type.TEMPORARY);
+            stmt.setTemporary(true);
         }
 
         accept(Token.TABLE);
@@ -55,7 +55,7 @@ public class SparkCreateTableParser extends HiveCreateTableParser {
             accept(Token.NOT);
             accept(Token.EXISTS);
 
-            stmt.setIfNotExiists(true);
+            stmt.setIfNotExists(true);
         }
 
         stmt.setName(this.exprParser.name());
