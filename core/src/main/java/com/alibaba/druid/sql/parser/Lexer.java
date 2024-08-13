@@ -2662,12 +2662,21 @@ public class Lexer {
         mark = pos;
         bufPos = 1;
         char ch = 0;
+        boolean hasLeftBrace = false;
         for (; ; ) {
             char c0 = ch;
             ch = charAt(++pos);
 
             if (!isIdentifierChar(ch)) {
-                if ((ch == '（' || ch == '）') && c0 > 256) {
+                if (((ch == '（' || ch == '）') && c0 > 256) || ch == '$') {
+                    bufPos++;
+                    continue;
+                } else if (ch == '{' && c0 == '$') {
+                    hasLeftBrace = true;
+                    bufPos++;
+                    continue;
+                } else if (ch == '}' && hasLeftBrace) {
+                    hasLeftBrace = false;
                     bufPos++;
                     continue;
                 }
