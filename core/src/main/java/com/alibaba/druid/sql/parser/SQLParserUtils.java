@@ -71,6 +71,9 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.presto.parser.PrestoExprParser;
 import com.alibaba.druid.sql.dialect.presto.parser.PrestoLexer;
 import com.alibaba.druid.sql.dialect.presto.parser.PrestoStatementParser;
+import com.alibaba.druid.sql.dialect.redshift.parser.RedshiftExprParser;
+import com.alibaba.druid.sql.dialect.redshift.parser.RedshiftLexer;
+import com.alibaba.druid.sql.dialect.redshift.parser.RedshiftStatementParser;
 import com.alibaba.druid.sql.dialect.spark.parser.SparkLexer;
 import com.alibaba.druid.sql.dialect.spark.parser.SparkStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -146,6 +149,8 @@ public class SQLParserUtils {
                 return new PGSQLStatementParser(sql, features);
             case hologres:
                 return new HologresStatementParser(sql, features);
+            case redshift:
+                return new RedshiftStatementParser(sql, features);
             case sqlserver:
             case jtds:
                 return new SQLServerStatementParser(sql, features);
@@ -206,6 +211,8 @@ public class SQLParserUtils {
                 return new PGExprParser(sql, features);
             case hologres:
                 return new HologresExprParser(sql, features);
+            case redshift:
+                return new RedshiftExprParser(sql, features);
             case sqlserver:
             case jtds:
                 return new SQLServerExprParser(sql, features);
@@ -263,6 +270,8 @@ public class SQLParserUtils {
                 return new PGLexer(sql, features);
             case hologres:
                 return new HologresLexer(sql, features);
+            case redshift:
+                return new RedshiftLexer(sql, features);
             case db2:
                 return new DB2Lexer(sql, features);
             case odps:
@@ -312,6 +321,7 @@ public class SQLParserUtils {
             case greenplum:
             case edb:
             case hologres:
+            case redshift:
                 return new PGSelectQueryBlock();
             case odps:
                 return new OdpsSelectQueryBlock();

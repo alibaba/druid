@@ -1,0 +1,79 @@
+select top 10 * from a
+--------------------
+SELECT TOP 10 *
+FROM a
+------------------------------------------------------------------------------------------------------------------------
+SELECT COUNT(*)
+FROM Employee "start"
+START WITH name = 'John'
+CONNECT BY PRIOR id = manager_id
+--------------------
+SELECT COUNT(*)
+FROM Employee "start"
+START WITH name = 'John'
+CONNECT BY PRIOR id = manager_id
+------------------------------------------------------------------------------------------------------------------------
+select salesid, listid, sum(pricepaid) from sales s
+where qtysold=
+(select max(numtickets) from listing l
+where s.listid=l.listid)
+group by 1,2
+order by 1,2
+limit 5
+--------------------
+SELECT salesid, listid, sum(pricepaid)
+FROM sales s
+WHERE qtysold = (
+	SELECT max(numtickets)
+	FROM listing l
+	WHERE s.listid = l.listid
+)
+GROUP BY 1, 2
+ORDER BY 1, 2
+LIMIT 5
+------------------------------------------------------------------------------------------------------------------------
+select salesid, qtysold, pricepaid, commission, saletime from sales
+order by qtysold, pricepaid, commission, salesid, saletime desc
+limit 10
+--------------------
+SELECT salesid, qtysold, pricepaid, commission, saletime
+FROM sales
+ORDER BY qtysold, pricepaid, commission, salesid, saletime DESC
+LIMIT 10
+------------------------------------------------------------------------------------------------------------------------
+select listid, sellerid, eventid from listing
+union select listid, sellerid, eventid from sales
+order by listid, sellerid, eventid desc limit 5
+--------------------
+SELECT listid, sellerid, eventid
+FROM listing
+UNION
+SELECT listid, sellerid, eventid
+FROM sales
+ORDER BY listid, sellerid, eventid DESC
+LIMIT 5
+------------------------------------------------------------------------------------------------------------------------
+SELECT *
+FROM store_sales ss
+WHERE ss_sold_time > time '12:00:00'
+QUALIFY row_number()
+OVER (PARTITION BY ss_sold_date ORDER BY ss_sales_price DESC) <= 2
+--------------------
+SELECT *
+FROM store_sales ss
+WHERE ss_sold_time > TIME '12:00:00'
+QUALIFY row_number() OVER (PARTITION BY ss_sold_date ORDER BY ss_sales_price DESC) <= 2
+------------------------------------------------------------------------------------------------------------------------
+select username, lastname, sum(pricepaid-commission) as profit
+into temp table profits
+from sales, users
+where sales.sellerid=users.userid
+group by 1, 2
+order by 3 desc
+--------------------
+SELECT username, lastname, sum(pricepaid - commission) AS profit
+INTO TEMP TABLE profits
+FROM sales, users
+WHERE sales.sellerid = users.userid
+GROUP BY 1, 2
+ORDER BY 3 DESC

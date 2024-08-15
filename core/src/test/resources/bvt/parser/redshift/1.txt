@@ -1,0 +1,108 @@
+create table customer_interleaved (
+  c_custkey     	integer        not null,
+  c_name        	varchar(25)    not null,
+  c_address     	varchar(25)    not null,
+  c_city        	varchar(10)    not null,
+  c_nation      	varchar(15)    not null,
+  c_region      	varchar(12)    not null,
+  c_phone       	varchar(15)    not null,
+  c_mktsegment      varchar(10)    not null)
+diststyle all
+interleaved sortkey (c_custkey, c_city, c_mktsegment)
+--------------------
+CREATE TABLE customer_interleaved (
+	c_custkey integer NOT NULL,
+	c_name varchar(25) NOT NULL,
+	c_address varchar(25) NOT NULL,
+	c_city varchar(10) NOT NULL,
+	c_nation varchar(15) NOT NULL,
+	c_region varchar(12) NOT NULL,
+	c_phone varchar(15) NOT NULL,
+	c_mktsegment varchar(10) NOT NULL
+)
+DISTSTYLE ALL
+INTERLEAVED SORTKEY(c_custkey, c_city, c_mktsegment)
+------------------------------------------------------------------------------------------------------------------------
+create table venue(
+venueid smallint not null,
+venuename varchar(100),
+venuecity varchar(30),
+venuestate char(2),
+venueseats integer,
+primary key(venueid)
+)
+diststyle all 
+--------------------
+CREATE TABLE venue (
+	venueid smallint NOT NULL,
+	venuename varchar(100),
+	venuecity varchar(30),
+	venuestate char(2),
+	venueseats integer,
+	PRIMARY KEY (venueid)
+)
+DISTSTYLE ALL
+------------------------------------------------------------------------------------------------------------------------
+create table myevent(
+eventid int,
+eventname varchar(200),
+eventcity varchar(30))
+diststyle even
+--------------------
+CREATE TABLE myevent (
+	eventid int,
+	eventname varchar(200),
+	eventcity varchar(30)
+)
+DISTSTYLE EVEN
+------------------------------------------------------------------------------------------------------------------------
+create table t2(c0 int, c1 varchar) encode auto
+--------------------
+CREATE TABLE t2 (
+	c0 int,
+	c1 varchar
+)
+ENCODE AUTO
+------------------------------------------------------------------------------------------------------------------------
+create table sales(
+salesid integer not null,
+listid integer not null,
+sellerid integer not null,
+buyerid integer not null,
+eventid integer not null encode mostly16,
+dateid smallint not null,
+qtysold smallint not null encode mostly8,
+pricepaid decimal(8,2) encode delta32k,
+commission decimal(8,2) encode delta32k,
+saletime timestamp,
+primary key(salesid),
+foreign key(listid) references listing(listid),
+foreign key(sellerid) references users(userid),
+foreign key(buyerid) references users(userid),
+foreign key(dateid) references date(dateid))
+distkey(listid)
+compound sortkey(listid,sellerid)
+--------------------
+CREATE TABLE sales (
+	salesid integer NOT NULL,
+	listid integer NOT NULL,
+	sellerid integer NOT NULL,
+	buyerid integer NOT NULL,
+	eventid integer NOT NULL ENCODE mostly16,
+	dateid smallint NOT NULL,
+	qtysold smallint NOT NULL ENCODE mostly8,
+	pricepaid decimal(8, 2) ENCODE delta32k,
+	commission decimal(8, 2) ENCODE delta32k,
+	saletime timestamp,
+	PRIMARY KEY (salesid),
+	FOREIGN KEY (listid)
+		REFERENCES listing (listid),
+	FOREIGN KEY (sellerid)
+		REFERENCES users (userid),
+	FOREIGN KEY (buyerid)
+		REFERENCES users (userid),
+	FOREIGN KEY (dateid)
+		REFERENCES date (dateid)
+)
+DISTKEY(listid)
+COMPOUND SORTKEY(listid, sellerid)
