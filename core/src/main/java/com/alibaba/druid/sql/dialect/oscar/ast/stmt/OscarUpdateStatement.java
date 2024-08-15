@@ -39,9 +39,10 @@ public class OscarUpdateStatement extends SQLUpdateStatement implements OscarSta
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof PGASTVisitor) {
             accept0((PGASTVisitor) visitor);
-        } else {
-            super.accept0(visitor);
+            return;
         }
+
+        super.accept0(visitor);
     }
 
     @Override
