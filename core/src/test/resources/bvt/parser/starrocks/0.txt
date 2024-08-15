@@ -1,0 +1,90 @@
+with t1 as (select 1),t2 as (select 2)
+select * from t1 union all select * from t2
+--------------------
+WITH t1 AS (
+		SELECT 1
+	),
+	t2 AS (
+		SELECT 2
+	)
+SELECT *
+FROM t1
+UNION ALL
+SELECT *
+FROM t2
+------------------------------------------------------------------------------------------------------------------------
+SELECT lhs.id, rhs.parent, lhs.c1, rhs.c2 FROM tree_data lhs, tree_data rhs WHERE lhs.id = rhs.parent
+--------------------
+SELECT lhs.id, rhs.parent, lhs.c1, rhs.c2
+FROM tree_data lhs, tree_data rhs
+WHERE lhs.id = rhs.parent
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1, t2
+--------------------
+SELECT *
+FROM t1, t2
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 CROSS JOIN t2
+--------------------
+SELECT *
+FROM t1
+	CROSS JOIN t2
+------------------------------------------------------------------------------------------------------------------------
+SELECT t1.c1, t1.c2, t1.c2 FROM t1 LEFT SEMI JOIN t2 ON t1.id = t2.id
+--------------------
+SELECT t1.c1, t1.c2, t1.c2
+FROM t1
+	LEFT SEMI JOIN t2 ON t1.id = t2.id
+------------------------------------------------------------------------------------------------------------------------
+SELECT t1.c1, t1.c2, t1.c2 FROM t1 LEFT ANTI JOIN t2 ON t1.id = t2.id
+--------------------
+SELECT t1.c1, t1.c2, t1.c2
+FROM t1
+	LEFT ANTI JOIN t2 ON t1.id = t2.id
+------------------------------------------------------------------------------------------------------------------------
+select  *  from  sales_record  order by  employee_id  nulls first
+--------------------
+SELECT *
+FROM sales_record
+ORDER BY employee_id NULLS FIRST
+------------------------------------------------------------------------------------------------------------------------
+SELECT a, b, SUM( c ) FROM tab1 GROUP BY GROUPING SETS ( (a, b), (a), (b), ( ) )
+--------------------
+SELECT a, b, SUM(c)
+FROM tab1
+GROUP BY GROUPING SETS ((a, b), (a), (b), ())
+------------------------------------------------------------------------------------------------------------------------
+SELECT a, b,c, SUM( d ) FROM tab1 GROUP BY ROLLUP(a,b,c)
+--------------------
+SELECT a, b, c, SUM(d)
+FROM tab1
+GROUP BY ROLLUP (a, b, c)
+------------------------------------------------------------------------------------------------------------------------
+(select id from select1) union distinct (select id from select2)
+--------------------
+(SELECT id
+FROM select1)
+UNION DISTINCT
+(SELECT id
+FROM select2)
+------------------------------------------------------------------------------------------------------------------------
+select count(distinct tiny_column) from small_table
+--------------------
+SELECT count(DISTINCT tiny_column)
+FROM small_table
+------------------------------------------------------------------------------------------------------------------------
+SELECT x FROM t1 WHERE EXISTS (SELECT y FROM t2 WHERE y = 1)
+--------------------
+SELECT x
+FROM t1
+WHERE EXISTS (
+	SELECT y
+	FROM t2
+	WHERE y = 1
+)
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 PIVOT (SUM(c1) AS sum_c1, AVG(c2) AS avg_c2 FOR c3 IN (1, 2, 3, 4, 5))
+--------------------
+SELECT *
+FROM t1
+PIVOT (SUM(c1) AS sum_c1, AVG(c2) AS avg_c2 FOR c3 IN (1, 2, 3, 4, 5))

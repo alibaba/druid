@@ -1,0 +1,445 @@
+CREATE TABLE example_db.table_hash
+(
+    k1 TINYINT,
+    k2 DECIMAL(10, 2) DEFAULT "10.5",
+    v1 CHAR(10) REPLACE,
+    v2 INT SUM
+)
+ENGINE=olap
+AGGREGATE KEY(k1, k2)
+COMMENT "my first starrocks table"
+DISTRIBUTED BY HASH(k1)
+PROPERTIES ("storage_type"="column")
+--------------------
+CREATE TABLE example_db.table_hash (
+	k1 TINYINT,
+	k2 DECIMAL(10, 2) DEFAULT "10.5",
+	v1 CHAR(10) REPLACE,
+	v2 INT SUM
+)
+COMMENT "my first starrocks table" ENGINE = olap
+AGGREGATE KEY(k1, k2)
+DISTRIBUTED BY HASH((k1)) BUCKETS 0
+PROPERTIES (
+  "storage_type" = "column"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.table_hash
+(
+    k1 BIGINT,
+    k2 LARGEINT,
+    v1 VARCHAR(2048) REPLACE,
+    v2 SMALLINT SUM DEFAULT "10"
+)
+ENGINE=olap
+UNIQUE KEY(k1, k2)
+DISTRIBUTED BY HASH (k1, k2)
+PROPERTIES(
+    "storage_type"="column",
+    "storage_medium" = "SSD",
+    "storage_cooldown_time" = "2015-06-04 00:00:00"
+)
+--------------------
+CREATE TABLE example_db.table_hash (
+	k1 BIGINT,
+	k2 LARGEINT,
+	v1 VARCHAR(2048) REPLACE,
+	v2 SMALLINT DEFAULT "10" SUM
+) ENGINE = olap
+UNIQUE KEY(k1, k2)
+DISTRIBUTED BY HASH(k1, k2) BUCKETS 0
+PROPERTIES (
+  "storage_type" = "column",
+  "storage_medium" = "SSD",
+  "storage_cooldown_time" = "2015-06-04 00:00:00"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.table_hash
+(
+    k1 BIGINT,
+    k2 LARGEINT,
+    v1 VARCHAR(2048) REPLACE,
+    v2 SMALLINT SUM DEFAULT "10"
+)
+ENGINE=olap
+PRIMARY KEY(k1, k2)
+DISTRIBUTED BY HASH (k1, k2)
+PROPERTIES(
+    "storage_type"="column",
+    "storage_medium" = "SSD",
+    "storage_cooldown_time" = "2015-06-04 00:00:00"
+)
+--------------------
+CREATE TABLE example_db.table_hash (
+	k1 BIGINT,
+	k2 LARGEINT,
+	v1 VARCHAR(2048) REPLACE,
+	v2 SMALLINT DEFAULT "10" SUM
+) ENGINE = olap
+PRIMARY KEY(k1, k2)
+DISTRIBUTED BY HASH(k1, k2) BUCKETS 0
+PROPERTIES (
+  "storage_type" = "column",
+  "storage_medium" = "SSD",
+  "storage_cooldown_time" = "2015-06-04 00:00:00"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.table_range
+(
+    k1 DATE,
+    k2 INT,
+    k3 SMALLINT,
+    v1 VARCHAR(2048),
+    v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+)
+ENGINE=olap
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE (k1)
+(
+    PARTITION p1 VALUES LESS THAN ("2014-01-01"),
+    PARTITION p2 VALUES LESS THAN ("2014-06-01"),
+    PARTITION p3 VALUES LESS THAN ("2014-12-01")
+)
+DISTRIBUTED BY HASH(k2)
+PROPERTIES(
+    "storage_medium" = "SSD", 
+    "storage_cooldown_time" = "2015-06-04 00:00:00"
+)
+--------------------
+CREATE TABLE example_db.table_range (
+	k1 DATE,
+	k2 INT,
+	k3 SMALLINT,
+	v1 VARCHAR(2048),
+	v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+) ENGINE = olap
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE(k1)
+(
+  PARTITION p1 VALUES LESS THAN ("2014-01-01"), 
+  PARTITION p2 VALUES LESS THAN ("2014-06-01"), 
+  PARTITION p3 VALUES LESS THAN ("2014-12-01")
+)
+DISTRIBUTED BY HASH((k2)) BUCKETS 0
+PROPERTIES (
+  "storage_medium" = "SSD",
+  "storage_cooldown_time" = "2015-06-04 00:00:00"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE table_range
+(
+    k1 DATE,
+    k2 INT,
+    k3 SMALLINT,
+    v1 VARCHAR(2048),
+    v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+)
+ENGINE=olap
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE (k1, k2, k3)
+(
+    PARTITION p1 VALUES [("2014-01-01", "10", "200"), ("2014-01-01", "20", "300")),
+    PARTITION p2 VALUES [("2014-06-01", "100", "200"), ("2014-07-01", "100", "300"))
+)
+DISTRIBUTED BY HASH(k2)
+PROPERTIES(
+    "storage_medium" = "SSD"
+)
+--------------------
+CREATE TABLE table_range (
+	k1 DATE,
+	k2 INT,
+	k3 SMALLINT,
+	v1 VARCHAR(2048),
+	v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+) ENGINE = olap
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE(k1,k2,k3)
+(
+  PARTITION p1 VALUES [("2014-01-01", "10", "200"),("2014-01-01", "20", "300")),
+  PARTITION p2 VALUES [("2014-06-01", "100", "200"),("2014-07-01", "100", "300"))
+)
+DISTRIBUTED BY HASH((k2)) BUCKETS 0
+PROPERTIES (
+  "storage_medium" = "SSD"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTERNAL TABLE example_db.table_mysql
+(
+    k1 DATE,
+    k2 INT,
+    k3 SMALLINT,
+    k4 VARCHAR(2048),
+    k5 DATETIME
+)
+ENGINE=mysql
+PROPERTIES
+(
+    "host" = "127.0.0.1",
+    "port" = "8239",
+    "user" = "mysql_user",
+    "password" = "mysql_passwd",
+    "database" = "mysql_db_test",
+    "table" = "mysql_table_test"
+)
+--------------------
+CREATE EXTERNAL TABLE example_db.table_mysql (
+	k1 DATE,
+	k2 INT,
+	k3 SMALLINT,
+	k4 VARCHAR(2048),
+	k5 DATETIME
+) ENGINE = mysql
+PROPERTIES (
+  "host" = "127.0.0.1",
+  "port" = "8239",
+  "user" = "mysql_user",
+  "password" = "mysql_passwd",
+  "database" = "mysql_db_test",
+  "table" = "mysql_table_test"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.example_table
+(
+    k1 TINYINT,
+    k2 DECIMAL(10, 2) DEFAULT "10.5",
+    v1 HLL HLL_UNION,
+    v2 HLL HLL_UNION
+)
+ENGINE=olap
+AGGREGATE KEY(k1, k2)
+DISTRIBUTED BY HASH(k1)
+PROPERTIES ("storage_type"="column")
+--------------------
+CREATE TABLE example_db.example_table (
+	k1 TINYINT,
+	k2 DECIMAL(10, 2) DEFAULT "10.5",
+	v1 HLL HLL_UNION,
+	v2 HLL HLL_UNION
+) ENGINE = olap
+AGGREGATE KEY(k1, k2)
+DISTRIBUTED BY HASH((k1)) BUCKETS 0
+PROPERTIES (
+  "storage_type" = "column"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.example_table
+(
+    k1 TINYINT,
+    k2 DECIMAL(10, 2) DEFAULT "10.5",
+    v1 BITMAP BITMAP_UNION,
+    v2 BITMAP BITMAP_UNION
+)
+ENGINE=olap
+AGGREGATE KEY(k1, k2)
+DISTRIBUTED BY HASH(k1)
+PROPERTIES ("storage_type"="column")
+--------------------
+CREATE TABLE example_db.example_table (
+	k1 TINYINT,
+	k2 DECIMAL(10, 2) DEFAULT "10.5",
+	v1 BITMAP BITMAP_UNION,
+	v2 BITMAP BITMAP_UNION
+) ENGINE = olap
+AGGREGATE KEY(k1, k2)
+DISTRIBUTED BY HASH((k1)) BUCKETS 0
+PROPERTIES (
+  "storage_type" = "column"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.table_hash
+(
+    k1 TINYINT,
+    k2 DECIMAL(10, 2) DEFAULT "10.5",
+    v1 CHAR(10) REPLACE,
+    v2 INT SUM,
+    INDEX k1_idx (k1) USING BITMAP COMMENT 'xxxxxx'
+)
+ENGINE=olap
+AGGREGATE KEY(k1, k2)
+COMMENT "my first starrocks table"
+DISTRIBUTED BY HASH(k1)
+PROPERTIES ("storage_type"="column")
+--------------------
+CREATE TABLE example_db.table_hash (
+	k1 TINYINT,
+	k2 DECIMAL(10, 2) DEFAULT "10.5",
+	v1 CHAR(10) REPLACE,
+	v2 INT SUM,
+	INDEX k1_idx(k1) USING BITMAP COMMENT xxxxxx
+)
+COMMENT "my first starrocks table" ENGINE = olap
+AGGREGATE KEY(k1, k2)
+DISTRIBUTED BY HASH((k1)) BUCKETS 0
+PROPERTIES (
+  "storage_type" = "column"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.dynamic_partition
+(
+    k1 DATE,
+    k2 INT,
+    k3 SMALLINT,
+    v1 VARCHAR(2048),
+    v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+)
+ENGINE=olap
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE (k1)
+(
+    PARTITION p1 VALUES LESS THAN ("2014-01-01"),
+    PARTITION p2 VALUES LESS THAN ("2014-06-01"),
+    PARTITION p3 VALUES LESS THAN ("2014-12-01")
+)
+DISTRIBUTED BY HASH(k2)
+PROPERTIES(
+    "storage_medium" = "SSD",
+    "dynamic_partition.enable" = "true",
+    "dynamic_partition.time_unit" = "DAY",
+    "dynamic_partition.start" = "-3",
+    "dynamic_partition.end" = "3",
+    "dynamic_partition.prefix" = "p",
+    "dynamic_partition.buckets" = "10"
+)
+--------------------
+CREATE TABLE example_db.dynamic_partition (
+	k1 DATE,
+	k2 INT,
+	k3 SMALLINT,
+	v1 VARCHAR(2048),
+	v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+) ENGINE = olap
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE(k1)
+(
+  PARTITION p1 VALUES LESS THAN ("2014-01-01"), 
+  PARTITION p2 VALUES LESS THAN ("2014-06-01"), 
+  PARTITION p3 VALUES LESS THAN ("2014-12-01")
+)
+DISTRIBUTED BY HASH((k2)) BUCKETS 0
+PROPERTIES (
+  "storage_medium" = "SSD",
+  "dynamic_partition.enable" = "true",
+  "dynamic_partition.time_unit" = "DAY",
+  "dynamic_partition.start" = "-3",
+  "dynamic_partition.end" = "3",
+  "dynamic_partition.prefix" = "p",
+  "dynamic_partition.buckets" = "10"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE site_access (
+    datekey INT,
+    site_id INT,
+    city_code SMALLINT,
+    user_name VARCHAR(32),
+    pv BIGINT DEFAULT '0'
+)
+ENGINE=olap
+DUPLICATE KEY(datekey, site_id, city_code, user_name)
+PARTITION BY RANGE (datekey) (START ("1") END ("5") EVERY (1)
+)
+DISTRIBUTED BY HASH(site_id)
+PROPERTIES ("replication_num" = "3")
+--------------------
+CREATE TABLE site_access (
+	datekey INT,
+	site_id INT,
+	city_code SMALLINT,
+	user_name VARCHAR(32),
+	pv BIGINT DEFAULT '0'
+) ENGINE = olap
+DUPLICATE KEY(datekey, site_id, city_code, user_name)
+PARTITION BY RANGE(datekey)
+(
+  START (("1"))  END (("5"))  EVERY ((1))
+)
+DISTRIBUTED BY HASH((site_id)) BUCKETS 0
+PROPERTIES (
+  "replication_num" = "3"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TEMPORARY TABLE example_db.temp_table
+(
+    k1 DATE,
+    k2 INT,
+    k3 SMALLINT,
+    v1 VARCHAR(2048),
+    v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+)
+ENGINE=olap
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE (k1)
+(
+    PARTITION p1 VALUES LESS THAN ("2014-01-01"),
+    PARTITION p2 VALUES LESS THAN ("2014-06-01"),
+    PARTITION p3 VALUES LESS THAN ("2014-12-01")
+)
+DISTRIBUTED BY HASH(k2)
+--------------------
+CREATE TEMPORARY TABLE example_db.temp_table (
+	k1 DATE,
+	k2 INT,
+	k3 SMALLINT,
+	v1 VARCHAR(2048),
+	v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+) ENGINE = olap
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE(k1)
+(
+  PARTITION p1 VALUES LESS THAN ("2014-01-01"), 
+  PARTITION p2 VALUES LESS THAN ("2014-06-01"), 
+  PARTITION p3 VALUES LESS THAN ("2014-12-01")
+)
+DISTRIBUTED BY HASH((k2)) BUCKETS 0
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE order_new
+AS SELECT * FROM order
+--------------------
+CREATE TABLE order_new
+AS
+SELECT *
+FROM order
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE customers_new 
+(   customer_id_new,
+    first_name_new,
+    INDEX idx_bitmap_customer_id (customer_id_new) USING BITMAP
+) 
+AS SELECT customer_id,first_name FROM customers
+--------------------
+CREATE TABLE customers_new (
+	customer_id_new,
+	first_name_new,
+	INDEX idx_bitmap_customer_id(customer_id_new) USING BITMAP
+)
+AS
+SELECT customer_id, first_name
+FROM customers
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE customers_pk
+PRIMARY KEY (customer_id)
+ORDER BY (first_name,last_name)
+AS SELECT  * FROM customers
+--------------------
+CREATE TABLE customers_pk
+PRIMARY KEY((customer_id))
+ORDER BY (first_name, last_name)
+AS
+SELECT *
+FROM customers
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE employee_new
+PRIMARY KEY(order_id)
+AS SELECT
+    order_list.order_id,
+    sum(goods.price) as total
+FROM order_list INNER JOIN goods ON goods.item_id1 = order_list.item_id2
+GROUP BY order_id
+--------------------
+CREATE TABLE employee_new
+PRIMARY KEY((order_id))
+AS
+SELECT order_list.order_id, sum(goods.price) AS total
+FROM order_list
+	INNER JOIN goods ON goods.item_id1 = order_list.item_id2
+GROUP BY order_id
