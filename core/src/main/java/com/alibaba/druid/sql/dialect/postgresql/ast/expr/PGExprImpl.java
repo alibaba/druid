@@ -26,7 +26,11 @@ public abstract class PGExprImpl extends SQLExprImpl implements PGExpr {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept(visitor);
+        }
     }
 
     public String toString() {

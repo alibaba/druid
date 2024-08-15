@@ -39,6 +39,8 @@ public class PGStartTransactionStatement extends SQLStatementImpl implements PGS
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof PGASTVisitor) {
             accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
         }
     }
 

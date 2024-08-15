@@ -44,7 +44,11 @@ public class OscarFunctionTableSource extends SQLExprTableSource implements Osca
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     public void accept0(OscarASTVisitor visitor) {

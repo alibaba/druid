@@ -42,7 +42,11 @@ public class PGFunctionTableSource extends SQLExprTableSource implements PGSQLOb
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            this.accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     public void accept0(PGASTVisitor visitor) {
