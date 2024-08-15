@@ -2221,7 +2221,7 @@ public class SQLSelectParser extends SQLParser {
             accept(Token.LPAREN);
             while (true) {
                 item = new SQLSelectItem();
-                item.setExpr((SQLAggregateExpr) this.exprParser.expr());
+                item.setExpr(this.exprParser.expr());
                 item.setAlias(as());
                 pivot.addItem(item);
 

@@ -4,11 +4,13 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLPartitionOf;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -50,7 +52,24 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(StarRocksCreateTableStatement x) {
-        super.visit((SQLCreateTableStatement) x);
+        printCreateTable(x, false);
+
+        SQLPartitionOf partitionOf = x.getPartitionOf();
+        if (partitionOf != null) {
+            println();
+            print0(ucase ? "PARTITION OF " : "partition of ");
+            partitionOf.accept(this);
+        }
+        printEngine(x);
+        printPartitionBy(x);
+        printTableOptions(x);
+
+        SQLName tablespace = x.getTablespace();
+        if (tablespace != null) {
+            println();
+            print0(ucase ? "TABLESPACE " : "tablespace ");
+            tablespace.accept(this);
+        }
 
         SQLName model = x.getAggDuplicate();
         if (model != null) {
@@ -240,8 +259,8 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             println();
             print0(")");
         }
-        println();
         if (x.getDistributedBy() != null) {
+            println();
             print0(ucase ? "DISTRIBUTED BY " : "distributed by ");
             switch (x.getDistributedBy().toString().toUpperCase()) {
                 case "HASH": {
@@ -295,10 +314,10 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
 
         }
 
-        println();
         int propertiesSize = x.getPropertiesMap().size();
         int lBracketSize = x.getlBracketPropertiesMap().size();
         if (propertiesSize > 0 || lBracketSize > 0) {
+            println();
             print0(ucase ? "PROPERTIES " : "properties ");
             print0("(");
             if (propertiesSize > 0) {
@@ -338,6 +357,15 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             }
             println();
             print0(")");
+        }
+
+        SQLSelect select = x.getSelect();
+        if (select != null) {
+            println();
+            print0(ucase ? "AS" : "as");
+
+            println();
+            visit(select);
         }
 
         return false;
