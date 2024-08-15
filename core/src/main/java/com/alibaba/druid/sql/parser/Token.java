@@ -316,6 +316,16 @@ public enum Token {
     // StarRocks
     BIGINT("BIGINT"),
 //    BITMAP("BITMAP"),
+    // Redshift
+    ENCODE("ENCODE"),
+    DISTSTYLE("DISTSTYLE"),
+    AUTO("AUTO"),
+    EVEN("EVEN"),
+    DISTKEY("DISTKEY"),
+    SORTKEY("SORTKEY"),
+    COMPOUND("COMPOUND"),
+    INTERLEAVED("INTERLEAVED"),
+    BACKUP("BACKUP"),
 
     LPAREN("("),
     RPAREN(")"),

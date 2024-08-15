@@ -59,6 +59,7 @@ import com.alibaba.druid.sql.dialect.oscar.visitor.OscarOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
+import com.alibaba.druid.sql.dialect.redshift.visitor.RedshiftOutputVisitor;
 import com.alibaba.druid.sql.dialect.spark.visitor.SparkOutputVisitor;
 import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
@@ -527,6 +528,8 @@ public class SQLUtils {
                 return new PGOutputVisitor(out);
             case hologres:
                 return new HologresOutputVisitor(out);
+            case redshift:
+                return new RedshiftOutputVisitor(out);
             case sqlserver:
             case jtds:
                 return new SQLServerOutputVisitor(out);
