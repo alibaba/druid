@@ -35,7 +35,11 @@ public class PGAlterSchemaStatement extends SQLStatementImpl implements PGSQLSta
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     public SQLIdentifierExpr getNewName() {

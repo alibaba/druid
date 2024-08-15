@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
  * @author lizongbo
- * @see  <a href="https://www.postgresql.org/docs/current/sql-end.html">end语法</a>
+ * @see <a href="https://www.postgresql.org/docs/current/sql-end.html">end语法</a>
  */
 public class PGEndTransactionStatement extends SQLStatementImpl implements PGSQLStatement {
     public PGEndTransactionStatement() {
@@ -33,6 +33,8 @@ public class PGEndTransactionStatement extends SQLStatementImpl implements PGSQL
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof PGASTVisitor) {
             accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
         }
     }
 

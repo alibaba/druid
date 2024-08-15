@@ -14,7 +14,11 @@ public class PGConnectToStatement extends SQLStatementImpl implements PGSQLState
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((PGASTVisitor) visitor);
+        if (visitor instanceof PGASTVisitor) {
+            accept0((PGASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     @Override
