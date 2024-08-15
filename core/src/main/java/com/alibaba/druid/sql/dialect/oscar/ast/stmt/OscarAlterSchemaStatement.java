@@ -36,11 +36,7 @@ public class OscarAlterSchemaStatement extends SQLStatementImpl implements Oscar
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof PGASTVisitor) {
-            accept0((PGASTVisitor) visitor);
-        } else {
-            super.accept0(visitor);
-        }
+        accept0((PGASTVisitor) visitor);
     }
 
     public SQLIdentifierExpr getNewName() {

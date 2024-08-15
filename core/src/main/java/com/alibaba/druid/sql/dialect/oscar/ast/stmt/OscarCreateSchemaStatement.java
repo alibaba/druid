@@ -61,11 +61,7 @@ public class OscarCreateSchemaStatement extends SQLStatementImpl implements Osca
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof PGASTVisitor) {
-            accept0((PGASTVisitor) visitor);
-        } else {
-            super.accept0(visitor);
-        }
+        accept0((PGASTVisitor) visitor);
     }
 
     @Override
