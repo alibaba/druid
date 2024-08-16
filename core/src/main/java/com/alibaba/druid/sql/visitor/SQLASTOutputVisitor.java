@@ -1910,8 +1910,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected void printMethodParameters(SQLMethodInvokeExpr x, List<SQLExpr> parameters) {
         String function = x.getMethodName();
         long nameHashCode64 = x.methodNameHashCode64();
-
-        print('(');
+        if (!x.isRemoveBrackets()) {
+            print('(');
+        }
 
         String trimOption = x.getTrimOption();
         if (trimOption != null) {
@@ -2029,7 +2030,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(" as ");
             print(asExpr.toString());
         }
-        print(')');
+        if (!x.isRemoveBrackets()) {
+            print(')');
+        }
 
         if (odpsTransformUsing) {
             print0(ucase ? " USING " : " using ");
