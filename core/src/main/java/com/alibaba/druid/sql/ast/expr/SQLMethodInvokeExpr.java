@@ -28,6 +28,7 @@ import java.util.Map;
 
 public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
     private static final long serialVersionUID = 1L;
+    private boolean removeBrackets;
 
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
     protected String methodName;
@@ -578,5 +579,13 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             x.setParent(this);
         }
         this.content = x;
+    }
+
+    public boolean isRemoveBrackets() {
+        return removeBrackets;
+    }
+
+    public void setRemoveBrackets(boolean removeBrackets) {
+        this.removeBrackets = removeBrackets;
     }
 }
