@@ -344,7 +344,7 @@ limit 10 offset 0
 --------------------
 SELECT *
 FROM public.newtable
-WHERE EXTRACT (EPOCH FROM timestamptz(column1)) >= EXTRACT (EPOCH FROM TIMESTAMP  WITH TIME ZONE '2017-09-10 00:00:00')
+WHERE EXTRACT(EPOCH FROM timestamptz(column1)) >= EXTRACT(EPOCH FROM TIMESTAMP  WITH TIME ZONE '2017-09-10 00:00:00')
 LIMIT 10 OFFSET 0
 ------------------------------------------------------------------------------------------------------------------------
 select '[1,2,3]'::jsonb ?| array['1']
