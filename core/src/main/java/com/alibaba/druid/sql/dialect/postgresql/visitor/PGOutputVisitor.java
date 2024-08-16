@@ -425,7 +425,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(PGExtractExpr x) {
-        print0(ucase ? "EXTRACT (" : "extract (");
+        print0(ucase ? "EXTRACT(" : "extract(");
         print0(x.getField().name());
         print0(ucase ? " FROM " : " from ");
         x.getSource().accept(this);

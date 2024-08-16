@@ -1,0 +1,9 @@
+SELECT * from tbl where EXTRACT(MONTH FROM DATE '1970-11-01') > 0
+--------------------
+SELECT *
+FROM tbl
+WHERE EXTRACT(MONTH FROM DATE '1970-11-01') > 0
+------------------------------------------------------------------------------------------------------------------------
+SELECT EXTRACT(MONTH FROM DATE '1970-11-01')
+--------------------
+SELECT EXTRACT(MONTH FROM DATE '1970-11-01')
