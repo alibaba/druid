@@ -24,7 +24,7 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
     private String collate;
 
     private String type;
-
+    protected boolean parenthesized;
     public MySqlCharExpr() {
     }
 
@@ -65,6 +65,16 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public boolean isParenthesized() {
+        return parenthesized;
+    }
+
+    @Override
+    public void setParenthesized(boolean parenthesized) {
+        this.parenthesized = parenthesized;
     }
 
     public void output(StringBuilder buf) {

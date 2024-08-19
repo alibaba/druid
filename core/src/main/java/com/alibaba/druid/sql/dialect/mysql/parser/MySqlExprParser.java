@@ -1048,8 +1048,8 @@ public class MySqlExprParser extends SQLExprParser {
                                 accept(Token.IDENTIFIER);
                             }
                         }
-
-                        charExpr = new MySqlCharExpr(str, "_utf8", collate);
+                        String charset = hash_lower == FnvHash.Constants._UTF8 ? "_utf8" : "_utf8mb4";
+                        charExpr = new MySqlCharExpr(str, charset, collate);
                     } else {
                         String str = MySqlUtils.utf8(hexString);
                         charExpr = new SQLCharExpr(str);
