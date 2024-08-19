@@ -3767,7 +3767,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
             return false;
         }
-
+        if (x.isParenthesized()) {
+            print("(");
+        }
         String charset = x.getCharset();
         String collate = x.getCollate();
         String text = x.getText();
@@ -3792,6 +3794,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (collate != null) {
             print(" COLLATE ");
             print(collate);
+        }
+        if (x.isParenthesized()) {
+            print(")");
         }
         return false;
     }

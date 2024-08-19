@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.parser.Lexer.SavePoint;
 import com.alibaba.druid.util.FnvHash;
@@ -156,6 +157,9 @@ public class SQLExprParser extends SQLParser {
             }
             if (parenthesized && sqlExpr instanceof SQLUnaryExpr) {
                 ((SQLUnaryExpr) sqlExpr).setParenthesized(true);
+            }
+            if (parenthesized && sqlExpr instanceof MySqlCharExpr) {
+                ((MySqlCharExpr) sqlExpr).setParenthesized(true);
             }
             return sqlExpr;
         }
