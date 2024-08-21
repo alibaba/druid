@@ -96,6 +96,7 @@ public class GaussDbDistributeBy extends GaussDbObjectImpl {
                 acceptChild(v, this.storeIn);
                 acceptChild(v, this.lifeCycle);
                 acceptChild(v, this.type);
+                acceptChild(v, this.subPartitionBy);
             }
         }
     }
