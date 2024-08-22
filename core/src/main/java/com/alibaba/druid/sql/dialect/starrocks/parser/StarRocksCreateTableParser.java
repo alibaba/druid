@@ -290,6 +290,8 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                     srStmt.setEvery(every);
                     accept(Token.RPAREN);
                 }
+            } else if (lexer.token() == Token.RPAREN) {
+                lexer.nextToken();
             }
         }
 

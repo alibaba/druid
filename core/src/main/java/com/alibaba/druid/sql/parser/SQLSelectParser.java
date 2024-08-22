@@ -473,16 +473,7 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
         }
 
-        if (lexer.token == Token.DISTINCT) {
-            queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
-            lexer.nextToken();
-        } else if (lexer.token == Token.UNIQUE) {
-            queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
-            lexer.nextToken();
-        } else if (lexer.token == Token.ALL) {
-            queryBlock.setDistionOption(SQLSetQuantifier.ALL);
-            lexer.nextToken();
-        }
+        parseBeforeSelectList(queryBlock);
 
         parseSelectList(queryBlock);
 
@@ -525,6 +516,19 @@ public class SQLSelectParser extends SQLParser {
         }
 
         return queryRest(queryBlock, acceptUnion);
+    }
+
+    protected void parseBeforeSelectList(SQLSelectQueryBlock queryBlock) {
+        if (lexer.token == Token.DISTINCT) {
+            queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
+            lexer.nextToken();
+        } else if (lexer.token == Token.UNIQUE) {
+            queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+            lexer.nextToken();
+        } else if (lexer.token == Token.ALL) {
+            queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+            lexer.nextToken();
+        }
     }
 
     protected SQLSelectQuery valuesQuery(boolean acceptUnion) {
@@ -1273,7 +1277,7 @@ public class SQLSelectParser extends SQLParser {
             throw new ParserException("TODO " + lexer.info());
         }
 
-        SQLExprTableSource tableReference = new SQLExprTableSource();
+        SQLExprTableSource tableReference = getTableSource();
 
         parseTableSourceQueryTableExpr(tableReference);
 
@@ -1284,6 +1288,9 @@ public class SQLSelectParser extends SQLParser {
         }
 
         return tableSrc;
+    }
+    protected SQLExprTableSource getTableSource() {
+        return new SQLExprTableSource();
     }
 
     protected void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) {
@@ -1976,8 +1983,11 @@ public class SQLSelectParser extends SQLParser {
             return parseLateralView(tableSource);
         }
 
+        parseAfterTableSourceRest(tableSource);
         return tableSource;
     }
+
+    public void parseAfterTableSourceRest(SQLTableSource tableSource) {}
 
     public SQLExpr expr() {
         return this.exprParser.expr();

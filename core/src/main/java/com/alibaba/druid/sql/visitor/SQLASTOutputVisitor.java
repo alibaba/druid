@@ -2527,6 +2527,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print(' ');
     }
 
+    public void printSqlSetQuantifier(SQLSelectQueryBlock x) {
+        final int distinctOption = x.getDistionOption();
+        if (SQLSetQuantifier.ALL == distinctOption) {
+            print0(ucase ? "ALL " : "all ");
+        } else if (SQLSetQuantifier.DISTINCT == distinctOption) {
+            print0(ucase ? "DISTINCT " : "distinct ");
+        } else if (SQLSetQuantifier.UNIQUE == distinctOption) {
+            print0(ucase ? "UNIQUE " : "unique ");
+        }
+    }
     public boolean visit(SQLSelectQueryBlock x) {
         if (x.isParenthesized()) {
             print('(');
@@ -2542,15 +2552,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         printSelectListBefore(x);
-
-        final int distinctOption = x.getDistionOption();
-        if (SQLSetQuantifier.ALL == distinctOption) {
-            print0(ucase ? "ALL " : "all ");
-        } else if (SQLSetQuantifier.DISTINCT == distinctOption) {
-            print0(ucase ? "DISTINCT " : "distinct ");
-        } else if (SQLSetQuantifier.UNIQUE == distinctOption) {
-            print0(ucase ? "UNIQUE " : "unique ");
-        }
+        printSqlSetQuantifier(x);
 
         printSelectList(
                 x.getSelectList());

@@ -7,6 +7,9 @@ import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 public class StarRocksStatementParser extends SQLStatementParser {
+    public StarRocksStatementParser(SQLExprParser exprParser) {
+        super(exprParser);
+    }
     public StarRocksStatementParser(String sql) {
         super(new StarRocksExprParser(sql));
     }

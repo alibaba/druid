@@ -43,6 +43,7 @@ public enum Token {
     NULL("NULL"),
     NOT("NOT"),
     DISTINCT("DISTINCT"),
+    DISTINCTROW("DISTINCTROW"),
 
     TABLE("TABLE"),
     TABLESPACE("TABLESPACE"),
@@ -326,6 +327,9 @@ public enum Token {
     COMPOUND("COMPOUND"),
     INTERLEAVED("INTERLEAVED"),
     BACKUP("BACKUP"),
+    TABLET("TABLET"),
+    REPEATABLE("REPEATABLE"),
+    TABLESAMPLE("TABLESAMPLE"),
 
     LPAREN("("),
     RPAREN(")"),
