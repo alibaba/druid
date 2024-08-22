@@ -321,40 +321,21 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print0(ucase ? "PROPERTIES " : "properties ");
             print0("(");
             if (propertiesSize > 0) {
-                Map<SQLCharExpr, SQLCharExpr> propertiesMap = x.getPropertiesMap();
-                Set<SQLCharExpr> keySet = propertiesMap.keySet();
-                int i = 0;
-                for (SQLCharExpr key : keySet) {
-                    println();
-                    print0("  ");
-                    print0(key.getText());
-                    print0(" = ");
-                    print0(propertiesMap.get(key).getText());
-                    if (lBracketSize > 0 || i != keySet.size() - 1) {
-                        print0(",");
-                    }
-                    i++;
-                }
+                printProperties(x.getPropertiesMap(), false);
             }
-
             if (lBracketSize > 0) {
-                Map<SQLCharExpr, SQLCharExpr> lBracketPropertiesMap = x.getlBracketPropertiesMap();
-                Set<SQLCharExpr> keySet = lBracketPropertiesMap.keySet();
-                int i = 0;
-                for (SQLCharExpr key : keySet) {
-                    println();
-                    print0("  ");
-                    print0("[");
-                    print0(key.getText());
-                    print0(" = ");
-                    print0(lBracketPropertiesMap.get(key).getText());
-                    if (i != keySet.size() - 1) {
-                        print0(",");
-                    }
-                    print0("]");
-                    i++;
-                }
+                print0(",");
+                printProperties(x.getlBracketPropertiesMap(), true);
             }
+            println();
+            print0(")");
+        }
+
+        if (!x.getBrokerPropertiesMap().isEmpty()) {
+            println();
+            print0(ucase ? "BROKER PROPERTIES " : "broker properties ");
+            print0("(");
+            printProperties(x.getBrokerPropertiesMap(), false);
             println();
             print0(")");
         }
@@ -369,6 +350,28 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         }
 
         return false;
+    }
+
+    protected void printProperties(Map<SQLCharExpr, SQLCharExpr> properties, boolean useBracket) {
+        int i = 0;
+        Set<SQLCharExpr> keySet = properties.keySet();
+        for (SQLCharExpr key : keySet) {
+            println();
+            print0("  ");
+            if (useBracket) {
+                print0("[");
+            }
+            print0(key.getText());
+            print0(" = ");
+            print0(properties.get(key).getText());
+            if (i != keySet.size() - 1) {
+                print0(",");
+            }
+            if (useBracket) {
+                print0("]");
+            }
+            i++;
+        }
     }
 
     protected void print(List<? extends SQLExpr> exprList) {

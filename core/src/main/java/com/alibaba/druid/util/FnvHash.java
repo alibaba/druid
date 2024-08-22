@@ -1154,5 +1154,6 @@ public final class FnvHash {
         long PROPERTIES = fnv1a_64_lower("PROPERTIES");
         long SINGLE = fnv1a_64_lower("SINGLE");
         long RANDOM = fnv1a_64_lower("RANDOM");
+        long BROKER = fnv1a_64_lower("BROKER");
     }
 }
