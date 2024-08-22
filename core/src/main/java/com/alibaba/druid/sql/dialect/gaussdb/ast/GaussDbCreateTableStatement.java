@@ -89,7 +89,12 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
     public void accept0(SQLASTVisitor v) {
         if (v instanceof GaussDbASTVisitor) {
             accept0((GaussDbASTVisitor) v);
+            return;
         }
+        if (v.visit(this)) {
+            acceptChild(v);
+        }
+        v.endVisit(this);
     }
 
     @Override
