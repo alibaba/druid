@@ -10,13 +10,13 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
+import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
-public class GaussDbExprParser extends SQLExprParser {
+public class GaussDbExprParser extends PGExprParser {
     public GaussDbExprParser(String sql, SQLParserFeature... features) {
         this(new GaussDbLexer(sql, features));
         this.lexer.nextToken();

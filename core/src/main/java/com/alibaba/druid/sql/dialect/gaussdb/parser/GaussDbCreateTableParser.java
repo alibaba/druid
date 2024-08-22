@@ -5,13 +5,13 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
+import com.alibaba.druid.sql.dialect.postgresql.parser.PGCreateTableParser;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
-public class GaussDbCreateTableParser extends SQLCreateTableParser {
+public class GaussDbCreateTableParser extends PGCreateTableParser {
     public GaussDbCreateTableParser(String sql) {
         super(new GaussDbExprParser(sql));
     }
@@ -129,7 +129,7 @@ public class GaussDbCreateTableParser extends SQLCreateTableParser {
         return null;
     }
 
-    private SQLPartitionByRange partitionByRange() {
+    protected SQLPartitionByRange partitionByRange() {
         SQLPartitionByRange rangePartition = new SQLPartitionByRange();
         accept(Token.LPAREN);
         for (; ; ) {
