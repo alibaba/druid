@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKStatVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.doris.visitor.DorisOutputVisitor;
 import com.alibaba.druid.sql.dialect.gaussdb.visitor.GaussDbOutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
@@ -563,6 +564,8 @@ public class SQLUtils {
                 return new BigQueryOutputVisitor(out);
             case impala:
                 return new ImpalaOutputVisitor(out);
+            case doris:
+                return new DorisOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }
