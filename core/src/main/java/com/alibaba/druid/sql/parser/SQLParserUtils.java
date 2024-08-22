@@ -35,6 +35,9 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2Lexer;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.gaussdb.parser.GaussDbExprParser;
 import com.alibaba.druid.sql.dialect.gaussdb.parser.GaussDbStatementParser;
+import com.alibaba.druid.sql.dialect.doris.parser.DorisExprParser;
+import com.alibaba.druid.sql.dialect.doris.parser.DorisLexer;
+import com.alibaba.druid.sql.dialect.doris.parser.DorisStatementParser;
 import com.alibaba.druid.sql.dialect.h2.parser.H2ExprParser;
 import com.alibaba.druid.sql.dialect.h2.parser.H2Lexer;
 import com.alibaba.druid.sql.dialect.h2.parser.H2StatementParser;
@@ -184,6 +187,8 @@ public class SQLParserUtils {
                 return new InformixStatementParser(sql, features);
             case impala:
                 return new ImpalaStatementParser(sql, features);
+            case doris:
+                return new DorisStatementParser(sql, features);
             default:
                 return new SQLStatementParser(sql, dbType, features);
         }
@@ -241,6 +246,8 @@ public class SQLParserUtils {
                 return new StarRocksExprParser(sql, features);
             case impala:
                 return new ImpalaExprParser(sql, features);
+            case doris:
+                return new DorisExprParser(sql, features);
             default:
                 return new SQLExprParser(sql, dbType, features);
         }
@@ -299,6 +306,8 @@ public class SQLParserUtils {
                 return new BigQueryLexer(sql, features);
             case impala:
                 return new ImpalaLexer(sql, features);
+            case doris:
+                return new DorisLexer(sql, features);
             default: {
                 Lexer lexer = new Lexer(sql, null, dbType);
                 for (SQLParserFeature feature : features) {

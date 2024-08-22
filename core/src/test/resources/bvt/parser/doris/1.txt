@@ -1,0 +1,170 @@
+CREATE TABLE example_db.table_hash
+(
+    k1 TINYINT,
+    k2 DECIMAL(10, 2) DEFAULT "10.5",
+    k3 CHAR(10) COMMENT "string column",
+    k4 INT NOT NULL DEFAULT "1" COMMENT "int column"
+)
+COMMENT "my first table"
+DISTRIBUTED BY HASH(k1) BUCKETS 32
+--------------------
+CREATE TABLE example_db.table_hash (
+	k1 TINYINT,
+	k2 DECIMAL(10, 2) DEFAULT "10.5",
+	k3 CHAR(10) COMMENT 'string column',
+	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
+)
+COMMENT "my first table"
+DISTRIBUTED BY HASH((k1)) BUCKETS 32
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.table_hash
+(
+    k1 DATE,
+    k2 DECIMAL(10, 2) DEFAULT "10.5",
+    k3 CHAR(10) COMMENT "string column",
+    k4 INT NOT NULL DEFAULT "1" COMMENT "int column"
+)
+DUPLICATE KEY(k1, k2)
+COMMENT "my first table"
+PARTITION BY RANGE(k1)
+(
+    PARTITION p1 VALUES LESS THAN ("2020-02-01"),
+    PARTITION p2 VALUES LESS THAN ("2020-03-01"),
+    PARTITION p3 VALUES LESS THAN ("2020-04-01")
+)
+DISTRIBUTED BY HASH(k1) BUCKETS 32
+PROPERTIES (
+    "replication_num" = "1"
+)
+--------------------
+CREATE TABLE example_db.table_hash (
+	k1 DATE,
+	k2 DECIMAL(10, 2) DEFAULT "10.5",
+	k3 CHAR(10) COMMENT 'string column',
+	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
+)
+COMMENT "my first table"
+DUPLICATE KEY(k1, k2)
+PARTITION BY RANGE(k1) (
+  PARTITION p1 VALUES LESS THAN ("2020-02-01"), 
+  PARTITION p2 VALUES LESS THAN ("2020-03-01"), 
+  PARTITION p3 VALUES LESS THAN ("2020-04-01")
+)
+DISTRIBUTED BY HASH((k1)) BUCKETS 32
+PROPERTIES (
+  "replication_num" = "1"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.table_hash
+(
+    k1 BIGINT,
+    k2 LARGEINT,
+    v1 VARCHAR(2048),
+    v2 SMALLINT DEFAULT "10"
+)
+UNIQUE KEY(k1, k2)
+DISTRIBUTED BY HASH (k1, k2) BUCKETS 32
+PROPERTIES(
+    "storage_medium" = "SSD",
+    "storage_cooldown_time" = "2015-06-04 00:00:00"
+)
+--------------------
+CREATE TABLE example_db.table_hash (
+	k1 BIGINT,
+	k2 LARGEINT,
+	v1 VARCHAR(2048),
+	v2 SMALLINT DEFAULT "10"
+)
+UNIQUE KEY(k1, k2)
+DISTRIBUTED BY HASH(k1, k2) BUCKETS 32
+PROPERTIES (
+  "storage_medium" = "SSD",
+  "storage_cooldown_time" = "2015-06-04 00:00:00"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE table_range
+(
+    k1 DATE,
+    k2 INT,
+    k3 SMALLINT,
+    v1 VARCHAR(2048) REPLACE,
+    v2 INT SUM DEFAULT "1"
+)
+AGGREGATE KEY(k1, k2, k3)
+PARTITION BY RANGE (k1, k2, k3)
+(
+    PARTITION p1 VALUES [("2014-01-01", "10", "200"), ("2014-01-01", "20", "300")),
+    PARTITION p2 VALUES [("2014-06-01", "100", "200"), ("2014-07-01", "100", "300"))
+)
+DISTRIBUTED BY HASH(k2) BUCKETS 32
+--------------------
+CREATE TABLE table_range (
+	k1 DATE,
+	k2 INT,
+	k3 SMALLINT,
+	v1 VARCHAR(2048) REPLACE,
+	v2 INT DEFAULT "1" SUM
+)
+AGGREGATE KEY(k1, k2, k3)
+PARTITION BY RANGE(k1,k2,k3) (
+  PARTITION p1 VALUES [("2014-01-01", "10", "200"),("2014-01-01", "20", "300")),
+  PARTITION p2 VALUES [("2014-06-01", "100", "200"),("2014-07-01", "100", "300"))
+)
+DISTRIBUTED BY HASH((k2)) BUCKETS 32
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.example_table
+(
+    k1 TINYINT,
+    k2 DECIMAL(10, 2) DEFAULT "10.5",
+    v1 HLL HLL_UNION,
+    v2 BITMAP BITMAP_UNION
+)
+ENGINE=olap
+AGGREGATE KEY(k1, k2)
+DISTRIBUTED BY HASH(k1) BUCKETS 32
+--------------------
+CREATE TABLE example_db.example_table (
+	k1 TINYINT,
+	k2 DECIMAL(10, 2) DEFAULT "10.5",
+	v1 HLL HLL_UNION,
+	v2 BITMAP BITMAP_UNION
+) ENGINE = olap
+AGGREGATE KEY(k1, k2)
+DISTRIBUTED BY HASH((k1)) BUCKETS 32
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.dynamic_partition
+(
+    k1 DATE,
+    k2 INT,
+    k3 SMALLINT,
+    v1 VARCHAR(2048),
+    v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+)
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE (k1) ()
+DISTRIBUTED BY HASH(k2) BUCKETS 32
+PROPERTIES(
+    "dynamic_partition.time_unit" = "DAY",
+    "dynamic_partition.start" = "-3",
+    "dynamic_partition.end" = "3",
+    "dynamic_partition.prefix" = "p",
+    "dynamic_partition.buckets" = "32" 
+)
+--------------------
+CREATE TABLE example_db.dynamic_partition (
+	k1 DATE,
+	k2 INT,
+	k3 SMALLINT,
+	v1 VARCHAR(2048),
+	v2 DATETIME DEFAULT "2014-02-04 15:36:00"
+)
+DUPLICATE KEY(k1, k2, k3)
+PARTITION BY RANGE(k1) ()
+DISTRIBUTED BY HASH((k2)) BUCKETS 32
+PROPERTIES (
+  "dynamic_partition.time_unit" = "DAY",
+  "dynamic_partition.start" = "-3",
+  "dynamic_partition.end" = "3",
+  "dynamic_partition.prefix" = "p",
+  "dynamic_partition.buckets" = "32"
+)

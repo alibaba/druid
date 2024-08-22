@@ -163,12 +163,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                     print0(",");
                 }
             }
-            print0(")");
-
-            println();
-            print0("(");
-            println();
+            print0(") (");
             if (x.isLessThan()) {
+                println();
                 Map<SQLExpr, SQLExpr> lessThanMap = x.getLessThanMap();
                 Set<SQLExpr> keySet = lessThanMap.keySet();
                 int size = keySet.size();
@@ -193,7 +190,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         i++;
                     }
                 }
+                println();
             } else if (x.isFixedRange()) {
+                println();
                 Map<SQLExpr, List<SQLExpr>> fixedRangeMap = x.getFixedRangeMap();
                 Set<SQLExpr> keySet = fixedRangeMap.keySet();
                 int size = keySet.size();
@@ -235,7 +234,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
 
                     }
                 }
+                println();
             } else if (x.isStartEnd()) {
+                println();
                 if (x.getStart() != null) {
                     print0(ucase ? "  START " : "  start ");
                     print0("(");
@@ -254,9 +255,8 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                     x.getEvery().accept(this);
                     print0(")");
                 }
-
+                println();
             }
-            println();
             print0(")");
         }
         if (x.getDistributedBy() != null) {

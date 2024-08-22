@@ -1,0 +1,96 @@
+select Name from student where age in (18,20,25)
+--------------------
+SELECT Name
+FROM student
+WHERE age IN (18, 20, 25)
+------------------------------------------------------------------------------------------------------------------------
+select * from tb_book order by price desc limit 3
+--------------------
+SELECT *
+FROM tb_book
+ORDER BY price DESC
+LIMIT 3
+------------------------------------------------------------------------------------------------------------------------
+select *,(price * 0.8) as "八折" from tb_book;
+--------------------
+SELECT *, (price * 0.8) AS "八折"
+FROM tb_book;
+------------------------------------------------------------------------------------------------------------------------
+WITH cte AS
+(
+  SELECT 1 AS col1, 2 AS col2
+  UNION ALL
+  SELECT 3, 4
+)
+SELECT col1, col2 FROM cte
+--------------------
+WITH cte AS (
+		SELECT 1 AS col1, 2 AS col2
+		UNION ALL
+		SELECT 3, 4
+	)
+SELECT col1, col2
+FROM cte
+------------------------------------------------------------------------------------------------------------------------
+SELECT COUNT(col1) AS col2 FROM t GROUP BY col2 HAVING col2 = 2
+--------------------
+SELECT COUNT(col1) AS col2
+FROM t
+GROUP BY col2
+HAVING col2 = 2
+------------------------------------------------------------------------------------------------------------------------
+select all except col1
+--------------------
+SELECT ALL EXCEPT col1
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 PARTITION (p202302) TABLET(10001) TABLESAMPLE(1000 ROWS) REPEATABLE 2 limit 1000
+--------------------
+SELECT *
+FROM t1
+PARTITION(p202302)
+TABLET(10001)
+TABLESAMPLE(1000 ROWS)
+REPEATABLE 2
+LIMIT 1000
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 TABLET(10001) TABLESAMPLE(1000 ROWS) REPEATABLE 2 limit 1000
+--------------------
+SELECT *
+FROM t1
+TABLET(10001)
+TABLESAMPLE(1000 ROWS)
+REPEATABLE 2
+LIMIT 1000
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 TABLESAMPLE(1000 ROWS) REPEATABLE 2 limit 1000
+--------------------
+SELECT *
+FROM t1
+TABLESAMPLE(1000 ROWS)
+REPEATABLE 2
+LIMIT 1000
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 REPEATABLE 2 limit 1000
+--------------------
+SELECT *
+FROM t1
+REPEATABLE 2
+LIMIT 1000
+------------------------------------------------------------------------------------------------------------------------
+SELECT a FROM t1 WHERE a = 10 AND B = 1 ORDER by a LIMIT 10
+UNION
+SELECT a FROM t2 WHERE a = 11 AND B = 2 ORDER by a LIMIT 10
+--------------------
+SELECT a
+FROM t1
+WHERE a = 10
+	AND B = 1
+ORDER BY a
+LIMIT 10
+UNION
+SELECT a
+FROM t2
+WHERE a = 11
+	AND B = 2
+ORDER BY a
+LIMIT 10
