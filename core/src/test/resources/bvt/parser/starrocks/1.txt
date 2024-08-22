@@ -9,7 +9,12 @@ ENGINE=olap
 AGGREGATE KEY(k1, k2)
 COMMENT "my first starrocks table"
 DISTRIBUTED BY HASH(k1)
-PROPERTIES ("storage_type"="column")
+PROPERTIES ("storage_type"="column",
+["replication_num"="3"])
+BROKER PROPERTIES (
+    "broker.username"="user1",
+    "broker.password"="passw0rd"
+)
 --------------------
 CREATE TABLE example_db.table_hash (
 	k1 TINYINT,
@@ -21,7 +26,12 @@ COMMENT "my first starrocks table" ENGINE = olap
 AGGREGATE KEY(k1, k2)
 DISTRIBUTED BY HASH((k1)) BUCKETS 0
 PROPERTIES (
-  "storage_type" = "column"
+  "storage_type" = "column",
+  ["replication_num" = "3"]
+)
+BROKER PROPERTIES (
+  "broker.username" = "user1",
+  "broker.password" = "passw0rd"
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.table_hash
