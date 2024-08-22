@@ -345,6 +345,26 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                 }
             }
         }
+        Lexer.SavePoint savePoint = lexer.markOut();
+        if (lexer.nextIfIdentifier(FnvHash.Constants.BROKER)
+                && lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+            accept(Token.LPAREN);
+            Map<SQLCharExpr, SQLCharExpr> brokerPropertiesMap = srStmt.getBrokerPropertiesMap();
+            for (; ; ) {
+                parseProperties(brokerPropertiesMap);
+                lexer.nextToken();
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+                if (lexer.token() == Token.RPAREN) {
+                    lexer.nextToken();
+                    srStmt.setBrokerPropertiesMap(brokerPropertiesMap);
+                    break;
+                }
+            }
+        } else {
+            lexer.reset(savePoint);
+        }
 
         if (lexer.token() == Token.AS) {
             lexer.nextToken();

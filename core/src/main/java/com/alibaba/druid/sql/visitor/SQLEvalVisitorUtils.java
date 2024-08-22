@@ -114,6 +114,7 @@ public class SQLEvalVisitorUtils {
             case mariadb:
             case tidb:
             case h2:
+            case lealone:
                 return new MySqlEvalVisitorImpl();
             case oracle:
                 return new OracleEvalVisitor();

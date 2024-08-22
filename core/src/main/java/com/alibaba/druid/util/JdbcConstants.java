@@ -69,6 +69,9 @@ public interface JdbcConstants {
     DbType H2 = DbType.h2;
     String H2_DRIVER = "org.h2.Driver";
 
+    DbType LEALONE = DbType.lealone;
+    String LEALONE_DRIVER = "org.lealone.client.jdbc.JdbcDriver";
+
     DbType DM = DbType.dm;
     String DM_DRIVER = "dm.jdbc.driver.DmDriver";
 

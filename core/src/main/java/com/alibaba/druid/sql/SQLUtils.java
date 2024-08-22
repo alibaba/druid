@@ -542,6 +542,7 @@ public class SQLUtils {
             case odps:
                 return new OdpsOutputVisitor(out);
             case h2:
+            case lealone:
                 return new H2OutputVisitor(out);
             case informix:
                 return new InformixOutputVisitor(out);
@@ -613,6 +614,7 @@ public class SQLUtils {
             case odps:
                 return new OdpsSchemaStatVisitor(repository);
             case h2:
+            case lealone:
                 return new H2SchemaStatVisitor(repository);
             case hive:
                 return new HiveSchemaStatVisitor(repository);
