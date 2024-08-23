@@ -21,10 +21,10 @@ CREATE TABLE example_db.table_hash (
 	k2 DECIMAL(10, 2) DEFAULT "10.5",
 	v1 CHAR(10) REPLACE,
 	v2 INT SUM
-)
-COMMENT "my first starrocks table" ENGINE = olap
+) ENGINE = olap
 AGGREGATE KEY(k1, k2)
-DISTRIBUTED BY HASH((k1)) BUCKETS 0
+COMMENT "my first starrocks table"
+DISTRIBUTED BY HASH(k1)
 PROPERTIES (
   "storage_type" = "column",
   ["replication_num" = "3"]
@@ -54,10 +54,10 @@ CREATE TABLE example_db.table_hash (
 	k1 BIGINT,
 	k2 LARGEINT,
 	v1 VARCHAR(2048) REPLACE,
-	v2 SMALLINT DEFAULT "10" SUM
+	v2 SMALLINT SUM DEFAULT "10"
 ) ENGINE = olap
 UNIQUE KEY(k1, k2)
-DISTRIBUTED BY HASH(k1, k2) BUCKETS 0
+DISTRIBUTED BY HASH(k1, k2)
 PROPERTIES (
   "storage_type" = "column",
   "storage_medium" = "SSD",
@@ -84,10 +84,10 @@ CREATE TABLE example_db.table_hash (
 	k1 BIGINT,
 	k2 LARGEINT,
 	v1 VARCHAR(2048) REPLACE,
-	v2 SMALLINT DEFAULT "10" SUM
+	v2 SMALLINT SUM DEFAULT "10"
 ) ENGINE = olap
 PRIMARY KEY(k1, k2)
-DISTRIBUTED BY HASH(k1, k2) BUCKETS 0
+DISTRIBUTED BY HASH(k1, k2)
 PROPERTIES (
   "storage_type" = "column",
   "storage_medium" = "SSD",
@@ -129,7 +129,7 @@ PARTITION BY RANGE(k1) (
   PARTITION p2 VALUES LESS THAN ("2014-06-01"), 
   PARTITION p3 VALUES LESS THAN ("2014-12-01")
 )
-DISTRIBUTED BY HASH((k2)) BUCKETS 0
+DISTRIBUTED BY HASH(k2)
 PROPERTIES (
   "storage_medium" = "SSD",
   "storage_cooldown_time" = "2015-06-04 00:00:00"
@@ -167,7 +167,7 @@ PARTITION BY RANGE(k1,k2,k3) (
   PARTITION p1 VALUES [("2014-01-01", "10", "200"),("2014-01-01", "20", "300")),
   PARTITION p2 VALUES [("2014-06-01", "100", "200"),("2014-07-01", "100", "300"))
 )
-DISTRIBUTED BY HASH((k2)) BUCKETS 0
+DISTRIBUTED BY HASH(k2)
 PROPERTIES (
   "storage_medium" = "SSD"
 )
@@ -226,7 +226,7 @@ CREATE TABLE example_db.example_table (
 	v2 HLL HLL_UNION
 ) ENGINE = olap
 AGGREGATE KEY(k1, k2)
-DISTRIBUTED BY HASH((k1)) BUCKETS 0
+DISTRIBUTED BY HASH(k1)
 PROPERTIES (
   "storage_type" = "column"
 )
@@ -250,7 +250,7 @@ CREATE TABLE example_db.example_table (
 	v2 BITMAP BITMAP_UNION
 ) ENGINE = olap
 AGGREGATE KEY(k1, k2)
-DISTRIBUTED BY HASH((k1)) BUCKETS 0
+DISTRIBUTED BY HASH(k1)
 PROPERTIES (
   "storage_type" = "column"
 )
@@ -275,10 +275,10 @@ CREATE TABLE example_db.table_hash (
 	v1 CHAR(10) REPLACE,
 	v2 INT SUM,
 	INDEX k1_idx(k1) USING BITMAP COMMENT xxxxxx
-)
-COMMENT "my first starrocks table" ENGINE = olap
+) ENGINE = olap
 AGGREGATE KEY(k1, k2)
-DISTRIBUTED BY HASH((k1)) BUCKETS 0
+COMMENT "my first starrocks table"
+DISTRIBUTED BY HASH(k1)
 PROPERTIES (
   "storage_type" = "column"
 )
@@ -323,7 +323,7 @@ PARTITION BY RANGE(k1) (
   PARTITION p2 VALUES LESS THAN ("2014-06-01"), 
   PARTITION p3 VALUES LESS THAN ("2014-12-01")
 )
-DISTRIBUTED BY HASH((k2)) BUCKETS 0
+DISTRIBUTED BY HASH(k2)
 PROPERTIES (
   "storage_medium" = "SSD",
   "dynamic_partition.enable" = "true",
@@ -357,9 +357,9 @@ CREATE TABLE site_access (
 ) ENGINE = olap
 DUPLICATE KEY(datekey, site_id, city_code, user_name)
 PARTITION BY RANGE(datekey) (
-  START (("1"))  END (("5"))  EVERY ((1))
+  START ("1")  END ("5")  EVERY (1)
 )
-DISTRIBUTED BY HASH((site_id)) BUCKETS 0
+DISTRIBUTED BY HASH(site_id)
 PROPERTIES (
   "replication_num" = "3"
 )
@@ -395,7 +395,7 @@ PARTITION BY RANGE(k1) (
   PARTITION p2 VALUES LESS THAN ("2014-06-01"), 
   PARTITION p3 VALUES LESS THAN ("2014-12-01")
 )
-DISTRIBUTED BY HASH((k2)) BUCKETS 0
+DISTRIBUTED BY HASH(k2)
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE order_new
 AS SELECT * FROM order
@@ -427,7 +427,7 @@ ORDER BY (first_name,last_name)
 AS SELECT  * FROM customers
 --------------------
 CREATE TABLE customers_pk
-PRIMARY KEY((customer_id))
+PRIMARY KEY(customer_id)
 ORDER BY (first_name, last_name)
 AS
 SELECT *
@@ -442,7 +442,7 @@ FROM order_list INNER JOIN goods ON goods.item_id1 = order_list.item_id2
 GROUP BY order_id
 --------------------
 CREATE TABLE employee_new
-PRIMARY KEY((order_id))
+PRIMARY KEY(order_id)
 AS
 SELECT order_list.order_id, sum(goods.price) AS total
 FROM order_list
