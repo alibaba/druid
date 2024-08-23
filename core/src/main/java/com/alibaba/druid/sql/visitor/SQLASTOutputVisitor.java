@@ -11238,6 +11238,37 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printTableOptionsPostfix(x);
     }
 
+    protected void printIntoBuckets(SQLCreateTableStatement x) {
+        int buckets = x.getBuckets();
+        if (buckets > 0) {
+            println();
+            print0(ucase ? "INTO " : "into ");
+            print(buckets);
+            print0(ucase ? " BUCKETS" : " buckets");
+        }
+    }
+
+    protected void printLocation(SQLCreateTableStatement x) {
+        SQLExpr location = x.getLocation();
+        if (location != null) {
+            println();
+            print0(ucase ? "LOCATION " : "location ");
+            printExpr(location, parameterized);
+        }
+    }
+
+    protected void printRowFormat(SQLCreateTableStatement x) {
+        SQLExternalRecordFormat format = x.getRowFormat();
+        if (format != null) {
+            println();
+            print0(ucase ? "ROW FORMAT" : "row format");
+            if (format.getSerde() == null) {
+                print0(ucase ? " DELIMITED" : " delimited ");
+            }
+            visit(format);
+            println();
+        }
+    }
     @Override
     public boolean visit(HiveInputOutputFormat x) {
         print0(ucase ? "INPUTFORMAT " : "inputformat ");

@@ -594,13 +594,7 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         }
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
         printSortedBy(sortedBy);
-        int buckets = x.getBuckets();
-        if (buckets > 0) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            print(buckets);
-            print0(ucase ? " BUCKETS" : " buckets");
-        }
+        printIntoBuckets(x);
         List<SQLExpr> skewedBy = x.getSkewedBy();
         if (skewedBy.size() > 0) {
             println();
@@ -668,12 +662,7 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
             printSerdeProperties(serdeProperties);
         }
 
-        SQLExpr location = x.getLocation();
-        if (location != null) {
-            println();
-            print0(ucase ? "LOCATION " : "location ");
-            printExpr(location, parameterized);
-        }
+        printLocation(x);
 
         printCached(x);
         printTableOptions(x);

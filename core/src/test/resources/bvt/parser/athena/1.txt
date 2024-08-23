@@ -1,0 +1,35 @@
+CREATE EXTERNAL TABLE planet_data (
+  planet_name string,
+  order_from_sun int,
+  au_to_sun float,
+  mass float,
+  gravity_earth float,
+  orbit_years float,
+  day_length float
+  )
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+STORED AS TEXTFILE
+WITH SERDEPROPERTIES (a='a')
+LOCATION 's3://amzn-s3-demo-bucket/tsv/'
+TBLPROPERTIES ( 'has_encrypted_data'='true | false')
+--------------------
+CREATE EXTERNAL TABLE planet_data (
+	planet_name string,
+	order_from_sun int,
+	au_to_sun float,
+	mass float,
+	gravity_earth float,
+	orbit_years float,
+	day_length float
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+STORE AS TEXTFILE
+WITH SERDEPROPERTIES (
+	'a' = 'a'
+)
+LOCATION 's3://amzn-s3-demo-bucket/tsv/'
+TBLPROPERTIES (
+	'has_encrypted_data' = 'true | false'
+)

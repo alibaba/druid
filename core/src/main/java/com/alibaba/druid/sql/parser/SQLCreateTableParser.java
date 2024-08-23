@@ -113,6 +113,22 @@ public class SQLCreateTableParser extends SQLDDLParser {
                     createTable.getTableElementList().add((SQLTableElement) constraint);
                 } else if (token == Token.TABLESPACE) {
                     throw new ParserException("TODO " + lexer.info());
+                } else if (lexer.token() == Token.LIKE) {
+                    lexer.nextToken();
+                    SQLTableLike tableLike = new SQLTableLike();
+                    tableLike.setTable(new SQLExprTableSource(this.exprParser.name()));
+                    tableLike.setParent(createTable);
+                    createTable.getTableElementList().add(tableLike);
+
+                    if (lexer.identifierEquals(FnvHash.Constants.INCLUDING)) {
+                        lexer.nextToken();
+                        acceptIdentifier("PROPERTIES");
+                        tableLike.setIncludeProperties(true);
+                    } else if (lexer.identifierEquals(FnvHash.Constants.EXCLUDING)) {
+                        lexer.nextToken();
+                        acceptIdentifier("PROPERTIES");
+                        tableLike.setExcludeProperties(true);
+                    }
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
