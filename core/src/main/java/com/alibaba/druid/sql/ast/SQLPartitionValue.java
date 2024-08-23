@@ -53,7 +53,8 @@ public class SQLPartitionValue extends OracleSegmentAttributesImpl {
         LessThanEqual,
         Equal,
         In,
-        List
+        List,
+        StartEndEvery
     }
 
     @Override
