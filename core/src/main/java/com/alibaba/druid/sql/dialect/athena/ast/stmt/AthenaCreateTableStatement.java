@@ -13,6 +13,9 @@ public class AthenaCreateTableStatement extends PrestoCreateTableStatement imple
 
     @Override
     public void accept0(AthenaASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            visitor.endVisit(this);
+        }
     }
 
     public Map<String, SQLObject> getSerdeProperties() {

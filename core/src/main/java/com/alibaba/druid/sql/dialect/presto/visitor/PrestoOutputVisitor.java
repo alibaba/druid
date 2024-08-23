@@ -37,16 +37,16 @@ import java.util.List;
  * @author zhangcanlong
  * @since 2022-01-07
  */
-public class PrestoOutputASTVisitor extends SQLASTOutputVisitor implements PrestoASTVisitor {
+public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoASTVisitor {
     {
         dbType = DbType.presto;
     }
 
-    public PrestoOutputASTVisitor(StringBuilder appender) {
+    public PrestoOutputVisitor(StringBuilder appender) {
         super(appender, DbType.presto);
     }
 
-    public PrestoOutputASTVisitor(StringBuilder appender, boolean parameterized) {
+    public PrestoOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 

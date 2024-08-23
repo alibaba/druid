@@ -405,6 +405,21 @@ public class SQLExprParser extends SQLParser {
         return null;
     }
 
+    public void parseAssignItems(List<? super SQLAssignItem> items, SQLObject parent, boolean variant) {
+        for (; ; ) {
+            SQLAssignItem item = parseAssignItem(variant, parent);
+            item.setParent(parent);
+            items.add(item);
+
+            if (lexer.token == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            } else {
+                break;
+            }
+        }
+    }
+
     protected SQLExpr primaryIdentifierRest(long hash_lower, String ident) {
         SQLExpr sqlExpr = null;
         if (hash_lower == FnvHash.Constants.VARCHAR && lexer.token == Token.LITERAL_CHARS) {

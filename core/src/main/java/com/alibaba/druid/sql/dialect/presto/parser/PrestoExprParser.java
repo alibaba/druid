@@ -16,9 +16,12 @@
 package com.alibaba.druid.sql.dialect.presto.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.dialect.presto.ast.PrestoColumnWith;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.Token;
 
 /**
  * Created by wenshao on 16/9/13.
@@ -34,4 +37,17 @@ public class PrestoExprParser extends SQLExprParser {
         dbType = DbType.presto;
     }
 
+    @Override
+    protected SQLColumnDefinition parseColumnSpecific(SQLColumnDefinition column) {
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            PrestoColumnWith prestoColumnWith = new PrestoColumnWith();
+            accept(Token.LPAREN);
+            parseAssignItems(prestoColumnWith.getProperties(), prestoColumnWith, false);
+            accept(Token.RPAREN);
+            column.addConstraint(prestoColumnWith);
+            return parseColumnRest(column);
+        }
+        return column;
+    }
 }
