@@ -86,6 +86,12 @@ public class StarRocksExprParser extends SQLExprParser {
             }
         }
 
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+            SQLExpr expr = expr();
+            column.setAsExpr(expr);
+        }
+
         if (lexer.token() == Token.USING) {
             lexer.nextToken();
             SQLCharExpr bitmap = new StarRocksCharExpr(lexer.stringVal());

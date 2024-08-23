@@ -15,7 +15,7 @@ CREATE TABLE example_db.table_hash (
 	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
 )
 COMMENT "my first table"
-DISTRIBUTED BY HASH((k1)) BUCKETS 32
+DISTRIBUTED BY HASH(k1) BUCKETS 32
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.table_hash
 (
@@ -43,14 +43,14 @@ CREATE TABLE example_db.table_hash (
 	k3 CHAR(10) COMMENT 'string column',
 	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
 )
-COMMENT "my first table"
 DUPLICATE KEY(k1, k2)
+COMMENT "my first table"
 PARTITION BY RANGE(k1) (
   PARTITION p1 VALUES LESS THAN ("2020-02-01"), 
   PARTITION p2 VALUES LESS THAN ("2020-03-01"), 
   PARTITION p3 VALUES LESS THAN ("2020-04-01")
 )
-DISTRIBUTED BY HASH((k1)) BUCKETS 32
+DISTRIBUTED BY HASH(k1) BUCKETS 32
 PROPERTIES (
   "replication_num" = "1"
 )
@@ -103,14 +103,14 @@ CREATE TABLE table_range (
 	k2 INT,
 	k3 SMALLINT,
 	v1 VARCHAR(2048) REPLACE,
-	v2 INT DEFAULT "1" SUM
+	v2 INT SUM DEFAULT "1"
 )
 AGGREGATE KEY(k1, k2, k3)
 PARTITION BY RANGE(k1,k2,k3) (
   PARTITION p1 VALUES [("2014-01-01", "10", "200"),("2014-01-01", "20", "300")),
   PARTITION p2 VALUES [("2014-06-01", "100", "200"),("2014-07-01", "100", "300"))
 )
-DISTRIBUTED BY HASH((k2)) BUCKETS 32
+DISTRIBUTED BY HASH(k2) BUCKETS 32
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.example_table
 (
@@ -130,7 +130,7 @@ CREATE TABLE example_db.example_table (
 	v2 BITMAP BITMAP_UNION
 ) ENGINE = olap
 AGGREGATE KEY(k1, k2)
-DISTRIBUTED BY HASH((k1)) BUCKETS 32
+DISTRIBUTED BY HASH(k1) BUCKETS 32
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.dynamic_partition
 (
@@ -160,7 +160,7 @@ CREATE TABLE example_db.dynamic_partition (
 )
 DUPLICATE KEY(k1, k2, k3)
 PARTITION BY RANGE(k1) ()
-DISTRIBUTED BY HASH((k2)) BUCKETS 32
+DISTRIBUTED BY HASH(k2) BUCKETS 32
 PROPERTIES (
   "dynamic_partition.time_unit" = "DAY",
   "dynamic_partition.start" = "-3",

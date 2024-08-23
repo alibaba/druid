@@ -3450,6 +3450,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             dataType.accept(this);
         }
 
+        if (x.getAggType() != null) {
+            visitAggType(x);
+        }
+
         if (x.getDefaultExpr() != null) {
             visitColumnDefault(x);
         }
@@ -3467,7 +3471,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         for (SQLColumnConstraint item : x.getConstraints()) {
             boolean newLine = item instanceof SQLForeignKeyConstraint //
                     || item instanceof SQLPrimaryKey //
-                    || item instanceof SQLColumnCheck //
                     || item instanceof SQLColumnCheck //
                     || item.getName() != null;
             if (newLine) {
@@ -3583,6 +3586,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected void visitColumnDefault(SQLColumnDefinition x) {
         print0(ucase ? " DEFAULT " : " default ");
         printExpr(x.getDefaultExpr(), false);
+    }
+
+    protected void visitAggType(SQLColumnDefinition x) {
+        print(' ');
+        print0(ucase ? x.getAggType().getText().toUpperCase(Locale.ROOT) :
+                x.getAggType().getText().toLowerCase(Locale.ROOT));
     }
 
     public boolean visit(SQLDeleteStatement x) {
@@ -3825,6 +3834,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "TABLESPACE " : "tablespace ");
             tablespace.accept(this);
         }
+        printAsSelect(x);
+        return false;
+    }
+
+    protected void printAsSelect(SQLCreateTableStatement x) {
         SQLSelect select = x.getSelect();
         if (select != null) {
             println();
@@ -3833,8 +3847,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             visit(select);
         }
-
-        return false;
     }
 
     protected void printPartitionBy(SQLCreateTableStatement x) {

@@ -1,0 +1,89 @@
+CREATE TABLE test_tbl1
+(
+    id INT NOT NULL,
+    data_array ARRAY<int> NOT NULL,
+    data_json JSON NOT NULL,
+    v2 SMALLINT SUM DEFAULT "10",
+    newcol1 DOUBLE AS array_avg(data_array),
+    newcol2 String AS json_string(json_query(data_json, "$.a"))
+)
+PRIMARY KEY (`id`)
+COMMENT 'this is a comment'
+DISTRIBUTED BY HASH(id)
+--------------------
+CREATE TABLE test_tbl1 (
+	id INT NOT NULL,
+	data_array ARRAY<int> NOT NULL,
+	data_json JSON NOT NULL,
+	v2 SMALLINT SUM DEFAULT "10",
+	newcol1 DOUBLE AS array_avg(data_array),
+	newcol2 String AS json_string(json_query(data_json, "$.a"))
+)
+PRIMARY KEY(`id`)
+COMMENT 'this is a comment'
+DISTRIBUTED BY HASH(id)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.table_random
+(
+    k1 BIGINT,
+    k2 LARGEINT,
+    v1 VARCHAR(2048) REPLACE,
+    v2 SMALLINT SUM DEFAULT "10"
+)
+ENGINE=olap
+DISTRIBUTED BY RANDOM BUCKETS 10
+PROPERTIES(
+    "storage_type"="column",
+)
+--------------------
+CREATE TABLE example_db.table_random (
+	k1 BIGINT,
+	k2 LARGEINT,
+	v1 VARCHAR(2048) REPLACE,
+	v2 SMALLINT SUM DEFAULT "10"
+) ENGINE = olap
+DISTRIBUTED BY RANDOM BUCKETS 10
+PROPERTIES (
+  "storage_type" = "column"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.table_random
+(
+    k1 BIGINT,
+    k2 LARGEINT,
+    v1 VARCHAR(2048) REPLACE,
+    v2 SMALLINT SUM DEFAULT "10"
+)
+ENGINE=olap
+DISTRIBUTED BY RANDOM BUCKETS
+PROPERTIES(
+    "storage_type"="column",
+)
+--------------------
+CREATE TABLE example_db.table_random (
+	k1 BIGINT,
+	k2 LARGEINT,
+	v1 VARCHAR(2048) REPLACE,
+	v2 SMALLINT SUM DEFAULT "10"
+) ENGINE = olap
+DISTRIBUTED BY RANDOM BUCKETS
+PROPERTIES (
+  "storage_type" = "column"
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE example_db.table_hash
+(
+    k1 TINYINT,
+    k2 DECIMAL(10, 2) DEFAULT "10.5",
+    k3 CHAR(10) COMMENT "string column",
+    k4 INT NOT NULL DEFAULT "1" COMMENT "int column"
+)
+DISTRIBUTED BY HASH(k1) BUCKETS 32
+--------------------
+CREATE TABLE example_db.table_hash (
+	k1 TINYINT,
+	k2 DECIMAL(10, 2) DEFAULT "10.5",
+	k3 CHAR(10) COMMENT 'string column',
+	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
+)
+DISTRIBUTED BY HASH(k1) BUCKETS 32
