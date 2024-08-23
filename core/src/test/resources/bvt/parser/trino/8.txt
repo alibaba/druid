@@ -1,3 +1,0 @@
-show create view test_view
---------------------
-SHOW CREATE VIEW test_view
