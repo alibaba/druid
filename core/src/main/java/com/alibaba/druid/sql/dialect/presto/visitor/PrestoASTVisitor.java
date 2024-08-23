@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.presto.visitor;
 
+import com.alibaba.druid.sql.dialect.presto.ast.PrestoColumnWith;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterSchemaStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoCreateTableStatement;
@@ -8,8 +9,8 @@ import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoExecuteStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoPrepareStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public interface PrestoVisitor extends SQLASTVisitor {
-    default boolean visit(PrestoCreateTableStatement x) {
+public interface PrestoASTVisitor extends SQLASTVisitor {
+    default boolean visit() {
         return true;
     }
 
@@ -50,4 +51,10 @@ public interface PrestoVisitor extends SQLASTVisitor {
 
     default void endVisit(PrestoDeallocatePrepareStatement x) {
     }
+
+    default boolean visit(PrestoColumnWith x) { return true; }
+
+    default void endVisit(PrestoColumnWith x) {
+    }
+
 }

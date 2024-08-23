@@ -17,7 +17,7 @@ package com.alibaba.druid.sql.dialect.presto.ast.stmt;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.presto.visitor.PrestoVisitor;
+import com.alibaba.druid.sql.dialect.presto.visitor.PrestoASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PrestoCreateTableStatement extends SQLCreateTableStatement implements PrestoSQLStatement {
@@ -30,16 +30,16 @@ public class PrestoCreateTableStatement extends SQLCreateTableStatement implemen
     }
 
     @Override
-    protected void accept0(SQLASTVisitor v) {
-        if (v instanceof PrestoVisitor) {
-            this.accept0((PrestoVisitor) v);
+    public void accept0(SQLASTVisitor v) {
+        if (v instanceof PrestoASTVisitor) {
+            this.accept0((PrestoASTVisitor) v);
         }
         super.accept0(v);
     }
 
     @Override
-    public void accept0(PrestoVisitor visitor) {
-        visitor.visit(this);
+    public void accept0(PrestoASTVisitor visitor) {
+        visitor.visit();
     }
 
     protected void acceptChild(SQLASTVisitor v) {

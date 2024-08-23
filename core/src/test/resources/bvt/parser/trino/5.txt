@@ -1,4 +1,0 @@
-PREPARE my_insert FROM INSERT INTO cities VALUES (1, 'San Francisco')
---------------------
-PREPARE my_insert FROM INSERT INTO cities
-VALUES (1, 'San Francisco')

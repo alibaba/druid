@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.presto.ast.PrestoColumnWith;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterSchemaStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoDeallocatePrepareStatement;
@@ -36,16 +37,16 @@ import java.util.List;
  * @author zhangcanlong
  * @since 2022-01-07
  */
-public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVisitor {
+public class PrestoOutputASTVisitor extends SQLASTOutputVisitor implements PrestoASTVisitor {
     {
         dbType = DbType.presto;
     }
 
-    public PrestoOutputVisitor(StringBuilder appender) {
+    public PrestoOutputASTVisitor(StringBuilder appender) {
         super(appender, DbType.presto);
     }
 
-    public PrestoOutputVisitor(StringBuilder appender, boolean parameterized) {
+    public PrestoOutputASTVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 
@@ -183,4 +184,11 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoVi
         return false;
     }
 
+    @Override
+    public boolean visit(PrestoColumnWith x) {
+        print0(ucase ? "WITH(" : "with(");
+        printAndAccept(x.getProperties(), ",");
+        print0(")");
+        return false;
+    }
 }

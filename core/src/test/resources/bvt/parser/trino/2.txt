@@ -1,3 +1,0 @@
-DROP SCHEMA IF EXISTS sales
---------------------
-DROP DATABASE IF EXISTS sales

@@ -1,0 +1,127 @@
+CREATE SCHEMA IF NOT EXISTS customer_db COMMENT 'This is customer database' LOCATION '/user' WITH DBPROPERTIES (ID=001, Name='John')
+--------------------
+CREATE DATABASE IF NOT EXISTS customer_db COMMENT 'This is customer database' LOCATION '/user'
+WITH DBPROPERTIES (
+	ID = 1,
+	Name = 'John'
+)
+------------------------------------------------------------------------------------------------------------------------
+DROP SCHEMA IF EXISTS sales
+--------------------
+DROP DATABASE IF EXISTS sales
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO students TABLE visiting_students
+--------------------
+INSERT INTO students
+SELECT *
+FROM visiting_students
+------------------------------------------------------------------------------------------------------------------------
+PREPARE my_select1 FROM SELECT * FROM nation
+--------------------
+PREPARE my_select1 FROM SELECT *
+FROM nation
+------------------------------------------------------------------------------------------------------------------------
+PREPARE my_insert FROM INSERT INTO cities VALUES (1, 'San Francisco')
+--------------------
+PREPARE my_insert FROM INSERT INTO cities
+VALUES (1, 'San Francisco')
+------------------------------------------------------------------------------------------------------------------------
+show schemas
+--------------------
+SHOW DATABASES
+------------------------------------------------------------------------------------------------------------------------
+show functions
+--------------------
+SHOW FUNCTIONS
+------------------------------------------------------------------------------------------------------------------------
+show create view test_view
+--------------------
+SHOW CREATE VIEW test_view
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE bigger_orders (
+  another_orderkey bigint,
+  LIKE orders,
+  another_orderdate date
+)
+--------------------
+CREATE TABLE bigger_orders (
+	another_orderkey bigint,
+	LIKE orders,
+	another_orderdate date
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE kudu.dwd_market.dynamic_qrcode_hquid_relate_unionid (
+   unionid varchar WITH ( primary_key = true ),
+   hq_uid bigint WITH ( primary_key = true ),
+   del_flag integer WITH ( nullable = true ),
+   uname varchar WITH ( nullable = true )
+)
+WITH (
+   number_of_replicas = 3,
+   partition_by_hash_buckets = 2,
+   partition_by_hash_columns = ARRAY['unionid'],
+   partition_by_range_columns = ARRAY['unionid','hq_uid'],
+   range_partitions = '[{lower:null,upper:null}]'
+)
+--------------------
+CREATE TABLE kudu.dwd_market.dynamic_qrcode_hquid_relate_unionid (
+	unionid varchar WITH(primary_key = true),
+	hq_uid bigint WITH(primary_key = true),
+	del_flag integer WITH(nullable = true),
+	uname varchar WITH(nullable = true)
+)
+WITH (number_of_replicas = 3, partition_by_hash_buckets = 2, partition_by_hash_columns = ARRAY['unionid'], partition_by_range_columns = ARRAY['unionid', 'hq_uid'], range_partitions = '[{lower:null,upper:null}]')
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS orders (
+  orderkey bigint,
+  orderstatus varchar NOT NULL,
+  totalprice double COMMENT 'Price in cents.',
+  orderdate date,
+  PRIMARY KEY (orderkey) ENFORCED
+)
+COMMENT 'A table to keep track of orders.'
+--------------------
+CREATE TABLE IF NOT EXISTS orders (
+	orderkey bigint,
+	orderstatus varchar NOT NULL,
+	totalprice double COMMENT 'Price in cents.',
+	orderdate date,
+	CONSTRAINT ENFORCED PRIMARY KEY (orderkey)
+)
+COMMENT 'A table to keep track of orders.'
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS orders (
+  orderkey bigint,
+  orderstatus varchar NOT NULL,
+  totalprice double COMMENT 'Price in cents.',
+  orderdate date,
+  PRIMARY KEY (orderkey) RELY
+)
+COMMENT 'A table to keep track of orders.'
+--------------------
+CREATE TABLE IF NOT EXISTS orders (
+	orderkey bigint,
+	orderstatus varchar NOT NULL,
+	totalprice double COMMENT 'Price in cents.',
+	orderdate date,
+	CONSTRAINT RELY PRIMARY KEY (orderkey)
+)
+COMMENT 'A table to keep track of orders.'
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS orders (
+  orderkey bigint,
+  orderstatus varchar NOT NULL,
+  totalprice double COMMENT 'Price in cents.',
+  orderdate date,
+  PRIMARY KEY (orderkey) DISABLED
+)
+COMMENT 'A table to keep track of orders.'
+--------------------
+CREATE TABLE IF NOT EXISTS orders (
+	orderkey bigint,
+	orderstatus varchar NOT NULL,
+	totalprice double COMMENT 'Price in cents.',
+	orderdate date,
+	CONSTRAINT DISABLED PRIMARY KEY (orderkey)
+)
+COMMENT 'A table to keep track of orders.'

@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.presto.ast.stmt;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.presto.visitor.PrestoVisitor;
+import com.alibaba.druid.sql.dialect.presto.visitor.PrestoASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
@@ -37,15 +37,15 @@ public class PrestoSelectStatement extends SQLSelectStatement implements PrestoS
     }
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof PrestoVisitor) {
-            this.accept0((PrestoVisitor) visitor);
+    public void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof PrestoASTVisitor) {
+            this.accept0((PrestoASTVisitor) visitor);
         } else {
             super.accept0(visitor);
         }
     }
 
-    public void accept0(PrestoVisitor visitor) {
+    public void accept0(PrestoASTVisitor visitor) {
         super.accept0(visitor);
     }
 }
