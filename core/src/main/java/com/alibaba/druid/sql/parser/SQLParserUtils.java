@@ -22,6 +22,9 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.athena.parser.AthenaExprParser;
+import com.alibaba.druid.sql.dialect.athena.parser.AthenaLexer;
+import com.alibaba.druid.sql.dialect.athena.parser.AthenaStatementParser;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryExprParser;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryLexer;
 import com.alibaba.druid.sql.dialect.bigquery.parser.BigQueryStatementParser;
@@ -177,6 +180,8 @@ public class SQLParserUtils {
             case presto:
             case trino:
                 return new PrestoStatementParser(sql, features);
+            case athena:
+                return new AthenaStatementParser(sql, features);
             case bigquery:
                 return new BigQueryStatementParser(sql, features);
             case spark:
@@ -237,6 +242,8 @@ public class SQLParserUtils {
             case presto:
             case trino:
                 return new PrestoExprParser(sql, features);
+            case athena:
+                return new AthenaExprParser(sql, features);
             case hive:
                 return new HiveExprParser(sql, features);
             case bigquery:
@@ -298,6 +305,8 @@ public class SQLParserUtils {
             case presto:
             case trino:
                 return new PrestoLexer(sql, features);
+            case athena:
+                return new AthenaLexer(sql, features);
             case spark:
                 return new SparkLexer(sql);
             case oscar:

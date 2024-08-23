@@ -3834,18 +3834,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public void parseAssignItems(List<? super SQLAssignItem> items, SQLObject parent, boolean variant) {
-        for (; ; ) {
-            SQLAssignItem item = exprParser.parseAssignItem(variant, parent);
-            item.setParent(parent);
-            items.add(item);
-
-            if (lexer.token == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            } else {
-                break;
-            }
-        }
+        exprParser.parseAssignItems(items, parent, variant);
     }
 
     public SQLPartitionRef parsePartitionRef() {

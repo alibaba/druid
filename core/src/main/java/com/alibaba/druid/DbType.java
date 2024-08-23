@@ -81,10 +81,12 @@ public enum DbType {
     bigquery(1L << 48),
 
     impala(1L << 49),
+
     doris(1L << 50),
 
-    lealone(1L << 50),
+    lealone(1L << 51),
 
+    athena(1L << 52),
     ingres(0),
     cloudscape(0),
     timesten(0),

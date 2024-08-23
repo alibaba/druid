@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.athena.visitor.AthenaOutputVisitor;
 import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
@@ -60,7 +61,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
-import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputASTVisitor;
+import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.redshift.visitor.RedshiftOutputVisitor;
 import com.alibaba.druid.sql.dialect.spark.visitor.SparkOutputVisitor;
 import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatVisitor;
@@ -554,7 +555,9 @@ public class SQLUtils {
                 return new SparkOutputVisitor(out);
             case presto:
             case trino:
-                return new PrestoOutputASTVisitor(out);
+                return new PrestoOutputVisitor(out);
+            case athena:
+                return new AthenaOutputVisitor(out);
             case clickhouse:
                 return new CKOutputVisitor(out);
             case oscar:

@@ -74,6 +74,15 @@ public class SQLParser {
         }
     }
 
+    protected void acceptIdentifier(Long hash) {
+        if (lexer.identifierEquals(hash)) {
+            lexer.nextToken();
+        } else {
+            setErrorEndPos(lexer.pos());
+            throw new ParserException("syntax error, expect " + hash + ", actual " + lexer.token + ", " + lexer.info());
+        }
+    }
+
     protected String tableAlias() {
         return tableAlias(false);
     }
