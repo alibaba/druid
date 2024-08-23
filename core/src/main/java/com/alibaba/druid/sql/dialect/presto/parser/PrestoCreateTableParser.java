@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.presto.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.presto.ast.PrestoColumnWith;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -76,7 +77,27 @@ public class PrestoCreateTableParser extends SQLCreateTableParser {
 
             for (; ; ) {
                 Token token = lexer.token();
-                if (lexer.token() == Token.LIKE) {
+                if (token == Token.IDENTIFIER
+                        || token == Token.LITERAL_ALIAS) {
+                    SQLColumnDefinition column = this.exprParser.parseColumn(createTable);
+                    column.setParent(createTable);
+                    createTable.getTableElementList().add(column);
+
+                    if (lexer.token() == Token.COMMENT) {
+                        lexer.nextToken();
+                        SQLExpr comment = this.exprParser.expr();
+                        column.setComment(comment);
+                    }
+
+                    if (lexer.token() == Token.WITH) {
+                        lexer.nextToken();
+                        PrestoColumnWith prestoColumnWith = new PrestoColumnWith();
+                        accept(Token.LPAREN);
+                        parseAssignItems(prestoColumnWith.getProperties(), prestoColumnWith, false);
+                        accept(Token.RPAREN);
+                        column.addConstraint(prestoColumnWith);
+                    }
+                } else if (lexer.token() == Token.LIKE) {
                     lexer.nextToken();
                     SQLTableLike tableLike = new SQLTableLike();
                     tableLike.setTable(new SQLExprTableSource(this.exprParser.name()));

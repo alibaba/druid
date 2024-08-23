@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.dialect.presto.ast.stmt;
 
 import com.alibaba.druid.sql.ast.statement.SQLAlterFunctionStatement;
-import com.alibaba.druid.sql.dialect.presto.visitor.PrestoVisitor;
+import com.alibaba.druid.sql.dialect.presto.visitor.PrestoASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PrestoAlterFunctionStatement extends SQLAlterFunctionStatement implements PrestoSQLStatement {
@@ -43,16 +43,16 @@ public class PrestoAlterFunctionStatement extends SQLAlterFunctionStatement impl
     }
 
     @Override
-    protected void accept0(SQLASTVisitor v) {
-        if (v instanceof PrestoVisitor) {
-            this.accept0((PrestoVisitor) v);
+    public void accept0(SQLASTVisitor v) {
+        if (v instanceof PrestoASTVisitor) {
+            this.accept0((PrestoASTVisitor) v);
         } else {
             super.accept0(v);
         }
     }
 
     @Override
-    public void accept0(PrestoVisitor visitor) {
+    public void accept0(PrestoASTVisitor visitor) {
         visitor.visit(this);
     }
 }
