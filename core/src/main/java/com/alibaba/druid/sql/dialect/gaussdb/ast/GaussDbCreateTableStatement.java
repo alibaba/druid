@@ -106,6 +106,7 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
             acceptChild(visitor, this.collate);
             acceptChild(visitor, this.charset);
             acceptChild(visitor, this.autoIncrement);
+            acceptChild((SQLASTVisitor) visitor);
         }
     }
 }

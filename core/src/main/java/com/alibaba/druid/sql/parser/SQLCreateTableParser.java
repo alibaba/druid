@@ -92,48 +92,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
     protected void createTableBody(SQLCreateTableStatement createTable) {
         if (lexer.nextIf(Token.LPAREN)) {
             for (; ; ) {
-                Token token = lexer.token;
-                if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
-                        && dialectFeatureEnabled(CreateTableBodySupplemental)) {
-                    SQLTableElement element = this.parseCreateTableSupplementalLoggingProps();
-                    element.setParent(createTable);
-                    createTable.getTableElementList().add(element);
-                } else if (token == Token.IDENTIFIER //
-                        || token == Token.LITERAL_ALIAS) {
-                    SQLColumnDefinition column = this.exprParser.parseColumn(createTable);
-                    column.setParent(createTable);
-                    createTable.getTableElementList().add(column);
-                } else if (token == Token.PRIMARY //
-                        || token == Token.UNIQUE //
-                        || token == Token.CHECK //
-                        || token == Token.CONSTRAINT
-                        || token == Token.FOREIGN) {
-                    SQLConstraint constraint = this.exprParser.parseConstaint();
-                    constraint.setParent(createTable);
-                    createTable.getTableElementList().add((SQLTableElement) constraint);
-                } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO " + lexer.info());
-                } else if (lexer.token() == Token.LIKE) {
-                    lexer.nextToken();
-                    SQLTableLike tableLike = new SQLTableLike();
-                    tableLike.setTable(new SQLExprTableSource(this.exprParser.name()));
-                    tableLike.setParent(createTable);
-                    createTable.getTableElementList().add(tableLike);
-
-                    if (lexer.identifierEquals(FnvHash.Constants.INCLUDING)) {
-                        lexer.nextToken();
-                        acceptIdentifier("PROPERTIES");
-                        tableLike.setIncludeProperties(true);
-                    } else if (lexer.identifierEquals(FnvHash.Constants.EXCLUDING)) {
-                        lexer.nextToken();
-                        acceptIdentifier("PROPERTIES");
-                        tableLike.setExcludeProperties(true);
-                    }
-                } else {
-                    SQLColumnDefinition column = this.exprParser.parseColumn();
-                    createTable.getTableElementList().add(column);
-                }
-
+                createTableContent(createTable);
                 if (lexer.nextIf(Token.COMMA)) {
                     if (lexer.token == Token.RPAREN) { // compatible for sql server
                         break;
@@ -147,6 +106,50 @@ public class SQLCreateTableParser extends SQLDDLParser {
             accept(Token.RPAREN);
 
             createTableAfter(createTable);
+        }
+    }
+
+    protected void createTableContent(SQLCreateTableStatement createTable) {
+        Token token = lexer.token;
+        if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
+                && dialectFeatureEnabled(CreateTableBodySupplemental)) {
+            SQLTableElement element = this.parseCreateTableSupplementalLoggingProps();
+            element.setParent(createTable);
+            createTable.getTableElementList().add(element);
+        } else if (token == Token.IDENTIFIER //
+                || token == Token.LITERAL_ALIAS) {
+            SQLColumnDefinition column = this.exprParser.parseColumn(createTable);
+            column.setParent(createTable);
+            createTable.getTableElementList().add(column);
+        } else if (token == Token.PRIMARY //
+                || token == Token.UNIQUE //
+                || token == Token.CHECK //
+                || token == Token.CONSTRAINT
+                || token == Token.FOREIGN) {
+            SQLConstraint constraint = this.exprParser.parseConstaint();
+            constraint.setParent(createTable);
+            createTable.getTableElementList().add((SQLTableElement) constraint);
+        } else if (token == Token.TABLESPACE) {
+            throw new ParserException("TODO " + lexer.info());
+        } else if (lexer.token() == Token.LIKE) {
+            lexer.nextToken();
+            SQLTableLike tableLike = new SQLTableLike();
+            tableLike.setTable(new SQLExprTableSource(this.exprParser.name()));
+            tableLike.setParent(createTable);
+            createTable.getTableElementList().add(tableLike);
+
+            if (lexer.identifierEquals(FnvHash.Constants.INCLUDING)) {
+                lexer.nextToken();
+                acceptIdentifier("PROPERTIES");
+                tableLike.setIncludeProperties(true);
+            } else if (lexer.identifierEquals(FnvHash.Constants.EXCLUDING)) {
+                lexer.nextToken();
+                acceptIdentifier("PROPERTIES");
+                tableLike.setExcludeProperties(true);
+            }
+        } else {
+            SQLColumnDefinition column = this.exprParser.parseColumn();
+            createTable.getTableElementList().add(column);
         }
     }
 

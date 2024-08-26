@@ -1,10 +1,7 @@
 package com.alibaba.druid.sql.dialect.gaussdb.parser;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionValue;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -125,7 +122,8 @@ public class GaussDbExprParser extends PGExprParser {
             case IDENTIFIER:
                 long hash = lexer.hashLCase();
                 if (hash == FnvHash.Constants.DELTA || hash == FnvHash.Constants.PREFIX ||
-                        hash == FnvHash.Constants.NUMSTR || hash == FnvHash.Constants.NOCOMPRESS) {
+                        hash == FnvHash.Constants.NUMSTR || hash == FnvHash.Constants.NOCOMPRESS ||
+                        hash == FnvHash.Constants.DICTIONARY) {
                     column.setCompression(new SQLCharExpr(lexer.stringVal()));
                     lexer.nextToken();
                     return parseColumnRest(column);

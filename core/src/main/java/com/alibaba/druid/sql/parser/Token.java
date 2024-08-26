@@ -65,6 +65,7 @@ public enum Token {
     FOREIGN("FOREIGN"),
     REFERENCES("REFERENCES"),
     LANGUAGE("LANGUAGE"),
+    PARTIAL("PARTIAL"),
 
     EXPLAIN("EXPLAIN"),
     FOR("FOR"),
