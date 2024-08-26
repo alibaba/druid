@@ -298,17 +298,22 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
         if (lexer.identifierEquals(FnvHash.Constants.DISTRIBUTED)) {
             lexer.nextToken();
             accept(Token.BY);
-            if (lexer.identifierEquals(FnvHash.Constants.HASH) || lexer.identifierEquals(FnvHash.Constants.RANDOM)) {
-                SQLName type = this.exprParser.name();
-                srStmt.setDistributedBy(type);
+            SQLName type = null;
+            if (lexer.identifierEquals(FnvHash.Constants.HASH)) {
+                type = this.exprParser.name();
+                this.exprParser.exprList(srStmt.getDistributedByParameters(), srStmt);
+            } else if (lexer.identifierEquals(FnvHash.Constants.RANDOM)) {
+                type = this.exprParser.name();
             }
-            this.exprParser.exprList(srStmt.getDistributedByParameters(), srStmt);
+            srStmt.setDistributedBy(type);
 
             if (lexer.identifierEquals(FnvHash.Constants.BUCKETS)) {
                 lexer.nextToken();
-                int bucket = lexer.integerValue().intValue();
-                stmt.setBuckets(bucket);
-                lexer.nextToken();
+                if (lexer.token() == Token.LITERAL_INT) {
+                    int bucket = lexer.integerValue().intValue();
+                    stmt.setBuckets(bucket);
+                    lexer.nextToken();
+                }
             }
         }
 

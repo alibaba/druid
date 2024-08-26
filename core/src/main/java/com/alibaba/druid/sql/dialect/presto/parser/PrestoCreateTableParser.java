@@ -21,9 +21,6 @@ import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.util.FnvHash;
-
-import java.util.List;
 
 /**
  * presto 的create table解析器
@@ -40,105 +37,27 @@ public class PrestoCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCreateTable() {
-        List<String> comments = null;
-        if (lexer.isKeepComments() && lexer.hasComment()) {
-            comments = lexer.readAndResetComments();
-        }
-
-        PrestoCreateTableStatement createTable = newCreateStatement();
-        if (comments != null) {
-            createTable.addBeforeComment(comments);
-        }
-
-        createTable.setDbType(getDbType());
-
-        if (lexer.hasComment() && lexer.isKeepComments()) {
-            createTable.addBeforeComment(lexer.readAndResetComments());
-        }
-
-        accept(Token.CREATE);
-
-        accept(Token.TABLE);
-
-        if (lexer.token() == Token.IF || lexer.identifierEquals(FnvHash.Constants.IF)) {
-            lexer.nextToken();
-            accept(Token.NOT);
-            accept(Token.EXISTS);
-
-            createTable.setIfNotExists(true);
-        }
-
-        createTable.setName(this.exprParser.name());
-
-        if (lexer.token() == Token.LPAREN) {
-            lexer.nextToken();
-
-            for (; ; ) {
-                Token token = lexer.token();
-                if (lexer.token() == Token.LIKE) {
-                    lexer.nextToken();
-                    SQLTableLike tableLike = new SQLTableLike();
-                    tableLike.setTable(new SQLExprTableSource(this.exprParser.name()));
-                    tableLike.setParent(createTable);
-                    createTable.getTableElementList().add(tableLike);
-
-                    if (lexer.identifierEquals(FnvHash.Constants.INCLUDING)) {
-                        lexer.nextToken();
-                        acceptIdentifier("PROPERTIES");
-                        tableLike.setIncludeProperties(true);
-                    } else if (lexer.identifierEquals(FnvHash.Constants.EXCLUDING)) {
-                        lexer.nextToken();
-                        acceptIdentifier("PROPERTIES");
-                        tableLike.setExcludeProperties(true);
-                    }
-                } else if (token == Token.IDENTIFIER //
-                        || token == Token.LITERAL_ALIAS) {
-                    SQLColumnDefinition column = this.exprParser.parseColumn(createTable);
-                    column.setParent(createTable);
-                    createTable.getTableElementList().add(column);
-                } else {
-                    SQLColumnDefinition column = this.exprParser.parseColumn();
-                    createTable.getTableElementList().add(column);
-                }
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-
-                    if (lexer.token() == Token.RPAREN) { // compatible for sql server
-                        break;
-                    }
-                    continue;
-                }
-
-                break;
-            }
-
-            accept(Token.RPAREN);
-        }
-
+    @Override
+    protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
             SQLExpr comment = this.exprParser.expr();
-            createTable.setComment(comment);
+            stmt.setComment(comment);
         }
 
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             accept(Token.LPAREN);
-            parseAssignItems(createTable.getTableOptions(), createTable, false);
+            parseAssignItems(stmt.getTableOptions(), stmt, false);
             accept(Token.RPAREN);
         }
 
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
             SQLSelect select = this.createSQLSelectParser().select();
-            createTable.setSelect(select);
+            stmt.setSelect(select);
         }
-
-        parseCreateTableRest(createTable);
-
-        return createTable;
+        super.parseCreateTableRest(stmt);
     }
 
     protected PrestoCreateTableStatement newCreateStatement() {

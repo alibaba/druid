@@ -1,0 +1,50 @@
+SELECT DISTINCT processid FROM "webdata"."impressions"
+WHERE cast(processid as int) BETWEEN 1500 and 1800
+ORDER BY processid
+--------------------
+SELECT DISTINCT processid
+FROM "webdata"."impressions"
+WHERE CAST(processid AS int) BETWEEN 1500 AND 1800
+ORDER BY processid
+------------------------------------------------------------------------------------------------------------------------
+SELECT DISTINCT "$path" AS data_source_file
+FROM sampledb.elb_logs
+ORDER By data_source_file ASC
+--------------------
+SELECT DISTINCT "$path" AS data_source_file
+FROM sampledb.elb_logs
+ORDER BY data_source_file ASC
+------------------------------------------------------------------------------------------------------------------------
+SELECT a, b
+FROM (
+  SELECT a, MAX(b) AS b FROM t GROUP BY a
+) AS x
+--------------------
+SELECT a, b
+FROM (
+	SELECT a, MAX(b) AS b
+	FROM t
+	GROUP BY a
+) x
+------------------------------------------------------------------------------------------------------------------------
+WITH x AS (SELECT a, MAX(b) AS b FROM t GROUP BY a)
+SELECT a, b FROM x
+--------------------
+WITH x AS (
+		SELECT a, MAX(b) AS b
+		FROM t
+		GROUP BY a
+	)
+SELECT a, b
+FROM x
+------------------------------------------------------------------------------------------------------------------------
+SELECT origin_state, origin_zip, destination_state, sum(package_weight)
+FROM shipping
+GROUP BY GROUPING SETS (
+    (origin_state),
+    (origin_state, origin_zip),
+    (destination_state))
+--------------------
+SELECT origin_state, origin_zip, destination_state, sum(package_weight)
+FROM shipping
+GROUP BY GROUPING SETS ((origin_state), (origin_state, origin_zip), (destination_state))

@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.athena.visitor.AthenaOutputVisitor;
 import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
@@ -555,6 +556,8 @@ public class SQLUtils {
             case presto:
             case trino:
                 return new PrestoOutputVisitor(out);
+            case athena:
+                return new AthenaOutputVisitor(out);
             case clickhouse:
                 return new CKOutputVisitor(out);
             case oscar:
