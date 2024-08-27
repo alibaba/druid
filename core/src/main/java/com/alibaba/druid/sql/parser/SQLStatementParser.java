@@ -3650,7 +3650,21 @@ public class SQLStatementParser extends SQLParser {
         parseInsert0(insertStatement, true);
     }
 
-    protected void parseInsert0_hinits(SQLInsertInto insertStatement) {
+    /**
+     * Impala dml support multiple place hint.
+     * First hint_clause isInsert is true, second hint_clause isInsert is false.
+     * ***************************************
+     * [with_clause]
+     *   INSERT [hint_clause] { INTO | OVERWRITE } [TABLE] table_name
+     *   [(column_list)]
+     *   [ PARTITION (partition_clause)]
+     * {
+     *     [hint_clause] select_statement
+     *   | VALUES (value [, value ...]) [, (value [, value ...]) ...]
+     * }
+     * ***************************************
+     */
+    protected void parseInsert0_hints(SQLInsertInto insertStatement, boolean isInsert) {
     }
 
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
@@ -3664,7 +3678,7 @@ public class SQLStatementParser extends SQLParser {
                 insertStatement.setAlias(tableAlias());
             }
 
-            parseInsert0_hinits(insertStatement);
+            parseInsert0_hints(insertStatement, false);
 
             if (lexer.token == Token.IDENTIFIER) {
                 insertStatement.setAlias(lexer.stringVal());

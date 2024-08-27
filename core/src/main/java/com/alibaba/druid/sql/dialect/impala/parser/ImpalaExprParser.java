@@ -1,19 +1,24 @@
 package com.alibaba.druid.sql.dialect.impala.parser;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionValue;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveExprParser;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaSQLPartitionValue;
+import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
+import java.util.List;
+
 public class ImpalaExprParser extends HiveExprParser {
+    public ImpalaExprParser(Lexer lexer) {
+        super(lexer);
+    }
     public ImpalaExprParser(String sql, SQLParserFeature... features) {
         super(new ImpalaLexer(sql, features));
         this.lexer.nextToken();
@@ -93,4 +98,15 @@ public class ImpalaExprParser extends HiveExprParser {
         }
     }
 
+    @Override
+    public void parseHints(List hints) {
+        if (lexer.token() == Token.LBRACKET) {
+            lexer.nextToken();
+            hints.add(new SQLExprHint(expr()));
+            accept(Token.RBRACKET);
+        } else {
+            super.parseHints(hints);
+        }
+
+    }
 }

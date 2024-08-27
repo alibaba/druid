@@ -261,7 +261,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             insertStatement.setAlias(tableAlias());
         }
 
-        parseInsert0_hinits(insertStatement);
+        parseInsert0_hints(insertStatement, false);
 
         if (lexer.token() == Token.IDENTIFIER && !lexer.stringVal().equalsIgnoreCase("OUTPUT")) {
             insertStatement.setAlias(lexer.stringVal());
