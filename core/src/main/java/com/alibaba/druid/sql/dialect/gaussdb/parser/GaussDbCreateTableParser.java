@@ -2,7 +2,7 @@ package com.alibaba.druid.sql.dialect.gaussdb.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGCreateTableParser;
@@ -28,6 +28,28 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
     public GaussDbCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
         dbType = DbType.gaussdb;
+    }
+
+    protected void createTableBodyItem(SQLCreateTableStatement createTable) {
+        if (lexer.token() == Token.PARTIAL) {
+            lexer.nextToken();
+            if (lexer.nextIfIdentifier(FnvHash.Constants.CLUSTER)) {
+                accept(Token.KEY);
+                accept(Token.LPAREN);
+                for (; ; ) {
+                    SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+                    createTable.addClusteredByItem(item);
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    } else if (lexer.token() == Token.RPAREN) {
+                        accept(Token.RPAREN);
+                        break;
+                    }
+                }}
+        } else {
+            super.createTableBodyItem(createTable);
+        }
     }
 
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {

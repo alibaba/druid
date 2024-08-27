@@ -3792,24 +3792,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.indentCount++;
         println();
         for (int i = 0; i < size; ++i) {
-            SQLTableElement element = tableElementList.get(i);
-            element.accept(this);
-
-            if (i != size - 1) {
-                print(',');
-            }
-            if (this.isPrettyFormat() && element.hasAfterComment()) {
-                print(' ');
-                printlnComment(element.getAfterCommentsDirect());
-            }
-
-            if (i != size - 1) {
-                println();
-            }
+            printTableElement(tableElementList, i);
         }
         this.indentCount--;
         println();
         print(')');
+    }
+
+    protected void printTableElement(List<SQLTableElement> tableElementList, int i) {
+        int size = tableElementList.size();
+        SQLTableElement element = tableElementList.get(i);
+        element.accept(this);
+
+        if (i != size - 1) {
+            print(',');
+        }
+        if (this.isPrettyFormat() && element.hasAfterComment()) {
+            print(' ');
+            printlnComment(element.getAfterCommentsDirect());
+        }
+
+        if (i != size - 1) {
+            println();
+        }
     }
 
     protected void printEngine(SQLCreateTableStatement x) {

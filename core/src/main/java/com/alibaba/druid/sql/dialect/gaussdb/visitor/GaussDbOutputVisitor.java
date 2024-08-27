@@ -10,6 +10,7 @@ import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GaussDbOutputVisitor extends SQLASTOutputVisitor implements GaussDbASTVisitor {
     public GaussDbOutputVisitor(StringBuilder appender, boolean parameterized) {
@@ -40,7 +41,7 @@ public class GaussDbOutputVisitor extends SQLASTOutputVisitor implements GaussDb
 
         printCreateTableAfterName(x);
 
-        printTableElements(x.getTableElementList());
+        printTableElements(x);
 
         printComment(x.getComment());
 
@@ -156,6 +157,33 @@ public class GaussDbOutputVisitor extends SQLASTOutputVisitor implements GaussDb
             print0(ucase ? "PARTITION BY " : "partition by ");
             partitionBy.accept(this);
         }
+    }
+
+    protected void printTableElements(GaussDbCreateTableStatement x) {
+        int size = x.getTableElementList().size();
+        if (size == 0) {
+            return;
+        }
+
+        print0(" (");
+
+        this.indentCount++;
+        println();
+        for (int i = 0; i < size; ++i) {
+            printTableElement(x.getTableElementList(), i);
+        }
+        this.indentCount--;
+        if (!x.getClusteredBy().isEmpty()) {
+            print(',');
+            println();
+            print(" ");
+            List<SQLExpr> clusterBy = x.getClusteredBy().stream().map(k -> k.getExpr()).collect(Collectors.toList());
+            print0(ucase ? "  PARTIAL CLUSTER KEY " : "  partial cluster key");
+            printColumns(clusterBy);
+
+        }
+        println();
+        print(')');
     }
 
     @Override
