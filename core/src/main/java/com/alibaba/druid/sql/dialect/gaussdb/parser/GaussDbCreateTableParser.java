@@ -30,7 +30,7 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
         dbType = DbType.gaussdb;
     }
 
-    protected void createTableContent(SQLCreateTableStatement createTable) {
+    protected void createTableBodyItem(SQLCreateTableStatement createTable) {
         if (lexer.token() == Token.PARTIAL) {
             lexer.nextToken();
             if (lexer.nextIfIdentifier(FnvHash.Constants.CLUSTER)) {
@@ -48,7 +48,7 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
                     }
                 }}
         } else {
-            super.createTableContent(createTable);
+            super.createTableBodyItem(createTable);
         }
     }
 

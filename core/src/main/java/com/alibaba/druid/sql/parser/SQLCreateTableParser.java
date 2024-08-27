@@ -92,7 +92,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
     protected void createTableBody(SQLCreateTableStatement createTable) {
         if (lexer.nextIf(Token.LPAREN)) {
             for (; ; ) {
-                createTableContent(createTable);
+                createTableBodyItem(createTable);
                 if (lexer.nextIf(Token.COMMA)) {
                     if (lexer.token == Token.RPAREN) { // compatible for sql server
                         break;
@@ -109,7 +109,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
         }
     }
 
-    protected void createTableContent(SQLCreateTableStatement createTable) {
+    protected void createTableBodyItem(SQLCreateTableStatement createTable) {
         Token token = lexer.token;
         if (lexer.identifierEquals(FnvHash.Constants.SUPPLEMENTAL)
                 && dialectFeatureEnabled(CreateTableBodySupplemental)) {
