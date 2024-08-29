@@ -56,12 +56,12 @@ public class ImpalaStatementParser extends HiveStatementParser {
 
     @Override
     protected void parseInsert0(SQLInsertInto insertStatement) {
-        parseInsert0_hints(insertStatement, true);
+        parseInsert0Hints(insertStatement, true);
         parseInsert0(insertStatement, true);
     }
 
     @Override
-    protected void parseInsert0_hints(SQLInsertInto insertStatement, boolean isInsert) {
+    protected void parseInsert0Hints(SQLInsertInto insertStatement, boolean isInsert) {
         if (insertStatement instanceof ImpalaInsertStatement) {
             ImpalaInsertStatement stmt = (ImpalaInsertStatement) insertStatement;
             List<SQLHint> hints = isInsert ? stmt.getInsertHints() : stmt.getSelectHints();

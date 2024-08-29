@@ -3664,7 +3664,7 @@ public class SQLStatementParser extends SQLParser {
      * }
      * ***************************************
      */
-    protected void parseInsert0_hints(SQLInsertInto insertStatement, boolean isInsert) {
+    protected void parseInsert0Hints(SQLInsertInto insertStatement, boolean isInsert) {
     }
 
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
@@ -3678,7 +3678,7 @@ public class SQLStatementParser extends SQLParser {
                 insertStatement.setAlias(tableAlias());
             }
 
-            parseInsert0_hints(insertStatement, false);
+            parseInsert0Hints(insertStatement, false);
 
             if (lexer.token == Token.IDENTIFIER) {
                 insertStatement.setAlias(lexer.stringVal());

@@ -55,7 +55,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return new OracleCreateTableParser(lexer);
     }
 
-    protected void parseInsert0_hints(SQLInsertInto insertStatement, boolean isInsert) {
+    protected void parseInsert0Hints(SQLInsertInto insertStatement, boolean isInsert) {
         if (insertStatement instanceof OracleInsertStatement) {
             OracleInsertStatement stmt = (OracleInsertStatement) insertStatement;
             this.getExprParser().parseHints(stmt.getHints());
