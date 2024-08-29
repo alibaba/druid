@@ -1,0 +1,18 @@
+UPSERT [SHUFFLE] INTO kudu_table (pk, c1, c2, c3) VALUES (0, 'hello', 50, true), (1, 'world', -1, false)
+--------------------
+UPSERT [SHUFFLE] INTO kudu_table (pk, c1, c2, c3)
+VALUES (0, 'hello', 50, true), (1, 'world', -1, false)
+------------------------------------------------------------------------------------------------------------------------
+UPSERT INTO production_table [SHUFFLE] SELECT * FROM staging_table
+--------------------
+UPSERT INTO production_table
+[SHUFFLE] SELECT *
+FROM staging_table
+------------------------------------------------------------------------------------------------------------------------
+UPSERT [SHUFFLE] INTO production_table [NOSHUFFLE] SELECT * FROM staging_table WHERE c1 IS NOT NULL AND c2 > 0;
+--------------------
+UPSERT [SHUFFLE] INTO production_table
+[NOSHUFFLE] SELECT *
+FROM staging_table
+WHERE c1 IS NOT NULL
+	AND c2 > 0;

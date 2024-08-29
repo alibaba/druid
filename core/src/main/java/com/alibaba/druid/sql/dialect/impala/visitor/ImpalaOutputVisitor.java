@@ -2,13 +2,11 @@ package com.alibaba.druid.sql.dialect.impala.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprHint;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaSQLPartitionValue;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
+import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaInsertStatement;
 
 import java.util.List;
 
@@ -27,15 +25,7 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTV
     protected void printJoinHint(SQLJoinTableSource x) {
         if (!x.getHints().isEmpty()) {
             print(' ');
-            for (SQLHint joinHint : x.getHints()) {
-                if (joinHint instanceof SQLCommentHint) {
-                    print0((joinHint).toString());
-                } else if (joinHint instanceof SQLExprHint) {
-                    print0("[");
-                    joinHint.accept(this);
-                    print0("]");
-                }
-            }
+            printHints(x.getHints());
         }
     }
 
@@ -70,6 +60,81 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTV
         }
         return super.visit(x);
     }
+
+    @Override
+    public boolean visit(SQLInsertStatement x) {
+        if (x instanceof ImpalaInsertStatement) {
+            return visit((ImpalaInsertStatement) x);
+        }
+        return super.visit(x);
+    }
+
+    @Override
+    public boolean visit(ImpalaInsertStatement x) {
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            visit(with);
+            println();
+        }
+
+        if (x.isUpsert()) {
+            print0(ucase ? "UPSERT " : "upsert ");
+            printHint(x, true);
+            print0(ucase ? "INTO " : "into ");
+        } else {
+            print0(ucase ? "INSERT " : "insert ");
+            printHint(x, true);
+            if (x.isOverwrite()) {
+                print0(ucase ? "OVERWRITE " : "overwrite ");
+            } else {
+                print0(ucase ? "INTO " : "into ");
+            }
+        }
+
+        x.getTableSource().accept(this);
+
+        String columnsString = x.getColumnsString();
+        if (columnsString != null) {
+            print0(columnsString);
+        } else {
+            printInsertColumns(x.getColumns());
+        }
+
+        if (!x.getValuesList().isEmpty()) {
+            println();
+            print0(ucase ? "VALUES " : "values ");
+            printAndAccept(x.getValuesList(), ", ");
+        } else {
+            if (x.getQuery() != null) {
+                println();
+                printHint(x, false);
+                x.getQuery().accept(this);
+            }
+        }
+
+        return false;
+    }
+
+    private void printHint(ImpalaInsertStatement x, boolean isInsert) {
+        List<SQLHint> hints = isInsert ? x.getInsertHints() : x.getSelectHints();
+        if (!hints.isEmpty()) {
+            printHints(hints);
+            print(' ');
+        }
+    }
+
+    private void printHints(List<SQLHint> hints) {
+        for (SQLHint hint : hints) {
+            if (hint instanceof SQLCommentHint) {
+                print0((hint).toString());
+            } else if (hint instanceof SQLExprHint) {
+                print0("[");
+                hint.accept(this);
+                print0("]");
+            }
+        }
+    }
+
     @Override
     protected void printSortedBy(List<SQLSelectOrderByItem> sortedBy) {
         if (sortedBy.size() > 0) {
