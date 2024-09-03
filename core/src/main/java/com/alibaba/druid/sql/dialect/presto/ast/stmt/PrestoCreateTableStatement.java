@@ -39,7 +39,7 @@ public class PrestoCreateTableStatement extends SQLCreateTableStatement implemen
 
     @Override
     public void accept0(PrestoASTVisitor visitor) {
-        visitor.visit();
+        visitor.visit(this);
     }
 
     protected void acceptChild(SQLASTVisitor v) {

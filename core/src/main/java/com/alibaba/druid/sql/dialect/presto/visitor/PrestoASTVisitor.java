@@ -10,7 +10,7 @@ import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoPrepareStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface PrestoASTVisitor extends SQLASTVisitor {
-    default boolean visit() {
+    default boolean visit(PrestoCreateTableStatement x) {
         return true;
     }
 
