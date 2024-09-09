@@ -5826,6 +5826,10 @@ public class SQLStatementParser extends SQLParser {
             SQLInsertStatement insert = (SQLInsertStatement) this.parseInsert();
             insert.setWith(with);
             stmt = insert;
+        } else if (lexer.token == Token.UPSERT) {
+            SQLInsertStatement insert = (SQLInsertStatement) this.parseUpsert();
+            insert.setWith(with);
+            stmt = insert;
         } else if (lexer.token == Token.FROM) {
             HiveMultiInsertStatement insert = (HiveMultiInsertStatement) this.parseInsert();
             insert.setWith(with);

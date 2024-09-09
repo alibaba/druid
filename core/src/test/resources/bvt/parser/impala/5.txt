@@ -16,3 +16,13 @@ UPSERT [SHUFFLE] INTO production_table
 FROM staging_table
 WHERE c1 IS NOT NULL
 	AND c2 > 0;
+------------------------------------------------------------------------------------------------------------------------
+with tmp as (select c,d from prj1.kudu_table2) upsert into prj1.kudu_table select * from tmp
+--------------------
+WITH tmp AS (
+		SELECT c, d
+		FROM prj1.kudu_table2
+	)
+UPSERT INTO prj1.kudu_table
+SELECT *
+FROM tmp
