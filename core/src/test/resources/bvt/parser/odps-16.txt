@@ -1,0 +1,7 @@
+SELECT array_sort(array(5,6,1), (left,right) -> CASE WHEN left < right THEN -1L WHEN left > right THEN 1L ELSE 0L END);
+---------------------------
+SELECT array_sort(array(5, 6, 1), (LEFT, RIGHT) -> CASE
+		WHEN LEFT < RIGHT THEN -1L
+		WHEN LEFT > RIGHT THEN 1L
+		ELSE 0L
+	END);

@@ -152,6 +152,9 @@ public class SQLExprParser extends SQLParser {
             }
         } else {
             SQLExpr sqlExpr = exprRest(expr);
+            if (token == SUBGT) {
+                parenthesized = false;
+            }
             if (parenthesized && sqlExpr instanceof SQLBinaryOpExpr) {
                 ((SQLBinaryOpExpr) sqlExpr).setParenthesized(true);
             }
