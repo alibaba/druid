@@ -70,6 +70,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oscar.parser.OscarExprParser;
 import com.alibaba.druid.sql.dialect.oscar.parser.OscarLexer;
+import com.alibaba.druid.sql.dialect.oscar.visitor.OscarStatementParser;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixExprParser;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixLexer;
 import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixStatementParser;
@@ -196,6 +197,8 @@ public class SQLParserUtils {
                 return new ImpalaStatementParser(sql, features);
             case doris:
                 return new DorisStatementParser(sql, features);
+            case oscar:
+                return new OscarStatementParser(sql, features);
             default:
                 return new SQLStatementParser(sql, dbType, features);
         }
