@@ -764,6 +764,13 @@ public interface SQLASTVisitor {
     default void endVisit(SQLColumnCheck x) {
     }
 
+    default boolean visit(SQLColumnDefault x) {
+        return true;
+    }
+
+    default void endVisit(SQLColumnDefault x) {
+    }
+
     default boolean visit(SQLExprHint x) {
         return true;
     }

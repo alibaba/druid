@@ -185,7 +185,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                                 || lexer.token() == Token.UNIQUE //
                                 || lexer.token() == Token.CHECK //
                                 || lexer.token() == Token.CONSTRAINT) {
-                            SQLConstraint constraint = this.exprParser.parseConstaint();
+                            SQLConstraint constraint = this.exprParser.parseConstraint();
                             constraint.setParent(item);
                             item.getTableElementList().add((SQLTableElement) constraint);
                         } else if (lexer.token() == Token.TABLESPACE) {

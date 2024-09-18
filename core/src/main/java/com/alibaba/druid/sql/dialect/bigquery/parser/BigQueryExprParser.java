@@ -3,14 +3,10 @@ package com.alibaba.druid.sql.dialect.bigquery.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCharExpr;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
@@ -151,7 +147,7 @@ public class BigQueryExprParser extends SQLExprParser {
 
             SQLDataType dataType = this.parseDataType();
             SQLStructDataType.Field field = struct.addField(name, dataType);
-
+            parseFieldConstraints(field);
             if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
                 parseAssignItem(field.getOptions(), field);
             }
@@ -170,6 +166,73 @@ public class BigQueryExprParser extends SQLExprParser {
             accept(Token.GT);
         }
         return struct;
+    }
+
+    private void parseFieldConstraints(SQLStructDataType.Field field) {
+        switch (lexer.token()) {
+            case DEFAULT:
+                field.addConstraint(parseColumnDefault());
+                break;
+            case NOT: {
+                lexer.nextToken();
+                accept(Token.NULL);
+                SQLNotNullConstraint notNull = new SQLNotNullConstraint();
+                field.addConstraint(notNull);
+                break;
+            }
+            case PRIMARY:
+                SQLColumnPrimaryKey pk = new SQLColumnPrimaryKey();
+                lexer.nextToken();
+                accept(Token.KEY);
+                accept(Token.NOT);
+                acceptIdentifier("ENFORCED");
+                pk.setNotEnforced(true);
+                field.addConstraint(pk);
+                break;
+            case REFERENCES:
+                SQLColumnReference ref = parseReference();
+                accept(Token.NOT);
+                acceptIdentifier("ENFORCED");
+                ref.setNotEnforced(true);
+                field.addConstraint(ref);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private SQLColumnDefault parseColumnDefault() {
+        SQLColumnDefault columnDefault = new SQLColumnDefault();
+        accept(Token.DEFAULT);
+        if (lexer.token() == Token.LPAREN) {
+            while (lexer.token() == Token.LPAREN) {
+                accept(Token.LPAREN);
+            }
+
+            columnDefault.setDefaultExpr(this.primary());
+
+            while (lexer.token() == Token.RPAREN) {
+                accept(Token.RPAREN);
+            }
+        } else {
+            columnDefault.setDefaultExpr(this.primary());
+        }
+        return columnDefault;
+    }
+
+    public void parsePrimaryKeyRest(SQLPrimaryKeyImpl primaryKey) {
+        accept(Token.NOT);
+        acceptIdentifier("ENFORCED");
+        primaryKey.setNotEnforced(true);
+        super.parsePrimaryKeyRest(primaryKey);
+    }
+
+    @Override
+    protected void parseForeignKeyRest(SQLForeignKeyImpl foreignKey) {
+        accept(Token.NOT);
+        acceptIdentifier("ENFORCED");
+        foreignKey.setNotEnforced(true);
+        super.parseForeignKeyRest(foreignKey);
     }
 
     public SQLExpr primary() {

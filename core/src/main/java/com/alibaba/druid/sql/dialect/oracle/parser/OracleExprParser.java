@@ -1665,8 +1665,8 @@ public class OracleExprParser extends SQLExprParser {
         return unique;
     }
 
-    public OracleConstraint parseConstaint() {
-        OracleConstraint constraint = (OracleConstraint) super.parseConstaint();
+    public OracleConstraint parseConstraint() {
+        OracleConstraint constraint = (OracleConstraint) super.parseConstraint();
 
         for (; ; ) {
             if (lexer.token() == Token.EXCEPTIONS) {

@@ -126,7 +126,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 || token == Token.CHECK //
                 || token == Token.CONSTRAINT
                 || token == Token.FOREIGN) {
-            SQLConstraint constraint = this.exprParser.parseConstaint();
+            SQLConstraint constraint = this.exprParser.parseConstraint();
             constraint.setParent(createTable);
             createTable.getTableElementList().add((SQLTableElement) constraint);
         } else if (token == Token.TABLESPACE) {

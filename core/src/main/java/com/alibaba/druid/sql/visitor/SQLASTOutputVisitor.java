@@ -3459,7 +3459,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.isAutoIncrement()) {
-            printeAutoIncrement();
+            printAutoIncrement();
         }
 
         final AutoIncrementType sequenceType = x.getSequenceType();
@@ -3565,7 +3565,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
     }
 
-    protected void printeAutoIncrement() {
+    protected void printAutoIncrement() {
         print0(ucase ? " AUTO_INCREMENT" : " auto_increment");
     }
 
@@ -3916,6 +3916,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         printComment(x.getComment());
+        printCollate(x);
 
         printPartitionedBy(x);
         printLifeCycle(x.getLifeCycle());
@@ -3947,6 +3948,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
         print0(ucase ? "COMMENT " : "comment ");
         comment.accept(this);
+    }
+
+    protected void printCollate(SQLCreateTableStatement x){
     }
 
     protected void printStoredAs(SQLCreateTableStatement x) {
@@ -5608,6 +5612,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(' ');
         }
         print0(ucase ? "PRIMARY KEY" : "primary key");
+        if (x.isNotEnforced()) {
+            print0(ucase ? " NOT ENFORCED" : " not enforced");
+        }
         return false;
     }
 
@@ -5652,6 +5659,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? " NOT ENFORCED" : " not enforced");
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLColumnDefault x) {
+        print0(ucase ? "DEFAULT " : "default ");
+        x.getDefaultExpr().accept(this);
         return false;
     }
 
@@ -6103,6 +6117,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " DISABLE NOVALIDATE" : " disable novalidate");
         }
 
+        if (x.isNotEnforced()) {
+            print0(ucase ? " NOT ENFORCED" : " not enforced");
+        }
+
         return false;
     }
 
@@ -6139,6 +6157,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printAndAccept(x.getColumns(), ", ");
         print(')');
 
+        if (x.isNotEnforced()) {
+            print0(ucase ? " NOT ENFORCED" : " not enforced");
+        }
         SQLForeignKeyImpl.Match match = x.getReferenceMatch();
         if (match != null) {
             print0(ucase ? " MATCH " : " match ");
@@ -6191,6 +6212,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.isDisableNovalidate()) {
             print0(ucase ? " DISABLE NOVALIDATE" : " disable novalidate");
+        }
+
+        if (x.isNotEnforced()) {
+            print0(ucase ? " NOT ENFORCED" : " not enforced");
         }
 
         this.indentCount--;
@@ -10371,6 +10396,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print(' ');
             }
         }
+
+        if (x.isEnabled(SQLCreateTableStatement.Feature.OrReplace)) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
     }
 
     @Override
@@ -11128,7 +11157,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
         for (int i = 0; i < partitionSize; ++i) {
             SQLColumnDefinition column = partitionColumns.get(i);
-            printPartitoinedByColumn(column);
+            printPartitionedByColumn(column);
 
             if (i != partitionSize - 1) {
                 print(',');
@@ -11156,7 +11185,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         lifeCycle.accept(this);
     }
 
-    protected void printPartitoinedByColumn(SQLColumnDefinition column) {
+    protected void printPartitionedByColumn(SQLColumnDefinition column) {
         column.accept(this);
     }
 

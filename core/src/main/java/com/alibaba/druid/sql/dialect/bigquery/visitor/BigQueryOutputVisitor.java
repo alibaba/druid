@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
@@ -39,7 +40,7 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         printAndAccept(((BigQueryCreateTableStatement) x).getPartitionBy(), ",");
     }
 
-    protected void printPartitoinedByColumn(SQLColumnDefinition column) {
+    protected void printPartitionedByColumn(SQLColumnDefinition column) {
         String function = (String) column.getName().getAttribute("function");
         if (function != null) {
             print0(function);
@@ -119,6 +120,17 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
             dataType.accept(this);
         }
 
+        if (!x.getConstraints().isEmpty()) {
+            print(' ');
+            printAndAccept(x.getConstraints(), ",");
+        }
+
+        if (!x.getOptions().isEmpty()) {
+            print(' ');
+            print0(ucase ? "OPTIONS (" : "options (");
+            printAndAccept(x.getOptions(), ",");
+            print0(ucase ? ")" : ")");
+        }
         return false;
     }
 
@@ -238,5 +250,34 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         print0(")");
         tryPrintRparen(x);
         return false;
+    }
+
+    protected void printTableOption(SQLExpr name, SQLExpr value, int index) {
+        if (index != 0) {
+            print(",");
+            println();
+        }
+        String key = name.toString();
+        print0(key);
+        print0(" = ");
+        value.accept(this);
+    }
+
+    @Override
+    public boolean visit(SQLTimestampExpr x) {
+        print0(ucase ? "TIMESTAMP " : "timestamp ");
+        print0(x.getLiteral());
+        return false;
+    }
+
+    protected void printCollate(SQLCreateTableStatement x) {
+        if (x instanceof BigQueryCreateTableStatement) {
+            BigQueryCreateTableStatement bigQueryCreateTableStatement = (BigQueryCreateTableStatement) x;
+            if (bigQueryCreateTableStatement.getCollate() != null) {
+                println();
+                print0(ucase ? "DEFAULT COLLATE " : "default collate ");
+                bigQueryCreateTableStatement.getCollate().accept(this);
+            }
+        }
     }
 }

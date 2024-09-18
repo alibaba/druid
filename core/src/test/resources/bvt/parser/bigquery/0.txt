@@ -12,8 +12,8 @@ CREATE TABLE mydataset.newtable (
 )
 PARTITION BY TIMESTAMP_TRUNC(transaction_ts, DAY)
 OPTIONS (
-	'partition_expiration_days' = 3,
-	'require_partition_filter' = true
+	partition_expiration_days = 3,
+	require_partition_filter = true
 );
 ------------------------------------------------------------------------------------------------------------------------
 SELECT SAFE_CAST("apple" AS INT64) AS not_a_number;
@@ -118,8 +118,8 @@ CREATE TABLE mydataset.myclusteredtable (
 PARTITION BY DATE(_PARTITIONTIME)
 CLUSTER BY customer_id
 OPTIONS (
-	'partition_expiration_days' = 3,
-	'description' = "a table clustered by customer_id"
+	partition_expiration_days = 3,
+	description = "a table clustered by customer_id"
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE `myproject.mydataset.mytable`
@@ -134,10 +134,10 @@ OPTIONS(
 CREATE TABLE `myproject.mydataset.mytable`
 CLONE `myproject.mydataset.mytablesnapshot`
 OPTIONS (
-	'expiration_timestamp' = TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL 365 DAY),
-	'friendly_name' = "my_table",
-	'description' = "A table that expires in 1 year",
-	'labels' = [("org_unit", "development")]
+	expiration_timestamp = TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL 365 DAY),
+	friendly_name = "my_table",
+	description = "A table that expires in 1 year",
+	labels = [("org_unit", "development")]
 )
 ------------------------------------------------------------------------------------------------------------------------
 SELECT

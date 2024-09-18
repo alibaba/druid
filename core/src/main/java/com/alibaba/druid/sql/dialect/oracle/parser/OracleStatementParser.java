@@ -1631,7 +1631,7 @@ public class OracleStatementParser extends SQLStatementParser {
                         || lexer.token() == Token.PRIMARY
                         || lexer.token() == Token.UNIQUE
                         || lexer.token() == Token.CHECK) {
-                    OracleConstraint constraint = ((OracleExprParser) this.exprParser).parseConstaint();
+                    OracleConstraint constraint = ((OracleExprParser) this.exprParser).parseConstraint();
                     SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint();
                     constraint.setParent(item);
                     item.setParent(stmt);
