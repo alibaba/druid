@@ -28,6 +28,7 @@ public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnCo
     private SQLForeignKeyImpl.Match referenceMatch;
     protected SQLForeignKeyImpl.Option onUpdate;
     protected SQLForeignKeyImpl.Option onDelete;
+    private boolean notEnforced;
 
     public SQLColumnReference() {
     }
@@ -100,5 +101,13 @@ public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnCo
 
     public void setOnDelete(SQLForeignKeyImpl.Option onDelete) {
         this.onDelete = onDelete;
+    }
+
+    public boolean isNotEnforced() {
+        return notEnforced;
+    }
+
+    public void setNotEnforced(boolean notEnforced) {
+        this.notEnforced = notEnforced;
     }
 }

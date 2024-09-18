@@ -1,0 +1,130 @@
+CREATE TABLE mydataset.newtable
+(
+  x INT64 OPTIONS(description="An optional INTEGER field"),
+  y STRUCT<
+    a ARRAY<STRING> OPTIONS(description="A repeated STRING field"),
+    b BOOL
+  >
+)
+DEFAULT COLLATE 'und:ci'
+PARTITION BY _PARTITIONDATE
+CLUSTER BY latest_status_name
+OPTIONS(
+  expiration_timestamp=TIMESTAMP "2025-01-01 00:00:00 UTC",
+  partition_expiration_days=1,
+  description="a table that expires in 2025, with each partition living for 24 hours",
+  labels=[("org_unit", "development")]
+)
+--------------------
+CREATE TABLE mydataset.newtable (
+	x INT64 OPTIONS (description = "An optional INTEGER field"),
+	y STRUCT<a ARRAY<STRING> OPTIONS (description = "A repeated STRING field"), b BOOL>
+)
+DEFAULT COLLATE 'und:ci'
+PARTITION BY _PARTITIONDATE
+CLUSTER BY latest_status_name
+OPTIONS (
+	expiration_timestamp = TIMESTAMP "2025-01-01 00:00:00 UTC",
+	partition_expiration_days = 1,
+	description = "a table that expires in 2025, with each partition living for 24 hours",
+	labels = [("org_unit", "development")]
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE mydataset.top_words
+OPTIONS(
+  description="Top ten words per Shakespeare corpus"
+) AS
+SELECT
+  corpus,
+  ARRAY_AGG(STRUCT(word, word_count) ORDER BY word_count DESC LIMIT 10) AS top_words
+FROM bigquery_public_data.samples.shakespeare
+GROUP BY corpus;
+--------------------
+CREATE TABLE mydataset.top_words
+OPTIONS (
+	description = "Top ten words per Shakespeare corpus"
+)
+AS
+SELECT corpus, ARRAY_AGG(STRUCT(word, word_count) ORDER BY word_count DESC LIMIT 10) AS top_words
+FROM bigquery_public_data.samples.shakespeare
+GROUP BY corpus;
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS mydataset.newtable (x INT64, y STRUCT<a ARRAY<STRING>, b BOOL>)
+OPTIONS(
+  expiration_timestamp=TIMESTAMP "2025-01-01 00:00:00 UTC",
+  description="a table that expires in 2025",
+  labels=[("org_unit", "development")]
+)
+--------------------
+CREATE TABLE IF NOT EXISTS mydataset.newtable (
+	x INT64,
+	y STRUCT<a ARRAY<STRING>, b BOOL>
+)
+OPTIONS (
+	expiration_timestamp = TIMESTAMP "2025-01-01 00:00:00 UTC",
+	description = "a table that expires in 2025",
+	labels = [("org_unit", "development")]
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE TABLE mydataset.newtable (x INT64, y STRUCT<a ARRAY<STRING>, b BOOL>)
+OPTIONS(
+  expiration_timestamp=TIMESTAMP "2025-01-01 00:00:00 UTC",
+  description="a table that expires in 2025",
+  labels=[("org_unit", "development")]
+)
+--------------------
+CREATE OR REPLACE TABLE mydataset.newtable (
+	x INT64,
+	y STRUCT<a ARRAY<STRING>, b BOOL>
+)
+OPTIONS (
+	expiration_timestamp = TIMESTAMP "2025-01-01 00:00:00 UTC",
+	description = "a table that expires in 2025",
+	labels = [("org_unit", "development")]
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE mydataset.newtable (
+  x INT64 NOT NULL,
+  y STRUCT<
+    a FLOAT64 REFERENCES t2(c1) NOT ENFORCED,
+    b BOOL NOT NULL,
+    c INT PRIMARY KEY NOT ENFORCED,
+    d INT DEFAULT 0
+  > NOT NULL,
+  z STRING
+)
+--------------------
+CREATE TABLE mydataset.newtable (
+	x INT64 NOT NULL,
+	y STRUCT<a FLOAT64 REFERENCES t2 (c1) NOT ENFORCED, b BOOL NOT NULL, c INT PRIMARY KEY NOT ENFORCED, d INT DEFAULT 0> NOT NULL,
+	z STRING
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE mydataset.newtable
+(
+  x INT64 OPTIONS(description="An optional INTEGER field"),
+  y BOOL,
+  PRIMARY KEY (x) NOT ENFORCED
+)
+--------------------
+CREATE TABLE mydataset.newtable (
+	x INT64 OPTIONS (description = "An optional INTEGER field"),
+	y BOOL,
+	PRIMARY KEY (x) NOT ENFORCED
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE mydataset.newtable
+(
+  x INT64 OPTIONS(description="An optional INTEGER field"),
+  y INT64,
+  PRIMARY KEY (x) NOT ENFORCED,
+  FOREIGN KEY (y) REFERENCES t1(c1) NOT ENFORCED
+)
+--------------------
+CREATE TABLE mydataset.newtable (
+	x INT64 OPTIONS (description = "An optional INTEGER field"),
+	y INT64,
+	PRIMARY KEY (x) NOT ENFORCED,
+	FOREIGN KEY (y)
+		REFERENCES t1 (c1) NOT ENFORCED
+)

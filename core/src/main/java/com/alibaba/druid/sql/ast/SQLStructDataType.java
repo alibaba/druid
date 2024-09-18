@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
@@ -129,6 +130,7 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
         private SQLDataType dataType;
         private final List<SQLAssignItem> options = new ArrayList<SQLAssignItem>();
         private String comment;
+        private List<SQLColumnConstraint> constraints = new ArrayList<>();
 
         public Field(SQLName name, SQLDataType dataType) {
             setName(name);
@@ -140,6 +142,7 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
             if (visitor.visit(this)) {
                 acceptChild(visitor, name);
                 acceptChild(visitor, dataType);
+                acceptChild(visitor, constraints);
             }
             visitor.endVisit(this);
         }
@@ -176,6 +179,17 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
 
         public void setComment(String comment) {
             this.comment = comment;
+        }
+
+        public void addConstraint(SQLColumnConstraint constraint) {
+            if (constraint != null) {
+                constraint.setParent(this);
+            }
+            this.constraints.add(constraint);
+        }
+
+        public List<SQLColumnConstraint> getConstraints() {
+            return constraints;
         }
     }
 }

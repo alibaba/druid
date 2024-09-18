@@ -2552,7 +2552,7 @@ public class SQLStatementParser extends SQLParser {
         lexer.nextToken();
         acceptIdentifier("NOCHECK");
         acceptIdentifier("ADD");
-        SQLConstraint check = this.exprParser.parseConstaint();
+        SQLConstraint check = this.exprParser.parseConstraint();
 
         SQLAlterTableAddConstraint addCheck = new SQLAlterTableAddConstraint();
         addCheck.setWithNoCheck(true);
@@ -2825,7 +2825,7 @@ public class SQLStatementParser extends SQLParser {
 
     protected void alterTableAddConstraint(SQLAlterTableStatement stmt) {
         acceptIdentifier("ADD");
-        SQLConstraint constraint = this.exprParser.parseConstaint();
+        SQLConstraint constraint = this.exprParser.parseConstraint();
         SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(constraint);
         if (lexer.identifierEquals("NO")) {
             lexer.nextToken();
@@ -4831,7 +4831,7 @@ public class SQLStatementParser extends SQLParser {
 
             for (; ; ) {
                 if (lexer.token == Token.CONSTRAINT) {
-                    SQLTableConstraint constraint = (SQLTableConstraint) this.exprParser.parseConstaint();
+                    SQLTableConstraint constraint = (SQLTableConstraint) this.exprParser.parseConstraint();
                     createView.addColumn(constraint);
                 } else if (lexer.token == Token.RPAREN) {
                     break;

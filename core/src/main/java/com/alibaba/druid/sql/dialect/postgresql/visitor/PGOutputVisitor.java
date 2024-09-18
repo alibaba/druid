@@ -2814,7 +2814,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    protected void printeAutoIncrement() {
+    protected void printAutoIncrement() {
         print0(ucase ? " GENERATED ALWAYS AS IDENTITY" : " generated always as identity");
     }
 

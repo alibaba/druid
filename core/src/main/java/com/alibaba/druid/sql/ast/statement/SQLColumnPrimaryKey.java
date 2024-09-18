@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLColumnPrimaryKey extends SQLConstraintImpl implements SQLColumnConstraint {
+    private boolean notEnforced;
     public SQLColumnPrimaryKey() {
     }
 
@@ -35,5 +36,13 @@ public class SQLColumnPrimaryKey extends SQLConstraintImpl implements SQLColumnC
         super.cloneTo(x);
 
         return x;
+    }
+
+    public boolean isNotEnforced() {
+        return notEnforced;
+    }
+
+    public void setNotEnforced(boolean notEnforced) {
+        this.notEnforced = notEnforced;
     }
 }

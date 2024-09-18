@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey, SQLTableConstraint {
     protected boolean disableNovalidate;
     protected boolean clustered; // sql server
+    protected boolean notEnforced; // bigquery
 
     public SQLPrimaryKeyImpl() {
     }
@@ -59,5 +60,13 @@ public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey, SQLTa
 
     public void setClustered(boolean clustered) {
         this.clustered = clustered;
+    }
+
+    public boolean isNotEnforced() {
+        return notEnforced;
+    }
+
+    public void setNotEnforced(boolean notEnforced) {
+        this.notEnforced = notEnforced;
     }
 }

@@ -4883,6 +4883,12 @@ public class SQLExprParser extends SQLParser {
 
     protected void parseIdentifySpecific() {
     }
+    protected void parsePrimaryKeyRest(SQLPrimaryKeyImpl primaryKey){
+    }
+
+    protected void parseForeignKeyRest(SQLForeignKeyImpl foreignKey){
+    }
+
     protected SQLColumnDefinition.Identity parseIdentity() {
         accept(Token.LPAREN);
         SQLColumnDefinition.Identity ident = new SQLColumnDefinition.Identity();
@@ -4908,7 +4914,7 @@ public class SQLExprParser extends SQLParser {
         return ident;
     }
 
-    private SQLColumnReference parseReference() {
+    protected SQLColumnReference parseReference() {
         SQLColumnReference fk = new SQLColumnReference();
 
         lexer.nextToken();
@@ -5051,7 +5057,7 @@ public class SQLExprParser extends SQLParser {
             acceptIdentifier("NOVALIDATE");
             pk.setDisableNovalidate(true);
         }
-
+        parsePrimaryKeyRest(pk);
         return pk;
     }
 
@@ -5378,7 +5384,7 @@ public class SQLExprParser extends SQLParser {
         parseIndexOptions(indexDefinition);
     }
 
-    public SQLConstraint parseConstaint() {
+    public SQLConstraint parseConstraint() {
         SQLName name = null;
 
         boolean nextIfConstraint = lexer.nextIf(CONSTRAINT);
@@ -5523,7 +5529,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.reset(mark);
             }
         }
-
+        parseForeignKeyRest(fk);
         return fk;
     }
 

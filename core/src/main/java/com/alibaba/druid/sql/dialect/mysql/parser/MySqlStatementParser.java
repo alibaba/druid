@@ -5329,7 +5329,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             for (; ; ) {
                 if (lexer.token() == Token.CONSTRAINT) {
-                    SQLTableConstraint constraint = (SQLTableConstraint) this.exprParser.parseConstaint();
+                    SQLTableConstraint constraint = (SQLTableConstraint) this.exprParser.parseConstraint();
                     createView.addColumn(constraint);
                 } else {
                     SQLColumnDefinition column = new SQLColumnDefinition();
@@ -9379,7 +9379,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         || token == Token.CHECK //
                         || token == Token.CONSTRAINT
                         || token == Token.FOREIGN) {
-                    SQLConstraint constraint = this.exprParser.parseConstaint();
+                    SQLConstraint constraint = this.exprParser.parseConstraint();
                     constraint.setParent(stmt);
                     stmt.getTableElementList().add((SQLTableElement) constraint);
                 } else if (lexer.token() == (Token.INDEX)) {

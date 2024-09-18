@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.bigquery.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
@@ -25,6 +26,12 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
     protected void parseCreateTableRest(SQLCreateTableStatement x) {
         BigQueryCreateTableStatement stmt = (BigQueryCreateTableStatement) x;
         for (;;) {
+            if (lexer.nextIf(Token.DEFAULT)) {
+                acceptIdentifier("COLLATE");
+                SQLExpr collate = exprParser.expr();
+                stmt.setCollate(collate);
+            }
+
             if (lexer.nextIf(Token.PARTITION)) {
                 accept(Token.BY);
 
