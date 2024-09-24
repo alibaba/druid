@@ -8071,9 +8071,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLSubPartitionByList x) {
         if (x.isLinear()) {
-            print0(ucase ? "SUBPARTITION BY LINEAR HASH " : "subpartition by linear hash ");
+            print0(ucase ? "SUBPARTITION BY LINEAR LIST " : "subpartition by linear list ");
         } else {
-            print0(ucase ? "SUBPARTITION BY HASH " : "subpartition by hash ");
+            print0(ucase ? "SUBPARTITION BY LIST " : "subpartition by list ");
         }
 
         print('(');
