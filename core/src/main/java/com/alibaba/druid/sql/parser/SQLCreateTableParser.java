@@ -161,7 +161,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             } else {
                 throw new ParserException("syntax error " + lexer.info());
             }
-        } else if (lexer.nextIfIdentifier("LOCAL")) {
+        } else if (lexer.nextIfIdentifier("LOCAL") || lexer.nextIf(Token.LOCAL)) {
             createTable.config(SQLCreateTableStatement.Feature.Local);
             if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")) {
                 createTable.config(SQLCreateTableStatement.Feature.Temporary);

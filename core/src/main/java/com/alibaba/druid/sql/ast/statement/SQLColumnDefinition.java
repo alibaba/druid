@@ -59,7 +59,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     protected Identity identity;
 
     // for ads
-    protected SQLExpr generatedAlawsAs;
+    protected SQLExpr generatedAlwaysAs;
     protected SQLExpr delimiter; // for ads
     protected SQLExpr delimiterTokenizer; // for ads3.0 multivalue
     protected SQLExpr nlpTokenizer; // for ads3.0 multivalue
@@ -431,7 +431,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         this.unitCount = unitCount;
     }
 
-    public static class Identity extends SQLObjectImpl {
+    public static class Identity extends SQLObjectImpl implements SQLExpr{
         private Integer seed;
         private Integer increment;
 
@@ -507,6 +507,11 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             x.maxValue = maxValue;
             x.notForReplication = notForReplication;
             return x;
+        }
+
+        @Override
+        public List<SQLObject> getChildren() {
+            return null;
         }
     }
 
@@ -671,14 +676,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public SQLExpr getGeneratedAlwaysAs() {
-        return generatedAlawsAs;
+        return generatedAlwaysAs;
     }
 
-    public void setGeneratedAlawsAs(SQLExpr x) {
+    public void setGeneratedAlwaysAs(SQLExpr x) {
         if (x != null) {
             x.setParent(this);
         }
-        this.generatedAlawsAs = x;
+        this.generatedAlwaysAs = x;
     }
 
     public boolean isVisible() {
