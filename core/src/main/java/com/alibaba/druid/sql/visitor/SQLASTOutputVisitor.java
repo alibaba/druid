@@ -3487,6 +3487,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
+        if (x.getCollateExpr() != null) {
+            print0(ucase ? " COLLATE " : " collate ");
+            x.getCollateExpr().accept(this);
+        }
+
         if (x.isDisableNovalidate()) {
             print0(ucase ? " DISABLE NOVALIDATE" : " disable novalidate");
         }
@@ -6153,9 +6158,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print0(ucase ? "REFERENCES " : "references ");
         x.getTable().accept(this);
-        print0(" (");
-        printAndAccept(x.getColumns(), ", ");
-        print(')');
+        if (!x.getColumns().isEmpty()) {
+            print0(" (");
+            printAndAccept(x.getColumns(), ", ");
+            print(')');
+        }
 
         if (x.isNotEnforced()) {
             print0(ucase ? " NOT ENFORCED" : " not enforced");

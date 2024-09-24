@@ -201,7 +201,7 @@ public class DB2ExprParser extends SQLExprParser {
             } else {
                 SQLExpr expr = this.expr();
 
-                column.setGeneratedAlawsAs(expr);
+                column.setGeneratedAlwaysAs(expr);
             }
 
             parseColumnRest(column);

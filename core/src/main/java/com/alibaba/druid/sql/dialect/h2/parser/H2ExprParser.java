@@ -65,10 +65,10 @@ public class H2ExprParser extends SQLExprParser {
             if (lexer.token() == Token.BY) {
                 lexer.nextToken();
                 accept(Token.DEFAULT);
-                column.setGeneratedAlawsAs(new SQLDefaultExpr());
+                column.setGeneratedAlwaysAs(new SQLDefaultExpr());
             } else {
                 acceptIdentifier("ALWAYS");
-                column.setGeneratedAlawsAs(new SQLIdentifierExpr("ALWAYS"));
+                column.setGeneratedAlwaysAs(new SQLIdentifierExpr("ALWAYS"));
             }
             accept(Token.AS);
             acceptIdentifier("IDENTITY");

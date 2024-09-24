@@ -4919,9 +4919,10 @@ public class SQLExprParser extends SQLParser {
 
         lexer.nextToken();
         fk.setTable(this.name());
-        accept(Token.LPAREN);
-        this.names(fk.getColumns(), fk);
-        accept(Token.RPAREN);
+        if (lexer.nextIf(LPAREN)) {
+            this.names(fk.getColumns(), fk);
+            accept(Token.RPAREN);
+        }
 
         if (lexer.identifierEquals(FnvHash.Constants.MATCH)) {
             lexer.nextToken();

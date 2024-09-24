@@ -1774,7 +1774,7 @@ public class MySqlExprParser extends SQLExprParser {
             accept(Token.LPAREN);
             SQLExpr expr = this.expr();
             accept(Token.RPAREN);
-            column.setGeneratedAlawsAs(expr);
+            column.setGeneratedAlwaysAs(expr);
         }
 
         return parseColumnRest(column);

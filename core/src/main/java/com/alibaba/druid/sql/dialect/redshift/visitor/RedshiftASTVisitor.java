@@ -1,10 +1,6 @@
 package com.alibaba.druid.sql.dialect.redshift.visitor;
 
-import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftColumnEncode;
-import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftCreateTableStatement;
-import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftSortKey;
-import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftTop;
+import com.alibaba.druid.sql.dialect.redshift.stmt.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface RedshiftASTVisitor extends SQLASTVisitor {
@@ -27,4 +23,11 @@ public interface RedshiftASTVisitor extends SQLASTVisitor {
     default void endVisit(RedshiftCreateTableStatement x) {}
     default boolean visit(RedshiftColumnEncode x) { return true; }
     default void endVisit(RedshiftColumnEncode x) {}
+
+    default boolean visit(RedshiftColumnKey x) {
+        return true;
+    }
+
+    default void endVisit(RedshiftColumnKey x) {
+    }
 }

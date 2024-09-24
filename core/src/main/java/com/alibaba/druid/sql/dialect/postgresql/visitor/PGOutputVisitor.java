@@ -2819,21 +2819,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    protected void printGeneratedAlways(SQLColumnDefinition x, boolean parameterized) {
-        SQLExpr generatedAlwaysAs = x.getGeneratedAlwaysAs();
-        SQLColumnDefinition.Identity identity = x.getIdentity();
-
-        if (generatedAlwaysAs != null || identity != null) {
-            print0(ucase ? " GENERATED ALWAYS AS " : " generated always as ");
-            if (generatedAlwaysAs != null) {
-                printExpr(generatedAlwaysAs, parameterized);
-                print(' ');
-            }
-            identity.accept(this);
-        }
-    }
-
-    @Override
     public boolean visit(SQLColumnDefinition.Identity x) {
         print0(ucase ? "IDENTITY" : "identity");
         Integer seed = x.getSeed();
