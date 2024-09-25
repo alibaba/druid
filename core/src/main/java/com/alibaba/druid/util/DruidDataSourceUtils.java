@@ -326,5 +326,6 @@ public class DruidDataSourceUtils {
         trySetIntProperty(properties, "druid.socketTimeout", druidDataSource::setSocketTimeout);
         trySetIntProperty(properties, "druid.transactionQueryTimeout", druidDataSource::setTransactionQueryTimeout);
         trySetIntProperty(properties, "druid.loginTimeout", druidDataSource::setLoginTimeout);
+        trySetBooleanProperty(properties, "druid.closeConnOnFatalError", druidDataSource::setCloseConnOnFatalError);
     }
 }
