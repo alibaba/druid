@@ -167,4 +167,7 @@ public interface JdbcConstants {
     String GBASE8S_DRIVER = "com.gbasedbt.jdbc.Driver";
 
     String OPENGAUSS_DRIVER = "org.opengauss.Driver";
+    String SUNDB = "sundb";
+    String SUNDB_DRIVER = "csii.sundb.jdbc.SundbDriver";
+
 }
