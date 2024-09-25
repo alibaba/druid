@@ -57,6 +57,7 @@ public class RedshiftLexer
         map.put("PARTITION", Token.PARTITION);
         map.put("INTERVAL", Token.INTERVAL);
         map.put("LANGUAGE", Token.LANGUAGE);
+        map.put("LOCAL", Token.LOCAL);
         map.put("TOP", Token.TOP);
         map.put("QUALIFY", Token.QUALIFY);
         map.put("TABLE", Token.TABLE);

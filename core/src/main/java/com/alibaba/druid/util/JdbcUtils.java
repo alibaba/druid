@@ -668,6 +668,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.taosdata;
         } else if (rawUrl.startsWith("jdbc:sundb:")) {
             return DbType.sundb;
+        } else if (rawUrl.startsWith("jdbc:oscar:")) {
+            return DbType.oscar;
         } else {
             return null;
         }

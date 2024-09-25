@@ -100,4 +100,12 @@ public class RedshiftCreateTableParser
             super.parseCreateTableRest(createTable);
         }
     }
+
+    @Override
+    protected void createTableBefore(SQLCreateTableStatement createTable) {
+        if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")) {
+            createTable.config(SQLCreateTableStatement.Feature.Temporary);
+        }
+        super.createTableBefore(createTable);
+    }
 }

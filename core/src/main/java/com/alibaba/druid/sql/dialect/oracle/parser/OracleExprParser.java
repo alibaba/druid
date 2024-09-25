@@ -1278,7 +1278,7 @@ public class OracleExprParser extends SQLExprParser {
             if (lexer.token() == Token.NULL || lexer.token() == Token.DEFAULT || lexer.token() == Token.LPAREN) {
                 SQLExpr expr = this.expr();
 
-                column.setGeneratedAlawsAs(expr);
+                column.setGeneratedAlwaysAs(expr);
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.IDENTITY)) {
