@@ -238,7 +238,7 @@ public class OracleCreateTableTest92 extends OracleTest {
                 "\tCELL_FLASH_CACHE DEFAULT\n" +
                 ")\n" +
                 "PARTITION BY RANGE (\"PAYMENT_HOME_CITY\")\n" +
-                "SUBPARTITION BY HASH (\"MONTH_KEY\")\n" +
+                "SUBPARTITION BY LIST (\"MONTH_KEY\")\n" +
                 "\tSUBPARTITION TEMPLATE (\n" +
                 "\t\tSUBPARTITION \"KEY_1\" VALUES (1),\n" +
                 "\t\tSUBPARTITION \"KEY_2\" VALUES (2)\n" +

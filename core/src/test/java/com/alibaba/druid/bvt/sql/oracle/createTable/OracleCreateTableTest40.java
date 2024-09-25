@@ -62,7 +62,7 @@ public class OracleCreateTableTest40 extends OracleTest {
                         "\tcredit_limit NUMBER(9, 2)\n" +
                         ")\n" +
                         "PARTITION BY RANGE (credit_limit)\n" +
-                        "SUBPARTITION BY HASH (nls_territory)\n" +
+                        "SUBPARTITION BY LIST (nls_territory)\n" +
                         "\tSUBPARTITION TEMPLATE (\n" +
                         "\t\tSUBPARTITION east VALUES ('CHINA', 'JAPAN', 'INDIA', 'THAILAND'),\n" +
                         "\t\tSUBPARTITION west VALUES ('AMERICA', 'GERMANY', 'ITALY', 'SWITZERLAND'),\n" +
