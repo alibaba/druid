@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftColumnEncode;
 import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftColumnKey;
 import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftTop;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
@@ -99,5 +100,31 @@ public class RedshiftExprParser
             column.setCollateExpr(expr());
         }
         return super.parseColumnRest(column);
+    }
+
+    @Override
+    protected SQLColumnDefinition.Identity parseIdentity() {
+        accept(Token.LPAREN);
+        SQLColumnDefinition.Identity ident = new SQLColumnDefinition.Identity();
+        parseIdentifySpecific();
+        if (lexer.token() == Token.LITERAL_INT) {
+            ident.setSeed(lexer.integerValue().intValue());
+            lexer.nextToken();
+        } else {
+            throw new ParserException("TODO : " + lexer.info());
+        }
+
+        if (lexer.token() == Token.COMMA) {
+            lexer.nextToken();
+            if (lexer.token() == Token.LITERAL_INT) {
+                ident.setIncrement(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                throw new ParserException("TODO : " + lexer.info());
+            }
+        }
+
+        accept(Token.RPAREN);
+        return ident;
     }
 }

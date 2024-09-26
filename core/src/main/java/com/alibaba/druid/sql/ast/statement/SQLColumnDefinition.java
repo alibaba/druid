@@ -80,6 +80,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     private List<SQLAssignItem> mappedBy;
     private List<SQLAssignItem> colProperties;
 
+    private boolean generateByDefault;
+
     public SQLCharExpr getIndexComment() {
         return indexComment;
     }
@@ -429,6 +431,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             unitCount.setParent(this);
         }
         this.unitCount = unitCount;
+    }
+
+    public boolean isGenerateByDefault() {
+        return generateByDefault;
+    }
+
+    public void setGenerateByDefault(boolean generateByDefault) {
+        this.generateByDefault = generateByDefault;
     }
 
     public static class Identity extends SQLObjectImpl implements SQLExpr{
