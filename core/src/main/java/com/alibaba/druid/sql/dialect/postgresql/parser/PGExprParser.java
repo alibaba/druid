@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -551,5 +552,59 @@ public class PGExprParser extends SQLExprParser {
                 break;
         }
         return alias;
+    }
+
+    @Override
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        column = super.parseColumnRest(column);
+        if (lexer.identifierEquals(FnvHash.Constants.GENERATED)) {
+            lexer.nextToken();
+            if (lexer.token() == Token.BY) {
+                lexer.nextToken();
+                accept(Token.DEFAULT);
+                column.setGenerateByDefault(true);
+            } else {
+                acceptIdentifier("ALWAYS");
+            }
+            accept(Token.AS);
+            if (lexer.token() == Token.IDENTITY) {
+                accept(Token.IDENTITY);
+                SQLColumnDefinition.Identity identity = parseIdentity();
+                column.setIdentity(identity);
+            } else {
+                SQLExpr expr = this.expr();
+                column.setGeneratedAlwaysAs(expr);
+            }
+        }
+        return column;
+    }
+
+    @Override
+    protected SQLColumnDefinition.Identity parseIdentity() {
+        SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
+        if (lexer.token() == Token.LPAREN) {
+            accept(Token.LPAREN);
+            if (lexer.identifierEquals(FnvHash.Constants.INCREMENT)) {
+                lexer.nextToken();
+                accept(Token.BY);
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setIncrement((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+                accept(Token.START);
+                accept(Token.WITH);
+                if (lexer.token() == Token.LITERAL_INT) {
+                    identity.setSeed((Integer) lexer.integerValue());
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        return identity;
     }
 }
