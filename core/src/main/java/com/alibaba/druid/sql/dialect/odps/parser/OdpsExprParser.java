@@ -29,10 +29,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsNewExpr;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsTransformExpr;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
@@ -779,5 +776,28 @@ public class OdpsExprParser extends SQLExprParser {
     @Override
     public OdpsSelectParser createSelectParser() {
         return new OdpsSelectParser(this);
+    }
+
+    @Override
+    protected SQLExpr relationalRestEqeq(SQLExpr expr) {
+        Lexer.SavePoint mark = lexer.mark();
+        lexer.nextToken();
+        SQLExpr rightExp;
+        try {
+            if (lexer.token() == Token.SEMI) {
+                lexer.reset(mark);
+                return expr;
+            }
+            rightExp = bitOr();
+        } catch (EOFParserException e) {
+            throw new ParserException("EOF, " + expr + "=", e);
+        }
+
+        if (lexer.token() == Token.COLONEQ) {
+            lexer.nextToken();
+            SQLExpr colonExpr = expr();
+            rightExp = new SQLBinaryOpExpr(rightExp, SQLBinaryOperator.Assignment, colonExpr, dbType);
+        }
+        return new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, dbType);
     }
 }

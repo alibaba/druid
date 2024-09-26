@@ -1,0 +1,12 @@
+SELECT c0 as service_id, c1 as service_name, caller_uid, caller_bid, resource,
+c2 as starttime, c3 as endtime, c4 as instance_num, c5 as cpu, c6 as cpumem, c7 as gpu
+FROM @left a LEFT OUTER JOIN @right b
+ON a.c0 == b.service_id AND a.c1 == b.service_name;
+---------------------------
+SELECT c0 AS service_id, c1 AS service_name, caller_uid, caller_bid, resource
+	, c2 AS starttime, c3 AS endtime, c4 AS instance_num, c5 AS cpu, c6 AS cpumem
+	, c7 AS gpu
+FROM @left a
+LEFT OUTER JOIN @right b
+ON a.c0 = b.service_id
+	AND a.c1 = b.service_name;
