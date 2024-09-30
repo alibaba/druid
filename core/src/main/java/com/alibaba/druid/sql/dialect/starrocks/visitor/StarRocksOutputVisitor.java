@@ -68,7 +68,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         printDistributedBy(x);
         printOrderBy(x);
         printTableOptions(x);
-        printAsSelect(x);
+        printSelectAs(x, true);
         return false;
     }
 

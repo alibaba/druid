@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.presto.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
@@ -29,7 +30,6 @@ import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoPrepareStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * presto 的输出的视图信息
@@ -92,24 +92,21 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoAS
          */
 
         printCreateTable(x, false);
-
-        List<SQLAssignItem> options = x.getTableOptions();
-        if (options.size() > 0) {
-            println();
-            print0(ucase ? "WITH (" : "with (");
-            printAndAccept(options, ", ");
-            print(')');
-        }
-
-        SQLSelect select = x.getSelect();
-        if (select != null) {
-            println();
-            print0(ucase ? "AS" : "as");
-
-            println();
-            visit(select);
-        }
+        printTableOptions(x);
+        printSelectAs(x, true);
         return false;
+    }
+
+    @Override
+    protected void printTableOption(SQLExpr name, SQLExpr value, int index) {
+        if (index != 0) {
+            print(",");
+            println();
+        }
+        String key = name.toString();
+        print0(key);
+        print0(" = ");
+        value.accept(this);
     }
 
     @Override

@@ -42,13 +42,13 @@ public class HiveCreateTableTest_31_mappedBy_for_dla extends OracleTest {
 
         assertEquals("CREATE TABLE aaaa (\n" +
                 "\tid int NOT NULL MAPPED BY (name = 'pk', format = 'yyy', charset = 'utf8', type = 'string')\n" +
-                ")\n" +
-                "MAPPED BY (name = 'AAAA')", stmt.toString());
+                ")" +
+                " MAPPED BY (name = 'AAAA')", stmt.toString());
 
         assertEquals("CREATE TABLE aaaa (\n" +
                 "\tid int NOT NULL MAPPED BY (name = 'pk', format = 'yyy', charset = 'utf8', type = 'string')\n" +
-                ")\n" +
-                "MAPPED BY (name = 'AAAA')", stmt.clone().toString());
+                ")" +
+                " MAPPED BY (name = 'AAAA')", stmt.clone().toString());
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

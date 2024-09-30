@@ -8,18 +8,14 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
 import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCacheTableStatement;
 import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCreateScanStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -59,112 +55,31 @@ public class SparkOutputVisitor extends HiveOutputVisitor implements SparkVisito
         }
 
         x.getName().accept(this);
+        printCreateTableLike(x);
+        printTableElementsWithComment(x);
+        printUsing(x);
 
-        if (x.getLike() != null) {
-            print0(ucase ? " LIKE " : " like ");
-            x.getLike().accept(this);
-        }
+        printComment(x.getComment());
+        printPartitionedBy(x);
+        printClusteredBy(x);
+        printSortedBy(x.getSortedBy());
+        printIntoBuckets(x.getBuckets());
+        printStoredAs(x);
+        printSelectAs(x, true);
+        printTableOptions(x);
+        printLocation(x);
+        return false;
+    }
 
-        final List<SQLTableElement> tableElementList = x.getTableElementList();
-        int size = tableElementList.size();
-        if (size > 0) {
-            print0(" (");
-
-            if (this.isPrettyFormat() && x.hasBodyBeforeComment()) {
-                print(' ');
-                printlnComment(x.getBodyBeforeCommentsDirect());
-            }
-
-            this.indentCount++;
-            println();
-            for (int i = 0; i < size; ++i) {
-                SQLTableElement element = tableElementList.get(i);
-                element.accept(this);
-
-                if (i != size - 1) {
-                    print(',');
-                }
-                if (this.isPrettyFormat() && element.hasAfterComment()) {
-                    print(' ');
-                    printlnComment(element.getAfterCommentsDirect());
-                }
-
-                if (i != size - 1) {
-                    println();
-                }
-            }
-            this.indentCount--;
-            println();
-            print(')');
-        }
+    protected void printUsing(SparkCreateTableStatement x) {
         if (x.getDatasource() != null) {
             println();
             print0(ucase ? "USING " : "using ");
             print0(x.getDatasource().toString());
         }
+    }
 
-        printComment(x.getComment());
-
-        int partitionSize = x.getPartitionColumns().size();
-        if (partitionSize > 0) {
-            println();
-            print0(ucase ? "PARTITIONED BY (" : "partitioned by (");
-            this.indentCount++;
-            println();
-            for (int i = 0; i < partitionSize; ++i) {
-                SQLColumnDefinition column = x.getPartitionColumns().get(i);
-                column.accept(this);
-
-                if (i != partitionSize - 1) {
-                    print(',');
-                }
-                if (this.isPrettyFormat() && column.hasAfterComment()) {
-                    print(' ');
-                    printlnComment(column.getAfterCommentsDirect());
-                }
-
-                if (i != partitionSize - 1) {
-                    println();
-                }
-            }
-            this.indentCount--;
-            println();
-            print(')');
-        }
-
-        printClusteredBy(x);
-
-        List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
-        if (sortedBy.size() > 0) {
-            println();
-            print0(ucase ? "SORTED BY (" : "sorted by (");
-            printAndAccept(sortedBy, ", ");
-            print(')');
-        }
-
-        int buckets = x.getBuckets();
-        if (buckets > 0) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            print(buckets);
-            print0(ucase ? " BUCKETS" : " buckets");
-        }
-
-        SQLExpr storedAs = x.getStoredAs();
-        if (storedAs != null) {
-            println();
-            print0(ucase ? "STORED AS " : "stored as ");
-            storedAs.accept(this);
-        }
-
-        SQLSelect select = x.getSelect();
-        if (select != null) {
-            println();
-            print0(ucase ? "AS" : "as");
-            println();
-            select.accept(this);
-        }
-
+    protected void printTableOptions(SparkCreateTableStatement x) {
         Map<String, SQLObject> serdeProperties = x.getSerdeProperties();
         if (serdeProperties.size() > 0) {
             println();
@@ -178,15 +93,6 @@ public class SparkOutputVisitor extends HiveOutputVisitor implements SparkVisito
             }
             print(')');
         }
-
-        SQLExpr location = x.getLocation();
-        if (location != null) {
-            println();
-            print0(ucase ? "LOCATION " : "location ");
-            location.accept(this);
-        }
-
-        return false;
     }
 
     @Override

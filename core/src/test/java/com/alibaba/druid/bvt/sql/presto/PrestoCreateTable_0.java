@@ -39,7 +39,7 @@ public class PrestoCreateTable_0 {
                 "\ttotalprice double,\n" +
                 "\torderdate date\n" +
                 ")\n" +
-                "WITH (format = 'ORC')", stmt.toString());
+                "WITH (\n\tformat = 'ORC'\n)", stmt.toString());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class PrestoCreateTable_0 {
     public void test_create_table_as_select_1() {
         String sql = "CREATE TABLE orders_by_date\n" +
                 "COMMENT 'Summary of orders by date'\n" +
-                "WITH (format = 'ORC')\n" +
+                "WITH (\n\tformat = 'ORC'\n)\n" +
                 "AS\n" +
                 "SELECT orderdate, sum(totalprice) AS price\n" +
                 "FROM orders\n" +
@@ -132,7 +132,7 @@ public class PrestoCreateTable_0 {
         assertFalse(tableMap.isEmpty());
         assertEquals("CREATE TABLE orders_by_date\n" +
                 "COMMENT 'Summary of orders by date'\n" +
-                "WITH (format = 'ORC')\n" +
+                "WITH (\n\tformat = 'ORC'\n)\n" +
                 "AS\n" +
                 "SELECT orderdate, sum(totalprice) AS price\n" +
                 "FROM orders\n" +
