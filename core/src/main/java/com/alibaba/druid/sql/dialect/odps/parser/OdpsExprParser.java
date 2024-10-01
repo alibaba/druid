@@ -241,6 +241,7 @@ public class OdpsExprParser extends SQLExprParser {
     protected boolean parseAssignItemTblProperties(SQLAssignItem item) {
         if (lexer.token() == Token.LPAREN) {
             SQLListExpr list = new SQLListExpr();
+            list.setParenthesized(true);
             this.exprList(list.getItems(), list);
             item.setTarget(new SQLIdentifierExpr("tblproperties"));
             item.setValue(list);

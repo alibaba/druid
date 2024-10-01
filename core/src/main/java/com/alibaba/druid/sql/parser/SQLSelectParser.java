@@ -1058,6 +1058,7 @@ public class SQLSelectParser extends SQLParser {
                     if (lexer.token == Token.LPAREN) {
                         accept(Token.LPAREN);
                         SQLListExpr list = new SQLListExpr();
+                        list.setParenthesized(true);
                         if (lexer.token == Token.COMMA) {
                             lexer.nextToken();
                         }

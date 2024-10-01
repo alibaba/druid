@@ -2541,6 +2541,7 @@ public class MySqlExprParser extends SQLExprParser {
 
                     accept(Token.LPAREN);
                     SQLListExpr list = new SQLListExpr();
+                    list.setParenthesized(true);
                     exprList(list.getItems(), list);
                     accept(Token.RPAREN);
                     assignItem = new SQLAssignItem(new SQLIdentifierExpr("UNION"), list);
