@@ -1244,6 +1244,7 @@ public class SQLSelectParser extends SQLParser {
             for (; ; ) {
                 accept(Token.LPAREN);
                 SQLListExpr listExpr = new SQLListExpr();
+                listExpr.setParenthesized(true);
                 this.exprParser.exprList(listExpr.getItems(), listExpr);
                 accept(Token.RPAREN);
 
@@ -2182,6 +2183,7 @@ public class SQLSelectParser extends SQLParser {
             }
 
             SQLListExpr listExpr = new SQLListExpr();
+            listExpr.setParenthesized(true);
 
             if (isSingleValue) {
                 SQLExpr expr = expr();
