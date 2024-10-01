@@ -143,7 +143,7 @@ INSERT INTO profile_group_execution
 	, status, count, error_msg, error_code)
 VALUES (now(), now(), ?, ?, ?
 	, ?, ?, ?, ?)
-RETURNING (id, gmt_create, gmt_modified, group_id, mode, sql, status, count, error_msg, error_code)
+RETURNING id, gmt_create, gmt_modified, group_id, mode, sql, status, count, error_msg, error_code
 ------------------------------------------------------------------------------------------------------------------------
 insert into test1 as xx (tid,tid1,tvalue)
     values (1,1,1),(2,2,2)
