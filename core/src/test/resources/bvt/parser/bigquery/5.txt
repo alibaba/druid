@@ -128,3 +128,9 @@ CREATE TABLE mydataset.newtable (
 	FOREIGN KEY (y)
 		REFERENCES t1 (c1) NOT ENFORCED
 )
+------------------------------------------------------------------------------------------------------------------------
+select a from b as c cross join d on c.e = d.e
+--------------------
+SELECT a
+FROM b c
+	CROSS JOIN d ON c.e = d.e

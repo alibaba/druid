@@ -1621,6 +1621,11 @@ public class SQLSelectParser extends SQLParser {
                     joinType = SQLJoinTableSource.JoinType.OUTER_APPLY;
                 }
                 break;
+            case CROSS:
+                lexer.nextToken();
+                accept(Token.JOIN);
+                joinType = natural ? SQLJoinTableSource.JoinType.NATURAL_CROSS_JOIN : SQLJoinTableSource.JoinType.CROSS_JOIN;
+                break;
             case STRAIGHT_JOIN:
             case IDENTIFIER:
                 final long hash = lexer.hashLCase;
