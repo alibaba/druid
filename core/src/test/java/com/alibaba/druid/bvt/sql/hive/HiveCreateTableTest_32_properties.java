@@ -42,17 +42,17 @@ public class HiveCreateTableTest_32_properties extends OracleTest {
 
         assertEquals("CREATE TABLE aaaa (\n" +
                 "\tid int NOT NULL COLPROPERTIES (name = 'pk', format = 'yyy', charset = 'utf8', type = 'string')\n" +
-                ")\n" +
+                ") " +
                 "MAPPED BY (name = 'AAAA')", stmt.toString());
 
         assertEquals("CREATE TABLE aaaa (\n" +
                 "\tid int NOT NULL COLPROPERTIES (name = 'pk', format = 'yyy', charset = 'utf8', type = 'string')\n" +
-                ")\n" +
+                ") " +
                 "MAPPED BY (name = 'AAAA')", stmt.clone().toString());
 
         assertEquals("create table aaaa (\n" +
                 "\tid int not null colproperties (name = 'pk', format = 'yyy', charset = 'utf8', type = 'string')\n" +
-                ")\n" +
+                ") " +
                 "mapped by (name = 'AAAA')", stmt.toLowerCaseString());
 
         System.out.println("Tables : " + visitor.getTables());

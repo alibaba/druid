@@ -31,19 +31,21 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTV
 
     @Override
     protected void printCached(SQLCreateTableStatement x) {
-        ImpalaCreateTableStatement createTable = (ImpalaCreateTableStatement) x;
-        if (createTable.isCached()) {
-            println();
-            print0(ucase ? "CACHED IN " : "cached in ");
-            createTable.getCachedPool().accept(this);
-            if (createTable.getCachedReplication() != -1) {
-                print0(" WITH REPLICATION = ");
-                print0(String.valueOf(createTable.getCachedReplication()));
+        if (x instanceof ImpalaCreateTableStatement) {
+            ImpalaCreateTableStatement createTable = (ImpalaCreateTableStatement) x;
+            if (createTable.isCached()) {
+                println();
+                print0(ucase ? "CACHED IN " : "cached in ");
+                createTable.getCachedPool().accept(this);
+                if (createTable.getCachedReplication() != -1) {
+                    print0(" WITH REPLICATION = ");
+                    print0(String.valueOf(createTable.getCachedReplication()));
+                }
             }
-        }
-        if (createTable.isUnCached()) {
-            println();
-            print0(ucase ? "UNCACHED" : "uncached");
+            if (createTable.isUnCached()) {
+                println();
+                print0(ucase ? "UNCACHED" : "uncached");
+            }
         }
     }
 
@@ -165,28 +167,30 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTV
 
     @Override
     public boolean visit(SQLPartitionValue x) {
-        ImpalaSQLPartitionValue partitionValue = (ImpalaSQLPartitionValue) x;
-        print0(ucase ? " PARTITION " : " partition ");
-        if (partitionValue.getOperator() == SQLPartitionValue.Operator.Equal) {
-            print0(ucase ? "VALUE" : "value");
-            print0(" = ");
-            if (partitionValue.getItems().size() == 1) {
-                // for single specific value
-                printExpr(partitionValue.getItems().get(0), parameterized);
+        if (x instanceof ImpalaSQLPartitionValue) {
+            ImpalaSQLPartitionValue partitionValue = (ImpalaSQLPartitionValue) x;
+            print0(ucase ? " PARTITION " : " partition ");
+            if (partitionValue.getOperator() == SQLPartitionValue.Operator.Equal) {
+                print0(ucase ? "VALUE" : "value");
+                print0(" = ");
+                if (partitionValue.getItems().size() == 1) {
+                    // for single specific value
+                    printExpr(partitionValue.getItems().get(0), parameterized);
+                } else {
+                    print("(");
+                    printAndAccept(partitionValue.getItems(), ", ", false);
+                    print(')');
+                }
             } else {
-                print("(");
-                printAndAccept(partitionValue.getItems(), ", ", false);
-                print(')');
-            }
-        } else {
-            if (partitionValue.getLeftBound() != null) {
-                print(partitionValue.getLeftBound());
-                printOperator(partitionValue.getLeftOperator());
-            }
-            print0(ucase ? "VALUES" : "values");
-            if (partitionValue.getRightBound() != null) {
-                printOperator(partitionValue.getRightOperator());
-                print(partitionValue.getRightBound());
+                if (partitionValue.getLeftBound() != null) {
+                    print(partitionValue.getLeftBound());
+                    printOperator(partitionValue.getLeftOperator());
+                }
+                print0(ucase ? "VALUES" : "values");
+                if (partitionValue.getRightBound() != null) {
+                    printOperator(partitionValue.getRightOperator());
+                    print(partitionValue.getRightBound());
+                }
             }
         }
 

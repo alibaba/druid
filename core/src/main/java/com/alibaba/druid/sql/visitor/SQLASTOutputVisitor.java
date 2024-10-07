@@ -3518,12 +3518,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getComment().accept(this);
         }
 
-        List<SQLAssignItem> mappedBy = x.getMappedByDirect();
-        if (mappedBy != null && mappedBy.size() > 0) {
-            print0(ucase ? " MAPPED BY (" : " mapped by (");
-            printAndAccept(mappedBy, ", ");
-            print0(ucase ? ")" : ")");
-        }
+        printMappedBy(x.getMappedByDirect());
 
         printColumnProperties(x);
 
@@ -3550,6 +3545,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? " COLPROPERTIES (" : " colproperties (");
         printAndAccept(colProperties, ", ");
         print0(ucase ? ")" : ")");
+    }
+
+    protected void printMappedBy(List<SQLAssignItem> mappedBy) {
+        if (mappedBy != null && mappedBy.size() > 0) {
+            print0(ucase ? " MAPPED BY (" : " mapped by (");
+            printAndAccept(mappedBy, ", ");
+            print0(ucase ? ")" : ")");
+        }
     }
 
     protected void printGeneratedAlways(SQLColumnDefinition x, boolean parameterized) {
@@ -3827,36 +3830,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, false);
-
-        SQLPartitionOf partitionOf = x.getPartitionOf();
-        if (partitionOf != null) {
-            println();
-            print0(ucase ? "PARTITION OF " : "partition of ");
-            partitionOf.accept(this);
-        }
+        printPartitionOf(x);
         printEngine(x);
         printPartitionBy(x);
         printTableOptions(x);
-
-        SQLName tablespace = x.getTablespace();
-        if (tablespace != null) {
-            println();
-            print0(ucase ? "TABLESPACE " : "tablespace ");
-            tablespace.accept(this);
-        }
-        printAsSelect(x);
+        printTablespace(x.getTablespace());
+        printSelectAs(x, true);
         return false;
-    }
-
-    protected void printAsSelect(SQLCreateTableStatement x) {
-        SQLSelect select = x.getSelect();
-        if (select != null) {
-            println();
-            print0(ucase ? "AS" : "as");
-
-            println();
-            visit(select);
-        }
     }
 
     protected void printPartitionBy(SQLCreateTableStatement x) {
@@ -3913,29 +3893,44 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printTableElements(x.getTableElementList());
 
+        printInherits(x);
+
+        printComment(x.getComment());
+        printCollate(x);
+
+        printPartitionedBy(x);
+        printClusteredBy(x);
+        printSortedBy(x.getSortedBy());
+        printIntoBuckets(x.getBuckets());
+        printIntoShards(x.getShards());
+
+        printStoredAs(x);
+        printStoredBy(x);
+        printLifeCycle(x.getLifeCycle());
+
+        printCreateTableLike(x);
+
+        printSelectAs(x, printSelect);
+    }
+
+    protected void printInherits(SQLCreateTableStatement x) {
         SQLExprTableSource inherits = x.getInherits();
         if (inherits != null) {
             print0(ucase ? " INHERITS (" : " inherits (");
             inherits.accept(this);
             print(')');
         }
+    }
 
-        printComment(x.getComment());
-        printCollate(x);
-
-        printPartitionedBy(x);
-        printLifeCycle(x.getLifeCycle());
-        printClusteredBy(x);
-
-        printStoredAs(x);
+    protected void printStoredBy(SQLCreateTableStatement x) {
         SQLExpr storedBy = x.getStoredBy();
         if (storedBy != null) {
             print0(ucase ? " STORE BY " : " store by ");
             printExpr(storedBy, parameterized);
         }
+    }
 
-        printCreateTableLike(x);
-
+    protected void printSelectAs(SQLCreateTableStatement x, boolean printSelect) {
         SQLSelect select = x.getSelect();
         if (printSelect && select != null) {
             println();
@@ -3943,6 +3938,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             println();
             visit(select);
+        }
+    }
+
+    protected void printPartitionOf(SQLCreateTableStatement x) {
+        SQLPartitionOf partitionOf = x.getPartitionOf();
+        if (partitionOf != null) {
+            println();
+            print0(ucase ? "PARTITION OF " : "partition of ");
+            partitionOf.accept(this);
+        }
+    }
+
+    protected void printTablespace(SQLName tablespace) {
+        if (tablespace != null) {
+            println();
+            print0(ucase ? "TABLESPACE " : "tablespace ");
+            tablespace.accept(this);
         }
     }
 
@@ -5987,22 +5999,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         List<SQLSelectOrderByItem> sortedBy = x.getSortedBy();
         printSortedBy(sortedBy);
-
-        int buckets = x.getBuckets();
-        if (buckets > 0) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            print(buckets);
-            print0(ucase ? " BUCKETS" : " buckets");
-        }
-
-        int shards = x.getShards();
-        if (shards > 0) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            print(shards);
-            print0(ucase ? " SHARDS" : " shards");
-        }
+        printIntoBuckets(x.getBuckets());
+        printIntoShards(x.getShards());
 
         if (x.isNotClustered()) {
             print0(ucase ? " NOT CLUSTERED" : " not clustered");
@@ -8852,11 +8850,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "NOLOGGING" : "nologging");
         }
 
-        if (x.getTablespace() != null) {
-            println();
-            print0(ucase ? "TABLESPACE " : "tablespace ");
-            x.getTablespace().accept(this);
-        }
+        printTablespace(x.getTablespace());
 
         if (x.getStorage() != null) {
             println();
@@ -11291,13 +11285,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printTableOptionsPostfix(x);
     }
 
-    protected void printIntoBuckets(SQLCreateTableStatement x) {
-        int buckets = x.getBuckets();
+    protected void printIntoBuckets(int buckets) {
         if (buckets > 0) {
             println();
             print0(ucase ? "INTO " : "into ");
             print(buckets);
             print0(ucase ? " BUCKETS" : " buckets");
+        }
+    }
+
+    protected void printIntoShards(int shards) {
+        if (shards > 0) {
+            println();
+            print0(ucase ? "INTO " : "into ");
+            print(shards);
+            print0(ucase ? " SHARDS" : " shards");
         }
     }
 
