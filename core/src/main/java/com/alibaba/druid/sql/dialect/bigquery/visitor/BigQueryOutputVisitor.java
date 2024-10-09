@@ -6,10 +6,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectQueryBlock;
+import com.alibaba.druid.sql.dialect.bigquery.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
@@ -279,5 +276,14 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
                 bigQueryCreateTableStatement.getCollate().accept(this);
             }
         }
+    }
+
+    @Override
+    public boolean visit(BigQueryDateTimeExpr x) {
+        x.getExpr().accept(this);
+        SQLExpr timeZone = x.getTimeZone();
+        print0(ucase ? " AT TIME ZONE " : " at time zone ");
+        timeZone.accept(this);
+        return false;
     }
 }

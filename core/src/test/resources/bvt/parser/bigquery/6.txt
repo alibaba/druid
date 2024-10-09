@@ -24,3 +24,11 @@ FROM postcte
 WHERE -- this is single comment
 prepost = '2. post' # group by 1,2,3,4,5
 ORDER BY 1, 2, 3
+------------------------------------------------------------------------------------------------------------------------
+SELECT EXTRACT(hour FROM booking_timestamp AT TIME ZONE 'Asia/Jakarta')
+--------------------
+SELECT EXTRACT(hour FROM booking_timestamp AT TIME ZONE 'Asia/Jakarta')
+------------------------------------------------------------------------------------------------------------------------
+SELECT EXTRACT(hour FROM booking_timestamp)
+--------------------
+SELECT EXTRACT(hour FROM booking_timestamp)
