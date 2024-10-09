@@ -17,12 +17,8 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import java.util.List;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import junit.framework.TestCase;
 
@@ -32,8 +28,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-
-import static org.junit.Assert.assertEquals;
 
 public class OdpsResourceTest extends TestCase {
     public void test_0() throws Exception {
@@ -74,6 +68,10 @@ public class OdpsResourceTest extends TestCase {
 
     public void test_17() throws Exception {
         exec_test("bvt/parser/odps-17.txt");
+    }
+
+    public void test_18() throws Exception {
+        exec_test("bvt/parser/odps-18.txt");
     }
 
     public void exec_test(String resource) throws Exception {
