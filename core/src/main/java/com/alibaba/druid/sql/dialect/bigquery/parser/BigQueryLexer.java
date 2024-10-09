@@ -1,10 +1,7 @@
 package com.alibaba.druid.sql.dialect.bigquery.parser;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.parser.Keywords;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -144,5 +141,23 @@ public class BigQueryLexer extends Lexer {
     protected void initDialectFeature() {
         super.initDialectFeature();
         this.dialectFeature.configFeature(SQLDateExpr);
+    }
+
+    @Override
+    public void scanSharp() {
+        scanComment();
+    }
+
+    @Override
+    public void scanComment() {
+        if ((ch == '/' && charAt(pos + 1) == '/')
+                || (ch == '-' && charAt(pos + 1) == '-')
+                || (ch == '#')) {
+            scanSingleLineComment();
+        } else if (ch == '/' && charAt(pos + 1) == '*') {
+            scanMultiLineComment();
+        } else {
+            throw new IllegalStateException();
+        }
     }
 }

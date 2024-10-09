@@ -2506,7 +2506,7 @@ public class Lexer {
         return args;
     }
 
-    private void scanMultiLineComment() {
+    protected void scanMultiLineComment() {
         Token lastToken = this.token;
         int depth = 1;
 
@@ -2557,7 +2557,7 @@ public class Lexer {
         }
     }
 
-    private void scanSingleLineComment() {
+    protected void scanSingleLineComment() {
         Token lastToken = this.token;
 
         mark = pos;
