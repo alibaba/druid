@@ -1,9 +1,6 @@
 package com.alibaba.druid.sql.dialect.bigquery.visitor;
 
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectQueryBlock;
+import com.alibaba.druid.sql.dialect.bigquery.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface BigQueryVisitor extends SQLASTVisitor {
@@ -40,5 +37,12 @@ public interface BigQueryVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(BigQueryCreateTableStatement x) {
+    }
+
+    default boolean visit(BigQueryDateTimeExpr x) {
+        return true;
+    }
+
+    default void endVisit(BigQueryDateTimeExpr x) {
     }
 }
