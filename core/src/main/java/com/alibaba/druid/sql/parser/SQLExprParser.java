@@ -1594,6 +1594,7 @@ public class SQLExprParser extends SQLParser {
                     }
 
                     SQLListExpr listExpr = new SQLListExpr();
+                    listExpr.setParenthesized(true);
                     this.exprList(listExpr.getItems(), listExpr);
                     item = listExpr;
 
@@ -2986,6 +2987,7 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token == (Token.LPAREN)) {
             lexer.nextToken();
             SQLListExpr list = new SQLListExpr();
+            list.setParenthesized(true);
             this.exprList(list.getItems(), list);
             accept(Token.RPAREN);
             item.setColumn(list);
