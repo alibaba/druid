@@ -83,7 +83,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             this.indentCount--;
             println();
         }
-        print0(ucase ? "THEN UPDATE SET " : "update set ");
+        print0(ucase ? "THEN UPDATE SET " : "then update set ");
         printAndAccept(x.getItems(), ", ");
         this.indentCount--;
 
