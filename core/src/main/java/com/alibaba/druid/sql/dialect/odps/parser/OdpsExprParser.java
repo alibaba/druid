@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.dialect.hive.parser.HiveExprParser;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsNewExpr;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsTransformExpr;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
@@ -35,7 +36,7 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Arrays;
 import java.util.List;
 
-public class OdpsExprParser extends SQLExprParser {
+public class OdpsExprParser extends HiveExprParser {
     public static final String[] AGGREGATE_FUNCTIONS;
 
     public static final long[] AGGREGATE_FUNCTIONS_CODES;
@@ -410,7 +411,8 @@ public class OdpsExprParser extends SQLExprParser {
     }
 
     public OdpsExprParser(Lexer lexer) {
-        super(lexer, DbType.odps);
+        super(lexer);
+        this.dbType = DbType.odps;
 
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;

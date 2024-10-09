@@ -1,0 +1,24 @@
+MERGE INTO
+  `bq_project_presentation.gofood.fact_booking` AS target
+USING
+  (
+    SELECT
+      order_no
+    FROM
+      temp_go_food_booking_accumulated
+  ) AS source
+ON target.order_no = source.order_no
+WHEN MATCHED THEN UPDATE SET
+      target.order_no = source.order_no
+WHEN NOT MATCHED THEN INSERT
+(order_no)
+VALUES
+(source.order_no);
+---------------------------
+MERGE INTO `bq_project_presentation.gofood.fact_booking` target
+USING (
+	SELECT order_no
+	FROM temp_go_food_booking_accumulated
+) source ON target.order_no = source.order_no 
+WHEN MATCHED THEN UPDATE SET target.order_no = source.order_no
+WHEN NOT MATCHED THEN INSERT (order_no) VALUES (source.order_no);
