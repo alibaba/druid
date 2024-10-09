@@ -1,0 +1,26 @@
+/*
+ this is multiple comment
+*/
+select
+service_area_name,
+driver_id,
+segment,
+target,
+payout_amt,
+points avg_pts,
+from postcte
+where 
+-- this is single comment
+prepost = '2. post'
+# group by 1,2,3,4,5
+order by 1,2,3
+--------------------
+/*
+ this is multiple comment
+*/
+SELECT service_area_name, driver_id, segment, target, payout_amt
+	, points AS avg_pts
+FROM postcte
+WHERE -- this is single comment
+prepost = '2. post' # group by 1,2,3,4,5
+ORDER BY 1, 2, 3
