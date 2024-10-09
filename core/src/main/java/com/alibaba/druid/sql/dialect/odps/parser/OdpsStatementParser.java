@@ -736,6 +736,11 @@ public class OdpsStatementParser extends HiveStatementParser {
         return stmt;
     }
 
+    @Override
+    public OdpsExprParser getExprParser() {
+        return (OdpsExprParser) exprParser;
+    }
+
     public SQLStatement parseClone() {
         acceptIdentifier("CLONE");
         accept(Token.TABLE);

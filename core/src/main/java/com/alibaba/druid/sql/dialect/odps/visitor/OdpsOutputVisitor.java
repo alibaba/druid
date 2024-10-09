@@ -64,6 +64,41 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
+    public boolean visit(SQLMergeStatement.MergeUpdateClause x) {
+        print0(ucase ? "WHEN MATCHED " : "when matched ");
+        this.indentCount++;
+
+        SQLExpr where = x.getWhere();
+        if (where != null) {
+            this.indentCount++;
+            if (SQLBinaryOpExpr.isAnd(where)) {
+                println();
+            } else {
+                print(' ');
+            }
+
+            print0(ucase ? "AND " : "and ");
+
+            printExpr(where, parameterized);
+            this.indentCount--;
+            println();
+        }
+        print0(ucase ? "THEN UPDATE SET " : "then update set ");
+        printAndAccept(x.getItems(), ", ");
+        this.indentCount--;
+
+        SQLExpr deleteWhere = x.getDeleteWhere();
+        if (deleteWhere != null) {
+            println();
+            print0(ucase ? "WHEN MATCHED AND " : "when matched and ");
+            printExpr(deleteWhere, parameterized);
+            print0(ucase ? " DELETE" : " delete");
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLCreateTableStatement x) {
         if (x instanceof OdpsCreateTableStatement) {
             return visit((OdpsCreateTableStatement) x);
