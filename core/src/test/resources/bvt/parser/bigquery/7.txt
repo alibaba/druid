@@ -21,3 +21,15 @@ from data-gojek-id-presentation.location.dim_service_area
 --------------------
 SELECT service_area_id, service_area_name
 FROM data-gojek-id-presentation.location.dim_service_area
+------------------------------------------------------------------------------------------------------------------------
+DECLARE start_date DEFAULT DATE('2024-01-01')
+--------------------
+DECLARE start_date DEFAULT DATE('2024-01-01')
+------------------------------------------------------------------------------------------------------------------------
+DECLARE int1 INT64
+--------------------
+DECLARE int1 INT64
+------------------------------------------------------------------------------------------------------------------------
+DECLARE x, y, z INT64 DEFAULT 0
+--------------------
+DECLARE x, y, z INT64 DEFAULT 0

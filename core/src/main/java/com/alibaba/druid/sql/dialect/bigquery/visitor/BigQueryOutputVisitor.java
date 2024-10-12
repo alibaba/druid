@@ -14,7 +14,7 @@ import java.util.List;
 public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         implements BigQueryVisitor {
     public BigQueryOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.db2);
+        super(appender, DbType.bigquery);
     }
 
     public BigQueryOutputVisitor(StringBuilder appender, boolean parameterized) {
