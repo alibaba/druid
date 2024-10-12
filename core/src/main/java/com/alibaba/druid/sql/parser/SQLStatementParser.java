@@ -3998,6 +3998,9 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.identifierEquals(FnvHash.Constants.SCAN)) {
                     lexer.reset(mark);
                     return parseCreateScan();
+                } else if (lexer.identifierEquals(FnvHash.Constants.TABLE)) {
+                    lexer.reset(mark);
+                    return parseCreateTable();
                 }
 
                 SQLStatement stmt = createTableRest(mark);
