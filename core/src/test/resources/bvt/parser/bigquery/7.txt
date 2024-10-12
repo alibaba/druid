@@ -14,3 +14,10 @@ WITH tmp AS (
 	)
 SELECT *
 FROM tmp
+------------------------------------------------------------------------------------------------------------------------
+select 
+service_area_id, service_area_name
+from data-gojek-id-presentation.location.dim_service_area
+--------------------
+SELECT service_area_id, service_area_name
+FROM data-gojek-id-presentation.location.dim_service_area

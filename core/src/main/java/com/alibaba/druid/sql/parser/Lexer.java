@@ -2679,6 +2679,9 @@ public class Lexer {
                     hasLeftBrace = false;
                     bufPos++;
                     continue;
+                } else if (ch == '-' && dialectFeatureEnabled(ScanSubAsIdentifier)) {
+                    bufPos++;
+                    continue;
                 }
                 break;
             }
