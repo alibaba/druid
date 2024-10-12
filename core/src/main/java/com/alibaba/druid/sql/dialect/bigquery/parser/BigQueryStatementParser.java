@@ -94,17 +94,18 @@ public class BigQueryStatementParser extends SQLStatementParser {
         SQLDeclareStatement declareStatement = new SQLDeclareStatement();
         for (; ; ) {
             SQLDeclareItem item = new SQLDeclareItem();
+            item.setName(exprParser.name());
             declareStatement.addItem(item);
-
-            item.setName(this.exprParser.name());
-
-            item.setDataType(this.exprParser.parseDataType());
-            if (lexer.nextIf(Token.EQ)) {
-                item.setValue(this.exprParser.expr());
-            }
-
-            if (!lexer.nextIf(Token.COMMA)) {
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+            } else if (lexer.token() != Token.EOF) {
+                item.setDataType(exprParser.parseDataType());
+                if (lexer.nextIf(Token.DEFAULT)) {
+                    item.setValue(exprParser.expr());
+                }
                 break;
+            } else {
+                throw new ParserException("TODO. " + lexer.info());
             }
         }
         return declareStatement;

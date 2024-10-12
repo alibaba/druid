@@ -7707,7 +7707,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 dataType.accept(this);
             }
             if (x.getValue() != null) {
-                if (DbType.mysql == getDbType()) {
+                if (DbType.mysql == getDbType() || DbType.bigquery == getDbType()) {
                     print0(ucase ? " DEFAULT " : " default ");
                 } else {
                     print0(" = ");
