@@ -12,6 +12,7 @@ import java.util.List;
 public class BigQueryCharExpr extends SQLCharExpr implements SQLExpr {
     private String prefix;
     private boolean space;
+    private boolean isAlias;
 
     public BigQueryCharExpr() {
     }
@@ -32,14 +33,23 @@ public class BigQueryCharExpr extends SQLCharExpr implements SQLExpr {
         this.space = space;
     }
 
-    public BigQueryCharExpr(String text, String prefix) {
-        this(text, prefix, false);
+    public boolean isAlias() {
+        return isAlias;
     }
 
-    public BigQueryCharExpr(String text, String prefix, boolean space) {
+    public void setAlias(boolean alias) {
+        isAlias = alias;
+    }
+
+    public BigQueryCharExpr(String text, String prefix) {
+        this(text, prefix, false, false);
+    }
+
+    public BigQueryCharExpr(String text, String prefix, boolean space, boolean isAlias) {
         this.prefix = prefix;
         this.text = text;
         this.space = space;
+        this.isAlias = isAlias;
     }
 
     @Override
@@ -52,9 +62,13 @@ public class BigQueryCharExpr extends SQLCharExpr implements SQLExpr {
             if (isSpace()) {
                 visitor.print(" ");
             }
-            visitor.print("'");
+            if (!isAlias) {
+                visitor.print("'");
+            }
             visitor.print(text);
-            visitor.print("'");
+            if (!isAlias) {
+                visitor.print("'");
+            }
         }
     }
 
@@ -69,6 +83,7 @@ public class BigQueryCharExpr extends SQLCharExpr implements SQLExpr {
         clone.setPrefix(this.prefix);
         clone.setText(this.text);
         clone.setSpace(this.space);
+        clone.setAlias(this.isAlias);
         return clone;
     }
 

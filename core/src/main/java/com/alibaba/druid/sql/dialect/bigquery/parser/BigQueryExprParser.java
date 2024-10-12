@@ -303,18 +303,19 @@ public class BigQueryExprParser extends SQLExprParser {
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
             String ident = identifierExpr.getName();
-            if (ident.equalsIgnoreCase("b") && lexer.token() == Token.LITERAL_CHARS) {
+            if (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS) {
+                boolean isAlias = lexer.token() == Token.LITERAL_ALIAS;
+                boolean isSpace;
+                if (ident.equalsIgnoreCase("b") || ident.equalsIgnoreCase("r")) {
+                    isSpace = false;
+                } else if (ident.equalsIgnoreCase("json")) {
+                    isSpace = true;
+                } else {
+                    throw new ParserException("Not supported prefix: " + ident + " for bigquery");
+                }
                 String charValue = lexer.stringVal();
                 lexer.nextToken();
-                expr = new SQLBinaryExpr(charValue);
-            } else if (ident.equalsIgnoreCase("r") && lexer.token() == Token.LITERAL_CHARS) {
-                String charValue = lexer.stringVal();
-                lexer.nextToken();
-                expr = new BigQueryCharExpr(charValue, "r");
-            } else if (ident.equalsIgnoreCase("json") && lexer.token() == Token.LITERAL_CHARS) {
-                String charValue = lexer.stringVal();
-                lexer.nextToken();
-                expr = new BigQueryCharExpr(charValue, "JSON", true);
+                expr = new BigQueryCharExpr(charValue, ident, isSpace, isAlias);
             }
         }
 
