@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftColumnEncode;
 import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftColumnKey;
-import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftTop;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -25,26 +24,6 @@ public class RedshiftExprParser
     public RedshiftExprParser(Lexer lexer) {
         super(lexer);
         dbType = DbType.redshift;
-    }
-
-    public RedshiftTop parseTop() {
-        if (lexer.token() == Token.TOP) {
-            RedshiftTop top = new RedshiftTop();
-            lexer.computeRowAndColumn(top);
-
-            lexer.nextToken();
-
-            if (lexer.token() == Token.LITERAL_INT) {
-                top.setExpr(lexer.integerValue().intValue());
-                lexer.nextToken();
-            } else {
-                top.setExpr(primary());
-            }
-
-            return top;
-        }
-
-        return null;
     }
 
     @Override

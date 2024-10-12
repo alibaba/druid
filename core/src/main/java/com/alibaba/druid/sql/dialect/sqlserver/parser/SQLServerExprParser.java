@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -153,42 +152,6 @@ public class SQLServerExprParser extends SQLExprParser {
         }
 
         return super.nameRest(expr);
-    }
-
-    public SQLServerTop parseTop() {
-        if (lexer.token() == Token.TOP) {
-            SQLServerTop top = new SQLServerTop();
-            lexer.computeRowAndColumn(top);
-
-            lexer.nextToken();
-
-            boolean paren = false;
-            if (lexer.token() == Token.LPAREN) {
-                paren = true;
-                lexer.nextToken();
-            }
-
-            if (lexer.token() == Token.LITERAL_INT) {
-                top.setExpr(lexer.integerValue().intValue());
-                lexer.nextToken();
-            } else {
-                top.setExpr(primary());
-            }
-
-            if (paren) {
-                accept(Token.RPAREN);
-            }
-
-            top.setParentheses(paren);
-            if (lexer.token() == Token.PERCENT) {
-                lexer.nextToken();
-                top.setPercent(true);
-            }
-
-            return top;
-        }
-
-        return null;
     }
 
     protected SQLServerOutput parserOutput() {

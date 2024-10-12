@@ -3,12 +3,12 @@ package com.alibaba.druid.sql.dialect.redshift.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.SQLTop;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSelectParser;
 import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.redshift.stmt.RedshiftTop;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectListCache;
 import com.alibaba.druid.sql.parser.Token;
@@ -40,7 +40,7 @@ public class RedshiftSelectParser
             lexer.nextToken();
 
             if (lexer.token() == Token.TOP) {
-                RedshiftTop top = this.createExprParser().parseTop();
+                SQLTop top = this.createExprParser().parseTop();
                 queryBlock.setTop(top);
             }
 

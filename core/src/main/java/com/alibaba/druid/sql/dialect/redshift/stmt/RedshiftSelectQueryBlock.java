@@ -1,12 +1,13 @@
 package com.alibaba.druid.sql.dialect.redshift.stmt;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLTop;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.redshift.visitor.RedshiftASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class RedshiftSelectQueryBlock extends SQLSelectQueryBlock {
-    private RedshiftTop top;
+    private SQLTop top;
     private boolean insertTable;
     private boolean insertTemp;
     private boolean insertTemporary;
@@ -18,11 +19,11 @@ public class RedshiftSelectQueryBlock extends SQLSelectQueryBlock {
         insertTemporary = false;
     }
 
-    public RedshiftTop getTop() {
+    public SQLTop getTop() {
         return top;
     }
 
-    public void setTop(RedshiftTop top) {
+    public void setTop(SQLTop top) {
         if (top != null) {
             top.setParent(this);
         }

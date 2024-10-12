@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.util.JdbcUtils;
 
 import java.util.List;
@@ -304,14 +303,14 @@ public class PagerUtils {
         if (query instanceof SQLSelectQueryBlock) {
             SQLServerSelectQueryBlock queryBlock = (SQLServerSelectQueryBlock) query;
             if (offset <= 0) {
-                SQLServerTop top = queryBlock.getTop();
+                SQLTop top = queryBlock.getTop();
                 if (check && top != null && !top.isPercent() && top.getExpr() instanceof SQLNumericLiteralExpr) {
                     int rowCount = ((SQLNumericLiteralExpr) top.getExpr()).getNumber().intValue();
                     if (rowCount <= count) {
                         return false;
                     }
                 }
-                queryBlock.setTop(new SQLServerTop(new SQLNumberExpr(count)));
+                queryBlock.setTop(new SQLTop(new SQLNumberExpr(count)));
                 return true;
             }
 
@@ -345,7 +344,7 @@ public class PagerUtils {
         countQueryBlock.setFrom(new SQLSubqueryTableSource(select.clone(), "XX"));
 
         if (offset <= 0) {
-            countQueryBlock.setTop(new SQLServerTop(new SQLNumberExpr(count)));
+            countQueryBlock.setTop(new SQLTop(new SQLNumberExpr(count)));
 
             select.setQuery(countQueryBlock);
             return true;

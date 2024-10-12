@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.oscar.ast.OscarTop;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarFunctionTableSource;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock;
 import com.alibaba.druid.sql.parser.*;
@@ -102,7 +101,7 @@ public class OscarSelectParser extends SQLSelectParser {
             }
 
             if (lexer.token() == Token.TOP) {
-                OscarTop top = this.createExprParser().parseTop();
+                SQLTop top = this.createExprParser().parseTop();
                 queryBlock.setTop(top);
             }
 

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.parser.*;
@@ -245,7 +244,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
     protected void parseInsert0(SQLInsertInto insert, boolean acceptSubQuery) {
         SQLServerInsertStatement insertStatement = (SQLServerInsertStatement) insert;
 
-        SQLServerTop top = this.getExprParser().parseTop();
+        SQLTop top = this.getExprParser().parseTop();
         if (top != null) {
             insertStatement.setTop(top);
         }
@@ -320,7 +319,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         accept(Token.UPDATE);
 
-        SQLServerTop top = this.getExprParser().parseTop();
+        SQLTop top = this.getExprParser().parseTop();
         if (top != null) {
             updateStatement.setTop(top);
         }

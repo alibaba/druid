@@ -6263,4 +6263,39 @@ public class SQLExprParser extends SQLParser {
 
         return format;
     }
+
+    public SQLTop parseTop() {
+        if (lexer.token() == Token.TOP) {
+            SQLTop top = new SQLTop();
+            lexer.computeRowAndColumn(top);
+            lexer.nextToken();
+
+            boolean paren = false;
+            if (lexer.token() == Token.LPAREN) {
+                top.setParentheses(true);
+                paren = true;
+                lexer.nextToken();
+            }
+
+            if (lexer.token() == Token.LITERAL_INT) {
+                top.setExpr(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                top.setExpr(primary());
+            }
+
+            if (paren) {
+                accept(Token.RPAREN);
+            }
+
+            if (lexer.token() == Token.PERCENT) {
+                lexer.nextToken();
+                top.setPercent(true);
+            }
+
+            return top;
+        }
+
+        return null;
+    }
 }

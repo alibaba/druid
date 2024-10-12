@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.oscar.visitor;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.oscar.ast.OscarTop;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -120,10 +119,4 @@ public interface OscarASTVisitor extends SQLASTVisitor {
     default boolean visit(OscarAlterSchemaStatement x) {
         return true;
     }
-
-    default boolean visit(OscarTop x) {
-        return true;
-    }
-
-    default void endVisit(OscarTop x) {}
 }

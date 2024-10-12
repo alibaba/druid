@@ -18,9 +18,9 @@ package com.alibaba.druid.sql.dialect.sqlserver.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.SQLTop;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.parser.*;
 
 public class SQLServerSelectParser extends SQLSelectParser {
@@ -143,7 +143,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
             }
 
             if (lexer.token() == Token.TOP) {
-                SQLServerTop top = this.createExprParser().parseTop();
+                SQLTop top = this.createExprParser().parseTop();
                 queryBlock.setTop(top);
             }
 
