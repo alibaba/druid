@@ -87,7 +87,6 @@ public class BigQueryLexer extends Lexer {
         map.put("SELECT", Token.SELECT);
         map.put("SET", Token.SET);
         map.put("SOME", Token.SOME);
-        map.put("TABLE", Token.TABLE);
         map.put("THEN", Token.THEN);
         map.put("TO", Token.TO);
         map.put("TRUE", Token.TRUE);

@@ -57,7 +57,12 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
         accept(Token.CREATE);
         createTableBefore(createTable);
-        accept(Token.TABLE);
+        if (lexer.token == Token.TABLE || lexer.identifierEquals(FnvHash.Constants.TABLE)) {
+            lexer.nextToken();
+        } else {
+            setErrorEndPos(lexer.pos());
+            printError(lexer.token);
+        }
         createTableBeforeName(createTable);
         createTable.setName(
                 this.exprParser.name());
