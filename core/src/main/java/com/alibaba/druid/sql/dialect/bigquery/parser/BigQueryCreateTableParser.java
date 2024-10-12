@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.bigquery.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
@@ -90,5 +91,10 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
             accept(Token.REPLACE);
             createTable.config(SQLCreateTableStatement.Feature.OrReplace);
         }
+    }
+
+    @Override
+    protected SQLSelect createTableQueryRest() {
+        return new BigQuerySelectParser(this.exprParser, selectListCache).select();
     }
 }

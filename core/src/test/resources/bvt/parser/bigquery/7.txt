@@ -1,0 +1,16 @@
+create table t as (
+with tmp as
+(
+ select col1,col2,col3, from t1
+)
+select * from tmp
+)
+--------------------
+CREATE TABLE t
+AS
+WITH tmp AS (
+		SELECT col1, col2, col3
+		FROM t1
+	)
+SELECT *
+FROM tmp
