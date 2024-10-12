@@ -11738,6 +11738,34 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    @Override
+    public boolean visit(SQLTop x) {
+        boolean parameterized = this.parameterized;
+        this.parameterized = false;
+
+        print0(ucase ? "TOP " : "top ");
+
+        boolean paren = false;
+
+        if (x.isParentheses()) {
+            paren = true;
+            print('(');
+        }
+
+        x.getExpr().accept(this);
+
+        if (paren) {
+            print(')');
+        }
+
+        if (x.isPercent()) {
+            print0(ucase ? " PERCENT" : " percent");
+        }
+
+        this.parameterized = parameterized;
+        return false;
+    }
+
     public boolean visit(OdpsNewExpr x) {
         print0(ucase ? "NEW " : "new ");
         return super.visit((SQLMethodInvokeExpr) x);

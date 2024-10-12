@@ -27,12 +27,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
-import com.alibaba.druid.sql.dialect.oscar.ast.OscarTop;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock.ForClause;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.LinkedHashSet;
@@ -48,34 +45,6 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
     public OscarOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         this.dbType = DbType.oscar;
-    }
-
-    @Override
-    public boolean visit(OscarTop x) {
-        boolean parameterized = this.parameterized;
-        this.parameterized = false;
-
-        print0(ucase ? "TOP " : "top ");
-
-        boolean paren = false;
-
-        if (x.getParent() instanceof SQLServerUpdateStatement || x.getParent() instanceof SQLServerInsertStatement) {
-            paren = true;
-            print('(');
-        }
-
-        x.getExpr().accept(this);
-
-        if (paren) {
-            print(')');
-        }
-
-        if (x.isPercent()) {
-            print0(ucase ? " PERCENT" : " percent");
-        }
-
-        this.parameterized = parameterized;
-        return false;
     }
 
     @Override
@@ -151,7 +120,7 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
             }
         }
 
-        OscarTop top = x.getTop();
+        SQLTop top = x.getTop();
         if (top != null) {
             visit(top);
             print(' ');

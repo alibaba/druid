@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
@@ -32,11 +31,6 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     public SQLServerSchemaStatVisitor(SchemaRepository repository) {
         super(repository);
-    }
-
-    @Override
-    public boolean visit(SQLServerTop x) {
-        return false;
     }
 
     @Override

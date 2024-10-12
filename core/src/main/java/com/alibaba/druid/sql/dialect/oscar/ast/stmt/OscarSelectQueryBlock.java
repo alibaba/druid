@@ -17,11 +17,11 @@ package com.alibaba.druid.sql.dialect.oscar.ast.stmt;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLTop;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oscar.ast.OscarObject;
 import com.alibaba.druid.sql.dialect.oscar.ast.OscarObjectImpl;
-import com.alibaba.druid.sql.dialect.oscar.ast.OscarTop;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -31,7 +31,7 @@ import java.util.List;
 public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarObject {
     private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
 
-    private OscarTop top;
+    private SQLTop top;
 
     private FetchClause fetch;
     private ForClause forClause;
@@ -152,19 +152,19 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
 
     }
 
-    public void setTop(OscarTop top) {
+    public void setTop(SQLTop top) {
         if (top != null) {
             top.setParent(this);
         }
         this.top = top;
     }
 
-    public OscarTop getTop() {
+    public SQLTop getTop() {
         return top;
     }
 
     public void setTop(int rowCount) {
-        setTop(new OscarTop(new SQLIntegerExpr(rowCount)));
+        setTop(new SQLTop(new SQLIntegerExpr(rowCount)));
     }
 
     public static class ForClause extends OscarObjectImpl {

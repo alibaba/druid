@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.redshift.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.SQLTop;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -23,7 +24,7 @@ public class RedshiftOutputVisitor extends PGOutputVisitor implements RedshiftAS
     public boolean visit(RedshiftSelectQueryBlock x) {
         print0(ucase ? "SELECT " : "select ");
 
-        RedshiftTop top = x.getTop();
+        SQLTop top = x.getTop();
         if (top != null) {
             visit(top);
             print(' ');
@@ -46,19 +47,6 @@ public class RedshiftOutputVisitor extends PGOutputVisitor implements RedshiftAS
         printFetchFirst(x);
         printAfterFetch(x);
 
-        return false;
-    }
-
-    @Override
-    public boolean visit(RedshiftTop x) {
-        boolean parameterized = this.parameterized;
-        this.parameterized = false;
-
-        print0(ucase ? "TOP " : "top ");
-
-        x.getExpr().accept(this);
-
-        this.parameterized = parameterized;
         return false;
     }
 

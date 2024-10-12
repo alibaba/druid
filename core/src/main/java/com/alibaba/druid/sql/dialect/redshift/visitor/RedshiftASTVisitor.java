@@ -4,11 +4,6 @@ import com.alibaba.druid.sql.dialect.redshift.stmt.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface RedshiftASTVisitor extends SQLASTVisitor {
-    default boolean visit(RedshiftTop x) {
-        return true;
-    }
-    default void endVisit(RedshiftTop x) {}
-
     default boolean visit(RedshiftSelectQueryBlock x) {
         return true;
     }
