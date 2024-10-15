@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.presto.ast.PrestoColumnWith;
+import com.alibaba.druid.sql.dialect.presto.ast.PrestoDateTimeExpr;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterSchemaStatement;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoDeallocatePrepareStatement;
@@ -186,6 +187,15 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoAS
         print0(ucase ? "WITH(" : "with(");
         printAndAccept(x.getProperties(), ",");
         print0(")");
+        return false;
+    }
+
+    @Override
+    public boolean visit(PrestoDateTimeExpr x) {
+        x.getExpr().accept(this);
+        SQLExpr timeZone = x.getTimeZone();
+        print0(ucase ? " AT TIME ZONE " : " at time zone ");
+        timeZone.accept(this);
         return false;
     }
 }

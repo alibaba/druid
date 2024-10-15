@@ -7,3 +7,13 @@ select x from {{ source('dag_datalake_klikpajak', 'efiling_user') }} e
 --------------------
 SELECT x
 FROM {{ source('dag_datalake_klikpajak', 'efiling_user') }} e
+------------------------------------------------------------------------------------------------------------------------
+select day(current_timestamp AT TIME ZONE 'Asia/Jakarta')
+--------------------
+SELECT day(current_timestamp AT TIME ZONE 'Asia/Jakarta')
+------------------------------------------------------------------------------------------------------------------------
+SELECT x from customer c left join attachments at on c.id = at.company_id
+--------------------
+SELECT x
+FROM customer c
+	LEFT JOIN attachments at ON c.id = at.company_id
