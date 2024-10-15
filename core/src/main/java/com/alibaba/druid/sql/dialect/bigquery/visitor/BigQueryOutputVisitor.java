@@ -2,12 +2,16 @@ package com.alibaba.druid.sql.dialect.bigquery.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
 
@@ -284,6 +288,86 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         SQLExpr timeZone = x.getTimeZone();
         print0(ucase ? " AT TIME ZONE " : " at time zone ");
         timeZone.accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAggregateExpr x) {
+        boolean parameterized = this.parameterized;
+        if (x.methodNameHashCode64() == FnvHash.Constants.GROUP_CONCAT) {
+            this.parameterized = false;
+        }
+        if (x.methodNameHashCode64() == FnvHash.Constants.COUNT) {
+            List<SQLExpr> arguments = x.getArguments();
+            if (arguments.size() == 1) {
+                SQLExpr arg0 = arguments.get(0);
+                if (arg0 instanceof SQLLiteralExpr) {
+                    this.parameterized = false;
+                }
+            }
+        }
+
+        if (x.getOwner() != null) {
+            printExpr(x.getOwner());
+            print(".");
+        }
+
+        String methodName = x.getMethodName();
+        print0(ucase ? methodName : methodName.toLowerCase());
+        print('(');
+
+        SQLAggregateOption option = x.getOption();
+        if (option != null) {
+            print0(option.toString());
+            print(' ');
+        }
+
+        List<SQLExpr> arguments = x.getArguments();
+        for (int i = 0, size = arguments.size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            printExpr(arguments.get(i), false);
+        }
+
+        if (x.isIgnoreNulls()) {
+            print0(ucase ? " IGNORE NULLS" : " ignore nulls");
+        }
+
+        if (x.isRespectNulls()) {
+            print0(ucase ? " RESPECT NULLS" : " respect nulls");
+        }
+
+        visitAggregateRest(x);
+
+        print(')');
+
+        SQLKeep keep = x.getKeep();
+        if (keep != null) {
+            print(' ');
+            visit(keep);
+        }
+
+        SQLOver over = x.getOver();
+        if (over != null) {
+            print0(ucase ? " OVER " : " over ");
+            over.accept(this);
+        }
+
+        final SQLName overRef = x.getOverRef();
+        if (overRef != null) {
+            print0(ucase ? " OVER " : " over ");
+            overRef.accept(this);
+        }
+
+        final SQLExpr filter = x.getFilter();
+        if (filter != null) {
+            print0(ucase ? " FILTER (WHERE " : " filter (where ");
+            printExpr(filter);
+            print(')');
+        }
+
+        this.parameterized = parameterized;
         return false;
     }
 }
