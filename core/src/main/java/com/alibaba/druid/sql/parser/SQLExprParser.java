@@ -1210,6 +1210,11 @@ public class SQLExprParser extends SQLParser {
                     sqlExpr = this.expr();
                 } else if (dialectFeatureEnabled(PrimaryLbraceOdbcEscape)) {
                     sqlExpr = this.expr(); // {identifier expr} is ODBC escape syntax and is accepted for ODBC compatibility.
+                } else if (lexer.nextIf(LBRACE)) {
+                    // support dbt style: {{ source(a,b) }} as identifier
+                    sqlExpr = new SQLPatternExpr(this.expr());
+                    // skip }
+                    accept(RBRACE);
                 } else {
                     throw new ParserException("ERROR. " + lexer.info());
                 }
