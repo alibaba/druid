@@ -319,12 +319,16 @@ public class BigQueryExprParser extends SQLExprParser {
             }
         }
 
-        if (lexer.identifierEquals("AT")) {
+        Lexer.SavePoint savePoint = lexer.markOut();
+        if (lexer.identifierEquals(FnvHash.Constants.AT)) {
             lexer.nextToken();
-            acceptIdentifier("TIME");
-            acceptIdentifier("ZONE");
-            SQLExpr timeZone = primary();
-            expr = new BigQueryDateTimeExpr(expr, timeZone);
+            if (lexer.nextIfIdentifier(FnvHash.Constants.TIME)) {
+                acceptIdentifier("ZONE");
+                SQLExpr timeZone = primary();
+                expr = new BigQueryDateTimeExpr(expr, timeZone);
+            } else {
+                lexer.reset(savePoint);
+            }
         }
 
         return super.primaryRest(expr);

@@ -16,12 +16,15 @@
 package com.alibaba.druid.sql.dialect.presto.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.presto.ast.PrestoColumnWith;
+import com.alibaba.druid.sql.dialect.presto.ast.PrestoDateTimeExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 
 /**
  * Created by wenshao on 16/9/13.
@@ -49,5 +52,21 @@ public class PrestoExprParser extends SQLExprParser {
             return parseColumnRest(column);
         }
         return column;
+    }
+
+    @Override
+    public SQLExpr primaryRest(SQLExpr expr) {
+        Lexer.SavePoint savePoint = lexer.markOut();
+        if (lexer.identifierEquals(FnvHash.Constants.AT)) {
+            lexer.nextToken();
+            if (lexer.nextIfIdentifier(FnvHash.Constants.TIME)) {
+                acceptIdentifier("ZONE");
+                SQLExpr timeZone = primary();
+                expr = new PrestoDateTimeExpr(expr, timeZone);
+            } else {
+                lexer.reset(savePoint);
+            }
+        }
+        return super.primaryRest(expr);
     }
 }
