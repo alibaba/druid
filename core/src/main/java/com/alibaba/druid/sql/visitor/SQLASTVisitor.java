@@ -2624,4 +2624,9 @@ public interface SQLASTVisitor {
     default void endVisit(SQLTop x) {
     }
 
+    default boolean visit(SQLPatternExpr x) { return true; }
+
+    default void endVisit(SQLPatternExpr x) {
+    }
+
 }

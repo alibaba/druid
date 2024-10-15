@@ -2,3 +2,8 @@ select x from unnest(array[1, 2, 3]) t(x)
 --------------------
 SELECT x
 FROM UNNEST(ARRAY[1, 2, 3]) AS t (x)
+------------------------------------------------------------------------------------------------------------------------
+select x from {{ source('dag_datalake_klikpajak', 'efiling_user') }} e
+--------------------
+SELECT x
+FROM {{ source('dag_datalake_klikpajak', 'efiling_user') }} e
