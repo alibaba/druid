@@ -37,7 +37,11 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
     protected SQLOrderBy orderBy;
     protected SQLExpr limit;
     protected boolean withinGroup;
+
+    // For BigQuery scenario.
     protected boolean ignoreNulls;
+
+    // For BigQuery scenario.
     protected boolean respectNulls;
 
     public SQLAggregateExpr(String methodName) {
