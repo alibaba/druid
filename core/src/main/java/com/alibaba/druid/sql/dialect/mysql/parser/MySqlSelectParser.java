@@ -464,36 +464,10 @@ public class MySqlSelectParser extends SQLSelectParser {
             throw new ParserException("TODO. " + lexer.info());
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.UNNEST)) {
-            Lexer.SavePoint mark = lexer.mark();
-            lexer.nextToken();
-
-            if (lexer.token() == Token.LPAREN) {
-                lexer.nextToken();
-                SQLUnnestTableSource unnest = new SQLUnnestTableSource();
-                this.exprParser.exprList(unnest.getItems(), unnest);
-                accept(Token.RPAREN);
-
-                if (lexer.token() == Token.WITH) {
-                    lexer.nextToken();
-                    acceptIdentifier("ORDINALITY");
-                    unnest.setOrdinality(true);
-                }
-
-                String alias = this.tableAlias();
-                unnest.setAlias(alias);
-
-                if (lexer.token() == Token.LPAREN) {
-                    lexer.nextToken();
-                    this.exprParser.names(unnest.getColumns(), unnest);
-                    accept(Token.RPAREN);
-                }
-
-                SQLTableSource tableSrc = parseTableSourceRest(unnest);
-                return tableSrc;
-            } else {
-                lexer.reset(mark);
-            }
+        SQLTableSource unnestTableSource = parseUnnestTableSource();
+        if (unnestTableSource != null) {
+            SQLTableSource tableSrc = parseTableSourceRest(unnestTableSource);
+            return tableSrc;
         }
 
         SQLExprTableSource tableReference = new SQLExprTableSource();

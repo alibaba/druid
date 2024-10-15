@@ -1277,6 +1277,11 @@ public class SQLSelectParser extends SQLParser {
             throw new ParserException("TODO " + lexer.info());
         }
 
+        SQLTableSource unnestTableSource = parseUnnestTableSource();
+        if (unnestTableSource != null) {
+            return parseTableSourceRest(unnestTableSource);
+        }
+
         SQLExprTableSource tableReference = getTableSource();
 
         parseTableSourceQueryTableExpr(tableReference);
@@ -1321,6 +1326,39 @@ public class SQLSelectParser extends SQLParser {
         }
 
         tableReference.setExpr(expr);
+    }
+
+    protected SQLTableSource parseUnnestTableSource() {
+        if (lexer.identifierEquals(FnvHash.Constants.UNNEST)) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                SQLUnnestTableSource unnest = new SQLUnnestTableSource();
+                this.exprParser.exprList(unnest.getItems(), unnest);
+                accept(Token.RPAREN);
+
+                if (lexer.token() == Token.WITH) {
+                    lexer.nextToken();
+                    acceptIdentifier("ORDINALITY");
+                    unnest.setOrdinality(true);
+                }
+
+                String alias = this.tableAlias();
+                unnest.setAlias(alias);
+
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    this.exprParser.names(unnest.getColumns(), unnest);
+                    accept(Token.RPAREN);
+                }
+                return unnest;
+            } else {
+                lexer.reset(mark);
+            }
+        }
+        return null;
     }
 
     protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {
@@ -1411,7 +1449,6 @@ public class SQLSelectParser extends SQLParser {
 
     public SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         parseTableSourceSample(tableSource);
-
         if (lexer.hasComment()
                 && lexer.isKeepComments()
                 && !(tableSource instanceof SQLSubqueryTableSource)) {
@@ -1726,41 +1763,17 @@ public class SQLSelectParser extends SQLParser {
                     }
                 }
             } else {
-                if (lexer.identifierEquals(FnvHash.Constants.UNNEST)) {
-                    Lexer.SavePoint mark = lexer.mark();
-                    lexer.nextToken();
-
-                    if (lexer.token() == Token.LPAREN) {
-                        lexer.nextToken();
-                        SQLUnnestTableSource unnest = new SQLUnnestTableSource();
-                        this.exprParser.exprList(unnest.getItems(), unnest);
-                        accept(Token.RPAREN);
-
-                        if (lexer.token() == Token.WITH) {
-                            lexer.nextToken();
-                            acceptIdentifier("ORDINALITY");
-                            unnest.setOrdinality(true);
-                        }
-
-                        String alias = this.tableAlias();
-                        unnest.setAlias(alias);
-
-                        if (lexer.token() == Token.LPAREN) {
-                            lexer.nextToken();
-                            this.exprParser.names(unnest.getColumns(), unnest);
-                            accept(Token.RPAREN);
-                        }
-
-                        if (lexer.identifierEquals(FnvHash.Constants.CROSS)) {
-                            rightTableSource = unnest;
-                        } else {
-                            rightTableSource = parseTableSourceRest(unnest);
-                        }
-                    } else {
-                        lexer.reset(mark);
-                    }
-                } else if (lexer.token == Token.VALUES) {
+                if (lexer.token == Token.VALUES) {
                     rightTableSource = this.parseValues();
+                } else {
+                    SQLTableSource unnestTableSource = parseUnnestTableSource();
+                    if (unnestTableSource != null) {
+                        if (lexer.identifierEquals(FnvHash.Constants.CROSS)) {
+                            rightTableSource = unnestTableSource;
+                        } else {
+                            rightTableSource = parseTableSourceRest(unnestTableSource);
+                        }
+                    }
                 }
 
                 if (rightTableSource == null) {
