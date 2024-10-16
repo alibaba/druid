@@ -17,3 +17,7 @@ SELECT x from customer c left join attachments at on c.id = at.company_id
 SELECT x
 FROM customer c
 	LEFT JOIN attachments at ON c.id = at.company_id
+------------------------------------------------------------------------------------------------------------------------
+SELECT LAST_VALUE(modified_month) IGNORE NULLS OVER (partition by company_id, product ORDER BY month_id DESC) AS modified_month
+--------------------
+SELECT LAST_VALUE(modified_month) IGNORE NULLS OVER (PARTITION BY company_id, product ORDER BY month_id DESC) AS modified_month
