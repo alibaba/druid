@@ -2497,6 +2497,18 @@ public class SQLExprParser extends SQLParser {
 
         accept(Token.RPAREN);
 
+        if (lexer.identifierEquals(FnvHash.Constants.IGNORE)) {
+            lexer.nextToken();
+            acceptIdentifier("NULLS");
+            aggregateExpr.setIgnoreNulls(true);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.RESPECT)) {
+            lexer.nextToken();
+            acceptIdentifier("NULLS");
+            aggregateExpr.setRespectNulls(true);
+        }
+
         if (lexer.nextIfIdentifier(FnvHash.Constants.WITHIN)) {
             accept(Token.GROUP);
             accept(Token.LPAREN);
