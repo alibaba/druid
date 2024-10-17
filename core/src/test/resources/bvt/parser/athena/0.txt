@@ -56,3 +56,7 @@ GROUP BY GROUPING SETS (
 SELECT origin_state, origin_zip, destination_state, sum(package_weight)
 FROM shipping
 GROUP BY GROUPING SETS ((origin_state), (origin_state, origin_zip), (destination_state))
+------------------------------------------------------------------------------------------------------------------------
+select cast(json_parse(tickets_fields_value) as array(varchar)) as tickets_fields_value
+--------------------
+SELECT CAST(json_parse(tickets_fields_value) AS ARRAY(varchar)) AS tickets_fields_value

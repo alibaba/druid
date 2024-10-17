@@ -171,3 +171,7 @@ SELECT
 	item, AVG(quantity, contribution_bounds_per_group => (0, 100)) AS average_quantity
 FROM professors
 GROUP BY item;
+------------------------------------------------------------------------------------------------------------------------
+select cast(json_parse(tickets_fields_value) as array(varchar)) as tickets_fields_value
+--------------------
+SELECT CAST(json_parse(tickets_fields_value) AS ARRAY(varchar)) AS tickets_fields_value
