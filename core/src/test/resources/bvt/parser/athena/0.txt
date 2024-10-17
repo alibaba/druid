@@ -1,3 +1,11 @@
+SELECT case when contains(u.roles[company_id_cross], 'report_reader') then 1 else 0 end is_report_reader from t1
+--------------------
+SELECT CASE
+		WHEN contains(ARRAY[company_id_cross], 'report_reader') THEN 1
+		ELSE 0
+	END AS is_report_reader
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
 SELECT DISTINCT processid FROM "webdata"."impressions"
 WHERE cast(processid as int) BETWEEN 1500 and 1800
 ORDER BY processid

@@ -1,3 +1,11 @@
+SELECT case when contains(u.roles[company_id_cross], 'report_reader') then 1 else 0 end is_report_reader from t1
+--------------------
+SELECT CASE
+		WHEN CONTAINS (u.roles[company_id_cross], 'report_reader') THEN 1
+		ELSE 0
+	END AS is_report_reader
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
 SELECT ARRAY_AGG(service_type_name IGNORE NULLS ORDER BY event_timestamp DESC LIMIT 10)[OFFSET(0)] AS service_type_name
 --------------------
 SELECT ARRAY_AGG(service_type_name IGNORE NULLS ORDER BY event_timestamp DESC LIMIT 10)[OFFSET(0)] AS service_type_name

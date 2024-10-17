@@ -256,16 +256,6 @@ public class BigQueryExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (lexer.token() == Token.LBRACKET) {
-            SQLArrayExpr array = new SQLArrayExpr();
-            array.setExpr(expr);
-            lexer.nextToken();
-            this.exprList(array.getValues(), array);
-            accept(Token.RBRACKET);
-            expr = array;
-            return primaryRest(expr);
-        }
-
         if (expr instanceof SQLPropertyExpr) {
             SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
             SQLExpr owner = propertyExpr.getOwner();

@@ -1569,9 +1569,15 @@ public class SQLExprParser extends SQLParser {
                     return seqExpr;
                 }
             }
-        }
-
-        if (token == Token.DOT) {
+        } else if (token == Token.LBRACKET) {
+            SQLArrayExpr array = new SQLArrayExpr();
+            array.setExpr(expr);
+            lexer.nextToken();
+            this.exprList(array.getValues(), array);
+            accept(Token.RBRACKET);
+            expr = array;
+            return primaryRest(expr);
+        } else if (token == Token.DOT) {
             lexer.nextToken();
 
             if (expr instanceof SQLCharExpr) {
