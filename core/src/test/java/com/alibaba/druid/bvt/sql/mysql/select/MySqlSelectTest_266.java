@@ -47,16 +47,18 @@ public class MySqlSelectTest_266 extends MysqlTest {
                         , SQLParserFeature.EnableSQLBinaryOpExprGroup
                 );
 
-        assertEquals("EXPLAIN (FORMAT DETAIL) SELECT `customer`.`name`, `max`(`customer`.`custkey`) AS \"MAXKEY\"\n" +
-                "FROM \"CUSTOMER\", ORDERS\n" +
-                "WHERE NOT `CUSTOMER`.`custkey` IN (\n" +
-                "\tSELECT `CUSTKEY`\n" +
-                "\tFROM \"ORDERS\"\n" +
-                "\tWHERE (`CUSTKEY` > 100)\n" +
-                ")\n" +
-                "GROUP BY `NAME`\n" +
-                "ORDER BY `MAXKEY` ASC\n" +
-                "LIMIT 1", stmt.toString());
+        assertEquals(
+            "EXPLAIN (FORMAT DETAIL) SELECT `customer`.`name`, `max`(`customer`.`custkey`) AS \"MAXKEY\"\n"
+                + "FROM \"CUSTOMER\", \"ORDERS\"\n"
+                + "WHERE NOT `CUSTOMER`.`custkey` IN (\n"
+                + "\tSELECT `CUSTKEY`\n"
+                + "\tFROM \"ORDERS\"\n"
+                + "\tWHERE (`CUSTKEY` > 100)\n"
+                + ")\n"
+                + "GROUP BY `NAME`\n"
+                + "ORDER BY `MAXKEY` ASC\n"
+                + "LIMIT 1",
+            stmt.toString());
     }
 
 

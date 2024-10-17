@@ -2423,12 +2423,17 @@ public class SQLExprParser extends SQLParser {
             if (lexer.token != Token.LITERAL_ALIAS
                     && lexer.token != Token.IDENTIFIER
                     && lexer.token != Token.VARIANT
+                    && lexer.token != Token.LITERAL_CHARS
                     && (!lexer.getKeywords().containsValue(lexer.token))) {
                 throw new ParserException("error, " + lexer.info());
             }
 
             String propertyName;
-            propertyName = lexer.stringVal();
+            if (lexer.token == Token.LITERAL_CHARS) {
+                propertyName = '\'' + lexer.stringVal() + '\'';
+            } else {
+                propertyName = lexer.stringVal();
+            }
             if (lexer.isEnabled(SQLParserFeature.IgnoreNameQuotes)) {
                 propertyName = SQLUtils.forcedNormalize(propertyName, dbType);
             }

@@ -1,3 +1,27 @@
+select e.reference, e.company_id, e.npwp, e.created_date, e.tax_period, e.payment_date, e.payment_reference, e.is_imported, 
+e.response_code, case when payment_date is not null and payment_status is not null then 1 else 0 end is_paid, 
+e.id_billing, e.kap_code, e.kjs_code, eka.description kap_description, ekj.description kjs_description, amount 
+from 'dag_datalake_klikpajak'.'ebilling' e 
+left join 'dag_datalake_klikpajak'.'kap' eka 
+on e.kap_code = eka.kap_code 
+left join 'dag_datalake_klikpajak'.'kjs' ekj 
+on eka.id = ekj.kap_id and e.kjs_code = ekj.kjs_code
+--------------------
+SELECT e.reference, e.company_id, e.npwp, e.created_date, e.tax_period
+	, e.payment_date, e.payment_reference, e.is_imported, e.response_code
+	, CASE
+		WHEN payment_date IS NOT NULL
+			AND payment_status IS NOT NULL
+		THEN 1
+		ELSE 0
+	END AS is_paid, e.id_billing, e.kap_code, e.kjs_code, eka.description AS kap_description
+	, ekj.description AS kjs_description, amount
+FROM 'dag_datalake_klikpajak'.'ebilling' e
+	LEFT JOIN 'dag_datalake_klikpajak'.'kap' eka ON e.kap_code = eka.kap_code
+	LEFT JOIN 'dag_datalake_klikpajak'.'kjs' ekj
+	ON eka.id = ekj.kap_id
+		AND e.kjs_code = ekj.kjs_code
+------------------------------------------------------------------------------------------------------------------------
 SELECT case when contains(u.roles[company_id_cross], 'report_reader') then 1 else 0 end is_report_reader from t1
 --------------------
 SELECT CASE

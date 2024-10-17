@@ -1781,6 +1781,8 @@ public class SQLSelectParser extends SQLParser {
                     SQLExpr expr;
                     switch (lexer.token) {
                         case ALL:
+                        case LITERAL_CHARS:
+                        case LITERAL_ALIAS:
                             expr = this.exprParser.name();
                             break;
                         default:
