@@ -22,6 +22,14 @@ FROM 'dag_datalake_klikpajak'.'ebilling' e
 	ON eka.id = ekj.kap_id
 		AND e.kjs_code = ekj.kjs_code
 ------------------------------------------------------------------------------------------------------------------------
+SELECT case when contains(u.roles[company_id_cross], 'report_reader') then 1 else 0 end is_report_reader from t1
+--------------------
+SELECT CASE
+		WHEN contains(ARRAY[company_id_cross], 'report_reader') THEN 1
+		ELSE 0
+	END AS is_report_reader
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
 SELECT DISTINCT processid FROM "webdata"."impressions"
 WHERE cast(processid as int) BETWEEN 1500 and 1800
 ORDER BY processid
@@ -72,3 +80,7 @@ GROUP BY GROUPING SETS (
 SELECT origin_state, origin_zip, destination_state, sum(package_weight)
 FROM shipping
 GROUP BY GROUPING SETS ((origin_state), (origin_state, origin_zip), (destination_state))
+------------------------------------------------------------------------------------------------------------------------
+select cast(json_parse(tickets_fields_value) as array(varchar)) as tickets_fields_value
+--------------------
+SELECT CAST(json_parse(tickets_fields_value) AS ARRAY(varchar)) AS tickets_fields_value
