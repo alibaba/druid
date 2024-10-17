@@ -608,6 +608,13 @@ public class SQLExprParser extends SQLParser {
                 } else if (hash_lower == FnvHash.Constants.TIMESTAMP && lexer.token == Token.LITERAL_ALIAS) {
                     sqlExpr = new SQLTimestampExpr(lexer.stringVal());
                     lexer.nextToken();
+                } else if (hash_lower == FnvHash.Constants.ARRAY && lexer.token == Token.LBRACKET) {
+                    SQLArrayExpr array = new SQLArrayExpr();
+                    array.setExpr(new SQLIdentifierExpr(ident));
+                    accept(Token.LBRACKET);
+                    this.exprList(array.getValues(), array);
+                    accept(Token.RBRACKET);
+                    sqlExpr = array;
                 } else {
                     sqlExpr = primaryIdentifierRest(hash_lower, ident);
                     if (sqlExpr == null) {
