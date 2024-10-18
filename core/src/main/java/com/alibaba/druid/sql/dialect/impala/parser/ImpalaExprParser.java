@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveExprParser;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaSQLPartitionValue;
@@ -23,6 +24,22 @@ public class ImpalaExprParser extends HiveExprParser {
         super(new ImpalaLexer(sql, features));
         this.lexer.nextToken();
         dbType = DbType.impala;
+    }
+
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        if (lexer.nextIfIdentifier("ENCODING")) {
+            column.setEncode(this.expr());
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.COMPRESSION)) {
+            column.setCompression(this.expr());
+        }
+
+        if (lexer.nextIfIdentifier("BLOCK_SIZE")) {
+            column.setBlockSize(this.integerExpr());
+        }
+
+        return super.parseColumnRest(column);
     }
 
     public SQLPartition parsePartition() {

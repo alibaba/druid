@@ -165,6 +165,20 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTV
         return false;
     }
 
+    protected void printEncoding(SQLColumnDefinition x) {
+        if (x.getEncode() != null) {
+            print0(ucase ? " ENCODING " : " encoding ");
+            x.getEncode().accept(this);
+        }
+    }
+
+    protected void printCompression(SQLColumnDefinition x) {
+        if (x.getCompression() != null) {
+            print0(ucase ? " COMPRESSION " : " compression ");
+            x.getCompression().accept(this);
+        }
+    }
+
     @Override
     public boolean visit(SQLPartitionValue x) {
         if (x instanceof ImpalaSQLPartitionValue) {
