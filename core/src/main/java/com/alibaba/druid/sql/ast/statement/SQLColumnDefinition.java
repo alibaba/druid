@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -70,8 +71,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     private SQLExpr unitCount;
     private SQLExpr unitIndex;
     private SQLExpr step;
-    private SQLCharExpr encode;
-    private SQLCharExpr compression;
+    private SQLExpr encode;
+    private SQLExpr compression;
     protected SQLCharExpr aggType; // for starrocks
     protected SQLCharExpr bitmap; // for starrocks
     protected SQLCharExpr indexComment; // for starrocks
@@ -79,6 +80,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     // for aliyun data lake anlytics
     private List<SQLAssignItem> mappedBy;
     private List<SQLAssignItem> colProperties;
+
+    protected SQLIntegerExpr blockSize; // for impala for kudu
 
     private boolean generateByDefault;
 
@@ -852,20 +855,28 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return colProperties;
     }
 
-    public SQLCharExpr getEncode() {
+    public SQLExpr getEncode() {
         return encode;
     }
 
-    public void setEncode(SQLCharExpr encode) {
+    public void setEncode(SQLExpr encode) {
         this.encode = encode;
     }
 
-    public SQLCharExpr getCompression() {
+    public SQLExpr getCompression() {
         return compression;
     }
 
-    public void setCompression(SQLCharExpr compression) {
+    public void setCompression(SQLExpr compression) {
         this.compression = compression;
+    }
+
+    public void setBlockSize(SQLIntegerExpr blockSize) {
+        this.blockSize = blockSize;
+    }
+
+    public SQLIntegerExpr getBlockSize() {
+        return blockSize;
     }
 
     public List<SQLAssignItem> getColPropertiesDirect() {

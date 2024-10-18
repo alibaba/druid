@@ -3522,19 +3522,36 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printColumnProperties(x);
 
-        if (x.getEncode() != null) {
-            print0(ucase ? " ENCODE=" : " encode=");
-            x.getEncode().accept(this);
-        }
+        printEncoding(x);
 
-        if (x.getCompression() != null) {
-            print0(ucase ? " COMPRESSION=" : " compression=");
-            x.getCompression().accept(this);
-        }
+        printCompression(x);
+
+        printBlockSize(x);
 
         this.parameterized = parameterized;
 
         return false;
+    }
+
+    protected void printEncoding(SQLColumnDefinition x) {
+        if (x.getEncode() != null) {
+            print0(ucase ? " ENCODE=" : " encode=");
+            x.getEncode().accept(this);
+        }
+    }
+
+    protected void printCompression(SQLColumnDefinition x) {
+        if (x.getCompression() != null) {
+            print0(ucase ? " COMPRESSION=" : " compression=");
+            x.getCompression().accept(this);
+        }
+    }
+
+    protected void printBlockSize(SQLColumnDefinition x) {
+        if (x.getBlockSize() != null) {
+            print0(ucase ? " BLOCK_SIZE " : " block_size ");
+            x.getBlockSize().accept(this);
+        }
     }
 
     protected void printColumnProperties(SQLColumnDefinition x) {
