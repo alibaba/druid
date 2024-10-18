@@ -31,7 +31,7 @@ public class SQLOpenStatement extends SQLStatementImpl {
     //cursor name
     private SQLName cursorName;
 
-    private final List<SQLName> columns = new ArrayList<SQLName>();
+    private final List<SQLExpr> columns = new ArrayList<SQLExpr>();
 
     private SQLExpr forExpr;
 
@@ -76,7 +76,7 @@ public class SQLOpenStatement extends SQLStatementImpl {
         this.forExpr = forExpr;
     }
 
-    public List<SQLName> getColumns() {
+    public List<SQLExpr> getColumns() {
         return columns;
     }
 
