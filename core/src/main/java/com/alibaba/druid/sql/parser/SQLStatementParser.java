@@ -5341,7 +5341,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
-            this.exprParser.names(stmt.getColumns(), stmt);
+            this.exprParser.exprList(stmt.getColumns(), stmt);
             accept(Token.RPAREN);
         }
 
