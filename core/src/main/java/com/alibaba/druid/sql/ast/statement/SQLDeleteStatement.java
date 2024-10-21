@@ -86,10 +86,6 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
         return (SQLExprTableSource) getTableSource();
     }
 
-    public void setTableSource(SQLExpr expr) {
-        this.setTableSource(new SQLExprTableSource(expr));
-    }
-
     public void setTableSource(SQLTableSource tableSource) {
         if (tableSource != null) {
             tableSource.setParent(this);
