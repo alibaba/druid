@@ -1694,6 +1694,15 @@ public class OdpsStatementParser extends HiveStatementParser {
     }
 
     @Override
+    protected void alterTableChangeOwner(SQLAlterTableStatement stmt) {
+        lexer.nextToken();
+        accept(Token.TO);
+        OdpsAlterTableChangeOwner item = new OdpsAlterTableChangeOwner();
+        item.setValue(this.exprParser.primary());
+        stmt.addItem(item);
+    }
+
+    @Override
     protected void parseCreateMaterializedViewRest(SQLCreateMaterializedViewStatement stmt) {
         if (lexer.identifierEquals(FnvHash.Constants.LIFECYCLE)) {
             lexer.nextToken();

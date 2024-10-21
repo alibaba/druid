@@ -1,0 +1,15 @@
+CREATE EXTERNAL TABLE IF NOT EXISTS mk.jup
+    (
+        `value` STRING
+    )
+    ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+    STORED AS TEXTFILE
+    LOCATION 'oss://oss-ap-southeast-5-internal.aliyuncs.com/mk-prod/mk/api/jm/evt/execution_time=2021-06-21T180000+0000/';
+---------------------------
+CREATE EXTERNAL TABLE IF NOT EXISTS mk.jup (
+	`value` STRING
+)
+ROW FORMAT
+	SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE
+LOCATION 'oss://oss-ap-southeast-5-internal.aliyuncs.com/mk-prod/mk/api/jm/evt/execution_time=2021-06-21T180000+0000/';

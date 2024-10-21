@@ -1,0 +1,4 @@
+alter table test_owner CHANGEOWNER TO 'RAM$12345678:xyz';
+---------------------------
+ALTER TABLE test_owner
+	CHANGEOWNER TO 'RAM$12345678:xyz';

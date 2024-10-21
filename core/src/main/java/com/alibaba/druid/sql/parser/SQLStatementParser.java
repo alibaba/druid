@@ -2180,6 +2180,8 @@ public class SQLStatementParser extends SQLParser {
                         SQLAlterTableSubpartitionAvailablePartitionNum item = new SQLAlterTableSubpartitionAvailablePartitionNum();
                         item.setNumber(num);
                         stmt.addItem(item);
+                    } else if (lexer.identifierEquals("CHANGEOWNER")) {
+                        alterTableChangeOwner(stmt);
                     } else if ((stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) && lexer.token == Token.INTO) {
                         lexer.nextToken();
 
@@ -2512,6 +2514,10 @@ public class SQLStatementParser extends SQLParser {
                 throw new ParserException("TODO " + lexer.info());
             }
         }
+    }
+
+    protected void alterTableChangeOwner(SQLAlterTableStatement stmt) {
+        throw new ParserException("TODO " + lexer.info());
     }
 
     protected void alterTableSetSerdeProperties(SQLAlterTableStatement stmt) {

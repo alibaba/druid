@@ -188,6 +188,13 @@ public interface OdpsASTVisitor extends HiveASTVisitor {
     default void endVisit(OdpsAlterTableSetChangeLogs x) {
     }
 
+    default boolean visit(OdpsAlterTableChangeOwner x) {
+        return true;
+    }
+
+    default void endVisit(OdpsAlterTableChangeOwner x) {
+    }
+
     default boolean visit(OdpsCountStatement x) {
         return true;
     }

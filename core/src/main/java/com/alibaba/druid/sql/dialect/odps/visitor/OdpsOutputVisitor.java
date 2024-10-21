@@ -140,6 +140,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         printIntoBuckets(x.getBuckets());
         printIntoShards(x.getShards());
         printSelectAs(x, true);
+        printRowFormat(x);
         printStoredBy(x);
         printStoredAs(x);
         printSerdeProperties(x);
@@ -862,6 +863,13 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     @Override
     public boolean visit(OdpsAlterTableSetChangeLogs x) {
         print0(ucase ? "SET CHANGELOGS " : "set changelogs ");
+        x.getValue().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(OdpsAlterTableChangeOwner x) {
+        print0(ucase ? "CHANGEOWNER TO " : "changeowner to ");
         x.getValue().accept(this);
         return false;
     }
