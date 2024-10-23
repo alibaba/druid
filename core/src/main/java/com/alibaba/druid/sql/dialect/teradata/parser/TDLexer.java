@@ -18,6 +18,7 @@ public class TDLexer extends Lexer {
 
         map.put("SEL", Token.SELECT);
         map.put("TOP", Token.TOP);
+        map.put("QUALIFY", Token.QUALIFY);
 
         return new Keywords(map);
     }
