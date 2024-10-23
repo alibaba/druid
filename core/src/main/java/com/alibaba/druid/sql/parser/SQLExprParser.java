@@ -910,30 +910,7 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = parseQueryExpr();
                 break;
             case CAST:
-                String castStr = lexer.stringVal();
-                lexer.nextToken();
-
-                if (lexer.token != Token.LPAREN) {
-                    sqlExpr = new SQLIdentifierExpr(castStr);
-                } else {
-                    lexer.nextToken();
-                    SQLCastExpr cast = new SQLCastExpr();
-                    cast.setExpr(
-                            expr());
-                    accept(Token.AS);
-                    cast.setDataType(
-                            parseDataType(false));
-                    if (cast.getDataType() instanceof SQLArrayDataType) {
-                        SQLArrayDataType arrayDataType = (SQLArrayDataType) cast.getDataType();
-                        if (arrayDataType.getDbType() == null) {
-                            arrayDataType.setDbType(dbType);
-                        }
-                        arrayDataType.setUsedForCast(true);
-                    }
-                    accept(Token.RPAREN);
-
-                    sqlExpr = cast;
-                }
+                sqlExpr = parseCast();
                 break;
             case SUB:
                 lexer.nextToken();
@@ -1307,6 +1284,32 @@ public class SQLExprParser extends SQLParser {
             // expr.addAfterComment(lexer.readAndResetComments());
         }
         return expr;
+    }
+
+    protected SQLExpr parseCast() {
+        String castStr = lexer.stringVal();
+        lexer.nextToken();
+
+        if (lexer.token != Token.LPAREN) {
+            return new SQLIdentifierExpr(castStr);
+        } else {
+            lexer.nextToken();
+            SQLCastExpr cast = new SQLCastExpr();
+            cast.setExpr(
+                    expr());
+            accept(Token.AS);
+            cast.setDataType(
+                    parseDataType(false));
+            if (cast.getDataType() instanceof SQLArrayDataType) {
+                SQLArrayDataType arrayDataType = (SQLArrayDataType) cast.getDataType();
+                if (arrayDataType.getDbType() == null) {
+                    arrayDataType.setDbType(dbType);
+                }
+                arrayDataType.setUsedForCast(true);
+            }
+            accept(Token.RPAREN);
+            return cast;
+        }
     }
 
     protected SQLExpr parseQueryExpr() {
@@ -4160,6 +4163,13 @@ public class SQLExprParser extends SQLParser {
     }
     protected void parseDataTypeComplex(StringBuilder typeName) {
     }
+
+    protected SQLDataType parseDataTypeDate(StringBuilder typeName, int sourceLine, int sourceColumn) {
+        SQLDataType dataType = new SQLDataTypeImpl(typeName.toString());
+        dataType.setDbType(dbType);
+        dataType.setSource(sourceLine, sourceColumn);
+        return dataType;
+    }
     public SQLDataType parseDataType(boolean restrict) {
         if (lexer.keepSourceLocation) {
             lexer.computeRowAndColumn();
@@ -4350,6 +4360,8 @@ public class SQLExprParser extends SQLParser {
             }
 
             return charType;
+        } else if (typeNameHashCode == FnvHash.Constants.DATE) {
+            return parseDataTypeRest(parseDataTypeDate(typeName, sourceLine, sourceColumn));
         }
 
         if ("national".equalsIgnoreCase(typeName.toString()) &&

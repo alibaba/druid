@@ -68,6 +68,7 @@ import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
+import com.alibaba.druid.sql.dialect.teradata.visitor.TDOutputVisitor;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.*;
@@ -570,6 +571,8 @@ public class SQLUtils {
                 return new ImpalaOutputVisitor(out);
             case doris:
                 return new DorisOutputVisitor(out);
+            case teradata:
+                return new TDOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }

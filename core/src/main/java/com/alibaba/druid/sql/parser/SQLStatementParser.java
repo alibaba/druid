@@ -4007,6 +4007,15 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.identifierEquals(FnvHash.Constants.TABLE)) {
                     lexer.reset(mark);
                     return parseCreateTable();
+                } else if (lexer.identifierEquals(Constants.SET) || lexer.identifierEquals(Constants.MULTISET) || lexer.identifierEquals(Constants.VOLATILE)) {
+                    lexer.reset(mark);
+                    return parseCreateTable();
+                } else if (lexer.identifierEquals(Constants.GLOBAL)) {
+                    lexer.nextToken();
+                    if (lexer.identifierEquals(Constants.TEMPORARY)) {
+                        lexer.reset(mark);
+                        return parseCreateTable();
+                    }
                 }
 
                 SQLStatement stmt = createTableRest(mark);

@@ -776,6 +776,8 @@ public final class FnvHash {
         long ALTER = fnv1a_64_lower("ALTER");
         long DESC = fnv1a_64_lower("DESC");
         long SET = fnv1a_64_lower("SET");
+        long MULTISET = fnv1a_64_lower("MULTISET");
+        long VOLATILE = fnv1a_64_lower("VOLATILE");
         long KILL = fnv1a_64_lower("KILL");
         long MSCK = fnv1a_64_lower("MSCK");
         long USE = fnv1a_64_lower("USE");

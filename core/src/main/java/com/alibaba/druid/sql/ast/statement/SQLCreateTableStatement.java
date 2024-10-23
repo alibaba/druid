@@ -1651,8 +1651,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         External(1 << 5),
         Transactional(1 << 6),
         Shadow(1 << 7),
-        Dimension(1 << 8);
-
+        Dimension(1 << 8),
+        Set(1 << 9),
+        MultiSet(1 << 10),
+        Volatile(1 << 11);
         public final int mask;
 
         Feature(int mask) {

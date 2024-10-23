@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PrestoCreateTableStatement extends SQLCreateTableStatement implements PrestoSQLStatement {
     public PrestoCreateTableStatement() {
-        this.dbType = DbType.hive;
+        this.dbType = DbType.presto;
     }
 
     public PrestoCreateTableStatement(DbType dbType) {

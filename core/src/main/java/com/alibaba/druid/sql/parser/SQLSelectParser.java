@@ -433,6 +433,9 @@ public class SQLSelectParser extends SQLParser {
     protected void querySelectListBefore(SQLSelectQueryBlock x) {
     }
 
+    protected void parseTop(SQLSelectQueryBlock x) {
+    }
+
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
@@ -473,6 +476,7 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
         }
 
+        parseTop(queryBlock);
         parseBeforeSelectList(queryBlock);
 
         parseSelectList(queryBlock);
