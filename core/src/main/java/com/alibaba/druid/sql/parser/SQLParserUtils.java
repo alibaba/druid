@@ -92,6 +92,9 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksExprParser;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksLexer;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
+import com.alibaba.druid.sql.dialect.teradata.parser.TDExprParser;
+import com.alibaba.druid.sql.dialect.teradata.parser.TDLexer;
+import com.alibaba.druid.sql.dialect.teradata.parser.TDStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.StringUtils;
@@ -199,6 +202,8 @@ public class SQLParserUtils {
                 return new DorisStatementParser(sql, features);
             case oscar:
                 return new OscarStatementParser(sql, features);
+            case teradata:
+                return new TDStatementParser(sql, features);
             default:
                 return new SQLStatementParser(sql, dbType, features);
         }
@@ -261,6 +266,8 @@ public class SQLParserUtils {
                 return new ImpalaExprParser(sql, features);
             case doris:
                 return new DorisExprParser(sql, features);
+            case teradata:
+                return new TDExprParser(sql, features);
             default:
                 return new SQLExprParser(sql, dbType, features);
         }
@@ -326,6 +333,8 @@ public class SQLParserUtils {
                 return new ImpalaLexer(sql, features);
             case doris:
                 return new DorisLexer(sql, features);
+            case teradata:
+                return new TDLexer(sql, features);
             default: {
                 Lexer lexer = new Lexer(sql, null, dbType);
                 for (SQLParserFeature feature : features) {

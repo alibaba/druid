@@ -2537,6 +2537,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "UNIQUE " : "unique ");
         }
     }
+
+    public void printTop(SQLSelectQueryBlock x) {
+    }
     public boolean visit(SQLSelectQueryBlock x) {
         if (x.isParenthesized()) {
             print('(');
@@ -2551,6 +2554,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(' ');
         }
 
+        printTop(x);
         printSelectListBefore(x);
         printSqlSetQuantifier(x);
 
@@ -3845,12 +3849,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected void printEngine(SQLCreateTableStatement x) {
     }
 
+    protected void printCreateTableRest(SQLCreateTableStatement x) {
+    }
+
     public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, false);
         printPartitionOf(x);
         printEngine(x);
         printPartitionBy(x);
         printTableOptions(x);
+        printCreateTableRest(x);
         printTablespace(x.getTablespace());
         printSelectAs(x, true);
         return false;
