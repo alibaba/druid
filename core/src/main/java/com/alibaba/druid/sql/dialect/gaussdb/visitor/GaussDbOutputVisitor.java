@@ -4,9 +4,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
+import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbInsertStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 import java.util.List;
@@ -307,6 +310,72 @@ public class GaussDbOutputVisitor extends SQLASTOutputVisitor implements GaussDb
         if (!x.getDistributions().isEmpty()) {
             printPartitionsValue(x.getDistributions());
         }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLInsertStatement x) {
+        if (x instanceof GaussDbInsertStatement) {
+            return visit((GaussDbInsertStatement) x);
+        }
+        return super.visit(x);
+    }
+
+    @Override
+    public boolean visit(GaussDbInsertStatement x) {
+        List<SQLCommentHint> headHints = x.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                hint.accept(this);
+                println();
+            }
+        }
+
+        if (x.getInsertBeforeCommentsDirect() != null) {
+            printlnComments(x.getInsertBeforeCommentsDirect());
+        }
+
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            visit(with);
+            println();
+        }
+
+        if (x.isOverwrite()) {
+            print0(ucase ? "INSERT OVERWRITE " : "insert overwrite ");
+        } else {
+            print0(ucase ? "INSERT INTO " : "insert into ");
+        }
+
+        if (x.isHasTableIdentifier()) {
+            print0(ucase ? "TABLE " : "table ");
+        }
+        x.getTableSource().accept(this);
+
+        if (!x.getPartition().isEmpty()) {
+            print(" PARTITION (");
+            printAndAccept(x.getPartition(), ",");
+            print(")");
+        }
+
+        String columnsString = x.getColumnsString();
+        if (columnsString != null) {
+            print0(columnsString);
+        } else {
+            printInsertColumns(x.getColumns());
+        }
+
+        if (!x.getValuesList().isEmpty()) {
+            println();
+            print0(ucase ? "VALUES " : "values ");
+            printAndAccept(x.getValuesList(), ", ");
+        } else {
+            if (x.getQuery() != null) {
+                println();
+                x.getQuery().accept(this);
+            }
+        }
+
         return false;
     }
 }
