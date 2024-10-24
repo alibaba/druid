@@ -14,3 +14,22 @@ SELECT historyid AS history_id, workorderid AS work_order_id, operationownerid A
 	, operation AS operation
 FROM smart_sdi.sdi_itsm_public_workorderhistory_da
 WHERE dt = '${deal_date}'
+------------------------------------------------------------------------------------------------------------------------
+create table if not exists edw_dwr.dwr_sale_tran_order_finance_scheme_da
+(
+ order_id string comment '订单号'
+,smart_id    string  comment 'smartId'
+,vehicle_type    string  comment '车型'
+) comment '订单金融方案'
+partitioned by (dt  string  comment 'YYYY-MM-DD')
+;
+--------------------
+CREATE TABLE IF NOT EXISTS edw_dwr.dwr_sale_tran_order_finance_scheme_da (
+	order_id string COMMENT '订单号',
+	smart_id string COMMENT 'smartId',
+	vehicle_type string COMMENT '车型'
+)
+COMMENT = '订单金融方案'
+PARTITIONED BY (
+	dt string COMMENT 'YYYY-MM-DD'
+);

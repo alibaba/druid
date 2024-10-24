@@ -20,6 +20,7 @@ public class GaussDbLexer extends PGLexer {
         map.put("PARTIAL", Token.PARTIAL);
         map.put("KEY", Token.KEY);
         map.put("OVERWRITE", Token.OVERWRITE);
+        map.put("PARTITIONED", Token.PARTITIONED);
         map.putAll(super.loadKeywords().getKeywords());
         return new Keywords(map);
     }

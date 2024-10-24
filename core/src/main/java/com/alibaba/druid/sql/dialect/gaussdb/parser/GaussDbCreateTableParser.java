@@ -120,6 +120,34 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
         if (partitionClause != null) {
             gdStmt.setPartitionBy(partitionClause);
         }
+        if (lexer.nextIf(Token.PARTITIONED)) {
+            accept(Token.BY);
+            accept(Token.LPAREN);
+
+            for (; ; ) {
+                if (lexer.token() != Token.IDENTIFIER) {
+                    throw new ParserException("expect identifier. " + lexer.info());
+                }
+
+                SQLColumnDefinition column = this.exprParser.parseColumn();
+                stmt.addPartitionColumn(column);
+
+                if (lexer.isKeepComments() && lexer.hasComment()) {
+                    column.addAfterComment(lexer.readAndResetComments());
+                }
+
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                } else {
+                    lexer.nextToken();
+                    if (lexer.isKeepComments() && lexer.hasComment()) {
+                        column.addAfterComment(lexer.readAndResetComments());
+                    }
+                }
+            }
+
+            accept(Token.RPAREN);
+        }
     }
 
     public SQLPartitionBy parsePartitionBy() {

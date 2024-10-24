@@ -151,6 +151,7 @@ public class GaussDbOutputVisitor extends SQLASTOutputVisitor implements GaussDb
 
     @Override
     protected void printPartitionedBy(SQLCreateTableStatement x) {
+        super.printPartitionedBy(x);
         if (x instanceof GaussDbCreateTableStatement) {
             SQLPartitionBy partitionBy = ((GaussDbCreateTableStatement) x).getPartitionBy();
             if (partitionBy == null) {
