@@ -41,17 +41,15 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
 
         if (lexer.token() == Token.INSERT) {
             lexer.nextToken();
-            if (lexer.token() == Token.INTO) {
+            if (lexer.identifierEquals("IGNORE")) {
                 lexer.nextToken();
-            } else {
-                accept(Token.OVERWRITE);
+                stmt.setIgnore(true);
+            } else if (lexer.token() == Token.OVERWRITE) {
+                lexer.nextToken();
                 stmt.setOverwrite(true);
             }
+            accept(Token.INTO);
 
-            if (lexer.token() == Token.TABLE) {
-                lexer.nextToken();
-                stmt.setHasTableIdentifier(true);
-            }
             stmt.setTableSource(this.exprParser.name());
             if (lexer.token() == Token.AS) {
                 lexer.nextToken();
@@ -64,10 +62,9 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
 
         }
 
-        if (lexer.token() == Token.PARTITION) {
+        if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
-            accept(Token.LPAREN);
-            this.exprParser.exprList(stmt.getPartition(), stmt);
+            this.exprParser.exprList(stmt.getColumns(), stmt);
             accept(Token.RPAREN);
         }
 
@@ -75,12 +72,6 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
             lexer.nextToken();
             accept(Token.VALUES);
             stmt.setDefaultValues(true);
-        }
-
-        if (lexer.token() == (Token.LPAREN)) {
-            lexer.nextToken();
-            this.exprParser.exprList(stmt.getColumns(), stmt);
-            accept(Token.RPAREN);
         }
 
         if (lexer.token() == (Token.VALUES)) {

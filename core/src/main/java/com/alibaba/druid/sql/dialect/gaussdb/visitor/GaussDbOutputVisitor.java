@@ -343,26 +343,23 @@ public class GaussDbOutputVisitor extends SQLASTOutputVisitor implements GaussDb
 
         if (x.isOverwrite()) {
             print0(ucase ? "INSERT OVERWRITE " : "insert overwrite ");
-        } else {
-            print0(ucase ? "INSERT INTO " : "insert into ");
+        } else if (x.isIgnore()) {
+            print0(ucase ? "INSERT IGNORE " : "insert ignore ");
         }
+        print0(ucase ? "INTO " : "into ");
 
-        if (x.isHasTableIdentifier()) {
-            print0(ucase ? "TABLE " : "table ");
-        }
         x.getTableSource().accept(this);
-
-        if (!x.getPartition().isEmpty()) {
-            print(" PARTITION (");
-            printAndAccept(x.getPartition(), ",");
-            print(")");
-        }
 
         String columnsString = x.getColumnsString();
         if (columnsString != null) {
             print0(columnsString);
         } else {
             printInsertColumns(x.getColumns());
+        }
+
+        if (x.isDefaultValues()) {
+            println();
+            print0(ucase ? "DEFAULT VALUES" : "default values");
         }
 
         if (!x.getValuesList().isEmpty()) {
