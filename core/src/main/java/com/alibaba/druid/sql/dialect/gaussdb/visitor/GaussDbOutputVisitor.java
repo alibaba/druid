@@ -10,12 +10,13 @@ import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbInsertStatement;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GaussDbOutputVisitor extends SQLASTOutputVisitor implements GaussDbASTVisitor {
+public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTVisitor {
     public GaussDbOutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
         dbType = DbType.gaussdb;
@@ -315,6 +316,14 @@ public class GaussDbOutputVisitor extends SQLASTOutputVisitor implements GaussDb
 
     @Override
     public boolean visit(SQLInsertStatement x) {
+        if (x instanceof GaussDbInsertStatement) {
+            return visit((GaussDbInsertStatement) x);
+        }
+        return super.visit(x);
+    }
+
+    @Override
+    public boolean visit(PGInsertStatement x) {
         if (x instanceof GaussDbInsertStatement) {
             return visit((GaussDbInsertStatement) x);
         }

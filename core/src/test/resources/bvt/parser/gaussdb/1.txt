@@ -21,3 +21,7 @@ default values
 --------------------
 INSERT OVERWRITE INTO edw_dwi.dwi_pub_eps_itsm_work_order_history_da (col1, col2)
 DEFAULT VALUES
+------------------------------------------------------------------------------------------------------------------------
+vacuum deltamerge vhms.fs_dwd_m241_online_10s_newenergy_dws_di
+--------------------
+VACUUM DELTAMERGE vhms.fs_dwd_m241_online_10s_newenergy_dws_di

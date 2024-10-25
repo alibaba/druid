@@ -3,9 +3,9 @@ package com.alibaba.druid.sql.dialect.gaussdb.visitor;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbInsertStatement;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
-public interface GaussDbASTVisitor extends SQLASTVisitor {
+public interface GaussDbASTVisitor extends PGASTVisitor {
     default boolean visit(GaussDbCreateTableStatement x) {
         return true;
     }
