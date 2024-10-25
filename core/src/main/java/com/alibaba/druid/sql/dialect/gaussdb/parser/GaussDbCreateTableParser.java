@@ -209,9 +209,6 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
             if (lexer.identifierEquals(FnvHash.Constants.HASH)) {
                 distributeBy.setType(this.exprParser.name());
                 if (lexer.nextIf(Token.LPAREN)) {
-                    if (lexer.token() != Token.IDENTIFIER) {
-                        throw new ParserException("expect identifier. " + lexer.info());
-                    }
                     for (; ; ) {
                         distributeBy.addColumn(this.exprParser.name());
                         if (lexer.token() == Token.COMMA) {

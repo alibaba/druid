@@ -1,0 +1,15 @@
+create table if not exists ads.ads_cs_clm_pdi_income_d
+(dt nvarchar2(255),
+dlr_code nvarchar2(255)
+)
+WITH(orientation=column) 
+DISTRIBUTE BY HASH("dlr_code") ;
+--------------------
+CREATE TABLE IF NOT EXISTS ads.ads_cs_clm_pdi_income_d (
+	dt nvarchar2(255),
+	dlr_code nvarchar2(255)
+)
+WITH (
+	orientation = column
+)
+DISTRIBUTE BY HASH ("dlr_code");

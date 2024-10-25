@@ -349,11 +349,11 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
             visit(with);
             println();
         }
-
+        print0(ucase ? "INSERT " : "insert ");
         if (x.isOverwrite()) {
-            print0(ucase ? "INSERT OVERWRITE " : "insert overwrite ");
+            print0(ucase ? "OVERWRITE " : "overwrite ");
         } else if (x.isIgnore()) {
-            print0(ucase ? "INSERT IGNORE " : "insert ignore ");
+            print0(ucase ? "IGNORE " : "ignore ");
         }
         print0(ucase ? "INTO " : "into ");
 
@@ -371,17 +371,26 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
             print0(ucase ? "DEFAULT VALUES" : "default values");
         }
 
-        if (!x.getValuesList().isEmpty()) {
+        printValuesOrQuery(x);
+
+        List<SQLExpr> duplicateKeyUpdate = x.getDuplicateKeyUpdate();
+        if (!duplicateKeyUpdate.isEmpty()) {
             println();
-            print0(ucase ? "VALUES " : "values ");
-            printAndAccept(x.getValuesList(), ", ");
-        } else {
-            if (x.getQuery() != null) {
-                println();
-                x.getQuery().accept(this);
+            print0(ucase ? "ON DUPLICATE KEY UPDATE " : "on duplicate key update ");
+            for (int i = 0, size = duplicateKeyUpdate.size(); i < size; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
+                    print0(", ");
+                }
+                duplicateKeyUpdate.get(i).accept(this);
             }
         }
 
+        printOnConflict(x);
+
+        printReturning(x);
         return false;
     }
 }
