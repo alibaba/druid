@@ -248,6 +248,23 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         printInsertColumns(x.getColumns());
 
+        printValuesOrQuery(x);
+
+        printOnConflict(x);
+
+        printReturning(x);
+        return false;
+    }
+
+    protected void printReturning(PGInsertStatement x) {
+        if (x.getReturning() != null) {
+            println();
+            print0(ucase ? "RETURNING " : "returning ");
+            x.getReturning().accept(this);
+        }
+    }
+
+    protected void printValuesOrQuery(PGInsertStatement x) {
         if (x.getValues() != null) {
             println();
             print0(ucase ? "VALUES " : "values ");
@@ -258,7 +275,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
                 x.getQuery().accept(this);
             }
         }
+    }
 
+    protected void printOnConflict(PGInsertStatement x) {
         List<SQLExpr> onConflictTarget = x.getOnConflictTarget();
         List<SQLUpdateSetItem> onConflictUpdateSetItems = x.getOnConflictUpdateSetItems();
         boolean onConflictDoNothing = x.isOnConflictDoNothing();
@@ -299,14 +318,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
                 }
             }
         }
-
-        if (x.getReturning() != null) {
-            println();
-            print0(ucase ? "RETURNING " : "returning ");
-            x.getReturning().accept(this);
-        }
-
-        return false;
     }
 
     @Override

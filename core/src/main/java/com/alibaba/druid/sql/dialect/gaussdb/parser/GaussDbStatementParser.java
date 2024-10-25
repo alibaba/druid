@@ -2,6 +2,8 @@ package com.alibaba.druid.sql.dialect.gaussdb.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -10,6 +12,8 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
+import com.alibaba.druid.sql.parser.EOFParserException;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
@@ -113,8 +117,6 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
                 }
 
                 if (lexer.nextIf(Token.DO)) {
-                    lexer.nextToken();
-
                     if (lexer.identifierEquals(FnvHash.Constants.NOTHING)) {
                         lexer.nextToken();
                         stmt.setOnConflictDoNothing(true);
@@ -137,6 +139,32 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
                             stmt.setOnConflictUpdateWhere(where);
                         }
                     }
+                }
+            } else if (lexer.identifierEquals("DUPLICATE")) {
+                lexer.nextToken();
+                accept(Token.KEY);
+                accept(Token.UPDATE);
+
+                List<SQLExpr> duplicateKeyUpdate = stmt.getDuplicateKeyUpdate();
+                for (; ; ) {
+                    SQLName name = this.exprParser.name();
+                    accept(Token.EQ);
+                    SQLExpr value;
+                    try {
+                        value = this.exprParser.expr();
+                    } catch (EOFParserException e) {
+                        throw new ParserException("EOF, " + name + "=", e);
+                    }
+
+                    SQLBinaryOpExpr assignment = new SQLBinaryOpExpr(name, SQLBinaryOperator.Equality, value);
+                    assignment.setParent(stmt);
+                    duplicateKeyUpdate.add(assignment);
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextTokenIdent();
+                        continue;
+                    }
+                    break;
                 }
             }
         }

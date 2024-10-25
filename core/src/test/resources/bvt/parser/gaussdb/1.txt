@@ -22,6 +22,32 @@ default values
 INSERT OVERWRITE INTO edw_dwi.dwi_pub_eps_itsm_work_order_history_da (col1, col2)
 DEFAULT VALUES
 ------------------------------------------------------------------------------------------------------------------------
+INSERT INTO db1.testOnConflict
+SELECT 
+longitude,
+latitude
+from vdpadmin.ads_longlati_pois_d WHERE report_date > '${dt}' ON CONFLICT(id) DO NOTHING; 
+--------------------
+INSERT INTO db1.testOnConflict
+SELECT longitude, latitude
+FROM vdpadmin.ads_longlati_pois_d
+WHERE report_date > '${dt}'
+ON CONFLICT (id) DO NOTHING;
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO db1.testOnDuplicate
+SELECT 
+longitude,
+latitude
+from db1.testOnDuplicate2 WHERE report_date > '${dt}'
+ON DUPLICATE KEY UPDATE longitude = DEFAULT,latitude = 1 returning *
+--------------------
+INSERT INTO db1.testOnDuplicate
+SELECT longitude, latitude
+FROM db1.testOnDuplicate2
+WHERE report_date > '${dt}'
+ON DUPLICATE KEY UPDATE longitude = DEFAULT, latitude = 1
+RETURNING *
+------------------------------------------------------------------------------------------------------------------------
 vacuum deltamerge vhms.fs_dwd_m241_online_10s_newenergy_dws_di
 --------------------
 VACUUM DELTAMERGE vhms.fs_dwd_m241_online_10s_newenergy_dws_di
