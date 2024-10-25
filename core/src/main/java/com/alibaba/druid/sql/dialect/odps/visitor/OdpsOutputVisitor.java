@@ -1070,4 +1070,12 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         print(')');
         return false;
     }
+
+    @Override
+    public boolean visit(SQLCurrentTimeExpr x) {
+        final SQLCurrentTimeExpr.Type type = x.getType();
+        print(ucase ? type.name : type.nameLCase);
+        print0("()");
+        return false;
+    }
 }
