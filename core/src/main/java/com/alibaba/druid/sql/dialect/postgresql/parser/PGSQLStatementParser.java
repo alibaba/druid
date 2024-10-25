@@ -1023,6 +1023,18 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 mark = lexer.mark();
                 strVal = lexer.stringVal();
                 continue;
+            } else if (strVal.equalsIgnoreCase("DELTAMERGE")) { // gaussDb
+                stmt.setDeltaMerge(true);
+                lexer.nextToken();
+                mark = lexer.markOut();
+                strVal = lexer.stringVal();
+                continue;
+            } else if (strVal.equalsIgnoreCase("HDFSDIRECTORY")) { // gaussDb
+                stmt.setHdfsDirectory(true);
+                lexer.nextToken();
+                mark = lexer.markOut();
+                strVal = lexer.stringVal();
+                continue;
             } else {
                 lexer.reset(mark);
                 break;

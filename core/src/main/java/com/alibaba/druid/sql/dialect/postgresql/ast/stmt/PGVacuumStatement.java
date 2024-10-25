@@ -37,6 +37,9 @@ public class PGVacuumStatement extends SQLStatementImpl implements PGSQLStatemen
     private boolean disablePageSkipping;
     private boolean processToast;
     private boolean truncate;
+    // gaussDb specific
+    private boolean deltaMerge;
+    private boolean hdfsDirectory;
     private List<SQLExprTableSource> tableSources = new ArrayList<>();
 
     public PGVacuumStatement(DbType dbType) {
@@ -130,5 +133,21 @@ public class PGVacuumStatement extends SQLStatementImpl implements PGSQLStatemen
             acceptChild(visitor, tableSources);
         }
         visitor.endVisit(this);
+    }
+
+    public boolean isDeltaMerge() {
+        return deltaMerge;
+    }
+
+    public void setDeltaMerge(boolean deltaMerge) {
+        this.deltaMerge = deltaMerge;
+    }
+
+    public boolean isHdfsDirectory() {
+        return hdfsDirectory;
+    }
+
+    public void setHdfsDirectory(boolean hdfsDirectory) {
+        this.hdfsDirectory = hdfsDirectory;
     }
 }

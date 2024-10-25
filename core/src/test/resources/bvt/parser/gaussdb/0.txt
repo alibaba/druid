@@ -1,33 +1,3 @@
-CREATE TABLE `test1` (
-	`id` bigint(20) AUTO_INCREMENT NOT NULL COMMENT 'id',
-	`c_tinyint` tinyint(4) DEFAULT '1' COMMENT 'tinyint',
-	`c_timestamp` timestamp DEFAULT NULL NULL COMMENT 'timestamp' ON UPDATE CURRENT_TIMESTAMP(),
-	`c_time` time DEFAULT NULL COMMENT 'time',
-	`c_char` char(10) DEFAULT NULL COMMENT 'char',
-	`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',
-	`c_longblob` longblob COMMENT 'longblob',
-	PRIMARY KEY (`id`, `c_tinyint`)
-)
-COMMENT = '10000000'
-AUTO_INCREMENT = 1769503
-CHARSET = 'utf8mb4'
-ENGINE = InnoDB
---------------------
-CREATE TABLE `test1` (
-	`id` bigint(20) AUTO_INCREMENT NOT NULL COMMENT 'id',
-	`c_tinyint` tinyint(4) DEFAULT '1' COMMENT 'tinyint',
-	`c_timestamp` timestamp DEFAULT NULL NULL COMMENT 'timestamp' ON UPDATE CURRENT_TIMESTAMP(),
-	`c_time` time DEFAULT NULL COMMENT 'time',
-	`c_char` char(10) DEFAULT NULL COMMENT 'char',
-	`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',
-	`c_longblob` longblob COMMENT 'longblob',
-	PRIMARY KEY (`id`, `c_tinyint`)
-)
-COMMENT = '10000000'
-AUTO_INCREMENT = 1769503
-CHARSET = 'utf8mb4'
-ENGINE = InnoDB
-------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE lineitem (
 	L_ORDERKEY BIGINT NOT NULL,
 	L_QUANTITY DECIMAL(15, 2) NOT NULL,
@@ -197,33 +167,3 @@ PARTITION BY RANGE (ca_address_sk) (
 	PARTITION p2  END (2000),
 	PARTITION p3  START (2000) END (5000)
 )
-------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE `test1` (
-	`id` bigint(20) AUTO_INCREMENT NOT NULL COMMENT 'id',
-	`c_tinyint` tinyint(4) DEFAULT '1' COMMENT 'tinyint',
-	`c_timestamp` timestamp DEFAULT NULL NULL COMMENT 'timestamp' ON UPDATE CURRENT_TIMESTAMP(),
-	`c_time` time DEFAULT NULL COMMENT 'time',
-	`c_char` char(10) DEFAULT NULL COMMENT 'char',
-	`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',
-	`c_longblob` longblob COMMENT 'longblob',
-	PRIMARY KEY (`id`, `c_tinyint`)
-)
-COMMENT = '10000000'
-AUTO_INCREMENT = 1769503
-CHARSET = 'utf8mb4'
-ENGINE = InnoDB
---------------------
-CREATE TABLE `test1` (
-	`id` bigint(20) AUTO_INCREMENT NOT NULL COMMENT 'id',
-	`c_tinyint` tinyint(4) DEFAULT '1' COMMENT 'tinyint',
-	`c_timestamp` timestamp DEFAULT NULL NULL COMMENT 'timestamp' ON UPDATE CURRENT_TIMESTAMP(),
-	`c_time` time DEFAULT NULL COMMENT 'time',
-	`c_char` char(10) DEFAULT NULL COMMENT 'char',
-	`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',
-	`c_longblob` longblob COMMENT 'longblob',
-	PRIMARY KEY (`id`, `c_tinyint`)
-)
-COMMENT = '10000000'
-AUTO_INCREMENT = 1769503
-CHARSET = 'utf8mb4'
-ENGINE = InnoDB
