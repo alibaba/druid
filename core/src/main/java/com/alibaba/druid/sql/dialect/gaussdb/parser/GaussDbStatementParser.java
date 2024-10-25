@@ -41,17 +41,15 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
 
         if (lexer.token() == Token.INSERT) {
             lexer.nextToken();
-            if (lexer.token() == Token.INTO) {
+            if (lexer.identifierEquals("IGNORE")) {
                 lexer.nextToken();
-            } else {
-                accept(Token.OVERWRITE);
+                stmt.setIgnore(true);
+            } else if (lexer.token() == Token.OVERWRITE) {
+                lexer.nextToken();
                 stmt.setOverwrite(true);
             }
+            accept(Token.INTO);
 
-            if (lexer.token() == Token.TABLE) {
-                lexer.nextToken();
-                stmt.setHasTableIdentifier(true);
-            }
             stmt.setTableSource(this.exprParser.name());
             if (lexer.token() == Token.AS) {
                 lexer.nextToken();
@@ -64,28 +62,17 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
 
         }
 
-        if (lexer.token() == Token.PARTITION) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            this.exprParser.exprList(stmt.getPartition(), stmt);
-            accept(Token.RPAREN);
-        }
-
-        if (lexer.token() == Token.DEFAULT) {
-            lexer.nextToken();
-            accept(Token.VALUES);
-            stmt.setDefaultValues(true);
-        }
-
-        if (lexer.token() == (Token.LPAREN)) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.LPAREN)) {
             this.exprParser.exprList(stmt.getColumns(), stmt);
             accept(Token.RPAREN);
         }
 
-        if (lexer.token() == (Token.VALUES)) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.DEFAULT)) {
+            accept(Token.VALUES);
+            stmt.setDefaultValues(true);
+        }
 
+        if (lexer.nextIf(Token.VALUES)) {
             for (; ; ) {
                 accept(Token.LPAREN);
                 SQLInsertStatement.ValuesClause valuesCaluse = new SQLInsertStatement.ValuesClause();
@@ -93,8 +80,7 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
                 stmt.addValueCause(valuesCaluse);
 
                 accept(Token.RPAREN);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
+                if (lexer.nextIf(Token.COMMA)) {
                     continue;
                 }
                 break;
@@ -104,33 +90,29 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
             stmt.setQuery(queryExpr.getSubQuery());
         }
 
-        if (lexer.token() == Token.ON) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.ON)) {
             if (lexer.identifierEquals(FnvHash.Constants.CONFLICT)) {
                 lexer.nextToken();
 
-                if (lexer.token() == Token.LPAREN) {
-                    lexer.nextToken();
+                if (lexer.nextIf(Token.LPAREN)) {
                     List<SQLExpr> onConflictTarget = new ArrayList<SQLExpr>();
                     this.exprParser.exprList(onConflictTarget, stmt);
                     stmt.setOnConflictTarget(onConflictTarget);
                     accept(Token.RPAREN);
                 }
 
-                if (lexer.token() == Token.ON) {
-                    lexer.nextToken();
+                if (lexer.nextIf(Token.ON)) {
                     accept(Token.CONSTRAINT);
                     SQLName constraintName = this.exprParser.name();
                     stmt.setOnConflictConstraint(constraintName);
                 }
 
-                if (lexer.token() == Token.WHERE) {
-                    lexer.nextToken();
+                if (lexer.nextIf(Token.WHERE)) {
                     SQLExpr where = this.exprParser.expr();
                     stmt.setOnConflictWhere(where);
                 }
 
-                if (lexer.token() == Token.DO) {
+                if (lexer.nextIf(Token.DO)) {
                     lexer.nextToken();
 
                     if (lexer.identifierEquals(FnvHash.Constants.NOTHING)) {
@@ -150,8 +132,7 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
 
                             lexer.nextToken();
                         }
-                        if (lexer.token() == Token.WHERE) {
-                            lexer.nextToken();
+                        if (lexer.nextIf(Token.WHERE)) {
                             SQLExpr where = this.exprParser.expr();
                             stmt.setOnConflictUpdateWhere(where);
                         }
@@ -160,12 +141,10 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
             }
         }
 
-        if (lexer.token() == Token.RETURNING) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.RETURNING)) {
             SQLExpr returning = this.exprParser.expr();
 
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
+            if (lexer.nextIf(Token.COMMA)) {
                 SQLListExpr list = new SQLListExpr();
                 list.addItem(returning);
 

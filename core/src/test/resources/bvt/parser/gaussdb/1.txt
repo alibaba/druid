@@ -1,4 +1,4 @@
-insert overwrite table edw_dwi.dwi_pub_eps_itsm_work_order_history_da partition (dt = '${deal_date}')
+insert overwrite into edw_dwi.dwi_pub_eps_itsm_work_order_history_da
 select 
     historyid	as	history_id	,
     workorderid	as	work_order_id	,
@@ -9,8 +9,15 @@ select
 from smart_sdi.sdi_itsm_public_workorderhistory_da
 where dt = '${deal_date}'
 --------------------
-INSERT OVERWRITE TABLE edw_dwi.dwi_pub_eps_itsm_work_order_history_da PARTITION (dt = '${deal_date}')
+INSERT OVERWRITE INTO edw_dwi.dwi_pub_eps_itsm_work_order_history_da
 SELECT historyid AS history_id, workorderid AS work_order_id, operationownerid AS operation_owner_id, operationtime AS operation_time, description AS description
 	, operation AS operation
 FROM smart_sdi.sdi_itsm_public_workorderhistory_da
 WHERE dt = '${deal_date}'
+------------------------------------------------------------------------------------------------------------------------
+insert overwrite into edw_dwi.dwi_pub_eps_itsm_work_order_history_da
+(col1,col2)
+default values
+--------------------
+INSERT OVERWRITE INTO edw_dwi.dwi_pub_eps_itsm_work_order_history_da (col1, col2)
+DEFAULT VALUES
