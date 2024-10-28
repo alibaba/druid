@@ -111,10 +111,7 @@ public class BigQueryExprParser extends SQLExprParser {
     protected void aliasedItems(List<SQLAliasedExpr> items, SQLObject parent) {
         while (true) {
             SQLExpr expr = expr();
-            String alias = null;
-            if (lexer.nextIf(Token.AS)) {
-                alias = alias();
-            }
+            String alias = as();
 
             SQLAliasedExpr aliasedExpr = new SQLAliasedExpr(expr, alias);
             aliasedExpr.setParent(parent);

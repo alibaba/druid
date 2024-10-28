@@ -1,3 +1,19 @@
+SELECT
+    CAST(NULL AS STRING) AS pn,
+    ARRAY(
+      SELECT AS STRUCT
+        CAST(NULL AS STRING) pt,
+        CAST(NULL AS STRING) pn
+      ) AS p,
+    a.s,
+FROM `d-k-id-m.g.x` AS a
+--------------------
+SELECT CAST(NULL AS STRING) AS pn, ARRAY(
+		SELECT AS STRUCT CAST(NULL AS STRING) AS pt,
+		CAST(NULL AS STRING) AS pn
+	) AS p, a.s
+FROM `d-k-id-m.g.x` a
+------------------------------------------------------------------------------------------------------------------------
 WITH PlayerStats AS (
   SELECT 'Adams' as LastName, 'Noam' as FirstName, 3 as PointsScored UNION ALL
   SELECT 'Buchanan', 'Jie', 0 UNION ALL

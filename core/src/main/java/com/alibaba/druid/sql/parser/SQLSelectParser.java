@@ -472,9 +472,7 @@ public class SQLSelectParser extends SQLParser {
             this.exprParser.parseHints(queryBlock.getHints());
         }
 
-        if (lexer.token == Token.COMMENT) {
-            lexer.nextToken();
-        }
+        lexer.nextIf(Token.COMMENT);
 
         parseTop(queryBlock);
         parseBeforeSelectList(queryBlock);

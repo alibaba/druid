@@ -192,7 +192,7 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
 
     public boolean visit(BigQuerySelectAsStruct x) {
         print0(ucase ? "SELECT AS STRUCT " : "select as struct ");
-        printlnAndAccept(x.getItems(), ", ");
+        printlnAndAccept(x.getItems(), ",");
         printFrom(x);
         return false;
     }
