@@ -1,6 +1,6 @@
-DELETE FROM `data-gojek-id-mart.risk_analytics.detail_suspicious_key` AS a
+DELETE FROM `data-c-id-mart.x.b` AS a
 --------------------
-DELETE FROM `data-gojek-id-mart.risk_analytics.detail_suspicious_key` a
+DELETE FROM `data-c-id-mart.x.b` a
 ------------------------------------------------------------------------------------------------------------------------
 SELECT case when contains(u.roles[company_id_cross], 'report_reader') then 1 else 0 end is_report_reader from t1
 --------------------
