@@ -1,3 +1,31 @@
+WITH PlayerStats AS (
+  SELECT 'Adams' as LastName, 'Noam' as FirstName, 3 as PointsScored UNION ALL
+  SELECT 'Buchanan', 'Jie', 0 UNION ALL
+  SELECT 'Coolidge', 'Kiran', 1 UNION ALL
+  SELECT 'Adams', 'Noam', 4 UNION ALL
+  SELECT 'Buchanan', 'Jie', 13)
+SELECT
+  SUM(PointsScored) AS total_points,
+  FirstName AS first_name,
+  LastName AS last_name
+FROM PlayerStats
+GROUP BY ALL;
+--------------------
+WITH PlayerStats AS (
+		SELECT 'Adams' AS LastName, 'Noam' AS FirstName, 3 AS PointsScored
+		UNION ALL
+		SELECT 'Buchanan', 'Jie', 0
+		UNION ALL
+		SELECT 'Coolidge', 'Kiran', 1
+		UNION ALL
+		SELECT 'Adams', 'Noam', 4
+		UNION ALL
+		SELECT 'Buchanan', 'Jie', 13
+	)
+SELECT SUM(PointsScored) AS total_points, FirstName AS first_name, LastName AS last_name
+FROM PlayerStats
+GROUP BY ALL;
+------------------------------------------------------------------------------------------------------------------------
 DELETE FROM `data-c-id-mart.x.b` AS a
 --------------------
 DELETE FROM `data-c-id-mart.x.b` a
