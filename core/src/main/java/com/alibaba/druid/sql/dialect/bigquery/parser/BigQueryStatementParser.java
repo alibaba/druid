@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.bigquery.parser;
 
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -129,5 +130,22 @@ public class BigQueryStatementParser extends SQLStatementParser {
             stmt.setAs((SQLCharExpr) exprParser.primary());
         }
         return stmt;
+    }
+
+    public SQLDeleteStatement parseDeleteStatement() {
+        SQLDeleteStatement deleteStatement = new SQLDeleteStatement(getDbType());
+
+        accept(Token.DELETE);
+        lexer.nextIf(Token.FROM);
+
+        SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
+        deleteStatement.setTableSource(tableSource);
+
+        if (lexer.nextIf(Token.WHERE)) {
+            SQLExpr where = this.exprParser.expr();
+            deleteStatement.setWhere(where);
+        }
+
+        return deleteStatement;
     }
 }

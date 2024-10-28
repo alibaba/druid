@@ -4746,11 +4746,8 @@ public class SQLStatementParser extends SQLParser {
     public SQLDeleteStatement parseDeleteStatement() {
         SQLDeleteStatement deleteStatement = new SQLDeleteStatement(getDbType());
 
-        if (lexer.token == Token.DELETE) {
-            lexer.nextToken();
-            if (lexer.token == (Token.FROM)) {
-                lexer.nextToken();
-            }
+        if (lexer.nextIf(Token.DELETE)) {
+            lexer.nextIf(Token.FROM);
 
             if (lexer.token == Token.COMMENT) {
                 lexer.nextToken();
