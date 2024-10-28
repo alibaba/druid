@@ -13,3 +13,8 @@ WITH (
 	orientation = column
 )
 DISTRIBUTE BY HASH ("dlr_code");
+------------------------------------------------------------------------------------------------------------------------
+select group_concat(col1 order by submit_time desc separator '|') user_education from t1
+--------------------
+SELECT group_concat(col1 ORDER BY submit_time DESC SEPARATOR '|') AS user_education
+FROM t1
