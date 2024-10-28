@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.gaussdb.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -13,7 +14,31 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
+import java.util.Arrays;
+
+import static com.alibaba.druid.util.FnvHash.fnv1a_64_lower;
+
 public class GaussDbExprParser extends PGExprParser {
+    private static final String[] AGGREGATE_FUNCTIONS;
+    private static final long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = {
+                "SUM", "MAX", "MIN", "AVG", "MEDIAN", "PERCENTILE_CONT", "PERCENTILE_DISC", "COUNT", "ARRAY_AGG",
+                "STRING_AGG", "LIST_AGG", "GROUP_CONCAT", "COVAR_POP", "COVAR_SAMP", "STDDEV_POP", "STDDEV_SAMP",
+                "VAR_POP", "VAR_SAMP", "BIT_AND", "BIT_OR", "BOOL_AND", "BOOL_OR", "CORR", "EVERY", "RANK", "REGR_AVGX",
+                "REGR_AVGY", "REGR_COUNT", "REGR_INTERCEPT", "REGR_R2", "REGR_SLOPE", "REGR_SXX", "REGR_SXY", "REGR_SYY",
+                "STDDEV", "VARIANCE", "CHECKSUM"
+        };
+        AGGREGATE_FUNCTIONS_CODES = fnv1a_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = fnv1a_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
+
     public GaussDbExprParser(String sql, SQLParserFeature... features) {
         this(new GaussDbLexer(sql, features));
         this.lexer.nextToken();
@@ -23,6 +48,8 @@ public class GaussDbExprParser extends PGExprParser {
     public GaussDbExprParser(GaussDbLexer lexer) {
         super(lexer);
         this.dbType = DbType.gaussdb;
+        this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
     public SQLPartition parsePartition() {
@@ -150,5 +177,23 @@ public class GaussDbExprParser extends PGExprParser {
             default:
                 return super.parseColumnRest(column);
         }
+    }
+
+    protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {
+        if (lexer.token() == Token.ORDER) {
+            SQLOrderBy orderBy = this.parseOrderBy();
+            aggregateExpr.setOrderBy(orderBy);
+            //为了兼容之前的逻辑
+            aggregateExpr.putAttribute("ORDER BY", orderBy);
+        }
+        if (lexer.identifierEquals(FnvHash.Constants.SEPARATOR)) {
+            lexer.nextToken();
+
+            SQLExpr seperator = this.primary();
+            seperator.setParent(aggregateExpr);
+
+            aggregateExpr.putAttribute("SEPARATOR", seperator);
+        }
+        return aggregateExpr;
     }
 }

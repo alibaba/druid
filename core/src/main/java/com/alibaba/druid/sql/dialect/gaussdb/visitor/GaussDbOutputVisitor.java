@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.gaussdb.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -392,5 +393,14 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
 
         printReturning(x);
         return false;
+    }
+
+    protected void visitAggregateRest(SQLAggregateExpr x) {
+        super.visitAggregateRest(x);
+        Object value = x.getAttribute("SEPARATOR");
+        if (value != null) {
+            print0(ucase ? " SEPARATOR " : " separator ");
+            ((SQLObject) value).accept(this);
+        }
     }
 }
