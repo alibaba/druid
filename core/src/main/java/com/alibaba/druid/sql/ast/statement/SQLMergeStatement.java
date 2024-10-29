@@ -25,7 +25,6 @@ public class SQLMergeStatement extends SQLStatementImpl {
     private final List<SQLHint> hints = new ArrayList<SQLHint>();
 
     private SQLTableSource into;
-    private String alias;
     private SQLTableSource using;
     private SQLExpr on;
     private MergeUpdateClause updateClause;
