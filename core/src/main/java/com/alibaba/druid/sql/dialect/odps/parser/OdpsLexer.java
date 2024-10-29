@@ -62,6 +62,7 @@ public class OdpsLexer extends HiveLexer {
         map.put("DIV", Token.DIV);
         map.put("LATERAL", Token.LATERAL);
         map.put("QUALIFY", Token.QUALIFY);
+        map.put("MATCHED", Token.MATCHED);
         map.put("；", Token.SEMI);
 
         return new Keywords(map);

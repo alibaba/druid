@@ -24,7 +24,7 @@ public class DM_MergeTest_0 extends TestCase {
                 "\tSELECT count(1) AS co\n" +
                 "\tFROM sys_user_online\n" +
                 "\tWHERE sessionid = ?\n" +
-                ") b ON (b.co <> 0) \n" +
+                ") b ON (b.co <> 0)\n" +
                 "WHEN MATCHED THEN UPDATE SET login_name = ?, dept_name = ?, ipaddr = ?, login_location = ?, browser = ?, os = ?, status = ?, start_timestamp = ?, last_access_time = ?, expire_time = ?\n" +
                 "\tWHERE sessionid = ?\n" +
                 "WHEN NOT MATCHED THEN INSERT (SESSIONID, LOGIN_NAME, DEPT_NAME, IPADDR, LOGIN_LOCATION, BROWSER, OS, STATUS, START_TIMESTAMP, LAST_ACCESS_TIME, EXPIRE_TIME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", stmt.toString());
@@ -45,7 +45,7 @@ public class DM_MergeTest_0 extends TestCase {
                 "\tSELECT count(1) AS co\n" +
                 "\tFROM sys_user_online\n" +
                 "\tWHERE sessionid = ?\n" +
-                ") b ON (b.co <> 0) \n" +
+                ") b ON (b.co <> 0)\n" +
                 "WHEN MATCHED THEN UPDATE SET login_name = ?, dept_name = ?, ipaddr = ?, login_location = ?, browser = ?, os = ?, status = ?, start_timestamp = ?, last_access_time = ?, expire_time = ?\n" +
                 "\tWHERE sessionid = ?\n" +
                 "WHEN NOT MATCHED THEN INSERT (SESSIONID, LOGIN_NAME, DEPT_NAME, IPADDR, LOGIN_LOCATION, BROWSER, OS, STATUS, START_TIMESTAMP, LAST_ACCESS_TIME, EXPIRE_TIME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", stmt.toString());

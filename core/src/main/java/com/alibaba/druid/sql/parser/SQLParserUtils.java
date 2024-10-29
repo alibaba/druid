@@ -84,6 +84,9 @@ import com.alibaba.druid.sql.dialect.presto.parser.PrestoStatementParser;
 import com.alibaba.druid.sql.dialect.redshift.parser.RedshiftExprParser;
 import com.alibaba.druid.sql.dialect.redshift.parser.RedshiftLexer;
 import com.alibaba.druid.sql.dialect.redshift.parser.RedshiftStatementParser;
+import com.alibaba.druid.sql.dialect.snowflake.SnowflakeExprParser;
+import com.alibaba.druid.sql.dialect.snowflake.SnowflakeLexer;
+import com.alibaba.druid.sql.dialect.snowflake.SnowflakeStatementParser;
 import com.alibaba.druid.sql.dialect.spark.parser.SparkLexer;
 import com.alibaba.druid.sql.dialect.spark.parser.SparkStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -188,6 +191,8 @@ public class SQLParserUtils {
                 return new AthenaStatementParser(sql, features);
             case bigquery:
                 return new BigQueryStatementParser(sql, features);
+            case snowflake:
+                return new SnowflakeStatementParser(sql, features);
             case spark:
                 return new SparkStatementParser(sql);
             case clickhouse:
@@ -256,6 +261,8 @@ public class SQLParserUtils {
                 return new HiveExprParser(sql, features);
             case bigquery:
                 return new BigQueryExprParser(sql, features);
+            case snowflake:
+                return new SnowflakeExprParser(sql, features);
             case clickhouse:
                 return new CKExprParser(sql, features);
             case oscar:
@@ -329,6 +336,8 @@ public class SQLParserUtils {
                 return new HiveLexer(sql, features);
             case bigquery:
                 return new BigQueryLexer(sql, features);
+            case snowflake:
+                return new SnowflakeLexer(sql, features);
             case impala:
                 return new ImpalaLexer(sql, features);
             case doris:

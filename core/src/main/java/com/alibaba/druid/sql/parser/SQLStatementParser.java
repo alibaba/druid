@@ -5500,9 +5500,8 @@ public class SQLStatementParser extends SQLParser {
             boolean insertFlag = false;
             if (lexer.token == Token.WHEN) {
                 lexer.nextToken();
-                if (lexer.token == Token.MATCHED || lexer.identifierEquals(Constants.MATCHED)) {
+                if (lexer.nextIf(MATCHED)) {
                     SQLMergeStatement.MergeUpdateClause updateClause = new SQLMergeStatement.MergeUpdateClause();
-                    lexer.nextToken();
 
                     if (lexer.nextIf(Token.AND)) {
                         SQLExpr where = this.exprParser.expr();
@@ -5587,12 +5586,7 @@ public class SQLStatementParser extends SQLParser {
             if (insertFlag) {
                 SQLMergeStatement.MergeInsertClause insertClause = new SQLMergeStatement.MergeInsertClause();
 
-                if (lexer.identifierEquals(Constants.MATCHED)) {
-                    lexer.nextToken();
-                } else {
-                    accept(Token.MATCHED);
-                }
-
+                lexer.nextIf(MATCHED);
                 if (lexer.token == AND) { // odps
                     lexer.nextToken();
                     insertClause.setWhere(

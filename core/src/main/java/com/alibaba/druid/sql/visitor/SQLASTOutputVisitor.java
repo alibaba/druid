@@ -8333,7 +8333,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print0(ucase ? " ON " : " on ");
         x.getOn().accept(this);
-        print0(" ");
 
         if (x.isInsertClauseFirst()) {
             if (x.getInsertClause() != null) {

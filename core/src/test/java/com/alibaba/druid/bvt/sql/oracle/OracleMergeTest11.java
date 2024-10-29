@@ -64,7 +64,7 @@ public class OracleMergeTest11 extends OracleTest {
                         "\tWHERE THE_DATE = TRUNC(SYSDATE)\n" +
                         "\t\tAND AREA_LEVEL <= 1\n" +
                         ") B ON (A.AREA_ID = B.AREA_ID\n" +
-                        "AND A.AREA_LEVEL = B.AREA_LEVEL) \n" +
+                        "AND A.AREA_LEVEL = B.AREA_LEVEL)\n" +
                         "WHEN MATCHED THEN UPDATE SET A.SUM_CHRG_YS = ROUND(B.TOTAL_CHARGE * 1.00 / 10000, 2), A.CHARGE = B.THIS_CHARGE;",
                 result);
 

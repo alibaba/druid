@@ -127,7 +127,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public static class MergeUpdateClause extends SQLObjectImpl {
-        private List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
+        private final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
         private SQLExpr where;
         private SQLExpr deleteWhere;
         private boolean delete;

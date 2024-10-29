@@ -46,7 +46,7 @@ public class OracleMergeTest7 extends OracleTest {
         SQLMergeStatement mergeStatement = (SQLMergeStatement) stmtList.get(0);
         String result = SQLUtils.toOracleString(mergeStatement);
         Assert.assertEquals("MERGE INTO copy_emp c" //
-                        + "\nUSING employees e ON (c.employee_id = e.employee_id) " //
+                        + "\nUSING employees e ON (c.employee_id = e.employee_id)" //
                         + "\nWHEN MATCHED THEN UPDATE SET c.first_name = e.first_name, c.last_name = e.last_name, c.department_id = e.department_id" //
                         + "\nWHEN NOT MATCHED THEN INSERT VALUES (e.employee_id, e.first_name, e.last_name, e.email, e.phone_number, e.hire_date, e.job_id, e.salary, e.commission_pct, e.manager_id, e.department_id)",
                 result);

@@ -1,0 +1,15 @@
+MERGE INTO target_table USING source_table
+    ON target_table.id = source_table.id
+    WHEN MATCHED THEN
+        UPDATE SET target_table.description = source_table.description;
+--------------------
+MERGE INTO target_table
+USING source_table ON target_table.id = source_table.id
+WHEN MATCHED THEN UPDATE SET target_table.description = source_table.description;
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE target_table (ID INTEGER, description VARCHAR);
+--------------------
+CREATE TABLE target_table (
+	ID INTEGER,
+	description VARCHAR
+);
