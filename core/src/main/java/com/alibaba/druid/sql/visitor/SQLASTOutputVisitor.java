@@ -10417,7 +10417,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 SQLCreateTableStatement.Feature.Shadow,
                 SQLCreateTableStatement.Feature.External,
                 SQLCreateTableStatement.Feature.Transactional,
-                SQLCreateTableStatement.Feature.Dimension
+                SQLCreateTableStatement.Feature.Dimension,
+                SQLCreateTableStatement.Feature.Unlogged
         };
 
         for (SQLCreateTableStatement.Feature feature : features) {
