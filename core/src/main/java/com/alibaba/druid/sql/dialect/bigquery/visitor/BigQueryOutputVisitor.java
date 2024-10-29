@@ -77,6 +77,10 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
     }
 
     protected void printSelectListBefore(BigQuerySelectQueryBlock x) {
+        if (x.isAsStruct()) {
+            print0(ucase ? " AS STRUCT " : " as struct ");
+        }
+
         BigQuerySelectQueryBlock.DifferentialPrivacy privacy = x.getDifferentialPrivacy();
         if (privacy != null) {
             incrementIndent();
@@ -188,24 +192,6 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         println();
         print(ucase ? "RETURNS " : "returns ");
         returnDataType.accept(this);
-    }
-
-    public boolean visit(BigQuerySelectAsStruct x) {
-        print0(ucase ? "SELECT AS STRUCT " : "select as struct ");
-        printlnAndAccept(x.getItems(), ",");
-        printFrom(x);
-        return false;
-    }
-
-    protected void printFrom(BigQuerySelectAsStruct x) {
-        SQLTableSource from = x.getFrom();
-        if (from == null) {
-            return;
-        }
-
-        println();
-        print(ucase ? "FROM " : "from ");
-        printTableSource(from);
     }
 
     protected void printFetchFirst(SQLSelectQueryBlock x) {

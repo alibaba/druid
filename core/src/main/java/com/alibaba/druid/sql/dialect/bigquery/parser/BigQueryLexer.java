@@ -69,6 +69,7 @@ public class BigQueryLexer extends Lexer {
         map.put("LIKE", Token.LIKE);
         map.put("LIMIT", Token.LIMIT);
         map.put("MERGE", Token.MERGE);
+        map.put("MATCHED", Token.MATCHED);
         map.put("NEW", Token.NEW);
         map.put("NOT", Token.NOT);
         map.put("NULL", Token.NULL);
@@ -100,6 +101,7 @@ public class BigQueryLexer extends Lexer {
         map.put("WHERE", Token.WHERE);
         map.put("WINDOW", Token.WINDOW);
         map.put("WITH", Token.WITH);
+        map.put("VIEW", Token.VIEW);
 
         return new Keywords(map);
     }

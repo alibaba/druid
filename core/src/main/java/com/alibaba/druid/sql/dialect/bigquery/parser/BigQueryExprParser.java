@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCharExpr;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryDateTimeExpr;
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQuerySelectAsStruct;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -118,7 +117,7 @@ public class BigQueryExprParser extends SQLExprParser {
             items.add(aliasedExpr);
 
             if (lexer.nextIfComma()) {
-                if (lexer.token() == Token.FROM) {
+                if (lexer.token() == Token.FROM || lexer.token() == Token.RPAREN) {
                     break;
                 }
                 continue;
@@ -333,29 +332,7 @@ public class BigQueryExprParser extends SQLExprParser {
         return super.dotRest(expr);
     }
 
-    protected SQLExpr parseQueryExpr() {
-        Lexer.SavePoint mark = lexer.markOut();
-        if (lexer.nextIf(Token.SELECT)
-                && lexer.nextIf(Token.AS)
-                && lexer.nextIfIdentifier(FnvHash.Constants.STRUCT)
-        ) {
-            return new SQLQueryExpr(
-                    new SQLSelect(
-                            parseSelectAsStruct()));
-        } else {
-            lexer.reset(mark);
-        }
-
-        return super.parseQueryExpr();
-    }
-
-    protected BigQuerySelectAsStruct parseSelectAsStruct() {
-        BigQuerySelectAsStruct selectAsStruct = new BigQuerySelectAsStruct();
-        aliasedItems(selectAsStruct.getItems(), selectAsStruct);
-        if (lexer.nextIf(Token.FROM)) {
-            selectAsStruct.setFrom(
-                    this.createSelectParser().parseTableSource());
-        }
-        return selectAsStruct;
+    public SQLSelectParser createSelectParser() {
+        return new BigQuerySelectParser(this, null);
     }
 }

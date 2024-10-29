@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class BigQuerySelectQueryBlock extends SQLSelectQueryBlock
         implements BigQueryObject{
+    protected boolean asStruct;
     private DifferentialPrivacy differentialPrivacy;
 
     public DifferentialPrivacy getDifferentialPrivacy() {
@@ -23,6 +24,14 @@ public class BigQuerySelectQueryBlock extends SQLSelectQueryBlock
             x.setParent(this);
         }
         this.differentialPrivacy = x;
+    }
+
+    public boolean isAsStruct() {
+        return asStruct;
+    }
+
+    public void setAsStruct(boolean asStruct) {
+        this.asStruct = asStruct;
     }
 
     @Override

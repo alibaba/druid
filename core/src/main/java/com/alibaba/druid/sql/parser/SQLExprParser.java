@@ -1344,6 +1344,7 @@ public class SQLExprParser extends SQLParser {
             case FROM:
             case ORDER:
             case LIMIT:
+            case UNION:
                 return new SQLIdentifierExpr(str);
             case IDENTIFIER:
                 if (dialectFeatureEnabled(ParseAllIdentifier)) {

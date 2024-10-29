@@ -1246,7 +1246,33 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseIf() {
-        throw new ParserException("not supported. " + lexer.info());
+        accept(Token.IF);
+        SQLIfStatement stmt = new SQLIfStatement();
+        stmt.setCondition(this.exprParser.expr());
+        accept(Token.THEN);
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
+        while (lexer.token() == Token.ELSE) {
+            lexer.nextToken();
+            if (lexer.token() == Token.IF) {
+                lexer.nextToken();
+                SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
+                elseIf.setCondition(this.exprParser.expr());
+                elseIf.setParent(stmt);
+                accept(Token.THEN);
+                this.parseStatementList(elseIf.getStatements(), -1, elseIf);
+                stmt.getElseIfList().add(elseIf);
+            } else {
+                SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
+                this.parseStatementList(elseItem.getStatements(), -1, elseItem);
+                stmt.setElseItem(elseItem);
+                break;
+            }
+        }
+        accept(Token.END);
+        accept(Token.IF);
+        accept(Token.SEMI);
+        stmt.setAfterSemi(true);
+        return stmt;
     }
 
     public SQLStatement parseWhile() {
@@ -5444,7 +5470,7 @@ public class SQLStatementParser extends SQLParser {
 
         parseHints(stmt.getHints());
 
-        accept(Token.INTO);
+        mergeBeforeName();
 
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
@@ -5478,15 +5504,13 @@ public class SQLStatementParser extends SQLParser {
                     SQLMergeStatement.MergeUpdateClause updateClause = new SQLMergeStatement.MergeUpdateClause();
                     lexer.nextToken();
 
-                    if (lexer.token == Token.AND) {
-                        lexer.nextToken();
+                    if (lexer.nextIf(Token.AND)) {
                         SQLExpr where = this.exprParser.expr();
                         updateClause.setWhere(where);
                     }
 
                     accept(Token.THEN);
-                    if (lexer.token == DELETE) {
-                        lexer.nextToken();
+                    if (lexer.nextIf(Token.DELETE)) {
                         updateClause.setDelete(true);
                         stmt.setUpdateClause(updateClause);
                         break;
@@ -5501,16 +5525,14 @@ public class SQLStatementParser extends SQLParser {
                         updateClause.addItem(item);
                         item.setParent(updateClause);
 
-                        if (lexer.token == (Token.COMMA)) {
-                            lexer.nextToken();
+                        if (lexer.nextIf(Token.COMMA)) {
                             continue;
                         }
 
                         break;
                     }
 
-                    if (lexer.token == Token.WHERE) {
-                        lexer.nextToken();
+                    if (lexer.nextIf(Token.WHERE)) {
                         updateClause.setWhere(exprParser.expr());
                     }
 
@@ -5520,19 +5542,13 @@ public class SQLStatementParser extends SQLParser {
                     if (lexer.token == Token.WHEN) {
                         Lexer.SavePoint savePoint = lexer.mark();
                         lexer.nextToken();
-                        if (lexer.token == Token.MATCHED) {
-                            lexer.nextToken();
-
-                            if (lexer.token == Token.AND) {
-                                lexer.nextToken();
+                        if (lexer.nextIf(Token.MATCHED)) {
+                            if (lexer.nextIf(Token.AND)) {
                                 deleteWhere = this.exprParser.expr();
                             }
 
-                            if (lexer.token == Token.THEN) {
-                                lexer.nextToken();
-
-                                if (lexer.token == Token.DELETE) {
-                                    lexer.nextToken();
+                            if (lexer.nextIf(Token.THEN)) {
+                                if (lexer.nextIf(Token.DELETE)) {
                                     updateClause.setDeleteWhere(deleteWhere);
                                 } else {
                                     deleteWhere = null;
@@ -5543,6 +5559,7 @@ public class SQLStatementParser extends SQLParser {
 
                             if (deleteWhere == null) {
                                 lexer.reset(savePoint);
+                                continue;
                             }
                         }
                     }
@@ -5561,12 +5578,8 @@ public class SQLStatementParser extends SQLParser {
             }
 
             if (!insertFlag) {
-                if (lexer.token == Token.WHEN) {
-                    lexer.nextToken();
-                }
-
-                if (lexer.token == Token.NOT) {
-                    lexer.nextToken();
+                lexer.nextIf(WHEN);
+                if (lexer.nextIf(NOT)) {
                     insertFlag = true;
                 }
             }
@@ -5595,10 +5608,14 @@ public class SQLStatementParser extends SQLParser {
                     exprParser.exprList(insertClause.getColumns(), insertClause);
                     accept(Token.RPAREN);
                 }
-                accept(Token.VALUES);
-                accept(Token.LPAREN);
-                exprParser.exprList(insertClause.getValues(), insertClause);
-                accept(Token.RPAREN);
+                if (lexer.nextIfIdentifier("ROW")) {
+                    insertClause.getValues().add(new SQLIdentifierExpr("ROW"));
+                } else {
+                    accept(Token.VALUES);
+                    accept(Token.LPAREN);
+                    exprParser.exprList(insertClause.getValues(), insertClause);
+                    accept(Token.RPAREN);
+                }
 
                 if (lexer.token == Token.WHERE) {
                     lexer.nextToken();
@@ -5620,6 +5637,10 @@ public class SQLStatementParser extends SQLParser {
         stmt.setErrorLoggingClause(errorClause);
 
         return stmt;
+    }
+
+    protected void mergeBeforeName() {
+        accept(Token.INTO);
     }
 
     protected SQLErrorLoggingClause parseErrorLoggingClause() {

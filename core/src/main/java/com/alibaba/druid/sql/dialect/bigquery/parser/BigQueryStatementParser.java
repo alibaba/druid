@@ -148,4 +148,9 @@ public class BigQueryStatementParser extends SQLStatementParser {
 
         return deleteStatement;
     }
+
+    @Override
+    protected void mergeBeforeName() {
+        this.lexer.nextIf(Token.INTO);
+    }
 }

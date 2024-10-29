@@ -21,6 +21,10 @@ public class BigQuerySelectParser extends SQLSelectParser {
     }
 
     protected void querySelectListBefore(SQLSelectQueryBlock x) {
+        if (lexer.nextIf(Token.AS)) {
+            acceptIdentifier("STRUCT");
+            ((BigQuerySelectQueryBlock) x).setAsStruct(true);
+        }
         if (lexer.nextIf(Token.WITH)) {
             acceptIdentifier("DIFFERENTIAL_PRIVACY");
             acceptIdentifier("OPTIONS");

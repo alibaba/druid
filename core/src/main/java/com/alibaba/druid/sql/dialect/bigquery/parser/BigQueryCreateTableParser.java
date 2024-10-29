@@ -91,6 +91,10 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
             accept(Token.REPLACE);
             createTable.config(SQLCreateTableStatement.Feature.OrReplace);
         }
+
+        if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")) {
+            createTable.setTemporary(true);
+        }
     }
 
     @Override

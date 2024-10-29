@@ -1335,14 +1335,12 @@ public class SQLSelectParser extends SQLParser {
             Lexer.SavePoint mark = lexer.mark();
             lexer.nextToken();
 
-            if (lexer.token() == Token.LPAREN) {
-                lexer.nextToken();
+            if (lexer.nextIf(Token.LPAREN)) {
                 SQLUnnestTableSource unnest = new SQLUnnestTableSource();
                 this.exprParser.exprList(unnest.getItems(), unnest);
                 accept(Token.RPAREN);
 
-                if (lexer.token() == Token.WITH) {
-                    lexer.nextToken();
+                if (lexer.nextIf(Token.WITH)) {
                     acceptIdentifier("ORDINALITY");
                     unnest.setOrdinality(true);
                 }
@@ -1350,10 +1348,17 @@ public class SQLSelectParser extends SQLParser {
                 String alias = this.tableAlias();
                 unnest.setAlias(alias);
 
-                if (lexer.token() == Token.LPAREN) {
-                    lexer.nextToken();
+                if (lexer.nextIf(Token.LPAREN)) {
                     this.exprParser.names(unnest.getColumns(), unnest);
                     accept(Token.RPAREN);
+                }
+
+                if (lexer.nextIf(Token.WITH)) {
+                    acceptIdentifier("OFFSET");
+                    lexer.nextIf(Token.AS);
+                    unnest.setOffset(
+                            this.exprParser.expr()
+                    );
                 }
                 return unnest;
             } else {

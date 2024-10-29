@@ -18,13 +18,6 @@ public interface BigQueryVisitor extends SQLASTVisitor {
     default void endVisit(BigQuerySelectQueryBlock.DifferentialPrivacy x) {
     }
 
-    default boolean visit(BigQuerySelectAsStruct x) {
-        return true;
-    }
-
-    default void endVisit(BigQuerySelectAsStruct x) {
-    }
-
     default boolean visit(BigQueryAssertStatement x) {
         return true;
     }

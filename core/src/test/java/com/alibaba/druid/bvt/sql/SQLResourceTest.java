@@ -51,6 +51,9 @@ public class SQLResourceTest {
         Arrays.sort(files, Comparator.comparing(File::getName));
 
         for (File file : files) {
+            if (file.getName().equals(".DS_Store")) {
+                continue;
+            }
             System.out.println(DELIMITER_LONG);
             System.out.println("## BEGIN parse sql, file " + file);
             System.out.println(DELIMITER_LONG);
@@ -117,7 +120,7 @@ public class SQLResourceTest {
             System.out.println();
             System.out.println(sql);
             System.out.println();
-            System.out.println(DELIMITER_SHORT +  " [" + (i + 1) + "/" + tests.length + "] " + dbType);
+            System.out.println(DELIMITER_SHORT + " " + file.getName() +  " [" + (i + 1) + "/" + tests.length + "] " + dbType);
             System.out.println();
 
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
