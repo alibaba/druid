@@ -78,7 +78,7 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
 
     protected void printSelectListBefore(BigQuerySelectQueryBlock x) {
         if (x.isAsStruct()) {
-            print0(ucase ? " AS STRUCT " : " as struct ");
+            print0(ucase ? " AS STRUCT" : " as struct");
         }
 
         BigQuerySelectQueryBlock.DifferentialPrivacy privacy = x.getDifferentialPrivacy();

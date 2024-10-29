@@ -9,8 +9,7 @@ SELECT
 FROM `d-k-id-m.g.x` AS a
 --------------------
 SELECT CAST(NULL AS STRING) AS pn, ARRAY(
-		SELECT AS STRUCT CAST(NULL AS STRING) AS pt,
-		CAST(NULL AS STRING) AS pn
+		SELECT AS STRUCT CAST(NULL AS STRING) AS pt, CAST(NULL AS STRING) AS pn
 	) AS p, a.s
 FROM `d-k-id-m.g.x` a
 ------------------------------------------------------------------------------------------------------------------------

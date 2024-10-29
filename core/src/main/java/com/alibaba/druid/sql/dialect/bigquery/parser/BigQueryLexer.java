@@ -7,8 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.ScanSubAsIdentifier;
-import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.GroupByAll;
-import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.SQLDateExpr;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 
 public class BigQueryLexer extends Lexer {
     @Override
@@ -143,7 +142,7 @@ public class BigQueryLexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(SQLDateExpr, ScanSubAsIdentifier, GroupByAll);
+        this.dialectFeature.configFeature(SQLDateExpr, ScanSubAsIdentifier, GroupByAll, InRestSpecificOperation);
     }
 
     @Override
