@@ -2,13 +2,24 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLStructDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLStructExpr extends SQLExprImpl {
+    private SQLStructDataType dataType;
     private final List<SQLAliasedExpr> items = new ArrayList<>();
+
+    public SQLStructDataType getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(SQLStructDataType x) {
+        x.setParent(this);
+        this.dataType = x;
+    }
 
     public void addItem(SQLAliasedExpr item) {
         item.setParent(this);

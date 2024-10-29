@@ -8738,33 +8738,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     /**
-     * parse while statement
-     *
-     * @return MySqlWhileStatement
-     */
-    public SQLWhileStatement parseWhile() {
-        accept(Token.WHILE);
-        SQLWhileStatement stmt = new SQLWhileStatement();
-
-        stmt.setCondition(this.exprParser.expr());
-
-        accept(Token.DO);
-
-        this.parseStatementList(stmt.getStatements(), -1, stmt);
-
-        accept(Token.END);
-
-        accept(Token.WHILE);
-
-        accept(SEMI);
-
-        stmt.setAfterSemi(true);
-
-        return stmt;
-
-    }
-
-    /**
      * parse while statement with label
      *
      * @return MySqlWhileStatement

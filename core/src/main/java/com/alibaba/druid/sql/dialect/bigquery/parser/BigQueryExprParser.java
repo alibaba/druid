@@ -10,7 +10,6 @@ import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static com.alibaba.druid.util.FnvHash.fnv1a_64_lower;
 
@@ -29,6 +28,7 @@ public class BigQueryExprParser extends SQLExprParser {
                 "BIT_XOR",
                 "COUNT",
                 "COUNTIF",
+                "FIRST_VALUE",
                 "GROUPING",
                 "LOGICAL_AND",
                 "LOGICAL_OR",
@@ -107,25 +107,6 @@ public class BigQueryExprParser extends SQLExprParser {
         return structExpr;
     }
 
-    protected void aliasedItems(List<SQLAliasedExpr> items, SQLObject parent) {
-        while (true) {
-            SQLExpr expr = expr();
-            String alias = as();
-
-            SQLAliasedExpr aliasedExpr = new SQLAliasedExpr(expr, alias);
-            aliasedExpr.setParent(parent);
-            items.add(aliasedExpr);
-
-            if (lexer.nextIfComma()) {
-                if (lexer.token() == Token.FROM || lexer.token() == Token.RPAREN) {
-                    break;
-                }
-                continue;
-            }
-            break;
-        }
-    }
-
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
             parseAssignItem(column.getColProperties(), column);
@@ -136,7 +117,10 @@ public class BigQueryExprParser extends SQLExprParser {
 
     protected SQLStructDataType parseDataTypeStruct() {
         acceptIdentifier("STRUCT");
+        return parseDataTypeStruct0();
+    }
 
+    protected SQLStructDataType parseDataTypeStruct0() {
         SQLStructDataType struct = new SQLStructDataType(dbType);
         accept(Token.LT);
         for (; ; ) {
@@ -334,5 +318,19 @@ public class BigQueryExprParser extends SQLExprParser {
 
     public SQLSelectParser createSelectParser() {
         return new BigQuerySelectParser(this, null);
+    }
+
+    public SQLExpr exprRest(SQLExpr expr) {
+        if (lexer.token() == Token.LT && expr instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) expr).nameEquals("STRUCT")) {
+            SQLStructExpr structExpr = new SQLStructExpr();
+            structExpr.setDataType(
+                    parseDataTypeStruct0()
+            );
+            accept(Token.LPAREN);
+            aliasedItems(structExpr.getItems(), structExpr);
+            accept(Token.RPAREN);
+            expr = structExpr;
+        }
+        return super.exprRest(expr);
     }
 }

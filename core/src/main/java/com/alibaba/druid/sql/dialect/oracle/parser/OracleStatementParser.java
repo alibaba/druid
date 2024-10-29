@@ -959,7 +959,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLStatement parseWhile() {
+    public SQLWhileStatement parseWhile() {
         accept(Token.WHILE);
 
         SQLWhileStatement stmt = new SQLWhileStatement();

@@ -2753,7 +2753,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLStructExpr x) {
-        print0(ucase ? "STRUCT(" : "struct(");
+        SQLStructDataType dataType = x.getDataType();
+        if (dataType != null) {
+            dataType.accept(this);
+            print('(');
+        } else {
+            print0(ucase ? "STRUCT(" : "struct(");
+        }
         printAndAccept(x.getItems(), ", ");
         print(')');
         return false;

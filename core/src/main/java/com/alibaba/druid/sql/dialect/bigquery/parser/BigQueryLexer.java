@@ -8,6 +8,7 @@ import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.ScanSubAsIdentifier;
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
+import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class BigQueryLexer extends Lexer {
     @Override
@@ -38,6 +39,7 @@ public class BigQueryLexer extends Lexer {
         map.put("DISTINCT", Token.DISTINCT);
         map.put("DELETE", Token.DELETE);
         map.put("DROP", Token.DROP);
+        map.put("DO", Token.DO);
         map.put("ELSE", Token.ELSE);
         map.put("END", Token.END);
         map.put("ESCAPE", Token.ESCAPE);
@@ -100,6 +102,7 @@ public class BigQueryLexer extends Lexer {
         map.put("WHERE", Token.WHERE);
         map.put("WINDOW", Token.WINDOW);
         map.put("WITH", Token.WITH);
+        map.put("WHILE", Token.WHILE);
         map.put("VIEW", Token.VIEW);
 
         return new Keywords(map);
@@ -160,6 +163,124 @@ public class BigQueryLexer extends Lexer {
             scanMultiLineComment();
         } else {
             throw new IllegalStateException();
+        }
+    }
+
+    @Override
+    protected void scanString() {
+        {
+            boolean hasSpecial = false;
+            int startIndex = pos + 1;
+            int endIndex = -1; // text.indexOf('\'', startIndex);
+            for (int i = startIndex; i < text.length(); ++i) {
+                final char ch = text.charAt(i);
+                if (ch == '\\') {
+                    hasSpecial = true;
+                    continue;
+                }
+                if (ch == '\'') {
+                    endIndex = i;
+                    break;
+                }
+            }
+
+            if (endIndex == -1) {
+                throw new ParserException("unclosed str. " + info());
+            }
+
+            String stringVal;
+            if (token == Token.AS) {
+                stringVal = text.substring(pos, endIndex + 1);
+            } else {
+                if (startIndex == endIndex) {
+                    stringVal = "";
+                } else {
+                    stringVal = text.substring(startIndex, endIndex);
+                }
+            }
+            // hasSpecial = stringVal.indexOf('\\') != -1;
+
+            if (!hasSpecial) {
+                this.stringVal = stringVal;
+                int pos = endIndex + 1;
+                char ch = charAt(pos);
+                if (ch != '\'') {
+                    this.pos = pos;
+                    this.ch = ch;
+                    token = LITERAL_CHARS;
+                    return;
+                }
+            }
+        }
+
+        mark = pos;
+        boolean hasSpecial = false;
+        for (; ; ) {
+            if (isEOF()) {
+                lexError("unclosed.str.lit");
+                return;
+            }
+
+            ch = charAt(++pos);
+
+            if (ch == '\\') {
+                scanChar();
+                if (!hasSpecial) {
+                    initBuff(bufPos);
+                    arraycopy(mark + 1, buf, 0, bufPos);
+                    hasSpecial = true;
+                }
+
+                switch (ch) {
+                    case '\'':
+                        putChar('\'');
+                        break;
+                    case '"':
+                        putChar('"');
+                        break;
+                    case '\\':
+                        putChar('\\');
+                        break;
+                    default:
+                        putChar('\\');
+                        putChar(ch);
+                        break;
+                }
+
+                continue;
+            }
+            if (ch == '\'') {
+                scanChar();
+                if (ch != '\'') {
+                    token = LITERAL_CHARS;
+                    break;
+                } else {
+                    if (!hasSpecial) {
+                        initBuff(bufPos);
+                        arraycopy(mark + 1, buf, 0, bufPos);
+                        hasSpecial = true;
+                    }
+                    putChar('\'');
+                    continue;
+                }
+            }
+
+            if (!hasSpecial) {
+                bufPos++;
+                continue;
+            }
+
+            if (bufPos == buf.length) {
+                putChar(ch);
+            } else {
+                buf[bufPos++] = ch;
+            }
+        }
+
+        if (!hasSpecial) {
+            stringVal = subString(mark + 1, bufPos);
+        } else {
+            stringVal = new String(buf, 0, bufPos);
         }
     }
 }

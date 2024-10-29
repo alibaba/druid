@@ -646,6 +646,13 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.token == WHILE) {
+                SQLStatement stmt = parseWhile();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
             int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
                 if (parent != null) {
@@ -1275,8 +1282,25 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
-    public SQLStatement parseWhile() {
-        throw new ParserException("not supported. " + lexer.info());
+    public SQLWhileStatement parseWhile() {
+        accept(Token.WHILE);
+        SQLWhileStatement stmt = new SQLWhileStatement();
+
+        stmt.setCondition(this.exprParser.expr());
+
+        accept(Token.DO);
+
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
+
+        accept(Token.END);
+
+        accept(Token.WHILE);
+
+        accept(SEMI);
+
+        stmt.setAfterSemi(true);
+
+        return stmt;
     }
 
     public SQLStatement parseDeclare() {
@@ -4727,9 +4751,7 @@ public class SQLStatementParser extends SQLParser {
     public SQLUpdateStatement parseUpdateStatement() {
         SQLUpdateStatement updateStatement = createUpdateStatement();
 
-        if (lexer.token == Token.UPDATE) {
-            lexer.nextToken();
-
+        if (lexer.nextIf(UPDATE)) {
             SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
             updateStatement.setTableSource(tableSource);
         }
@@ -4737,6 +4759,10 @@ public class SQLStatementParser extends SQLParser {
         parseUpdateStatementPartition(updateStatement);
 
         parseUpdateSet(updateStatement);
+
+        if (lexer.nextIf(FROM)) {
+            updateStatement.setFrom(this.createSQLSelectParser().parseTableSource());
+        }
 
         if (lexer.token == (Token.WHERE)) {
             lexer.nextToken();

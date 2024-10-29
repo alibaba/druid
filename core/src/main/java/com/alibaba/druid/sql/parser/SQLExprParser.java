@@ -1995,24 +1995,44 @@ public class SQLExprParser extends SQLParser {
     protected String doRestSpecific(SQLExpr expr) {
         return null;
     }
-    protected SQLExpr dotRest(SQLExpr expr) {
-        if (lexer.token == Token.STAR) {
-            lexer.nextToken();
-            if (lexer.token == Token.EXCEPT) {
-                SQLAllColumnExpr allColumnExpr = new SQLAllColumnExpr();
-                allColumnExpr.setOwner(expr);
 
-                lexer.nextToken();
-                accept(Token.LPAREN);
-                List<SQLExpr> except = new ArrayList<>();
-                this.exprList(except, allColumnExpr);
-                allColumnExpr.setExcept(except);
-                accept(Token.RPAREN);
+    protected void aliasedItems(List<SQLAliasedExpr> items, SQLObject parent) {
+        while (true) {
+            SQLExpr expr = expr();
+            String alias = as();
 
-                expr = allColumnExpr;
-            } else {
-                expr = new SQLPropertyExpr(expr, "*");
+            SQLAliasedExpr aliasedExpr = new SQLAliasedExpr(expr, alias);
+            aliasedExpr.setParent(parent);
+            items.add(aliasedExpr);
+
+            if (lexer.nextIfComma()) {
+                if (lexer.token() == Token.FROM || lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                continue;
             }
+            break;
+        }
+    }
+
+    protected SQLExpr dotRest(SQLExpr expr) {
+        if (lexer.nextIf(STAR)) {
+            expr = new SQLPropertyExpr(expr, "*");
+//            SQLAllColumnExpr allColumnExpr = new SQLAllColumnExpr();
+//            allColumnExpr.setOwner(expr);
+//            if (lexer.nextIf(EXCEPT)) {
+//                accept(Token.LPAREN);
+//                List<SQLExpr> except = new ArrayList<>();
+//                this.exprList(except, allColumnExpr);
+//                allColumnExpr.setExcept(except);
+//                accept(Token.RPAREN);
+//            }
+//            if (lexer.nextIf(REPLACE)) {
+//                accept(Token.LPAREN);
+//                this.aliasedItems(allColumnExpr.getReplace(), allColumnExpr);
+//                accept(Token.RPAREN);
+//            }
+//            expr = allColumnExpr;
         } else {
             String name;
             long hash_lower = 0L;
@@ -5698,7 +5718,7 @@ public class SQLExprParser extends SQLParser {
                 }
             } else if (FnvHash.Constants.DATE == hash_lower
                     && lexer.stringVal().charAt(0) != '`'
-                    && lexer.token == Token.LITERAL_CHARS
+                    && (lexer.token == Token.LITERAL_CHARS || lexer.token == LITERAL_ALIAS)
                     && (dialectFeatureEnabled(SQLDateExpr))
             ) {
                 String literal = lexer.stringVal();

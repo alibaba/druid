@@ -1452,6 +1452,17 @@ class SchemaResolveVisitorFactory {
                         propertyExpr.setResolvedColumn(column);
                     }
                 }
+            } else if (expr instanceof SQLAllColumnExpr) {
+                SQLAllColumnExpr allColumnExpr = (SQLAllColumnExpr) expr;
+                SQLExpr owner = allColumnExpr.getOwner();
+                if (owner instanceof SQLIdentifierExpr) {
+                    SQLIdentifierExpr ownerIdent = (SQLIdentifierExpr) owner;
+                    String ownerName = ownerIdent.getName();
+                    if (visitor.isEnabled(SchemaResolveVisitor.Option.ResolveAllColumn)) {
+                        SQLTableSource tableSource = x.findTableSource(ownerName);
+                        extractColumns(visitor, tableSource, ownerName, columns);
+                    }
+                }
             } else if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 visitor.visit(identExpr);
@@ -1871,7 +1882,7 @@ class SchemaResolveVisitorFactory {
             }
         }
 
-        if (expr instanceof SQLName) {
+        if (expr instanceof SQLName || expr instanceof SQLAllColumnExpr) {
             if (x.getSchemaObject() != null) {
                 return;
             }
@@ -1882,6 +1893,11 @@ class SchemaResolveVisitorFactory {
                 identifierExpr = (SQLIdentifierExpr) expr;
             } else if (expr instanceof SQLPropertyExpr) {
                 SQLExpr owner = ((SQLPropertyExpr) expr).getOwner();
+                if (owner instanceof SQLIdentifierExpr) {
+                    identifierExpr = (SQLIdentifierExpr) owner;
+                }
+            } else if (expr instanceof SQLAllColumnExpr) {
+                SQLExpr owner = ((SQLAllColumnExpr) expr).getOwner();
                 if (owner instanceof SQLIdentifierExpr) {
                     identifierExpr = (SQLIdentifierExpr) owner;
                 }

@@ -1020,6 +1020,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 continue;
             }
 
+            if (expr instanceof SQLAllColumnExpr) {
+                SQLExpr owner = ((SQLAllColumnExpr) expr).getOwner();
+                if (owner != null) {
+                    return owner;
+                }
+            }
+
             if (expr instanceof SQLPropertyExpr) {
                 SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
 
@@ -1760,6 +1767,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     private void statAllColumn(SQLAllColumnExpr x, SQLExprTableSource tableSource) {
         SQLExprTableSource exprTableSource = tableSource;
         SQLName expr = exprTableSource.getName();
+        if (x.getOwner() instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr owner = (SQLIdentifierExpr) x.getOwner();
+            if (!tableSource.containsAlias(owner.normalizedName())) {
+                return;
+            }
+        }
 
         SQLCreateTableStatement createStmt = null;
 
@@ -1874,7 +1887,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     protected boolean isSimpleExprTableSource(SQLExprTableSource x) {
-        return x.getExpr() instanceof SQLName;
+        SQLExpr expr = x.getExpr();
+        return expr instanceof SQLName || (expr instanceof SQLAllColumnExpr && ((SQLAllColumnExpr) expr).getOwner() != null);
     }
 
     public TableStat getTableStat(SQLExprTableSource tableSource) {
