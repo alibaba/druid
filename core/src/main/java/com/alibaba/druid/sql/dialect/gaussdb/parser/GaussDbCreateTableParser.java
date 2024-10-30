@@ -71,10 +71,20 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
     }
 
     protected void createTableBefore(SQLCreateTableStatement createTable) {
+        parseTableType(createTable);
+        parseTableType(createTable);
+    }
+
+    private void parseTableType(SQLCreateTableStatement createTable) {
         if (lexer.nextIfIdentifier("UNLOGGED")) {
             createTable.config(SQLCreateTableStatement.Feature.Unlogged);
+        } else if (lexer.nextIfIdentifier(FnvHash.Constants.GLOBAL)) {
+            createTable.config(SQLCreateTableStatement.Feature.Global);
+        } else if (lexer.nextIfIdentifier(FnvHash.Constants.TEMPORARY) || lexer.nextIfIdentifier("TEMP")) {
+            createTable.config(SQLCreateTableStatement.Feature.Temporary);
+        } else if (lexer.nextIf(Token.LOCAL)) {
+            createTable.config(SQLCreateTableStatement.Feature.Local);
         }
-        super.createTableBefore(createTable);
     }
 
     public GaussDbDistributeBy parseDistributeBy() {

@@ -20,6 +20,46 @@ WITH (
 )
 DISTRIBUTE BY hash (L_ORDERKEY);
 ------------------------------------------------------------------------------------------------------------------------
+CREATE GLOBAL TABLE test_global (
+	L_ORDERKEY BIGINT NOT NULL
+)
+--------------------
+CREATE GLOBAL TABLE test_global (
+	L_ORDERKEY BIGINT NOT NULL
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE LOCAL TABLE test_local (
+	L_ORDERKEY BIGINT NOT NULL
+)
+--------------------
+CREATE LOCAL TABLE test_local (
+	L_ORDERKEY BIGINT NOT NULL
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TEMP TABLE test_temporary (
+	L_ORDERKEY BIGINT NOT NULL
+)
+--------------------
+CREATE TEMPORARY TABLE test_temporary (
+	L_ORDERKEY BIGINT NOT NULL
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TEMPORARY TABLE test_temp (
+	L_ORDERKEY BIGINT NOT NULL
+)
+--------------------
+CREATE TEMPORARY TABLE test_temp (
+	L_ORDERKEY BIGINT NOT NULL
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE GLOBAL TEMPORARY TABLE test_global_temp (
+	L_ORDERKEY BIGINT NOT NULL
+)
+--------------------
+CREATE GLOBAL TEMPORARY TABLE test_global_temp (
+	L_ORDERKEY BIGINT NOT NULL
+)
+------------------------------------------------------------------------------------------------------------------------
 create table if not exists test_comment
 (
 business_date nvarchar2 comment '业务日期', -- 录音创建日期
