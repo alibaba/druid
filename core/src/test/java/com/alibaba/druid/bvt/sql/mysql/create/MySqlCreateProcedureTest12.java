@@ -71,9 +71,10 @@ public class MySqlCreateProcedureTest12 extends MysqlTest {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(3, visitor.getTables().size());
-        assertEquals(4, visitor.getColumns().size());
+        assertEquals(5, visitor.getColumns().size());
         assertEquals(2, visitor.getConditions().size());
 
+        Assert.assertTrue(visitor.containsColumn("_result", "*"));
         Assert.assertTrue(visitor.containsColumn("_result", "node"));
         Assert.assertTrue(visitor.containsColumn("nodes", "parent"));
         Assert.assertTrue(visitor.containsColumn("nodes", "child"));

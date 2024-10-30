@@ -1,3 +1,8 @@
+SELECT a.* EXCEPT (f1, f2) from t
+--------------------
+SELECT a.* EXCEPT(f1, f2)
+FROM t
+------------------------------------------------------------------------------------------------------------------------
 SELECT CAST(b'\x48\x65\x6c\x6c\x6f' AS STRING FORMAT 'ASCII') AS bytes_to_string;
 --------------------
 SELECT CAST(b'\x48\x65\x6c\x6c\x6f' AS STRING FORMAT 'ASCII') AS bytes_to_string;

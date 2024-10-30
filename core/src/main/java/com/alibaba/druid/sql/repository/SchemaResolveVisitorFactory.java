@@ -1422,12 +1422,18 @@ class SchemaResolveVisitorFactory {
             SQLExpr expr = selectItem.getExpr();
             if (expr instanceof SQLAllColumnExpr) {
                 SQLAllColumnExpr allColumnExpr = (SQLAllColumnExpr) expr;
-                allColumnExpr.setResolvedTableSource(from);
+                SQLExpr owner = allColumnExpr.getOwner();
+                SQLTableSource resolvedTableSource = from;
+                if (owner instanceof SQLIdentifierExpr) {
+                    String ownerName = ((SQLIdentifierExpr) owner).getName();
+                    resolvedTableSource = x.findTableSource(ownerName);
+                }
+                allColumnExpr.setResolvedTableSource(resolvedTableSource);
 
                 visitor.visit(allColumnExpr);
 
                 if (visitor.isEnabled(SchemaResolveVisitor.Option.ResolveAllColumn)) {
-                    extractColumns(visitor, from, null, columns);
+                    extractColumns(visitor, resolvedTableSource, null, columns);
                 }
             } else if (expr instanceof SQLPropertyExpr) {
                 SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;

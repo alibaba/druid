@@ -2026,22 +2026,21 @@ public class SQLExprParser extends SQLParser {
 
     protected SQLExpr dotRest(SQLExpr expr) {
         if (lexer.nextIf(STAR)) {
-            expr = new SQLPropertyExpr(expr, "*");
-//            SQLAllColumnExpr allColumnExpr = new SQLAllColumnExpr();
-//            allColumnExpr.setOwner(expr);
-//            if (lexer.nextIf(EXCEPT)) {
-//                accept(Token.LPAREN);
-//                List<SQLExpr> except = new ArrayList<>();
-//                this.exprList(except, allColumnExpr);
-//                allColumnExpr.setExcept(except);
-//                accept(Token.RPAREN);
-//            }
-//            if (lexer.nextIf(REPLACE)) {
-//                accept(Token.LPAREN);
-//                this.aliasedItems(allColumnExpr.getReplace(), allColumnExpr);
-//                accept(Token.RPAREN);
-//            }
-//            expr = allColumnExpr;
+            SQLAllColumnExpr allColumnExpr = new SQLAllColumnExpr();
+            allColumnExpr.setOwner(expr);
+            if (lexer.nextIf(EXCEPT)) {
+                accept(Token.LPAREN);
+                List<SQLExpr> except = new ArrayList<>();
+                this.exprList(except, allColumnExpr);
+                allColumnExpr.setExcept(except);
+                accept(Token.RPAREN);
+            }
+            if (lexer.nextIf(REPLACE)) {
+                accept(Token.LPAREN);
+                this.aliasedItems(allColumnExpr.getReplace(), allColumnExpr);
+                accept(Token.RPAREN);
+            }
+            expr = allColumnExpr;
         } else {
             String name;
             long hash_lower = 0L;

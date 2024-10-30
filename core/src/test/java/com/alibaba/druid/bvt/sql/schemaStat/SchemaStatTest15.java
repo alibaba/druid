@@ -34,7 +34,7 @@ public class SchemaStatTest15 extends TestCase {
         System.out.println("relationships : " + statVisitor.getRelationships()); // group by
         System.out.println(statVisitor.getConditions());
 
-        assertEquals(4, statVisitor.getColumns().size());
+        assertEquals(5, statVisitor.getColumns().size());
         assertEquals(1, statVisitor.getConditions().size());
         assertEquals(0, statVisitor.getFunctions().size());
 

@@ -1746,6 +1746,78 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
+        SQLIdentifierExpr owner = null;
+        if (x.getOwner() instanceof SQLIdentifierExpr) {
+            owner = (SQLIdentifierExpr) x.getOwner();
+        }
+        if (tableSource instanceof SQLSubqueryTableSource) {
+            SQLSelect subSelect = ((SQLSubqueryTableSource) tableSource).getSelect();
+            SQLSelectQueryBlock subQuery = subSelect.getQueryBlock();
+            if (subQuery != null && owner != null) {
+                SQLTableSource subTableSource = subQuery.findTableSourceWithColumn(owner.nameHashCode64());
+                if (subTableSource != null) {
+                    tableSource = subTableSource;
+                }
+            }
+        }
+
+        if (tableSource instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
+
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr table = (SQLIdentifierExpr) expr;
+                SQLTableSource resolvedTableSource = table.getResolvedTableSource();
+                if (resolvedTableSource instanceof SQLExprTableSource) {
+                    expr = ((SQLExprTableSource) resolvedTableSource).getExpr();
+                }
+            } else if (expr instanceof SQLPropertyExpr) {
+                SQLPropertyExpr table = (SQLPropertyExpr) expr;
+                SQLTableSource resolvedTableSource = table.getResolvedTableSource();
+                if (resolvedTableSource instanceof SQLExprTableSource) {
+                    expr = ((SQLExprTableSource) resolvedTableSource).getExpr();
+                }
+            }
+
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr table = (SQLIdentifierExpr) expr;
+
+                SQLTableSource resolvedTableSource = table.getResolvedTableSource();
+                if (resolvedTableSource instanceof SQLWithSubqueryClause.Entry) {
+                    return false;
+                }
+
+                addColumn(table, "*");
+            } else if (expr instanceof SQLPropertyExpr) {
+                SQLPropertyExpr table = (SQLPropertyExpr) expr;
+                addColumn(table, "*");
+            } else if (expr instanceof SQLMethodInvokeExpr) {
+                SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) expr;
+                if ("table".equalsIgnoreCase(methodInvokeExpr.getMethodName())
+                        && methodInvokeExpr.getArguments().size() == 1
+                        && methodInvokeExpr.getArguments().get(0) instanceof SQLName) {
+                    SQLName table = (SQLName) methodInvokeExpr.getArguments().get(0);
+
+                    String tableName = null;
+                    if (table instanceof SQLPropertyExpr) {
+                        SQLPropertyExpr propertyExpr = (SQLPropertyExpr) table;
+                        if (propertyExpr.getResolvedTableSource() != null
+                                && propertyExpr.getResolvedTableSource() instanceof SQLExprTableSource) {
+                            SQLExpr resolveExpr = ((SQLExprTableSource) propertyExpr.getResolvedTableSource()).getExpr();
+                            if (resolveExpr instanceof SQLName) {
+                                tableName = resolveExpr.toString() + "." + propertyExpr.getName();
+                            }
+                        }
+                    }
+
+                    if (tableName == null) {
+                        tableName = table.toString();
+                    }
+
+                    addColumn(tableName, "*");
+                }
+            }
+        }
+
         statAllColumn(x, tableSource);
 
         return false;
@@ -2187,8 +2259,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLCreateTableStatement x) {
+        SQLObject parent = x.getParent();
         if (repository != null
-                && x.getParent() == null) {
+                && (parent instanceof SQLBlockStatement || parent == null)) {
             repository.resolve(x);
         }
 
@@ -2364,6 +2437,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLAlterTableDropConstraint x) {
         return false;
     }
+
     @Override
     public boolean visit(SQLAlterTableDropCheck x) {
         return false;
