@@ -3,13 +3,10 @@ package com.alibaba.druid.sql.dialect.gaussdb.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
@@ -105,8 +102,7 @@ public class GaussDbExprParser extends PGExprParser {
                 if (lexer.token() == Token.TABLESPACE) {
                     lexer.nextToken();
                     values.setSpaceName(this.expr());
-                }
-                else if (lexer.identifierEquals(FnvHash.Constants.DATANODE)) {
+                } else if (lexer.identifierEquals(FnvHash.Constants.DATANODE)) {
                     lexer.nextToken();
                     values.setDataNodes(this.expr());
                 }
@@ -145,38 +141,16 @@ public class GaussDbExprParser extends PGExprParser {
     }
 
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
-        switch (lexer.token()) {
-            case IDENTIFIER:
-                long hash = lexer.hashLCase();
-                if (hash == FnvHash.Constants.DELTA || hash == FnvHash.Constants.PREFIX ||
-                        hash == FnvHash.Constants.NUMSTR || hash == FnvHash.Constants.NOCOMPRESS ||
-                        hash == FnvHash.Constants.DICTIONARY) {
-                    column.setCompression(new SQLCharExpr(lexer.stringVal()));
-                    lexer.nextToken();
-                    return parseColumnRest(column);
-                } else {
-                    return super.parseColumnRest(column);
-                }
-            case ON:
-                lexer.nextToken();
-                if (lexer.token() == Token.UPDATE) {
-                    lexer.nextToken();
-                } else {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("syntax error, expect ");
-                    sb.append((Token.UPDATE.name != null ? Token.UPDATE.name : Token.UPDATE.toString()));
-                    sb.append(", actual ");
-                    sb.append((lexer.token().name != null ? lexer.token().name : lexer.token().toString()));
-                    sb.append(" ");
-                    sb.append(lexer.info());
-                    throw new ParserException(sb.toString());
-                }
-                MySqlExprParser mySqlExprParser = new MySqlExprParser(lexer);
-                SQLExpr expr = mySqlExprParser.primary();
-                column.setOnUpdate(expr);
-            default:
-                return super.parseColumnRest(column);
+        if (lexer.nextIfIdentifier(FnvHash.Constants.COMPRESS_MODE)) {
+            column.setCompression(this.expr());
+            return parseColumnRest(column);
         }
+        if (lexer.nextIfIdentifier(FnvHash.Constants.COLLATE)) {
+            column.setCollateExpr(this.expr());
+            return parseColumnRest(column);
+        }
+
+        return super.parseColumnRest(column);
     }
 
     protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {

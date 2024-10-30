@@ -3,10 +3,9 @@ package com.alibaba.druid.sql.dialect.gaussdb.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
+import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGCreateTableParser;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
@@ -54,58 +53,6 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
 
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
         GaussDbCreateTableStatement gdStmt = (GaussDbCreateTableStatement) stmt;
-        if (lexer.token() == Token.COMMENT) {
-            lexer.nextToken();
-            if (lexer.token() == Token.EQ) {
-                lexer.nextToken();
-            }
-            SQLExpr expr = this.exprParser.expr();
-            stmt.setComment(expr);
-        }
-        if (lexer.identifierEquals(FnvHash.Constants.AUTO_INCREMENT)) {
-            lexer.nextToken();
-            if (lexer.token() == Token.EQ) {
-                lexer.nextToken();
-            }
-            SQLExpr expr = this.exprParser.expr();
-            gdStmt.setAutoIncrement(expr);
-        }
-        if (lexer.token() == Token.DEFAULT) {
-            lexer.nextToken();
-        }
-        if (lexer.identifierEquals(FnvHash.Constants.CHARSET)) {
-            lexer.nextToken();
-            if (lexer.token() == Token.EQ) {
-                lexer.nextToken();
-            }
-            SQLExpr expr = this.exprParser.expr();
-            gdStmt.setCharset(expr);
-        } else if (lexer.identifierEquals(FnvHash.Constants.CHARACTER)) {
-            lexer.nextToken();
-            accept(Token.SET);
-            if (lexer.token() == Token.EQ) {
-                lexer.nextToken();
-            }
-            SQLExpr expr = this.exprParser.expr();
-            gdStmt.setCharset(expr);
-        }
-        if (lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
-            lexer.nextToken();
-            if (lexer.token() == Token.EQ) {
-                lexer.nextToken();
-            }
-            SQLExpr expr = this.exprParser.expr();
-            gdStmt.setCollate(expr);
-        }
-        if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
-            lexer.nextToken();
-            if (lexer.token() == Token.EQ) {
-                lexer.nextToken();
-            }
-            gdStmt.setEngine(
-                    this.exprParser.expr()
-            );
-        }
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             accept(Token.LPAREN);
@@ -116,89 +63,28 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
         if (distributeByClause != null) {
             gdStmt.setDistributeBy(distributeByClause);
         }
-        SQLPartitionBy partitionClause = parsePartitionBy();
-        if (partitionClause != null) {
-            gdStmt.setPartitionBy(partitionClause);
+        if (lexer.nextIf(Token.COMMENT)) {
+            lexer.nextIf(Token.EQ);
+            SQLExpr comment = this.exprParser.expr();
+            gdStmt.setComment(comment);
         }
     }
 
-    public SQLPartitionBy parsePartitionBy() {
-        if (lexer.nextIf(Token.PARTITION)) {
-            accept(Token.BY);
-            if (lexer.nextIfIdentifier(FnvHash.Constants.HASH)) {
-                SQLPartitionBy hashPartition = new SQLPartitionByHash();
-                if (lexer.nextIf(Token.LPAREN)) {
-                    if (lexer.token() != Token.IDENTIFIER) {
-                        throw new ParserException("expect identifier. " + lexer.info());
-                    }
-                    for (; ; ) {
-                        hashPartition.addColumn(this.exprParser.name());
-                        if (lexer.token() == Token.COMMA) {
-                            lexer.nextToken();
-                            continue;
-                        }
-                        break;
-                    }
-                    accept(Token.RPAREN);
-                    return hashPartition;
-                }
-            } else if (lexer.nextIfIdentifier(FnvHash.Constants.RANGE)) {
-                return partitionByRange();
-            } else if (lexer.nextIfIdentifier(FnvHash.Constants.LIST)) {
-                return partitionByList();
-            }
-        }
-        return null;
+    protected void createTableBefore(SQLCreateTableStatement createTable) {
+        parseTableType(createTable);
+        parseTableType(createTable);
     }
 
-    protected SQLPartitionByRange partitionByRange() {
-        SQLPartitionByRange rangePartition = new SQLPartitionByRange();
-        accept(Token.LPAREN);
-        for (; ; ) {
-            rangePartition.addColumn(this.exprParser.name());
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
+    private void parseTableType(SQLCreateTableStatement createTable) {
+        if (lexer.nextIfIdentifier("UNLOGGED")) {
+            createTable.config(SQLCreateTableStatement.Feature.Unlogged);
+        } else if (lexer.nextIfIdentifier(FnvHash.Constants.GLOBAL)) {
+            createTable.config(SQLCreateTableStatement.Feature.Global);
+        } else if (lexer.nextIfIdentifier(FnvHash.Constants.TEMPORARY) || lexer.nextIfIdentifier("TEMP")) {
+            createTable.config(SQLCreateTableStatement.Feature.Temporary);
+        } else if (lexer.nextIf(Token.LOCAL)) {
+            createTable.config(SQLCreateTableStatement.Feature.Local);
         }
-        accept(Token.RPAREN);
-        accept(Token.LPAREN);
-        for (; ; ) {
-            rangePartition.addPartition(this.getExprParser().parsePartition());
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
-        }
-        accept(Token.RPAREN);
-        return rangePartition;
-    }
-
-    private SQLPartitionByList partitionByList() {
-        SQLPartitionByList listPartition = new SQLPartitionByList();
-        accept(Token.LPAREN);
-        for (; ; ) {
-            listPartition.addColumn(this.exprParser.name());
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
-        }
-        accept(Token.RPAREN);
-        accept(Token.LPAREN);
-        for (; ; ) {
-            listPartition.addPartition(this.getExprParser().parsePartition());
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
-        }
-        accept(Token.RPAREN);
-        return listPartition;
     }
 
     public GaussDbDistributeBy parseDistributeBy() {

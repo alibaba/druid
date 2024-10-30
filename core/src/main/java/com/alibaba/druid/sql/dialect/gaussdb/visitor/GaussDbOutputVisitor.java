@@ -7,9 +7,9 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
-import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
+import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
@@ -48,15 +48,7 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
 
         printTableElements(x);
 
-        printComment(x.getComment());
-
-        printAutoIncrement(x.getAutoIncrement());
-
-        printCharSet(x.getCharset());
-
-        printCollate(x.getCollate());
-
-        printEngine(x);
+        printCreateTableLike(x);
 
         printTableOptions(x);
 
@@ -64,9 +56,7 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
             printDistributeBy(x.getDistributeBy());
         }
 
-        printPartitionedBy(x);
-
-        printCreateTableLike(x);
+        printComment(x.getComment());
         return false;
     }
 
@@ -100,68 +90,6 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
         print0(ucase ? "WITH (" : "with (");
         incrementIndent();
         println();
-    }
-
-    @Override
-    protected void printEngine(SQLCreateTableStatement x) {
-        if (x instanceof GaussDbCreateTableStatement) {
-            SQLExpr engine = ((GaussDbCreateTableStatement) x).getEngine();
-            if (engine != null) {
-                println();
-                print0(ucase ? "ENGINE = " : "engine = ");
-                engine.accept(this);
-            }
-        }
-    }
-
-    @Override
-    protected void printComment(SQLExpr comment) {
-        if (comment == null) {
-            return;
-        }
-        println();
-        print0(ucase ? "COMMENT = " : "comment = ");
-        comment.accept(this);
-    }
-
-    protected void printAutoIncrement(SQLExpr autoIncrement) {
-        if (autoIncrement == null) {
-            return;
-        }
-        println();
-        print0(ucase ? "AUTO_INCREMENT = " : "auto_increment = ");
-        autoIncrement.accept(this);
-    }
-
-    protected void printCharSet(SQLExpr charset) {
-        if (charset == null) {
-            return;
-        }
-        println();
-        print0(ucase ? "CHARSET = " : "charset = ");
-        charset.accept(this);
-    }
-
-    protected void printCollate(SQLExpr collate) {
-        if (collate == null) {
-            return;
-        }
-        println();
-        print0(ucase ? "COLLATE = " : "collate = ");
-        collate.accept(this);
-    }
-
-    @Override
-    protected void printPartitionedBy(SQLCreateTableStatement x) {
-        if (x instanceof GaussDbCreateTableStatement) {
-            SQLPartitionBy partitionBy = ((GaussDbCreateTableStatement) x).getPartitionBy();
-            if (partitionBy == null) {
-                return;
-            }
-            println();
-            print0(ucase ? "PARTITION BY " : "partition by ");
-            partitionBy.accept(this);
-        }
     }
 
     protected void printTableElements(GaussDbCreateTableStatement x) {
@@ -401,6 +329,13 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
         if (value != null) {
             print0(ucase ? " SEPARATOR " : " separator ");
             ((SQLObject) value).accept(this);
+        }
+    }
+
+    protected void printCompression(SQLColumnDefinition x) {
+        if (x.getCompression() != null) {
+            print0(ucase ? " COMPRESS_MODE " : " compress_mode ");
+            x.getCompression().accept(this);
         }
     }
 }

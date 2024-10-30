@@ -1,4 +1,4 @@
-CREATE TABLE lineitem (
+CREATE UNLOGGED TABLE lineitem (
 	L_ORDERKEY BIGINT NOT NULL,
 	L_QUANTITY DECIMAL(15, 2) NOT NULL,
 	L_SHIPDATE DATE NOT NULL,
@@ -9,7 +9,7 @@ WITH (
 )
 DISTRIBUTE BY hash (L_ORDERKEY);
 --------------------
-CREATE TABLE lineitem (
+CREATE UNLOGGED TABLE lineitem (
 	L_ORDERKEY BIGINT NOT NULL,
 	L_QUANTITY DECIMAL(15, 2) NOT NULL,
 	L_SHIPDATE DATE NOT NULL,
@@ -20,150 +20,79 @@ WITH (
 )
 DISTRIBUTE BY hash (L_ORDERKEY);
 ------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE test_range1 (
-	id INT,
-	info VARCHAR(20)
-)
-PARTITION BY RANGE (id) (
-	PARTITION p1 VALUES LESS THAN (200) TABLESPACE tbs_test_range1_p1,
-	PARTITION p2 VALUES LESS THAN (400) TABLESPACE tbs_test_range1_p2,
-	PARTITION p3 VALUES LESS THAN (600) TABLESPACE tbs_test_range1_p3,
-	PARTITION pmax VALUES LESS THAN (MAXVALUE) TABLESPACE tbs_test_range1_p4
-);
---------------------
-CREATE TABLE test_range1 (
-	id INT,
-	info VARCHAR(20)
-)
-PARTITION BY RANGE (id) (
-	PARTITION p1 VALUES LESS THAN (200) TABLESPACE tbs_test_range1_p1,
-	PARTITION p2 VALUES LESS THAN (400) TABLESPACE tbs_test_range1_p2,
-	PARTITION p3 VALUES LESS THAN (600) TABLESPACE tbs_test_range1_p3,
-	PARTITION pmax VALUES LESS THAN (MAXVALUE) TABLESPACE tbs_test_range1_p4
-);
-------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE test_range2 (
-	id INT,
-	info VARCHAR(20)
-)
-PARTITION BY RANGE (id) (
-	PARTITION p1  START (1) END (600) EVERY (200),
-	PARTITION p2  START (600) END (800),
-	PARTITION pmax  START (800) END (MAXVALUE)
+CREATE GLOBAL TABLE test_global (
+	L_ORDERKEY BIGINT NOT NULL
 )
 --------------------
-CREATE TABLE test_range2 (
-	id INT,
-	info VARCHAR(20)
-)
-PARTITION BY RANGE (id) (
-	PARTITION p1  START (1) END (600) EVERY (200),
-	PARTITION p2  START (600) END (800),
-	PARTITION pmax  START (800) END (MAXVALUE)
+CREATE GLOBAL TABLE test_global (
+	L_ORDERKEY BIGINT NOT NULL
 )
 ------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE test_list (
-	NAME VARCHAR(50),
-	area VARCHAR(50)
-)
-PARTITION BY LIST (area) (
-	PARTITION p1 VALUES  ('Beijing'),
-	PARTITION p2 VALUES  ('Shanghai'),
-	PARTITION p3 VALUES  ('Guangzhou'),
-	PARTITION p4 VALUES  ('Shenzhen'),
-	PARTITION pdefault VALUES  (DEFAULT)
+CREATE LOCAL TABLE test_local (
+	L_ORDERKEY BIGINT NOT NULL
 )
 --------------------
-CREATE TABLE test_list (
-	NAME VARCHAR(50),
-	area VARCHAR(50)
-)
-PARTITION BY LIST (area) (
-	PARTITION p1 VALUES  ('Beijing'),
-	PARTITION p2 VALUES  ('Shanghai'),
-	PARTITION p3 VALUES  ('Guangzhou'),
-	PARTITION p4 VALUES  ('Shenzhen'),
-	PARTITION pdefault VALUES  (DEFAULT)
+CREATE LOCAL TABLE test_local (
+	L_ORDERKEY BIGINT NOT NULL
 )
 ------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE test_range (
-	id INT,
-	name VARCHAR(20),
-	province VARCHAR(60),
-	country VARCHAR(30) DEFAULT 'China'
-)
-DISTRIBUTE BY RANGE (id) (
-	SLICE s1  START (100) END (200) EVERY (10),
-	SLICE s2  START (200) END (300) EVERY (10)
+CREATE TEMP TABLE test_temporary (
+	L_ORDERKEY BIGINT NOT NULL
 )
 --------------------
-CREATE TABLE test_range (
-	id INT,
-	name VARCHAR(20),
-	province VARCHAR(60),
-	country VARCHAR(30) DEFAULT 'China'
-)
-DISTRIBUTE BY RANGE (id) (
-	SLICE s1  START (100) END (200) EVERY (10),
-	SLICE s2  START (200) END (300) EVERY (10)
+CREATE TEMPORARY TABLE test_temporary (
+	L_ORDERKEY BIGINT NOT NULL
 )
 ------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE test_range (
-	id INT,
-	name VARCHAR(20),
-	province VARCHAR(60),
-	country VARCHAR(30) DEFAULT 'China'
-)
-DISTRIBUTE BY RANGE (id) (
-	SLICE s1 VALUES LESS THAN (100) DATANODE dn_6001_6002_6003,
-	SLICE s2 VALUES LESS THAN (200) DATANODE dn_6004_6005_6006,
-	SLICE s3 VALUES LESS THAN (MAXVALUE) DATANODE dn_6007_6008_6009
+CREATE TEMPORARY TABLE test_temp (
+	L_ORDERKEY BIGINT NOT NULL
 )
 --------------------
-CREATE TABLE test_range (
-	id INT,
-	name VARCHAR(20),
-	province VARCHAR(60),
-	country VARCHAR(30) DEFAULT 'China'
-)
-DISTRIBUTE BY RANGE (id) (
-	SLICE s1 VALUES LESS THAN (100) DATANODE dn_6001_6002_6003,
-	SLICE s2 VALUES LESS THAN (200) DATANODE dn_6004_6005_6006,
-	SLICE s3 VALUES LESS THAN (MAXVALUE) DATANODE dn_6007_6008_6009
+CREATE TEMPORARY TABLE test_temp (
+	L_ORDERKEY BIGINT NOT NULL
 )
 ------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE customer_address_SE (
-	ca_address_sk INTEGER NOT NULL,
-	ca_address_id CHARACTER(16) NOT NULL,
-	ca_street_number CHARACTER(10),
-	ca_street_name CHARACTER varying(60),
-	ca_street_type CHARACTER(15),
-	ca_suite_number CHARACTER(10)
-)
-WITH (
-	'ORIENTATION' = COLUMN
-)
-DISTRIBUTE BY HASH (ca_address_sk)
-PARTITION BY RANGE (ca_address_sk) (
-	PARTITION p1  START (1) END (1000) EVERY (200),
-	PARTITION p2  END (2000),
-	PARTITION p3  START (2000) END (5000)
+CREATE GLOBAL TEMPORARY TABLE test_global_temp (
+	L_ORDERKEY BIGINT NOT NULL
 )
 --------------------
-CREATE TABLE customer_address_SE (
-	ca_address_sk INTEGER NOT NULL,
-	ca_address_id CHARACTER(16) NOT NULL,
-	ca_street_number CHARACTER(10),
-	ca_street_name CHARACTER varying(60),
-	ca_street_type CHARACTER(15),
-	ca_suite_number CHARACTER(10)
+CREATE GLOBAL TEMPORARY TABLE test_global_temp (
+	L_ORDERKEY BIGINT NOT NULL
 )
-WITH (
-	'ORIENTATION' = COLUMN
+------------------------------------------------------------------------------------------------------------------------
+create table if not exists test_comment
+(
+business_date nvarchar2 comment '业务日期', -- 录音创建日期
+big_area_name	nvarchar2 comment '门店大区'
 )
-DISTRIBUTE BY HASH (ca_address_sk)
-PARTITION BY RANGE (ca_address_sk) (
-	PARTITION p1  START (1) END (1000) EVERY (200),
-	PARTITION p2  END (2000),
-	PARTITION p3  START (2000) END (5000)
+comment 'TDA录音任务执行结果统计表'
+--------------------
+CREATE TABLE IF NOT EXISTS test_comment (
+	business_date nvarchar2 COMMENT '业务日期',
+	big_area_name nvarchar2 COMMENT '门店大区'
+)
+COMMENT 'TDA录音任务执行结果统计表'
+------------------------------------------------------------------------------------------------------------------------
+create table test_column_constraint
+(
+business_date nvarchar2 compress_mode DELTA, 
+big_area_name nvarchar2 COLLATE utf8_bin,
+col_constraint bigint not null,
+col_constraint2 bigint null,
+col_constraint3 bigint check (col_constraint3 > 0),
+col_constraint4 bigint unique,
+col_constraint5 bigint primary key，
+constraint cst check(col_constraint4 > 0)
+)
+--------------------
+CREATE TABLE test_column_constraint (
+	business_date nvarchar2 COMPRESS_MODE DELTA,
+	big_area_name nvarchar2 COLLATE utf8_bin,
+	col_constraint bigint NOT NULL,
+	col_constraint2 bigint NULL,
+	col_constraint3 bigint
+		CHECK (col_constraint3 > 0),
+	col_constraint4 bigint UNIQUE,
+	col_constraint5 bigint PRIMARY KEY,
+	CONSTRAINT cst CHECK (col_constraint4 > 0)
 )

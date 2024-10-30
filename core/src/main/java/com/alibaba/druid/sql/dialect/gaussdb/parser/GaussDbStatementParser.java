@@ -185,4 +185,10 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
         }
         return stmt;
     }
+
+    protected void createOptionSkip() {
+        lexer.nextIf(Token.LOCAL);
+        lexer.nextIfIdentifier("UNLOGGED");
+        super.createOptionSkip();
+    }
 }

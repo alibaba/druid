@@ -1,7 +1,7 @@
 package com.alibaba.druid.sql.dialect.gaussdb.visitor;
 
-import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
+import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
