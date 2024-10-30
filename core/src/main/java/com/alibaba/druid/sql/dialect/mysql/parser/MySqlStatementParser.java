@@ -8676,42 +8676,19 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    /**
-     * parse if statement
-     *
-     * @return MySqlIfStatement
-     */
-    public SQLIfStatement parseIf() {
-        accept(Token.IF);
-
-        SQLIfStatement stmt = new SQLIfStatement();
-
-        stmt.setCondition(this.exprParser.expr());
-
-        accept(Token.THEN);
-
-        this.parseStatementList(stmt.getStatements(), -1, stmt);
-
-        while (lexer.token() == Token.ELSEIF) {
-            lexer.nextToken();
-
+    @Override
+    protected void parseIfElse(SQLIfStatement stmt) {
+        while (lexer.nextIf(Token.ELSEIF)) {
             SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
-
             elseIf.setCondition(this.exprParser.expr());
             elseIf.setParent(stmt);
-
             accept(Token.THEN);
-            this.parseStatementList(elseIf.getStatements(), -1, stmt);
-
+            this.parseStatementList(elseIf.getStatements(), -1, elseIf);
             stmt.getElseIfList().add(elseIf);
         }
 
-        while (lexer.token() == Token.ELSE) {
-            lexer.nextToken();
-
-            if (lexer.token() == Token.IF) {
-                lexer.nextToken();
-
+        while (lexer.nextIf(Token.ELSE)) {
+            if (lexer.nextIf(Token.IF)) {
                 SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
 
                 elseIf.setCondition(this.exprParser.expr());
@@ -8728,13 +8705,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                 break;
             }
         }
-
-        accept(Token.END);
-        accept(Token.IF);
-        accept(SEMI);
-        stmt.setAfterSemi(true);
-
-        return stmt;
     }
 
     /**

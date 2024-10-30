@@ -579,37 +579,6 @@ public class PGSQLStatementParser extends SQLStatementParser {
         }
     }
 
-    @Override
-    public SQLStatement parseIf() {
-        accept(Token.IF);
-        SQLIfStatement stmt = new SQLIfStatement();
-        stmt.setCondition(this.exprParser.expr());
-        accept(Token.THEN);
-        this.parseStatementList(stmt.getStatements(), -1, stmt);
-        while (lexer.token() == Token.ELSE) {
-            lexer.nextToken();
-            if (lexer.token() == Token.IF) {
-                lexer.nextToken();
-                SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
-                elseIf.setCondition(this.exprParser.expr());
-                elseIf.setParent(stmt);
-                accept(Token.THEN);
-                this.parseStatementList(elseIf.getStatements(), -1, elseIf);
-                stmt.getElseIfList().add(elseIf);
-            } else {
-                SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
-                this.parseStatementList(elseItem.getStatements(), -1, elseItem);
-                stmt.setElseItem(elseItem);
-                break;
-            }
-        }
-        accept(Token.END);
-        accept(Token.IF);
-        accept(Token.SEMI);
-        stmt.setAfterSemi(true);
-        return stmt;
-    }
-
     protected PGStartTransactionStatement parseBegin() {
         PGStartTransactionStatement stmt = new PGStartTransactionStatement();
         if (lexer.token() == Token.START) {

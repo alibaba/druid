@@ -1257,11 +1257,21 @@ public class SQLStatementParser extends SQLParser {
         SQLIfStatement stmt = new SQLIfStatement();
         stmt.setCondition(this.exprParser.expr());
         accept(Token.THEN);
+
         this.parseStatementList(stmt.getStatements(), -1, stmt);
-        while (lexer.token() == Token.ELSE) {
-            lexer.nextToken();
-            if (lexer.token() == Token.IF) {
-                lexer.nextToken();
+
+        parseIfElse(stmt);
+
+        accept(Token.END);
+        accept(Token.IF);
+        accept(Token.SEMI);
+        stmt.setAfterSemi(true);
+        return stmt;
+    }
+
+    protected void parseIfElse(SQLIfStatement stmt) {
+        while (lexer.nextIf(Token.ELSE)) {
+            if (lexer.nextIf(Token.IF)) {
                 SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
                 elseIf.setCondition(this.exprParser.expr());
                 elseIf.setParent(stmt);
@@ -1275,11 +1285,6 @@ public class SQLStatementParser extends SQLParser {
                 break;
             }
         }
-        accept(Token.END);
-        accept(Token.IF);
-        accept(Token.SEMI);
-        stmt.setAfterSemi(true);
-        return stmt;
     }
 
     public SQLWhileStatement parseWhile() {

@@ -1177,52 +1177,22 @@ public class OracleStatementParser extends SQLStatementParser {
         return caseStmt;
     }
 
-    public SQLStatement parseIf() {
-        accept(Token.IF);
-
-        SQLIfStatement stmt = new SQLIfStatement();
-        stmt.setDbType(dbType);
-
-        stmt.setCondition(this.exprParser.expr());
-
-        accept(Token.THEN);
-
-        this.parseStatementList(stmt.getStatements(), -1, stmt);
-
-        while (lexer.token() == Token.ELSIF) {
-            lexer.nextToken();
-
+    @Override
+    protected void parseIfElse(SQLIfStatement stmt) {
+        while (lexer.nextIf(Token.ELSIF)) {
             SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
-
             elseIf.setCondition(this.exprParser.expr());
             elseIf.setParent(stmt);
-
             accept(Token.THEN);
             this.parseStatementList(elseIf.getStatements(), -1, elseIf);
-
             stmt.getElseIfList().add(elseIf);
         }
 
-        if (lexer.token() == Token.ELSE) {
-            lexer.nextToken();
-
+        if (lexer.nextIf(Token.ELSE)) {
             SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
             this.parseStatementList(elseItem.getStatements(), -1, elseItem);
             stmt.setElseItem(elseItem);
         }
-
-        accept(Token.END);
-//        if (lexer.token() != Token.SEMI) {
-//            accept(Token.IF);
-//        }
-        accept(Token.IF);
-//        if (lexer.token() == Token.SEMI) {
-//            lexer.nextToken();
-//        }
-        accept(Token.SEMI);
-        stmt.setAfterSemi(true);
-
-        return stmt;
     }
 
     @Override
