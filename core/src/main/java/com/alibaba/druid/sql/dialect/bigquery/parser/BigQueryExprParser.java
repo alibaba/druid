@@ -333,4 +333,14 @@ public class BigQueryExprParser extends SQLExprParser {
         }
         return super.exprRest(expr);
     }
+
+    @Override
+    protected SQLCastExpr parseCastFormat(SQLCastExpr cast) {
+        if (lexer.nextIfIdentifier("FORMAT")) {
+            cast.setFormat(
+                    this.expr()
+            );
+        }
+        return cast;
+    }
 }

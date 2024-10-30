@@ -234,6 +234,13 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         x.getExpr().accept(this);
         print0(ucase ? " AS " : " as ");
         x.getDataType().accept(this);
+
+        SQLExpr format = x.getFormat();
+        if (format != null) {
+            print0(ucase ? " FORMAT " : " format ");
+            format.accept(this);
+        }
+
         print0(")");
         tryPrintRparen(x);
         return false;

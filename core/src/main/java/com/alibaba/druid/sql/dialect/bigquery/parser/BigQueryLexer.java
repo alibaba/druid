@@ -168,6 +168,26 @@ public class BigQueryLexer extends Lexer {
 
     @Override
     protected void scanString() {
+        if (pos + 2 < text.length()
+                && text.charAt(pos + 1) == '\''
+                && text.charAt(pos + 2) == '\''
+        ) {
+            for (int i = pos + 3; i < text.length(); i++) {
+                char c = text.charAt(i);
+                if (c == '\''
+                        && i + 2 < text.length()
+                        && text.charAt(i + 1) == '\''
+                        && text.charAt(i + 2) == '\''
+                ) {
+                    stringVal = text.substring(pos + 3, i);
+                    token = Token.LITERAL_TEXT_BLOCK;
+                    pos = i + 2;
+                    scanChar();
+                    return;
+                }
+            }
+        }
+
         {
             boolean hasSpecial = false;
             int startIndex = pos + 1;

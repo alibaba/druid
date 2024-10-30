@@ -26,6 +26,7 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
     protected boolean isTry;
     protected SQLExpr expr;
     protected SQLDataType dataType;
+    protected SQLExpr format;
 
     public SQLCastExpr() {
     }
@@ -44,6 +45,17 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
             expr.setParent(this);
         }
         this.expr = expr;
+    }
+
+    public SQLExpr getFormat() {
+        return format;
+    }
+
+    public void setFormat(SQLExpr format) {
+        if (format != null) {
+            format.setParent(this);
+        }
+        this.format = format;
     }
 
     public SQLDataType getDataType() {

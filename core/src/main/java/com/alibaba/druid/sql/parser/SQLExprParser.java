@@ -1270,6 +1270,10 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = array;
                 break;
             }
+            case LITERAL_TEXT_BLOCK:
+                sqlExpr = new SQLCharExpr(lexer.stringVal());
+                lexer.nextToken();
+                break;
             default:
                 throw new ParserException("ERROR. " + lexer.info());
         }
@@ -1307,9 +1311,14 @@ public class SQLExprParser extends SQLParser {
                 }
                 arrayDataType.setUsedForCast(true);
             }
+            cast = parseCastFormat(cast);
             accept(Token.RPAREN);
             return cast;
         }
+    }
+
+    protected SQLCastExpr parseCastFormat(SQLCastExpr cast) {
+        return cast;
     }
 
     protected SQLExpr parseQueryExpr() {

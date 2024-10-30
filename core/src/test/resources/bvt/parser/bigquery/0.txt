@@ -1,3 +1,14 @@
+SELECT CAST(b'\x48\x65\x6c\x6c\x6f' AS STRING FORMAT 'ASCII') AS bytes_to_string;
+--------------------
+SELECT CAST(b'\x48\x65\x6c\x6c\x6f' AS STRING FORMAT 'ASCII') AS bytes_to_string;
+------------------------------------------------------------------------------------------------------------------------
+select """abc""", '''it's''', '''Title:"Boy"''', '''two
+                                                 lines''', '''why\?'''
+--------------------
+SELECT 'abc', 'it''s', 'Title:"Boy"'
+	, 'two
+                                                 lines', 'why\?'
+------------------------------------------------------------------------------------------------------------------------
 UPDATE
   `p1` main
 SET
