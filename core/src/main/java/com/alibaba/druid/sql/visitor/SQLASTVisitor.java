@@ -2262,6 +2262,13 @@ public interface SQLASTVisitor {
     default void endVisit(SQLUnnestTableSource x) {
     }
 
+    default boolean visit(SQLGeneratedTableSource x) {
+        return true;
+    }
+
+    default void endVisit(SQLGeneratedTableSource x) {
+    }
+
     default boolean visit(SQLCopyFromStatement x) {
         return true;
     }

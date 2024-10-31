@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 
@@ -388,5 +389,10 @@ public class PGSelectParser extends SQLSelectParser {
 
             break;
         }
+    }
+
+    @Override
+    protected List<String> getReturningFunctions() {
+        return Lists.newArrayList("GENERATE_SERIES", "GENERATE_SUBSCRIPTS");
     }
 }

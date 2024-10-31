@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.StringUtils;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 
@@ -1284,6 +1285,11 @@ public class SQLSelectParser extends SQLParser {
             return parseTableSourceRest(unnestTableSource);
         }
 
+        SQLTableSource generatedTableSource = parseGeneratedTableSource();
+        if (generatedTableSource != null) {
+            return parseTableSourceRest(generatedTableSource);
+        }
+
         SQLExprTableSource tableReference = getTableSource();
 
         parseTableSourceQueryTableExpr(tableReference);
@@ -1366,6 +1372,39 @@ public class SQLSelectParser extends SQLParser {
             }
         }
         return null;
+    }
+
+    protected SQLTableSource parseGeneratedTableSource() {
+        for (String returningFunction : getReturningFunctions()) {
+            if (lexer.identifierEquals(returningFunction)) {
+                Lexer.SavePoint mark = lexer.mark();
+                SQLIdentifierExpr methodName = new SQLIdentifierExpr(returningFunction);
+                lexer.nextToken();
+
+                if (lexer.nextIf(Token.LPAREN)) {
+                    SQLGeneratedTableSource generated = new SQLGeneratedTableSource();
+                    generated.setMethodName(methodName);
+                    this.exprParser.exprList(generated.getItems(), generated);
+                    accept(Token.RPAREN);
+
+                    String alias = this.tableAlias();
+                    generated.setAlias(alias);
+
+                    if (lexer.nextIf(Token.LPAREN)) {
+                        this.exprParser.names(generated.getColumns(), generated);
+                        accept(Token.RPAREN);
+                    }
+                    return generated;
+                } else {
+                    lexer.reset(mark);
+                }
+            }
+        }
+        return null;
+    }
+
+    protected List<String> getReturningFunctions() {
+        return Lists.newArrayList("GENERATE_SERIES");
     }
 
     protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {

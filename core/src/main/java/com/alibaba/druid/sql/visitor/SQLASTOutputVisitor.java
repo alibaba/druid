@@ -4863,6 +4863,38 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLGeneratedTableSource x) {
+        printExpr(x.getMethodName());
+        print('(');
+        List<SQLExpr> items = x.getItems();
+        printAndAccept(items, ", ");
+        print(')');
+
+        final List<SQLName> columns = x.getColumns();
+        final String alias = x.getAlias();
+        if (alias != null) {
+            if (columns.size() > 0) {
+                print0(ucase ? " AS " : " as ");
+            } else {
+                print(' ');
+            }
+            print0(alias);
+        }
+
+        if (columns.size() > 0) {
+            print0(" (");
+            for (int i = 0; i < columns.size(); i++) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                printExpr(columns.get(i));
+            }
+            print(')');
+        }
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLTruncateStatement x) {
         List<SQLCommentHint> headHints = x.getHeadHintsDirect();
         if (headHints != null) {
