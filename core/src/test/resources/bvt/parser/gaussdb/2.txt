@@ -18,3 +18,23 @@ select group_concat(col1 order by submit_time desc separator '|') user_education
 --------------------
 SELECT group_concat(col1 ORDER BY submit_time DESC SEPARATOR '|') AS user_education
 FROM t1
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO public.dim_iptv_datebase_m
+select date_format(daytime::date,'%Y-%m') base_date,
+    retrodict_month,
+    date_format(daytime::date,'%Y-%m') start_date,
+    date_format(now()::date,'%Y-%m-%d') end_date
+from generate_series('2022-07-01', now()::date, '1 month') s(daytime)
+LEFT JOIN public.dim_retrodict_month_d on type='iptv';
+--------------------
+INSERT INTO public.dim_iptv_datebase_m
+SELECT date_format(daytime::date, '%Y-%m') AS base_date, retrodict_month
+	, date_format(daytime::date, '%Y-%m') AS start_date
+	, date_format(now()::date, '%Y-%m-%d') AS end_date
+FROM GENERATE_SERIES('2022-07-01', now()::date, '1 month') AS s (daytime)
+	LEFT JOIN public.dim_retrodict_month_d ON type = 'iptv';
+------------------------------------------------------------------------------------------------------------------------
+select s.a from generate_subscripts('{NULL,1,NULL,2}'::int[], 1) as s(a)
+--------------------
+SELECT s.a
+FROM GENERATE_SUBSCRIPTS('{NULL,1,NULL,2}'::int[], 1) AS s (a)
