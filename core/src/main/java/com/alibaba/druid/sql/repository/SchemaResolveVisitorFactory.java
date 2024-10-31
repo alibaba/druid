@@ -1692,7 +1692,7 @@ class SchemaResolveVisitorFactory {
 
             for (SQLSelectItem subSelectItem : subSelectList) {
                 String alias = subSelectItem.computeAlias();
-                columns.add(new SQLSelectItem(new SQLIdentifierExpr(alias)));
+                columns.add(new SQLSelectItem(new SQLPropertyExpr(ownerName, alias)));
             }
         } else if (from instanceof SQLUnionQueryTableSource) {
             SQLSelectQueryBlock firstQueryBlock = ((SQLUnionQueryTableSource) from).getUnion().getFirstQueryBlock();
