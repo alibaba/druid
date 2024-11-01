@@ -117,6 +117,10 @@ public class BigQueryStatementParser extends SQLStatementParser {
             statementList.add(parseAssert());
             return true;
         }
+        if (lexer.token() == Token.BEGIN) {
+            statementList.add(parseBlock());
+            return true;
+        }
         return false;
     }
 

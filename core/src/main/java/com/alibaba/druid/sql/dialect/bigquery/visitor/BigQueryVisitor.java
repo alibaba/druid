@@ -38,4 +38,11 @@ public interface BigQueryVisitor extends SQLASTVisitor {
 
     default void endVisit(BigQueryDateTimeExpr x) {
     }
+
+    default boolean visit(BigQueryCharExpr x) {
+        return true;
+    }
+
+    default void endVisit(BigQueryCharExpr x) {
+    }
 }

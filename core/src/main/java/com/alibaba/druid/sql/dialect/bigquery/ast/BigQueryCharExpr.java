@@ -3,13 +3,13 @@ package com.alibaba.druid.sql.dialect.bigquery.ast;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;
 import java.util.List;
 
-public class BigQueryCharExpr extends SQLCharExpr implements SQLExpr {
+public class BigQueryCharExpr extends SQLCharExpr implements SQLExpr, BigQueryObject {
     private String prefix;
     private boolean space;
     private boolean isAlias;
@@ -23,6 +23,10 @@ public class BigQueryCharExpr extends SQLCharExpr implements SQLExpr {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 
     public boolean isSpace() {
@@ -52,24 +56,19 @@ public class BigQueryCharExpr extends SQLCharExpr implements SQLExpr {
         this.isAlias = isAlias;
     }
 
+    public void accept0(BigQueryVisitor v) {
+        v.visit(this);
+        v.endVisit(this);
+    }
+
     @Override
-    protected void accept0(SQLASTVisitor v) {
-        if (v instanceof SQLASTOutputVisitor) {
-            SQLASTOutputVisitor visitor = (SQLASTOutputVisitor) v;
-            if (hasPrefix()) {
-                visitor.print(prefix);
-            }
-            if (isSpace()) {
-                visitor.print(" ");
-            }
-            if (!isAlias) {
-                visitor.print("'");
-            }
-            visitor.print(text);
-            if (!isAlias) {
-                visitor.print("'");
-            }
+    public void accept0(SQLASTVisitor v) {
+        if (v instanceof BigQueryVisitor) {
+            this.accept0((BigQueryVisitor) v);
+            return;
         }
+        v.visit(this);
+        v.endVisit(this);
     }
 
     @Override
@@ -86,5 +85,4 @@ public class BigQueryCharExpr extends SQLCharExpr implements SQLExpr {
         clone.setAlias(this.isAlias);
         return clone;
     }
-
 }

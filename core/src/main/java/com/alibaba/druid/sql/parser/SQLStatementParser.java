@@ -3550,18 +3550,16 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseTruncate() {
         accept(Token.TRUNCATE);
-        if (lexer.token == Token.TABLE) {
-            lexer.nextToken();
+        if (!lexer.nextIf(Token.TABLE)) {
+            lexer.nextIfIdentifier("TABLE");
         }
         SQLTruncateStatement stmt = new SQLTruncateStatement(getDbType());
 
-        if (lexer.token == Token.ONLY) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.ONLY)) {
             stmt.setOnly(true);
         }
 
-        if (lexer.token == Token.IF) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.IF)) {
             accept(Token.EXISTS);
             stmt.setIfExists(true);
         }

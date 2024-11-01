@@ -363,4 +363,21 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         this.parameterized = parameterized;
         return false;
     }
+
+    public boolean visit(BigQueryCharExpr x) {
+        if (x.hasPrefix()) {
+            print0(x.getPrefix());
+        }
+        if (x.isSpace()) {
+            print0(" ");
+        }
+        if (!x.isAlias()) {
+            print("'");
+        }
+        print(x.getText());
+        if (!x.isAlias()) {
+            print("'");
+        }
+        return false;
+    }
 }

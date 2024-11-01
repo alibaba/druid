@@ -104,6 +104,9 @@ public class BigQueryLexer extends Lexer {
         map.put("WITH", Token.WITH);
         map.put("WHILE", Token.WHILE);
         map.put("VIEW", Token.VIEW);
+        map.put("TRUNCATE", Token.TRUNCATE);
+        map.put("BEGIN", Token.BEGIN);
+        map.put("END", Token.END);
 
         return new Keywords(map);
     }
@@ -145,7 +148,7 @@ public class BigQueryLexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(SQLDateExpr, ScanSubAsIdentifier, GroupByAll, InRestSpecificOperation);
+        this.dialectFeature.configFeature(SQLDateExpr, GroupByAll, ScanSubAsIdentifier, InRestSpecificOperation);
     }
 
     @Override
