@@ -2,8 +2,7 @@ package com.alibaba.druid.sql.dialect.gaussdb.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
@@ -169,5 +168,30 @@ public class GaussDbExprParser extends PGExprParser {
             aggregateExpr.putAttribute("SEPARATOR", seperator);
         }
         return aggregateExpr;
+    }
+
+    @Override
+    protected SQLExpr parseInterval() {
+        accept(Token.INTERVAL);
+        SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
+        if (lexer.token() != Token.LITERAL_CHARS
+                && lexer.token() != Token.LITERAL_INT
+                && lexer.token() != Token.VARIANT
+        ) {
+            return new SQLIdentifierExpr("INTERVAL");
+        }
+        SQLExpr value = expr();
+
+        if (value instanceof SQLCharExpr) {
+            String literal = ((SQLCharExpr) value).getText();
+            String[] split = literal.split(" ");
+            if (split.length == 2) {
+                return new SQLIntervalExpr(new SQLIntegerExpr(Integer.parseInt(split[0])), SQLIntervalUnit.of(split[1]));
+            } else {
+                intervalExpr.setValue(value);
+                return intervalExpr;
+            }
+        }
+        return intervalExpr;
     }
 }

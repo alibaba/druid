@@ -2,7 +2,7 @@ package com.alibaba.druid.sql.dialect.gaussdb.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -337,5 +337,33 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
             print0(ucase ? " COMPRESS_MODE " : " compress_mode ");
             x.getCompression().accept(this);
         }
+    }
+
+    @Override
+    public boolean visit(SQLIntervalExpr x) {
+        print0(ucase ? "INTERVAL " : "interval ");
+        SQLExpr value = x.getValue();
+
+        boolean str = value instanceof SQLCharExpr;
+        if (!str) {
+            print('\'');
+        }
+        value.accept(this);
+
+        SQLIntervalUnit unit = x.getUnit();
+        if (unit != null) {
+            print(' ');
+            print0(ucase ? unit.name : unit.nameLCase);
+            if (value instanceof SQLIntegerExpr) {
+                SQLIntegerExpr integerExpr = (SQLIntegerExpr) value;
+                if (integerExpr.getNumber().intValue() > 1) {
+                    print(ucase ? 'S' : 's');
+                }
+            }
+        }
+        if (!str) {
+            print('\'');
+        }
+        return false;
     }
 }
