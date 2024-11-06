@@ -180,18 +180,15 @@ public class GaussDbExprParser extends PGExprParser {
         ) {
             return new SQLIdentifierExpr("INTERVAL");
         }
-        SQLExpr value = expr();
-
-        if (value instanceof SQLCharExpr) {
-            String literal = ((SQLCharExpr) value).getText();
-            String[] split = literal.split(" ");
-            if (split.length == 2) {
-                return new SQLIntervalExpr(new SQLIntegerExpr(Integer.parseInt(split[0])), SQLIntervalUnit.of(split[1]));
-            } else {
-                intervalExpr.setValue(value);
-                return intervalExpr;
-            }
+        SQLExpr value = new SQLCharExpr(lexer.stringVal());
+        lexer.nextToken();
+        String literal = ((SQLCharExpr) value).getText();
+        String[] split = literal.split(" ");
+        if (split.length == 2) {
+            return new SQLIntervalExpr(new SQLIntegerExpr(Integer.parseInt(split[0])), SQLIntervalUnit.of(split[1]));
+        } else {
+            intervalExpr.setValue(value);
+            return intervalExpr;
         }
-        return intervalExpr;
     }
 }

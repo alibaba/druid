@@ -9,3 +9,22 @@ SELECT INTERVAL '3 DAYS'
 SELECT INTERVAL '1 year 2 months 3 days 5 hours'
 --------------------
 SELECT INTERVAL '1 year 2 months 3 days 5 hours'
+------------------------------------------------------------------------------------------------------------------------
+select  vin, 
+            city, 
+            sum(dur_time)
+    from dws.dws_cnet_nev_vehicle_stop_location_poi_day_staytime_d 
+    where dt between '${dt}'::TIMESTAMP - interval '1 month' and '${dt}'
+    group by vin, city
+--------------------
+SELECT vin, city, sum(dur_time)
+FROM dws.dws_cnet_nev_vehicle_stop_location_poi_day_staytime_d
+WHERE dt BETWEEN '${dt}'::TIMESTAMP - INTERVAL '1 MONTH' AND '${dt}'
+GROUP BY vin, city
+------------------------------------------------------------------------------------------------------------------------
+select prod_category_l1_name,the_date_week from ads.mid_ota_order
+  group by 1,2,3,4,8,rollup(delivery_bigarea_name)
+--------------------
+SELECT prod_category_l1_name, the_date_week
+FROM ads.mid_ota_order
+GROUP BY 1, 2, 3, 4, 8, rollup(delivery_bigarea_name)
