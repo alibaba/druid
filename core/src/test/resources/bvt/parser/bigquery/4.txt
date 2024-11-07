@@ -8,11 +8,11 @@ SELECT TO_BASE32(b'abcde\xFF')
 ------------------------------------------------------------------------------------------------------------------------
 SELECT JSON_EXTRACT(JSON 'null', "$")
 --------------------
-SELECT JSON_EXTRACT(JSON 'null', "$")
+SELECT JSON_EXTRACT(JSON 'null', '$')
 ------------------------------------------------------------------------------------------------------------------------
 SELECT JSON_EXTRACT(JSON "null", "$")
 --------------------
-SELECT JSON_EXTRACT(JSON "null", "$")
+SELECT JSON_EXTRACT(JSON 'null', '$')
 ------------------------------------------------------------------------------------------------------------------------
 SELECT REGEXP_CONTAINS('xxx@gmail.com', r'@[a-zA-Z0-9-]+')
 --------------------
@@ -20,4 +20,4 @@ SELECT REGEXP_CONTAINS('xxx@gmail.com', r'@[a-zA-Z0-9-]+')
 ------------------------------------------------------------------------------------------------------------------------
 SELECT REGEXP_CONTAINS('xxx@gmail.com', r"@[a-zA-Z0-9-]+")
 --------------------
-SELECT REGEXP_CONTAINS('xxx@gmail.com', r"@[a-zA-Z0-9-]+")
+SELECT REGEXP_CONTAINS('xxx@gmail.com', r'@[a-zA-Z0-9-]+')

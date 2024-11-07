@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.bigquery.parser;
 
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -156,5 +157,33 @@ public class BigQueryStatementParser extends SQLStatementParser {
     @Override
     protected void mergeBeforeName() {
         this.lexer.nextIf(Token.INTO);
+    }
+
+    public SQLStatement parseBlock() {
+        accept(Token.BEGIN);
+        SQLBlockStatement block = new SQLBlockStatement();
+        parseStatementList(block.getStatementList());
+        accept(Token.END);
+        return block;
+    }
+
+    protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
+        if (lexer.token() == Token.IDENTIFIER) {
+            SQLName tableName = this.exprParser.name();
+            insertStatement.setTableName(tableName);
+
+            if (lexer.token() == Token.LITERAL_ALIAS) {
+                insertStatement.setAlias(tableAlias());
+            }
+
+            parseInsert0Hints(insertStatement, false);
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                insertStatement.setAlias(lexer.stringVal());
+                lexer.nextToken();
+            }
+        }
+
+        super.parseInsert0(insertStatement, acceptSubQuery);
     }
 }

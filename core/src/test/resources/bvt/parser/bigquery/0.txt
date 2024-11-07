@@ -1,3 +1,19 @@
+SELECT DATEADD("2024-10-01", -1, 'mm');
+--------------------
+SELECT DATEADD('2024-10-01', -1, 'mm');
+------------------------------------------------------------------------------------------------------------------------
+DROP TABLE `a.b`;
+--------------------
+DROP TABLE `a.b`;
+------------------------------------------------------------------------------------------------------------------------
+INSERT `a.b`
+SELECT *
+FROM `c.d`;
+--------------------
+INSERT INTO `a.b`
+SELECT *
+FROM `c.d`;
+------------------------------------------------------------------------------------------------------------------------
 /* a
    b
    c
@@ -143,7 +159,7 @@ OPTIONS (
 ------------------------------------------------------------------------------------------------------------------------
 SELECT SAFE_CAST("apple" AS INT64) AS not_a_number;
 --------------------
-SELECT SAFE_CAST("apple" AS INT64) AS not_a_number;
+SELECT SAFE_CAST('apple' AS INT64) AS not_a_number;
 ------------------------------------------------------------------------------------------------------------------------
 SELECT
 ARRAY_AGG(
@@ -244,7 +260,7 @@ PARTITION BY DATE(_PARTITIONTIME)
 CLUSTER BY customer_id
 OPTIONS (
 	partition_expiration_days = 3,
-	description = "a table clustered by customer_id"
+	description = 'a table clustered by customer_id'
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE `myproject.mydataset.mytable`
@@ -260,9 +276,9 @@ CREATE TABLE `myproject.mydataset.mytable`
 CLONE `myproject.mydataset.mytablesnapshot`
 OPTIONS (
 	expiration_timestamp = TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL 365 DAY),
-	friendly_name = "my_table",
-	description = "A table that expires in 1 year",
-	labels = [("org_unit", "development")]
+	friendly_name = 'my_table',
+	description = 'A table that expires in 1 year',
+	labels = [('org_unit', 'development')]
 )
 ------------------------------------------------------------------------------------------------------------------------
 SELECT

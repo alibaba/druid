@@ -107,6 +107,7 @@ public class BigQueryLexer extends Lexer {
         map.put("TRUNCATE", Token.TRUNCATE);
         map.put("BEGIN", Token.BEGIN);
         map.put("END", Token.END);
+        map.put("TABLE", Token.TABLE);
 
         return new Keywords(map);
     }
@@ -142,7 +143,55 @@ public class BigQueryLexer extends Lexer {
                 }
             }
         }
-        super.scanAlias();
+        mark = pos;
+        boolean hasSpecial = false;
+        Token preToken = this.token;
+
+        for (; ; ) {
+            if (isEOF()) {
+                lexError("unclosed.str.lit");
+                return;
+            }
+
+            ch = charAt(++pos);
+
+            if (ch == '"') {
+                scanChar();
+                if (ch != '"') {
+                    token = LITERAL_CHARS;
+                    break;
+                } else {
+                    if (!hasSpecial) {
+                        initBuff(bufPos);
+                        arraycopy(mark + 1, buf, 0, bufPos);
+                        hasSpecial = true;
+                    }
+                    putChar('\'');
+                    continue;
+                }
+            }
+
+            if (!hasSpecial) {
+                bufPos++;
+                continue;
+            }
+
+            if (bufPos == buf.length) {
+                putChar(ch);
+            } else {
+                buf[bufPos++] = ch;
+            }
+        }
+
+        if (!hasSpecial) {
+            if (preToken == Token.AS) {
+                stringVal = subString(mark, bufPos + 2);
+            } else {
+                stringVal = subString(mark + 1, bufPos);
+            }
+        } else {
+            stringVal = new String(buf, 0, bufPos);
+        }
     }
 
     @Override

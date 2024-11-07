@@ -30,6 +30,7 @@ public class BigQueryExprParser extends SQLExprParser {
                 "COUNTIF",
                 "FIRST_VALUE",
                 "GROUPING",
+                "LAST_VALUE",
                 "LOGICAL_AND",
                 "LOGICAL_OR",
                 "MAX",

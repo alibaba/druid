@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -255,13 +254,6 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         print0(key);
         print0(" = ");
         value.accept(this);
-    }
-
-    @Override
-    public boolean visit(SQLTimestampExpr x) {
-        print0(ucase ? "TIMESTAMP " : "timestamp ");
-        print0(x.getLiteral());
-        return false;
     }
 
     protected void printCollate(SQLCreateTableStatement x) {

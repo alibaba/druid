@@ -40,4 +40,13 @@ public class BigQuerySelectParser extends SQLSelectParser {
     protected boolean parseSelectListFromError() {
         return false;
     }
+
+    protected String tableAlias(boolean must) {
+        if (lexer.token() == Token.TABLE) {
+            String alias = lexer.stringVal();
+            lexer.nextToken();
+            return alias;
+        }
+        return super.tableAlias(must);
+    }
 }

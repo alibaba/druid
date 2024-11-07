@@ -17,17 +17,17 @@ OPTIONS(
 )
 --------------------
 CREATE TABLE mydataset.newtable (
-	x INT64 OPTIONS (description = "An optional INTEGER field"),
-	y STRUCT<a ARRAY<STRING> OPTIONS (description = "A repeated STRING field"), b BOOL>
+	x INT64 OPTIONS (description = 'An optional INTEGER field'),
+	y STRUCT<a ARRAY<STRING> OPTIONS (description = 'A repeated STRING field'), b BOOL>
 )
 DEFAULT COLLATE 'und:ci'
 PARTITION BY _PARTITIONDATE
 CLUSTER BY latest_status_name
 OPTIONS (
-	expiration_timestamp = TIMESTAMP "2025-01-01 00:00:00 UTC",
+	expiration_timestamp = TIMESTAMP '2025-01-01 00:00:00 UTC',
 	partition_expiration_days = 1,
-	description = "a table that expires in 2025, with each partition living for 24 hours",
-	labels = [("org_unit", "development")]
+	description = 'a table that expires in 2025, with each partition living for 24 hours',
+	labels = [('org_unit', 'development')]
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE mydataset.top_words
@@ -42,7 +42,7 @@ GROUP BY corpus;
 --------------------
 CREATE TABLE mydataset.top_words
 OPTIONS (
-	description = "Top ten words per Shakespeare corpus"
+	description = 'Top ten words per Shakespeare corpus'
 )
 AS
 SELECT corpus, ARRAY_AGG(STRUCT(word, word_count) ORDER BY word_count DESC LIMIT 10) AS top_words
@@ -51,7 +51,7 @@ GROUP BY corpus;
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS mydataset.newtable (x INT64, y STRUCT<a ARRAY<STRING>, b BOOL>)
 OPTIONS(
-  expiration_timestamp=TIMESTAMP "2025-01-01 00:00:00 UTC",
+  expiration_timestamp=TIMESTAMP '2025-01-01 00:00:00 UTC',
   description="a table that expires in 2025",
   labels=[("org_unit", "development")]
 )
@@ -61,9 +61,9 @@ CREATE TABLE IF NOT EXISTS mydataset.newtable (
 	y STRUCT<a ARRAY<STRING>, b BOOL>
 )
 OPTIONS (
-	expiration_timestamp = TIMESTAMP "2025-01-01 00:00:00 UTC",
-	description = "a table that expires in 2025",
-	labels = [("org_unit", "development")]
+	expiration_timestamp = TIMESTAMP '2025-01-01 00:00:00 UTC',
+	description = 'a table that expires in 2025',
+	labels = [('org_unit', 'development')]
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE OR REPLACE TABLE mydataset.newtable (x INT64, y STRUCT<a ARRAY<STRING>, b BOOL>)
@@ -78,9 +78,9 @@ CREATE OR REPLACE TABLE mydataset.newtable (
 	y STRUCT<a ARRAY<STRING>, b BOOL>
 )
 OPTIONS (
-	expiration_timestamp = TIMESTAMP "2025-01-01 00:00:00 UTC",
-	description = "a table that expires in 2025",
-	labels = [("org_unit", "development")]
+	expiration_timestamp = TIMESTAMP '2025-01-01 00:00:00 UTC',
+	description = 'a table that expires in 2025',
+	labels = [('org_unit', 'development')]
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE mydataset.newtable (
@@ -108,7 +108,7 @@ CREATE TABLE mydataset.newtable
 )
 --------------------
 CREATE TABLE mydataset.newtable (
-	x INT64 OPTIONS (description = "An optional INTEGER field"),
+	x INT64 OPTIONS (description = 'An optional INTEGER field'),
 	y BOOL,
 	PRIMARY KEY (x) NOT ENFORCED
 )
@@ -122,7 +122,7 @@ CREATE TABLE mydataset.newtable
 )
 --------------------
 CREATE TABLE mydataset.newtable (
-	x INT64 OPTIONS (description = "An optional INTEGER field"),
+	x INT64 OPTIONS (description = 'An optional INTEGER field'),
 	y INT64,
 	PRIMARY KEY (x) NOT ENFORCED,
 	FOREIGN KEY (y)
