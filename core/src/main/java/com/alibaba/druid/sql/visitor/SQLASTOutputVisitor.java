@@ -2160,6 +2160,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
+        List<SQLAliasedExpr> replace = x.getReplace();
+        if (!replace.isEmpty()) {
+            print(ucase ? " REPLACE(" : "replace(");
+            printAndAccept(replace, ", ");
+            print(')');
+        }
+
         return true;
     }
 
