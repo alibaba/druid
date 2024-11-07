@@ -1,0 +1,5 @@
+SELECT * REPLACE ("widget" AS item_name,"sprocket" AS order_id)
+FROM orders
+--------------------
+SELECT * REPLACE("widget" AS item_name, "sprocket" AS order_id)
+FROM orders

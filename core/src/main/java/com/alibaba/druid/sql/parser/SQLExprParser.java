@@ -5926,6 +5926,12 @@ public class SQLExprParser extends SQLParser {
                 accept(Token.RPAREN);
             }
 
+            if (lexer.nextIf(REPLACE)) {
+                accept(Token.LPAREN);
+                this.aliasedItems(star.getReplace(), star);
+                accept(Token.RPAREN);
+            }
+
             expr = star;
             return new SQLSelectItem(expr, (String) null, connectByRoot);
         } else if (token == Token.DO || token == Token.JOIN || token == Token.TABLESPACE) {
