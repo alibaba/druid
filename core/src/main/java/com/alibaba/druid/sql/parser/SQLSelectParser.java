@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -1141,6 +1142,9 @@ public class SQLSelectParser extends SQLParser {
                 } else {
                     break;
                 }
+            }
+            if (lexer.token == Token.RPAREN && dbType == DbType.bigquery) {
+                break;
             }
         }
     }

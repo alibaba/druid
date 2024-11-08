@@ -143,6 +143,51 @@ public class BigQueryLexer extends Lexer {
                 }
             }
         }
+
+        {
+            boolean hasSpecial = false;
+            int startIndex = pos + 1;
+            int endIndex = -1; // text.indexOf('\'', startIndex);
+            for (int i = startIndex; i < text.length(); ++i) {
+                final char ch = text.charAt(i);
+                if (ch == '\\') {
+                    hasSpecial = true;
+                    continue;
+                }
+                if (ch == '"') {
+                    endIndex = i;
+                    break;
+                }
+            }
+
+            if (endIndex == -1) {
+                throw new ParserException("unclosed str. " + info());
+            }
+
+            String stringVal;
+            if (token == Token.AS) {
+                stringVal = text.substring(pos, endIndex + 1);
+            } else {
+                if (startIndex == endIndex) {
+                    stringVal = "";
+                } else {
+                    stringVal = text.substring(startIndex, endIndex);
+                }
+            }
+
+            if (!hasSpecial) {
+                this.stringVal = stringVal;
+                int pos = endIndex + 1;
+                char ch = charAt(pos);
+                if (ch != '"') {
+                    this.pos = pos;
+                    this.ch = ch;
+                    token = LITERAL_CHARS;
+                    return;
+                }
+            }
+        }
+
         mark = pos;
         boolean hasSpecial = false;
         Token preToken = this.token;
@@ -155,6 +200,33 @@ public class BigQueryLexer extends Lexer {
 
             ch = charAt(++pos);
 
+            if (ch == '\\') {
+                scanChar();
+                if (!hasSpecial) {
+                    initBuff(bufPos);
+                    arraycopy(mark + 1, buf, 0, bufPos);
+                    hasSpecial = true;
+                }
+
+                switch (ch) {
+                    case '\'':
+                        putChar('\'');
+                        break;
+                    case '"':
+                        putChar('"');
+                        break;
+                    case '\\':
+                        putChar('\\');
+                        break;
+                    default:
+                        putChar('\\');
+                        putChar(ch);
+                        break;
+                }
+
+                continue;
+            }
+
             if (ch == '"') {
                 scanChar();
                 if (ch != '"') {
@@ -166,7 +238,7 @@ public class BigQueryLexer extends Lexer {
                         arraycopy(mark + 1, buf, 0, bufPos);
                         hasSpecial = true;
                     }
-                    putChar('\'');
+                    putChar('"');
                     continue;
                 }
             }

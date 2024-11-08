@@ -1,3 +1,18 @@
+SELECT ARRAY(SELECT AS STRUCT
+        cast(coalesce(a,0) as NUMERIC) as seconds_amount,
+        cast(coalesce(b,0) as NUMERIC) as nanos_amount,
+      )
+from t1
+--------------------
+SELECT ARRAY(
+		SELECT AS STRUCT CAST(coalesce(a, 0) AS NUMERIC) AS seconds_amount, CAST(coalesce(b, 0) AS NUMERIC) AS nanos_amount
+	)
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT "[\"sameday\"]"
+--------------------
+SELECT '["sameday"]'
+------------------------------------------------------------------------------------------------------------------------
 SELECT DATEADD("2024-10-01", -1, 'mm');
 --------------------
 SELECT DATEADD('2024-10-01', -1, 'mm');
