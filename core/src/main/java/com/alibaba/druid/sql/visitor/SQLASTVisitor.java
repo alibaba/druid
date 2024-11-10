@@ -29,6 +29,9 @@ import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
 public interface SQLASTVisitor {
     default void endVisit(SQLAllColumnExpr x) {
     }
@@ -2636,4 +2639,41 @@ public interface SQLASTVisitor {
     default void endVisit(SQLPatternExpr x) {
     }
 
+    static SQLASTVisitor ofMethodInvoke(Consumer<SQLMethodInvokeExpr> p) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLMethodInvokeExpr x) {
+                p.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofMethodInvoke(Predicate<String> filter, Consumer<SQLMethodInvokeExpr> p) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLMethodInvokeExpr x) {
+                if (filter == null || filter.test(x.getMethodName())) {
+                    p.accept(x);
+                }
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofCast(Consumer<SQLCastExpr> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLCastExpr x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofUnnest(Consumer<SQLUnnestTableSource> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLUnnestTableSource x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
 }
