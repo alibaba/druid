@@ -2676,4 +2676,49 @@ public interface SQLASTVisitor {
             }
         };
     }
+
+    static SQLASTVisitor ofExprTableSource(Consumer<SQLExprTableSource> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLExprTableSource x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofDelete(Consumer<SQLDeleteStatement> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLDeleteStatement x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofMerge(Consumer<SQLMergeStatement> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLMergeStatement x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofDeclare(Consumer<SQLDeclareStatement> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLDeclareStatement x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofIf(Consumer<SQLIfStatement> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLIfStatement x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
 }
