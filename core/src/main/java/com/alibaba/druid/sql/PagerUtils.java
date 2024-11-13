@@ -161,6 +161,7 @@ public class PagerUtils {
             case lealone:
             case ads:
             case clickhouse:
+            case polardbx:
                 return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
             case postgresql:
             case greenplum:
@@ -548,6 +549,7 @@ public class PagerUtils {
             case mariadb:
             case tidb:
             case ads:
+            case polardbx:
                 return new MySqlSelectQueryBlock();
             case oracle:
                 return new OracleSelectQueryBlock();

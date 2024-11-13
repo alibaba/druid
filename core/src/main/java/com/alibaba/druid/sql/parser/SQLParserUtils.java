@@ -149,7 +149,8 @@ public class SQLParserUtils {
             case mariadb:
             case goldendb:
             case oceanbase:
-            case drds: {
+            case drds:
+            case polardbx: {
                 return new MySqlStatementParser(sql, features);
             }
             case elastic_search: {

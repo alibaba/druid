@@ -525,6 +525,7 @@ public class SQLUtils {
             case mysql:
             case mariadb:
             case tidb:
+            case polardbx:
                 return new MySqlOutputVisitor(out);
             case postgresql:
             case greenplum:
@@ -607,6 +608,7 @@ public class SQLUtils {
             case mariadb:
             case tidb:
             case elastic_search:
+            case polardbx:
                 return new MySqlSchemaStatVisitor(repository);
             case postgresql:
             case greenplum:

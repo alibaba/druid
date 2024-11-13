@@ -416,6 +416,7 @@ public class SchemaRepository {
             case mariadb:
             case tidb:
             case sqlite:
+            case polardbx:
                 resolveVisitor = new SchemaResolveVisitorFactory.MySqlResolveVisitor(this, optionsValue);
                 break;
             case oracle:

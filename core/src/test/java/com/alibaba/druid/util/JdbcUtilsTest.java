@@ -62,4 +62,15 @@ public class JdbcUtilsTest extends TestCase {
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
         assertEquals("Does not support OceanBase, for url like jdbc:oceanbase:oracle:...", DbType.oceanbase_oracle, dbType);
     }
+
+    public void testGetDbTypePolarDBX() {
+        String jdbcUrl = "jdbc:polardbx://localhost:3306/test";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, null);
+        assertEquals("Does not support PolarDB-X, for url like jdbc:polardbx:...", DbType.polardbx.name(), dbType);
+    }
+
+    public void testPolarDBXIsMySQLDBType() {
+        assertTrue("PolarDB-X suppose to be a MySQL compatible DB", JdbcUtils.isMysqlDbType(DbType.polardbx));
+        assertTrue("PolarDB-X suppose to be a MySQL compatible DB", JdbcUtils.isMysqlDbType("polardbx"));
+    }
 }
