@@ -597,6 +597,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case mysql:
             case mariadb:
             case tidb:
+            case polardbx:
                 return new MySqlOrderByStatVisitor(x);
             case postgresql:
             case greenplum:

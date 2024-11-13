@@ -137,6 +137,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             case lealone:
             case presto:
             case trino:
+            case polardbx:
                 if (config == null) {
                     config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
                 }

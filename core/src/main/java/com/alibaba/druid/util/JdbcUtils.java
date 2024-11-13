@@ -528,6 +528,9 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:inspur:")) {
             return JdbcConstants.KDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:polardb")) {
+            if (rawUrl.startsWith("jdbc:polardbx:")) {
+                return JdbcConstants.POLARDBX_DRIVER;
+            }
             return JdbcConstants.POLARDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:highgo:")) {
             return "com.highgo.jdbc.Driver";
@@ -657,6 +660,9 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:inspur:")) {
             return DbType.kdb;
         } else if (rawUrl.startsWith("jdbc:polardb")) {
+            if (rawUrl.startsWith("jdbc:polardbx:")) {
+                return DbType.polardbx;
+            }
             return DbType.polardb;
         } else if (rawUrl.startsWith("jdbc:highgo:")) {
             return DbType.highgo;
@@ -992,6 +998,7 @@ public final class JdbcUtils implements JdbcConstants {
             case h2:
             case lealone:
             case goldendb:
+            case polardbx:
                 return true;
             default:
                 return false;

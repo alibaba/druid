@@ -169,4 +169,6 @@ public interface JdbcConstants {
     String OPENGAUSS_DRIVER = "org.opengauss.Driver";
     String SUNDB = "sundb"; //科蓝数s据
     String SUNDB_DRIVER = "csii.sundb.jdbc.SundbDriver";
+
+    String POLARDBX_DRIVER = "com.aliyun.polardbx.Driver";
 }

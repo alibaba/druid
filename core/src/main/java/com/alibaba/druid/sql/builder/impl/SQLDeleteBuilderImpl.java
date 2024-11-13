@@ -128,6 +128,7 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
             case mysql:
             case mariadb:
             case tidb:
+            case polardbx:
                 return new MySqlDeleteStatement();
             case postgresql:
             case greenplum:

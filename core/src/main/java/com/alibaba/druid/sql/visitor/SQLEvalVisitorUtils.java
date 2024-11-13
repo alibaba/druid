@@ -115,6 +115,7 @@ public class SQLEvalVisitorUtils {
             case tidb:
             case h2:
             case lealone:
+            case polardbx:
                 return new MySqlEvalVisitorImpl();
             case oracle:
                 return new OracleEvalVisitor();

@@ -87,6 +87,9 @@ public enum DbType {
     lealone(1L << 51),
 
     athena(1L << 52),
+
+    polardbx(1L << 53),
+
     ingres(0),
     cloudscape(0),
     timesten(0),

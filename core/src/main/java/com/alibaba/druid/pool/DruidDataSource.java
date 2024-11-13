@@ -977,6 +977,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 || JdbcUtils.MYSQL_DRIVER_603.equals(this.driverClass)
                 || JdbcUtils.GOLDENDB_DRIVER.equals(this.driverClass)
                 || JdbcUtils.GBASE8S_DRIVER.equals(this.driverClass)
+                || JdbcUtils.POLARDBX_DRIVER.equals(this.driverClass)
         ) {
             isMySql = true;
         }
@@ -1116,6 +1117,9 @@ public class DruidDataSource extends DruidAbstractDataSource
             } else if (realDriverClassName.contains("DB2")) {
                 this.exceptionSorter = new DB2ExceptionSorter();
             } else if (realDriverClassName.equals(JdbcConstants.GOLDENDB_DRIVER)) {
+                this.exceptionSorter = new MySqlExceptionSorter();
+                this.isMySql = true;
+            } else if (realDriverClassName.equals(JdbcConstants.POLARDBX_DRIVER)) {
                 this.exceptionSorter = new MySqlExceptionSorter();
                 this.isMySql = true;
             } else {

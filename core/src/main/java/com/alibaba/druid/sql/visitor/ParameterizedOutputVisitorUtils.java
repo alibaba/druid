@@ -416,6 +416,7 @@ public class ParameterizedOutputVisitorUtils {
             case oceanbase:
             case drds:
             case elastic_search:
+            case polardbx:
                 return new MySqlOutputVisitor(out, true);
             case h2:
             case lealone:
