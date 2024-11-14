@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
@@ -22,6 +23,10 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
 
     protected SQLCreateTableStatement newCreateStatement() {
         return new BigQueryCreateTableStatement();
+    }
+
+    public SQLSelectParser createSQLSelectParser() {
+        return new BigQuerySelectParser(this.exprParser, selectListCache);
     }
 
     protected void parseCreateTableRest(SQLCreateTableStatement x) {

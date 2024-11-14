@@ -4366,7 +4366,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLExpr value = x.getValue();
         if (value != null) {
-            print0(" = ");
+            print0(" =");
+            if (!(value instanceof SQLQueryExpr)) {
+                print(' ');
+            }
             value.accept(this);
         } else {
             if (dbType == DbType.odps) {

@@ -53,7 +53,8 @@ public class BigQuerySelectQueryBlock extends SQLSelectQueryBlock
         }
     }
 
-    public static class DifferentialPrivacy extends SQLObjectImpl implements BigQueryObject {
+    public static class DifferentialPrivacy
+            extends SQLObjectImpl implements BigQueryObject {
         private final List<SQLAssignItem> options = new ArrayList<>();
 
         @Override
@@ -102,5 +103,15 @@ public class BigQuerySelectQueryBlock extends SQLSelectQueryBlock
             }
             return x;
         }
+    }
+
+    public BigQuerySelectQueryBlock clone() {
+        BigQuerySelectQueryBlock x = new BigQuerySelectQueryBlock();
+        cloneTo(x);
+        x.asStruct = this.asStruct;
+        if (differentialPrivacy != null) {
+            x.differentialPrivacy = this.differentialPrivacy.clone();
+        }
+        return x;
     }
 }

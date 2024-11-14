@@ -266,7 +266,9 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             printJoinType(joinType);
         }
 
-        print(' ');
+        if (!(right instanceof SQLLateralViewTableSource)) {
+            print(' ');
+        }
         right.accept(this);
 
         if (x.getCondition() != null) {

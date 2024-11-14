@@ -100,6 +100,7 @@ public class SQLQueryExpr extends SQLExprImpl implements Serializable {
         if (subQuery != null) {
             x.setSubQuery(subQuery.clone());
         }
+        x.parenthesized = this.parenthesized;
 
         return x;
     }
