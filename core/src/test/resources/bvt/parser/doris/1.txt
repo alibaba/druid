@@ -1,3 +1,173 @@
+CREATE TABLE `bbbbbb` (
+  `table_name` varchar(255) NOT NULL COMMENT '监控对象表名',
+  `media_platform` varchar(255) NOT NULL COMMENT '媒体平台',
+  `account_id` varchar(255) NOT NULL COMMENT '媒体账号id',
+  `account_name` varchar(255) NULL COMMENT '媒体账号名称',
+  `adv_id` varchar(255) NULL COMMENT '广告主id',
+  `adv_name` varchar(255) NULL COMMENT '广告主名称',
+  `is_company_owned_account` tinyint(4) NULL COMMENT '是否公司内部账户',
+  `is_account_acquisition_completion` tinyint(4) NULL COMMENT '该账户下是否存在广告报表数据,1是，0否',
+  `lst_report_data_date` date NULL COMMENT '最近一次报表数据日期',
+  `lst_report_collection_time` datetime NULL COMMENT '最近一次报表数据采集时间',
+  `timestamp` datetime NULL COMMENT '表中数据时间戳'
+) ENGINE=OLAP
+UNIQUE KEY(`table_name`, `media_platform`, `account_id`)
+COMMENT '广告域-globalad-account误差监控(账户数据是否采集)'
+PARTITION BY LIST(`table_name`)
+(PARTITION p_dwd_ad_country_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_country_reports"),
+PARTITION p_dwd_ad_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_reports"),
+PARTITION p_ods_ad_country_reports VALUES IN ("onedata_warehouse.ods_tiktok_country_reports_integrated_basic"),
+PARTITION p_ods_ad_reports VALUES IN ("onedata_warehouse.ods_tiktok_reports_integrated_basic"),
+PARTITION p_dws_ad_reports VALUES IN ("tec_cdm.dws_ad_ad_performance_1d"))
+DISTRIBUTED BY HASH(`table_name`, `media_platform`, `account_id`) BUCKETS 6
+PROPERTIES (
+"replication_allocation" = "tag.location.default: 3",
+"is_being_synced" = "false",
+"storage_format" = "V2",
+"light_schema_change" = "true",
+"disable_auto_compaction" = "false",
+"enable_single_replica_compaction" = "false"
+);
+--------------------
+CREATE TABLE `bbbbbb` (
+	`table_name` varchar(255) NOT NULL COMMENT '监控对象表名',
+	`media_platform` varchar(255) NOT NULL COMMENT '媒体平台',
+	`account_id` varchar(255) NOT NULL COMMENT '媒体账号id',
+	`account_name` varchar(255) NULL COMMENT '媒体账号名称',
+	`adv_id` varchar(255) NULL COMMENT '广告主id',
+	`adv_name` varchar(255) NULL COMMENT '广告主名称',
+	`is_company_owned_account` tinyint(4) NULL COMMENT '是否公司内部账户',
+	`is_account_acquisition_completion` tinyint(4) NULL COMMENT '该账户下是否存在广告报表数据,1是，0否',
+	`lst_report_data_date` date NULL COMMENT '最近一次报表数据日期',
+	`lst_report_collection_time` datetime NULL COMMENT '最近一次报表数据采集时间',
+	`timestamp` datetime NULL COMMENT '表中数据时间戳'
+) ENGINE = OLAP
+UNIQUE KEY(`table_name`, `media_platform`, `account_id`)
+COMMENT '广告域-globalad-account误差监控(账户数据是否采集)'
+PARTITION BY LIST(`table_name`) (
+  PARTITION p_dwd_ad_country_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_country_reports"), 
+  PARTITION p_dwd_ad_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_reports"), 
+  PARTITION p_ods_ad_country_reports VALUES IN ("onedata_warehouse.ods_tiktok_country_reports_integrated_basic"), 
+  PARTITION p_ods_ad_reports VALUES IN ("onedata_warehouse.ods_tiktok_reports_integrated_basic"), 
+  PARTITION p_dws_ad_reports VALUES IN ("tec_cdm.dws_ad_ad_performance_1d")
+)
+DISTRIBUTED BY HASH(`table_name`, `media_platform`, `account_id`) BUCKETS 6
+PROPERTIES (
+  "replication_allocation" = "tag.location.default: 3",
+  "is_being_synced" = "false",
+  "storage_format" = "V2",
+  "light_schema_change" = "true",
+  "disable_auto_compaction" = "false",
+  "enable_single_replica_compaction" = "false"
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `aaaa` (
+  `stat_date` date NOT NULL COMMENT '统计时间_天',
+  `ad_id` varchar(512) NOT NULL COMMENT '广告id',
+  `ad_name` text NULL COMMENT '广告名称',
+  `stat_mon` varchar(100) NULL COMMENT '统计时间_月',
+  `spu_id` varchar(255) NULL COMMENT '商品的SPUID',
+  `shopping_ads_type` varchar(100) NULL COMMENT '购物广告类型',
+  `account_id` varchar(255) NULL COMMENT '媒体账号id',
+  `adv_id` varchar(512) NULL COMMENT '广告主id',
+  `product_name` varchar(1024) NULL COMMENT '商品名称',
+  `account_name` varchar(255) NULL COMMENT '媒体账号名称',
+  `adv_name` varchar(1024) NULL COMMENT '广告主名称',
+  `spend_amt_1d` DECIMAL(38, 2) NULL DEFAULT "0.0" COMMENT '最近1天消耗金额',
+  `imps_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天曝光量',
+  `clk_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天点击量',
+  `cvr_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天转化量',
+  `cart_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天加购量',
+  `pur_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天购买量',
+  `revenue_amt_1d` DECIMAL(38, 2) NULL DEFAULT "0.0" COMMENT '最近1天收入金额',
+  `collect_timestamp` datetime NULL COMMENT '采集时间戳',
+  INDEX product_name_idx (`product_name`) USING BITMAP COMMENT 'Bitmap index on column product_name',
+  INDEX adv_name_idx (`adv_name`) USING BITMAP COMMENT 'Bitmap index on column adv_name',
+  INDEX account_name_idx (`account_name`) USING BITMAP COMMENT 'Bitmap index on column account_name'
+) ENGINE=OLAP
+UNIQUE KEY(`stat_date`, `ad_id`)
+COMMENT '广告域-素材近1天广告效果数据'
+PARTITION BY RANGE(`stat_date`)
+(PARTITION p202205 VALUES [('2022-05-01'), ('2022-06-01')))
+DISTRIBUTED BY HASH(`stat_date`, `ad_id`) BUCKETS 6
+PROPERTIES (
+"replication_allocation" = "tag.location.default: 3",
+"is_being_synced" = "false",
+"dynamic_partition.enable" = "true",
+"dynamic_partition.time_unit" = "MONTH",
+"dynamic_partition.time_zone" = "Europe/London",
+"dynamic_partition.start" = "-2147483648",
+"dynamic_partition.end" = "1",
+"dynamic_partition.prefix" = "p",
+"dynamic_partition.replication_allocation" = "tag.location.default: 3",
+"dynamic_partition.buckets" = "16",
+"dynamic_partition.create_history_partition" = "true",
+"dynamic_partition.history_partition_num" = "24",
+"dynamic_partition.hot_partition_num" = "0",
+"dynamic_partition.reserved_history_periods" = "NULL",
+"dynamic_partition.storage_policy" = "",
+"dynamic_partition.storage_medium" = "HDD",
+"dynamic_partition.start_day_of_month" = "1",
+"storage_format" = "V2",
+"light_schema_change" = "true",
+"disable_auto_compaction" = "false",
+"enable_single_replica_compaction" = "false"
+);
+--------------------
+CREATE TABLE `aaaa` (
+	`stat_date` date NOT NULL COMMENT '统计时间_天',
+	`ad_id` varchar(512) NOT NULL COMMENT '广告id',
+	`ad_name` text NULL COMMENT '广告名称',
+	`stat_mon` varchar(100) NULL COMMENT '统计时间_月',
+	`spu_id` varchar(255) NULL COMMENT '商品的SPUID',
+	`shopping_ads_type` varchar(100) NULL COMMENT '购物广告类型',
+	`account_id` varchar(255) NULL COMMENT '媒体账号id',
+	`adv_id` varchar(512) NULL COMMENT '广告主id',
+	`product_name` varchar(1024) NULL COMMENT '商品名称',
+	`account_name` varchar(255) NULL COMMENT '媒体账号名称',
+	`adv_name` varchar(1024) NULL COMMENT '广告主名称',
+	`spend_amt_1d` DECIMAL(38, 2) DEFAULT "0.0" NULL COMMENT '最近1天消耗金额',
+	`imps_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天曝光量',
+	`clk_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天点击量',
+	`cvr_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天转化量',
+	`cart_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天加购量',
+	`pur_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天购买量',
+	`revenue_amt_1d` DECIMAL(38, 2) DEFAULT "0.0" NULL COMMENT '最近1天收入金额',
+	`collect_timestamp` datetime NULL COMMENT '采集时间戳',
+	INDEX product_name_idx(`product_name`) USING BITMAP COMMENT Bitmap index on column product_name,
+	INDEX adv_name_idx(`adv_name`) USING BITMAP COMMENT Bitmap index on column adv_name,
+	INDEX account_name_idx(`account_name`) USING BITMAP COMMENT Bitmap index on column account_name
+) ENGINE = OLAP
+UNIQUE KEY(`stat_date`, `ad_id`)
+COMMENT '广告域-素材近1天广告效果数据'
+PARTITION BY RANGE(`stat_date`) (
+  PARTITION p202205 VALUES [(('2022-05-01')),(('2022-06-01')))
+)
+DISTRIBUTED BY HASH(`stat_date`, `ad_id`) BUCKETS 6
+PROPERTIES (
+  "replication_allocation" = "tag.location.default: 3",
+  "is_being_synced" = "false",
+  "dynamic_partition.enable" = "true",
+  "dynamic_partition.time_unit" = "MONTH",
+  "dynamic_partition.time_zone" = "Europe/London",
+  "dynamic_partition.start" = "-2147483648",
+  "dynamic_partition.end" = "1",
+  "dynamic_partition.prefix" = "p",
+  "dynamic_partition.replication_allocation" = "tag.location.default: 3",
+  "dynamic_partition.buckets" = "16",
+  "dynamic_partition.create_history_partition" = "true",
+  "dynamic_partition.history_partition_num" = "24",
+  "dynamic_partition.hot_partition_num" = "0",
+  "dynamic_partition.reserved_history_periods" = "NULL",
+  "dynamic_partition.storage_policy" = "",
+  "dynamic_partition.storage_medium" = "HDD",
+  "dynamic_partition.start_day_of_month" = "1",
+  "storage_format" = "V2",
+  "light_schema_change" = "true",
+  "disable_auto_compaction" = "false",
+  "enable_single_replica_compaction" = "false"
+);
+------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.table_hash
 (
     k1 TINYINT,

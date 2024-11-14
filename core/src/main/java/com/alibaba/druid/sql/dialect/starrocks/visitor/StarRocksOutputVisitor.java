@@ -237,6 +237,35 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                         x.getEvery().accept(this);
                     }
                     println();
+                } else if (x.isValuesIn()) {
+                    println();
+                    Map<SQLExpr, List<SQLExpr>> valuesInMap = x.getValuesInMap();
+                    Set<SQLExpr> keySet = valuesInMap.keySet();
+                    int size = keySet.size();
+                    if (size > 0) {
+                        int i = 0;
+                        for (SQLExpr key : keySet) {
+                            if (i != 0) {
+                                println(", ");
+                            }
+                            List<SQLExpr> values = valuesInMap.get(key);
+                            print0(ucase ? "  PARTITION " : "  partition ");
+                            key.accept(this);
+                            print0(ucase ? " VALUES IN (" : " values in (");
+                            boolean isFirst = true;
+                            for (SQLExpr value : values) {
+                                if (!isFirst) {
+                                    print(", ");
+                                } else {
+                                    isFirst = false;
+                                }
+                                value.accept(this);
+                            }
+                            print0(")");
+                            i++;
+                        }
+                    }
+                    println();
                 }
                 print0(")");
             }

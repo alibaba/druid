@@ -25,6 +25,7 @@ public class DorisLexer
         map.put("PERCENT", Token.PERCENT);
         map.put("REPEATABLE", Token.REPEATABLE);
         map.put("TABLESAMPLE", Token.TABLESAMPLE);
+        map.put("USING", Token.USING);
 //        map.put("DISTRIBUTED", Token.DISTRIBUTE);
 
         return new Keywords(map);

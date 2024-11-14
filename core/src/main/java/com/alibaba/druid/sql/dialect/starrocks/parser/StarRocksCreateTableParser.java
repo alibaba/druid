@@ -230,6 +230,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                 for (; ; ) {
                     Map<SQLExpr, SQLExpr> lessThanMap = srStmt.getLessThanMap();
                     Map<SQLExpr, List<SQLExpr>> fixedRangeMap = srStmt.getFixedRangeMap();
+                    Map<SQLExpr, List<SQLExpr>> valuesInMap = srStmt.getValuesInMap();
                     lexer.nextToken();
                     SQLExpr area = this.exprParser.expr();
                     accept(Token.VALUES);
@@ -270,6 +271,28 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                         } else if (lexer.token() == Token.RPAREN) {
                             lexer.nextToken();
                             srStmt.setFixedRangeMap(fixedRangeMap);
+                            break;
+                        }
+                    } else if (lexer.token() == Token.IN) {
+                        srStmt.setValuesIn(true);
+                        lexer.nextToken();
+                        accept(Token.LPAREN);
+                        List<SQLExpr> valueList = new ArrayList<>();
+                        for (; ; ) {
+                            SQLExpr value = this.exprParser.expr();
+                            valueList.add(value);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                            } else if (lexer.token() == Token.RPAREN) {
+                                lexer.nextToken();
+                                valuesInMap.put(area, valueList);
+                                break;
+                            }
+                        }
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                        } else if (lexer.token() == Token.RPAREN) {
+                            lexer.nextToken();
                             break;
                         }
                     }
