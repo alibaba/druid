@@ -30,12 +30,14 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
 
     protected boolean lessThan;
     protected boolean fixedRange;
+    protected boolean valuesIn;
     protected boolean startEnd;
     protected SQLExpr engine;
 
     protected final List<SQLExpr> orderBy = new ArrayList<>();
 
     protected Map<SQLExpr, SQLExpr> lessThanMap = new LinkedHashMap<>();
+    protected Map<SQLExpr, List<SQLExpr>> valuesInMap = new LinkedHashMap<>();
     protected Map<SQLExpr, List<SQLExpr>> fixedRangeMap = new LinkedHashMap<>();
     protected Map<SQLCharExpr, SQLCharExpr> propertiesMap = new LinkedHashMap<>();
     protected Map<SQLCharExpr, SQLCharExpr> lBracketPropertiesMap = new LinkedHashMap<>();
@@ -149,12 +151,28 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement {
         this.lessThan = lessThan;
     }
 
+    public boolean isValuesIn() {
+        return valuesIn;
+    }
+
+    public void setValuesIn(boolean valuesIn) {
+        this.valuesIn = valuesIn;
+    }
+
     public Map<SQLExpr, SQLExpr> getLessThanMap() {
         return lessThanMap;
     }
 
     public void setLessThanMap(Map<SQLExpr, SQLExpr> lessThanMap) {
         this.lessThanMap = lessThanMap;
+    }
+
+    public Map<SQLExpr, List<SQLExpr>> getValuesInMap() {
+        return valuesInMap;
+    }
+
+    public void setValuesInMap(Map<SQLExpr, List<SQLExpr>> valuesInMap) {
+        this.valuesInMap = valuesInMap;
     }
 
     public SQLName getAggDuplicate() {
