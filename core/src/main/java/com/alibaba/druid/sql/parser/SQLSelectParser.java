@@ -1818,7 +1818,14 @@ public class SQLSelectParser extends SQLParser {
                 } else {
                     SQLTableSource unnestTableSource = parseUnnestTableSource();
                     if (unnestTableSource != null) {
-                        if (lexer.identifierEquals(FnvHash.Constants.CROSS)) {
+                        if (lexer.identifierEquals(FnvHash.Constants.CROSS)
+                                || lexer.token == Token.LEFT
+                                || lexer.token == Token.RIGHT
+                                || lexer.token == Token.COMMA
+                                || lexer.token == Token.INNER
+                                || lexer.token == Token.JOIN
+                                || lexer.token == Token.FULL
+                        ) {
                             rightTableSource = unnestTableSource;
                         } else {
                             rightTableSource = parseTableSourceRest(unnestTableSource);
