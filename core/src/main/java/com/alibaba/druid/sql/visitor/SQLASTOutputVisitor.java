@@ -391,6 +391,36 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
     }
 
+    protected void printAndAccept(
+            String prefix,
+            String suffix,
+            List<? extends SQLObject> nodes,
+            String separator,
+            int lineItems
+    ) {
+        int size = nodes.size();
+        print(prefix);
+        incrementIndent();
+        if (size > lineItems) {
+            println();
+        }
+        for (int i = 0; i < size; ++i) {
+            if (i != 0) {
+                if (i % lineItems == 0) {
+                    println(separator.trim());
+                } else {
+                    print0(separator);
+                }
+            }
+            nodes.get(i).accept(this);
+        }
+        decrementIndent();
+        if (size > lineItems) {
+            println();
+        }
+        print(suffix);
+    }
+
     protected void printAndAccept(List<? extends SQLExpr> nodes, String seperator, boolean parameterized) {
         for (int i = 0, size = nodes.size(); i < size; ++i) {
             if (i != 0) {
@@ -7058,6 +7088,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
+        if (isEnabled(VisitorFeature.OutputSkipMultilineComment) && comment.startsWith("/*")) {
+            return;
+        }
+
         if (comment.startsWith("--")
                 && comment.length() > 2
                 && comment.charAt(2) != ' '
@@ -8449,17 +8483,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(MergeInsertClause x) {
         print0(ucase ? "WHEN NOT MATCHED THEN INSERT" : "when not matched then insert");
         if (x.getColumns().size() > 0) {
-            incrementIndent();
-            println(" (");
-            printAndAccept(x.getColumns(), ", ");
-            decrementIndent();
-            println();
-            print(')');
+            printAndAccept(" (", ")", x.getColumns(), ", ", 5);
         }
         println();
-        print0(ucase ? "VALUES (" : "values (");
-        printAndAccept(x.getValues(), ", ");
-        print(')');
+        printAndAccept(
+                ucase ? "VALUES (" : "values (",
+                ")",
+                x.getValues(),
+                ", ",
+                5
+        );
         if (x.getWhere() != null) {
             this.indentCount++;
             println();
@@ -9402,6 +9435,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public void setPrintStatementAfterSemi(Boolean printStatementAfterSemi) {
         this.printStatementAfterSemi = printStatementAfterSemi;
+    }
+
+    public void config(VisitorFeature... features) {
+        for (VisitorFeature feature : features) {
+            config(feature, true);
+        }
     }
 
     public void config(VisitorFeature feature, boolean state) {

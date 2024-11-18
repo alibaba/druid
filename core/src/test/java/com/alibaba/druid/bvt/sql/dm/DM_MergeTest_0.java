@@ -38,9 +38,15 @@ public class DM_MergeTest_0 extends TestCase {
                         "\texpire_time = ?\n" +
                         "WHERE sessionid = ?\n" +
                         "WHEN NOT MATCHED THEN INSERT (\n" +
-                        "\tSESSIONID, LOGIN_NAME, DEPT_NAME, IPADDR, LOGIN_LOCATION, BROWSER, OS, STATUS, START_TIMESTAMP, LAST_ACCESS_TIME, EXPIRE_TIME\n" +
+                        "\tSESSIONID, LOGIN_NAME, DEPT_NAME, IPADDR, LOGIN_LOCATION,\n" +
+                        "\tBROWSER, OS, STATUS, START_TIMESTAMP, LAST_ACCESS_TIME,\n" +
+                        "\tEXPIRE_TIME\n" +
                         ")\n" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "VALUES (\n" +
+                        "\t?, ?, ?, ?, ?,\n" +
+                        "\t?, ?, ?, ?, ?,\n" +
+                        "\t?\n" +
+                        ")",
                 stmt.toString());
         SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
     }
@@ -55,27 +61,33 @@ public class DM_MergeTest_0 extends TestCase {
         assertEquals(1, statementList.size());
 
         assertEquals("MERGE INTO sys_user_online a\n" +
-                "USING (\n" +
-                "\tSELECT count(1) AS co\n" +
-                "\tFROM sys_user_online\n" +
-                "\tWHERE sessionid = ?\n" +
-                ") b ON (b.co <> 0)\n" +
-                "WHEN MATCHED THEN UPDATE\n" +
-                "SET login_name = ?,\n" +
-                "\tdept_name = ?,\n" +
-                "\tipaddr = ?,\n" +
-                "\tlogin_location = ?,\n" +
-                "\tbrowser = ?,\n" +
-                "\tos = ?,\n" +
-                "\tstatus = ?,\n" +
-                "\tstart_timestamp = ?,\n" +
-                "\tlast_access_time = ?,\n" +
-                "\texpire_time = ?\n" +
-                "WHERE sessionid = ?\n" +
-                "WHEN NOT MATCHED THEN INSERT (\n" +
-                "\tSESSIONID, LOGIN_NAME, DEPT_NAME, IPADDR, LOGIN_LOCATION, BROWSER, OS, STATUS, START_TIMESTAMP, LAST_ACCESS_TIME, EXPIRE_TIME\n" +
-                ")\n" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "USING (\n" +
+                        "\tSELECT count(1) AS co\n" +
+                        "\tFROM sys_user_online\n" +
+                        "\tWHERE sessionid = ?\n" +
+                        ") b ON (b.co <> 0)\n" +
+                        "WHEN MATCHED THEN UPDATE\n" +
+                        "SET login_name = ?,\n" +
+                        "\tdept_name = ?,\n" +
+                        "\tipaddr = ?,\n" +
+                        "\tlogin_location = ?,\n" +
+                        "\tbrowser = ?,\n" +
+                        "\tos = ?,\n" +
+                        "\tstatus = ?,\n" +
+                        "\tstart_timestamp = ?,\n" +
+                        "\tlast_access_time = ?,\n" +
+                        "\texpire_time = ?\n" +
+                        "WHERE sessionid = ?\n" +
+                        "WHEN NOT MATCHED THEN INSERT (\n" +
+                        "\tSESSIONID, LOGIN_NAME, DEPT_NAME, IPADDR, LOGIN_LOCATION,\n" +
+                        "\tBROWSER, OS, STATUS, START_TIMESTAMP, LAST_ACCESS_TIME,\n" +
+                        "\tEXPIRE_TIME\n" +
+                        ")\n" +
+                        "VALUES (\n" +
+                        "\t?, ?, ?, ?, ?,\n" +
+                        "\t?, ?, ?, ?, ?,\n" +
+                        "\t?\n" +
+                        ")",
                 stmt.toString());
         SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
     }

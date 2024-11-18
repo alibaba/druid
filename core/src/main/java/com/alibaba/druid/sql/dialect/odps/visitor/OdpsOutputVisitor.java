@@ -65,7 +65,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     @Override
     public boolean visit(SQLMergeStatement.MergeUpdateClause x) {
-        print0(ucase ? "WHEN MATCHED " : "when matched ");
+        print0(ucase ? "WHEN MATCHED" : "when matched");
         this.indentCount++;
 
         SQLExpr where = x.getWhere();
@@ -82,9 +82,14 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             printExpr(where, parameterized);
             this.indentCount--;
             println();
+        } else {
+            print(' ');
         }
-        print0(ucase ? "THEN UPDATE SET " : "then update set ");
-        printAndAccept(x.getItems(), ", ");
+        println(ucase ? "THEN UPDATE" : "then update");
+        incrementIndent();
+        print(ucase ? "SET " : "set ");
+        printlnAndAccept(x.getItems(), ",");
+        decrementIndent();
         this.indentCount--;
 
         SQLExpr deleteWhere = x.getDeleteWhere();

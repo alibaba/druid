@@ -45,9 +45,7 @@ public class OracleMergeTest10 extends OracleTest {
                         "\tSELECT employee_id.*\n" +
                         "\tFROM employees\n" +
                         ") s ON (employee_id = a)\n" +
-                        "WHEN NOT MATCHED THEN INSERT (\n" +
-                        "\td.employee_id, d.bonus\n" +
-                        ")\n" +
+                        "WHEN NOT MATCHED THEN INSERT (d.employee_id, d.bonus)\n" +
                         "VALUES (s.employee_id, s.salary)\n" +
                         "\tWHERE (s.salary <= 8000)\n" +
                         "WHEN MATCHED THEN UPDATE\n" +

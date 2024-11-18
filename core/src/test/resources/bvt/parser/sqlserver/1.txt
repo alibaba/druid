@@ -285,9 +285,7 @@ USING (
 	WHERE device_category IS NOT NULL
 ) t2 ON (t1.name = t2.device_category
 AND t1.factory_id = t2.factory_id)
-WHEN NOT MATCHED THEN INSERT (
-	name, factory_id
-)
+WHEN NOT MATCHED THEN INSERT (name, factory_id)
 VALUES (t2.device_category, t2.factory_id)
 ------------------------------------------------------------------------------------------------------------------------
 ROLLBACK WORK

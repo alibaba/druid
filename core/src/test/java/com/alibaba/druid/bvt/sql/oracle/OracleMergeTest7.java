@@ -52,7 +52,11 @@ public class OracleMergeTest7 extends OracleTest {
                         "\tc.last_name = e.last_name,\n" +
                         "\tc.department_id = e.department_id\n" +
                         "WHEN NOT MATCHED THEN INSERT\n" +
-                        "VALUES (e.employee_id, e.first_name, e.last_name, e.email, e.phone_number, e.hire_date, e.job_id, e.salary, e.commission_pct, e.manager_id, e.department_id)",
+                        "VALUES (\n" +
+                        "\te.employee_id, e.first_name, e.last_name, e.email, e.phone_number,\n" +
+                        "\te.hire_date, e.job_id, e.salary, e.commission_pct, e.manager_id,\n" +
+                        "\te.department_id\n" +
+                        ")",
                 result);
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

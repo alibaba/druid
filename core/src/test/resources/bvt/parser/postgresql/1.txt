@@ -44,9 +44,7 @@ USING (
 	SELECT CustomerId, TransactionValue
 	FROM RecentTransactions
 ) T ON CA.CustomerId = T.CustomerId
-WHEN NOT MATCHED THEN INSERT (
-	CustomerId, Balance
-)
+WHEN NOT MATCHED THEN INSERT (CustomerId, Balance)
 VALUES (T.CustomerId, T.TransactionValue)
 WHEN MATCHED THEN UPDATE
 SET Balance = Balance + TransactionValue;
