@@ -57,7 +57,8 @@ public class OracleMergeTest8 extends OracleTest {
                         "\t\tFROM t08_cust_result_i_mid t2)\n" +
                         "\t)\n" +
                         ") t3 ON (t3.cust_no = t.cust_no)\n" +
-                        "WHEN MATCHED THEN UPDATE SET t.organ_key = t3.organ_key",
+                        "WHEN MATCHED THEN UPDATE\n" +
+                        "SET t.organ_key = t3.organ_key",
                 result);
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

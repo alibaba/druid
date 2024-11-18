@@ -8383,29 +8383,32 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? " ON " : " on ");
         x.getOn().accept(this);
 
+        MergeInsertClause insert = x.getInsertClause();
+        MergeUpdateClause update = x.getUpdateClause();
         if (x.isInsertClauseFirst()) {
-            if (x.getInsertClause() != null) {
+            if (insert != null) {
                 println();
-                x.getInsertClause().accept(this);
+                insert.accept(this);
             }
-            if (x.getUpdateClause() != null) {
+            if (update != null) {
                 println();
-                x.getUpdateClause().accept(this);
+                update.accept(this);
             }
         } else {
-            if (x.getUpdateClause() != null) {
+            if (update != null) {
                 println();
-                x.getUpdateClause().accept(this);
+                update.accept(this);
             }
-            if (x.getInsertClause() != null) {
+            if (insert != null) {
                 println();
-                x.getInsertClause().accept(this);
+                insert.accept(this);
             }
         }
 
-        if (x.getErrorLoggingClause() != null) {
+        SQLErrorLoggingClause errorLogging = x.getErrorLoggingClause();
+        if (errorLogging != null) {
             println();
-            x.getErrorLoggingClause().accept(this);
+            errorLogging.accept(this);
         }
 
         return false;
@@ -8417,16 +8420,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "WHEN MATCHED THEN DELETE" : "when matched then delete");
             return false;
         }
-        print0(ucase ? "WHEN MATCHED THEN UPDATE SET " : "when matched then update set ");
-        printAndAccept(x.getItems(), ", ");
+        println(ucase ? "WHEN MATCHED THEN UPDATE" : "when matched then update");
+        incrementIndent();
+        print(ucase ? "SET " : "set ");
+        printlnAndAccept(x.getItems(), ",");
+        decrementIndent();
 
         SQLExpr where = x.getWhere();
         if (where != null) {
-            this.indentCount++;
             println();
             print0(ucase ? "WHERE " : "where ");
             printExpr(where, parameterized);
-            this.indentCount--;
         }
 
         SQLExpr deleteWhere = x.getDeleteWhere();
@@ -8445,11 +8449,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(MergeInsertClause x) {
         print0(ucase ? "WHEN NOT MATCHED THEN INSERT" : "when not matched then insert");
         if (x.getColumns().size() > 0) {
-            print(" (");
+            incrementIndent();
+            println(" (");
             printAndAccept(x.getColumns(), ", ");
+            decrementIndent();
+            println();
             print(')');
         }
-        print0(ucase ? " VALUES (" : " values (");
+        println();
+        print0(ucase ? "VALUES (" : "values (");
         printAndAccept(x.getValues(), ", ");
         print(')');
         if (x.getWhere() != null) {

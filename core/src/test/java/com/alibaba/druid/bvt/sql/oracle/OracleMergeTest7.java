@@ -45,10 +45,14 @@ public class OracleMergeTest7 extends OracleTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLMergeStatement mergeStatement = (SQLMergeStatement) stmtList.get(0);
         String result = SQLUtils.toOracleString(mergeStatement);
-        Assert.assertEquals("MERGE INTO copy_emp c" //
-                        + "\nUSING employees e ON (c.employee_id = e.employee_id)" //
-                        + "\nWHEN MATCHED THEN UPDATE SET c.first_name = e.first_name, c.last_name = e.last_name, c.department_id = e.department_id" //
-                        + "\nWHEN NOT MATCHED THEN INSERT VALUES (e.employee_id, e.first_name, e.last_name, e.email, e.phone_number, e.hire_date, e.job_id, e.salary, e.commission_pct, e.manager_id, e.department_id)",
+        Assert.assertEquals("MERGE INTO copy_emp c\n" +
+                        "USING employees e ON (c.employee_id = e.employee_id)\n" +
+                        "WHEN MATCHED THEN UPDATE\n" +
+                        "SET c.first_name = e.first_name,\n" +
+                        "\tc.last_name = e.last_name,\n" +
+                        "\tc.department_id = e.department_id\n" +
+                        "WHEN NOT MATCHED THEN INSERT\n" +
+                        "VALUES (e.employee_id, e.first_name, e.last_name, e.email, e.phone_number, e.hire_date, e.job_id, e.salary, e.commission_pct, e.manager_id, e.department_id)",
                 result);
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

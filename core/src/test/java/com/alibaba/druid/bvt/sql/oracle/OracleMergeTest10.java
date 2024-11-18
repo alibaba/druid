@@ -41,14 +41,18 @@ public class OracleMergeTest10 extends OracleTest {
         SQLMergeStatement mergeStatement = (SQLMergeStatement) stmtList.get(0);
         String result = SQLUtils.toOracleString(mergeStatement);
         Assert.assertEquals("MERGE INTO bonuses d\n" +
-                "USING (\n" +
-                "\tSELECT employee_id.*\n" +
-                "\tFROM employees\n" +
-                ") s ON (employee_id = a)\n" +
-                "WHEN NOT MATCHED THEN INSERT (d.employee_id, d.bonus) VALUES (s.employee_id, s.salary)\n" +
-                "\tWHERE (s.salary <= 8000)\n" +
-                "WHEN MATCHED THEN UPDATE SET d.bonus = bonus\n" +
-                "\tDELETE WHERE (salary > 8000)",
+                        "USING (\n" +
+                        "\tSELECT employee_id.*\n" +
+                        "\tFROM employees\n" +
+                        ") s ON (employee_id = a)\n" +
+                        "WHEN NOT MATCHED THEN INSERT (\n" +
+                        "\td.employee_id, d.bonus\n" +
+                        ")\n" +
+                        "VALUES (s.employee_id, s.salary)\n" +
+                        "\tWHERE (s.salary <= 8000)\n" +
+                        "WHEN MATCHED THEN UPDATE\n" +
+                        "SET d.bonus = bonus\n" +
+                        "\tDELETE WHERE (salary > 8000)",
             result);
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

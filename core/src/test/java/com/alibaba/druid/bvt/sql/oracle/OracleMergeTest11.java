@@ -65,7 +65,9 @@ public class OracleMergeTest11 extends OracleTest {
                         "\t\tAND AREA_LEVEL <= 1\n" +
                         ") B ON (A.AREA_ID = B.AREA_ID\n" +
                         "AND A.AREA_LEVEL = B.AREA_LEVEL)\n" +
-                        "WHEN MATCHED THEN UPDATE SET A.SUM_CHRG_YS = ROUND(B.TOTAL_CHARGE * 1.00 / 10000, 2), A.CHARGE = B.THIS_CHARGE;",
+                        "WHEN MATCHED THEN UPDATE\n" +
+                        "SET A.SUM_CHRG_YS = ROUND(B.TOTAL_CHARGE * 1.00 / 10000, 2),\n" +
+                        "\tA.CHARGE = B.THIS_CHARGE;",
                 result);
 
         SQLSelect select = ((SQLSubqueryTableSource) mergeStatement.getInto()).getSelect();
