@@ -55,6 +55,9 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
     protected boolean onCluster;
     private SQLName to;
 
+    // bigquery
+    protected List<SQLAssignItem> options = new ArrayList<>();
+
     private SQLBlockStatement script;
 
     public SQLCreateViewStatement() {
@@ -433,5 +436,9 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
         }
 
         return x;
+    }
+
+    public List<SQLAssignItem> getOptions() {
+        return options;
     }
 }

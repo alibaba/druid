@@ -159,12 +159,7 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
             print0(language);
         }
         List<SQLAssignItem> options = x.getOptions();
-        if (!options.isEmpty()) {
-            println();
-            print0(ucase ? "OPTIONS (" : "options (");
-            printAndAccept(options, ",");
-            print(')');
-        }
+        printOptions(options);
 
         String wrappedSource = x.getWrappedSource();
         if (wrappedSource != null) {
@@ -180,6 +175,15 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
                 block.accept(this);
                 print(')');
             }
+        }
+    }
+
+    protected void printOptions(List<SQLAssignItem> options) {
+        if (!options.isEmpty()) {
+            println();
+            print0(ucase ? "OPTIONS (" : "options (");
+            printAndAccept(options, ",");
+            print(')');
         }
     }
 
@@ -371,5 +375,23 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
             print("'");
         }
         return false;
+    }
+
+    protected void printName0(String text) {
+        if (text.length() > 1
+                && text.charAt(0) != '`'
+                && text.indexOf('-') != -1
+        ) {
+            appender.append('`');
+            appender.append(text);
+            appender.append('`');
+            return;
+        }
+        super.printName0(text);
+    }
+
+    protected void printCreateViewAs(SQLCreateViewStatement x) {
+        printOptions(x.getOptions());
+        super.printCreateViewAs(x);
     }
 }

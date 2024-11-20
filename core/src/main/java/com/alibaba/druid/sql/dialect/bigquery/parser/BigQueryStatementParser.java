@@ -186,4 +186,11 @@ public class BigQueryStatementParser extends SQLStatementParser {
 
         super.parseInsert0(insertStatement, acceptSubQuery);
     }
+
+    protected void createViewAs(SQLCreateViewStatement createView) {
+        if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
+            exprParser.parseAssignItem(createView.getOptions(), createView);
+        }
+        super.createViewAs(createView);
+    }
 }

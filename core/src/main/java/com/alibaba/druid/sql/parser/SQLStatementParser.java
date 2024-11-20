@@ -4988,7 +4988,7 @@ public class SQLStatementParser extends SQLParser {
         return createView;
     }
 
-    private void createViewAs(SQLCreateViewStatement createView) {
+    protected void createViewAs(SQLCreateViewStatement createView) {
         accept(Token.AS);
 
         if (lexer.identifierEquals(Constants.BEGIN)) {

@@ -5534,6 +5534,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printComment(x.getComment());
 
+        printCreateViewAs(x);
+
+        if (x.isWithCheckOption()) {
+            println();
+            print0(ucase ? "WITH CHECK OPTION" : "with check option");
+        }
+
+        return false;
+    }
+
+    protected void printCreateViewAs(SQLCreateViewStatement x) {
         println();
         print0(ucase ? "AS" : "as");
         println();
@@ -5547,13 +5558,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (script != null) {
             script.accept(this);
         }
-
-        if (x.isWithCheckOption()) {
-            println();
-            print0(ucase ? "WITH CHECK OPTION" : "with check option");
-        }
-
-        return false;
     }
 
     public boolean visit(SQLCreateViewStatement.Column x) {
@@ -7089,6 +7093,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (isEnabled(VisitorFeature.OutputSkipMultilineComment) && comment.startsWith("/*")) {
+            return;
+        }
+
+        if (isEnabled(VisitorFeature.OutputSkipSingleLineComment)
+                && (comment.startsWith("-") || comment.startsWith("#"))) {
             return;
         }
 

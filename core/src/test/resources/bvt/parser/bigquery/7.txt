@@ -17,10 +17,10 @@ FROM tmp
 ------------------------------------------------------------------------------------------------------------------------
 select 
 service_area_id, service_area_name
-from data-gojek-id-presentation.location.dim_service_area
+from d-g-id-p.location.dim_service_area
 --------------------
 SELECT service_area_id, service_area_name
-FROM data-gojek-id-presentation.location.dim_service_area
+FROM `d-g-id-p`.location.dim_service_area
 ------------------------------------------------------------------------------------------------------------------------
 DECLARE start_date DEFAULT DATE('2024-01-01')
 --------------------

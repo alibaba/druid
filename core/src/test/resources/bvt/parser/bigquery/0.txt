@@ -27,7 +27,7 @@ FROM `c.d`;
 --------------------
 INSERT INTO `a.b`
 SELECT *
-FROM `c.d`;
+FROM c.d;
 ------------------------------------------------------------------------------------------------------------------------
 /* a
    b
@@ -103,7 +103,7 @@ FROM `d-k-id-m.g.x` AS a
 SELECT CAST(NULL AS STRING) AS pn, ARRAY(
 		SELECT AS STRUCT CAST(NULL AS STRING) AS pt, CAST(NULL AS STRING) AS pn
 	) AS p, a.s
-FROM `d-k-id-m.g.x` a
+FROM `d-k-id-m`.g.x a
 ------------------------------------------------------------------------------------------------------------------------
 WITH PlayerStats AS (
   SELECT 'Adams' as LastName, 'Noam' as FirstName, 3 as PointsScored UNION ALL
@@ -135,7 +135,7 @@ GROUP BY ALL;
 ------------------------------------------------------------------------------------------------------------------------
 DELETE FROM `data-c-id-mart.x.b` AS a
 --------------------
-DELETE FROM `data-c-id-mart.x.b` a
+DELETE FROM `data-c-id-mart`.x.b a
 ------------------------------------------------------------------------------------------------------------------------
 SELECT case when contains(u.roles[company_id_cross], 'report_reader') then 1 else 0 end is_report_reader from t1
 --------------------
