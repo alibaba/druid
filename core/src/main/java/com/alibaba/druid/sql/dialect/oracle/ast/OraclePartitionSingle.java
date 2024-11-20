@@ -6,11 +6,6 @@ import com.alibaba.druid.sql.ast.SQLPartitionSingle;
 import com.alibaba.druid.sql.ast.SQLSubPartition;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-/**
- * @author lingo
- * @date 2024/11/19 14:47
- * @description
- */
 public class OraclePartitionSingle extends SQLPartitionSingle implements OracleSegmentAttributes {
     protected boolean segmentCreationImmediate;
     protected boolean segmentCreationDeferred;
