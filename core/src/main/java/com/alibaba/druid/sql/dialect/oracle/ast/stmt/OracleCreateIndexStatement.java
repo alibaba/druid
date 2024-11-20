@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OraclePartitionSingle;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -105,7 +106,7 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
 
     private boolean local;
     private List<SQLName> localStoreIn = new ArrayList<SQLName>();
-    private List<SQLPartition> localPartitions = new ArrayList<SQLPartition>();
+    private List<OraclePartitionSingle> localPartitions = new ArrayList<>();
 
     private boolean global;
     private List<SQLPartitionBy> globalPartitions = new ArrayList<SQLPartitionBy>();
@@ -267,7 +268,7 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         this.compressForOltp = compressForOltp;
     }
 
-    public List<SQLPartition> getLocalPartitions() {
+    public List<OraclePartitionSingle> getLocalPartitions() {
         return localPartitions;
     }
 

@@ -54,7 +54,8 @@ public class SQLPartitionValue extends OracleSegmentAttributesImpl {
         Equal,
         In,
         List,
-        StartEndEvery
+        StartEndEvery,
+        FixedRange
     }
 
     @Override

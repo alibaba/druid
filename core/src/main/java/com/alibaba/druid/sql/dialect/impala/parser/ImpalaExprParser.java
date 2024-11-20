@@ -42,9 +42,9 @@ public class ImpalaExprParser extends HiveExprParser {
         return super.parseColumnRest(column);
     }
 
-    public SQLPartition parsePartition() {
+    public SQLPartitionSingle parsePartition() {
         accept(Token.PARTITION);
-        SQLPartition partitionDef = new SQLPartition();
+        SQLPartitionSingle partitionDef = new SQLPartitionSingle();
         ImpalaSQLPartitionValue values = new ImpalaSQLPartitionValue();
         SQLName name;
         if (lexer.token() == Token.LITERAL_INT) {

@@ -68,8 +68,8 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 this.exprParser.name());
         createTableAfterName(createTable);
         createTableBody(createTable);
-        createTableQuery(createTable);
         parseCreateTableRest(createTable);
+        createTableQuery(createTable);
 
         return createTable;
     }

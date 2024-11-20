@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl.Option;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlPartitionSingle;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.parser.*;
@@ -2381,7 +2382,7 @@ public class MySqlExprParser extends SQLExprParser {
         return subPartition;
     }
 
-    public SQLPartition parsePartition() {
+    public MysqlPartitionSingle parsePartition() {
         if (lexer.identifierEquals(FnvHash.Constants.DBPARTITION)
                 || lexer.identifierEquals(FnvHash.Constants.TBPARTITION)
                 || lexer.identifierEquals(FnvHash.Constants.SUBPARTITION)) {
@@ -2390,7 +2391,7 @@ public class MySqlExprParser extends SQLExprParser {
             accept(Token.PARTITION);
         }
 
-        SQLPartition partitionDef = new SQLPartition();
+    MysqlPartitionSingle partitionDef = new MysqlPartitionSingle();
 
         SQLName name;
         if (lexer.token() == Token.LITERAL_INT) {

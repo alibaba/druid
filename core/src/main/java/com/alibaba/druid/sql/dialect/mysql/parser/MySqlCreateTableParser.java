@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlPartitionSingle;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.parser.*;
@@ -1148,7 +1149,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             for (; ; ) {
-                SQLPartition partitionDef = this.getExprParser()
+                MysqlPartitionSingle partitionDef = this.getExprParser()
                         .parsePartition();
 
                 partitionClause.addPartition(partitionDef);

@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
+import com.alibaba.druid.sql.dialect.oracle.ast.OraclePartitionSingle;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -1236,7 +1237,7 @@ public class OracleExprParser extends SQLExprParser {
 
                 // http://docs.oracle.com/cd/B19306_01/server.102/b14200/statements_5010.htm#i2125897
                 for (; ; ) {
-                    SQLPartition partition = this.parsePartition();
+                    OraclePartitionSingle partition = this.parsePartition();
                     partition.setParent(using);
                     using.getLocalPartitionIndex().add(partition);
 
@@ -1749,9 +1750,9 @@ public class OracleExprParser extends SQLExprParser {
         return new OracleCheck();
     }
 
-    protected SQLPartition parsePartition() {
+    public OraclePartitionSingle parsePartition() {
         accept(Token.PARTITION);
-        SQLPartition partition = new SQLPartition();
+        OraclePartitionSingle partition = new OraclePartitionSingle();
         partition.setName(this.name());
 
         SQLPartitionValue values = this.parsePartitionValues();
@@ -1850,7 +1851,7 @@ public class OracleExprParser extends SQLExprParser {
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
                 for (; ; ) {
-                    SQLPartition partition = this.parsePartition();
+                    OraclePartitionSingle partition = this.parsePartition();
                     partitionByHash.addPartition(partition);
                     if (lexer.token() == Token.COMMA) {
                         lexer.nextToken();
@@ -2049,7 +2050,7 @@ public class OracleExprParser extends SQLExprParser {
         accept(Token.LPAREN);
 
         for (; ; ) {
-            SQLPartition partition = this.parsePartition();
+            OraclePartitionSingle partition = this.parsePartition();
 
             clause.addPartition(partition);
 

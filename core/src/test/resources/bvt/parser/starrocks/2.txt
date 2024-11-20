@@ -19,9 +19,9 @@ CREATE TABLE test_tbl1 (
 	newcol1 DOUBLE AS array_avg(data_array),
 	newcol2 String AS json_string(json_query(data_json, "$.a"))
 )
-PRIMARY KEY(`id`)
+PRIMARY KEY (`id`)
 COMMENT 'this is a comment'
-DISTRIBUTED BY HASH(id)
+DISTRIBUTED BY HASH (id)
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.table_random
 (
@@ -33,7 +33,7 @@ CREATE TABLE example_db.table_random
 ENGINE=olap
 DISTRIBUTED BY RANDOM BUCKETS 10
 PROPERTIES(
-    "storage_type"="column",
+    "storage_type"="column"
 )
 --------------------
 CREATE TABLE example_db.table_random (
@@ -44,7 +44,7 @@ CREATE TABLE example_db.table_random (
 ) ENGINE = olap
 DISTRIBUTED BY RANDOM BUCKETS 10
 PROPERTIES (
-  "storage_type" = "column"
+	"storage_type" = "column"
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.table_random
@@ -57,7 +57,7 @@ CREATE TABLE example_db.table_random
 ENGINE=olap
 DISTRIBUTED BY RANDOM BUCKETS
 PROPERTIES(
-    "storage_type"="column",
+    "storage_type"="column"
 )
 --------------------
 CREATE TABLE example_db.table_random (
@@ -68,7 +68,7 @@ CREATE TABLE example_db.table_random (
 ) ENGINE = olap
 DISTRIBUTED BY RANDOM BUCKETS
 PROPERTIES (
-  "storage_type" = "column"
+	"storage_type" = "column"
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.table_hash
@@ -86,4 +86,4 @@ CREATE TABLE example_db.table_hash (
 	k3 CHAR(10) COMMENT 'string column',
 	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
 )
-DISTRIBUTED BY HASH(k1) BUCKETS 32
+DISTRIBUTED BY HASH (k1) BUCKETS 32

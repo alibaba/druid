@@ -5601,4 +5601,112 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print0(" = ");
         value.accept(this);
     }
+
+    @Override
+    public boolean visit(SQLPartitionSingle x) {
+        if (x instanceof MysqlPartitionSingle) {
+            return visit((MysqlPartitionSingle) x);
+        }
+        return super.visit(x);
+    }
+
+    public boolean visit(MysqlPartitionSingle x) {
+        boolean isDbPartiton = false, isTbPartition = false;
+        final SQLObject parent = x.getParent();
+        if (parent != null) {
+            final SQLObject parent2 = parent.getParent();
+            if (parent2 instanceof MySqlCreateTableStatement) {
+                MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) parent2;
+                isDbPartiton = parent == stmt.getDbPartitionBy();
+                isTbPartition = parent == stmt.getTablePartitionBy();
+            }
+        }
+
+        if (isDbPartiton) {
+            print0(ucase ? "DBPARTITION " : "dbpartition ");
+        } else if (isTbPartition) {
+            print0(ucase ? "TBPARTITION " : "tbpartition ");
+        } else {
+            print0(ucase ? "PARTITION " : "partition ");
+        }
+        x.getName().accept(this);
+        if (x.getValues() != null) {
+            print(' ');
+            x.getValues().accept(this);
+        }
+
+        if (x.getDataDirectory() != null) {
+            this.indentCount++;
+            println();
+            print0(ucase ? "DATA DIRECTORY " : "data directory ");
+            x.getDataDirectory().accept(this);
+            this.indentCount--;
+        }
+
+        if (x.getIndexDirectory() != null) {
+            this.indentCount++;
+            println();
+            print0(ucase ? "INDEX DIRECTORY " : "index directory ");
+            x.getIndexDirectory().accept(this);
+            this.indentCount--;
+        }
+
+        this.indentCount++;
+        if (x.getTablespace() != null) {
+            printTablespace(x.getTablespace());
+        }
+
+        if (x.getEngine() != null) {
+            println();
+            print0(ucase ? "STORAGE ENGINE " : "storage engine ");
+            x.getEngine().accept(this);
+        }
+        this.indentCount--;
+
+        if (x.getMaxRows() != null) {
+            print0(ucase ? " MAX_ROWS " : " max_rows ");
+            x.getMaxRows().accept(this);
+        }
+
+        if (x.getMinRows() != null) {
+            print0(ucase ? " MIN_ROWS " : " min_rows ");
+            x.getMinRows().accept(this);
+        }
+
+        if (x.getComment() != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            x.getComment().accept(this);
+        }
+
+        if (x.getSubPartitionsCount() != null) {
+            this.indentCount++;
+            println();
+            print0(ucase ? "SUBPARTITIONS " : "subpartitions ");
+            x.getSubPartitionsCount().accept(this);
+            this.indentCount--;
+        }
+
+        if (x.getSubPartitions().size() > 0) {
+            print(" (");
+            this.indentCount++;
+            for (int i = 0; i < x.getSubPartitions().size(); ++i) {
+                if (i != 0) {
+                    print(',');
+                }
+                println();
+                x.getSubPartitions().get(i).accept(this);
+            }
+            this.indentCount--;
+            println();
+            print(')');
+        }
+
+        SQLExpr locality = x.getLocality();
+        if (locality != null) {
+            print(ucase ? " LOCALITY = " : " locality = ");
+            locality.accept(this);
+        }
+
+        return false;
+    }
 }

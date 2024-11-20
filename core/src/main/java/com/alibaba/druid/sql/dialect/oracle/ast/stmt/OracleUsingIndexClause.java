@@ -17,8 +17,8 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OraclePartitionSingle;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -34,7 +34,7 @@ public class OracleUsingIndexClause extends OracleSegmentAttributesImpl implemen
     private boolean computeStatistics;
     private boolean reverse;
 
-    private List<SQLPartition> localPartitionIndex = new ArrayList<SQLPartition>();
+    private List<OraclePartitionSingle> localPartitionIndex = new ArrayList<>();
 
     public OracleUsingIndexClause() {
     }
@@ -95,7 +95,7 @@ public class OracleUsingIndexClause extends OracleSegmentAttributesImpl implemen
         this.reverse = reverse;
     }
 
-    public List<SQLPartition> getLocalPartitionIndex() {
+    public List<OraclePartitionSingle> getLocalPartitionIndex() {
         return localPartitionIndex;
     }
 
@@ -110,8 +110,8 @@ public class OracleUsingIndexClause extends OracleSegmentAttributesImpl implemen
         x.computeStatistics = computeStatistics;
         x.reverse = reverse;
 
-        for (SQLPartition p : localPartitionIndex) {
-            SQLPartition p2 = p.clone();
+        for (OraclePartitionSingle p : localPartitionIndex) {
+            OraclePartitionSingle p2 = p.clone();
             p2.setParent(x);
             x.localPartitionIndex.add(p2);
         }

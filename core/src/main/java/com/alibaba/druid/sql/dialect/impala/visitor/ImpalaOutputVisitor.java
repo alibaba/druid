@@ -159,7 +159,7 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTV
     }
 
     @Override
-    public boolean visit(SQLPartition x) {
+    public boolean visit(SQLPartitionSingle x) {
         ImpalaSQLPartitionValue values = (ImpalaSQLPartitionValue) x.getValues();
         values.accept(this);
         return false;

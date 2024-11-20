@@ -42,23 +42,23 @@ CREATE TABLE `bbbbbb` (
 	`lst_report_collection_time` datetime NULL COMMENT '最近一次报表数据采集时间',
 	`timestamp` datetime NULL COMMENT '表中数据时间戳'
 ) ENGINE = OLAP
-UNIQUE KEY(`table_name`, `media_platform`, `account_id`)
+UNIQUE KEY (`table_name`, `media_platform`, `account_id`)
 COMMENT '广告域-globalad-account误差监控(账户数据是否采集)'
-PARTITION BY LIST(`table_name`) (
-  PARTITION p_dwd_ad_country_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_country_reports"), 
-  PARTITION p_dwd_ad_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_reports"), 
-  PARTITION p_ods_ad_country_reports VALUES IN ("onedata_warehouse.ods_tiktok_country_reports_integrated_basic"), 
-  PARTITION p_ods_ad_reports VALUES IN ("onedata_warehouse.ods_tiktok_reports_integrated_basic"), 
-  PARTITION p_dws_ad_reports VALUES IN ("tec_cdm.dws_ad_ad_performance_1d")
+PARTITION BY LIST (`table_name`) (
+	PARTITION p_dwd_ad_country_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_country_reports"), 
+	PARTITION p_dwd_ad_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_reports"), 
+	PARTITION p_ods_ad_country_reports VALUES IN ("onedata_warehouse.ods_tiktok_country_reports_integrated_basic"), 
+	PARTITION p_ods_ad_reports VALUES IN ("onedata_warehouse.ods_tiktok_reports_integrated_basic"), 
+	PARTITION p_dws_ad_reports VALUES IN ("tec_cdm.dws_ad_ad_performance_1d")
 )
-DISTRIBUTED BY HASH(`table_name`, `media_platform`, `account_id`) BUCKETS 6
+DISTRIBUTED BY HASH (`table_name`, `media_platform`, `account_id`) BUCKETS 6
 PROPERTIES (
-  "replication_allocation" = "tag.location.default: 3",
-  "is_being_synced" = "false",
-  "storage_format" = "V2",
-  "light_schema_change" = "true",
-  "disable_auto_compaction" = "false",
-  "enable_single_replica_compaction" = "false"
+	"replication_allocation" = "tag.location.default: 3",
+	"is_being_synced" = "false",
+	"storage_format" = "V2",
+	"light_schema_change" = "true",
+	"disable_auto_compaction" = "false",
+	"enable_single_replica_compaction" = "false"
 );
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE `aaaa` (
@@ -134,38 +134,38 @@ CREATE TABLE `aaaa` (
 	`pur_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天购买量',
 	`revenue_amt_1d` DECIMAL(38, 2) DEFAULT "0.0" NULL COMMENT '最近1天收入金额',
 	`collect_timestamp` datetime NULL COMMENT '采集时间戳',
-	INDEX product_name_idx(`product_name`) USING BITMAP COMMENT Bitmap index on column product_name,
-	INDEX adv_name_idx(`adv_name`) USING BITMAP COMMENT Bitmap index on column adv_name,
-	INDEX account_name_idx(`account_name`) USING BITMAP COMMENT Bitmap index on column account_name
+	INDEX product_name_idx(`product_name`) USING BITMAP COMMENT 'Bitmap index on column product_name',
+	INDEX adv_name_idx(`adv_name`) USING BITMAP COMMENT 'Bitmap index on column adv_name',
+	INDEX account_name_idx(`account_name`) USING BITMAP COMMENT 'Bitmap index on column account_name'
 ) ENGINE = OLAP
-UNIQUE KEY(`stat_date`, `ad_id`)
+UNIQUE KEY (`stat_date`, `ad_id`)
 COMMENT '广告域-素材近1天广告效果数据'
-PARTITION BY RANGE(`stat_date`) (
-  PARTITION p202205 VALUES [(('2022-05-01')),(('2022-06-01')))
+PARTITION BY RANGE (`stat_date`) (
+	PARTITION p202205 VALUES [('2022-05-01'), ('2022-06-01'))
 )
-DISTRIBUTED BY HASH(`stat_date`, `ad_id`) BUCKETS 6
+DISTRIBUTED BY HASH (`stat_date`, `ad_id`) BUCKETS 6
 PROPERTIES (
-  "replication_allocation" = "tag.location.default: 3",
-  "is_being_synced" = "false",
-  "dynamic_partition.enable" = "true",
-  "dynamic_partition.time_unit" = "MONTH",
-  "dynamic_partition.time_zone" = "Europe/London",
-  "dynamic_partition.start" = "-2147483648",
-  "dynamic_partition.end" = "1",
-  "dynamic_partition.prefix" = "p",
-  "dynamic_partition.replication_allocation" = "tag.location.default: 3",
-  "dynamic_partition.buckets" = "16",
-  "dynamic_partition.create_history_partition" = "true",
-  "dynamic_partition.history_partition_num" = "24",
-  "dynamic_partition.hot_partition_num" = "0",
-  "dynamic_partition.reserved_history_periods" = "NULL",
-  "dynamic_partition.storage_policy" = "",
-  "dynamic_partition.storage_medium" = "HDD",
-  "dynamic_partition.start_day_of_month" = "1",
-  "storage_format" = "V2",
-  "light_schema_change" = "true",
-  "disable_auto_compaction" = "false",
-  "enable_single_replica_compaction" = "false"
+	"replication_allocation" = "tag.location.default: 3",
+	"is_being_synced" = "false",
+	"dynamic_partition.enable" = "true",
+	"dynamic_partition.time_unit" = "MONTH",
+	"dynamic_partition.time_zone" = "Europe/London",
+	"dynamic_partition.start" = "-2147483648",
+	"dynamic_partition.end" = "1",
+	"dynamic_partition.prefix" = "p",
+	"dynamic_partition.replication_allocation" = "tag.location.default: 3",
+	"dynamic_partition.buckets" = "16",
+	"dynamic_partition.create_history_partition" = "true",
+	"dynamic_partition.history_partition_num" = "24",
+	"dynamic_partition.hot_partition_num" = "0",
+	"dynamic_partition.reserved_history_periods" = "NULL",
+	"dynamic_partition.storage_policy" = "",
+	"dynamic_partition.storage_medium" = "HDD",
+	"dynamic_partition.start_day_of_month" = "1",
+	"storage_format" = "V2",
+	"light_schema_change" = "true",
+	"disable_auto_compaction" = "false",
+	"enable_single_replica_compaction" = "false"
 );
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.table_hash
@@ -185,7 +185,7 @@ CREATE TABLE example_db.table_hash (
 	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
 )
 COMMENT "my first table"
-DISTRIBUTED BY HASH(k1) BUCKETS 32
+DISTRIBUTED BY HASH (k1) BUCKETS 32
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.table_hash
 (
@@ -213,16 +213,16 @@ CREATE TABLE example_db.table_hash (
 	k3 CHAR(10) COMMENT 'string column',
 	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
 )
-DUPLICATE KEY(k1, k2)
+DUPLICATE KEY (k1, k2)
 COMMENT "my first table"
-PARTITION BY RANGE(k1) (
-  PARTITION p1 VALUES LESS THAN ("2020-02-01"), 
-  PARTITION p2 VALUES LESS THAN ("2020-03-01"), 
-  PARTITION p3 VALUES LESS THAN ("2020-04-01")
+PARTITION BY RANGE (k1) (
+	PARTITION p1 VALUES LESS THAN ("2020-02-01"),
+	PARTITION p2 VALUES LESS THAN ("2020-03-01"),
+	PARTITION p3 VALUES LESS THAN ("2020-04-01")
 )
-DISTRIBUTED BY HASH(k1) BUCKETS 32
+DISTRIBUTED BY HASH (k1) BUCKETS 32
 PROPERTIES (
-  "replication_num" = "1"
+	"replication_num" = "1"
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.table_hash
@@ -245,11 +245,11 @@ CREATE TABLE example_db.table_hash (
 	v1 VARCHAR(2048),
 	v2 SMALLINT DEFAULT "10"
 )
-UNIQUE KEY(k1, k2)
-DISTRIBUTED BY HASH(k1, k2) BUCKETS 32
+UNIQUE KEY (k1, k2)
+DISTRIBUTED BY HASH (k1, k2) BUCKETS 32
 PROPERTIES (
-  "storage_medium" = "SSD",
-  "storage_cooldown_time" = "2015-06-04 00:00:00"
+	"storage_medium" = "SSD",
+	"storage_cooldown_time" = "2015-06-04 00:00:00"
 )
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE table_range
@@ -275,12 +275,12 @@ CREATE TABLE table_range (
 	v1 VARCHAR(2048) REPLACE,
 	v2 INT SUM DEFAULT "1"
 )
-AGGREGATE KEY(k1, k2, k3)
-PARTITION BY RANGE(k1,k2,k3) (
-  PARTITION p1 VALUES [("2014-01-01", "10", "200"),("2014-01-01", "20", "300")),
-  PARTITION p2 VALUES [("2014-06-01", "100", "200"),("2014-07-01", "100", "300"))
+AGGREGATE KEY (k1, k2, k3)
+PARTITION BY RANGE (k1, k2, k3) (
+	PARTITION p1 VALUES [("2014-01-01", "10", "200"), ("2014-01-01", "20", "300")),
+	PARTITION p2 VALUES [("2014-06-01", "100", "200"), ("2014-07-01", "100", "300"))
 )
-DISTRIBUTED BY HASH(k2) BUCKETS 32
+DISTRIBUTED BY HASH (k2) BUCKETS 32
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.example_table
 (
@@ -299,8 +299,8 @@ CREATE TABLE example_db.example_table (
 	v1 HLL HLL_UNION,
 	v2 BITMAP BITMAP_UNION
 ) ENGINE = olap
-AGGREGATE KEY(k1, k2)
-DISTRIBUTED BY HASH(k1) BUCKETS 32
+AGGREGATE KEY (k1, k2)
+DISTRIBUTED BY HASH (k1) BUCKETS 32
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE example_db.dynamic_partition
 (
@@ -328,13 +328,13 @@ CREATE TABLE example_db.dynamic_partition (
 	v1 VARCHAR(2048),
 	v2 DATETIME DEFAULT "2014-02-04 15:36:00"
 )
-DUPLICATE KEY(k1, k2, k3)
-PARTITION BY RANGE(k1) ()
-DISTRIBUTED BY HASH(k2) BUCKETS 32
+DUPLICATE KEY (k1, k2, k3)
+PARTITION BY RANGE (k1)
+DISTRIBUTED BY HASH (k2) BUCKETS 32
 PROPERTIES (
-  "dynamic_partition.time_unit" = "DAY",
-  "dynamic_partition.start" = "-3",
-  "dynamic_partition.end" = "3",
-  "dynamic_partition.prefix" = "p",
-  "dynamic_partition.buckets" = "32"
+	"dynamic_partition.time_unit" = "DAY",
+	"dynamic_partition.start" = "-3",
+	"dynamic_partition.end" = "3",
+	"dynamic_partition.prefix" = "p",
+	"dynamic_partition.buckets" = "32"
 )
