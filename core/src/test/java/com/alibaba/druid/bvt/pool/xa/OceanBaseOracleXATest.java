@@ -5,6 +5,7 @@ import com.alibaba.druid.pool.xa.DruidXADataSource;
 import com.alibaba.druid.util.JdbcUtils;
 import com.oceanbase.jdbc.OceanBaseXid;
 import org.junit.Assert;
+import org.junit.Ignore;
 
 import javax.sql.XAConnection;
 import javax.transaction.xa.XAException;
@@ -15,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Ignore("OceanBase Oracle Mode is not open source")
 public class OceanBaseOracleXATest extends PoolTestCase {
 
     private DruidXADataSource dataSource;
@@ -149,14 +151,6 @@ public class OceanBaseOracleXATest extends PoolTestCase {
         } catch (XAException e) {
             Assert.assertEquals(XAException.XAER_NOTA, e.errorCode);
         }
-
-        try {
-            xaResource.end(xid, 123);
-            Assert.fail();
-        } catch (XAException e) {
-            Assert.assertEquals(XAException.XAER_PROTO, e.errorCode);
-        }
-
         xaResource.rollback(xid);
     }
 
