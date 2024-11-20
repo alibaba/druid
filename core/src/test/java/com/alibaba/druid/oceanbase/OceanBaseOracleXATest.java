@@ -1,4 +1,4 @@
-package com.alibaba.druid.bvt.pool.xa;
+package com.alibaba.druid.oceanbase;
 
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.xa.DruidXADataSource;
