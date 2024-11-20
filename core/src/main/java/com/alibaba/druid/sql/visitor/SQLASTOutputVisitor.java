@@ -10471,7 +10471,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             print0(ucase ? " WITH (" : " with (");
             int i = 0;
-            for (Map.Entry<String, SQLName> option : x.getWith().entrySet()) {
+            List<Map.Entry<String, SQLName>> options = new ArrayList<>(x.getWith().entrySet());
+            options.sort(Map.Entry.comparingByKey());
+            for (Map.Entry<String, SQLName> option : options) {
                 if (i != 0) {
                     print0(", ");
                 }
