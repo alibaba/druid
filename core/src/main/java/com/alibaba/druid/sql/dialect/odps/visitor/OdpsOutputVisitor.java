@@ -146,7 +146,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         printIntoShards(x.getShards());
         printSelectAs(x, true);
         printRowFormat(x);
-        printStoredBy(x);
+        printStoredBy(x.getStoredBy());
         printStoredAs(x);
         printSerdeProperties(x);
         printLocation(x);
@@ -993,12 +993,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         print0(ucase ? "LOCATION " : "location ");
         x.getInpath().accept(this);
 
-        SQLExpr storedBy = x.getStoredBy();
-        if (storedBy != null) {
-            println();
-            print0(ucase ? "STORED BY " : "stored by ");
-            storedBy.accept(this);
-        }
+        printStoredBy(x.getStoredBy());
 
         SQLExpr rowFormat = x.getRowFormat();
         if (rowFormat != null) {

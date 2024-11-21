@@ -19,13 +19,13 @@ SELECT DATEADD('2024-10-01', -1, 'mm');
 ------------------------------------------------------------------------------------------------------------------------
 DROP TABLE `a.b`;
 --------------------
-DROP TABLE `a.b`;
+DROP TABLE a.b;
 ------------------------------------------------------------------------------------------------------------------------
 INSERT `a.b`
 SELECT *
 FROM `c.d`;
 --------------------
-INSERT INTO `a.b`
+INSERT INTO a.b
 SELECT *
 FROM c.d;
 ------------------------------------------------------------------------------------------------------------------------
@@ -287,8 +287,8 @@ OPTIONS(
   labels=[("org_unit", "development")]
 )
 --------------------
-CREATE TABLE `myproject.mydataset.mytable`
-CLONE `myproject.mydataset.mytablesnapshot`
+CREATE TABLE myproject.mydataset.mytable
+CLONE myproject.mydataset.mytablesnapshot
 OPTIONS (
 	expiration_timestamp = TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL 365 DAY),
 	friendly_name = 'my_table',

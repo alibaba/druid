@@ -382,4 +382,11 @@ public class HiveExprParser extends SQLExprParser {
 
         return intervalExpr;
     }
+
+    protected SQLExpr primaryIdentifierRest(long hash_lower, String ident) {
+        if (ident.length() > 3 && ident.charAt(0) == '`' && ident.charAt(ident.length() - 1) == '`' && ident.indexOf('.') != -1) {
+            return topPropertyExpr(ident);
+        }
+        return super.primaryIdentifierRest(hash_lower, ident);
+    }
 }

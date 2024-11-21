@@ -623,12 +623,36 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
     protected void printStoredBy(HiveCreateTableStatement x) {
         SQLExpr storedBy = x.getStoredBy();
         if (storedBy != null) {
-            println();
-            print0(ucase ? "STORED BY " : "STORED by ");
-            printExpr(storedBy, parameterized);
+            printStoredBy(storedBy);
+
             Map<String, SQLObject> serdeProperties = x.getSerdeProperties();
             printSerdeProperties(serdeProperties);
         }
+    }
+
+    protected void printStoredBy(SQLExpr storedBy) {
+        if (storedBy == null) {
+            return;
+        }
+
+        println();
+        print0(ucase ? "STORED BY " : "stored by ");
+
+        if (storedBy instanceof SQLIdentifierExpr) {
+            String name = ((SQLIdentifierExpr) storedBy).getName();
+            if (!name.isEmpty()
+                    && name.charAt(0) != '`'
+                    && name.charAt(0) != '"'
+                    && name.charAt(0) != '\''
+            ) {
+                print('\'');
+                print(name);
+                print('\'');
+                return;
+            }
+        }
+
+        printExpr(storedBy, parameterized);
     }
 
     protected void printStoredAs(HiveCreateTableStatement x) {

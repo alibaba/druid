@@ -435,6 +435,16 @@ public class SQLExprParser extends SQLParser {
         return sqlExpr;
     }
 
+    protected SQLPropertyExpr topPropertyExpr(String ident) {
+        String substring = ident.substring(1, ident.length() - 1);
+        String[] items = substring.split("\\.");
+        SQLPropertyExpr expr = new SQLPropertyExpr(items[0], items[1]);
+        for (int i = 2; i < items.length; i++) {
+            expr = new SQLPropertyExpr(expr, items[i]);
+        }
+        return expr;
+    }
+
     protected SQLExpr primaryLiteralCharsRest(SQLExpr sqlExpr) {
         lexer.nextToken();
         return sqlExpr;
@@ -2426,11 +2436,19 @@ public class SQLExprParser extends SQLParser {
             }
         }
 
+        SQLName identifierExpr = null;
         if (lexer.isEnabled(SQLParserFeature.IgnoreNameQuotes)) {
-            identName = SQLUtils.forcedNormalize(identName, dbType);
+            if (identName.indexOf('.') == -1) {
+                identName = SQLUtils.forcedNormalize(identName, dbType);
+                hash = 0;
+            } else {
+                identifierExpr = (SQLName) primaryIdentifierRest(hash, identName);
+            }
         }
 
-        SQLIdentifierExpr identifierExpr = new SQLIdentifierExpr(identName, hash);
+        if (identifierExpr == null) {
+            identifierExpr = new SQLIdentifierExpr(identName, hash);
+        }
         if (lexer.keepSourceLocation) {
             lexer.computeRowAndColumn(identifierExpr);
         }

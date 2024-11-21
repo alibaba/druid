@@ -301,6 +301,17 @@ public class SQLUtils {
         return expr;
     }
 
+    public static SQLExpr toSQLExpr(String sql, DbType dbType, SQLParserFeature... features) {
+        SQLExprParser parser = SQLParserUtils.createExprParser(sql, dbType, features);
+        SQLExpr expr = parser.expr();
+
+        if (parser.getLexer().token() != Token.EOF) {
+            throw new ParserException("illegal sql expr : " + sql + ", " + parser.getLexer().info());
+        }
+
+        return expr;
+    }
+
     public static SQLSelectOrderByItem toOrderByItem(String sql, DbType dbType) {
         SQLExprParser parser = SQLParserUtils.createExprParser(sql, dbType);
         SQLSelectOrderByItem orderByItem = parser.parseSelectOrderByItem();

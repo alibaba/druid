@@ -347,14 +347,18 @@ public class BigQueryExprParser extends SQLExprParser {
 
     protected SQLExpr primaryIdentifierRest(long hash_lower, String ident) {
         if (ident.length() > 3 && ident.charAt(0) == '`' && ident.charAt(ident.length() - 1) == '`' && ident.indexOf('.') != -1) {
-            String substring = ident.substring(1, ident.length() - 1);
-            String[] items = substring.split("\\.");
-            SQLPropertyExpr expr = new SQLPropertyExpr(items[0], items[1]);
-            for (int i = 2; i < items.length; i++) {
-                expr = new SQLPropertyExpr(expr, items[i]);
-            }
-            return expr;
+            return topPropertyExpr(ident);
         }
         return super.primaryIdentifierRest(hash_lower, ident);
+    }
+
+    public SQLName nameRest(SQLName name) {
+        if (name instanceof SQLIdentifierExpr) {
+            String ident = ((SQLIdentifierExpr) name).getName();
+            if (ident.length() > 3 && ident.charAt(0) == '`' && ident.charAt(ident.length() - 1) == '`' && ident.indexOf('.') != -1) {
+                return topPropertyExpr(ident);
+            }
+        }
+        return super.nameRest(name);
     }
 }

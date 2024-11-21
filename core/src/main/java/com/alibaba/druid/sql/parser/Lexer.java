@@ -2682,6 +2682,12 @@ public class Lexer {
                 } else if (ch == '-'
                         && isIdentifierChar(charAt(pos + 1))
                         && dialectFeatureEnabled(ScanSubAsIdentifier)) {
+                    hash ^= ch;
+                    hash *= 0x100000001b3L;
+
+                    hashLCase ^= ch;
+                    hashLCase *= 0x100000001b3L;
+
                     bufPos++;
                     continue;
                 }

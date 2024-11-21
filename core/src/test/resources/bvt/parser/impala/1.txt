@@ -78,4 +78,4 @@ STORED AS PARQUET
 LOCATION 'hdfs://dc/user/hive/warehouse/ods.db/ods_dc_test_df'
 AS
 SELECT *
-FROM `ods.ods_dc_df`
+FROM ods.ods_dc_df
