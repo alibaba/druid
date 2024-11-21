@@ -170,5 +170,5 @@ public interface JdbcConstants {
     String SUNDB = "sundb"; //科蓝数s据
     String SUNDB_DRIVER = "csii.sundb.jdbc.SundbDriver";
 
-    String POLARDBX_DRIVER = "com.aliyun.polardbx.Driver";
+    String POLARDBX_DRIVER = "com.alibaba.polardbx.Driver";
 }
