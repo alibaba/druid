@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksObject;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,14 +59,6 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement imple
             orderBy.setParent(this);
         }
         this.orderBy = orderBy;
-    }
-
-    @Override
-    protected void accept0(SQLASTVisitor v) {
-        if (v instanceof StarRocksASTVisitor) {
-            accept0((StarRocksASTVisitor) v);
-        }
-        super.accept0(v);
     }
 
     @Override

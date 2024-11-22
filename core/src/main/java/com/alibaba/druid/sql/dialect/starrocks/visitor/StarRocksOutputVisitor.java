@@ -50,17 +50,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(StarRocksCreateTableStatement x) {
-        print0(ucase ? "CREATE " : "create ");
-        printCreateTableFeatures(x);
-        print0(ucase ? "TABLE " : "table ");
-        if (x.isIfNotExists()) {
-            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
-        }
-        printTableSourceExpr(
-                x.getTableSource()
-                        .getExpr());
-        printCreateTableAfterName(x);
-        printTableElements(x.getTableElementList());
+        printCreateTable(x, false);
         printEngine(x);
         printUniqueKey(x);
         printComment(x.getComment());
@@ -72,16 +62,13 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         return false;
     }
 
+    @Override
     public boolean visit(SQLCreateTableStatement x) {
-        printCreateTable(x, false);
-        printEngine(x);
-        printComment(x.getComment());
-        printPartitionBy(x);
-        printDistributedBy(x);
-        printOrderBy(x);
-        printTableOptions(x);
-        printSelectAs(x, true);
-        return false;
+        if (x instanceof StarRocksCreateTableStatement) {
+            return visit((StarRocksCreateTableStatement) x);
+        } else {
+            return super.visit(x);
+        }
     }
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
         print0(ucase ? "CREATE " : "create ");
