@@ -196,6 +196,8 @@ public enum Token {
     WITH("WITH"),
     EXTRACT("EXTRACT"),
     CURSOR("CURSOR"),
+    BULK("BULK"),
+
     //    MODEL("MODEL"),
     MERGE("MERGE"),
     MATCHED("MATCHED"),

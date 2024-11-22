@@ -366,6 +366,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         printSelectList(x.getSelectList());
+        printBulkCollect(x);
         printInto(x);
         printFrom(x);
         printWhere(x);
@@ -2598,6 +2599,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleExecuteImmediateStatement x) {
         print0(ucase ? "EXECUTE IMMEDIATE " : "execute immediate ");
         x.getDynamicSql().accept(this);
+
+        if (x.isBulkCollect()) {
+            print0(ucase ? " BULK COLLECT" : " bulk collect");
+        }
 
         List<SQLExpr> into = x.getInto();
         if (into.size() > 0) {

@@ -284,6 +284,8 @@ public class OracleSelectParser extends SQLSelectParser {
             parseSelectList(queryBlock);
         }
 
+        parseBulkCollect(queryBlock);
+
         parseInto(queryBlock);
 
         parseFrom(queryBlock);
@@ -934,6 +936,14 @@ public class OracleSelectParser extends SQLSelectParser {
         }
 
         return tableSource;
+    }
+
+    private void parseBulkCollect(SQLSelectQueryBlock queryBlock) {
+        if (lexer.token() == Token.BULK) {
+            lexer.nextToken();
+            acceptIdentifier("COLLECT");
+            queryBlock.setBulkCollect(true);
+        }
     }
 
     protected void parseInto(OracleSelectQueryBlock x) {

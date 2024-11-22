@@ -865,6 +865,12 @@ public class OracleStatementParser extends SQLStatementParser {
             SQLExpr dyanmiacSql = this.exprParser.primary();
             stmt.setDynamicSql(dyanmiacSql);
 
+            if (lexer.token() == Token.BULK) {
+                lexer.nextToken();
+                acceptIdentifier("COLLECT");
+                stmt.setBulkCollect(true);
+            }
+
             if (lexer.token() == Token.INTO) {
                 lexer.nextToken();
 

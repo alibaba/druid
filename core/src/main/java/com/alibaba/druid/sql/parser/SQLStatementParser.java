@@ -3714,12 +3714,12 @@ public class SQLStatementParser extends SQLParser {
      * First hint_clause isInsert is true, second hint_clause isInsert is false.
      * ***************************************
      * [with_clause]
-     *   INSERT [hint_clause] { INTO | OVERWRITE } [TABLE] table_name
-     *   [(column_list)]
-     *   [ PARTITION (partition_clause)]
+     * INSERT [hint_clause] { INTO | OVERWRITE } [TABLE] table_name
+     * [(column_list)]
+     * [ PARTITION (partition_clause)]
      * {
-     *     [hint_clause] select_statement
-     *   | VALUES (value [, value ...]) [, (value [, value ...]) ...]
+     * [hint_clause] select_statement
+     * | VALUES (value [, value ...]) [, (value [, value ...]) ...]
      * }
      * ***************************************
      */
@@ -5437,7 +5437,7 @@ public class SQLStatementParser extends SQLParser {
         SQLFetchStatement stmt = new SQLFetchStatement();
         stmt.setCursorName(this.exprParser.name());
 
-        if (lexer.identifierEquals("BULK")) {
+        if (lexer.token() == Token.BULK) {
             lexer.nextToken();
             acceptIdentifier("COLLECT");
             stmt.setBulkCollect(true);

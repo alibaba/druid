@@ -2598,6 +2598,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printSelectList(
                 x.getSelectList());
 
+        printBulkCollect(x);
         printInto(x);
         printFrom(x);
         printWhere(x);
@@ -2654,6 +2655,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             print0(ucase ? "INTO " : "into ");
             into.accept(this);
+        }
+    }
+
+    protected void printBulkCollect(SQLSelectQueryBlock x) {
+        if (x.isBulkCollect()) {
+            println();
+            print0(ucase ? "BULK COLLECT " : "bulk collect ");
         }
     }
 

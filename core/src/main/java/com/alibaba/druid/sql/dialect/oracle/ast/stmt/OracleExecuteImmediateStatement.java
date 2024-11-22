@@ -32,6 +32,8 @@ public class OracleExecuteImmediateStatement extends OracleStatementImpl {
 
     private final List<SQLExpr> returnInto = new ArrayList<SQLExpr>();
 
+    private boolean isBulkCollect;
+
     public OracleExecuteImmediateStatement() {
     }
 
@@ -100,5 +102,13 @@ public class OracleExecuteImmediateStatement extends OracleStatementImpl {
 
     public List<SQLExpr> getReturnInto() {
         return returnInto;
+    }
+
+    public void setBulkCollect(boolean bulkCollect) {
+        this.isBulkCollect = bulkCollect;
+    }
+
+    public boolean isBulkCollect() {
+        return isBulkCollect;
     }
 }

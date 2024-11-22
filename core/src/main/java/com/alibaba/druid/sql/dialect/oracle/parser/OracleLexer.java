@@ -113,6 +113,8 @@ public class OracleLexer extends Lexer {
         map.put("CASCADE", Token.CASCADE);
         map.put("MATCHED", Token.MATCHED);
 
+        map.put("BULK", Token.BULK);
+
         map.put("，", Token.COMMA);
         map.put("（", Token.LPAREN);
         map.put("）", Token.RPAREN);

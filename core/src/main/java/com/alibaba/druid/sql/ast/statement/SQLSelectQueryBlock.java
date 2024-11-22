@@ -44,6 +44,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     protected SQLExpr connectBy;
     protected boolean prior;
     protected boolean noCycle;
+    protected boolean isBulkCollect;
     protected SQLOrderBy orderBySiblings;
 
     protected SQLSelectGroupByClause groupBy;
@@ -656,6 +657,14 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
     public void setNoCycle(boolean noCycle) {
         this.noCycle = noCycle;
+    }
+
+    public boolean isBulkCollect() {
+        return isBulkCollect;
+    }
+
+    public void setBulkCollect(boolean bulkCollect) {
+        this.isBulkCollect = bulkCollect;
     }
 
     public List<SQLSelectOrderByItem> getDistributeBy() {
