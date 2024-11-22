@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExternalRecordFormat;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OraclePartitionSingle;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
@@ -220,7 +221,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                     if (lexer.token() == Token.LPAREN) {
                         lexer.nextToken();
                         for (; ; ) {
-                            SQLPartition partition = this.getExprParser().parsePartition();
+                            OraclePartitionSingle partition = this.getExprParser().parsePartition();
                             partitionByHash.addPartition(partition);
                             if (lexer.token() == Token.COMMA) {
                                 lexer.nextToken();

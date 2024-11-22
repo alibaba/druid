@@ -20,8 +20,10 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
+import com.alibaba.druid.sql.dialect.oracle.ast.OraclePartitionSingle;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
@@ -2953,6 +2955,74 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleCreateTableSpaceStatement x) {
         print0(ucase ? x.getSql().toUpperCase() : x.getSql().toLowerCase());
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLPartitionSingle x) {
+        if (x instanceof OraclePartitionSingle) {
+            return visit((OraclePartitionSingle) x);
+        }
+        return super.visit(x);
+    }
+
+    public boolean visit(OraclePartitionSingle x) {
+        boolean isDbPartiton = false, isTbPartition = false;
+        final SQLObject parent = x.getParent();
+        if (parent != null) {
+            final SQLObject parent2 = parent.getParent();
+            if (parent2 instanceof MySqlCreateTableStatement) {
+                MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) parent2;
+                isDbPartiton = parent == stmt.getDbPartitionBy();
+                isTbPartition = parent == stmt.getTablePartitionBy();
+            }
+        }
+
+        if (isDbPartiton) {
+            print0(ucase ? "DBPARTITION " : "dbpartition ");
+        } else if (isTbPartition) {
+            print0(ucase ? "TBPARTITION " : "tbpartition ");
+        } else {
+            print0(ucase ? "PARTITION " : "partition ");
+        }
+        x.getName().accept(this);
+        if (x.getValues() != null) {
+            print(' ');
+            x.getValues().accept(this);
+        }
+
+        this.indentCount++;
+        printOracleSegmentAttributes(x);
+        this.indentCount--;
+        if (x.getSubPartitionsCount() != null) {
+            this.indentCount++;
+            println();
+            print0(ucase ? "SUBPARTITIONS " : "subpartitions ");
+            x.getSubPartitionsCount().accept(this);
+            this.indentCount--;
+        }
+
+        if (x.getSubPartitions().size() > 0) {
+            print(" (");
+            this.indentCount++;
+            for (int i = 0; i < x.getSubPartitions().size(); ++i) {
+                if (i != 0) {
+                    print(',');
+                }
+                println();
+                x.getSubPartitions().get(i).accept(this);
+            }
+            this.indentCount--;
+            println();
+            print(')');
+        }
+
+        SQLExpr locality = x.getLocality();
+        if (locality != null) {
+            print(ucase ? " LOCALITY = " : " locality = ");
+            locality.accept(this);
+        }
+
         return false;
     }
 }

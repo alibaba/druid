@@ -1262,13 +1262,19 @@ public interface SQLASTVisitor {
     default void endVisit(SQLPartitionValue x) {
     }
 
-    default boolean visit(SQLPartition x) {
+    default boolean visit(SQLPartitionSingle x) {
         return true;
     }
 
-    default void endVisit(SQLPartition x) {
+    default void endVisit(SQLPartitionSingle x) {
     }
 
+    default boolean visit(SQLPartitionBatch x) {
+        return true;
+    }
+
+    default void endVisit(SQLPartitionBatch x) {
+    }
     default boolean visit(SQLPartitionByRange x) {
         return true;
     }

@@ -6083,7 +6083,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     accept(Token.INTO);
                     accept(Token.LPAREN);
                     for (; ; ) {
-                        SQLPartition partition = this.getExprParser().parsePartition();
+                        MysqlPartitionSingle partition = this.getExprParser().parsePartition();
 
                         item.addPartition(partition);
 
@@ -6613,7 +6613,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             for (; ; ) {
-                SQLPartition partition = this.getExprParser().parsePartition();
+                MysqlPartitionSingle partition = this.getExprParser().parsePartition();
                 item.addPartition(partition);
                 if (lexer.token() == COMMA) {
                     lexer.nextToken();

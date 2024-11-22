@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.OraclePartitionSingle;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
@@ -2680,7 +2681,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     } else if (lexer.token() == Token.LPAREN) {
                         lexer.nextToken();
                         for (; ; ) {
-                            SQLPartition partition = this.getExprParser().parsePartition();
+                            OraclePartitionSingle partition = this.getExprParser().parsePartition();
                             partition.setParent(stmt);
                             stmt.getLocalPartitions().add(partition);
                             if (lexer.token() == Token.COMMA) {
@@ -2718,7 +2719,7 @@ public class OracleStatementParser extends SQLStatementParser {
                         if (lexer.token() == Token.LPAREN) {
                             lexer.nextToken();
                             for (; ; ) {
-                                SQLPartition partition = this.getExprParser().parsePartition();
+                                OraclePartitionSingle partition = this.getExprParser().parsePartition();
                                 partitionByHash.addPartition(partition);
                                 if (lexer.token() == Token.COMMA) {
                                     lexer.nextToken();

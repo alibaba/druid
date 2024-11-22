@@ -175,7 +175,7 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
     }
 
     @Override
-    public boolean visit(SQLPartition x) {
+    public boolean visit(SQLPartitionSingle x) {
         GaussDbPartitionValue values = (GaussDbPartitionValue) x.getValues();
         if (values.getDistribute()) {
             print0(ucase ? "SLICE " : "slice ");

@@ -48,18 +48,18 @@ public class GaussDbExprParser extends PGExprParser {
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
-    public SQLPartition parsePartition() {
+    public SQLPartitionSingle parsePartition() {
         accept(Token.PARTITION);
-        SQLPartition partitionDef = new SQLPartition();
+        SQLPartitionSingle partitionDef = new SQLPartitionSingle();
         SQLName name = this.name();
         partitionDef.setName(name);
         partitionDef.setValues(this.parsePartitionValues(false));
         return partitionDef;
     }
 
-    public SQLPartition parseDistribution() {
+    public SQLPartitionSingle parseDistribution() {
         acceptIdentifier("SLICE");
-        SQLPartition partitionDef = new SQLPartition();
+        SQLPartitionSingle partitionDef = new SQLPartitionSingle();
         SQLName name = this.name();
         partitionDef.setName(name);
         partitionDef.setValues(this.parsePartitionValues(true));

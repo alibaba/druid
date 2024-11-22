@@ -2704,7 +2704,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     @Override
-    public boolean visit(SQLPartition x) {
+    public boolean visit(SQLPartitionSingle x) {
         return false;
     }
 

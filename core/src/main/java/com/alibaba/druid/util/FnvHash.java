@@ -732,6 +732,7 @@ public final class FnvHash {
         long LINEAR = fnv1a_64_lower("LINEAR");
         long EVERY = fnv1a_64_lower("EVERY");
         long STARTS = fnv1a_64_lower("STARTS");
+        long END = fnv1a_64_lower("END");
         long ENDS = fnv1a_64_lower("ENDS");
         long BINARY = fnv1a_64_lower("BINARY");
         long GEOMETRY = fnv1a_64_lower("GEOMETRY");

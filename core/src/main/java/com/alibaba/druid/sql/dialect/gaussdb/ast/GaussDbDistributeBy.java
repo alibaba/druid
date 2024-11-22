@@ -11,7 +11,7 @@ import java.util.List;
 
 public class GaussDbDistributeBy extends GaussDbObjectImpl {
     protected SQLSubPartitionBy subPartitionBy;
-    protected List<SQLPartition> distributions = new ArrayList<SQLPartition>();
+    protected List<SQLPartition> distributions = new ArrayList<>();
     protected List<SQLName> storeIn = new ArrayList<SQLName>();
     protected List<SQLExpr> columns = new ArrayList<SQLExpr>();
     protected SQLName type;
@@ -30,7 +30,7 @@ public class GaussDbDistributeBy extends GaussDbObjectImpl {
         return type;
     }
 
-    public void addDistribution(SQLPartition distribution) {
+    public void addDistribution(SQLPartitionSingle distribution) {
         if (distribution != null) {
             distribution.setParent(this);
         }

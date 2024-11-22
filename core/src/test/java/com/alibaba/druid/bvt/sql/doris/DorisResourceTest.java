@@ -11,6 +11,6 @@ public class DorisResourceTest extends SQLResourceTest {
 
     @Test
     public void doris_parse() throws Exception {
-        fileTest(1, 999, i -> "bvt/parser/doris/" + i + ".txt");
+        fileTest(0, 999, i -> "bvt/parser/doris/" + i + ".txt");
     }
 }

@@ -225,6 +225,9 @@ public class ImpalaCreateTableParser extends HiveCreateTableParser {
         accept(Token.RPAREN);
         accept(Token.LPAREN);
         for (; ; ) {
+            if (lexer.token() == Token.RPAREN) {
+                break;
+            }
             rangePartition.addPartition(this.getExprParser().parsePartition());
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();

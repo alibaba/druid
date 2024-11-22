@@ -2669,6 +2669,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printOrderBy(SQLSelectQueryBlock x) {
         SQLOrderBy orderBy = x.getOrderBy();
+        printOrderBy(orderBy);
+    }
+
+    protected void printOrderBy(SQLOrderBy orderBy) {
         if (orderBy == null) {
             return;
         }
@@ -7852,6 +7856,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "VALUES LESS THAN (" : "values less than (");
         } else if (x.getOperator() == SQLPartitionValue.Operator.In) {
             print0(ucase ? "VALUES IN (" : "values in (");
+        } else if (x.getOperator() == SQLPartitionValue.Operator.FixedRange) {
+            print(ucase ? "VALUES [" : "values [");
         } else {
             print(ucase ? "VALUES (" : "values (");
         }
@@ -7873,7 +7879,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
-    public boolean visit(SQLPartition x) {
+    public boolean visit(SQLPartitionBatch x) {
+        print0(ucase ? "START (" : "start (");
+        x.getStart().accept(this);
+        print0(ucase ? ") END (" : ") end (");
+        x.getEnd().accept(this);
+        print0(ucase ? ") EVERY (" : ") every (");
+        x.getEvery().accept(this);
+        print0(")");
+        return false;
+    }
+    @Override
+    public boolean visit(SQLPartitionSingle x) {
         boolean isDbPartiton = false, isTbPartition = false;
         final SQLObject parent = x.getParent();
         if (parent != null) {
@@ -7896,47 +7913,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.getValues() != null) {
             print(' ');
             x.getValues().accept(this);
-        }
-
-        if (x.getDataDirectory() != null) {
-            this.indentCount++;
-            println();
-            print0(ucase ? "DATA DIRECTORY " : "data directory ");
-            x.getDataDirectory().accept(this);
-            this.indentCount--;
-        }
-
-        if (x.getIndexDirectory() != null) {
-            this.indentCount++;
-            println();
-            print0(ucase ? "INDEX DIRECTORY " : "index directory ");
-            x.getIndexDirectory().accept(this);
-            this.indentCount--;
-        }
-
-        this.indentCount++;
-        printOracleSegmentAttributes(x);
-
-        if (x.getEngine() != null) {
-            println();
-            print0(ucase ? "STORAGE ENGINE " : "storage engine ");
-            x.getEngine().accept(this);
-        }
-        this.indentCount--;
-
-        if (x.getMaxRows() != null) {
-            print0(ucase ? " MAX_ROWS " : " max_rows ");
-            x.getMaxRows().accept(this);
-        }
-
-        if (x.getMinRows() != null) {
-            print0(ucase ? " MIN_ROWS " : " min_rows ");
-            x.getMinRows().accept(this);
-        }
-
-        if (x.getComment() != null) {
-            print0(ucase ? " COMMENT " : " comment ");
-            x.getComment().accept(this);
         }
 
         if (x.getSubPartitionsCount() != null) {

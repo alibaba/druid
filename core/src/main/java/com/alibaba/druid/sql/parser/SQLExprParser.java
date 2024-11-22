@@ -6050,8 +6050,32 @@ public class SQLExprParser extends SQLParser {
         return selectItem;
     }
 
-    protected SQLPartition parsePartition() {
-        throw new ParserException("TODO");
+    public SQLPartition parsePartition() {
+        if (lexer.nextIf(Token.PARTITION)) {
+            SQLPartitionSingle partitionDef = new SQLPartitionSingle();
+            SQLName name = this.name();
+            partitionDef.setName(name);
+            partitionDef.setValues(this.parsePartitionValues());
+            return partitionDef;
+        } else if (lexer.nextIf(START) || lexer.nextIfIdentifier(FnvHash.Constants.START)) {
+            SQLPartitionBatch partitionDef = new SQLPartitionBatch();
+            accept(Token.LPAREN);
+            partitionDef.setStart(this.expr());
+            accept(Token.RPAREN);
+            if (lexer.nextIf(Token.END) || lexer.nextIfIdentifier(FnvHash.Constants.END)) {
+                accept(Token.LPAREN);
+                partitionDef.setEnd(this.expr());
+                accept(Token.RPAREN);
+            } else {
+                throw new ParserException("syntax error, expect END, " + lexer.info());
+            }
+            acceptIdentifier(FnvHash.Constants.EVERY);
+            accept(Token.LPAREN);
+            partitionDef.setEvery(this.expr());
+            accept(Token.RPAREN);
+            return partitionDef;
+        }
+        return null;
     }
 
     public SQLPartitionSpec parsePartitionSpec() {
@@ -6130,43 +6154,35 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLPartitionValue parsePartitionValues() {
-        if (lexer.token != Token.VALUES) {
-            return null;
-        }
-        lexer.nextToken();
-
         SQLPartitionValue values = null;
-
-        if (lexer.token == Token.IN) {
-            lexer.nextToken();
-            values = new SQLPartitionValue(SQLPartitionValue.Operator.In);
-
-            accept(Token.LPAREN);
-            this.exprList(values.getItems(), values);
-            accept(Token.RPAREN);
-        } else if (lexer.identifierEquals(FnvHash.Constants.LESS)) {
-            lexer.nextToken();
-            acceptIdentifier("THAN");
-
-            values = new SQLPartitionValue(SQLPartitionValue.Operator.LessThan);
-
-            if (lexer.identifierEquals(FnvHash.Constants.MAXVALUE)) {
-                SQLIdentifierExpr maxValue = new SQLIdentifierExpr(lexer.stringVal());
-                lexer.nextToken();
-                maxValue.setParent(values);
-                values.addItem(maxValue);
-            } else {
+        if (lexer.nextIf(Token.VALUES)) {
+            if (lexer.nextIf(Token.IN)) {
+                values = new SQLPartitionValue(SQLPartitionValue.Operator.In);
                 accept(Token.LPAREN);
                 this.exprList(values.getItems(), values);
                 accept(Token.RPAREN);
+            } else if (lexer.nextIfIdentifier(FnvHash.Constants.LESS)) {
+                acceptIdentifier(FnvHash.Constants.THAN);
+                values = new SQLPartitionValue(SQLPartitionValue.Operator.LessThan);
+                if (lexer.nextIfIdentifier(FnvHash.Constants.MAXVALUE)) {
+                    SQLIdentifierExpr maxValue = new SQLIdentifierExpr(lexer.stringVal());
+                    maxValue.setParent(values);
+                    values.addItem(maxValue);
+                } else {
+                    accept(Token.LPAREN);
+                    this.exprList(values.getItems(), values);
+                    accept(Token.RPAREN);
+                }
+            } else if (lexer.nextIf(Token.LPAREN)) {
+                values = new SQLPartitionValue(SQLPartitionValue.Operator.List);
+                this.exprList(values.getItems(), values);
+                accept(Token.RPAREN);
+            } else if (lexer.nextIf(Token.LBRACKET)) {
+                values = new SQLPartitionValue(SQLPartitionValue.Operator.FixedRange);
+                this.exprList(values.getItems(), values);
+                accept(Token.RPAREN);
             }
-        } else if (lexer.token == Token.LPAREN) {
-            values = new SQLPartitionValue(SQLPartitionValue.Operator.List);
-            lexer.nextToken();
-            this.exprList(values.getItems(), values);
-            accept(Token.RPAREN);
         }
-
         return values;
     }
 

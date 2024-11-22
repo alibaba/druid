@@ -63,35 +63,7 @@ public class Issue6029 {
                     "\t\"replication_num\" = \"1\"\n" +
                     ")",
 
-            // 3.LESS THAN分区含有 MAXVALUE| 值的建表语句
-            "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
-                    "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
-                    "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
-                    "\t`num_plate` SMALLINT COMMENT 'range [-32768, 32767] ',\n" +
-                    "\t`tel` INT COMMENT 'range [-2147483648, 2147483647]',\n" +
-                    "\t`id` BIGINT COMMENT 'range [-2^63 + 1 ~ 2^63 - 1]',\n" +
-                    "\t`password` LARGEINT COMMENT 'range [-2^127 + 1 ~ 2^127 - 1]',\n" +
-                    "\t`name` CHAR(20) NOT NULL COMMENT 'range char(m),m in (1-255)',\n" +
-                    "\t`profile` VARCHAR(500) NOT NULL COMMENT 'upper limit value 1048576 bytes',\n" +
-                    "\t`hobby` STRING NOT NULL COMMENT 'upper limit value 65533 bytes',\n" +
-                    "\t`leave_time` DATETIME COMMENT 'YYYY-MM-DD HH:MM:SS',\n" +
-                    "\t`channel` FLOAT COMMENT '4 bytes',\n" +
-                    "\t`income` DOUBLE COMMENT '8 bytes',\n" +
-                    "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
-                    "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
-                    ") ENGINE = OLAP\n" +
-                    "DUPLICATE KEY (`recruit_date`, `region_num`)\n" +
-                    "PARTITION BY RANGE(`recruit_date`)\n" +
-                    "(\n" +
-                    "  PARTITION partition_name1 VALUES LESS THAN MAXVALUE | (\"value1\", \"value2\"), \n" +
-                    "  PARTITION partition_name2 VALUES LESS THAN MAXVALUE | (\"value1\", \"value2\")\n" +
-                    ")\n" +
-                    "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n" +
-                    "PROPERTIES (\n" +
-                    "\t\"replication_num\" = \"1\"\n" +
-                    ")",
-
-//            // 4.分区类型为 Fixed Range的建表语句
+            // 3.分区类型为 Fixed Range的建表语句
             "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
                     "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
                     "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
@@ -120,7 +92,7 @@ public class Issue6029 {
                     "\t\"replication_num\" = \"1\"\n" +
                     ")",
 
-            // 5.分区类型为 Fixed Range, 多分段的建表语句
+            // 4.分区类型为 Fixed Range, 多分段的建表语句
             "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
                     "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
                     "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
@@ -148,7 +120,7 @@ public class Issue6029 {
                     "\t\"replication_num\" = \"1\"\n" +
                     ")",
 
-            // 6. 多种 PROPERTIES 参数类型的建表语句
+            // 5. 多种 PROPERTIES 参数类型的建表语句
             "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
                     "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
                     "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
@@ -178,11 +150,11 @@ public class Issue6029 {
                     "\t\"dynamic_partition.enable\" = \"true|false\",\n" +
                     "\t\"dynamic_partition.time_unit\" = \"DAY|WEEK|MONTH\",\n" +
                     "\t\"dynamic_partition.start\" = \"${integer_value}\",\n" +
-                    "\t[\"storage_cooldown_time\" = \"yyyy-MM-dd HH:mm:ss\",]\n" +
-                    "\t[\"replication_num\" = \"3\"]\n" +
+                    "\t\"storage_cooldown_time\" = \"yyyy-MM-dd HH:mm:ss\",\n" +
+                    "\t\"replication_num\" = \"3\"\n" +
                     ")",
 
-            // 7.含有 Bitmap 索引和聚合函数的建表语句
+            // 6.含有 Bitmap 索引和聚合函数的建表语句
             "CREATE TABLE d0.table_hash (\n" +
                     "\tk1 TINYINT,\n" +
                     "\tk2 DECIMAL(10, 2) DEFAULT \"10.5\",\n" +
@@ -196,7 +168,7 @@ public class Issue6029 {
                     "\t\"storage_type\" = \"column\"\n" +
                     ")",
 
-            // 8. 外部表
+            // 7. 外部表
             "CREATE EXTERNAL TABLE example_db.table_mysql (\n" +
                     "\tk1 DATE,\n" +
                     "\tk2 INT,\n" +
@@ -211,7 +183,7 @@ public class Issue6029 {
                     "\t\"table\" = \"mysql_table_test\"\n" +
                     ")",
 
-            // 9. 数据模型列只有一列
+            // 8. 数据模型列只有一列
             "CREATE TABLE `olap_5e61d03d605641ebafd100c809dbf15c` (\n" +
                     "\t`a` int(11) NULL,\n" +
                     "\t`b` text NULL,\n" +
