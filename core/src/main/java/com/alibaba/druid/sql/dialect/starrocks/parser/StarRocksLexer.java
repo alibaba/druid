@@ -16,10 +16,24 @@ public class StarRocksLexer extends Lexer {
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
-        //        map.put("BITMAP", Token.BITMAP);
-        map.put("USING", Token.USING);
+        map.put("ADD", Token.ADD);
+        map.put("BOTH", Token.BOTH);
+        map.put("DUAL", Token.DUAL);
+        map.put("FALSE", Token.FALSE);
+        map.put("FORCE", Token.FORCE);
+        map.put("IF", Token.IF);
+        map.put("KILL", Token.KILL);
+
+        map.put("TRUE", Token.TRUE);
+        map.put("SHOW", Token.SHOW);
+        map.put("ANALYZE", Token.ANALYZE);
+        map.put("ROW", Token.ROW);
+
         map.put("PARTITION", Token.PARTITION);
 
+        map.put("MOD", Token.MOD);
+        map.put("RLIKE", Token.RLIKE);
+        map.put("USING", Token.USING);
         return new Keywords(map);
     }
 

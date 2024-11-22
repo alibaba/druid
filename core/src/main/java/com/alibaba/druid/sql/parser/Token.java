@@ -316,8 +316,9 @@ public enum Token {
     UPSERT("UPSERT"), // Phoenix
 
     // StarRocks
-    BIGINT("BIGINT"),
-//    BITMAP("BITMAP"),
+    ADD("ADD"),
+    BOTH("BOTH"),
+    FORCE("FORCE"),
     // Redshift
     ENCODE("ENCODE"),
     DISTSTYLE("DISTSTYLE"),
