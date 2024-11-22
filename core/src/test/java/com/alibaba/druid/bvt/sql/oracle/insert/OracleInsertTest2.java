@@ -94,4 +94,34 @@ public class OracleInsertTest2 extends OracleTest {
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "job_title")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
     }
+
+    public void test_2() throws Exception {
+        String sql = "SELECT employee_id, TO_CHAR(TRIM(LEADING 0 FROM hire_date))\n" +
+                "FROM employees\n" +
+                "WHERE department_id = 60\n" +
+                "ORDER BY employee_id";
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+
+        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
+
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "hire_date")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+    }
 }

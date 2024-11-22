@@ -2152,6 +2152,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         this.functions.add(x);
 
         accept(x.getArguments());
+        accept(x.getFrom());
         return false;
     }
 
