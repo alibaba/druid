@@ -38,6 +38,9 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
     }
 
     public void setReturning(OracleReturningClause returning) {
+        if (returning != null) {
+            returning.setParent(this);
+        }
         this.returning = returning;
     }
 

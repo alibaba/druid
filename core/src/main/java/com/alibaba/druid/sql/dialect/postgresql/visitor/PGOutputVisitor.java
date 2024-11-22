@@ -711,7 +711,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(SQLAssignItem x) {
         if (!(x.getParent() instanceof SQLSetStatement)) {
-            return super.visit(x);
+            x.getTarget().accept(this);
+            print0(" := ");
+            x.getValue().accept(this);
+            return false;
         }
 
         x.getTarget().accept(this);

@@ -282,6 +282,7 @@ public class PGExprParser extends SQLExprParser {
             for (; ; ) {
                 accept(Token.LPAREN);
                 SQLListExpr listExpr = new SQLListExpr();
+                listExpr.setParenthesized(true);
                 exprList(listExpr.getItems(), listExpr);
                 accept(Token.RPAREN);
 

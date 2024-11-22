@@ -543,6 +543,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token == Token.LPAREN) {
                 lexer.nextToken();
                 SQLListExpr listExpr = new SQLListExpr();
+                listExpr.setParenthesized(true);
                 this.exprParser.exprList(listExpr.getItems(), listExpr);
                 accept(Token.RPAREN);
                 valuesQuery.addValue(listExpr);
@@ -1042,7 +1043,9 @@ public class SQLSelectParser extends SQLParser {
 
             if (lexer.token == Token.RPAREN) {
                 lexer.nextToken();
-                return new SQLListExpr();
+                SQLListExpr sqlListExpr = new SQLListExpr();
+                sqlListExpr.setParenthesized(true);
+                return sqlListExpr;
             }
 
             lexer.reset(mark);
@@ -1062,6 +1065,7 @@ public class SQLSelectParser extends SQLParser {
                     if (lexer.token == Token.LPAREN) {
                         accept(Token.LPAREN);
                         SQLListExpr list = new SQLListExpr();
+                        list.setParenthesized(true);
                         if (lexer.token == Token.COMMA) {
                             lexer.nextToken();
                         }
@@ -1250,6 +1254,7 @@ public class SQLSelectParser extends SQLParser {
             for (; ; ) {
                 accept(Token.LPAREN);
                 SQLListExpr listExpr = new SQLListExpr();
+                listExpr.setParenthesized(true);
                 this.exprParser.exprList(listExpr.getItems(), listExpr);
                 accept(Token.RPAREN);
 
@@ -2258,6 +2263,7 @@ public class SQLSelectParser extends SQLParser {
             }
 
             SQLListExpr listExpr = new SQLListExpr();
+            listExpr.setParenthesized(true);
 
             if (isSingleValue) {
                 SQLExpr expr = expr();

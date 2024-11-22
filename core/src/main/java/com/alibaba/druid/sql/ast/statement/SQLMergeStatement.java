@@ -81,6 +81,9 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public void setOn(SQLExpr on) {
+        if (on != null) {
+            on.setParent(this);
+        }
         this.on = on;
     }
 

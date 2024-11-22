@@ -4806,9 +4806,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLListExpr x) {
-        print('(');
+        if (x.isParenthesized()) {
+            print('(');
+        }
         printAndAccept(x.getItems(), ", ");
-        print(')');
+        if (x.isParenthesized()) {
+            print(')');
+        }
 
         return false;
     }

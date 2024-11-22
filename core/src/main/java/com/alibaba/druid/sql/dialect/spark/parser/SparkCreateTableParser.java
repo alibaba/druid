@@ -174,6 +174,7 @@ public class SparkCreateTableParser extends HiveCreateTableParser {
             for (; ; ) {
                 if (lexer.token() == Token.LPAREN) {
                     SQLListExpr list = new SQLListExpr();
+                    list.setParenthesized(true);
                     lexer.nextToken();
                     this.exprParser.exprList(list.getItems(), list);
                     accept(Token.RPAREN);

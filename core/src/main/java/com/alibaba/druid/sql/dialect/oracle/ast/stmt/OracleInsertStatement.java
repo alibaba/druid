@@ -64,6 +64,9 @@ public class OracleInsertStatement extends SQLInsertStatement implements OracleS
     }
 
     public void setReturning(OracleReturningClause returning) {
+        if (returning != null) {
+            returning.setParent(this);
+        }
         this.returning = returning;
     }
 
@@ -72,6 +75,9 @@ public class OracleInsertStatement extends SQLInsertStatement implements OracleS
     }
 
     public void setErrorLogging(SQLErrorLoggingClause errorLogging) {
+        if (errorLogging != null) {
+            errorLogging.setParent(this);
+        }
         this.errorLogging = errorLogging;
     }
 
