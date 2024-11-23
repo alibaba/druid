@@ -37,7 +37,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatemen
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
-import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcUtils;
@@ -12122,22 +12121,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.isContainsSql()) {
             print0(ucase ? " CONTAINS SQL" : " contains sql");
-        }
-        return false;
-    }
-
-    public boolean visit(StarRocksIndexDefinition x) {
-        print0(ucase ? "INDEX " : "index ");
-        x.getIndexName().accept(this);
-        print('(');
-        printAndAccept(x.getColumns(), ", ");
-        print(')');
-        if (x.isUsingBitmap()) {
-            print0(ucase ? " USING BITMAP" : " using bitmap");
-        }
-        if (x.getComment() != null) {
-            print0(ucase ? " COMMENT " : " comment ");
-            print(x.getComment());
         }
         return false;
     }
