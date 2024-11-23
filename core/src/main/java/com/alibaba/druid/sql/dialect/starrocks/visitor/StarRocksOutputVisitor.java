@@ -11,6 +11,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
+import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -248,6 +249,22 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
 
         print0(ucase ? "PROPERTIES" : "properties");
         print(x.getProperties());
+        return false;
+    }
+
+    public boolean visit(StarRocksIndexDefinition x) {
+        print0(ucase ? "INDEX " : "index ");
+        x.getIndexName().accept(this);
+        print('(');
+        printAndAccept(x.getColumns(), ", ");
+        print(')');
+        if (x.isUsingBitmap()) {
+            print0(ucase ? " USING BITMAP" : " using bitmap");
+        }
+        if (x.getComment() != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            x.getComment().accept(this);
+        }
         return false;
     }
 }

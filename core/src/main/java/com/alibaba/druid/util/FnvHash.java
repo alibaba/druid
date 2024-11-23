@@ -1165,5 +1165,6 @@ public final class FnvHash {
         long NOCOMPRESS = fnv1a_64_lower("NOCOMPRESS");
         long COMPRESS_MODE = fnv1a_64_lower("COMPRESS_MODE");
         long BROKER = fnv1a_64_lower("BROKER");
+        long INDEX = fnv1a_64_lower("INDEX");
     }
 }

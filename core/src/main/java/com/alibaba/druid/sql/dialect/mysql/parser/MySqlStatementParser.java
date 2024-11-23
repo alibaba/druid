@@ -40,6 +40,7 @@ import static com.alibaba.druid.sql.parser.Token.*;
 import static com.alibaba.druid.sql.parser.Token.ALTER;
 import static com.alibaba.druid.sql.parser.Token.FALSE;
 import static com.alibaba.druid.sql.parser.Token.GROUP;
+import static com.alibaba.druid.sql.parser.Token.INDEX;
 import static com.alibaba.druid.sql.parser.Token.SEMI;
 import static com.alibaba.druid.sql.parser.Token.TABLE;
 import static com.alibaba.druid.sql.parser.Token.TRUE;
@@ -319,7 +320,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.UNIQUE
-                || lexer.token() == Token.INDEX
+                || lexer.token() == INDEX
                 || lexer.identifierEquals(FnvHash.Constants.SPATIAL)
                 || lexer.identifierEquals(FnvHash.Constants.ANN)
                 || lexer.identifierEquals(FnvHash.Constants.GLOBAL)
@@ -358,7 +359,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.ANALYZER)) {
             lexer.nextToken();
             return parseFullTextAnalyzer();
-        } else if (lexer.token() == Token.INDEX) {
+        } else if (lexer.token() == INDEX) {
             lexer.reset(mark);
             return parseCreateIndex();
         } else if (lexer.identifierEquals(FnvHash.Constants.DICTIONARY)) {
@@ -2707,7 +2708,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             // DRDS GSI syntax.
-            if (isEnabled(SQLParserFeature.DRDSAsyncDDL) && (Token.INDEX == lexer.token() || lexer.identifierEquals("INDEXES"))) {
+            if (isEnabled(SQLParserFeature.DRDSAsyncDDL) && (INDEX == lexer.token() || lexer.identifierEquals("INDEXES"))) {
                 lexer.nextToken();
 
                 DrdsShowGlobalIndex stmt = new DrdsShowGlobalIndex();
@@ -3153,7 +3154,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        if (lexer.token() == Token.INDEX || lexer.identifierEquals("INDEXES") || lexer.identifierEquals("KEYS")) {
+        if (lexer.token() == INDEX || lexer.identifierEquals("INDEXES") || lexer.identifierEquals("KEYS")) {
             SQLShowIndexesStatement stmt = new SQLShowIndexesStatement();
 
             stmt.setType(lexer.stringVal());
@@ -6276,7 +6277,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             case ALTER: {
                 lexer.nextToken();
-                if (lexer.token() == Token.INDEX) {
+                if (lexer.token() == INDEX) {
                     // Caution: Not in MySql documents.
                     lexer.nextToken();
 
@@ -6298,7 +6299,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     accept(Token.SET);
                     accept(Token.FULLTEXT);
 
-                    if (lexer.token() == Token.INDEX) {
+                    if (lexer.token() == INDEX) {
                         lexer.nextToken();
                         alterIndex.setAnalyzerType(AnalyzerIndexType.INDEX);
                     } else if (lexer.identifierEquals(FnvHash.Constants.QUERY)) {
@@ -7706,7 +7707,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public void parseAlterDrop(SQLAlterTableStatement stmt) {
         lexer.nextToken();
-        if (lexer.token() == Token.INDEX) {
+        if (lexer.token() == INDEX) {
             lexer.nextToken();
             SQLName indexName = this.exprParser.name();
             SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
@@ -9298,7 +9299,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                             lexer.nextToken();
                             continue;
                         }
-                    } else if (lexer.token() == Token.INDEX) {
+                    } else if (lexer.token() == INDEX) {
                         MySqlTableIndex idx = new MySqlTableIndex();
                         this.exprParser.parseIndex(idx.getIndexDefinition());
                         idx.setIndexType("CLUSTERED");
@@ -9325,7 +9326,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     SQLConstraint constraint = this.exprParser.parseConstraint();
                     constraint.setParent(stmt);
                     stmt.getTableElementList().add((SQLTableElement) constraint);
-                } else if (lexer.token() == (Token.INDEX)) {
+                } else if (lexer.token() == (INDEX)) {
                     MySqlTableIndex idx = new MySqlTableIndex();
                     this.exprParser.parseIndex(idx.getIndexDefinition());
 
