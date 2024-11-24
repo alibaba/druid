@@ -66,6 +66,9 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
             if (select != null) {
                 select.accept(visitor);
             }
+            if (pivot != null) {
+                pivot.accept(visitor);
+            }
         }
         visitor.endVisit(this);
     }

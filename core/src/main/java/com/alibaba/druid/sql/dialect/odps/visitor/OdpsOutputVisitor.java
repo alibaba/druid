@@ -585,7 +585,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     protected void printMethodOwner(SQLExpr owner) {
         owner.accept(this);
-        if (owner instanceof SQLMethodInvokeExpr) {
+        if (owner instanceof SQLMethodInvokeExpr || owner instanceof SQLPropertyExpr) {
             print('.');
         } else {
             print(':');
