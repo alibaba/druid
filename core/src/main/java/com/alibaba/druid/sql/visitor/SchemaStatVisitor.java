@@ -876,7 +876,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 SQLObject resolvedOwnerObject = propertyExpr.getResolvedOwnerObject();
                 if (resolvedOwnerObject instanceof SQLSubqueryTableSource
                         || resolvedOwnerObject instanceof SQLCreateProcedureStatement
-                        || resolvedOwnerObject instanceof SQLCreateFunctionStatement) {
+                        || resolvedOwnerObject instanceof SQLCreateFunctionStatement
+                        || resolvedOwnerObject instanceof SQLParameter) {
                     table = null;
                 }
 
