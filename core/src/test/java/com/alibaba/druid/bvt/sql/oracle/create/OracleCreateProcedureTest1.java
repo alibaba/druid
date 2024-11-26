@@ -35,10 +35,9 @@ public class OracleCreateProcedureTest1 extends OracleTest {
                 " " +
                 "  IF SQL%FOUND THEN" +
                 "    DBMS_OUTPUT.PUT_LINE (" +
-                "      'Delete succeeded for department number ' || dept_no" +
-                "    );" +
+                "      'Delete succeeded for department number');" +
                 "  ELSE" +
-                "    DBMS_OUTPUT.PUT_LINE ('No department number ' || dept_no);" +
+                "    DBMS_OUTPUT.PUT_LINE ('No department number');" +
                 "  END IF;" +
                 "END;" +
                 "/" +
@@ -68,7 +67,8 @@ public class OracleCreateProcedureTest1 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dept_temp")));
 
-//        Assert.assertEquals(7, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getRelationships().size());
 

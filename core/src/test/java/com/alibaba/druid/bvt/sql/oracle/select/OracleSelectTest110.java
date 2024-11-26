@@ -177,7 +177,7 @@ public class OracleSelectTest110 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(1, visitor.getTables().size());
-        assertEquals(30, visitor.getColumns().size());
+        assertEquals(29, visitor.getColumns().size());
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());

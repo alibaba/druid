@@ -861,8 +861,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     protected Column getColumn(SQLExpr expr) {
-        final SQLExpr original = expr;
-
         // unwrap
         expr = unwrapExpr(expr);
 

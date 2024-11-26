@@ -61,5 +61,4 @@ public class OracleInsertTest2 extends OracleTest {
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "job_id")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
-
 }
