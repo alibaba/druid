@@ -360,12 +360,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public boolean visit(OracleExceptionStatement.Item x) {
         SQLExpr when = x.getWhen();
         if (when instanceof SQLIdentifierExpr) {
-            SQLIdentifierExpr ident = (SQLIdentifierExpr) when;
-            if (ident.getName().equalsIgnoreCase("OTHERS")) {
-                // skip
-            } else {
-                this.visit(ident);
-            }
+            return false;
         } else if (when != null) {
             when.accept(this);
         }
