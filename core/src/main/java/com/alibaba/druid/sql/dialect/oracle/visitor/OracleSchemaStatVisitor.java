@@ -52,11 +52,11 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     private static final Set<Long> FUNCTIONS_IDENT;
     private static final Set<Long> IMPLICIT_CURSOR_ATTRIBUTES;
 
-	static {
-		PSEUDO_COLUMNS = new HashSet<>();
-		PSEUDO_COLUMNS.add(FnvHash.Constants.ROWID);
-		PSEUDO_COLUMNS.add(FnvHash.Constants.ROWNUM);
-		PSEUDO_COLUMNS.add(FnvHash.Constants.LEVEL);
+    static {
+        PSEUDO_COLUMNS = new HashSet<>();
+        PSEUDO_COLUMNS.add(FnvHash.Constants.ROWID);
+        PSEUDO_COLUMNS.add(FnvHash.Constants.ROWNUM);
+        PSEUDO_COLUMNS.add(FnvHash.Constants.LEVEL);
 
         FUNCTIONS_IDENT = new HashSet<>();
         FUNCTIONS_IDENT.add(FnvHash.Constants.SYSDATE);
@@ -72,9 +72,9 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         IMPLICIT_CURSOR_ATTRIBUTES.add(FnvHash.Constants.ROWCOUNT);
         IMPLICIT_CURSOR_ATTRIBUTES.add(FnvHash.Constants.BULK_ROWCOUNT);
         IMPLICIT_CURSOR_ATTRIBUTES.add(FnvHash.Constants.BULK_EXCEPTIONS);
-	}
+    }
 
-	public OracleSchemaStatVisitor() {
+    public OracleSchemaStatVisitor() {
         this(new ArrayList<Object>());
     }
 
@@ -580,21 +580,21 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             SQLExpr valueExpr = null;
             if (x.getParent() instanceof SQLBlockStatement) {
                 List<SQLStatement> statementList = ((SQLBlockStatement) x.getParent()).getStatementList();
-				for (SQLStatement stmt : statementList) {
-					if (stmt == x) {
-						break;
-					}
+                for (SQLStatement stmt : statementList) {
+                    if (stmt == x) {
+                        break;
+                    }
 
-					if (stmt instanceof SQLSetStatement) {
-						List<SQLAssignItem> items = ((SQLSetStatement) stmt).getItems();
-						for (SQLAssignItem item : items) {
-							if (item.getTarget().equals(dynamicSql)) {
-								valueExpr = item.getValue();
-								break;
-							}
-						}
-					}
-				}
+                    if (stmt instanceof SQLSetStatement) {
+                        List<SQLAssignItem> items = ((SQLSetStatement) stmt).getItems();
+                        for (SQLAssignItem item : items) {
+                            if (item.getTarget().equals(dynamicSql)) {
+                                valueExpr = item.getValue();
+                                break;
+                            }
+                        }
+                    }
+                }
             }
 
             if (valueExpr != null) {
