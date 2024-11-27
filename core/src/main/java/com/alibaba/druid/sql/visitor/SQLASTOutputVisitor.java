@@ -8011,12 +8011,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLPartitionByList x) {
         print0(ucase ? "LIST " : "list ");
-        if (x.getColumns().size() == 1) {
-            print('(');
-            x.getColumns().get(0).accept(this);
+        if (SQLPartitionByList.PartitionByListType.LIST_COLUMNS.equals(x.getType())) {
+            print0(ucase ? "COLUMNS (" : "columns (");
+            printAndAccept(x.getColumns(), ", ");
             print0(")");
         } else {
-            print0(ucase ? "COLUMNS (" : "columns (");
+            print('(');
             printAndAccept(x.getColumns(), ", ");
             print0(")");
         }

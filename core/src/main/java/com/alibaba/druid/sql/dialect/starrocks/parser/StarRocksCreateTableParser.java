@@ -162,6 +162,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                 hasLparen = true;
             } else if (lexer.nextIfIdentifier(FnvHash.Constants.LIST)) {
                 partitionClause = new SQLPartitionByList();
+                ((SQLPartitionByList) partitionClause).setType(SQLPartitionByList.PartitionByListType.LIST_EXPRESSION);
                 accept(Token.LPAREN);
                 hasLparen = true;
             } else if (lexer.nextIf(Token.LPAREN)) {

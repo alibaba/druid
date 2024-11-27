@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartitionByList extends SQLPartitionBy {
+    protected PartitionByListType type;
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -27,6 +28,14 @@ public class SQLPartitionByList extends SQLPartitionBy {
             acceptChild(visitor, subPartitionBy);
         }
         visitor.endVisit(this);
+    }
+
+    public PartitionByListType getType() {
+        return type;
+    }
+
+    public void setType(PartitionByListType type) {
+        this.type = type;
     }
 
     public SQLPartitionByList clone() {
@@ -45,5 +54,9 @@ public class SQLPartitionByList extends SQLPartitionBy {
 
     public void cloneTo(SQLPartitionByList x) {
         super.cloneTo(x);
+    }
+    public enum PartitionByListType {
+        LIST_EXPRESSION,
+        LIST_COLUMNS,
     }
 }
