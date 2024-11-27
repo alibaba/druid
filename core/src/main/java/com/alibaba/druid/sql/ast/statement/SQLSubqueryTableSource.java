@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -71,6 +72,16 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
             }
         }
         visitor.endVisit(this);
+    }
+
+    public SQLObject resolveColumn(long columnNameHash) {
+        if (select != null) {
+            SQLSelectQueryBlock queryBlock = select.getQueryBlock();
+            if (queryBlock != null) {
+                return queryBlock.findSelectItem(columnNameHash);
+            }
+        }
+        return null;
     }
 
     public void cloneTo(SQLSubqueryTableSource x) {

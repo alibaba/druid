@@ -1,0 +1,4 @@
+ALTER TABLE nxxe ADD COLUMNS IF NOT EXISTS (traffic INT);
+---------------------------
+ALTER TABLE nxxe
+	ADD COLUMNS IF NOT EXISTS (traffic INT);

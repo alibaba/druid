@@ -1080,4 +1080,32 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         print0("()");
         return false;
     }
+
+    @Override
+    public boolean visit(SQLDropDatabaseStatement x) {
+        print0(ucase ? "DROP " : "drop ");
+
+        if (x.isPhysical()) {
+            print0(ucase ? "PHYSICAL " : "physical ");
+        }
+
+        print0(ucase ? "SCHEMA " : "schema ");
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
+        x.getDatabase().accept(this);
+
+        final Boolean restrict = x.getRestrict();
+        if (restrict != null && restrict.booleanValue()) {
+            print0(ucase ? " RESTRICT" : " restrict");
+        }
+
+        if (x.isCascade()) {
+            print0(ucase ? " CASCADE" : " cascade");
+        }
+
+        return false;
+    }
 }

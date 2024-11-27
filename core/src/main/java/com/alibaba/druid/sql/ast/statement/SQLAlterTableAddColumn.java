@@ -31,6 +31,7 @@ public class SQLAlterTableAddColumn extends SQLObjectImpl implements SQLAlterTab
     private boolean first;
     private Boolean restrict;
     private boolean cascade;
+    private boolean ifNotExists;
 
     public SQLAlterTableAddColumn() {
     }
@@ -41,6 +42,14 @@ public class SQLAlterTableAddColumn extends SQLObjectImpl implements SQLAlterTab
             acceptChild(visitor, columns);
         }
         visitor.endVisit(this);
+    }
+
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 
     public List<SQLColumnDefinition> getColumns() {

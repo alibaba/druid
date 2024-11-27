@@ -5048,13 +5048,13 @@ public class SQLStatementParser extends SQLParser {
         );
     }
 
-    protected boolean parseAlterTableAddColumnBefore() {
+    protected boolean parseAlterTableAddColumnBefore(SQLAlterTableAddColumn x) {
         return false;
     }
-    protected SQLAlterTableAddColumn parseAlterTableAddColumn() {
-        boolean columns = parseAlterTableAddColumnBefore();
 
+    protected SQLAlterTableAddColumn parseAlterTableAddColumn() {
         SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
+        boolean columns = parseAlterTableAddColumnBefore(item);
 
         for (; ; ) {
             SQLColumnDefinition columnDef = this.exprParser.parseColumn();

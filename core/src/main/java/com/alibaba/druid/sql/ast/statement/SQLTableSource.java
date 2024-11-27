@@ -42,7 +42,12 @@ public interface SQLTableSource extends SQLObject {
 
     SQLColumnDefinition findColumn(long columnNameHash);
 
-    SQLObject resolveColum(long columnNameHash);
+    @Deprecated
+    default SQLObject resolveColum(long columnNameHash) {
+        return resolveColumn(columnNameHash);
+    }
+
+    SQLObject resolveColumn(long columnNameHash);
 
     SQLTableSource findTableSourceWithColumn(String columnName);
 

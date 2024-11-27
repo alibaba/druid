@@ -1155,7 +1155,10 @@ class SchemaResolveVisitorFactory {
         if (tableSource != null) {
             x.setResolvedTableSource(tableSource);
 
-            SQLColumnDefinition column = tableSource.findColumn(hash);
+            SQLObject column = tableSource.findColumn(hash);
+            if (column == null) {
+                column = tableSource.resolveColumn(hash);
+            }
             if (column != null) {
                 x.setResolvedColumn(column);
             }
@@ -1803,7 +1806,11 @@ class SchemaResolveVisitorFactory {
         SQLSelectQuery query = x.getQuery();
         if (query != null) {
             if (query instanceof SQLSelectQueryBlock) {
-                visitor.visit((SQLSelectQueryBlock) query);
+                try {
+                    visitor.visit((SQLSelectQueryBlock) query);
+                } catch (StackOverflowError ignored) {
+                    // ignore
+                }
             } else {
                 query.accept(visitor);
             }

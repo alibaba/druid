@@ -5043,11 +5043,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterTableAddColumn x) {
+        print0(ucase ? "ADD" : "add");
+
         if (DbType.odps == dbType || DbType.hive == dbType) {
-            print0(ucase ? "ADD COLUMNS (" : "add columns (");
-        } else {
-            print0(ucase ? "ADD (" : "add (");
+            print0(ucase ? " COLUMNS" : " columns");
         }
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? " IF NOT EXISTS" : " if not exists");
+        }
+
+        print0(" (");
         printAndAccept(x.getColumns(), ", ");
         print(')');
 
@@ -7080,6 +7086,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             for (int i = 0; i < comments.size(); ++i) {
                 String comment = comments.get(i);
                 boolean lineComment = comment.startsWith("--");
+                if (lineComment) {
+                    comment = comment.trim();
+                }
                 if (i != 0 && lineComment) {
                     println();
                 }

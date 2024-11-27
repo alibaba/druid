@@ -25,8 +25,8 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
     private Boolean recursive;
     private final List<Entry> entries = new ArrayList<Entry>();
 
-    public SQLWithSubqueryClause clone() {
-        SQLWithSubqueryClause x = new SQLWithSubqueryClause();
+    protected void cloneTo(SQLWithSubqueryClause x) {
+        super.cloneTo(x);
         x.recursive = recursive;
 
         for (Entry entry : entries) {
@@ -34,7 +34,11 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             entry2.setParent(x);
             x.entries.add(entry2);
         }
+    }
 
+    public SQLWithSubqueryClause clone() {
+        SQLWithSubqueryClause x = new SQLWithSubqueryClause();
+        cloneTo(x);
         return x;
     }
 
@@ -108,6 +112,16 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             x.alias = alias;
             x.expr = expr;
             x.prefixAlias = prefixAlias;
+        }
+
+        public SQLObject resolveColumn(long columnNameHash) {
+            if (subQuery != null) {
+                SQLSelectQueryBlock queryBlock = subQuery.getQueryBlock();
+                if (queryBlock != null) {
+                    return queryBlock.findSelectItem(columnNameHash);
+                }
+            }
+            return null;
         }
 
         @Override

@@ -188,6 +188,10 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
         this.resolvedColumn = resolvedColumn;
     }
 
+    public void setResolvedColumn(SQLObject resolvedColumn) {
+        this.resolvedColumn = resolvedColumn;
+    }
+
     public void setResolvedColumn(SQLSelectItem selectItem) {
         this.resolvedColumn = selectItem;
     }

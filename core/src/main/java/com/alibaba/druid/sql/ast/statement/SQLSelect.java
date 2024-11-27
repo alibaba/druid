@@ -168,7 +168,10 @@ public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
     public SQLSelect clone() {
         SQLSelect x = new SQLSelect();
 
-        x.withSubQuery = this.withSubQuery;
+        if (withSubQuery != null) {
+            x.withSubQuery = withSubQuery.clone();
+        }
+
         if (query != null) {
             x.setQuery(query.clone());
         }

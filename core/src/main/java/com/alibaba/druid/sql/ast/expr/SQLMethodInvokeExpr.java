@@ -309,6 +309,7 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
     }
 
     public void cloneTo(SQLMethodInvokeExpr x) {
+        super.cloneTo(x);
         x.methodName = methodName;
 
         if (owner != null) {
