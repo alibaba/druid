@@ -27,7 +27,8 @@ public class CKCreateTableParser extends SQLCreateTableParser {
     public SQLPartitionBy parsePartitionBy() {
         lexer.nextToken();
         accept(Token.BY);
-        SQLPartitionBy sqlPartitionBy = new SQLPartitionByList();
+        SQLPartitionByList sqlPartitionBy = new SQLPartitionByList();
+        sqlPartitionBy.setType(SQLPartitionByList.PartitionByListType.LIST_EXPRESSION);
         boolean hasParen = false;
         if (lexer.nextIf(Token.LPAREN)) {
             hasParen = true;

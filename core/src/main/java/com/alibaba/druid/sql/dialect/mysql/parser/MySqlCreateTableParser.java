@@ -1071,7 +1071,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             partitionClause = clause;
 
             partitionClauseRest(clause);
-        } else if (lexer.identifierEquals("HASH") || lexer.identifierEquals("UNI_HASH")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.HASH) || lexer.identifierEquals("UNI_HASH")) {
             SQLPartitionByHash clause = new SQLPartitionByHash();
 
             if (lexer.identifierEquals("UNI_HASH")) {
@@ -1096,28 +1096,30 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
             partitionClauseRest(clause);
 
-        } else if (lexer.identifierEquals("RANGE")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.RANGE)) {
             SQLPartitionByRange clause = partitionByRange();
             partitionClause = clause;
 
             partitionClauseRest(clause);
 
-        } else if (lexer.identifierEquals("VALUE")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.VALUE)) {
             SQLPartitionByValue clause = partitionByValue();
             partitionClause = clause;
 
             partitionClauseRest(clause);
 
-        } else if (lexer.identifierEquals("LIST")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.LIST)) {
             lexer.nextToken();
             SQLPartitionByList clause = new SQLPartitionByList();
 
             if (lexer.token() == Token.LPAREN) {
+                clause.setType(SQLPartitionByList.PartitionByListType.LIST_EXPRESSION);
                 lexer.nextToken();
                 clause.addColumn(this.exprParser.expr());
                 accept(Token.RPAREN);
             } else {
-                acceptIdentifier("COLUMNS");
+                acceptIdentifier(FnvHash.Constants.COLUMNS);
+                clause.setType(SQLPartitionByList.PartitionByListType.LIST_COLUMNS);
                 accept(Token.LPAREN);
                 for (; ; ) {
                     clause.addColumn(this.exprParser.name());

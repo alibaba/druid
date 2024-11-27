@@ -70,11 +70,13 @@ public class PGCreateTableParser extends SQLCreateTableParser {
             SQLPartitionByList list = new SQLPartitionByList();
 
             if (lexer.token() == Token.LPAREN) {
+                list.setType(SQLPartitionByList.PartitionByListType.LIST_EXPRESSION);
                 lexer.nextToken();
                 list.addColumn(this.exprParser.expr());
                 accept(Token.RPAREN);
             } else {
                 acceptIdentifier("COLUMNS");
+                list.setType(SQLPartitionByList.PartitionByListType.LIST_COLUMNS);
                 accept(Token.LPAREN);
                 for (; ; ) {
                     list.addColumn(this.exprParser.name());
