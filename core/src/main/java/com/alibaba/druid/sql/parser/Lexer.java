@@ -867,6 +867,8 @@ public class Lexer {
                 return SQLType.SET_PROJECT;
             }
             return SQLType.SET;
+        } else if (hashCode == FnvHash.Constants.SETPROJECT) {
+            return SQLType.SET_PROJECT;
         } else if (hashCode == FnvHash.Constants.KILL) {
             return SQLType.KILL;
         } else if (hashCode == FnvHash.Constants.MSCK) {
