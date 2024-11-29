@@ -2651,12 +2651,44 @@ public interface SQLASTVisitor {
                 p.accept(x);
                 return true;
             }
+
+            public boolean visit(SQLAggregateExpr x) {
+                p.accept(x);
+                return true;
+            }
         };
     }
 
     static SQLASTVisitor ofMethodInvoke(Predicate<String> filter, Consumer<SQLMethodInvokeExpr> p) {
         return new SQLASTVisitor() {
             public boolean visit(SQLMethodInvokeExpr x) {
+                if (filter == null || filter.test(x.getMethodName())) {
+                    p.accept(x);
+                }
+                return true;
+            }
+
+            public boolean visit(SQLAggregateExpr x) {
+                if (filter == null || filter.test(x.getMethodName())) {
+                    p.accept(x);
+                }
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofAggregate(Consumer<SQLAggregateExpr> p) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLAggregateExpr x) {
+                p.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofAggregate(Predicate<String> filter, Consumer<SQLAggregateExpr> p) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLAggregateExpr x) {
                 if (filter == null || filter.test(x.getMethodName())) {
                     p.accept(x);
                 }

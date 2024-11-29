@@ -17,7 +17,7 @@ FROM tmp
 ------------------------------------------------------------------------------------------------------------------------
 select 
 service_area_id, service_area_name
-from d-g-id-p.location.dim_service_area
+from `d-g-id-p.location.dim_service_area`
 --------------------
 SELECT service_area_id, service_area_name
 FROM `d-g-id-p`.location.dim_service_area

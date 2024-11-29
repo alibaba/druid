@@ -156,6 +156,17 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         return false;
     }
 
+    protected void printPartitionedBy(OdpsCreateTableStatement x) {
+        super.printPartitionedBy(x);
+        SQLAliasedExpr autoPartitionedBy = x.getAutoPartitionedBy();
+        if (autoPartitionedBy != null) {
+            println();
+            print0(ucase ? "AUTO PARTITIONED BY (" : "auto partitioned by (");
+            autoPartitionedBy.accept(this);
+            print(")");
+        }
+    }
+
     protected void printSerdeProperties(OdpsCreateTableStatement x) {
         List<SQLExpr> withSerdeproperties = x.getWithSerdeproperties();
         if (withSerdeproperties.size() > 0) {

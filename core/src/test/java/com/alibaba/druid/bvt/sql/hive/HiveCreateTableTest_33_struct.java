@@ -174,7 +174,7 @@ public class HiveCreateTableTest_33_struct extends OracleTest {
                     "\tphaseQuality int\n" +
                     ")\n" +
                     "STORED AS PARQUET\n" +
-                    "LOCATION 'oss://wegene-genomics-api-test/parquet_data/WGSDANAL098612/'", text);
+                    "LOCATION 'oss://wegene-genomics-api-test/parquet_data/WGSDANAL098612/';", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());

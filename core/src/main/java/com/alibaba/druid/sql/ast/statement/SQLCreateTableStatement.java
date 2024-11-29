@@ -31,6 +31,7 @@ import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
@@ -278,6 +279,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         addColumn(column);
     }
 
+    public void addColumn(String name, SQLDataType dataType) {
+        addColumn(new SQLColumnDefinition(name, dataType));
+    }
+
     public void addColumn(SQLColumnDefinition column) {
         if (column == null) {
             throw new IllegalArgumentException();
@@ -461,6 +466,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
 
         return null;
+    }
+
+    public boolean containsColumn(String columName) {
+        return findColumn(columName) == null;
     }
 
     public SQLColumnDefinition findColumn(String columName) {
@@ -1340,6 +1349,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         x.buckets = buckets;
         x.shards = shards;
+        x.afterSemi = afterSemi;
 
     }
 
@@ -1649,6 +1659,12 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public void setLifeCycle(SQLExpr x) {
+        if (x instanceof SQLNumberExpr) {
+            Number number = ((SQLNumberExpr) x).getNumber();
+            if (number instanceof BigDecimal) {
+                x = new SQLIntegerExpr(((BigDecimal) number).intValueExact());
+            }
+        }
         if (x != null) {
             x.setParent(this);
         }

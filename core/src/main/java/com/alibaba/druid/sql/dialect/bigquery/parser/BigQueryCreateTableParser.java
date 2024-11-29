@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateTableStatement;
-import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -14,7 +13,7 @@ import com.alibaba.druid.util.FnvHash;
 
 public class BigQueryCreateTableParser extends SQLCreateTableParser {
     public BigQueryCreateTableParser(String sql) {
-        super(new DB2ExprParser(sql));
+        super(new BigQueryExprParser(sql));
     }
 
     public BigQueryCreateTableParser(SQLExprParser exprParser) {
@@ -90,6 +89,8 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
     protected void createTableBefore(SQLCreateTableStatement createTable) {
         if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")) {
             createTable.setTemporary(true);
+        } else if (lexer.nextIfIdentifier(FnvHash.Constants.EXTERNAL)) {
+            createTable.setExternal(true);
         }
 
         if (lexer.nextIf(Token.OR)) {

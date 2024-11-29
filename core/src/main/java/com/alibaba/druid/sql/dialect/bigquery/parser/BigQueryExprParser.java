@@ -335,6 +335,12 @@ public class BigQueryExprParser extends SQLExprParser {
         return super.exprRest(expr);
     }
 
+    protected String nameCommon() {
+        String identName = lexer.stringVal();
+        lexer.nextToken();
+        return identName;
+    }
+
     @Override
     protected SQLCastExpr parseCastFormat(SQLCastExpr cast) {
         if (lexer.nextIfIdentifier("FORMAT")) {

@@ -58,7 +58,7 @@ public class BigQueryNameTest {
 
     @Test
     public void name3() {
-        String str = "a-x.b.c";
+        String str = "`a-x`.b.c";
         SQLExpr expr = SQLUtils.toSQLExpr(str, DbType.bigquery, SQLParserFeature.IgnoreNameQuotes);
         assertTrue(expr instanceof SQLPropertyExpr);
         SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;

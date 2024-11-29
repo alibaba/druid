@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.parser.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.ScanSubAsIdentifier;
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
@@ -121,6 +120,10 @@ public class BigQueryLexer extends Lexer {
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
+    }
+
+    public final void scanIdentifier() {
+        scanIdentifier0();
     }
 
     protected void scanAlias() {
@@ -269,7 +272,7 @@ public class BigQueryLexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(SQLDateExpr, GroupByAll, ScanSubAsIdentifier, InRestSpecificOperation);
+        this.dialectFeature.configFeature(SQLDateExpr, GroupByAll, InRestSpecificOperation);
     }
 
     @Override

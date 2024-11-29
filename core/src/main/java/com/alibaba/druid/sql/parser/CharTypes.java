@@ -41,6 +41,7 @@ public class CharTypes {
     }
 
     private static final boolean[] firstIdentifierFlags = new boolean[256];
+    private static final boolean[] UNDERSCORE_LETTERS = new boolean[256];
 
     static {
         // the Latin letter decimal values range between 192('À') and 255('ÿ') but exclude 215('×') and 247('÷').
@@ -54,6 +55,18 @@ public class CharTypes {
         firstIdentifierFlags['`'] = true;
         firstIdentifierFlags['_'] = true;
         firstIdentifierFlags['$'] = true;
+
+        for (char c = 'A'; c <= 'Z'; ++c) {
+            UNDERSCORE_LETTERS[c] = true;
+        }
+        for (char c = 'a'; c <= 'z'; ++c) {
+            UNDERSCORE_LETTERS[c] = true;
+        }
+        UNDERSCORE_LETTERS['_'] = true;
+    }
+
+    public static boolean letterOrUnderScore(char c) {
+        return (c & ~0xFF) == 0 && UNDERSCORE_LETTERS[c & 0xFF];
     }
 
     public static boolean isFirstIdentifierChar(char c) {

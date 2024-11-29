@@ -2017,10 +2017,7 @@ public class SQLExprParser extends SQLParser {
 
     protected void aliasedItems(List<SQLAliasedExpr> items, SQLObject parent) {
         while (true) {
-            SQLExpr expr = expr();
-            String alias = as();
-
-            SQLAliasedExpr aliasedExpr = new SQLAliasedExpr(expr, alias);
+            SQLAliasedExpr aliasedExpr = aliasedExpr();
             aliasedExpr.setParent(parent);
             items.add(aliasedExpr);
 
@@ -2032,6 +2029,10 @@ public class SQLExprParser extends SQLParser {
             }
             break;
         }
+    }
+
+    public SQLAliasedExpr aliasedExpr() {
+        return new SQLAliasedExpr(expr(), as());
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {

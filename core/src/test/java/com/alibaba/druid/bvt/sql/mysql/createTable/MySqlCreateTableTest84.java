@@ -139,7 +139,7 @@ public class MySqlCreateTableTest84 extends MysqlTest {
                         "\tUNIQUE KEY uk_a (c_tinyint),\n" +
                         "\tKEY k_b (c_smallint),\n" +
                         "\tKEY k_c (c_mediumint, c_int)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000';"
                 , repository.console("show create table test"));
     }
 }

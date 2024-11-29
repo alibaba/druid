@@ -279,6 +279,15 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
+            if (lexer.nextIfIdentifier("AUTO")) {
+                accept(Token.PARTITIONED);
+                accept(Token.BY);
+                accept(Token.LPAREN);
+                stmt.setAutoPartitionedBy(
+                        this.exprParser.aliasedExpr());
+                accept(Token.RPAREN);
+            }
+
             if (lexer.identifierEquals(FnvHash.Constants.RANGE)) {
                 lexer.nextToken();
                 if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
