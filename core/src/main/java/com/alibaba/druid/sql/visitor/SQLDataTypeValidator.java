@@ -84,15 +84,15 @@ public class SQLDataTypeValidator extends SQLASTVisitorAdapter {
             case odps: {
                 types = odpsTypes;
                 if (types == null) {
-                    typeSet = new HashSet<String>();
-                    OdpsUtils.loadDataTypes(typeSet);
+                    typeSet = new HashSet<>();
+                    OdpsUtils.DIALECT.dumpBuiltInDataTypes(typeSet);
                 }
                 break;
             }
             case hive: {
                 types = hiveTypes;
                 if (types == null) {
-                    typeSet = new HashSet<String>();
+                    typeSet = new HashSet<>();
                     HiveUtils.loadDataTypes(typeSet);
                 }
                 break;
@@ -100,7 +100,7 @@ public class SQLDataTypeValidator extends SQLASTVisitorAdapter {
             case mysql: {
                 types = mysqlTypes;
                 if (types == null) {
-                    typeSet = new HashSet<String>();
+                    typeSet = new HashSet<>();
                     MySqlUtils.loadDataTypes(typeSet);
                 }
                 break;

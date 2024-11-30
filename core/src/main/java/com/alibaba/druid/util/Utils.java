@@ -24,9 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Utils {
@@ -40,6 +38,38 @@ public class Utils {
 
         InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
         return read(reader);
+    }
+
+    public static Properties loadProperties(String resource) {
+        InputStream in = Utils.class.getClassLoader().getResourceAsStream(resource);
+        Properties properties = new Properties();
+        if (in != null) {
+            try {
+                properties.load(in);
+             } catch (IOException ignore) {
+                // ignored
+            }
+        }
+        return properties;
+    }
+
+    public static List<String> readLines(String resource) {
+        List<String> lines = new ArrayList<>();
+        InputStream in = Utils.class.getClassLoader().getResourceAsStream(resource);
+        if (in != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+                for (;;) {
+                    String line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    lines.add(line);
+                }
+            } catch (IOException ignore) {
+                // ignored
+            }
+        }
+        return lines;
     }
 
     public static String readFromResource(String resource) throws IOException {

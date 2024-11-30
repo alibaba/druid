@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
@@ -106,6 +107,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected transient int lines;
     private TimeZone timeZone;
     private boolean endLineComment;
+
+    protected SQLDialect dialect;
 
     protected Boolean printStatementAfterSemi = defaultPrintStatementAfterSemi;
 
@@ -353,30 +356,63 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? text.toUpperCase() : text.toLowerCase());
     }
 
-    protected void printName0(String text) {
-        if (appender == null || text.length() == 0) {
+    protected void printName0(String name) {
+        StringBuilder appender = this.appender;
+        if (appender == null || name.isEmpty()) {
             return;
         }
 
-        if (printNameQuote) {
-            char c0 = text.charAt(0);
-            if (c0 == quote) {
-                this.appender.append(text);
-            } else if (c0 == '"' && text.charAt(text.length() - 1) == '"') {
-                this.appender.append(quote);
-                this.appender.append(text.substring(1, text.length() - 1));
-                this.appender.append(quote);
-            } else if (c0 == '`' && text.charAt(text.length() - 1) == '`') {
-                this.appender.append(quote);
-                this.appender.append(text.substring(1, text.length() - 1));
-                this.appender.append(quote);
-            } else {
-                this.appender.append(quote);
-                this.appender.append(text);
-                this.appender.append(quote);
+        SQLDialect dialect = this.dialect;
+        char quote = '"';
+        boolean keyword = false;
+        if (isEnabled(VisitorFeature.OutputNameQuote) && dialect != null) {
+            keyword = dialect.isKeyword(name);
+            quote = dialect.getQuoteChar();
+        }
+
+        if (keyword) {
+            appender.append(quote);
+        }
+        appender.append(name);
+        if (keyword) {
+            appender.append(quote);
+        }
+    }
+
+    protected boolean nameHasSpecial(String alias) {
+        int len = alias.length();
+        if (len == 0) {
+            return false;
+        }
+        char c0 = alias.charAt(0);
+        if (c0 != '"' && c0 != '\'' && c0 != '`' && c0 != '[') {
+            for (int i = 1; i < len; ++i) {
+                char ch = alias.charAt(i);
+                if (ch < 256 &&
+                        !((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || ch == '_' || ch == '$')) {
+                    return true;
+                }
             }
-        } else {
-            this.appender.append(text);
+        }
+        return false;
+    }
+
+    protected void printAlias0(String alias) {
+        boolean special = nameHasSpecial(alias);
+        char quote = this.quote;
+        StringBuilder appender = this.appender;
+        SQLDialect dialect = this.dialect;
+        boolean needQuote = special;
+        if (!needQuote && isEnabled(VisitorFeature.OutputNameQuote) && dialect != null) {
+            needQuote = dialect.isAliasKeyword(alias);
+        }
+
+        if (needQuote) {
+            appender.append(quote);
+        }
+        appender.append(alias);
+        if (needQuote) {
+            appender.append(quote);
         }
     }
 
@@ -387,7 +423,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print(' ');
 
-        this.appender.append(alias);
+        printAlias0(alias);
     }
 
     protected void printAndAccept(List<? extends SQLObject> nodes, String seperator) {
@@ -2868,7 +2904,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     print0(", ");
                 }
             }
-            print0(aliasList.get(i));
+            printAlias0(aliasList.get(i));
         }
 
         if (aliasSize > 5) {
@@ -2882,49 +2918,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printExprAlias(String alias) {
         print0(ucase ? " AS " : " as ");
-        char c0 = alias.charAt(0);
-
-        boolean special = false;
-        if (c0 != '"' && c0 != '\'' && c0 != '`' && c0 != '[') {
-            for (int i = 1; i < alias.length(); ++i) {
-                char ch = alias.charAt(i);
-                if (ch < 256) {
-                    if (ch >= '0' && ch <= '9') {
-                        // skip
-                    } else if (ch >= 'a' && ch <= 'z') {
-                        // skip
-                    } else if (ch >= 'A' && ch <= 'Z') {
-                        // skip
-                    } else if (ch == '_' || ch == '$') {
-                        // skip
-                    } else {
-                        special = true;
-                    }
-                }
-            }
-        }
-        if ((!printNameQuote) && (!special)) {
-            print0(alias);
-        } else {
-            print(quote);
-
-            String unquoteAlias = null;
-            if (c0 == '`' && alias.charAt(alias.length() - 1) == '`') {
-                unquoteAlias = alias.substring(1, alias.length() - 1);
-            } else if (c0 == '\'' && alias.charAt(alias.length() - 1) == '\'') {
-                unquoteAlias = alias.substring(1, alias.length() - 1);
-            } else if (c0 == '"' && alias.charAt(alias.length() - 1) == '"') {
-                unquoteAlias = alias.substring(1, alias.length() - 1);
-            } else {
-                print0(alias);
-            }
-
-            if (unquoteAlias != null) {
-                print0(unquoteAlias);
-            }
-
-            print(quote);
-        }
+        printAlias0(alias);
     }
 
     public boolean visit(SQLOrderBy x) {
@@ -3152,7 +3146,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             } else if (x.isNeedAsTokenForAlias()) {
                 print0(ucase ? "AS " : "as ");
             }
-            print0(alias);
+            printAlias0(alias);
         }
 
         if (columns != null && columns.size() > 0) {
@@ -7348,18 +7342,32 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLPrivilegeItem x) {
-        printExpr(x.getAction());
+        SQLExpr action = x.getAction();
+        if (action instanceof SQLIdentifierExpr) {
+            String actionName = ((SQLIdentifierExpr) action).getName();
+            print0(ucase ? actionName.toUpperCase() : actionName.toLowerCase());
+        } else {
+            printExpr(action);
+        }
 
-        if (!x.getColumns().isEmpty()) {
+        List<SQLName> columns = x.getColumns();
+        int size = columns.size();
+        if (size > 0) {
             print0("(");
-            printAndAccept(x.getColumns(), ", ");
+            for (int i = 0; i < size; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                SQLName column = columns.get(i);
+                if (column instanceof SQLIdentifierExpr) {
+                    print0(((SQLIdentifierExpr) column).getName());
+                } else {
+                    printExpr(column);
+                }
+            }
             print0(")");
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLPrivilegeItem x) {
     }
 
     @Override
