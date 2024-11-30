@@ -1428,18 +1428,22 @@ public interface SQLASTVisitor {
     default void endVisit(SQLMergeStatement x) {
     }
 
-    default boolean visit(SQLMergeStatement.MergeUpdateClause x) {
+    default boolean visit(SQLMergeStatement.WhenUpdate x) {
         return true;
     }
 
-    default void endVisit(SQLMergeStatement.MergeUpdateClause x) {
+    default void endVisit(SQLMergeStatement.WhenUpdate x) {
     }
 
-    default boolean visit(SQLMergeStatement.MergeInsertClause x) {
+    default boolean visit(SQLMergeStatement.WhenInsert x) {
         return true;
     }
 
-    default void endVisit(SQLMergeStatement.MergeInsertClause x) {
+    default boolean visit(SQLMergeStatement.WhenDelete x) {
+        return true;
+    }
+
+    default void endVisit(SQLMergeStatement.WhenInsert x) {
     }
 
     default boolean visit(SQLErrorLoggingClause x) {

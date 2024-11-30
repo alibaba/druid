@@ -1,3 +1,120 @@
+merge into t1 as tgt
+using
+(select * from base) as src
+ON FALSE
+WHEN NOT MATCHED BY SOURCE
+THEN DELETE
+when not matched
+then insert
+(business_id)
+values(src.business_id)
+--------------------
+MERGE INTO t1 tgt
+USING (
+	SELECT *
+	FROM base
+) src ON false
+WHEN NOT MATCHED BY SOURCE THEN DELETE
+WHEN NOT MATCHED THEN INSERT (business_id)
+VALUES (src.business_id)
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.Inventory T
+USING dataset.NewArrivals S
+ON T.product = S.product
+WHEN MATCHED THEN
+  UPDATE SET quantity = T.quantity + S.quantity
+--------------------
+MERGE INTO dataset.Inventory T
+USING dataset.NewArrivals S ON T.product = S.product
+WHEN MATCHED THEN UPDATE
+SET quantity = T.quantity + S.quantity
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.Inventory T
+USING (SELECT product, quantity, state FROM dataset.NewArrivals t1 JOIN dataset.Warehouse t2 ON t1.warehouse = t2.warehouse) S
+ON T.product = S.product
+WHEN MATCHED AND state = 'CA' THEN
+  UPDATE SET quantity = T.quantity + S.quantity
+WHEN MATCHED THEN
+  DELETE
+--------------------
+MERGE INTO dataset.Inventory T
+USING (
+	SELECT product, quantity, state
+	FROM dataset.NewArrivals t1
+		JOIN dataset.Warehouse t2 ON t1.warehouse = t2.warehouse
+) S ON T.product = S.product
+WHEN MATCHED THEN UPDATE
+SET quantity = T.quantity + S.quantity
+WHERE state = 'CA'
+WHEN MATCHED THEN DELETE
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.Inventory T
+USING dataset.NewArrivals S
+ON FALSE
+WHEN NOT MATCHED AND product LIKE '%washer%' THEN
+  INSERT (product, quantity) VALUES(product, quantity)
+WHEN NOT MATCHED BY SOURCE AND product LIKE '%washer%' THEN
+  DELETE
+--------------------
+MERGE INTO dataset.Inventory T
+USING dataset.NewArrivals S ON false
+WHEN NOT MATCHED THEN INSERT (product, quantity)
+VALUES (product, quantity)
+	WHERE product LIKE '%washer%'
+WHEN NOT MATCHED BY SOURCE AND product LIKE '%washer%' THEN DELETE
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.NewArrivals T
+USING (SELECT * FROM dataset.NewArrivals WHERE warehouse <> 'warehouse #2') S
+ON T.product = S.product
+WHEN MATCHED AND T.warehouse = 'warehouse #1' THEN
+  UPDATE SET quantity = T.quantity + 20
+WHEN MATCHED THEN
+  DELETE
+--------------------
+MERGE INTO dataset.NewArrivals T
+USING (
+	SELECT *
+	FROM dataset.NewArrivals
+	WHERE warehouse <> 'warehouse #2'
+) S ON T.product = S.product
+WHEN MATCHED THEN UPDATE
+SET quantity = T.quantity + 20
+WHERE T.warehouse = 'warehouse #1'
+WHEN MATCHED THEN DELETE
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.Inventory T
+USING dataset.NewArrivals S
+ON T.product = S.product
+WHEN MATCHED THEN
+  UPDATE SET quantity = T.quantity + S.quantity
+WHEN NOT MATCHED THEN
+  INSERT (product, quantity) VALUES(product, quantity)
+--------------------
+MERGE INTO dataset.Inventory T
+USING dataset.NewArrivals S ON T.product = S.product
+WHEN MATCHED THEN UPDATE
+SET quantity = T.quantity + S.quantity
+WHEN NOT MATCHED THEN INSERT (product, quantity)
+VALUES (product, quantity)
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.DetailedInventory T
+USING dataset.Inventory S
+ON T.product = S.product
+WHEN NOT MATCHED AND quantity < 20 THEN
+  INSERT(product, quantity, supply_constrained, comments)
+  VALUES(product, quantity, true, NULL)
+WHEN NOT MATCHED THEN
+  INSERT(product, quantity, supply_constrained)
+  VALUES(product, quantity, false)
+--------------------
+MERGE INTO dataset.DetailedInventory T
+USING dataset.Inventory S ON T.product = S.product
+WHEN NOT MATCHED THEN INSERT (product, quantity, supply_constrained, comments)
+VALUES (product, quantity, true, NULL)
+	WHERE quantity < 20
+WHEN NOT MATCHED THEN INSERT (product, quantity, supply_constrained)
+VALUES (product, quantity, false)
+------------------------------------------------------------------------------------------------------------------------
 SELECT ARRAY(SELECT AS STRUCT
         cast(coalesce(a,0) as NUMERIC) as seconds_amount,
         cast(coalesce(b,0) as NUMERIC) as nanos_amount,

@@ -2815,12 +2815,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         x.getOn().accept(this);
 
-        if (x.getUpdateClause() != null) {
-            x.getUpdateClause().accept(this);
-        }
-
-        if (x.getInsertClause() != null) {
-            x.getInsertClause().accept(this);
+        for (SQLMergeStatement.When when : x.getWhens()) {
+            when.accept(this);
         }
 
         return false;

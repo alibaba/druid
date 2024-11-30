@@ -22,14 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLMergeStatement extends SQLStatementImpl {
-    private final List<SQLHint> hints = new ArrayList<SQLHint>();
+    private final List<SQLHint> hints = new ArrayList<>();
 
     private SQLTableSource into;
     private SQLTableSource using;
     private SQLExpr on;
-    private MergeUpdateClause updateClause;
-    private MergeInsertClause insertClause;
-    private boolean insertClauseFirst;
+    private List<When> whens = new ArrayList<>();
     private SQLErrorLoggingClause errorLoggingClause;
 
     public void accept0(SQLASTVisitor visitor) {
@@ -37,13 +35,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
             acceptChild(visitor, into);
             acceptChild(visitor, using);
             acceptChild(visitor, on);
-            if (insertClauseFirst) {
-                acceptChild(visitor, insertClause);
-                acceptChild(visitor, updateClause);
-            } else {
-                acceptChild(visitor, updateClause);
-                acceptChild(visitor, insertClause);
-            }
+            acceptChild(visitor, whens);
             acceptChild(visitor, errorLoggingClause);
         }
         visitor.endVisit(this);
@@ -84,26 +76,13 @@ public class SQLMergeStatement extends SQLStatementImpl {
         this.on = on;
     }
 
-    public MergeUpdateClause getUpdateClause() {
-        return updateClause;
+    public void addWhen(When when) {
+        when.setParent(this);
+        this.whens.add(when);
     }
 
-    public void setUpdateClause(MergeUpdateClause updateClause) {
-        if (updateClause != null) {
-            updateClause.setParent(this);
-        }
-        this.updateClause = updateClause;
-    }
-
-    public MergeInsertClause getInsertClause() {
-        return insertClause;
-    }
-
-    public void setInsertClause(MergeInsertClause insertClause) {
-        if (insertClause != null) {
-            insertClause.setParent(this);
-        }
-        this.insertClause = insertClause;
+    public List<When> getWhens() {
+        return whens;
     }
 
     public SQLErrorLoggingClause getErrorLoggingClause() {
@@ -118,22 +97,17 @@ public class SQLMergeStatement extends SQLStatementImpl {
         return hints;
     }
 
-    public boolean isInsertClauseFirst() {
-        return insertClauseFirst;
-    }
-
-    public void setInsertClauseFirst(boolean insertClauseFirst) {
-        this.insertClauseFirst = insertClauseFirst;
-    }
-
-    public static class MergeUpdateClause extends SQLObjectImpl {
-        private final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
-        private SQLExpr where;
-        private SQLExpr deleteWhere;
-        private boolean delete;
-
+    public static class WhenUpdate extends When {
+        private final List<SQLUpdateSetItem> items = new ArrayList<>();
         public List<SQLUpdateSetItem> getItems() {
             return items;
+        }
+
+        public WhenUpdate() {
+        }
+
+        public WhenUpdate(boolean not, SQLName by, SQLExpr where) {
+            super(not, by, where);
         }
 
         public void addItem(SQLUpdateSetItem item) {
@@ -143,62 +117,63 @@ public class SQLMergeStatement extends SQLStatementImpl {
             this.items.add(item);
         }
 
-        public boolean isDelete() {
-            return delete;
-        }
-
-        public void setDelete(boolean delete) {
-            this.delete = delete;
-        }
-
-        public SQLExpr getWhere() {
-            return where;
-        }
-
-        public void setWhere(SQLExpr where) {
-            this.where = where;
-        }
-
-        public SQLExpr getDeleteWhere() {
-            return deleteWhere;
-        }
-
-        public void setDeleteWhere(SQLExpr x) {
-            if (x != null) {
-                x.setParent(this);
-            }
-            this.deleteWhere = x;
-        }
-
         @Override
-        public void accept0(SQLASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, items);
-                acceptChild(visitor, where);
-                acceptChild(visitor, deleteWhere);
+        public void accept0(SQLASTVisitor v) {
+            if (v.visit(this)) {
+                acceptChild(v, items);
+                acceptChild(v, where);
             }
-            visitor.endVisit(this);
+            v.endVisit(this);
         }
 
+        protected void cloneTo(WhenUpdate x) {
+            super.cloneTo(x);
+            for (SQLUpdateSetItem item : items) {
+                x.addItem(item.clone());
+            }
+        }
+
+        public WhenUpdate cloneTo() {
+            WhenUpdate x = new WhenUpdate();
+            cloneTo(x);
+            return x;
+        }
     }
 
-    public static class MergeInsertClause extends SQLObjectImpl {
+    public static class WhenInsert extends When {
         private List<SQLExpr> columns = new ArrayList<SQLExpr>();
         private List<SQLExpr> values = new ArrayList<SQLExpr>();
-        private SQLExpr where;
+
+        public WhenInsert() {
+        }
+
+        public WhenInsert(boolean not, SQLName by, SQLExpr where) {
+            super(not, by, where);
+        }
 
         @Override
-        public void accept0(SQLASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, columns);
-                acceptChild(visitor, values);
-                acceptChild(visitor, where);
+        public void accept0(SQLASTVisitor v) {
+            if (v.visit(this)) {
+                acceptChild(v, by);
+                acceptChild(v, where);
+                acceptChild(v, columns);
+                acceptChild(v, values);
             }
-            visitor.endVisit(this);
+            v.endVisit(this);
         }
 
         public List<SQLExpr> getColumns() {
             return columns;
+        }
+
+        public void addColumn(SQLExpr column) {
+            column.setParent(this);
+            columns.add(column);
+        }
+
+        public void addValue(SQLExpr value) {
+            value.setParent(this);
+            values.add(value);
         }
 
         public void setColumns(List<SQLExpr> columns) {
@@ -213,6 +188,89 @@ public class SQLMergeStatement extends SQLStatementImpl {
             this.values = values;
         }
 
+        protected void cloneTo(WhenInsert x) {
+            super.cloneTo(x);
+            for (SQLExpr column : columns) {
+                x.addColumn(column.clone());
+            }
+            for (SQLExpr value : values) {
+                x.addValue(value.clone());
+            }
+        }
+
+        public WhenInsert cloneTo() {
+            WhenInsert x = new WhenInsert();
+            cloneTo(x);
+            return x;
+        }
+    }
+
+    public static class WhenDelete extends When {
+        public WhenDelete() {
+        }
+
+        public WhenDelete(boolean not, SQLName by, SQLExpr where) {
+            super(not, by, where);
+        }
+
+        @Override
+        protected void accept0(SQLASTVisitor v) {
+            if (v.visit(this)) {
+                acceptChild(v, by);
+                acceptChild(v, where);
+            }
+        }
+
+        public WhenDelete cloneTo() {
+            WhenDelete x = new WhenDelete();
+            cloneTo(x);
+            return x;
+        }
+    }
+
+    public abstract static class When extends SQLObjectImpl {
+        protected boolean not;
+        protected SQLName by;
+        protected SQLExpr where;
+
+        public When() {
+        }
+
+        public When(boolean not, SQLName by, SQLExpr where) {
+            this.not = not;
+            this.by = by;
+            this.where = where;
+        }
+
+        protected void cloneTo(When x) {
+            x.not = this.not;
+            if (by != null) {
+                x.by = by.clone();
+            }
+            if (where != null) {
+                x.where = where.clone();
+            }
+        }
+
+        public boolean isNot() {
+            return not;
+        }
+
+        public void setNot(boolean not) {
+            this.not = not;
+        }
+
+        public SQLName getBy() {
+            return by;
+        }
+
+        public void setBy(SQLName x) {
+            if (x != null) {
+                x.setParent(this);
+            }
+            this.by = x;
+        }
+
         public SQLExpr getWhere() {
             return where;
         }
@@ -223,7 +281,5 @@ public class SQLMergeStatement extends SQLStatementImpl {
             }
             this.where = x;
         }
-
     }
-
 }

@@ -1154,11 +1154,9 @@ public class SQLSelectParser extends SQLParser {
     }
 
     public void parseFrom(SQLSelectQueryBlock queryBlock) {
-        if (lexer.token != Token.FROM) {
+        if (!lexer.nextIf(Token.FROM)) {
             return;
         }
-
-        lexer.nextToken();
         if (lexer.hasComment()) {
             queryBlock.setCommentsAfterFrom(lexer.readAndResetComments());
         }
@@ -1329,7 +1327,7 @@ public class SQLSelectParser extends SQLParser {
                 expr = this.exprParser.name();
                 break;
             default:
-                expr = expr();
+                expr = exprParser.expr();
                 break;
         }
 
@@ -2235,7 +2233,10 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token == Token.COMMA) {
                 mark = lexer.mark();
                 lexer.nextToken();
-                continue;
+                if (lexer.token != Token.LPAREN) {
+                    continue;
+                }
+                lexer.reset(mark);
             }
             break;
         }

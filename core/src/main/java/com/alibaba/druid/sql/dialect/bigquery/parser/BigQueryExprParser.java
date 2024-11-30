@@ -100,14 +100,6 @@ public class BigQueryExprParser extends SQLExprParser {
         return super.methodRest(expr, acceptLPAREN);
     }
 
-    private SQLStructExpr struct() {
-        SQLStructExpr structExpr = new SQLStructExpr();
-        accept(Token.LPAREN);
-        aliasedItems(structExpr.getItems(), structExpr);
-        accept(Token.RPAREN);
-        return structExpr;
-    }
-
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
             parseAssignItem(column.getColProperties(), column);
@@ -366,5 +358,12 @@ public class BigQueryExprParser extends SQLExprParser {
             }
         }
         return super.nameRest(name);
+    }
+
+    @Override
+    protected SQLExpr primaryCommon(SQLExpr sqlExpr) {
+        sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+        lexer.nextToken();
+        return sqlExpr;
     }
 }

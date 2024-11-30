@@ -3025,4 +3025,18 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         return false;
     }
+
+    @Override
+    public boolean visit(SQLMergeStatement.WhenDelete x) {
+        print0(ucase ? "DELETE" : "delete");
+        if (x.isNot()) {
+            print0(ucase ? " NOT MATCHED" : " not matched");
+        }
+        SQLExpr where = x.getWhere();
+        if (where != null) {
+            print0(ucase ? " WHERE " : " where");
+            printExpr(where, parameterized);
+        }
+        return false;
+    }
 }

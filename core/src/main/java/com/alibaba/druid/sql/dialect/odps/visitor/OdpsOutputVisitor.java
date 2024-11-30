@@ -64,7 +64,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     @Override
-    public boolean visit(SQLMergeStatement.MergeUpdateClause x) {
+    public boolean visit(SQLMergeStatement.WhenUpdate x) {
         print0(ucase ? "WHEN MATCHED" : "when matched");
         this.indentCount++;
 
@@ -91,14 +91,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         printlnAndAccept(x.getItems(), ",");
         decrementIndent();
         this.indentCount--;
-
-        SQLExpr deleteWhere = x.getDeleteWhere();
-        if (deleteWhere != null) {
-            println();
-            print0(ucase ? "WHEN MATCHED AND " : "when matched and ");
-            printExpr(deleteWhere, parameterized);
-            print0(ucase ? " DELETE" : " delete");
-        }
 
         return false;
     }
@@ -144,7 +136,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         printSortedBy(x.getSortedBy());
         printIntoBuckets(x.getBuckets());
         printIntoShards(x.getShards());
-        printSelectAs(x, true);
         printRowFormat(x);
         printStoredBy(x.getStoredBy());
         printStoredAs(x);
@@ -153,6 +144,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         printTableOptions(x);
         printLifeCycle(x.getLifeCycle());
         printUsing(x);
+        printSelectAs(x, true);
         return false;
     }
 

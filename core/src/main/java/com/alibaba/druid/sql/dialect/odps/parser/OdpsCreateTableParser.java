@@ -42,6 +42,11 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
         accept(Token.CREATE);
 
+        if (lexer.nextIf(Token.OR)) {
+            accept(Token.REPLACE);
+            stmt.config(SQLCreateTableStatement.Feature.OrReplace);
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();
             stmt.setExternal(true);

@@ -23,8 +23,8 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
-import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
-import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.WhenInsert;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.WhenUpdate;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatemen
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
+import com.alibaba.druid.sql.parser.CharTypes;
 import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcUtils;
@@ -261,7 +262,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.exportTables = exportTables;
     }
 
-    public void print(char value) {
+    public final void print(char value) {
+        if (endLineComment) {
+            println();
+        }
+
+        print0(value);
+    }
+
+    protected final void print0(char value) {
         if (this.appender == null) {
             return;
         }
@@ -546,7 +555,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        print('\n');
+        print0('\n');
         lines++;
         printIndent();
         if (endLineComment) {
@@ -2427,9 +2436,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
         }
         if (x.isParenthesized()) {
-            if (endLineComment) {
-                println();
-            }
             print(')');
         }
         return false;
@@ -2639,9 +2645,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "FOR UPDATE" : "for update");
         }
         if (x.isParenthesized()) {
-            if (endLineComment) {
-                println();
-            }
             print(')');
         }
         return false;
@@ -4274,9 +4277,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (bracket) {
-            if (endLineComment) {
-                println();
-            }
             print(')');
         }
 
@@ -7094,7 +7094,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 }
 
                 printComment(comment);
-                endLineComment = lineComment;
             }
         }
     }
@@ -7127,6 +7126,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(comment.substring(1));
         } else {
             print0(comment);
+        }
+
+        char first = '\0';
+        for (int i = 0; i < comment.length(); i++) {
+            char c = comment.charAt(i);
+            if (CharTypes.isWhitespace(c)) {
+                continue;
+            }
+            first = c;
+            break;
+        }
+
+        if (first == '-' || first == '#') {
+            endLineComment = true;
         }
     }
 
@@ -8410,26 +8423,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? " ON " : " on ");
         x.getOn().accept(this);
 
-        MergeInsertClause insert = x.getInsertClause();
-        MergeUpdateClause update = x.getUpdateClause();
-        if (x.isInsertClauseFirst()) {
-            if (insert != null) {
-                println();
-                insert.accept(this);
-            }
-            if (update != null) {
-                println();
-                update.accept(this);
-            }
-        } else {
-            if (update != null) {
-                println();
-                update.accept(this);
-            }
-            if (insert != null) {
-                println();
-                insert.accept(this);
-            }
+        for (SQLMergeStatement.When when : x.getWhens()) {
+            println();
+            when.accept(this);
         }
 
         SQLErrorLoggingClause errorLogging = x.getErrorLoggingClause();
@@ -8442,12 +8438,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
-    public boolean visit(MergeUpdateClause x) {
-        if (x.isDelete()) {
-            print0(ucase ? "WHEN MATCHED THEN DELETE" : "when matched then delete");
-            return false;
-        }
-        println(ucase ? "WHEN MATCHED THEN UPDATE" : "when matched then update");
+    public boolean visit(WhenUpdate x) {
+        print0(ucase ? "WHEN MATCHED THEN UPDATE" : "when matched then update");
+        println();
         incrementIndent();
         print(ucase ? "SET " : "set ");
         printlnAndAccept(x.getItems(), ",");
@@ -8460,21 +8453,40 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printExpr(where, parameterized);
         }
 
-        SQLExpr deleteWhere = x.getDeleteWhere();
-        if (deleteWhere != null) {
-            this.indentCount++;
-            println();
-            print0(ucase ? "DELETE WHERE " : "delete where ");
-            printExpr(deleteWhere, parameterized);
-            this.indentCount--;
-        }
-
         return false;
     }
 
     @Override
-    public boolean visit(MergeInsertClause x) {
-        print0(ucase ? "WHEN NOT MATCHED THEN INSERT" : "when not matched then insert");
+    public boolean visit(SQLMergeStatement.WhenDelete x) {
+        print0(ucase ? "WHEN" : "when");
+        if (x.isNot()) {
+            print0(ucase ? " NOT" : " not");
+        }
+        print0(ucase ? " MATCHED" : " matched");
+        SQLName by = x.getBy();
+        if (by != null) {
+            print0(ucase ? " BY " : " by ");
+            by.accept(this);
+        }
+
+        SQLExpr where = x.getWhere();
+        if (where != null) {
+            print0(ucase ? " AND " : " and ");
+            printExpr(where, parameterized);
+        }
+        print0(ucase ? " THEN DELETE" : " then delete");
+        return false;
+    }
+
+    @Override
+    public boolean visit(WhenInsert x) {
+        print0(ucase ? "WHEN NOT MATCHED" : "when not matched");
+        SQLName by = x.getBy();
+        if (by != null) {
+            print0(ucase ? " BY " : " by ");
+            by.accept(this);
+        }
+        print0(ucase ? " THEN INSERT" : " then insert");
         if (x.getColumns().size() > 0) {
             printAndAccept(" (", ")", x.getColumns(), ", ", 5);
         }
@@ -9023,9 +9035,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     : printStatementAfterSemi.booleanValue();
 
             if (printSemi) {
-                if (endLineComment) {
-                    println();
-                }
                 print(';');
             }
         }

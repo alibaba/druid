@@ -122,6 +122,29 @@ public class BigQueryLexer extends Lexer {
         }
     }
 
+    public final void nextTokenFullName() {
+        nextToken();
+    }
+
+    @Override
+    public boolean nextIf(Token token) {
+        if (this.token == token) {
+            boolean setFeature = token == Token.DELETE
+                    || token == Token.FROM
+                    || token == Token.INTO
+                    || token == Token.JOIN;
+            if (setFeature) {
+                dialectFeature.configFeature(DialectFeature.LexerFeature.ScanSubAsIdentifier);
+            }
+            nextToken();
+            if (setFeature) {
+                dialectFeature.configFeature(DialectFeature.LexerFeature.ScanSubAsIdentifier, false);
+            }
+            return true;
+        }
+        return false;
+    }
+
     public final void scanIdentifier() {
         scanIdentifier0();
     }

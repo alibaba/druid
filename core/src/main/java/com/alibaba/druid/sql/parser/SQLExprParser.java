@@ -6428,4 +6428,12 @@ public class SQLExprParser extends SQLParser {
 
         return null;
     }
+
+    protected SQLStructExpr struct() {
+        SQLStructExpr structExpr = new SQLStructExpr();
+        accept(Token.LPAREN);
+        aliasedItems(structExpr.getItems(), structExpr);
+        accept(Token.RPAREN);
+        return structExpr;
+    }
 }

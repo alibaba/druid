@@ -224,10 +224,13 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         return false;
     }
 
-    public boolean visit(SQLMergeStatement.MergeUpdateClause x) {
-        print0(ucase ? "WHEN MATCHED " : "when matched ");
+    public boolean visit(SQLMergeStatement.WhenUpdate x) {
+        print0(ucase ? "WHEN" : "when");
+        if (x.isNot()) {
+            print0(ucase ? " NOT" : " not");
+        }
+        print0(ucase ? " MATCHED " : " matched ");
         this.indentCount++;
-
         SQLExpr where = x.getWhere();
         if (where != null) {
             this.indentCount++;
@@ -246,14 +249,6 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         print0(ucase ? "UPDATE SET " : "update set ");
         printAndAccept(x.getItems(), ", ");
         this.indentCount--;
-
-        SQLExpr deleteWhere = x.getDeleteWhere();
-        if (deleteWhere != null) {
-            println();
-            print0(ucase ? "WHEN MATCHED AND " : "when matched and ");
-            printExpr(deleteWhere, parameterized);
-            print0(ucase ? " DELETE" : " delete");
-        }
 
         return false;
     }

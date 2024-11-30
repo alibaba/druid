@@ -298,7 +298,7 @@ public class Lexer {
         return token;
     }
 
-    public final boolean nextIf(Token token) {
+    public boolean nextIf(Token token) {
         if (this.token == token) {
             nextToken();
             return true;

@@ -355,7 +355,12 @@ public class HiveExprParser extends SQLExprParser {
     }
 
     protected SQLExpr parseInterval() {
+        String str = lexer.stringVal();
         accept(Token.INTERVAL);
+        if (lexer.token() == Token.AS || lexer.token() == Token.RPAREN) {
+            return new SQLIdentifierExpr(str);
+        }
+
         SQLExpr value = expr();
 
         if (value instanceof SQLIntervalExpr) {
