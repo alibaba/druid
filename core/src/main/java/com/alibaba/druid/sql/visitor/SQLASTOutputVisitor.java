@@ -12200,7 +12200,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             for (int i = 0; i < paramSize; ++i) {
                 if (i != 0) {
-                    print0(", ");
+                    print(',');
                     println();
                 }
                 SQLParameter param = x.getParameters().get(i);
@@ -12225,7 +12225,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         println();
         println(ucase ? "AS" : "as");
-        println();
         block.accept(this);
     }
 

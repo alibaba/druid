@@ -71,8 +71,8 @@ public class OracleCreateFunctionTest_4 extends OracleTest {
         assertEquals(1, statementList.size());
 
         assertEquals("FUNCTION SPLITSTR (\n" +
-                        "\tSTR IN CLOB, \n" +
-                        "\tI IN NUMBER := 0, \n" +
+                        "\tSTR IN CLOB,\n" +
+                        "\tI IN NUMBER := 0,\n" +
                         "\tSEP IN VARCHAR2 := ','\n" +
                         ")\n" +
                         "RETURN VARCHAR2DETERMINISTIC \n" +
