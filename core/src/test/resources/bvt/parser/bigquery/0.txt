@@ -1,3 +1,68 @@
+WITH Races AS (
+ SELECT "800M" AS race,
+   [STRUCT("Rudisha" AS name, [23.4, 26.3, 26.4, 26.1] AS laps),
+    STRUCT("Makhloufi" AS name, [24.5, 25.4, 26.6, 26.1] AS laps),
+    STRUCT("Murphy" AS name, [23.9, 26.0, 27.0, 26.0] AS laps),
+    STRUCT("Bosse" AS name, [23.6, 26.2, 26.5, 27.1] AS laps),
+    STRUCT("Rotich" AS name, [24.7, 25.6, 26.9, 26.4] AS laps),
+    STRUCT("Lewandowski" AS name, [25.0, 25.7, 26.3, 27.2] AS laps),
+    STRUCT("Kipketer" AS name, [23.2, 26.1, 27.3, 29.4] AS laps),
+    STRUCT("Berian" AS name, [23.7, 26.1, 27.0, 29.3] AS laps),
+    STRUCT("Nathan" AS name, ARRAY<FLOAT64>[] AS laps),
+    STRUCT("David" AS name, NULL AS laps)]
+    AS participants)
+SELECT
+  name, sum(duration) AS finish_time
+FROM Races CROSS JOIN Races.participants LEFT JOIN participants.laps AS duration
+GROUP BY name;
+--------------------
+WITH Races AS (
+		SELECT '800M' AS race, [STRUCT('Rudisha' AS name, [23.4, 26.3, 26.4, 26.1] AS laps),
+			STRUCT('Makhloufi' AS name, [24.5, 25.4, 26.6, 26.1] AS laps),
+			STRUCT('Murphy' AS name, [23.9, 26.0, 27.0, 26.0] AS laps),
+			STRUCT('Bosse' AS name, [23.6, 26.2, 26.5, 27.1] AS laps),
+			STRUCT('Rotich' AS name, [24.7, 25.6, 26.9, 26.4] AS laps),
+			STRUCT('Lewandowski' AS name, [25.0, 25.7, 26.3, 27.2] AS laps),
+			STRUCT('Kipketer' AS name, [23.2, 26.1, 27.3, 29.4] AS laps),
+			STRUCT('Berian' AS name, [23.7, 26.1, 27.0, 29.3] AS laps),
+			STRUCT('Nathan' AS name, ARRAY < FLOAT64 > [] AS laps),
+			STRUCT('David' AS name, NULL AS laps)] AS participants
+	)
+SELECT name, sum(duration) AS finish_time
+FROM Races
+	CROSS JOIN Races.participants
+	LEFT JOIN participants.laps duration
+GROUP BY name;
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+  some_numbers,
+  some_numbers[0] AS index_0,
+  some_numbers[OFFSET(1)] AS offset_1,
+  some_numbers[ORDINAL(1)] AS ordinal_1
+FROM Sequences
+--------------------
+SELECT some_numbers, some_numbers[0] AS index_0, some_numbers[OFFSET(1)] AS offset_1, some_numbers[ORDINAL(1)] AS ordinal_1
+FROM Sequences
+------------------------------------------------------------------------------------------------------------------------
+WITH
+  Sequences AS (
+    SELECT [0, 1, 1, 2, 3, 5] AS some_numbers UNION ALL
+    SELECT [2, 4, 8, 16, 32] UNION ALL
+    SELECT [5, 10]
+  )
+SELECT * FROM Sequences
+--------------------
+WITH Sequences AS (
+		SELECT [0, 1, 1, 2, 3,
+			5] AS some_numbers
+		UNION ALL
+		SELECT [2, 4, 8, 16, 32]
+		UNION ALL
+		SELECT [5, 10]
+	)
+SELECT *
+FROM Sequences
+------------------------------------------------------------------------------------------------------------------------
 merge into t1 as tgt
 using
 (select * from base) as src
@@ -306,7 +371,8 @@ SELECT ARRAY_AGG(x LIMIT 5) AS array_agg
 FROM UNNEST([2, 1, -2, 3, -2, 1, 2]) AS x;
 --------------------
 SELECT ARRAY_AGG(x LIMIT 5) AS array_agg
-FROM UNNEST([2, 1, -2, 3, -2, 1, 2]) x;
+FROM UNNEST([2, 1, -2, 3, -2,
+	1, 2]) x;
 ------------------------------------------------------------------------------------------------------------------------
 ASSERT (
   (SELECT COUNT(*) > 5 FROM UNNEST([1, 2, 3, 4, 5, 6]))
@@ -314,7 +380,8 @@ ASSERT (
 --------------------
 ASSERT (
 	SELECT COUNT(*) > 5
-	FROM UNNEST([1, 2, 3, 4, 5, 6]))
+	FROM UNNEST([1, 2, 3, 4, 5,
+		6]))
 AS '''Table must contain more than 5 rows.''';
 ------------------------------------------------------------------------------------------------------------------------
 SELECT f1

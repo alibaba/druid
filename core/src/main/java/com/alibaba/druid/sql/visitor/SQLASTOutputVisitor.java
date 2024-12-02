@@ -4867,8 +4867,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLUnnestTableSource x) {
         print0(ucase ? "UNNEST(" : "unnest(");
+        incrementIndent();
         List<SQLExpr> items = x.getItems();
         printAndAccept(items, ", ");
+        decrementIndent();
         print(')');
 
         if (x.isOrdinality()) {
@@ -7499,7 +7501,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         boolean brace = arrayValue && (dbType == DbType.hive || dbType == DbType.spark || dbType == DbType.odps);
 
         print(brace ? '(' : '[');
-        printAndAccept(x.getValues(), ", ");
+        List<SQLExpr> values = x.getValues();
+        int size = values.size();
+        for (int i = 0, columnIndex = 0; i < size; i++, columnIndex++) {
+            SQLExpr value = values.get(i);
+            if (i != 0) {
+                print(',');
+                if (i % 5 == 0 || value instanceof SQLStructExpr) {
+                    println();
+                    columnIndex = 0;
+                } else {
+                    print0(' ');
+                }
+            }
+            printExpr(value);
+        }
         print(brace ? ')' : ']');
         return false;
     }
