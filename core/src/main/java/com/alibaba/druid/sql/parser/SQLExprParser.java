@@ -376,38 +376,6 @@ public class SQLExprParser extends SQLParser {
         }
     }
 
-    public SQLIntervalUnit parseIntervalUnit() {
-        if (lexer.token() == Token.IDENTIFIER) {
-            SQLIntervalUnit unit = SQLIntervalUnit.of(lexer.stringVal());
-            if (unit != null) {
-                lexer.nextToken();
-            }
-
-            if (unit == SQLIntervalUnit.YEAR && lexer.nextIf(Token.TO)) {
-                if (lexer.nextIfIdentifier(FnvHash.Constants.MONTH)) {
-                    unit = SQLIntervalUnit.YEAR_TO_MONTH;
-                } else {
-                    throw new ParserException("parse interval unit error, " + lexer.info());
-                }
-            } else if (unit == SQLIntervalUnit.DAY && lexer.nextIf(Token.TO)) {
-                if (lexer.nextIfIdentifier(FnvHash.Constants.SECOND)) {
-                    unit = SQLIntervalUnit.DAY_HOUR;
-                } else {
-                    throw new ParserException("parse interval unit error, " + lexer.info());
-                }
-            } else if (unit == SQLIntervalUnit.HOUR && lexer.nextIf(Token.TO)) {
-                if (lexer.nextIfIdentifier(FnvHash.Constants.SECOND)) {
-                    unit = SQLIntervalUnit.HOUR_SECOND;
-                } else {
-                    throw new ParserException("parse interval unit error, " + lexer.info());
-                }
-            }
-
-            return unit;
-        }
-        return null;
-    }
-
     public void parseAssignItems(List<? super SQLAssignItem> items, SQLObject parent, boolean variant) {
         for (; ; ) {
             SQLAssignItem item = parseAssignItem(variant, parent);
