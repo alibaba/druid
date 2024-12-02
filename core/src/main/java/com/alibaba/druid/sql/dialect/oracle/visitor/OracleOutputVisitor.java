@@ -139,7 +139,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleDeleteStatement x) {
         print0(ucase ? "DELETE " : "delete ");
 
-        SQLTableSource tableSource = x.getTableSource();
         if (x.getHints().size() > 0) {
             printAndAccept(x.getHints(), ", ");
             print(' ');

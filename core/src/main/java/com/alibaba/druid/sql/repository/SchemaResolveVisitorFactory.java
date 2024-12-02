@@ -1016,6 +1016,13 @@ class SchemaResolveVisitorFactory {
             visitor.visit(query);
         }
 
+        if (x instanceof OracleInsertStatement) {
+            SQLObject returning = ((OracleInsertStatement) x).getReturning();
+            if (returning != null) {
+                returning.accept(visitor);
+            }
+        }
+
         visitor.popContext();
     }
 
