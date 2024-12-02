@@ -231,11 +231,6 @@ public class HiveExprParser extends SQLExprParser {
                     lexer.nextToken();
                     Number num = ((SQLNumericLiteralExpr) expr).getNumber();
                     expr = new SQLDecimalExpr(num.toString());
-                } else if (lexer.token() == Token.IDENTIFIER) { // hortonworks
-                    SQLIntervalUnit unit = parseIntervalUnit();
-                    if (unit != null) {
-                        expr = new SQLIntervalExpr(expr, unit);
-                    }
                 }
                 break;
             default:
@@ -382,6 +377,16 @@ public class HiveExprParser extends SQLExprParser {
             lexer.nextToken();
             acceptIdentifier("MONTH");
             intervalUnit = SQLIntervalUnit.YEAR_TO_MONTH;
+        }
+        if (intervalUnit == SQLIntervalUnit.YEAR && lexer.nextIf(Token.TO)) {
+            acceptIdentifier(FnvHash.Constants.MONTH);
+            intervalUnit = SQLIntervalUnit.YEAR_TO_MONTH;
+        } else if (intervalUnit == SQLIntervalUnit.DAY && lexer.nextIf(Token.TO)) {
+            acceptIdentifier(FnvHash.Constants.SECOND);
+            intervalUnit = SQLIntervalUnit.DAY_HOUR;
+        } else if (intervalUnit == SQLIntervalUnit.HOUR && lexer.nextIf(Token.TO)) {
+            acceptIdentifier(FnvHash.Constants.SECOND);
+            intervalUnit = SQLIntervalUnit.HOUR_SECOND;
         }
         intervalExpr.setUnit(intervalUnit);
 
