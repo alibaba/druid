@@ -371,7 +371,7 @@ public class HiveExprParser extends SQLExprParser {
 
         SQLIntervalExpr intervalExpr = new SQLIntervalExpr();
         intervalExpr.setValue(value);
-        SQLIntervalUnit intervalUnit = SQLIntervalUnit.valueOf(unit.toUpperCase());
+        SQLIntervalUnit intervalUnit = SQLIntervalUnit.of(unit.toUpperCase());
         if (intervalUnit == SQLIntervalUnit.YEAR
                 && lexer.token() == Token.TO) {
             lexer.nextToken();

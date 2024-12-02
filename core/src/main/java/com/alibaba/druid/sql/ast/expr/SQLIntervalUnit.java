@@ -24,7 +24,6 @@ public enum SQLIntervalUnit {
     MONTH,
     WEEK,
     DAY,
-    DAYS,
     DAY_HOUR,
     DAY_MINUTE,
     DAY_SECOND,
