@@ -68,6 +68,12 @@ public class BigQueryCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
+            if (lexer.nextIf(Token.COMMENT)) {
+                SQLExpr comment = this.exprParser.expr();
+                stmt.setComment(comment);
+                continue;
+            }
+
             if (lexer.nextIfIdentifier(FnvHash.Constants.LIFECYCLE)) {
                 lexer.nextIf(Token.EQ);
                 stmt.setLifeCycle(this.exprParser.primary());

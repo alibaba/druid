@@ -207,6 +207,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case FETCH:
                     case OVER:
                     case DATABASE:
+                    case FUNCTION:
                         column = this.exprParser.parseColumn(stmt);
                         break;
                     default:
