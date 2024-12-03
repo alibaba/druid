@@ -1,0 +1,207 @@
+UPDATE `p-gojek-data-archive.integration.fd_gobluebird_booking` booking
+SET 
+  booking.additional_outstanding_balance_amt = oba.additional_outstanding_balance_amt,
+  booking.repayment_outstanding_balance_amt = oba.repayment_outstanding_balance_amt,
+  booking.customer_final_pay_in_gopay = oba.customer_final_pay_in_gopay,
+  booking.customer_final_pay = oba.customer_final_pay,
+  booking.repayment_timestamp = oba.repayment_timestamp,
+  booking.previous_order_no = oba.order_number_oba,
+  booking.repayment_option_type = oba.payment_option_type
+FROM 
+(
+ SELECT
+    booking_time,
+    failed_transaction_order_no,
+  from 
+  (
+    with 
+    booking_streaming as
+    ( 
+      SELECT 
+        booking.order_number,
+        booking.status, 
+      FROM `data-gojek-id-raw-internal.mainstream.go_blue_bird_booking_log` booking
+      LEFT JOIN
+        UNNEST(outstanding_balance_order) oba
+      where 
+        lower(booking.status) = 'completed'
+        and date(booking.event_timestamp) >= date_SUB('2024-10-01', interval 1 month)
+    ),
+    oba_payment_method as (
+    SELECT 
+      payment_option_type, 
+      order_number, 
+      transaction_status
+    FROM 
+      (    
+        SELECT 
+          event_timestamp, 
+          payment_option_type, 
+          order_number, 
+          transaction_status,
+          ROW_NUMBER() OVER (PARTITION BY order_number ORDER BY event_timestamp DESC) rn
+        FROM 
+          `data-gojek-id-standardized.mainstream.customer_payment_log` 
+        where 
+          country_code = 'ID'
+          and date(event_timestamp,'Asia/Jakarta')  >= '2024-10-01'
+      )
+    where 
+      rn = 1
+      and transaction_status = "SUCCESS"
+    ),  
+    all_data as 
+    (
+      select 
+        case 
+          when oba_transaction.order_number is null 
+            then booking.booking_time --pay without order
+          else oba_transaction.booking_creation_time --pay with order
+        end as booking_time,
+        case
+          when oba_transaction.order_number is null 
+            then failed_transaction.order_no --pay without order
+          else oba_transaction.order_number --pay with order
+        end as failed_transaction_order_no,
+        case 
+          when oba_transaction.order_number_oba is null 
+            then failed_transaction.order_no --pay without order
+          else oba_transaction.order_number_oba --pay with order
+        end as order_number_oba,
+        oba_transaction.order_number as repayment_order_number,
+        failed_transaction.settlement_id,
+        case 
+          when --pay without order
+            failed_transaction.settlement_id is not null 
+            and oba_transaction.order_number is null
+            then cast(failed_transaction.amount as float64)
+          when --pay with order
+            failed_transaction.settlement_id is not null 
+            and oba_transaction.order_number is not null
+            then NULL
+          when --unpaid
+            failed_transaction.settlement_id is null 
+            then cast(failed_transaction.amount as float64)
+          else NULL
+        end as additional_outstanding_balance_amt,
+        case 
+          when failed_transaction.settlement_id is not null
+            then cast(failed_transaction.amount as float64)
+          else NULL
+        end as repayment_outstanding_balance_amt, 
+        case
+          when --pay gopay
+            oba_transaction.order_number_oba is not null
+            then oba_transaction.cbv_amount-coalesce(oba_transaction.oba_amount,amount)
+          when --pay cash
+            oba_transaction.order_number_oba is null
+            then oba_cash_transaction.cbv_amount-coalesce(oba_cash_transaction.oba_amount,amount) 
+        end as customer_final_pay_in_gopay,
+        customer_final_pay_in_cash,
+        case 
+          when --pay without order
+            failed_transaction.settlement_id is not null 
+            and oba_transaction.order_number is null
+            then failed_transaction.updated_time
+          when --pay with order
+            failed_transaction.settlement_id is not null 
+            and oba_transaction.order_number is NOT null
+            then oba_transaction.booking_creation_time
+          else NULL
+        end as repayment_timestamp,
+        payment_option_type
+      FROM 
+        `p-gojek-data-archive.integration.fd_gobluebird_booking` booking
+      join 
+        (
+          SELECT 
+            _PARTITIONDATE dt,
+            customer_id,
+            transaction_type,
+            order_no,
+            transaction_id,
+            amount,
+            country_code,
+            settlement_id,
+            updated_time,
+            created_time
+          FROM 
+            `p-gojek-data-archive.staging.fd_failed_transaction` 
+          where 
+            country_code = 'ID'
+            and date(updated_time,'Asia/Jakarta') >= '2024-10-01'
+        ) failed_transaction on booking.order_no = failed_transaction.order_no
+      left join booking_streaming oba_transaction on oba_transaction.order_number_oba = failed_transaction.order_no
+      left join booking_streaming oba_cash_transaction on oba_cash_transaction.order_number = failed_transaction.order_no
+      left join oba_payment_method oba_payment_method on oba_payment_method.order_number = failed_transaction.order_no
+
+    ),
+
+    diff as 
+    (
+      select 
+        * 
+      from 
+        all_data
+      where 
+        failed_transaction_order_no != order_number_oba
+    )
+
+    select 
+      * 
+    from 
+      all_data
+
+    union all
+
+    select 
+      booking_time,
+      order_number_oba as failed_transaction_order_no,
+      null as order_number_oba,
+      null as repayment_order_number,
+      settlement_id,
+      repayment_outstanding_balance_amt as additional_outstanding_balance_amt,
+      null as repayment_outstanding_balance_amt,
+      customer_final_pay_in_gopay,
+      customer_final_pay_in_cash,
+      null as repayment_timestamp,
+      payment_option_type
+    from 
+      diff
+  ) GROUP BY 1,2,4,11,12
+) oba
+WHERE 
+  booking.order_no = oba.failed_transaction_order_no
+--------------------
+UPDATE `p-gojek-data-archive`.integration.fd_gobluebird_booking booking
+SET booking.additional_outstanding_balance_amt = oba.additional_outstanding_balance_amt, booking.repayment_outstanding_balance_amt = oba.repayment_outstanding_balance_amt, booking.customer_final_pay_in_gopay = oba.customer_final_pay_in_gopay, booking.customer_final_pay = oba.customer_final_pay, booking.repayment_timestamp = oba.repayment_timestamp, booking.previous_order_no = oba.order_number_oba, booking.repayment_option_type = oba.payment_option_type
+FROM (
+		SELECT booking_time, failed_transaction_order_no
+		FROM (
+			SELECT *
+			FROM all_data
+			UNION ALL
+			SELECT booking_time, order_number_oba AS failed_transaction_order_no, NULL AS order_number_oba, NULL AS repayment_order_number, settlement_id
+				, repayment_outstanding_balance_amt AS additional_outstanding_balance_amt, NULL AS repayment_outstanding_balance_amt, customer_final_pay_in_gopay, customer_final_pay_in_cash, NULL AS repayment_timestamp
+				, payment_option_type
+			FROM diff
+		)
+		GROUP BY 1, 2, 4, 11, 12
+	) oba
+WHERE booking.order_no = oba.failed_transaction_order_no
+------------------------------------------------------------------------------------------------------------------------
+UPDATE `p-gojek-data-archive.integration.fd_gobluebird_booking` booking
+SET 
+  booking.additional_outstanding_balance_amt = oba.additional_outstanding_balance_amt,
+  booking.repayment_outstanding_balance_amt = oba.repayment_outstanding_balance_amt,
+  booking.customer_final_pay_in_gopay = oba.customer_final_pay_in_gopay,
+  booking.customer_final_pay = oba.customer_final_pay,
+  booking.repayment_timestamp = oba.repayment_timestamp,
+  booking.previous_order_no = oba.order_number_oba,
+  booking.repayment_option_type = oba.payment_option_type
+FROM 
+a.b.c
+--------------------
+UPDATE `p-gojek-data-archive`.integration.fd_gobluebird_booking booking
+SET booking.additional_outstanding_balance_amt = oba.additional_outstanding_balance_amt, booking.repayment_outstanding_balance_amt = oba.repayment_outstanding_balance_amt, booking.customer_final_pay_in_gopay = oba.customer_final_pay_in_gopay, booking.customer_final_pay = oba.customer_final_pay, booking.repayment_timestamp = oba.repayment_timestamp, booking.previous_order_no = oba.order_number_oba, booking.repayment_option_type = oba.payment_option_type
+FROM a.b.c

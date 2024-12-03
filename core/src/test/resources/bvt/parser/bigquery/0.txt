@@ -201,6 +201,7 @@ WHERE
 --------------------
 UPDATE `p1` main
 SET a = false, b = dup.x
+FROM tp dup
 WHERE main.x = dup.u;
 ------------------------------------------------------------------------------------------------------------------------
 SELECT STRUCT<x int64, y string>(1, t.str_col)
