@@ -3837,6 +3837,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(item);
         }
 
+        SQLTableSource from = x.getFrom();
+        if (from instanceof SQLTableSourceImpl) {
+            println();
+            indentCount++;
+            print0(ucase ? "FROM " : "from ");
+            if (from instanceof SQLSubqueryTableSource) {
+                visit((SQLSubqueryTableSource) from);
+            } else if (from instanceof SQLExprTableSource) {
+                visit((SQLExprTableSource) from);
+            }
+            indentCount--;
+        }
+
         SQLExpr where = x.getWhere();
         if (where != null) {
             println();
