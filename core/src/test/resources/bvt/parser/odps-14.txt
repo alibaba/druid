@@ -32,13 +32,13 @@ SELECT a -- 2 select注释
 FROM tmp t1 -- 8 空白注释 ok
 -- 9 空白注释 ok
 GROUP BY -- 10 空白注释 ok
-	a, 
-	b, 
-	c, 
+	a,
+	b,
+	c,
 	d -- 11 空白注释 ok
 	-- 12 空白注释 ok
-	, 
-	e, 
+	,
+	e,
 	f -- 13 空白注释 ok
-	, 
+	,
 	GROUPING SETS ((a, b, c), (b, c, d), (d, e, f))

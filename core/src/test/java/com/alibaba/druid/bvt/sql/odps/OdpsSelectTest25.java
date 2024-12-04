@@ -77,13 +77,13 @@ public class OdpsSelectTest25 extends TestCase {
                 "\t) t1\n" +
                 "\t\tLATERAL VIEW EXPLODE(t1.os) t2 AS os\n" +
                 "\t\tLATERAL VIEW EXPLODE(t1.ver) t3 AS ver\n" +
-                "\tGROUP BY t1.uid, \n" +
-                "\t\tt2.os, \n" +
+                "\tGROUP BY t1.uid,\n" +
+                "\t\tt2.os,\n" +
                 "\t\tt3.ver\n" +
                 ") tt\n" +
                 "WHERE NOT (tt.os = 'all'\n" +
                 "AND tt.ver <> 'all')\n" +
-                "GROUP BY tt.os, \n" +
+                "GROUP BY tt.os,\n" +
                 "\ttt.ver;", SQLUtils.formatOdps(sql));
 
         assertEquals("insert overwrite table ids_openapp_dau_d partition (dt='${lastday}')\n" +
@@ -106,13 +106,13 @@ public class OdpsSelectTest25 extends TestCase {
                 "\t) t1\n" +
                 "\t\tlateral view explode(t1.os) t2 as os\n" +
                 "\t\tlateral view explode(t1.ver) t3 as ver\n" +
-                "\tgroup by t1.uid, \n" +
-                "\t\tt2.os, \n" +
+                "\tgroup by t1.uid,\n" +
+                "\t\tt2.os,\n" +
                 "\t\tt3.ver\n" +
                 ") tt\n" +
                 "where not (tt.os = 'all'\n" +
                 "and tt.ver <> 'all')\n" +
-                "group by tt.os, \n" +
+                "group by tt.os,\n" +
                 "\ttt.ver;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);

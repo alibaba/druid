@@ -71,9 +71,9 @@ public class OdpsSelectTest22 extends TestCase {
                 "\t\tWHERE ds = 20170627\n" +
                 "\t\t\tAND hh = 0\n" +
                 "\t\t\tAND mm = 0\n" +
-                "\t\tGROUP BY item_id, \n" +
-                "\t\t\tstr_to_map(args, ',', '=')['sid'], \n" +
-                "\t\t\tpv_id, \n" +
+                "\t\tGROUP BY item_id,\n" +
+                "\t\t\tstr_to_map(args, ',', '=')['sid'],\n" +
+                "\t\t\tpv_id,\n" +
                 "\t\t\tsplit_part(str_to_map(args, ',', '=')['scm'], '.', 2)\n" +
                 "\t) UT\n" +
                 "\tLEFT OUTER JOIN (\n" +
@@ -83,7 +83,7 @@ public class OdpsSelectTest22 extends TestCase {
                 "\t\tWHERE ds = 20170627\n" +
                 "\t\t\tAND hh = 0\n" +
                 "\t\t\tAND mm = 0\n" +
-                "\t\tGROUP BY pv_id, \n" +
+                "\t\tGROUP BY pv_id,\n" +
                 "\t\t\titem_it\n" +
                 "\t) CLK\n" +
                 "\tON UT.ad_session = CLK.ad_session\n" +
@@ -110,9 +110,9 @@ public class OdpsSelectTest22 extends TestCase {
                 "\t\twhere ds = 20170627\n" +
                 "\t\t\tand hh = 0\n" +
                 "\t\t\tand mm = 0\n" +
-                "\t\tgroup by item_id, \n" +
-                "\t\t\tstr_to_map(args, ',', '=')['sid'], \n" +
-                "\t\t\tpv_id, \n" +
+                "\t\tgroup by item_id,\n" +
+                "\t\t\tstr_to_map(args, ',', '=')['sid'],\n" +
+                "\t\t\tpv_id,\n" +
                 "\t\t\tsplit_part(str_to_map(args, ',', '=')['scm'], '.', 2)\n" +
                 "\t) UT\n" +
                 "\tleft outer join (\n" +
@@ -122,7 +122,7 @@ public class OdpsSelectTest22 extends TestCase {
                 "\t\twhere ds = 20170627\n" +
                 "\t\t\tand hh = 0\n" +
                 "\t\t\tand mm = 0\n" +
-                "\t\tgroup by pv_id, \n" +
+                "\t\tgroup by pv_id,\n" +
                 "\t\t\titem_it\n" +
                 "\t) CLK\n" +
                 "\ton UT.ad_session = CLK.ad_session\n" +
