@@ -1,3 +1,9 @@
+select PARSE_DATE("%Y%m%d", date.date_id) as date, week.week_start_date
+ from t1
+--------------------
+SELECT PARSE_DATE('%Y%m%d', date.date_id) AS date, week.week_start_date
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
 WITH Races AS (
  SELECT "800M" AS race,
    [STRUCT("Rudisha" AS name, [23.4, 26.3, 26.4, 26.1] AS laps),
@@ -410,7 +416,7 @@ SELECT 1;
 ------------------------------------------------------------------------------------------------------------------------
 select *
 from t
-where TIMESTAMP.abc.created_timestamp) >= area.effective_timestamp
+where TIMESTAMP(abc.created_timestamp) >= area.effective_timestamp
 --------------------
 SELECT *
 FROM t

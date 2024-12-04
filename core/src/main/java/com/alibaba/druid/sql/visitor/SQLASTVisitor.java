@@ -2763,4 +2763,22 @@ public interface SQLASTVisitor {
             }
         };
     }
+
+    static SQLASTVisitor ofPropertyExpr(Consumer<SQLPropertyExpr> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLPropertyExpr x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofIdentifier(Consumer<SQLIdentifierExpr> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLIdentifierExpr x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
 }

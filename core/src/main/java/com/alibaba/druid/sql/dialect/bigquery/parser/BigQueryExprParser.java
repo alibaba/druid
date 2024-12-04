@@ -229,40 +229,6 @@ public class BigQueryExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (expr instanceof SQLPropertyExpr) {
-            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
-            SQLExpr owner = propertyExpr.getOwner();
-            if (owner instanceof SQLIdentifierExpr) {
-                SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) owner;
-                long hashCode64 = identifierExpr.hashCode64();
-                if (hashCode64 == FnvHash.Constants.DATE
-                        || hashCode64 == FnvHash.Constants.DATETIME
-                        || hashCode64 == FnvHash.Constants.TIMESTAMP
-                ) {
-                    String name = null;
-                    if (lexer.nextIf(Token.DOT)) {
-                        name = lexer.stringVal();
-                        lexer.nextToken();
-                    }
-
-                    SQLExpr timeZone = null;
-                    if (lexer.nextIf(Token.COMMA)) {
-                        timeZone = this.primary();
-                    }
-                    accept(Token.RPAREN);
-                    SQLMethodInvokeExpr func = new SQLMethodInvokeExpr((SQLIdentifierExpr) owner);
-                    func.addArgument(
-                            name != null
-                                    ? new SQLPropertyExpr(new SQLIdentifierExpr(propertyExpr.getName()), name)
-                                    : new SQLIdentifierExpr(identifierExpr.getName())
-                    );
-                    if (timeZone != null) {
-                        func.addArgument(timeZone);
-                    }
-                    expr = func;
-                }
-            }
-        }
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
             String ident = identifierExpr.getName();
