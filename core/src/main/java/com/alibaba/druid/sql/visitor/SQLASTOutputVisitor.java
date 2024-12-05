@@ -9544,6 +9544,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLAtTimeZoneExpr x) {
+        x.getExpr().accept(this);
+        SQLExpr timeZone = x.getTimeZone();
+
+        if (timeZone instanceof SQLIdentifierExpr) {
+            if (((SQLIdentifierExpr) timeZone).getName().equalsIgnoreCase("LOCAL")) {
+                print0(ucase ? " AT LOCAL" : " at local");
+                return false;
+            }
+        }
+
+        print0(ucase ? " AT TIME ZONE " : " at time zone ");
+        timeZone.accept(this);
+
+        return false;
+    }
+
     ///////////// for odps & hive
     @Override
     public boolean visit(SQLLateralViewTableSource x) {

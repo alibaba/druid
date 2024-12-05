@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCharExpr;
-import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryDateTimeExpr;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -38,7 +37,8 @@ public class BigQueryExprParser extends SQLExprParser {
                 "MIN",
                 "MIN_BY",
                 "STRING_AGG",
-                "SUM"
+                "SUM",
+                "APPROX_QUANTILES"
         };
         AGGREGATE_FUNCTIONS_CODES = fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
@@ -255,7 +255,7 @@ public class BigQueryExprParser extends SQLExprParser {
             if (lexer.nextIfIdentifier(FnvHash.Constants.TIME)) {
                 acceptIdentifier("ZONE");
                 SQLExpr timeZone = primary();
-                expr = new BigQueryDateTimeExpr(expr, timeZone);
+                expr = new SQLAtTimeZoneExpr(expr, timeZone);
             } else {
                 lexer.reset(savePoint);
             }
