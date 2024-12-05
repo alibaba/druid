@@ -251,6 +251,9 @@ public enum Token {
     ANALYZE("ANALYZE"),
     OPTIMIZE("OPTIMIZE"),
 
+    // bigquery
+    RAISE("RAISE"),
+
     // transact-sql
     TOP("TOP"),
 

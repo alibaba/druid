@@ -215,7 +215,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.EXCEPTION) {
-                OracleExceptionStatement stmt = this.parseException();
+                SQLExceptionStatement stmt = this.parseException();
                 stmt.setParent(parent);
                 if (parent instanceof SQLBlockStatement) {
                     ((SQLBlockStatement) parent).setException(stmt);
@@ -701,7 +701,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.WHEN
-                    && parent instanceof OracleExceptionStatement.Item) {
+                    && parent instanceof SQLExceptionStatement.Item) {
                 break;
             }
 
@@ -2356,31 +2356,6 @@ public class OracleStatementParser extends SQLStatementParser {
         SQLSelect subQuery = this.createSQLSelectParser().select();
         stmt.setSubQuery(subQuery);
 
-        return stmt;
-    }
-
-    private OracleExceptionStatement parseException() {
-        accept(Token.EXCEPTION);
-        OracleExceptionStatement stmt = new OracleExceptionStatement();
-
-        for (; ; ) {
-            accept(Token.WHEN);
-            OracleExceptionStatement.Item item = new OracleExceptionStatement.Item();
-            item.setWhen(this.exprParser.expr());
-            accept(Token.THEN);
-
-            this.parseStatementList(item.getStatements(), -1, item);
-
-            stmt.addItem(item);
-
-            if (lexer.token() == Token.SEMI) {
-                lexer.nextToken();
-            }
-
-            if (lexer.token() != Token.WHEN) {
-                break;
-            }
-        }
         return stmt;
     }
 

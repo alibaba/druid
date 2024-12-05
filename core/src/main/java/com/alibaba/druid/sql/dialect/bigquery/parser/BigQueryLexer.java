@@ -107,6 +107,8 @@ public class BigQueryLexer extends Lexer {
         map.put("BEGIN", Token.BEGIN);
         map.put("END", Token.END);
         map.put("TABLE", Token.TABLE);
+        map.put("EXCEPTION", Token.EXCEPTION);
+        map.put("RAISE", Token.RAISE);
 
         return new Keywords(map);
     }

@@ -122,7 +122,23 @@ public class BigQueryStatementParser extends SQLStatementParser {
             statementList.add(parseBlock());
             return true;
         }
+        if (lexer.token() == Token.RAISE) {
+            statementList.add(parseRaise());
+            return true;
+        }
         return false;
+    }
+
+    public SQLStatement parseRaise() {
+        accept(Token.RAISE);
+        SQLRaiseStatement sqlRaiseStatement = new SQLRaiseStatement();
+        if (lexer.nextIf(Token.USING)) {
+            acceptIdentifier("MESSAGE");
+            accept(Token.EQ);
+            sqlRaiseStatement.setMessage(exprParser.expr());
+        }
+
+        return sqlRaiseStatement;
     }
 
     protected SQLStatement parseAssert() {
@@ -161,8 +177,20 @@ public class BigQueryStatementParser extends SQLStatementParser {
 
     public SQLStatement parseBlock() {
         accept(Token.BEGIN);
+        if (lexer.identifierEquals("TRANSACTION") || lexer.identifierEquals("TRAN")) {
+            lexer.nextToken();
+            SQLStartTransactionStatement startTrans = new SQLStartTransactionStatement(dbType);
+            if (lexer.token() == Token.IDENTIFIER) {
+                SQLName name = this.exprParser.name();
+                startTrans.setName(name);
+            }
+            return startTrans;
+        }
         SQLBlockStatement block = new SQLBlockStatement();
-        parseStatementList(block.getStatementList());
+        parseStatementList(block.getStatementList(), -1, block);
+        if (lexer.token() == Token.EXCEPTION) {
+            block.setException(parseException());
+        }
         accept(Token.END);
         return block;
     }

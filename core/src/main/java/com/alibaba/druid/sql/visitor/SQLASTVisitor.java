@@ -2649,6 +2649,37 @@ public interface SQLASTVisitor {
     default void endVisit(SQLPatternExpr x) {
     }
 
+    default boolean visit(SQLCommitTransactionStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLCommitTransactionStatement x) {
+    }
+
+    default boolean visit(SQLRaiseStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLRaiseStatement x) {
+    }
+
+    default boolean visit(SQLRollbackTransactionStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLRollbackTransactionStatement x) {}
+
+    default boolean visit(SQLExceptionStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLExceptionStatement x) {}
+
+    default boolean visit(SQLExceptionStatement.Item x) {
+        return true;
+    }
+
+    default void endVisit(SQLExceptionStatement.Item x) {}
     static SQLASTVisitor ofMethodInvoke(Consumer<SQLMethodInvokeExpr> p) {
         return new SQLASTVisitor() {
             public boolean visit(SQLMethodInvokeExpr x) {
