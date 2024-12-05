@@ -1,3 +1,11 @@
+select a, b, c
+from t1
+group by all
+--------------------
+SELECT a, b, c
+FROM t1
+GROUP BY ALL
+------------------------------------------------------------------------------------------------------------------------
 select PARSE_DATE("%Y%m%d", date.date_id) as date, week.week_start_date
  from t1
 --------------------

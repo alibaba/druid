@@ -1047,6 +1047,9 @@ public class SQLSelectParser extends SQLParser {
 
             lexer.reset(mark);
         }
+        if (lexer.nextIf(Token.ALL)) {
+            return new SQLIdentifierExpr("ALL");
+        }
         SQLExpr item;
         if (lexer.identifierEquals(FnvHash.Constants.ROLLUP)) {
             SQLMethodInvokeExpr rollup = new SQLMethodInvokeExpr(lexer.stringVal());
