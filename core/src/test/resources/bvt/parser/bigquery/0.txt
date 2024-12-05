@@ -1,3 +1,20 @@
+SELECT DATE(verify_timestamp, 'Asia/Jakarta') AS jakarta_data_date, app_version, device_platform as device_platform_name, 
+BU as business_unit_name, verification_method as verification_type,
+  CAST(APPROX_QUANTILES(time_diff, 100 IGNORE NULLS)[OFFSET(50)] AS NUMERIC) AS p50_granted_time_in_second,
+  CAST(APPROX_QUANTILES(time_diff, 100 IGNORE NULLS)[OFFSET(75)] AS NUMERIC) AS p75_granted_time_in_second,
+  CAST(APPROX_QUANTILES(time_diff, 100 IGNORE NULLS)[OFFSET(90)] AS NUMERIC) AS p90_granted_time_in_second,
+  CAST(APPROX_QUANTILES(time_diff, 100 IGNORE NULLS)[OFFSET(95)] AS NUMERIC) AS p95_granted_time_in_second,
+  CAST(AVG(time_diff) AS NUMERIC) AS average_login_time_in_second,
+  CURRENT_TIMESTAMP() AS load_timestamp,
+  CAST('2024-10-03T00:00:00Z' AS TIMESTAMP) AS last_modified_timestamp
+FROM 
+  data
+--------------------
+SELECT DATE(verify_timestamp, 'Asia/Jakarta') AS jakarta_data_date, app_version, device_platform AS device_platform_name
+	, BU AS business_unit_name, verification_method AS verification_type, CAST(APPROX_QUANTILES(time_diff, 100 IGNORE NULLS)[OFFSET(50)] AS NUMERIC) AS p50_granted_time_in_second, CAST(APPROX_QUANTILES(time_diff, 100 IGNORE NULLS)[OFFSET(75)] AS NUMERIC) AS p75_granted_time_in_second, CAST(APPROX_QUANTILES(time_diff, 100 IGNORE NULLS)[OFFSET(90)] AS NUMERIC) AS p90_granted_time_in_second
+	, CAST(APPROX_QUANTILES(time_diff, 100 IGNORE NULLS)[OFFSET(95)] AS NUMERIC) AS p95_granted_time_in_second, CAST(AVG(time_diff) AS NUMERIC) AS average_login_time_in_second, CURRENT_TIMESTAMP() AS load_timestamp, CAST('2024-10-03T00:00:00Z' AS TIMESTAMP) AS last_modified_timestamp
+FROM data
+------------------------------------------------------------------------------------------------------------------------
 SELECT SAFE_CAST(var_start_date AS STRING FORMAT 'DD')
 --------------------
 SELECT SAFE_CAST(var_start_date AS STRING FORMAT 'DD')
