@@ -5177,15 +5177,17 @@ public class SQLExprParser extends SQLParser {
 
     public void parseAssignItem(List<SQLAssignItem> outList, SQLObject parent) {
         accept(Token.LPAREN);
-        for (; ; ) {
-            SQLAssignItem item = this.parseAssignItem(true, parent);
-            item.setParent(parent);
-            outList.add(item);
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
+        if (lexer.token() != Token.RPAREN) {
+            for (; ; ) {
+                SQLAssignItem item = this.parseAssignItem(true, parent);
+                item.setParent(parent);
+                outList.add(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
             }
-            break;
         }
         accept(Token.RPAREN);
     }

@@ -1,3 +1,62 @@
+create temporary function poly(polygon string)
+returns string language js as """
+var res = JSON.parse(polygon);
+var l = res.length;
+var i;
+for (i=0; i<l; i++) {
+  temp = res[i][0]
+  res[i][0] = res[i][1]
+  res[i][1] = temp
+};
+var last = [res[0][0],res[0][1]];
+res.push(last);
+var geojson = {"type": "Polygon", "coordinates" : [res]}
+return JSON.stringify(geojson);
+"""
+OPTIONS();
+--------------------
+CREATE TEMPORARY FUNCTION poly (
+	polygon string
+)
+RETURNS string
+LANGUAGE js
+AS """
+var res = JSON.parse(polygon);
+var l = res.length;
+var i;
+for (i=0; i<l; i++) {
+  temp = res[i][0]
+  res[i][0] = res[i][1]
+  res[i][1] = temp
+};
+var last = [res[0][0],res[0][1]];
+res.push(last);
+var geojson = {"type": "Polygon", "coordinates" : [res]}
+return JSON.stringify(geojson);
+""";
+------------------------------------------------------------------------------------------------------------------------
+CREATE TEMP FUNCTION myFunc(a FLOAT64, b STRING)
+RETURNS STRING
+LANGUAGE js
+AS r"""
+  // Assumes 'doInterestingStuff' is defined in one of the library files.
+  return doInterestingStuff(a, b);
+"""
+OPTIONS (
+    library=['gs://my-bucket/path/to/lib1.js', 'gs://my-bucket/path/to/lib2.js']);
+--------------------
+CREATE TEMPORARY FUNCTION myFunc (
+	a FLOAT64,
+	b STRING
+)
+RETURNS STRING
+LANGUAGE js
+OPTIONS (library = ['gs://my-bucket/path/to/lib1.js', 'gs://my-bucket/path/to/lib2.js'])
+AS """
+  // Assumes 'doInterestingStuff' is defined in one of the library files.
+  return doInterestingStuff(a, b);
+""";
+------------------------------------------------------------------------------------------------------------------------
 SELECT SAFE_CAST(var_start_date AS STRING FORMAT 'DD')
 --------------------
 SELECT SAFE_CAST(var_start_date AS STRING FORMAT 'DD')
