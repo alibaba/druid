@@ -1109,50 +1109,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleExceptionStatement.Item x) {
-        print0(ucase ? "WHEN " : "when ");
-        x.getWhen().accept(this);
-        print0(ucase ? " THEN" : " then");
-
-        this.indentCount++;
-        if (x.getStatements().size() > 1) {
-            println();
-        } else {
-            if (x.getStatements().size() == 1
-                    && x.getStatements().get(0) instanceof SQLIfStatement) {
-                println();
-            } else {
-                print(' ');
-            }
-        }
-
-        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
-            if (i != 0 && size > 1) {
-                println();
-            }
-            SQLStatement stmt = x.getStatements().get(i);
-            stmt.accept(this);
-        }
-
-        this.indentCount--;
-        return false;
-    }
-
-    @Override
-    public boolean visit(OracleExceptionStatement x) {
-        print0(ucase ? "EXCEPTION" : "exception");
-        this.indentCount++;
-        List<OracleExceptionStatement.Item> items = x.getItems();
-        for (int i = 0, size = items.size(); i < size; ++i) {
-            println();
-            OracleExceptionStatement.Item item = items.get(i);
-            item.accept(this);
-        }
-        this.indentCount--;
-        return false;
-    }
-
-    @Override
     public boolean visit(OracleArgumentExpr x) {
         print0(x.getArgumentName());
         print0(" => ");

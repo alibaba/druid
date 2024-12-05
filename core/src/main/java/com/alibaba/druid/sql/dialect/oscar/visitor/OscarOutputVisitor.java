@@ -633,12 +633,12 @@ public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTV
     }
 
     @Override
-    public boolean visit(OracleExceptionStatement x) {
+    public boolean visit(SQLExceptionStatement x) {
         return false;
     }
 
     @Override
-    public boolean visit(OracleExceptionStatement.Item x) {
+    public boolean visit(SQLExceptionStatement.Item x) {
         return false;
     }
 

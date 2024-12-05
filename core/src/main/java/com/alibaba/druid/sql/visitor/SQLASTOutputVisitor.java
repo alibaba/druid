@@ -12166,6 +12166,73 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         return false;
     }
+
+    public boolean visit(SQLCommitTransactionStatement x) {
+        print0(ucase ? "COMMIT TRANSACTION" : "commit transaction");
+        return false;
+    }
+
+    public boolean visit(SQLRollbackTransactionStatement x) {
+        print0(ucase ? "ROLLBACK TRANSACTION" : "rollback transaction");
+        return false;
+    }
+
+    public boolean visit(SQLStartTransactionStatement x) {
+        print0(ucase ? "START TRANSACTION" : "start transaction");
+        return false;
+    }
+
+    public boolean visit(SQLRaiseStatement x) {
+        print0(ucase ? "RAISE" : "raise");
+        if (x.getMessage() != null) {
+            print0(ucase ? " USING MESSAGE = " : " using message = ");
+            x.getMessage().accept(this);
+        }
+        return false;
+    }
+    @Override
+    public boolean visit(SQLExceptionStatement.Item x) {
+        print0(ucase ? "WHEN " : "when ");
+        x.getWhen().accept(this);
+        print0(ucase ? " THEN" : " then");
+
+        this.indentCount++;
+        if (x.getStatements().size() > 1) {
+            println();
+        } else {
+            if (x.getStatements().size() == 1
+                    && x.getStatements().get(0) instanceof SQLIfStatement) {
+                println();
+            } else {
+                print(' ');
+            }
+        }
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            if (i != 0 && size > 1) {
+                println();
+            }
+            SQLStatement stmt = x.getStatements().get(i);
+            stmt.accept(this);
+        }
+
+        this.indentCount--;
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLExceptionStatement x) {
+        print0(ucase ? "EXCEPTION" : "exception");
+        this.indentCount++;
+        List<SQLExceptionStatement.Item> items = x.getItems();
+        for (int i = 0, size = items.size(); i < size; ++i) {
+            println();
+            SQLExceptionStatement.Item item = items.get(i);
+            item.accept(this);
+        }
+        this.indentCount--;
+        return false;
+    }
     protected void tryPrintLparen(SQLExprImpl x) {
         if (x.isParenthesized()) {
             print('(');

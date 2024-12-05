@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLExceptionStatement;
 import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -75,8 +76,8 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleAlterSessionStatement().accept(adapter);
         new SQLExprStatement().accept(adapter);
         new OracleDatetimeExpr().accept(adapter);
-        new OracleExceptionStatement().accept(adapter);
-        new OracleExceptionStatement.Item().accept(adapter);
+        new SQLExceptionStatement().accept(adapter);
+        new SQLExceptionStatement.Item().accept(adapter);
         new OracleArgumentExpr().accept(adapter);
         new OracleSetTransactionStatement().accept(adapter);
         new SQLDropSequenceStatement().accept(adapter);

@@ -1,3 +1,20 @@
+BEGIN
+	BEGIN TRANSACTION;
+	COMMIT TRANSACTION;
+EXCEPTION WHEN ERROR THEN
+  RAISE USING message = FORMAT("Error %s at %s because of statement %s.", @@error.message, @@error.formatted_stack_trace, @@error.statement_text);
+  ROLLBACK TRANSACTION;
+END
+--------------------
+BEGIN
+	START TRANSACTION;
+	COMMIT TRANSACTION;
+EXCEPTION
+	WHEN ERROR THEN
+		RAISE USING MESSAGE = FORMAT('Error %s at %s because of statement %s.', @@error.message, @@error.formatted_stack_trace, @@error.statement_text);
+		ROLLBACK TRANSACTION;
+END;
+------------------------------------------------------------------------------------------------------------------------
 select PARSE_DATE("%Y%m%d", date.date_id) as date, week.week_start_date
  from t1
 --------------------

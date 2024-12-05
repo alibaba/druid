@@ -835,12 +835,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    public boolean visit(OracleExceptionStatement x) {
+    public boolean visit(SQLExceptionStatement x) {
         return false;
     }
 
     @Override
-    public boolean visit(OracleExceptionStatement.Item x) {
+    public boolean visit(SQLExceptionStatement.Item x) {
         return false;
     }
 

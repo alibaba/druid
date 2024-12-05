@@ -159,6 +159,7 @@ public class SQLStatementParser extends SQLParser {
                 case UNTIL:
                 case ELSE:
                 case WHEN:
+                case EXCEPTION:
                     if (lexer.isKeepComments() && lexer.hasComment() && !statementList.isEmpty()) {
                         SQLStatement stmt = statementList.get(statementList.size() - 1);
                         stmt.addAfterComment(lexer.readAndResetComments());
@@ -1433,6 +1434,10 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseRollback() {
         lexer.nextToken();
 
+        if (lexer.nextIfIdentifier("TRANSACTION")) {
+            return new SQLRollbackTransactionStatement();
+        }
+
         if (lexer.identifierEquals("WORK")) {
             lexer.nextToken();
         }
@@ -1453,6 +1458,9 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseCommit() {
         acceptIdentifier("COMMIT");
+        if (lexer.nextIfIdentifier("TRANSACTION")) {
+            return new SQLCommitTransactionStatement();
+        }
         return new SQLCommitStatement();
     }
 
@@ -7674,6 +7682,31 @@ public class SQLStatementParser extends SQLParser {
             stmt.setWhere(where);
         }
 
+        return stmt;
+    }
+
+    protected SQLExceptionStatement parseException() {
+        accept(Token.EXCEPTION);
+        SQLExceptionStatement stmt = new SQLExceptionStatement();
+
+        for (; ; ) {
+            accept(Token.WHEN);
+            SQLExceptionStatement.Item item = new SQLExceptionStatement.Item();
+            item.setWhen(this.exprParser.expr());
+            accept(Token.THEN);
+
+            this.parseStatementList(item.getStatements(), -1, item);
+
+            stmt.addItem(item);
+
+            if (lexer.token() == Token.SEMI) {
+                lexer.nextToken();
+            }
+
+            if (lexer.token() != Token.WHEN) {
+                break;
+            }
+        }
         return stmt;
     }
 
