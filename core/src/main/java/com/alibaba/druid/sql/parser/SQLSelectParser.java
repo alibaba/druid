@@ -1139,7 +1139,7 @@ public class SQLSelectParser extends SQLParser {
             }
 
             // https://github.com/alibaba/druid/issues/5140
-            if (lexer.token == Token.FROM) {
+            if (lexer.token == Token.FROM || lexer.token == Token.UNION) {
                 if (parseSelectListFromError()) {
                     throw new ParserException("syntax error, expect is not TOKEN:from " + lexer.info());
                 } else {
