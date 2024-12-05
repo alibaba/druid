@@ -121,6 +121,15 @@ public class SQLIfStatement extends SQLStatementImpl implements SQLReplaceable {
     public static class ElseIf extends SQLObjectImpl implements SQLReplaceable {
         private SQLExpr condition;
         private List<SQLStatement> statements = new ArrayList<SQLStatement>();
+        private boolean isConcatenated;
+
+        public boolean isConcatenated() {
+            return isConcatenated;
+        }
+
+        public void setConcatenated(boolean isConcatenated) {
+            this.isConcatenated = isConcatenated;
+        }
 
         @Override
         public void accept0(SQLASTVisitor visitor) {

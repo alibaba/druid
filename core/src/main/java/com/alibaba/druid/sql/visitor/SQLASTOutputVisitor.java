@@ -7642,8 +7642,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLIfStatement.ElseIf x) {
-        print0(ucase ? "ELSE IF" : "else if");
+        if (x.isConcatenated()) {
+            print0(ucase ? "ELSEIF " : "elseif ");
+        } else {
+            print0(ucase ? "ELSE IF " : "else if ");
+        }
         x.getCondition().accept(this);
+        println();
         print0(ucase ? " THEN" : " then");
         this.indentCount++;
         println();
