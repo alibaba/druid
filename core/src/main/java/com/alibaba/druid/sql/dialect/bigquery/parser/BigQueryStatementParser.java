@@ -187,7 +187,7 @@ public class BigQueryStatementParser extends SQLStatementParser {
             return startTrans;
         }
         SQLBlockStatement block = new SQLBlockStatement();
-        parseStatementList(block.getStatementList());
+        parseStatementList(block.getStatementList(), -1, block);
         if (lexer.token() == Token.EXCEPTION) {
             block.setException(parseException());
         }
