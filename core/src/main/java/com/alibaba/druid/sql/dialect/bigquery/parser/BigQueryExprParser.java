@@ -93,6 +93,7 @@ public class BigQueryExprParser extends SQLExprParser {
                 castExpr.setDataType(
                         parseDataType()
                 );
+                castExpr = parseCastFormat(castExpr);
                 accept(Token.RPAREN);
                 return castExpr;
             }
