@@ -6,6 +6,64 @@ SELECT 1, 2
 UNION ALL
 SELECT 2, 3
 ------------------------------------------------------------------------------------------------------------------------
+IF source_start_date <= latest_old_table_partition
+  THEN
+  SET previous_partition = (
+          SELECT MAX(_partitiontime)
+              from `p-gofin-id-data-raw.data_science_us.dm_customer_cs_cscore`
+          WHERE
+              _partitiontime < TIMESTAMP(source_start_date)
+      );
+
+  SET latest_partition = (
+        SELECT MAX(_partitiontime) as partitiontime
+            from `p-gofin-id-data-raw.data_science_us.dm_customer_cs_cscore`
+      );
+ELSEIF source_start_date = first_new_table_partition
+  THEN
+  SET previous_partition = TIMESTAMP(latest_old_table_partition);
+  SET latest_partition = TIMESTAMP(first_new_table_partition);
+ELSE
+  SET previous_partition = (
+        SELECT MAX(_partitiontime) as partitiontime
+            from `p-gofin-id-data-raw.data_science_us.m_cust_pl_c_scores`
+        WHERE
+            _partitiontime < TIMESTAMP(source_start_date)
+      );
+
+  SET latest_partition = (
+        SELECT MAX(_partitiontime) 
+            from `p-gofin-id-data-raw.data_science_us.m_cust_pl_c_scores`
+      );
+END IF;
+--------------------
+IF source_start_date <= latest_old_table_partition
+	THEN
+	SET previous_partition =(
+		SELECT MAX(_partitiontime)
+		FROM `p-gofin-id-data-raw`.data_science_us.dm_customer_cs_cscore
+		WHERE _partitiontime < TIMESTAMP(source_start_date)
+	);
+	SET latest_partition =(
+		SELECT MAX(_partitiontime) AS partitiontime
+		FROM `p-gofin-id-data-raw`.data_science_us.dm_customer_cs_cscore
+	);
+ELSEIF source_start_date = first_new_table_partition
+ THEN
+	SET previous_partition = TIMESTAMP(latest_old_table_partition);
+	SET latest_partition = TIMESTAMP(first_new_table_partition);
+ELSE
+	SET previous_partition =(
+		SELECT MAX(_partitiontime) AS partitiontime
+		FROM `p-gofin-id-data-raw`.data_science_us.m_cust_pl_c_scores
+		WHERE _partitiontime < TIMESTAMP(source_start_date)
+	);
+	SET latest_partition =(
+		SELECT MAX(_partitiontime)
+		FROM `p-gofin-id-data-raw`.data_science_us.m_cust_pl_c_scores
+	);
+END IF;
+------------------------------------------------------------------------------------------------------------------------
 select a, b, c
 from t1
 group by all

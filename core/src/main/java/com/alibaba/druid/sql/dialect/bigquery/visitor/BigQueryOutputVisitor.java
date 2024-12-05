@@ -394,4 +394,35 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         printOptions(x.getOptions());
         super.printCreateViewAs(x);
     }
+
+    @Override
+    public boolean visit(SQLIfStatement x) {
+        print0(ucase ? "IF " : "if ");
+        x.getCondition().accept(this);
+        this.indentCount++;
+        println();
+        print0(ucase ? "THEN" : "then");
+        println();
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+        this.indentCount--;
+
+        for (SQLIfStatement.ElseIf elseIf : x.getElseIfList()) {
+            println();
+            elseIf.accept(this);
+        }
+
+        if (x.getElseItem() != null) {
+            println();
+            x.getElseItem().accept(this);
+        }
+        println();
+        print0(ucase ? "END IF" : "end if");
+        return false;
+    }
 }

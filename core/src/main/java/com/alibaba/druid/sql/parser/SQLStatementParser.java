@@ -1271,9 +1271,11 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected void parseIfElse(SQLIfStatement stmt) {
-        while (lexer.nextIf(Token.ELSE)) {
-            if (lexer.nextIf(Token.IF)) {
+        while (lexer.token == Token.ELSE || lexer.token == Token.ELSEIF) {
+            boolean isConcatenated = lexer.token == Token.ELSEIF;
+            if (lexer.nextIf(Token.ELSEIF) || (lexer.nextIf(Token.ELSE) && lexer.nextIf(Token.IF))) {
                 SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
+                elseIf.setConcatenated(isConcatenated);
                 elseIf.setCondition(this.exprParser.expr());
                 elseIf.setParent(stmt);
                 accept(Token.THEN);
