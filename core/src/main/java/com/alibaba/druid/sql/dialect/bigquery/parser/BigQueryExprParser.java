@@ -38,7 +38,8 @@ public class BigQueryExprParser extends SQLExprParser {
                 "MIN",
                 "MIN_BY",
                 "STRING_AGG",
-                "SUM"
+                "SUM",
+                "APPROX_QUANTILES"
         };
         AGGREGATE_FUNCTIONS_CODES = fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
