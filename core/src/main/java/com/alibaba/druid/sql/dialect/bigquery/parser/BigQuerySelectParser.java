@@ -42,7 +42,8 @@ public class BigQuerySelectParser extends SQLSelectParser {
     }
 
     protected String tableAlias(boolean must) {
-        if (lexer.token() == Token.TABLE) {
+        Token tok = lexer.token();
+        if (tok == Token.TABLE || tok == Token.UPDATE) {
             String alias = lexer.stringVal();
             lexer.nextToken();
             return alias;

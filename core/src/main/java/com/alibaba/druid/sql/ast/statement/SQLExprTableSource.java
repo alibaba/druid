@@ -384,7 +384,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
         return null;
     }
 
-    public SQLObject resolveColum(long columnNameHash) {
+    public SQLObject resolveColumn(long columnNameHash) {
         if (schemaObject != null) {
             SQLStatement stmt = schemaObject.getStatement();
             if (stmt instanceof SQLCreateTableStatement) {

@@ -882,9 +882,7 @@ public class SQLParser {
     }
 
     public void accept(Token token) {
-        if (lexer.token == token) {
-            lexer.nextToken();
-        } else {
+        if (!lexer.nextIf(token)) {
             setErrorEndPos(lexer.pos());
             printError(token);
         }

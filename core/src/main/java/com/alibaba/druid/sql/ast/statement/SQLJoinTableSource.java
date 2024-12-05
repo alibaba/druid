@@ -509,7 +509,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         return null;
     }
 
-    public SQLObject resolveColum(long columnNameHash) {
+    public SQLObject resolveColumn(long columnNameHash) {
         if (left != null) {
             SQLObject column = left.resolveColum(columnNameHash);
             if (column != null) {

@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
+import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -53,6 +54,37 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
         this.exprParser.orderBy(sqlUnique.getColumns(), sqlUnique);
         accept(Token.RPAREN);
         stmt.setUnique(sqlUnique);
+    }
+
+    protected void parseIndex(SQLCreateTableStatement createTable) {
+        if (lexer.token() == Token.INDEX) {
+            StarRocksIndexDefinition index = new StarRocksIndexDefinition();
+            lexer.nextToken();
+            index.setIndexName(this.exprParser.name());
+            accept(Token.LPAREN);
+            for (; ; ) {
+                index.getColumns().add(this.exprParser.name());
+                if (!(lexer.token() == (Token.COMMA))) {
+                    break;
+                } else {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+            if (lexer.token() == Token.USING) {
+                lexer.nextToken();
+                if (lexer.identifierEquals(FnvHash.Constants.BITMAP)) {
+                    lexer.nextToken();
+                    index.setUsingBitmap(true);
+                }
+            }
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+                index.setComment(this.exprParser.expr());
+            }
+            index.setParent(createTable);
+            createTable.getTableElementList().add(index);
+        }
     }
     public void parseCreateTableRest(SQLCreateTableStatement stmt) {
         StarRocksCreateTableStatement srStmt = (StarRocksCreateTableStatement) stmt;
@@ -130,6 +162,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
                 hasLparen = true;
             } else if (lexer.nextIfIdentifier(FnvHash.Constants.LIST)) {
                 partitionClause = new SQLPartitionByList();
+                ((SQLPartitionByList) partitionClause).setType(SQLPartitionByList.PartitionByListType.LIST_EXPRESSION);
                 accept(Token.LPAREN);
                 hasLparen = true;
             } else if (lexer.nextIf(Token.LPAREN)) {

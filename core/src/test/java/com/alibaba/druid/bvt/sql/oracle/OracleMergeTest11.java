@@ -77,7 +77,7 @@ public class OracleMergeTest11 extends OracleTest {
                 "\tAND AREA_LEVEL <= 1\n" +
                 "\tAND TYPE_ID = '2'", select.toString());
 
-        SQLUpdateSetItem updateSetItem = mergeStatement.getUpdateClause().getItems().get(0);
+        SQLUpdateSetItem updateSetItem = ((SQLMergeStatement.WhenUpdate) mergeStatement.getWhens().get(0)).getItems().get(0);
         SQLExpr value = updateSetItem.getValue();
 
         assertEquals("ROUND(B.TOTAL_CHARGE * 1.00 / 10000, 2)", value.toString());

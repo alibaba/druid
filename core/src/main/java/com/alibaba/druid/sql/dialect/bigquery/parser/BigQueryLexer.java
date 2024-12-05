@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.parser.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.ScanSubAsIdentifier;
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
@@ -108,6 +107,8 @@ public class BigQueryLexer extends Lexer {
         map.put("BEGIN", Token.BEGIN);
         map.put("END", Token.END);
         map.put("TABLE", Token.TABLE);
+        map.put("EXCEPTION", Token.EXCEPTION);
+        map.put("RAISE", Token.RAISE);
 
         return new Keywords(map);
     }
@@ -121,6 +122,33 @@ public class BigQueryLexer extends Lexer {
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
+    }
+
+    public final void nextTokenFullName() {
+        nextToken();
+    }
+
+    @Override
+    public boolean nextIf(Token token) {
+        if (this.token == token) {
+            boolean setFeature = token == Token.DELETE
+                    || token == Token.FROM
+                    || token == Token.INTO
+                    || token == Token.JOIN;
+            if (setFeature) {
+                dialectFeature.configFeature(DialectFeature.LexerFeature.ScanSubAsIdentifier);
+            }
+            nextToken();
+            if (setFeature) {
+                dialectFeature.configFeature(DialectFeature.LexerFeature.ScanSubAsIdentifier, false);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public final void scanIdentifier() {
+        scanIdentifier0();
     }
 
     protected void scanAlias() {
@@ -269,7 +297,7 @@ public class BigQueryLexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(SQLDateExpr, GroupByAll, ScanSubAsIdentifier, InRestSpecificOperation);
+        this.dialectFeature.configFeature(SQLDateExpr, GroupByAll, InRestSpecificOperation);
     }
 
     @Override

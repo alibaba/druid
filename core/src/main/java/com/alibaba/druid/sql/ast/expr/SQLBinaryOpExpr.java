@@ -215,9 +215,8 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
                 && Utils.equals(this.right, other.left));
     }
 
-    public SQLBinaryOpExpr clone() {
-        SQLBinaryOpExpr x = new SQLBinaryOpExpr();
-
+    protected void cloneTo(SQLBinaryOpExpr x) {
+        super.cloneTo(x);
         if (left != null) {
             x.setLeft(left.clone());
         }
@@ -232,6 +231,11 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
             x.hint = hint.clone();
         }
         x.setParenthesized(parenthesized);
+    }
+
+    public SQLBinaryOpExpr clone() {
+        SQLBinaryOpExpr x = new SQLBinaryOpExpr();
+        cloneTo(x);
         return x;
     }
 

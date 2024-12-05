@@ -77,4 +77,8 @@ public interface SQLDataType extends SQLObject {
     public boolean isString();
 
     public boolean hasKeyLength();
+
+    static SQLDataType of(String name) {
+        return new SQLDataTypeImpl(name);
+    }
 }

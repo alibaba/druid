@@ -1,10 +1,11 @@
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLExceptionStatement;
 import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
-import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.WhenInsert;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.WhenUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.*;
@@ -60,8 +61,8 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new CellAssignmentItem().accept(adapter);
         new CellAssignment().accept(adapter);
         new SQLMergeStatement().accept(adapter);
-        new MergeUpdateClause().accept(adapter);
-        new MergeInsertClause().accept(adapter);
+        new WhenUpdate().accept(adapter);
+        new WhenInsert().accept(adapter);
         new SQLErrorLoggingClause().accept(adapter);
         new OracleReturningClause().accept(adapter);
         new OracleInsertStatement().accept(adapter);
@@ -75,8 +76,8 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleAlterSessionStatement().accept(adapter);
         new SQLExprStatement().accept(adapter);
         new OracleDatetimeExpr().accept(adapter);
-        new OracleExceptionStatement().accept(adapter);
-        new OracleExceptionStatement.Item().accept(adapter);
+        new SQLExceptionStatement().accept(adapter);
+        new SQLExceptionStatement.Item().accept(adapter);
         new OracleArgumentExpr().accept(adapter);
         new OracleSetTransactionStatement().accept(adapter);
         new SQLDropSequenceStatement().accept(adapter);

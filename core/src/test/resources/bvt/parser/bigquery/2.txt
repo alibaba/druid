@@ -9,7 +9,7 @@ AS r"""
 """;
 --------------------
 CREATE TEMPORARY FUNCTION myFunc (
-	a FLOAT64, 
+	a FLOAT64,
 	b STRING
 )
 RETURNS STRING

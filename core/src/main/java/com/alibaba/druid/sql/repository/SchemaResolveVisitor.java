@@ -70,7 +70,7 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
 
     void popContext();
 
-    static class Context {
+    public static class Context {
         public final Context parent;
         public final SQLObject object;
         public final int level;

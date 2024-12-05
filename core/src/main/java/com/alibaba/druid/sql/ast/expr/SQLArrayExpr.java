@@ -48,8 +48,11 @@ public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable {
         return expr;
     }
 
-    public void setExpr(SQLExpr expr) {
-        this.expr = expr;
+    public void setExpr(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.expr = x;
     }
 
     public List<SQLExpr> getValues() {

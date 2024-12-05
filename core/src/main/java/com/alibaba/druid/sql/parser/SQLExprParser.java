@@ -376,38 +376,6 @@ public class SQLExprParser extends SQLParser {
         }
     }
 
-    public SQLIntervalUnit parseIntervalUnit() {
-        if (lexer.token() == Token.IDENTIFIER) {
-            SQLIntervalUnit unit = SQLIntervalUnit.of(lexer.stringVal());
-            if (unit != null) {
-                lexer.nextToken();
-            }
-
-            if (unit == SQLIntervalUnit.YEAR && lexer.nextIf(Token.TO)) {
-                if (lexer.nextIfIdentifier(FnvHash.Constants.MONTH)) {
-                    unit = SQLIntervalUnit.YEAR_TO_MONTH;
-                } else {
-                    throw new ParserException("parse interval unit error, " + lexer.info());
-                }
-            } else if (unit == SQLIntervalUnit.DAY && lexer.nextIf(Token.TO)) {
-                if (lexer.nextIfIdentifier(FnvHash.Constants.SECOND)) {
-                    unit = SQLIntervalUnit.DAY_HOUR;
-                } else {
-                    throw new ParserException("parse interval unit error, " + lexer.info());
-                }
-            } else if (unit == SQLIntervalUnit.HOUR && lexer.nextIf(Token.TO)) {
-                if (lexer.nextIfIdentifier(FnvHash.Constants.SECOND)) {
-                    unit = SQLIntervalUnit.HOUR_SECOND;
-                } else {
-                    throw new ParserException("parse interval unit error, " + lexer.info());
-                }
-            }
-
-            return unit;
-        }
-        return null;
-    }
-
     public void parseAssignItems(List<? super SQLAssignItem> items, SQLObject parent, boolean variant) {
         for (; ; ) {
             SQLAssignItem item = parseAssignItem(variant, parent);
@@ -2017,10 +1985,7 @@ public class SQLExprParser extends SQLParser {
 
     protected void aliasedItems(List<SQLAliasedExpr> items, SQLObject parent) {
         while (true) {
-            SQLExpr expr = expr();
-            String alias = as();
-
-            SQLAliasedExpr aliasedExpr = new SQLAliasedExpr(expr, alias);
+            SQLAliasedExpr aliasedExpr = aliasedExpr();
             aliasedExpr.setParent(parent);
             items.add(aliasedExpr);
 
@@ -2032,6 +1997,10 @@ public class SQLExprParser extends SQLParser {
             }
             break;
         }
+    }
+
+    public SQLAliasedExpr aliasedExpr() {
+        return new SQLAliasedExpr(expr(), as());
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
@@ -6426,5 +6395,13 @@ public class SQLExprParser extends SQLParser {
         }
 
         return null;
+    }
+
+    protected SQLStructExpr struct() {
+        SQLStructExpr structExpr = new SQLStructExpr();
+        accept(Token.LPAREN);
+        aliasedItems(structExpr.getItems(), structExpr);
+        accept(Token.RPAREN);
+        return structExpr;
     }
 }

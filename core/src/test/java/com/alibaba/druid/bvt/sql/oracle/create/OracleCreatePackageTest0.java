@@ -113,11 +113,11 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\ttot_emps NUMBER;\n" +
                         "\ttot_depts NUMBER;\n" +
                         "\tFUNCTION hire (\n" +
-                        "\t\tlast_name VARCHAR2, \n" +
-                        "\t\tjob_id VARCHAR2, \n" +
-                        "\t\tmanager_id NUMBER, \n" +
-                        "\t\tsalary NUMBER, \n" +
-                        "\t\tcommission_pct NUMBER, \n" +
+                        "\t\tlast_name VARCHAR2,\n" +
+                        "\t\tjob_id VARCHAR2,\n" +
+                        "\t\tmanager_id NUMBER,\n" +
+                        "\t\tsalary NUMBER,\n" +
+                        "\t\tcommission_pct NUMBER,\n" +
                         "\t\tdepartment_id NUMBER\n" +
                         "\t)\n" +
                         "\tRETURN NUMBER\n" +
@@ -135,7 +135,7 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\t\tRETURN (new_empno);\n" +
                         "\tEND;\n" +
                         "\tFUNCTION create_dept (\n" +
-                        "\t\tdepartment_id NUMBER, \n" +
+                        "\t\tdepartment_id NUMBER,\n" +
                         "\t\tlocation_id NUMBER\n" +
                         "\t)\n" +
                         "\tRETURN NUMBER\n" +

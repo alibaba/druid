@@ -42,7 +42,7 @@ public class HiveCreateTableTest_49_dla
                 ")\n" +
                 "LIKE\n" +
                 "SELECT pure_date\n" +
-                "\t, substr(regexp_extract(fld11, '\"sgm_add\":\"?([^\"}]*)', 1), 1, 10) AS sgm_add\n" +
+                "\t, (substr(regexp_extract(fld11, '\"sgm_add\":\"?([^\"}]*)', 1), 1, 10)) AS sgm_add\n" +
                 "FROM log_push_1912\n" +
                 "WHERE pure_date = 20191120", clone.toString());
 

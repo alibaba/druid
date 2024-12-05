@@ -1428,18 +1428,22 @@ public interface SQLASTVisitor {
     default void endVisit(SQLMergeStatement x) {
     }
 
-    default boolean visit(SQLMergeStatement.MergeUpdateClause x) {
+    default boolean visit(SQLMergeStatement.WhenUpdate x) {
         return true;
     }
 
-    default void endVisit(SQLMergeStatement.MergeUpdateClause x) {
+    default void endVisit(SQLMergeStatement.WhenUpdate x) {
     }
 
-    default boolean visit(SQLMergeStatement.MergeInsertClause x) {
+    default boolean visit(SQLMergeStatement.WhenInsert x) {
         return true;
     }
 
-    default void endVisit(SQLMergeStatement.MergeInsertClause x) {
+    default boolean visit(SQLMergeStatement.WhenDelete x) {
+        return true;
+    }
+
+    default void endVisit(SQLMergeStatement.WhenInsert x) {
     }
 
     default boolean visit(SQLErrorLoggingClause x) {
@@ -2645,9 +2649,45 @@ public interface SQLASTVisitor {
     default void endVisit(SQLPatternExpr x) {
     }
 
+    default boolean visit(SQLCommitTransactionStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLCommitTransactionStatement x) {
+    }
+
+    default boolean visit(SQLRaiseStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLRaiseStatement x) {
+    }
+
+    default boolean visit(SQLRollbackTransactionStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLRollbackTransactionStatement x) {}
+
+    default boolean visit(SQLExceptionStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLExceptionStatement x) {}
+
+    default boolean visit(SQLExceptionStatement.Item x) {
+        return true;
+    }
+
+    default void endVisit(SQLExceptionStatement.Item x) {}
     static SQLASTVisitor ofMethodInvoke(Consumer<SQLMethodInvokeExpr> p) {
         return new SQLASTVisitor() {
             public boolean visit(SQLMethodInvokeExpr x) {
+                p.accept(x);
+                return true;
+            }
+
+            public boolean visit(SQLAggregateExpr x) {
                 p.accept(x);
                 return true;
             }
@@ -2657,6 +2697,33 @@ public interface SQLASTVisitor {
     static SQLASTVisitor ofMethodInvoke(Predicate<String> filter, Consumer<SQLMethodInvokeExpr> p) {
         return new SQLASTVisitor() {
             public boolean visit(SQLMethodInvokeExpr x) {
+                if (filter == null || filter.test(x.getMethodName())) {
+                    p.accept(x);
+                }
+                return true;
+            }
+
+            public boolean visit(SQLAggregateExpr x) {
+                if (filter == null || filter.test(x.getMethodName())) {
+                    p.accept(x);
+                }
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofAggregate(Consumer<SQLAggregateExpr> p) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLAggregateExpr x) {
+                p.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofAggregate(Predicate<String> filter, Consumer<SQLAggregateExpr> p) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLAggregateExpr x) {
                 if (filter == null || filter.test(x.getMethodName())) {
                     p.accept(x);
                 }
@@ -2722,6 +2789,24 @@ public interface SQLASTVisitor {
     static SQLASTVisitor ofIf(Consumer<SQLIfStatement> h) {
         return new SQLASTVisitor() {
             public boolean visit(SQLIfStatement x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofPropertyExpr(Consumer<SQLPropertyExpr> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLPropertyExpr x) {
+                h.accept(x);
+                return true;
+            }
+        };
+    }
+
+    static SQLASTVisitor ofIdentifier(Consumer<SQLIdentifierExpr> h) {
+        return new SQLASTVisitor() {
+            public boolean visit(SQLIdentifierExpr x) {
                 h.accept(x);
                 return true;
             }

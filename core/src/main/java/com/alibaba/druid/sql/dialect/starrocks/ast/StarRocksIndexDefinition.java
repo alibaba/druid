@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.starrocks.ast;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
@@ -17,7 +18,7 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
     private SQLName indexName;
     private List<SQLName> columns = new ArrayList<SQLName>();
     private boolean usingBitmap;
-    private String comment;
+    private SQLExpr comment;
 
     public SQLName getIndexName() {
         return indexName;
@@ -43,11 +44,11 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
         this.usingBitmap = usingBitmap;
     }
 
-    public String getComment() {
+    public SQLExpr getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setComment(SQLExpr comment) {
         this.comment = comment;
     }
 

@@ -802,4 +802,20 @@ public class OdpsExprParser extends HiveExprParser {
         }
         return new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, dbType);
     }
+
+    @Override
+    protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
+        if (expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
+            long hashCode64 = identifierExpr.hashCode64();
+            if (hashCode64 == FnvHash.Constants.STRUCT && acceptLPAREN) {
+                SQLStructExpr struct = struct();
+                if (lexer.isKeepSourceLocation()) {
+                    struct.setSource(identifierExpr.getSourceLine(), identifierExpr.getSourceColumn());
+                }
+                return struct;
+            }
+        }
+        return super.methodRest(expr, acceptLPAREN);
+    }
 }

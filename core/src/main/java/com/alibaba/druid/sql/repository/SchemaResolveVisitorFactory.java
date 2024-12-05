@@ -1162,7 +1162,10 @@ class SchemaResolveVisitorFactory {
         if (tableSource != null) {
             x.setResolvedTableSource(tableSource);
 
-            SQLColumnDefinition column = tableSource.findColumn(hash);
+            SQLObject column = tableSource.findColumn(hash);
+            if (column == null) {
+                column = tableSource.resolveColumn(hash);
+            }
             if (column != null) {
                 x.setResolvedColumn(column);
             }
@@ -1810,7 +1813,11 @@ class SchemaResolveVisitorFactory {
         SQLSelectQuery query = x.getQuery();
         if (query != null) {
             if (query instanceof SQLSelectQueryBlock) {
-                visitor.visit((SQLSelectQueryBlock) query);
+                try {
+                    visitor.visit((SQLSelectQueryBlock) query);
+                } catch (StackOverflowError ignored) {
+                    // ignore
+                }
             } else {
                 query.accept(visitor);
             }
@@ -2024,50 +2031,47 @@ class SchemaResolveVisitorFactory {
             on.accept(visitor);
         }
 
-        SQLMergeStatement.MergeUpdateClause updateClause = x.getUpdateClause();
-        if (updateClause != null) {
-            for (SQLUpdateSetItem item : updateClause.getItems()) {
-                SQLExpr column = item.getColumn();
+        List<SQLMergeStatement.When> whens = x.getWhens();
+        for (SQLMergeStatement.When when : whens) {
+            SQLName by = when.getBy();
+            if (by != null) {
+                by.accept(visitor);
+            }
 
-                if (column instanceof SQLIdentifierExpr) {
-                    ((SQLIdentifierExpr) column).setResolvedTableSource(into);
-                } else if (column instanceof SQLPropertyExpr) {
-                    ((SQLPropertyExpr) column).setResolvedTableSource(into);
-                } else {
+            if (when instanceof SQLMergeStatement.WhenUpdate) {
+                SQLMergeStatement.WhenUpdate updateClause = (SQLMergeStatement.WhenUpdate) when;
+                for (SQLUpdateSetItem item : updateClause.getItems()) {
+                    SQLExpr column = item.getColumn();
+
+                    if (column instanceof SQLIdentifierExpr) {
+                        ((SQLIdentifierExpr) column).setResolvedTableSource(into);
+                    } else if (column instanceof SQLPropertyExpr) {
+                        ((SQLPropertyExpr) column).setResolvedTableSource(into);
+                    } else {
+                        column.accept(visitor);
+                    }
+
+                    SQLExpr value = item.getValue();
+                    if (value != null) {
+                        value.accept(visitor);
+                    }
+                }
+            } else if (when instanceof SQLMergeStatement.WhenInsert) {
+                SQLMergeStatement.WhenInsert insertClause = (SQLMergeStatement.WhenInsert) when;
+                for (SQLExpr column : insertClause.getColumns()) {
+                    if (column instanceof SQLIdentifierExpr) {
+                        ((SQLIdentifierExpr) column).setResolvedTableSource(into);
+                    } else if (column instanceof SQLPropertyExpr) {
+                        ((SQLPropertyExpr) column).setResolvedTableSource(into);
+                    }
                     column.accept(visitor);
                 }
-
-                SQLExpr value = item.getValue();
-                if (value != null) {
+                for (SQLExpr value : insertClause.getValues()) {
                     value.accept(visitor);
                 }
             }
 
-            SQLExpr where = updateClause.getWhere();
-            if (where != null) {
-                where.accept(visitor);
-            }
-
-            SQLExpr deleteWhere = updateClause.getDeleteWhere();
-            if (deleteWhere != null) {
-                deleteWhere.accept(visitor);
-            }
-        }
-
-        SQLMergeStatement.MergeInsertClause insertClause = x.getInsertClause();
-        if (insertClause != null) {
-            for (SQLExpr column : insertClause.getColumns()) {
-                if (column instanceof SQLIdentifierExpr) {
-                    ((SQLIdentifierExpr) column).setResolvedTableSource(into);
-                } else if (column instanceof SQLPropertyExpr) {
-                    ((SQLPropertyExpr) column).setResolvedTableSource(into);
-                }
-                column.accept(visitor);
-            }
-            for (SQLExpr value : insertClause.getValues()) {
-                value.accept(visitor);
-            }
-            SQLExpr where = insertClause.getWhere();
+            SQLExpr where = when.getWhere();
             if (where != null) {
                 where.accept(visitor);
             }

@@ -162,7 +162,7 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
         if (resolvedColumn instanceof SQLSelectItem) {
             SQLSelectItem selectItem = (SQLSelectItem) resolvedColumn;
             final SQLExpr expr = selectItem.getExpr();
-            if (expr instanceof SQLIdentifierExpr) {
+            if (expr instanceof SQLIdentifierExpr && expr != this) {
                 return ((SQLIdentifierExpr) expr).getResolvedColumn();
             } else if (expr instanceof SQLPropertyExpr) {
                 return ((SQLPropertyExpr) expr).getResolvedColumn();
@@ -185,6 +185,10 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
     }
 
     public void setResolvedColumn(SQLColumnDefinition resolvedColumn) {
+        this.resolvedColumn = resolvedColumn;
+    }
+
+    public void setResolvedColumn(SQLObject resolvedColumn) {
         this.resolvedColumn = resolvedColumn;
     }
 
@@ -241,7 +245,10 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
         }
 
         if (this.resolvedColumn instanceof SQLSelectItem) {
-            return ((SQLSelectItem) this.resolvedColumn).computeDataType();
+            if (((SQLSelectItem) this.resolvedColumn).getExpr() != this) {
+                return ((SQLSelectItem) this.resolvedColumn).computeDataType();
+            }
+            return null;
         }
 
         SQLSelectQueryBlock queryBlock = null;

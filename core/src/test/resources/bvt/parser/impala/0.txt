@@ -1,3 +1,19 @@
+select cast(concat('20', strleft(m_brd_season_name, 2)) as int) year
+        , strright(m_brd_season_name, 2)                           qtr
+        , m_brd_season_name
+        , product_no
+        , managing_provice_no
+        from dwd_kudu.t15_imp_key_pro
+        WHERE
+        m_brd_season_name > '23'
+        group by m_brd_season_name, product_no, managing_provice_no
+--------------------
+SELECT CAST(concat('20', strleft(m_brd_season_name, 2)) AS int) AS year, strright(m_brd_season_name, 2) AS qtr, m_brd_season_name
+	, product_no, managing_provice_no
+FROM dwd_kudu.t15_imp_key_pro
+WHERE m_brd_season_name > '23'
+GROUP BY m_brd_season_name, product_no, managing_provice_no
+------------------------------------------------------------------------------------------------------------------------
 SELECT a AS A FROM B AS b LEFT JOIN /* +shuffle */  ( select c from D d join E e on d.id=e.id where e.id = 'test' group by 1,2 ) f on b.id=f.id WHERE 1=1  GROUP BY a HAVING 1=1 limit 2000000
 --------------------
 SELECT a AS A

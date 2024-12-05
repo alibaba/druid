@@ -42,6 +42,11 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
         accept(Token.CREATE);
 
+        if (lexer.nextIf(Token.OR)) {
+            accept(Token.REPLACE);
+            stmt.config(SQLCreateTableStatement.Feature.OrReplace);
+        }
+
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();
             stmt.setExternal(true);
@@ -202,6 +207,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                     case FETCH:
                     case OVER:
                     case DATABASE:
+                    case FUNCTION:
                         column = this.exprParser.parseColumn(stmt);
                         break;
                     default:
@@ -277,6 +283,15 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
                 accept(Token.RPAREN);
                 continue;
+            }
+
+            if (lexer.nextIfIdentifier("AUTO")) {
+                accept(Token.PARTITIONED);
+                accept(Token.BY);
+                accept(Token.LPAREN);
+                stmt.setAutoPartitionedBy(
+                        this.exprParser.aliasedExpr());
+                accept(Token.RPAREN);
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.RANGE)) {

@@ -357,7 +357,7 @@ public final class FnvHash {
         return hashCode;
     }
 
-    public static interface Constants {
+    public interface Constants {
         long HIGH_PRIORITY = fnv1a_64_lower("HIGH_PRIORITY");
         long DISTINCTROW = fnv1a_64_lower("DISTINCTROW");
         long STRAIGHT = fnv1a_64_lower("STRAIGHT");
@@ -528,6 +528,7 @@ public final class FnvHash {
         long SUBTIME = fnv1a_64_lower("SUBTIME");
         long TIMEDIFF = fnv1a_64_lower("TIMEDIFF");
         long SQLCODE = fnv1a_64_lower("SQLCODE");
+        long SQLERRM = fnv1a_64_lower("SQLERRM");
         long PRECISION = fnv1a_64_lower("PRECISION");
         long DOUBLE = fnv1a_64_lower("DOUBLE");
         long DOUBLE_PRECISION = fnv1a_64_lower("DOUBLE PRECISION");
@@ -736,6 +737,11 @@ public final class FnvHash {
         long ENDS = fnv1a_64_lower("ENDS");
         long BINARY = fnv1a_64_lower("BINARY");
         long GEOMETRY = fnv1a_64_lower("GEOMETRY");
+        long FOUND = fnv1a_64_lower("FOUND");
+        long NOTFOUND = fnv1a_64_lower("NOTFOUND");
+        long ROWCOUNT = fnv1a_64_lower("ROWCOUNT");
+        long BULK_ROWCOUNT = fnv1a_64_lower("BULK_ROWCOUNT");
+        long BULK_EXCEPTIONS = fnv1a_64_lower("BULK_EXCEPTIONS");
         long ISOPEN = fnv1a_64_lower("ISOPEN");
         long CONFLICT = fnv1a_64_lower("CONFLICT");
         long NOTHING = fnv1a_64_lower("NOTHING");
@@ -1165,5 +1171,7 @@ public final class FnvHash {
         long NOCOMPRESS = fnv1a_64_lower("NOCOMPRESS");
         long COMPRESS_MODE = fnv1a_64_lower("COMPRESS_MODE");
         long BROKER = fnv1a_64_lower("BROKER");
+        long INDEX = fnv1a_64_lower("INDEX");
+        long SETPROJECT = fnv1a_64_lower("SETPROJECT");
     }
 }

@@ -1047,6 +1047,9 @@ public class SQLSelectParser extends SQLParser {
 
             lexer.reset(mark);
         }
+        if (lexer.nextIf(Token.ALL)) {
+            return new SQLIdentifierExpr("ALL");
+        }
         SQLExpr item;
         if (lexer.identifierEquals(FnvHash.Constants.ROLLUP)) {
             SQLMethodInvokeExpr rollup = new SQLMethodInvokeExpr(lexer.stringVal());
@@ -1116,7 +1119,7 @@ public class SQLSelectParser extends SQLParser {
             //https://github.com/alibaba/druid/issues/5708
             if (lexer.hasComment()
                     && lexer.isKeepComments()
-                    && lexer.getComments().size() == 1
+                    && !lexer.getComments().isEmpty()
                     && lexer.getComments().get(0).startsWith("--")) {
                 selectItem.addAfterComment(lexer.readAndResetComments());
             }
@@ -1154,11 +1157,9 @@ public class SQLSelectParser extends SQLParser {
     }
 
     public void parseFrom(SQLSelectQueryBlock queryBlock) {
-        if (lexer.token != Token.FROM) {
+        if (!lexer.nextIf(Token.FROM)) {
             return;
         }
-
-        lexer.nextToken();
         if (lexer.hasComment()) {
             queryBlock.setCommentsAfterFrom(lexer.readAndResetComments());
         }
@@ -1329,7 +1330,7 @@ public class SQLSelectParser extends SQLParser {
                 expr = this.exprParser.name();
                 break;
             default:
-                expr = expr();
+                expr = exprParser.expr();
                 break;
         }
 
@@ -2235,7 +2236,10 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token == Token.COMMA) {
                 mark = lexer.mark();
                 lexer.nextToken();
-                continue;
+                if (lexer.token != Token.LPAREN) {
+                    continue;
+                }
+                lexer.reset(mark);
             }
             break;
         }

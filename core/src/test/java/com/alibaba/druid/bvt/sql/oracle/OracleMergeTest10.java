@@ -50,7 +50,7 @@ public class OracleMergeTest10 extends OracleTest {
                         "\tWHERE (s.salary <= 8000)\n" +
                         "WHEN MATCHED THEN UPDATE\n" +
                         "SET d.bonus = bonus\n" +
-                        "\tDELETE WHERE (salary > 8000)",
+                        "DELETE WHERE (salary > 8000)",
             result);
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

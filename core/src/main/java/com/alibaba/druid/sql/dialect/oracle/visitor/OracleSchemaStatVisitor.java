@@ -43,9 +43,37 @@ import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class OracleSchemaStatVisitor extends SchemaStatVisitor implements OracleASTVisitor {
+    private static final Set<Long> PSEUDO_COLUMNS;
+    private static final Set<Long> FUNCTIONS_IDENT;
+    private static final Set<Long> IMPLICIT_CURSOR_ATTRIBUTES;
+
+    static {
+        PSEUDO_COLUMNS = new HashSet<>();
+        PSEUDO_COLUMNS.add(FnvHash.Constants.ROWID);
+        PSEUDO_COLUMNS.add(FnvHash.Constants.ROWNUM);
+        PSEUDO_COLUMNS.add(FnvHash.Constants.LEVEL);
+
+        FUNCTIONS_IDENT = new HashSet<>();
+        FUNCTIONS_IDENT.add(FnvHash.Constants.SYSDATE);
+        FUNCTIONS_IDENT.add(FnvHash.Constants.CURRENT_DATE);
+        FUNCTIONS_IDENT.add(FnvHash.Constants.CURRENT_TIMESTAMP);
+        FUNCTIONS_IDENT.add(FnvHash.Constants.SYSTIMESTAMP);
+        FUNCTIONS_IDENT.add(FnvHash.Constants.SQLCODE);
+        FUNCTIONS_IDENT.add(FnvHash.Constants.SQLERRM);
+
+        IMPLICIT_CURSOR_ATTRIBUTES = new HashSet<>();
+        IMPLICIT_CURSOR_ATTRIBUTES.add(FnvHash.Constants.FOUND);
+        IMPLICIT_CURSOR_ATTRIBUTES.add(FnvHash.Constants.NOTFOUND);
+        IMPLICIT_CURSOR_ATTRIBUTES.add(FnvHash.Constants.ROWCOUNT);
+        IMPLICIT_CURSOR_ATTRIBUTES.add(FnvHash.Constants.BULK_ROWCOUNT);
+        IMPLICIT_CURSOR_ATTRIBUTES.add(FnvHash.Constants.BULK_EXCEPTIONS);
+    }
+
     public OracleSchemaStatVisitor() {
         this(new ArrayList<Object>());
     }
@@ -176,21 +204,50 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         }
 
         long hashCode64 = x.hashCode64();
-
-        if (hashCode64 == FnvHash.Constants.ROWNUM
-                || hashCode64 == FnvHash.Constants.SYSDATE
-                || hashCode64 == FnvHash.Constants.LEVEL
-                || hashCode64 == FnvHash.Constants.SQLCODE) {
-            return false;
-        }
-
-        if (hashCode64 == FnvHash.Constants.ISOPEN
-                && x.getParent() instanceof SQLBinaryOpExpr
-                && ((SQLBinaryOpExpr) x.getParent()).getOperator() == SQLBinaryOperator.Modulus) {
+        if (isPseudoColumn(hashCode64) || isFunctionIdentifier(hashCode64) ||
+                isImplicitCursorBinaryExpr(x.getParent())) {
             return false;
         }
 
         return super.visit(x);
+    }
+
+    // This is to override the default behavior of the {@link SchemaStatVisitor} to ignore pseudo columns.
+    @Override
+    protected boolean isPseudoColumn(long hash) {
+        // Pseudo columns which are not covered by {@link SchemaStatVisitor} to ignore. Not all pseudo
+        // columns are ignored, for example, wildcard * is not ignored.
+        return PSEUDO_COLUMNS.contains(hash);
+    }
+
+    protected boolean isFunctionIdentifier(long hash) {
+        return FUNCTIONS_IDENT.contains(hash);
+    }
+
+    private static boolean isImplicitCursorBinaryExpr(SQLObject sqlObject) {
+        if (!(sqlObject instanceof SQLBinaryOpExpr)) {
+            return false;
+        }
+
+        SQLBinaryOpExpr sqlBinaryOpExpr = (SQLBinaryOpExpr) sqlObject;
+        if (sqlBinaryOpExpr.getOperator() == SQLBinaryOperator.Modulus) {
+            SQLExpr left = sqlBinaryOpExpr.getLeft();
+            SQLExpr right = sqlBinaryOpExpr.getRight();
+            return isImplicitCursorBinaryExpr(left, right);
+        }
+
+        return false;
+    }
+
+    private static boolean isImplicitCursorBinaryExpr(SQLExpr left, SQLExpr right) {
+        // Change: if it is an implicit cursor, skip it
+        if (left instanceof SQLIdentifierExpr && right instanceof SQLIdentifierExpr) {
+            long leftHashCode64 = ((SQLIdentifierExpr) left).hashCode64();
+            long rightHashCode64 = ((SQLIdentifierExpr) right).hashCode64();
+            return leftHashCode64 == FnvHash.Constants.SQL && IMPLICIT_CURSOR_ATTRIBUTES.contains(rightHashCode64);
+        }
+
+        return false;
     }
 
     @Override
@@ -300,15 +357,10 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleExceptionStatement.Item x) {
+    public boolean visit(SQLExceptionStatement.Item x) {
         SQLExpr when = x.getWhen();
         if (when instanceof SQLIdentifierExpr) {
-            SQLIdentifierExpr ident = (SQLIdentifierExpr) when;
-            if (ident.getName().equalsIgnoreCase("OTHERS")) {
-                // skip
-            } else {
-                this.visit(ident);
-            }
+            return false;
         } else if (when != null) {
             when.accept(this);
         }
@@ -528,8 +580,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             SQLExpr valueExpr = null;
             if (x.getParent() instanceof SQLBlockStatement) {
                 List<SQLStatement> statementList = ((SQLBlockStatement) x.getParent()).getStatementList();
-                for (int i = 0, size = statementList.size(); i < size; ++i) {
-                    SQLStatement stmt = statementList.get(i);
+                for (SQLStatement stmt : statementList) {
                     if (stmt == x) {
                         break;
                     }

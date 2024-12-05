@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -33,14 +32,14 @@ public class MySqlGrantTest_12 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals("GRANT CREATE TEMPORARY TABLES ON mydb.* TO 'someuser'@'somehost';", //
+        assertEquals("GRANT CREATE TEMPORARY TABLES ON mydb.* TO 'someuser'@'somehost';", //
                 SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("grant CREATE TEMPORARY TABLES on mydb.* to 'someuser'@'somehost';", //
+        assertEquals("grant create temporary tables on mydb.* to 'someuser'@'somehost';", //
                 SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
 //        System.out.println("Tables : " + visitor.getTables());
@@ -48,13 +47,13 @@ public class MySqlGrantTest_12 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
 
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
+//        assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

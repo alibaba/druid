@@ -66,13 +66,17 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement imple
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof StarRocksASTVisitor) {
             accept0((StarRocksASTVisitor) v);
+            return;
         }
+        super.accept0(v);
     }
 
     @Override
     public void accept0(StarRocksASTVisitor v) {
         if (v.visit(this)) {
-            acceptChild(v);
+            super.acceptChild(v);
+            acceptChild(v, engine);
+            acceptChild(v, orderBy);
         }
         v.endVisit(this);
     }

@@ -147,7 +147,7 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
         return null;
     }
 
-    public SQLObject resolveColum(long columnNameHash) {
+    public SQLObject resolveColumn(long columnNameHash) {
         return findColumn(columnNameHash);
     }
 

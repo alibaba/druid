@@ -69,7 +69,7 @@ public class OracleCreateMaterializedViewTest0 extends OracleTest {
 
         assertEquals(1, visitor.getTables().size());
 
-        assertEquals(4, visitor.getColumns().size());
+        assertEquals(3, visitor.getColumns().size());
 
         assertTrue(visitor.getColumns().contains(new TableStat.Column("invoice", "seller_no")));
     }

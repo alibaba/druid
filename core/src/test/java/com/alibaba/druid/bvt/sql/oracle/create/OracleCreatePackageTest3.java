@@ -96,8 +96,8 @@ public class OracleCreatePackageTest3 extends OracleTest {
                         "\t)\n" +
                         "\t;\n" +
                         "\tFUNCTION new_request (\n" +
-                        "\t\tp_method IN VARCHAR2, \n" +
-                        "\t\tp_namespace IN VARCHAR2, \n" +
+                        "\t\tp_method IN VARCHAR2,\n" +
+                        "\t\tp_namespace IN VARCHAR2,\n" +
                         "\t\tp_envelope_tag IN VARCHAR2 := 'SOAP-ENV'\n" +
                         "\t)\n" +
                         "\tRETURN t_request\n" +
@@ -110,15 +110,15 @@ public class OracleCreatePackageTest3 extends OracleTest {
                         "\t)\n" +
                         "\t;\n" +
                         "\tFUNCTION invoke (\n" +
-                        "\t\tp_request IN OUT NOCOPY t_request, \n" +
-                        "\t\tp_url IN VARCHAR2, \n" +
+                        "\t\tp_request IN OUT NOCOPY t_request,\n" +
+                        "\t\tp_url IN VARCHAR2,\n" +
                         "\t\tp_action IN VARCHAR2\n" +
                         "\t)\n" +
                         "\tRETURN t_response\n" +
                         "\t\n" +
                         "\tFUNCTION get_return_value (\n" +
-                        "\t\tp_response IN OUT NOCOPY t_response, \n" +
-                        "\t\tp_name IN VARCHAR2, \n" +
+                        "\t\tp_response IN OUT NOCOPY t_response,\n" +
+                        "\t\tp_name IN VARCHAR2,\n" +
                         "\t\tp_namespace IN VARCHAR2\n" +
                         "\t)\n" +
                         "\tRETURN VARCHAR2\n" +

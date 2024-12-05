@@ -428,6 +428,16 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         return this.distionOption == SQLSetQuantifier.DISTINCT;
     }
 
+    public void setDistinct(boolean distinct) {
+        if (distinct) {
+            this.distionOption = SQLSetQuantifier.DISTINCT;
+        } else {
+            if (this.distionOption == SQLSetQuantifier.DISTINCT) {
+                this.distionOption = 0;
+            }
+        }
+    }
+
     public List<SQLSelectItem> getSelectList() {
         return this.selectList;
     }
@@ -759,6 +769,10 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
         if (this.groupBy != null) {
             this.groupBy.accept(visitor);
+        }
+
+        if (this.qualify != null) {
+            this.qualify.accept(visitor);
         }
 
         if (this.orderBy != null) {

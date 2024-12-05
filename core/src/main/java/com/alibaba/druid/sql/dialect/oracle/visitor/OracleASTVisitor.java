@@ -312,20 +312,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     default void endVisit(OracleSysdateExpr x) {
     }
 
-    default boolean visit(OracleExceptionStatement x) {
-        return true;
-    }
-
-    default void endVisit(OracleExceptionStatement x) {
-    }
-
-    default boolean visit(OracleExceptionStatement.Item x) {
-        return true;
-    }
-
-    default void endVisit(OracleExceptionStatement.Item x) {
-    }
-
     default boolean visit(OracleArgumentExpr x) {
         return true;
     }

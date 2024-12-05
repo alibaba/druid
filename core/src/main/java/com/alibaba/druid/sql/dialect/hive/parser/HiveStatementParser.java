@@ -626,14 +626,16 @@ public class HiveStatementParser extends SQLStatementParser {
     }
 
     @Override
-    protected boolean parseAlterTableAddColumnBefore() {
-        if (lexer.identifierEquals("COLUMNS")) {
-            lexer.nextToken();
-            if (lexer.token() == LPAREN) {
-                lexer.nextToken();
-                return true;
-            }
-        } else if (lexer.token() == LPAREN) {
+    protected boolean parseAlterTableAddColumnBefore(SQLAlterTableAddColumn x) {
+        lexer.nextIfIdentifier("COLUMNS");
+
+        if (lexer.nextIf(Token.IF)) {
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            x.setIfNotExists(true);
+        }
+
+        if (lexer.token() == LPAREN) {
             lexer.nextToken();
             return true;
         }

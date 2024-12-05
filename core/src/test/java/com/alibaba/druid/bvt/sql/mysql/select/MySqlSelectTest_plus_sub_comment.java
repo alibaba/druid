@@ -229,7 +229,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
                 "SELECT *\n" +
                 "FROM mp_Sites\n" +
                 "WHERE SiteID = -1\n" +
-                "\tOR -1 = -1 -- ORDER BY SiteID LIMIT ", stmt.toString());
+                "\tOR -1 = -1 -- ORDER BY SiteID LIMIT", stmt.toString());
     }
 
     public void test_20() throws Exception {

@@ -11,6 +11,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
+import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -50,17 +51,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(StarRocksCreateTableStatement x) {
-        print0(ucase ? "CREATE " : "create ");
-        printCreateTableFeatures(x);
-        print0(ucase ? "TABLE " : "table ");
-        if (x.isIfNotExists()) {
-            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
-        }
-        printTableSourceExpr(
-                x.getTableSource()
-                        .getExpr());
-        printCreateTableAfterName(x);
-        printTableElements(x.getTableElementList());
+        printCreateTable(x, false);
         printEngine(x);
         printUniqueKey(x);
         printComment(x.getComment());
@@ -72,16 +63,13 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         return false;
     }
 
+    @Override
     public boolean visit(SQLCreateTableStatement x) {
-        printCreateTable(x, false);
-        printEngine(x);
-        printComment(x.getComment());
-        printPartitionBy(x);
-        printDistributedBy(x);
-        printOrderBy(x);
-        printTableOptions(x);
-        printSelectAs(x, true);
-        return false;
+        if (x instanceof StarRocksCreateTableStatement) {
+            return visit((StarRocksCreateTableStatement) x);
+        } else {
+            return super.visit(x);
+        }
     }
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
         print0(ucase ? "CREATE " : "create ");
@@ -261,6 +249,22 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
 
         print0(ucase ? "PROPERTIES" : "properties");
         print(x.getProperties());
+        return false;
+    }
+
+    public boolean visit(StarRocksIndexDefinition x) {
+        print0(ucase ? "INDEX " : "index ");
+        x.getIndexName().accept(this);
+        print('(');
+        printAndAccept(x.getColumns(), ", ");
+        print(')');
+        if (x.isUsingBitmap()) {
+            print0(ucase ? " USING BITMAP" : " using bitmap");
+        }
+        if (x.getComment() != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            x.getComment().accept(this);
+        }
         return false;
     }
 }

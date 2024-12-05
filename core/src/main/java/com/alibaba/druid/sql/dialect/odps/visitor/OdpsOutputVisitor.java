@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
+import com.alibaba.druid.util.OdpsUtils;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -61,10 +62,11 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     public OdpsOutputVisitor(StringBuilder appender) {
         super(appender, DbType.odps);
+        dialect = OdpsUtils.DIALECT;
     }
 
     @Override
-    public boolean visit(SQLMergeStatement.MergeUpdateClause x) {
+    public boolean visit(SQLMergeStatement.WhenUpdate x) {
         print0(ucase ? "WHEN MATCHED" : "when matched");
         this.indentCount++;
 
@@ -91,14 +93,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         printlnAndAccept(x.getItems(), ",");
         decrementIndent();
         this.indentCount--;
-
-        SQLExpr deleteWhere = x.getDeleteWhere();
-        if (deleteWhere != null) {
-            println();
-            print0(ucase ? "WHEN MATCHED AND " : "when matched and ");
-            printExpr(deleteWhere, parameterized);
-            print0(ucase ? " DELETE" : " delete");
-        }
 
         return false;
     }
@@ -144,7 +138,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         printSortedBy(x.getSortedBy());
         printIntoBuckets(x.getBuckets());
         printIntoShards(x.getShards());
-        printSelectAs(x, true);
         printRowFormat(x);
         printStoredBy(x.getStoredBy());
         printStoredAs(x);
@@ -153,7 +146,19 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         printTableOptions(x);
         printLifeCycle(x.getLifeCycle());
         printUsing(x);
+        printSelectAs(x, true);
         return false;
+    }
+
+    protected void printPartitionedBy(OdpsCreateTableStatement x) {
+        super.printPartitionedBy(x);
+        SQLAliasedExpr autoPartitionedBy = x.getAutoPartitionedBy();
+        if (autoPartitionedBy != null) {
+            println();
+            print0(ucase ? "AUTO PARTITIONED BY (" : "auto partitioned by (");
+            autoPartitionedBy.accept(this);
+            print(")");
+        }
     }
 
     protected void printSerdeProperties(OdpsCreateTableStatement x) {
@@ -585,7 +590,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     protected void printMethodOwner(SQLExpr owner) {
         owner.accept(this);
-        if (owner instanceof SQLMethodInvokeExpr) {
+        if (owner instanceof SQLMethodInvokeExpr || owner instanceof SQLPropertyExpr) {
             print('.');
         } else {
             print(':');
@@ -1078,6 +1083,34 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         final SQLCurrentTimeExpr.Type type = x.getType();
         print(ucase ? type.name : type.nameLCase);
         print0("()");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropDatabaseStatement x) {
+        print0(ucase ? "DROP " : "drop ");
+
+        if (x.isPhysical()) {
+            print0(ucase ? "PHYSICAL " : "physical ");
+        }
+
+        print0(ucase ? "SCHEMA " : "schema ");
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
+        x.getDatabase().accept(this);
+
+        final Boolean restrict = x.getRestrict();
+        if (restrict != null && restrict.booleanValue()) {
+            print0(ucase ? " RESTRICT" : " restrict");
+        }
+
+        if (x.isCascade()) {
+            print0(ucase ? " CASCADE" : " cascade");
+        }
+
         return false;
     }
 }

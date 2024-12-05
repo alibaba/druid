@@ -1,3 +1,216 @@
+select a, b, c
+from t1
+group by all
+--------------------
+SELECT a, b, c
+FROM t1
+GROUP BY ALL
+------------------------------------------------------------------------------------------------------------------------
+BEGIN
+	BEGIN TRANSACTION;
+	COMMIT TRANSACTION;
+EXCEPTION WHEN ERROR THEN
+  RAISE USING message = FORMAT("Error %s at %s because of statement %s.", @@error.message, @@error.formatted_stack_trace, @@error.statement_text);
+  ROLLBACK TRANSACTION;
+END
+--------------------
+BEGIN
+	START TRANSACTION;
+	COMMIT TRANSACTION;
+EXCEPTION
+	WHEN ERROR THEN
+		RAISE USING MESSAGE = FORMAT('Error %s at %s because of statement %s.', @@error.message, @@error.formatted_stack_trace, @@error.statement_text);
+		ROLLBACK TRANSACTION;
+END;
+------------------------------------------------------------------------------------------------------------------------
+select PARSE_DATE("%Y%m%d", date.date_id) as date, week.week_start_date
+ from t1
+--------------------
+SELECT PARSE_DATE('%Y%m%d', date.date_id) AS date, week.week_start_date
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+WITH Races AS (
+ SELECT "800M" AS race,
+   [STRUCT("Rudisha" AS name, [23.4, 26.3, 26.4, 26.1] AS laps),
+    STRUCT("Makhloufi" AS name, [24.5, 25.4, 26.6, 26.1] AS laps),
+    STRUCT("Murphy" AS name, [23.9, 26.0, 27.0, 26.0] AS laps),
+    STRUCT("Bosse" AS name, [23.6, 26.2, 26.5, 27.1] AS laps),
+    STRUCT("Rotich" AS name, [24.7, 25.6, 26.9, 26.4] AS laps),
+    STRUCT("Lewandowski" AS name, [25.0, 25.7, 26.3, 27.2] AS laps),
+    STRUCT("Kipketer" AS name, [23.2, 26.1, 27.3, 29.4] AS laps),
+    STRUCT("Berian" AS name, [23.7, 26.1, 27.0, 29.3] AS laps),
+    STRUCT("Nathan" AS name, ARRAY<FLOAT64>[] AS laps),
+    STRUCT("David" AS name, NULL AS laps)]
+    AS participants)
+SELECT
+  name, sum(duration) AS finish_time
+FROM Races CROSS JOIN Races.participants LEFT JOIN participants.laps AS duration
+GROUP BY name;
+--------------------
+WITH Races AS (
+		SELECT '800M' AS race, [STRUCT('Rudisha' AS name, [23.4, 26.3, 26.4, 26.1] AS laps),
+			STRUCT('Makhloufi' AS name, [24.5, 25.4, 26.6, 26.1] AS laps),
+			STRUCT('Murphy' AS name, [23.9, 26.0, 27.0, 26.0] AS laps),
+			STRUCT('Bosse' AS name, [23.6, 26.2, 26.5, 27.1] AS laps),
+			STRUCT('Rotich' AS name, [24.7, 25.6, 26.9, 26.4] AS laps),
+			STRUCT('Lewandowski' AS name, [25.0, 25.7, 26.3, 27.2] AS laps),
+			STRUCT('Kipketer' AS name, [23.2, 26.1, 27.3, 29.4] AS laps),
+			STRUCT('Berian' AS name, [23.7, 26.1, 27.0, 29.3] AS laps),
+			STRUCT('Nathan' AS name, ARRAY < FLOAT64 > [] AS laps),
+			STRUCT('David' AS name, NULL AS laps)] AS participants
+	)
+SELECT name, sum(duration) AS finish_time
+FROM Races
+	CROSS JOIN Races.participants
+	LEFT JOIN participants.laps duration
+GROUP BY name;
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+  some_numbers,
+  some_numbers[0] AS index_0,
+  some_numbers[OFFSET(1)] AS offset_1,
+  some_numbers[ORDINAL(1)] AS ordinal_1
+FROM Sequences
+--------------------
+SELECT some_numbers, some_numbers[0] AS index_0, some_numbers[OFFSET(1)] AS offset_1, some_numbers[ORDINAL(1)] AS ordinal_1
+FROM Sequences
+------------------------------------------------------------------------------------------------------------------------
+WITH
+  Sequences AS (
+    SELECT [0, 1, 1, 2, 3, 5] AS some_numbers UNION ALL
+    SELECT [2, 4, 8, 16, 32] UNION ALL
+    SELECT [5, 10]
+  )
+SELECT * FROM Sequences
+--------------------
+WITH Sequences AS (
+		SELECT [0, 1, 1, 2, 3,
+			5] AS some_numbers
+		UNION ALL
+		SELECT [2, 4, 8, 16, 32]
+		UNION ALL
+		SELECT [5, 10]
+	)
+SELECT *
+FROM Sequences
+------------------------------------------------------------------------------------------------------------------------
+merge into t1 as tgt
+using
+(select * from base) as src
+ON FALSE
+WHEN NOT MATCHED BY SOURCE
+THEN DELETE
+when not matched
+then insert
+(business_id)
+values(src.business_id)
+--------------------
+MERGE INTO t1 tgt
+USING (
+	SELECT *
+	FROM base
+) src ON false
+WHEN NOT MATCHED BY SOURCE THEN DELETE
+WHEN NOT MATCHED THEN INSERT (business_id)
+VALUES (src.business_id)
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.Inventory T
+USING dataset.NewArrivals S
+ON T.product = S.product
+WHEN MATCHED THEN
+  UPDATE SET quantity = T.quantity + S.quantity
+--------------------
+MERGE INTO dataset.Inventory T
+USING dataset.NewArrivals S ON T.product = S.product
+WHEN MATCHED THEN UPDATE
+SET quantity = T.quantity + S.quantity
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.Inventory T
+USING (SELECT product, quantity, state FROM dataset.NewArrivals t1 JOIN dataset.Warehouse t2 ON t1.warehouse = t2.warehouse) S
+ON T.product = S.product
+WHEN MATCHED AND state = 'CA' THEN
+  UPDATE SET quantity = T.quantity + S.quantity
+WHEN MATCHED THEN
+  DELETE
+--------------------
+MERGE INTO dataset.Inventory T
+USING (
+	SELECT product, quantity, state
+	FROM dataset.NewArrivals t1
+		JOIN dataset.Warehouse t2 ON t1.warehouse = t2.warehouse
+) S ON T.product = S.product
+WHEN MATCHED THEN UPDATE
+SET quantity = T.quantity + S.quantity
+WHERE state = 'CA'
+WHEN MATCHED THEN DELETE
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.Inventory T
+USING dataset.NewArrivals S
+ON FALSE
+WHEN NOT MATCHED AND product LIKE '%washer%' THEN
+  INSERT (product, quantity) VALUES(product, quantity)
+WHEN NOT MATCHED BY SOURCE AND product LIKE '%washer%' THEN
+  DELETE
+--------------------
+MERGE INTO dataset.Inventory T
+USING dataset.NewArrivals S ON false
+WHEN NOT MATCHED THEN INSERT (product, quantity)
+VALUES (product, quantity)
+	WHERE product LIKE '%washer%'
+WHEN NOT MATCHED BY SOURCE AND product LIKE '%washer%' THEN DELETE
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.NewArrivals T
+USING (SELECT * FROM dataset.NewArrivals WHERE warehouse <> 'warehouse #2') S
+ON T.product = S.product
+WHEN MATCHED AND T.warehouse = 'warehouse #1' THEN
+  UPDATE SET quantity = T.quantity + 20
+WHEN MATCHED THEN
+  DELETE
+--------------------
+MERGE INTO dataset.NewArrivals T
+USING (
+	SELECT *
+	FROM dataset.NewArrivals
+	WHERE warehouse <> 'warehouse #2'
+) S ON T.product = S.product
+WHEN MATCHED THEN UPDATE
+SET quantity = T.quantity + 20
+WHERE T.warehouse = 'warehouse #1'
+WHEN MATCHED THEN DELETE
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.Inventory T
+USING dataset.NewArrivals S
+ON T.product = S.product
+WHEN MATCHED THEN
+  UPDATE SET quantity = T.quantity + S.quantity
+WHEN NOT MATCHED THEN
+  INSERT (product, quantity) VALUES(product, quantity)
+--------------------
+MERGE INTO dataset.Inventory T
+USING dataset.NewArrivals S ON T.product = S.product
+WHEN MATCHED THEN UPDATE
+SET quantity = T.quantity + S.quantity
+WHEN NOT MATCHED THEN INSERT (product, quantity)
+VALUES (product, quantity)
+------------------------------------------------------------------------------------------------------------------------
+MERGE dataset.DetailedInventory T
+USING dataset.Inventory S
+ON T.product = S.product
+WHEN NOT MATCHED AND quantity < 20 THEN
+  INSERT(product, quantity, supply_constrained, comments)
+  VALUES(product, quantity, true, NULL)
+WHEN NOT MATCHED THEN
+  INSERT(product, quantity, supply_constrained)
+  VALUES(product, quantity, false)
+--------------------
+MERGE INTO dataset.DetailedInventory T
+USING dataset.Inventory S ON T.product = S.product
+WHEN NOT MATCHED THEN INSERT (product, quantity, supply_constrained, comments)
+VALUES (product, quantity, true, NULL)
+	WHERE quantity < 20
+WHEN NOT MATCHED THEN INSERT (product, quantity, supply_constrained)
+VALUES (product, quantity, false)
+------------------------------------------------------------------------------------------------------------------------
 SELECT ARRAY(SELECT AS STRUCT
         cast(coalesce(a,0) as NUMERIC) as seconds_amount,
         cast(coalesce(b,0) as NUMERIC) as nanos_amount,
@@ -84,6 +297,7 @@ WHERE
 --------------------
 UPDATE `p1` main
 SET a = false, b = dup.x
+FROM tp dup
 WHERE main.x = dup.u;
 ------------------------------------------------------------------------------------------------------------------------
 SELECT STRUCT<x int64, y string>(1, t.str_col)
@@ -189,7 +403,8 @@ SELECT ARRAY_AGG(x LIMIT 5) AS array_agg
 FROM UNNEST([2, 1, -2, 3, -2, 1, 2]) AS x;
 --------------------
 SELECT ARRAY_AGG(x LIMIT 5) AS array_agg
-FROM UNNEST([2, 1, -2, 3, -2, 1, 2]) x;
+FROM UNNEST([2, 1, -2, 3, -2,
+	1, 2]) x;
 ------------------------------------------------------------------------------------------------------------------------
 ASSERT (
   (SELECT COUNT(*) > 5 FROM UNNEST([1, 2, 3, 4, 5, 6]))
@@ -197,7 +412,8 @@ ASSERT (
 --------------------
 ASSERT (
 	SELECT COUNT(*) > 5
-	FROM UNNEST([1, 2, 3, 4, 5, 6]))
+	FROM UNNEST([1, 2, 3, 4, 5,
+		6]))
 AS '''Table must contain more than 5 rows.''';
 ------------------------------------------------------------------------------------------------------------------------
 SELECT f1
@@ -226,7 +442,7 @@ SELECT 1;
 ------------------------------------------------------------------------------------------------------------------------
 select *
 from t
-where TIMESTAMP.abc.created_timestamp) >= area.effective_timestamp
+where TIMESTAMP(abc.created_timestamp) >= area.effective_timestamp
 --------------------
 SELECT *
 FROM t

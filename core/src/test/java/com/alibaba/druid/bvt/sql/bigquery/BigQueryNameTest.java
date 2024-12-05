@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.FnvHash;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class BigQueryNameTest {
 
     @Test
     public void name3() {
-        String str = "a-x.b.c";
+        String str = "`a-x`.b.c";
         SQLExpr expr = SQLUtils.toSQLExpr(str, DbType.bigquery, SQLParserFeature.IgnoreNameQuotes);
         assertTrue(expr instanceof SQLPropertyExpr);
         SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
@@ -93,6 +94,23 @@ public class BigQueryNameTest {
                 str, DbType.bigquery,
                 SQLParserFeature.IgnoreNameQuotes);
         SQLExpr expr = stmt.getName();
+        assertTrue(expr instanceof SQLPropertyExpr);
+        SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+        assertEquals("c", propertyExpr.getName());
+        assertTrue(propertyExpr.getOwner() instanceof SQLPropertyExpr);
+        SQLExpr ownerOwner = ((SQLPropertyExpr) propertyExpr.getOwner()).getOwner();
+        assertTrue(ownerOwner instanceof SQLIdentifierExpr);
+        assertEquals("a-x", ((SQLIdentifierExpr) ownerOwner).getName());
+        assertEquals("`a-x`.b.c", SQLUtils.toSQLString(expr, DbType.bigquery));
+    }
+
+    @Test
+    public void select1() {
+        String str = "select * from a-x.b.c";
+        SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(
+                str, DbType.bigquery,
+                SQLParserFeature.IgnoreNameQuotes);
+        SQLExpr expr = ((SQLExprTableSource) stmt.getSelect().getQueryBlock().getFrom()).getExpr();
         assertTrue(expr instanceof SQLPropertyExpr);
         SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
         assertEquals("c", propertyExpr.getName());

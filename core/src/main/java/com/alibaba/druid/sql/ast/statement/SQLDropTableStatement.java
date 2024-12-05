@@ -20,15 +20,17 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropStatement {
     private List<SQLCommentHint> hints;
 
-    protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
+    protected List<SQLExprTableSource> tableSources = new ArrayList<>();
     protected boolean purge;
     protected boolean cascade;
     protected boolean restrict;
@@ -75,6 +77,10 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
 
     public void setName(SQLName name) {
         this.addTableSource(new SQLExprTableSource(name));
+    }
+
+    public void addTableSource(String name) {
+        this.addTableSource(new SQLIdentifierExpr(name));
     }
 
     public void addTableSource(SQLName name) {
@@ -184,5 +190,65 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
             return dataSource0.getName();
         }
         return null;
+    }
+
+    protected void cloneTo(SQLDropTableStatement x) {
+        if (hints != null) {
+            x.hints = new ArrayList<>(hints);
+        }
+        tableSources.forEach(e -> x.addTableSource(e.clone()));
+        x.purge = purge;
+        x.cascade = cascade;
+        x.restrict = restrict;
+        x.ifExists = ifExists;
+        x.temporary = temporary;
+        x.external = external;
+        x.isDropPartition = isDropPartition;
+        if (where != null) {
+            x.where = where.clone();
+        }
+    }
+
+    public SQLDropTableStatement clone() {
+        SQLDropTableStatement x = new SQLDropTableStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        SQLDropTableStatement that = (SQLDropTableStatement) o;
+        return purge == that.purge
+                && cascade == that.cascade
+                && restrict == that.restrict
+                && ifExists == that.ifExists
+                && temporary == that.temporary
+                && external == that.external
+                && isDropPartition == that.isDropPartition
+                && Objects.equals(hints, that.hints)
+                && Objects.equals(tableSources, that.tableSources)
+                && Objects.equals(where, that.where);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(hints);
+        result = 31 * result + Objects.hashCode(tableSources);
+        result = 31 * result + Boolean.hashCode(purge);
+        result = 31 * result + Boolean.hashCode(cascade);
+        result = 31 * result + Boolean.hashCode(restrict);
+        result = 31 * result + Boolean.hashCode(ifExists);
+        result = 31 * result + Boolean.hashCode(temporary);
+        result = 31 * result + Boolean.hashCode(external);
+        result = 31 * result + Boolean.hashCode(isDropPartition);
+        result = 31 * result + Objects.hashCode(where);
+        return result;
     }
 }

@@ -298,7 +298,7 @@ public class Lexer {
         return token;
     }
 
-    public final boolean nextIf(Token token) {
+    public boolean nextIf(Token token) {
         if (this.token == token) {
             nextToken();
             return true;
@@ -867,6 +867,8 @@ public class Lexer {
                 return SQLType.SET_PROJECT;
             }
             return SQLType.SET;
+        } else if (hashCode == FnvHash.Constants.SETPROJECT) {
+            return SQLType.SET_PROJECT;
         } else if (hashCode == FnvHash.Constants.KILL) {
             return SQLType.KILL;
         } else if (hashCode == FnvHash.Constants.MSCK) {
@@ -1525,7 +1527,7 @@ public class Lexer {
         token = LBRACKET;
     }
 
-    private final void scanOperator() {
+    private void scanOperator() {
         switch (ch) {
             case '+':
                 scanChar();
@@ -2647,6 +2649,141 @@ public class Lexer {
 
         final boolean firstFlag = isFirstIdentifierChar(first);
         if (!firstFlag) {
+            throw new ParserException("illegal identifier. " + info());
+        }
+
+        hashLCase = 0xcbf29ce484222325L;
+        hash = 0xcbf29ce484222325L;
+
+        hashLCase ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
+        hashLCase *= 0x100000001b3L;
+
+        hash ^= ch;
+        hash *= 0x100000001b3L;
+
+        mark = pos;
+        bufPos = 1;
+        char ch = 0;
+        boolean hasLeftBrace = false;
+        for (; ; ) {
+            char c0 = ch;
+            ch = charAt(++pos);
+
+            if (!isIdentifierChar(ch)) {
+                if (((ch == '（' || ch == '）') && c0 > 256) || ch == '$') {
+                    bufPos++;
+                    continue;
+                } else if (ch == '{' && c0 == '$') {
+                    hasLeftBrace = true;
+                    bufPos++;
+                    continue;
+                } else if (ch == '}' && hasLeftBrace) {
+                    hasLeftBrace = false;
+                    bufPos++;
+                    continue;
+                } else if (ch == '-'
+                        && isIdentifierChar(charAt(pos + 1))
+                        && dialectFeatureEnabled(ScanSubAsIdentifier)) {
+                    hash ^= ch;
+                    hash *= 0x100000001b3L;
+
+                    hashLCase ^= ch;
+                    hashLCase *= 0x100000001b3L;
+
+                    bufPos++;
+                    continue;
+                }
+                break;
+            }
+
+            hashLCase ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
+            hashLCase *= 0x100000001b3L;
+
+            hash ^= ch;
+            hash *= 0x100000001b3L;
+
+            bufPos++;
+            continue;
+        }
+
+        this.ch = charAt(pos);
+
+        if (bufPos == 1) {
+            switch (first) {
+                case '（':
+                    token = Token.LPAREN;
+                    return;
+                case '）':
+                    token = Token.RPAREN;
+                    return;
+                default:
+                    break;
+            }
+            token = Token.IDENTIFIER;
+            stringVal = CharTypes.valueOf(first);
+            if (stringVal == null) {
+                stringVal = Character.toString(first);
+            }
+            return;
+        }
+
+        Token tok = keywords.getKeyword(hashLCase);
+        if (tok != null) {
+            token = tok;
+            if (token == Token.IDENTIFIER) {
+                stringVal = SymbolTable.global.addSymbol(text, mark, bufPos, hash);
+            } else {
+                stringVal = null;
+            }
+        } else {
+            token = Token.IDENTIFIER;
+            stringVal = SymbolTable.global.addSymbol(text, mark, bufPos, hash);
+        }
+    }
+
+    protected boolean isFirstIdentifierChar0(char ch) {
+        return CharTypes.letterOrUnderScore(ch);
+    }
+
+    protected void scanIdentifier0() {
+        this.hashLCase = 0;
+        this.hash = 0;
+
+        final char first = ch;
+
+        if (ch == '`') {
+            mark = pos;
+            bufPos = 1;
+            char ch;
+
+            int startPos = pos + 1;
+            int quoteIndex = text.indexOf('`', startPos);
+            if (quoteIndex == -1) {
+                throw new ParserException("illegal identifier. " + info());
+            }
+
+            hashLCase = 0xcbf29ce484222325L;
+            hash = 0xcbf29ce484222325L;
+
+            for (int i = startPos; i < quoteIndex; ++i) {
+                ch = text.charAt(i);
+
+                hashLCase ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
+                hashLCase *= 0x100000001b3L;
+
+                hash ^= ch;
+                hash *= 0x100000001b3L;
+            }
+
+            stringVal = MySqlLexer.quoteTable.addSymbol(text, pos, quoteIndex + 1 - pos, hash);
+            //stringVal = text.substring(mark, pos);
+            pos = quoteIndex + 1;
+            this.ch = charAt(pos);
+            token = Token.IDENTIFIER;
+            return;
+        }
+
+        if (!isFirstIdentifierChar0(first)) {
             throw new ParserException("illegal identifier. " + info());
         }
 

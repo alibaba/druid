@@ -116,6 +116,13 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         this.arguments.set(i, arg);
     }
 
+    public SQLExpr getArgument(int i) {
+        if (i >= 0 && i < this.arguments.size()) {
+            return this.arguments.get(i);
+        }
+        return null;
+    }
+
     /**
      * deprecated, instead of addArgument
      *
@@ -309,6 +316,7 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
     }
 
     public void cloneTo(SQLMethodInvokeExpr x) {
+        super.cloneTo(x);
         x.methodName = methodName;
 
         if (owner != null) {

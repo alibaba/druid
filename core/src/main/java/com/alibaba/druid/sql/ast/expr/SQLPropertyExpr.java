@@ -291,7 +291,7 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
             final SQLExpr expr = selectItem.getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 return ((SQLIdentifierExpr) expr).getResolvedColumn();
-            } else if (expr instanceof SQLPropertyExpr) {
+            } else if (expr instanceof SQLPropertyExpr && expr != this) {
                 return ((SQLPropertyExpr) expr).getResolvedColumn();
             }
         }
@@ -340,14 +340,15 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
     }
 
     public SQLDataType computeDataType() {
-        if (resolvedColumn instanceof SQLColumnDefinition
-                && resolvedColumn != null) {
+        if (resolvedColumn instanceof SQLColumnDefinition) {
             return ((SQLColumnDefinition) resolvedColumn).getDataType();
         }
 
-        if (resolvedColumn instanceof SQLSelectItem
-                && resolvedColumn != null) {
-            return ((SQLSelectItem) resolvedColumn).computeDataType();
+        if (resolvedColumn instanceof SQLSelectItem) {
+            if (((SQLSelectItem) resolvedColumn).getExpr() != this) {
+                return ((SQLSelectItem) resolvedColumn).computeDataType();
+            }
+            return null;
         }
 
         if (resolvedOwnerObject == null) {

@@ -61,7 +61,7 @@ public class OracleInsertTest2 extends OracleTest {
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "job_id")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
-
+  
     public void test_1() throws Exception {
         String sql = "BEGIN\n" +
                 "\tINSERT INTO employees (first_name, last_name, job_title)\n" +

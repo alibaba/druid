@@ -152,10 +152,17 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 acceptIdentifier("PROPERTIES");
                 tableLike.setExcludeProperties(true);
             }
+        } else if (lexer.token() == Token.INDEX) {
+            parseIndex(createTable);
         } else {
             SQLColumnDefinition column = this.exprParser.parseColumn();
             createTable.getTableElementList().add(column);
         }
+    }
+
+    protected void parseIndex(SQLCreateTableStatement createTable) {
+        SQLColumnDefinition column = this.exprParser.parseColumn();
+        createTable.getTableElementList().add(column);
     }
 
     protected void createTableBefore(SQLCreateTableStatement createTable) {

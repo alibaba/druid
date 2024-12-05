@@ -70,7 +70,13 @@ CREATE TABLE kudu.dwd_market.dynamic_qrcode_hquid_relate_unionid (
 	del_flag integer WITH(nullable = true),
 	uname varchar WITH(nullable = true)
 )
-WITH (number_of_replicas = 3, partition_by_hash_buckets = 2, partition_by_hash_columns = ARRAY['unionid'], partition_by_range_columns = ARRAY['unionid', 'hq_uid'], range_partitions = '[{lower:null,upper:null}]')
+WITH (
+	number_of_replicas = 3,
+	partition_by_hash_buckets = 2,
+	partition_by_hash_columns = ARRAY['unionid'],
+	partition_by_range_columns = ARRAY['unionid', 'hq_uid'],
+	range_partitions = '[{lower:null,upper:null}]'
+)
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS orders (
   orderkey bigint,

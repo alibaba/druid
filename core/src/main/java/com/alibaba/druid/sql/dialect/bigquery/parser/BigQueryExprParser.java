@@ -100,14 +100,6 @@ public class BigQueryExprParser extends SQLExprParser {
         return super.methodRest(expr, acceptLPAREN);
     }
 
-    private SQLStructExpr struct() {
-        SQLStructExpr structExpr = new SQLStructExpr();
-        accept(Token.LPAREN);
-        aliasedItems(structExpr.getItems(), structExpr);
-        accept(Token.RPAREN);
-        return structExpr;
-    }
-
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
             parseAssignItem(column.getColProperties(), column);
@@ -237,40 +229,6 @@ public class BigQueryExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (expr instanceof SQLPropertyExpr) {
-            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
-            SQLExpr owner = propertyExpr.getOwner();
-            if (owner instanceof SQLIdentifierExpr) {
-                SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) owner;
-                long hashCode64 = identifierExpr.hashCode64();
-                if (hashCode64 == FnvHash.Constants.DATE
-                        || hashCode64 == FnvHash.Constants.DATETIME
-                        || hashCode64 == FnvHash.Constants.TIMESTAMP
-                ) {
-                    String name = null;
-                    if (lexer.nextIf(Token.DOT)) {
-                        name = lexer.stringVal();
-                        lexer.nextToken();
-                    }
-
-                    SQLExpr timeZone = null;
-                    if (lexer.nextIf(Token.COMMA)) {
-                        timeZone = this.primary();
-                    }
-                    accept(Token.RPAREN);
-                    SQLMethodInvokeExpr func = new SQLMethodInvokeExpr((SQLIdentifierExpr) owner);
-                    func.addArgument(
-                            name != null
-                                    ? new SQLPropertyExpr(new SQLIdentifierExpr(propertyExpr.getName()), name)
-                                    : new SQLIdentifierExpr(identifierExpr.getName())
-                    );
-                    if (timeZone != null) {
-                        func.addArgument(timeZone);
-                    }
-                    expr = func;
-                }
-            }
-        }
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
             String ident = identifierExpr.getName();
@@ -335,6 +293,12 @@ public class BigQueryExprParser extends SQLExprParser {
         return super.exprRest(expr);
     }
 
+    protected String nameCommon() {
+        String identName = lexer.stringVal();
+        lexer.nextToken();
+        return identName;
+    }
+
     @Override
     protected SQLCastExpr parseCastFormat(SQLCastExpr cast) {
         if (lexer.nextIfIdentifier("FORMAT")) {
@@ -360,5 +324,12 @@ public class BigQueryExprParser extends SQLExprParser {
             }
         }
         return super.nameRest(name);
+    }
+
+    @Override
+    protected SQLExpr primaryCommon(SQLExpr sqlExpr) {
+        sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+        lexer.nextToken();
+        return sqlExpr;
     }
 }
