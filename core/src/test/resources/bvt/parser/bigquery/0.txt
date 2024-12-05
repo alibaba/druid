@@ -1,3 +1,11 @@
+select a, b, c
+from t1
+group by all
+--------------------
+SELECT a, b, c
+FROM t1
+GROUP BY ALL
+------------------------------------------------------------------------------------------------------------------------
 BEGIN
 	BEGIN TRANSACTION;
 	COMMIT TRANSACTION;

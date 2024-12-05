@@ -137,7 +137,7 @@ public class OdpsSelectTest24 extends TestCase {
                 "ON t1.region_id = t3.region_id\n" +
                 "WHERE t1.add_date = '${date_minus_1}'\n" +
                 "\tOR t2.order_id IS NOT NULL\n" +
-                "GROUP BY t1.member_id, \n" +
+                "GROUP BY t1.member_id,\n" +
                 "\tt3.city_id", SQLUtils.formatOdps(sql));
 
         assertEquals("select ta.member_id as member_id, ta.city_id\n" +
@@ -189,7 +189,7 @@ public class OdpsSelectTest24 extends TestCase {
                 "on t1.region_id = t3.region_id\n" +
                 "where t1.add_date = '${date_minus_1}'\n" +
                 "\tor t2.order_id is not null\n" +
-                "group by t1.member_id, \n" +
+                "group by t1.member_id,\n" +
                 "\tt3.city_id", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);

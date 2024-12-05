@@ -50,7 +50,7 @@ public class OdpsSelectTest26 extends TestCase {
                 "\t\t'CheckMobileConflict', \n" +
                 "\t\t'VerifyEmail'\n" +
                 "\t)\n" +
-                "GROUP BY process, \n" +
+                "GROUP BY process,\n" +
                 "\tvalue5", SQLUtils.formatOdps(sql));
 
         assertEquals("select count(DISTINCT (trackid)) as total, process, value5 as result\n" +
@@ -70,7 +70,7 @@ public class OdpsSelectTest26 extends TestCase {
                 "\t\t'CheckMobileConflict', \n" +
                 "\t\t'VerifyEmail'\n" +
                 "\t)\n" +
-                "group by process, \n" +
+                "group by process,\n" +
                 "\tvalue5", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
