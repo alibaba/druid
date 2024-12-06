@@ -1133,7 +1133,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         if (lexer.identifierEquals(FnvHash.Constants.ALLOW_CONNECTIONS)) {
             lexer.nextToken();
             Token valueToken = lexer.token();
-            if (valueToken == TRUE){
+            if (valueToken == TRUE) {
                 lexer.nextToken();
                 stmt.setAllowConnections(true);
             } else if (valueToken == FALSE) {
@@ -1145,7 +1145,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         if (lexer.identifierEquals(FnvHash.Constants.IS_TEMPLATE)) {
             lexer.nextToken();
             Token valueToken = lexer.token();
-            if (valueToken == TRUE){
+            if (valueToken == TRUE) {
                 lexer.nextToken();
                 stmt.setSetTemplateMark(true);
             } else if (valueToken == FALSE) {
