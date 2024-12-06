@@ -126,13 +126,13 @@ CREATE TABLE `aaaa` (
 	`product_name` varchar(1024) NULL COMMENT '商品名称',
 	`account_name` varchar(255) NULL COMMENT '媒体账号名称',
 	`adv_name` varchar(1024) NULL COMMENT '广告主名称',
-	`spend_amt_1d` DECIMAL(38, 2) DEFAULT "0.0" NULL COMMENT '最近1天消耗金额',
-	`imps_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天曝光量',
-	`clk_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天点击量',
-	`cvr_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天转化量',
-	`cart_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天加购量',
-	`pur_cnt_1d` bigint(20) DEFAULT "0" NULL COMMENT '最近1天购买量',
-	`revenue_amt_1d` DECIMAL(38, 2) DEFAULT "0.0" NULL COMMENT '最近1天收入金额',
+	`spend_amt_1d` DECIMAL(38, 2) NULL DEFAULT "0.0" COMMENT '最近1天消耗金额',
+	`imps_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天曝光量',
+	`clk_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天点击量',
+	`cvr_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天转化量',
+	`cart_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天加购量',
+	`pur_cnt_1d` bigint(20) NULL DEFAULT "0" COMMENT '最近1天购买量',
+	`revenue_amt_1d` DECIMAL(38, 2) NULL DEFAULT "0.0" COMMENT '最近1天收入金额',
 	`collect_timestamp` datetime NULL COMMENT '采集时间戳',
 	INDEX product_name_idx(`product_name`) USING BITMAP COMMENT 'Bitmap index on column product_name',
 	INDEX adv_name_idx(`adv_name`) USING BITMAP COMMENT 'Bitmap index on column adv_name',
@@ -182,7 +182,7 @@ CREATE TABLE example_db.table_hash (
 	k1 TINYINT,
 	k2 DECIMAL(10, 2) DEFAULT "10.5",
 	k3 CHAR(10) COMMENT 'string column',
-	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
+	k4 INT NOT NULL DEFAULT "1" COMMENT 'int column'
 )
 COMMENT "my first table"
 DISTRIBUTED BY HASH (k1) BUCKETS 32
@@ -211,7 +211,7 @@ CREATE TABLE example_db.table_hash (
 	k1 DATE,
 	k2 DECIMAL(10, 2) DEFAULT "10.5",
 	k3 CHAR(10) COMMENT 'string column',
-	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
+	k4 INT NOT NULL DEFAULT "1" COMMENT 'int column'
 )
 DUPLICATE KEY (k1, k2)
 COMMENT "my first table"
