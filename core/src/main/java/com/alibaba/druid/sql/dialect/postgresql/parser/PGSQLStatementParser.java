@@ -239,7 +239,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             stmt.addBeforeComment(lexer.readAndResetComments());
         }
 
-        stmt.setDbName(this.exprParser.identifier());
+        stmt.setName(this.exprParser.identifier());
 
         if (lexer.token() == WITH) {
             lexer.nextToken();
@@ -338,6 +338,42 @@ public class PGSQLStatementParser extends SQLStatementParser {
             lexer.nextToken();
             accept(Token.TO);
             stmt.setNewOwner(this.exprParser.identifier());
+        }
+
+        return stmt;
+    }
+
+    //with force
+    @Override
+    public PGDropDatabaseStatement parseDropDatabaseOrSchema(boolean acceptDrop) {
+        if (acceptDrop) {
+            accept(Token.DROP);
+        }
+
+        PGDropDatabaseStatement stmt = new PGDropDatabaseStatement(getDbType());
+
+        if (lexer.token() == Token.SCHEMA) {
+            lexer.nextToken();
+        } else {
+            accept(Token.DATABASE);
+        }
+
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+
+        stmt.setName(this.exprParser.name());
+
+        if (lexer.token() == WITH) {
+            lexer.nextToken();
+            stmt.setUsingWith(true);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+            lexer.nextToken();
+            stmt.setForce(true);
         }
 
         return stmt;

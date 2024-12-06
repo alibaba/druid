@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
-import com.google.common.collect.Lists;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +52,7 @@ public class CKExprParser extends SQLExprParser {
             int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
             AGGREGATE_FUNCTIONS[index] = str;
         }
-        NESTED_DATA_TYPE = Lists.newArrayList("array", "tuple", "nullable", "lowcardinality", "variant");
+        NESTED_DATA_TYPE = Arrays.asList("array", "tuple", "nullable", "lowcardinality", "variant");
     }
 
     public CKExprParser(String sql) {

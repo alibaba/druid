@@ -23,8 +23,8 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.StringUtils;
-import com.google.common.collect.Lists;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
@@ -1409,7 +1409,7 @@ public class SQLSelectParser extends SQLParser {
     }
 
     protected List<String> getReturningFunctions() {
-        return Lists.newArrayList("GENERATE_SERIES");
+        return Collections.singletonList("GENERATE_SERIES");
     }
 
     protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {

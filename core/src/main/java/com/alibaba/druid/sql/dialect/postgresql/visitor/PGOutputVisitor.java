@@ -648,8 +648,8 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(PGCreateDatabaseStatement x) {
         printUcase("CREATE DATABASE ");
 
-        if (x.getDbName() != null) {
-            x.getDbName().accept(this);
+        if (x.getName() != null) {
+            x.getName().accept(this);
         }
 
         if (x.isHaveWith()) {
@@ -678,6 +678,26 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
                     break;
             }
             x.getTemplateName().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGDropDatabaseStatement x) {
+        print0(ucase ? "DROP DATABASE " : "drop database ");
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
+        x.getName().accept(this);
+
+        if (x.isForce()) {
+            if (x.isUsingWith()) {
+                print0(ucase ? " WITH" : " with");
+            }
+            print0(ucase ? " FORCE" : " force");
         }
 
         return false;

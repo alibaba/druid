@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,21 +16,21 @@
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class PGCreateDatabaseStatement extends SQLStatementImpl implements PGSQLStatement, SQLCreateStatement{
-    private SQLIdentifierExpr dbName;
+public class PGCreateDatabaseStatement extends SQLStatementImpl implements PGSQLStatement, SQLCreateStatement {
+    private SQLName name;
 
     private boolean haveWith;
 
-    private SQLIdentifierExpr ownerName;
+    private SQLName ownerName;
     private PGWithMode ownerWithMode;
 
-    private SQLIdentifierExpr templateName;
+    private SQLName templateName;
     private PGWithMode templateWithMode;
 
     public static enum PGWithMode {
@@ -42,12 +42,13 @@ public class PGCreateDatabaseStatement extends SQLStatementImpl implements PGSQL
         super(dbType);
     }
 
-    public SQLIdentifierExpr getDbName() {
-        return dbName;
+    @Override
+    public SQLName getName() {
+        return this.name;
     }
 
-    public void setDbName(SQLIdentifierExpr dbName) {
-        this.dbName = dbName;
+    public void setName(SQLName dbName) {
+        this.name = dbName;
     }
 
     public boolean isHaveWith() {
@@ -58,11 +59,11 @@ public class PGCreateDatabaseStatement extends SQLStatementImpl implements PGSQL
         this.haveWith = haveWith;
     }
 
-    public SQLIdentifierExpr getOwnerName() {
+    public SQLName getOwnerName() {
         return ownerName;
     }
 
-    public void setOwnerName(SQLIdentifierExpr ownerName) {
+    public void setOwnerName(SQLName ownerName) {
         this.ownerName = ownerName;
     }
 
@@ -74,11 +75,11 @@ public class PGCreateDatabaseStatement extends SQLStatementImpl implements PGSQL
         this.ownerWithMode = ownerWithMode;
     }
 
-    public SQLIdentifierExpr getTemplateName() {
+    public SQLName getTemplateName() {
         return templateName;
     }
 
-    public void setTemplateName(SQLIdentifierExpr templateName) {
+    public void setTemplateName(SQLName templateName) {
         this.templateName = templateName;
     }
 
@@ -99,7 +100,7 @@ public class PGCreateDatabaseStatement extends SQLStatementImpl implements PGSQL
     @Override
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.dbName);
+            acceptChild(visitor, this.name);
             if (this.ownerName != null) {
                 acceptChild(visitor, this.ownerName);
             }
