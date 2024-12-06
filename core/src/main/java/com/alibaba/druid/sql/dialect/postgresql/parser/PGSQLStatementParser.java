@@ -30,7 +30,7 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.alibaba.druid.sql.parser.Token.RESTRICT;
+import static com.alibaba.druid.sql.parser.Token.*;
 
 public class PGSQLStatementParser extends SQLStatementParser {
     public static final String TIME_ZONE = "TIME ZONE";
@@ -229,6 +229,57 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    @Override
+    public PGCreateDatabaseStatement parseCreateDatabase() {
+        accept(CREATE);
+        accept(DATABASE);
+        PGCreateDatabaseStatement stmt = new PGCreateDatabaseStatement(dbType);
+
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            stmt.addBeforeComment(lexer.readAndResetComments());
+        }
+
+        stmt.setDbName(this.exprParser.identifier());
+
+        if (lexer.token() == WITH) {
+            lexer.nextToken();
+            stmt.setHaveWith(true);
+        }
+
+        for (;;) {
+            if (lexer.token() == Token.SEMI || lexer.isEOF()) {
+                break;
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.OWNER)) {
+                lexer.nextToken();
+                if (lexer.token() == EQ) {
+                    lexer.nextToken();
+                    stmt.setOwnerName(this.exprParser.identifier());
+                    stmt.setOwnerWithMode(PGCreateDatabaseStatement.PGWithMode.EQ);
+                } else {
+                    stmt.setOwnerName(this.exprParser.identifier());
+                    stmt.setOwnerWithMode(PGCreateDatabaseStatement.PGWithMode.OWNER);
+                }
+            } else if (lexer.identifierEquals(FnvHash.Constants.TEMPLATE)) {
+                lexer.nextToken();
+                if (lexer.token() == EQ) {
+                    lexer.nextToken();
+                    stmt.setTemplateName(this.exprParser.identifier());
+                    stmt.setTemplateWithMode(PGCreateDatabaseStatement.PGWithMode.EQ);
+                } else {
+                    stmt.setTemplateName(this.exprParser.identifier());
+                    stmt.setTemplateWithMode(PGCreateDatabaseStatement.PGWithMode.OWNER);
+                }
+            } else {
+                throw new ParserException("TODO " + lexer.info());
+            }
+        }
+
+        return stmt;
+    }
+
+    @Override
     public PGCreateSchemaStatement parseCreateSchema() {
         accept(Token.CREATE);
         accept(Token.SCHEMA);
@@ -1073,6 +1124,36 @@ public class PGSQLStatementParser extends SQLStatementParser {
             lexer.nextToken();
             stmt.setResetParameterName(this.exprParser.identifier());
         }
+
+        if (lexer.token() == WITH) {
+            lexer.nextToken();
+            stmt.setHaveWith(true);
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.ALLOW_CONNECTIONS)) {
+            lexer.nextToken();
+            Token valueToken = lexer.token();
+            if (valueToken == TRUE){
+                lexer.nextToken();
+                stmt.setAllowConnections(true);
+            } else if (valueToken == FALSE) {
+                lexer.nextToken();
+                stmt.setAllowConnections(false);
+            }
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.IS_TEMPLATE)) {
+            lexer.nextToken();
+            Token valueToken = lexer.token();
+            if (valueToken == TRUE){
+                lexer.nextToken();
+                stmt.setSetTemplateMark(true);
+            } else if (valueToken == FALSE) {
+                lexer.nextToken();
+                stmt.setSetTemplateMark(false);
+            }
+        }
+
         return stmt;
     }
 

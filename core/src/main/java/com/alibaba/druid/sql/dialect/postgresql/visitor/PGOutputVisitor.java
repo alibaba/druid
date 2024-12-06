@@ -645,6 +645,45 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public boolean visit(PGCreateDatabaseStatement x) {
+        printUcase("CREATE DATABASE ");
+
+        if (x.getDbName() != null) {
+            x.getDbName().accept(this);
+        }
+
+        if (x.isHaveWith()) {
+            printUcase(" WITH");
+        }
+
+        if (x.getOwnerName() != null) {
+            switch (x.getOwnerWithMode()) {
+                case EQ:
+                    printUcase(" OWNER = ");
+                    break;
+                case OWNER:
+                    printUcase(" OWNER ");
+                    break;
+            }
+            x.getOwnerName().accept(this);
+        }
+
+        if (x.getTemplateName() != null) {
+            switch (x.getTemplateWithMode()) {
+                case EQ:
+                    printUcase(" TEMPLATE = ");
+                    break;
+                case OWNER:
+                    printUcase(" TEMPLATE ");
+                    break;
+            }
+            x.getTemplateName().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean visit(PGCreateSchemaStatement x) {
         printUcase("CREATE SCHEMA ");
         if (x.isIfNotExists()) {
@@ -2832,6 +2871,17 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getResetParameterName() != null) {
             print0(ucase ? "RESET " : "reset ");
             x.getResetParameterName().accept(this);
+        }
+        if (x.isHaveWith()) {
+            print0(ucase ? "WITH " : "with ");
+        }
+        if (x.getAllowConnections() != null) {
+            print0(ucase ? "ALLOW_CONNECTIONS " : "allow_connections ");
+            print0(String.valueOf(x.getAllowConnections()));
+        }
+        if (x.getSetTemplateMark() != null) {
+            print0(ucase ? "IS_TEMPLATE " : "is_template ");
+            print0(String.valueOf(x.getSetTemplateMark()));
         }
         return false;
     }

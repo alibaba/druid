@@ -227,6 +227,13 @@ public interface PGASTVisitor extends SQLASTVisitor {
         return true;
     }
 
+    default boolean visit(PGCreateDatabaseStatement x) {
+        return true;
+    }
+
+    default void endVisit(PGCreateDatabaseStatement x) {
+    }
+
     default void endVisit(PGAlterDatabaseStatement x) {
     }
 
