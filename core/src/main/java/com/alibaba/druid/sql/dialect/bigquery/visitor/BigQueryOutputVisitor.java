@@ -2,11 +2,7 @@ package com.alibaba.druid.sql.dialect.bigquery.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
-import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -272,7 +268,7 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
     }
 
     @Override
-    public boolean visit(BigQueryDateTimeExpr x) {
+    public boolean visit(SQLAtTimeZoneExpr x) {
         x.getExpr().accept(this);
         SQLExpr timeZone = x.getTimeZone();
         print0(ucase ? " AT TIME ZONE " : " at time zone ");

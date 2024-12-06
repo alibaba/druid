@@ -403,7 +403,7 @@ public class SQLExprParser extends SQLParser {
         return sqlExpr;
     }
 
-    protected SQLPropertyExpr topPropertyExpr(String ident) {
+    public SQLPropertyExpr topPropertyExpr(String ident) {
         String substring = ident.substring(1, ident.length() - 1);
         String[] items = substring.split("\\.");
         SQLPropertyExpr expr = new SQLPropertyExpr(items[0], items[1]);
@@ -2361,6 +2361,7 @@ public class SQLExprParser extends SQLParser {
                 case IS:
                 case LOCK:
                 case REFERENCES:
+                case EXCEPTION:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;

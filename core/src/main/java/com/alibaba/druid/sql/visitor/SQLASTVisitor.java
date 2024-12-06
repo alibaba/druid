@@ -2663,6 +2663,13 @@ public interface SQLASTVisitor {
     default void endVisit(SQLRaiseStatement x) {
     }
 
+    default boolean visit(SQLAtTimeZoneExpr x) {
+        return true;
+    }
+
+    default void endVisit(SQLAtTimeZoneExpr x) {
+    }
+
     default boolean visit(SQLRollbackTransactionStatement x) {
         return true;
     }
