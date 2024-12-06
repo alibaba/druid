@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
@@ -22,12 +23,14 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.List;
+
 public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLStatement, SQLCreateStatement {
     private SQLIdentifierExpr schemaName;
     private SQLIdentifierExpr userName;
     private boolean ifNotExists;
     private boolean authorization;
-    private SQLCreateTableStatement createTable;
+    private List<SQLCreateStatement> createStatement;
 
     public SQLIdentifierExpr getSchemaName() {
         return schemaName;
@@ -61,12 +64,12 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
         this.authorization = authorization;
     }
 
-    public SQLCreateTableStatement getCreateTable() {
-        return createTable;
+    public List<SQLCreateStatement> getCreateStatement() {
+        return createStatement;
     }
 
-    public void setCreateTable(SQLCreateTableStatement createTable) {
-        this.createTable = createTable;
+    public void setCreateStatement(List<SQLCreateStatement> createStatement) {
+        this.createStatement = createStatement;
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -82,8 +85,10 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
             acceptChild(visitor, this.userName);
         }
 
-        if (this.createTable != null) {
-            acceptChild(visitor, this.createTable);
+        if (this.createStatement != null && !this.createStatement.isEmpty()) {
+            for (SQLCreateStatement stat :this.createStatement) {
+                acceptChild(visitor, stat);
+            }
         }
 
         visitor.endVisit(this);

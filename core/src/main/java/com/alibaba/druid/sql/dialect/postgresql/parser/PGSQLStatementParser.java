@@ -314,10 +314,36 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
         }
 
-        if (lexer.token() == Token.CREATE) {
-            stmt.setCreateTable(this.parseCreateTable());
-        } else {
-            throw new ParserException("TODO " + lexer.info());
+        stmt.setCreateStatement(new ArrayList<>());
+
+        while (lexer.token() != SEMI && !lexer.isEOF()) {
+            if (lexer.token() == Token.CREATE) {
+                Lexer.SavePoint mark = lexer.markOut();
+                lexer.nextToken();
+                if (lexer.token() == Token.TABLE) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatement().add(this.parseCreateTable());
+                    continue;
+                } else if (lexer.token() == VIEW) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatement().add(this.parseCreateView());
+                    continue;
+                } else if (lexer.token() == INDEX) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatement().add(this.parseCreateIndex());
+                    continue;
+                } else if (lexer.token() == SEQUENCE) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatement().add(this.parseCreateSequence());
+                    continue;
+                } else if (lexer.token() == TRIGGER) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatement().add(this.parseCreateTrigger());
+                    continue;
+                }
+            }
+
+            throw new ParserException("syntax error. " + lexer.info());
         }
 
         return stmt;
@@ -397,14 +423,15 @@ public class PGSQLStatementParser extends SQLStatementParser {
         SQLIdentifierExpr name = this.exprParser.identifier();
         stmt.setSchemaName(name);
 
-        if (lexer.identifierEquals(FnvHash.Constants.RESTRICT)) {
-            lexer.nextToken();
-            stmt.setRestrict(true);
-        } else if (lexer.token() == Token.CASCADE || lexer.identifierEquals(FnvHash.Constants.CASCADE)) {
+        if (lexer.token() == Token.CASCADE) {
             lexer.nextToken();
             stmt.setCascade(true);
         } else {
             stmt.setCascade(false);
+        }
+        if (lexer.token() == Token.RESTRICT) {
+            lexer.nextToken();
+            stmt.setRestrict(true);
         }
 
         return stmt;

@@ -722,16 +722,20 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    public void endVisit(PGDropSchemaStatement x) {
+    public boolean visit(PGDropSchemaStatement x) {
         printUcase("DROP SCHEMA ");
         if (x.isIfExists()) {
             printUcase("IF EXISTS ");
         }
         x.getSchemaName().accept(this);
-    }
 
-    @Override
-    public boolean visit(PGDropSchemaStatement x) {
+        if (x.isCascade()){
+            print0(ucase ? " CASCADE" : " cascade");
+        }
+        if (x.isRestrict()){
+            print0(ucase ? " RESTRICT" : " restrict");
+        }
+
         return false;
     }
 
