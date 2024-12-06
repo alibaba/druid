@@ -1265,7 +1265,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 for (int index = 0; index < valuesList.size(); index++) {
                     List<SQLExpr> values = valuesList.get(index).getValues();
                     for (int i = 0; i < values.size(); i++) {
-                        SQLExpr value = values.get(i);
+                        Object value = values.get(i);
                         if (value instanceof SQLLiteralExpr || value instanceof SQLVariantRefExpr) {
                             continue;
                         } else if (value instanceof SQLMethodInvokeExpr && ((SQLMethodInvokeExpr) value).getArguments().isEmpty()) {
