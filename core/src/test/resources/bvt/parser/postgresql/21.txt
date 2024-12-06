@@ -1,0 +1,20 @@
+insert into table2 with tab1Cnt as (select id,name from table1) select * from tab1Cnt;
+--------------------
+INSERT INTO table2
+WITH tab1Cnt AS (
+		SELECT id, name
+		FROM table1
+	)
+SELECT *
+FROM tab1Cnt;
+------------------------------------------------------------------------------------------------------------------------
+insert into table2 with tab1Cnt as (select id,column1 from table1) select * from tab1Cnt returning (id,column1);
+--------------------
+INSERT INTO table2
+WITH tab1Cnt AS (
+		SELECT id, column1
+		FROM table1
+	)
+SELECT *
+FROM tab1Cnt
+RETURNING (id, column1);

@@ -4386,7 +4386,7 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
-    public SQLStatement parseCreateTrigger() {
+    public SQLCreateStatement parseCreateTrigger() {
         SQLCreateTriggerStatement stmt = new SQLCreateTriggerStatement(getDbType());
 
         if (lexer.token == Token.CREATE) {
@@ -4577,7 +4577,7 @@ public class SQLStatementParser extends SQLParser {
         throw new ParserException("TODO " + lexer.token);
     }
 
-    public SQLStatement parseCreateSequence() {
+    public SQLCreateStatement parseCreateSequence() {
         accept(Token.CREATE);
         SQLCreateSequenceStatement stmt = new SQLCreateSequenceStatement();
 

@@ -21,11 +21,14 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.List;
+
 public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLStatement, SQLCreateStatement {
     private SQLIdentifierExpr schemaName;
     private SQLIdentifierExpr userName;
     private boolean ifNotExists;
     private boolean authorization;
+    private List<SQLCreateStatement> createStatement;
 
     public SQLIdentifierExpr getSchemaName() {
         return schemaName;
@@ -59,6 +62,14 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
         this.authorization = authorization;
     }
 
+    public List<SQLCreateStatement> getCreateStatement() {
+        return createStatement;
+    }
+
+    public void setCreateStatement(List<SQLCreateStatement> createStatement) {
+        this.createStatement = createStatement;
+    }
+
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof PGASTVisitor) {
             accept0((PGASTVisitor) visitor);
@@ -71,6 +82,13 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
             acceptChild(visitor, this.schemaName);
             acceptChild(visitor, this.userName);
         }
+
+        if (this.createStatement != null && !this.createStatement.isEmpty()) {
+            for (SQLCreateStatement stat : this.createStatement) {
+                acceptChild(visitor, stat);
+            }
+        }
+
         visitor.endVisit(this);
     }
 }

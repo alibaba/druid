@@ -597,6 +597,9 @@ public final class FnvHash {
         long RECURSIVE = fnv1a_64_lower("RECURSIVE");
         long ROLLUP = fnv1a_64_lower("ROLLUP");
         long CUBE = fnv1a_64_lower("CUBE");
+        long TEMPLATE = fnv1a_64_lower("TEMPLATE");
+        long ALLOW_CONNECTIONS = fnv1a_64_lower("ALLOW_CONNECTIONS");
+        long IS_TEMPLATE = fnv1a_64_lower("IS_TEMPLATE");
 
         long YEAR = fnv1a_64_lower("YEAR");
         long QUARTER = fnv1a_64_lower("QUARTER");
