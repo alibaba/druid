@@ -422,6 +422,13 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         SQLIdentifierExpr name = this.exprParser.identifier();
         stmt.setSchemaName(name);
+        stmt.setMultipleName(new ArrayList<>());
+        stmt.getMultipleName().add(name);
+
+        while (lexer.token() == COMMA) {
+            lexer.nextToken();
+            stmt.getMultipleName().add(this.exprParser.identifier());
+        }
 
         if (lexer.token() == Token.CASCADE) {
             lexer.nextToken();

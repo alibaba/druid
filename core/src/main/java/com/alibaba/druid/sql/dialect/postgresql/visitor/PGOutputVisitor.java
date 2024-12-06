@@ -727,12 +727,19 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.isIfExists()) {
             printUcase("IF EXISTS ");
         }
-        x.getSchemaName().accept(this);
 
-        if (x.isCascade()){
+        List<SQLIdentifierExpr> multipleName = x.getMultipleName();
+        for (int i = 0; i < multipleName.size(); i++) {
+            if (i > 0) {
+                printUcase(", ");
+            }
+            multipleName.get(i).accept(this);
+        }
+
+        if (x.isCascade()) {
             print0(ucase ? " CASCADE" : " cascade");
         }
-        if (x.isRestrict()){
+        if (x.isRestrict()) {
             print0(ucase ? " RESTRICT" : " restrict");
         }
 

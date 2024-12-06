@@ -28,4 +28,12 @@ public class PG_DropSchemaScriptTest extends TestCase {
         SQLStatement statement = parser.parseStatement();
         Assert.assertEquals(targetSql, SQLUtils.toSQLString(statement, DbType.postgresql));
     }
+
+    public void testDrop_3() {
+        String sql = "drop schema abc, ccc ,aac ";
+        String targetSql = "DROP SCHEMA abc, ccc, aac";
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        SQLStatement statement = parser.parseStatement();
+        Assert.assertEquals(targetSql, SQLUtils.toSQLString(statement, DbType.postgresql));
+    }
 }
