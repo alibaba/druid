@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -26,6 +27,7 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
     private SQLIdentifierExpr userName;
     private boolean ifNotExists;
     private boolean authorization;
+    private SQLCreateTableStatement createTable;
 
     public SQLIdentifierExpr getSchemaName() {
         return schemaName;
@@ -59,6 +61,14 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
         this.authorization = authorization;
     }
 
+    public SQLCreateTableStatement getCreateTable() {
+        return createTable;
+    }
+
+    public void setCreateTable(SQLCreateTableStatement createTable) {
+        this.createTable = createTable;
+    }
+
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof PGASTVisitor) {
             accept0((PGASTVisitor) visitor);
@@ -71,6 +81,11 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
             acceptChild(visitor, this.schemaName);
             acceptChild(visitor, this.userName);
         }
+
+        if (this.createTable != null) {
+            acceptChild(visitor, this.createTable);
+        }
+
         visitor.endVisit(this);
     }
 }

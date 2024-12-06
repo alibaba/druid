@@ -144,7 +144,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 }
                 break;
             }
-        } else if (lexer.token() == (Token.SELECT)) {
+        }
+
+        if (lexer.token() == Token.WITH) {
+            PGSelectStatement nextWithQuery = (PGSelectStatement) this.parseWith();
+            stmt.setQuery(nextWithQuery.getSelect());
+        } else if (lexer.token() == Token.SELECT) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             stmt.setQuery(queryExpr.getSubQuery());
         }
@@ -256,6 +261,10 @@ public class PGSQLStatementParser extends SQLStatementParser {
                     stmt.setUserName(userName);
                 }
             }
+        }
+
+        if (lexer.token() == Token.CREATE) {
+            stmt.setCreateTable(this.parseCreateTable());
         } else {
             throw new ParserException("TODO " + lexer.info());
         }

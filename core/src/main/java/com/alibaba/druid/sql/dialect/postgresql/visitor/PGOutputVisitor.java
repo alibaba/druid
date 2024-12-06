@@ -1865,6 +1865,19 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        int curLen = this.appender.length();
+        if (curLen > 0) {
+            char c = this.appender.charAt(curLen - 1);
+            if (!(c == ' ' || c == '\t' || c == '\n' || c == '\r')) {
+                this.appender.append(" ");
+            }
+        }
+
+        return super.visit(x);
+    }
+
+    @Override
     public boolean visit(OracleCreateTableStatement x) {
         printCreateTable(x, false);
 
