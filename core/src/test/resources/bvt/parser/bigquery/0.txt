@@ -56,7 +56,7 @@ AS """
   // Assumes 'doInterestingStuff' is defined in one of the library files.
   return doInterestingStuff(a, b);
 """;
-=======
+------------------------------------------------------------------------------------------------------------------------
 SELECT DATE(verify_timestamp, 'Asia/Jakarta') AS jakarta_data_date, app_version, device_platform as device_platform_name, 
 BU as business_unit_name, verification_method as verification_type,
   CAST(APPROX_QUANTILES(time_diff, 100 IGNORE NULLS)[OFFSET(50)] AS NUMERIC) AS p50_granted_time_in_second,
