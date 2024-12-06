@@ -74,10 +74,19 @@ public class BigQueryStatementParser extends SQLStatementParser {
                     accept(Token.RPAREN);
                 } else {
                     lexer.nextIfIdentifier("R");
+                    String script = lexer.stringVal();
+                    if (script.startsWith("\"") && script.endsWith("\"")) {
+                        script = script.substring(1, script.length() - 1);
+                    }
                     createFunction.setWrappedSource(
-                            lexer.stringVal()
+                            script
                     );
-                    accept(Token.LITERAL_TEXT_BLOCK);
+                    if (lexer.token() == Token.LITERAL_TEXT_BLOCK || lexer.token() == Token.LITERAL_CHARS) {
+                        lexer.nextToken();
+                    } else {
+                        setErrorEndPos(lexer.pos());
+                        printError(lexer.token());
+                    }
                 }
                 continue;
             }
