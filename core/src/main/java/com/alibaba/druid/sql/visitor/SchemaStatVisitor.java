@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
 import com.alibaba.druid.sql.repository.SchemaObject;
@@ -1183,6 +1184,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         accept(x.getColumns());
         accept(x.getQuery());
+        if (x instanceof OracleInsertStatement) {
+            accept(((OracleInsertStatement) x).getReturning());
+        }
 
         return false;
     }
@@ -2147,6 +2151,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         this.functions.add(x);
 
         accept(x.getArguments());
+        accept(x.getFrom());
         return false;
     }
 

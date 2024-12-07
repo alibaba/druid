@@ -26,11 +26,10 @@ import java.util.List;
 
 public class OracleSelectTest57 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = //
-                "SELECT TRIM(BOTH FROM EUCD) AS \"value\",NTLANG1 AS \"text\" " //
+        String sql = "SELECT TRIM(BOTH FROM EUCD) AS \"value\",NTLANG1 AS \"text\" "
                         + " FROM T_HT_WREM_ENUMLANG_D"
                         + " WHERE TYPE=?"
-                        + " ORDER BY \"value\" ASC"; //
+                        + " ORDER BY \"value\" ASC";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -49,8 +48,7 @@ public class OracleSelectTest57 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
 
         {
             String text = SQLUtils.toOracleString(stmt);
@@ -72,5 +70,28 @@ public class OracleSelectTest57 extends OracleTest {
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
         // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+    }
+
+    public void test_1() throws Exception {
+        String sql = "SELECT TRIM(BOTH 'x' FROM 'xJohnxx') FROM dual";
+
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+
+        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
     }
 }
