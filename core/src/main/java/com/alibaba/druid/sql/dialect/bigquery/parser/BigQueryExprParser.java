@@ -97,6 +97,11 @@ public class BigQueryExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
                 return castExpr;
             }
+
+            String ident = identifierExpr.getName();
+            if (ident.length() > 3 && ident.charAt(0) == '`' && ident.charAt(ident.length() - 1) == '`' && ident.indexOf('.') != -1) {
+                expr = topPropertyExpr(ident);
+            }
         }
         return super.methodRest(expr, acceptLPAREN);
     }

@@ -1,8 +1,12 @@
-  SELECT 
+SELECT `a-b-c-d-e.udfs.st`(1);
+--------------------
+SELECT `a-b-c-d-e`.udfs.st(1);
+------------------------------------------------------------------------------------------------------------------------
+  SELECT
     campaign.key AS campaign_key,
     campaign.start_date AS campaign_start_date,
     campaign.end_date AS campaign_end_date,
-  FROM 
+  FROM
     UNNEST([
       STRUCT(
         'trial_campaign' AS key,
@@ -21,7 +25,7 @@ FROM UNNEST([STRUCT('trial_campaign' AS key, '2024-11-17T17:00:00+00:00' AS star
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TEMP FUNCTION invalidRoute(polyline1 STRING)
   RETURNS BOOL
-  LANGUAGE js AS 
+  LANGUAGE js AS
   "return (lengthOfEncodedPolyline(polyline1) <= 1)"
   OPTIONS (library="gs://bi_cloud_storage_ees6see6/public/lib/polyutil_new.js");
 --------------------

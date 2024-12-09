@@ -91,7 +91,11 @@ public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr, 
     }
 
     public SQLTimestampExpr toTimestamp() {
-        return new SQLTimestampExpr(this.text);
+        String text = this.text;
+        if (text.length() == 10) {
+            text += " 00:00:00";
+        }
+        return new SQLTimestampExpr(text);
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.alibaba.druid.FastsqlException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -936,7 +937,13 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, val);
                 break;
             case Negative:
-                x.putAttribute(EVAL_VALUE, multi(val, -1));
+                Object value;
+                if (val instanceof SQLName) {
+                    value = new SQLUnaryExpr(SQLUnaryOperator.Negative, (SQLName) val);
+                } else {
+                    value = multi(val, -1);
+                }
+                x.putAttribute(EVAL_VALUE, value);
                 break;
             case Compl:
                 x.putAttribute(EVAL_VALUE, ~castToInteger(val));

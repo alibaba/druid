@@ -403,7 +403,7 @@ public class SQLExprParser extends SQLParser {
         return sqlExpr;
     }
 
-    public SQLPropertyExpr topPropertyExpr(String ident) {
+    protected SQLPropertyExpr topPropertyExpr(String ident) {
         String substring = ident.substring(1, ident.length() - 1);
         String[] items = substring.split("\\.");
         SQLPropertyExpr expr = new SQLPropertyExpr(items[0], items[1]);
