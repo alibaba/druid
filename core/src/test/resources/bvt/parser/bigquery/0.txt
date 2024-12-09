@@ -1,3 +1,24 @@
+  SELECT 
+    campaign.key AS campaign_key,
+    campaign.start_date AS campaign_start_date,
+    campaign.end_date AS campaign_end_date,
+  FROM 
+    UNNEST([
+      STRUCT(
+        'trial_campaign' AS key,
+        '2024-11-17T17:00:00+00:00' AS start_date,
+        '2024-12-01T16:59:59+00:00' AS end_date,
+        ARRAY<STRUCT<key STRING, start_date STRING, end_date STRING>>[
+          STRUCT('mission_1', '2024-11-17T17:00:00+00:00', '2024-11-24T16:59:59+00:00'),
+          STRUCT('mission_2', '2024-11-24T17:00:00+00:00', '2024-12-01T16:59:59+00:00')
+        ] AS missions
+      )
+    ]) AS campaign
+--------------------
+SELECT campaign.key AS campaign_key, campaign.start_date AS campaign_start_date, campaign.end_date AS campaign_end_date
+FROM UNNEST([STRUCT('trial_campaign' AS key, '2024-11-17T17:00:00+00:00' AS start_date, '2024-12-01T16:59:59+00:00' AS end_date, ARRAY<STRUCT<key STRING, start_date STRING, end_date STRING>>[STRUCT('mission_1', '2024-11-17T17:00:00+00:00', '2024-11-24T16:59:59+00:00'),
+	STRUCT('mission_2', '2024-11-24T17:00:00+00:00', '2024-12-01T16:59:59+00:00')] AS missions)]) AS campaign
+------------------------------------------------------------------------------------------------------------------------
 CREATE TEMP FUNCTION invalidRoute(polyline1 STRING)
   RETURNS BOOL
   LANGUAGE js AS 
@@ -216,7 +237,7 @@ WITH Races AS (
 			STRUCT('Lewandowski' AS name, [25.0, 25.7, 26.3, 27.2] AS laps),
 			STRUCT('Kipketer' AS name, [23.2, 26.1, 27.3, 29.4] AS laps),
 			STRUCT('Berian' AS name, [23.7, 26.1, 27.0, 29.3] AS laps),
-			STRUCT('Nathan' AS name, ARRAY < FLOAT64 > [] AS laps),
+			STRUCT('Nathan' AS name, ARRAY<FLOAT64>[] AS laps),
 			STRUCT('David' AS name, NULL AS laps)] AS participants
 	)
 SELECT name, sum(duration) AS finish_time
@@ -564,7 +585,7 @@ FROM UNNEST([2, 1, -2, 3, -2, 1, 2]) AS x;
 --------------------
 SELECT ARRAY_AGG(x LIMIT 5) AS array_agg
 FROM UNNEST([2, 1, -2, 3, -2,
-	1, 2]) x;
+	1, 2]) AS x;
 ------------------------------------------------------------------------------------------------------------------------
 ASSERT (
   (SELECT COUNT(*) > 5 FROM UNNEST([1, 2, 3, 4, 5, 6]))
@@ -687,6 +708,6 @@ SELECT
 FROM professors
 GROUP BY item;
 ------------------------------------------------------------------------------------------------------------------------
-select cast(json_parse(tickets_fields_value) as array(varchar)) as tickets_fields_value
+select cast(json_parse(tickets_fields_value) as array<varchar>) as tickets_fields_value
 --------------------
-SELECT CAST(json_parse(tickets_fields_value) AS ARRAY(varchar)) AS tickets_fields_value
+SELECT CAST(json_parse(tickets_fields_value) AS ARRAY<varchar>) AS tickets_fields_value
