@@ -106,6 +106,13 @@ public class BigQueryExprParser extends SQLExprParser {
         return super.methodRest(expr, acceptLPAREN);
     }
 
+    protected SQLExpr parseSelectItemRest(String ident, long hash_lower) {
+        if (ident.length() > 3 && ident.charAt(0) == '`' && ident.charAt(ident.length() - 1) == '`' && ident.indexOf('.') != -1) {
+            return topPropertyExpr(ident);
+        }
+        return null;
+    }
+
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
             parseAssignItem(column.getColProperties(), column);
