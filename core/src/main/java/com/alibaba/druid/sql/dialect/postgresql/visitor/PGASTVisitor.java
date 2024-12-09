@@ -102,6 +102,13 @@ public interface PGASTVisitor extends SQLASTVisitor {
         return true;
     }
 
+    default void endVisit(PGAttrExpr x) {
+    }
+
+    default boolean visit(PGAttrExpr x) {
+        return true;
+    }
+
     default void endVisit(PGPointExpr x) {
     }
 
@@ -194,6 +201,13 @@ public interface PGASTVisitor extends SQLASTVisitor {
     default void endVisit(PGDropSchemaStatement x) {
     }
 
+    default boolean visit(PGDropDatabaseStatement x) {
+        return true;
+    }
+
+    default void endVisit(PGDropDatabaseStatement x) {
+    }
+
     default boolean visit(PGDropSchemaStatement x) {
         return true;
     }
@@ -225,6 +239,13 @@ public interface PGASTVisitor extends SQLASTVisitor {
 
     default boolean visit(PGVacuumStatement x) {
         return true;
+    }
+
+    default boolean visit(PGCreateDatabaseStatement x) {
+        return true;
+    }
+
+    default void endVisit(PGCreateDatabaseStatement x) {
     }
 
     default void endVisit(PGAlterDatabaseStatement x) {

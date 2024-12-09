@@ -445,6 +445,27 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public boolean visit(PGAttrExpr x) {
+        int curLen = this.appender.length();
+        if (curLen > 0) {
+            char c = this.appender.charAt(curLen - 1);
+            if (!(c == ' ' || c == '\t' || c == '\n' || c == '\r')) {
+                this.appender.append(" ");
+            }
+        }
+
+        x.getName().accept(this);
+        if (x.getMode() == PGAttrExpr.PGExprMode.EQ) {
+            print0(" = ");
+        } else {
+            print0(" ");
+        }
+
+        x.getValue().accept(this);
+        return false;
+    }
+
+    @Override
     public boolean visit(PGBoxExpr x) {
         print0(ucase ? "BOX " : "box ");
         x.getValue().accept(this);
@@ -645,6 +666,45 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public boolean visit(PGCreateDatabaseStatement x) {
+        printUcase("CREATE DATABASE ");
+
+        if (x.getName() != null) {
+            x.getName().accept(this);
+        }
+
+        if (x.isHaveWith()) {
+            printUcase(" WITH");
+        }
+
+        for (PGAttrExpr attrExpr : x.getStats()) {
+            attrExpr.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGDropDatabaseStatement x) {
+        print0(ucase ? "DROP DATABASE " : "drop database ");
+
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
+        x.getName().accept(this);
+
+        if (x.isForce()) {
+            if (x.isUsingWith()) {
+                print0(ucase ? " WITH" : " with");
+            }
+            print0(ucase ? " FORCE" : " force");
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean visit(PGCreateSchemaStatement x) {
         printUcase("CREATE SCHEMA ");
         if (x.isIfNotExists()) {
@@ -663,16 +723,27 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    public void endVisit(PGDropSchemaStatement x) {
+    public boolean visit(PGDropSchemaStatement x) {
         printUcase("DROP SCHEMA ");
         if (x.isIfExists()) {
             printUcase("IF EXISTS ");
         }
-        x.getSchemaName().accept(this);
-    }
 
-    @Override
-    public boolean visit(PGDropSchemaStatement x) {
+        List<SQLIdentifierExpr> multipleName = x.getMultipleNames();
+        for (int i = 0; i < multipleName.size(); i++) {
+            if (i > 0) {
+                printUcase(", ");
+            }
+            multipleName.get(i).accept(this);
+        }
+
+        if (x.isCascade()) {
+            print0(ucase ? " CASCADE" : " cascade");
+        }
+        if (x.isRestrict()) {
+            print0(ucase ? " RESTRICT" : " restrict");
+        }
+
         return false;
     }
 
@@ -1865,6 +1936,19 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        int curLen = this.appender.length();
+        if (curLen > 0) {
+            char c = this.appender.charAt(curLen - 1);
+            if (!(c == ' ' || c == '\t' || c == '\n' || c == '\r')) {
+                this.appender.append(" ");
+            }
+        }
+
+        return super.visit(x);
+    }
+
+    @Override
     public boolean visit(OracleCreateTableStatement x) {
         printCreateTable(x, false);
 
@@ -2819,6 +2903,17 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getResetParameterName() != null) {
             print0(ucase ? "RESET " : "reset ");
             x.getResetParameterName().accept(this);
+        }
+        if (x.isHaveWith()) {
+            print0(ucase ? "WITH " : "with ");
+        }
+        if (x.getAllowConnections() != null) {
+            print0(ucase ? "ALLOW_CONNECTIONS " : "allow_connections ");
+            print0(String.valueOf(x.getAllowConnections()));
+        }
+        if (x.getSetTemplateMark() != null) {
+            print0(ucase ? "IS_TEMPLATE " : "is_template ");
+            print0(String.valueOf(x.getSetTemplateMark()));
         }
         return false;
     }

@@ -39,6 +39,9 @@ public class PGAlterDatabaseStatement extends SQLStatementImpl implements PGSQLS
     private SQLExpr setParameterValue;
     private boolean setFromCurrent;
     private SQLIdentifierExpr resetParameterName;
+    private boolean haveWith;
+    private Boolean allowConnections;
+    private Boolean setTemplateMark;
 
     public SQLIdentifierExpr getDatabaseName() {
         return databaseName;
@@ -119,6 +122,31 @@ public class PGAlterDatabaseStatement extends SQLStatementImpl implements PGSQLS
     public void setResetParameterName(SQLIdentifierExpr resetParameterName) {
         this.resetParameterName = resetParameterName;
     }
+
+    public boolean isHaveWith() {
+        return haveWith;
+    }
+
+    public void setHaveWith(boolean haveWith) {
+        this.haveWith = haveWith;
+    }
+
+    public Boolean getAllowConnections() {
+        return allowConnections;
+    }
+
+    public void setAllowConnections(Boolean allowConnections) {
+        this.allowConnections = allowConnections;
+    }
+
+    public Boolean getSetTemplateMark() {
+        return setTemplateMark;
+    }
+
+    public void setSetTemplateMark(Boolean setTemplateMark) {
+        this.setTemplateMark = setTemplateMark;
+    }
+
     public PGAlterDatabaseStatement(DbType dbType) {
         super.dbType = dbType;
     }

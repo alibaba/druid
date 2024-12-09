@@ -1,0 +1,59 @@
+alter database abc with allow_connections true
+--------------------
+ALTER DATABASE abc WITH ALLOW_CONNECTIONS true
+------------------------------------------------------------------------------------------------------------------------
+alter database abc allow_connections false
+--------------------
+ALTER DATABASE abc ALLOW_CONNECTIONS false
+------------------------------------------------------------------------------------------------------------------------
+alter database abc is_template true
+--------------------
+ALTER DATABASE abc IS_TEMPLATE true
+------------------------------------------------------------------------------------------------------------------------
+alter database "abc" is_template true
+--------------------
+ALTER DATABASE "abc" IS_TEMPLATE true
+------------------------------------------------------------------------------------------------------------------------
+create database abc
+--------------------
+CREATE DATABASE abc
+------------------------------------------------------------------------------------------------------------------------
+create database abc owner zyc
+--------------------
+CREATE DATABASE abc owner zyc
+------------------------------------------------------------------------------------------------------------------------
+create database abc with owner zyc
+--------------------
+CREATE DATABASE abc WITH owner zyc
+------------------------------------------------------------------------------------------------------------------------
+create database abc template template1
+--------------------
+CREATE DATABASE abc template template1
+------------------------------------------------------------------------------------------------------------------------
+create database abc template = zyc
+--------------------
+CREATE DATABASE abc template = zyc
+------------------------------------------------------------------------------------------------------------------------
+create database abc with template zyc
+--------------------
+CREATE DATABASE abc WITH template zyc
+------------------------------------------------------------------------------------------------------------------------
+create database abc with owner = zyc template zyc
+--------------------
+CREATE DATABASE abc WITH owner = zyc template zyc
+------------------------------------------------------------------------------------------------------------------------
+create database "abc" with owner = zyc template zyc
+--------------------
+CREATE DATABASE "abc" WITH owner = zyc template zyc
+------------------------------------------------------------------------------------------------------------------------
+drop database if exists abc;
+--------------------
+DROP DATABASE IF EXISTS abc;
+------------------------------------------------------------------------------------------------------------------------
+drop database if exists "abc";
+--------------------
+DROP DATABASE IF EXISTS "abc";
+------------------------------------------------------------------------------------------------------------------------
+drop database if exists abc with force;
+--------------------
+DROP DATABASE IF EXISTS abc WITH FORCE;
