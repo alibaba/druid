@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -27,27 +26,15 @@ import java.util.List;
 
 public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable {
     private SQLExpr expr;
-    private SQLDataType dataType;
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
     public SQLArrayExpr() {
-    }
-
-    public SQLDataType getDataType() {
-        return dataType;
-    }
-
-    public void setDataType(SQLDataType dataType) {
-        this.dataType = dataType;
     }
 
     public SQLArrayExpr clone() {
         SQLArrayExpr x = new SQLArrayExpr();
         if (expr != null) {
             x.setExpr(expr.clone());
-        }
-        if (dataType != null) {
-            x.setDataType(dataType.clone());
         }
         for (SQLExpr value : values) {
             SQLExpr value2 = value.clone();
@@ -89,9 +76,17 @@ public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, expr);
-            acceptChild(visitor, dataType);
-            acceptChild(visitor, values);
+            if (expr != null) {
+                this.expr.accept(visitor);
+            }
+
+            if (values != null) {
+                for (SQLExpr value : values) {
+                    if (value != null) {
+                        value.accept(visitor);
+                    }
+                }
+            }
         }
         visitor.endVisit(this);
     }

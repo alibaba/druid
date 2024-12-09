@@ -586,21 +586,12 @@ public class SQLExprParser extends SQLParser {
                 } else if (hash_lower == FnvHash.Constants.TIMESTAMP && lexer.token == Token.LITERAL_ALIAS) {
                     sqlExpr = new SQLTimestampExpr(lexer.stringVal());
                     lexer.nextToken();
-                } else if (hash_lower == FnvHash.Constants.ARRAY && (lexer.token == Token.LBRACKET || lexer.token == Token.LT)) {
+                } else if (hash_lower == FnvHash.Constants.ARRAY && lexer.token == Token.LBRACKET) {
                     SQLArrayExpr array = new SQLArrayExpr();
                     array.setExpr(new SQLIdentifierExpr(ident));
-                    if (lexer.nextIf(Token.LT)) {
-                        SQLDataType sqlDataType = this.parseDataType();
-                        array.setDataType(sqlDataType);
-                        accept(Token.GT);
-                    }
-
-                    if (lexer.nextIf(Token.LBRACKET)) {
-                        this.exprList(array.getValues(), array);
-                        accept(Token.RBRACKET);
-                    } else {
-                        throw new ParserException("Syntax error. " + lexer.info());
-                    }
+                    accept(Token.LBRACKET);
+                    this.exprList(array.getValues(), array);
+                    accept(Token.RBRACKET);
                     sqlExpr = array;
                 } else {
                     sqlExpr = primaryIdentifierRest(hash_lower, ident);
@@ -1250,18 +1241,10 @@ public class SQLExprParser extends SQLParser {
                 SQLArrayExpr array = new SQLArrayExpr();
                 array.setExpr(new SQLIdentifierExpr("ARRAY"));
                 lexer.nextToken();
-                if (lexer.nextIf(Token.LT)) {
-                    SQLDataType sqlDataType = this.parseDataType();
-                    array.setDataType(sqlDataType);
-                    accept(Token.GT);
-                }
-                if (lexer.nextIf(Token.LBRACKET)) {
-                    this.exprList(array.getValues(), array);
-                    accept(Token.RBRACKET);
-                } else {
-                    throw new ParserException("Syntax error. " + lexer.info());
-                }
 
+                accept(Token.LBRACKET);
+                this.exprList(array.getValues(), array);
+                accept(Token.RBRACKET);
                 sqlExpr = array;
                 break;
             }
@@ -6421,11 +6404,7 @@ public class SQLExprParser extends SQLParser {
         SQLStructExpr structExpr = new SQLStructExpr();
         accept(Token.LPAREN);
         aliasedItems(structExpr.getItems(), structExpr);
-        if (lexer.token == Token.GTGT) {
-            lexer.token = Token.RPAREN;
-        } else {
-            accept(Token.RPAREN);
-        }
+        accept(Token.RPAREN);
         return structExpr;
     }
 }
