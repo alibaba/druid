@@ -2,12 +2,17 @@ package com.alibaba.druid.sql.dialect.starrocks.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.DistributedByType;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLNotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
@@ -16,6 +21,7 @@ import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateReso
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -218,7 +224,42 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(SQLColumnDefinition x) {
-        super.visit((SQLColumnDefinition) x);
+        x.getName().accept(this);
+        final SQLDataType dataType = x.getDataType();
+
+        if (dataType != null) {
+            if (JdbcUtils.isPgsqlDbType(dbType) && x.getParent() instanceof SQLAlterTableAlterColumn) {
+                print0(ucase ? " TYPE " : " type ");
+            } else {
+                print(' ');
+            }
+            dataType.accept(this);
+        }
+
+        if (x.getAggType() != null) {
+            visitAggType(x);
+        }
+
+        for (SQLColumnConstraint item : x.getConstraints()) {
+            if (item instanceof SQLNullConstraint || item instanceof SQLNotNullConstraint) {
+                print(' ');
+                item.accept(this);
+            }
+        }
+
+        if (x.getDefaultExpr() != null) {
+            visitColumnDefault(x);
+        }
+
+        if (x.isAutoIncrement()) {
+            printAutoIncrement();
+        }
+
+        if (x.getComment() != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            x.getComment().accept(this);
+        }
+
         if (x.getAsExpr() != null) {
             print(' ');
             print0(ucase ? "AS " : "as ");

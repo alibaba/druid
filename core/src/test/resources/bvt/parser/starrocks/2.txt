@@ -84,6 +84,6 @@ CREATE TABLE example_db.table_hash (
 	k1 TINYINT,
 	k2 DECIMAL(10, 2) DEFAULT "10.5",
 	k3 CHAR(10) COMMENT 'string column',
-	k4 INT DEFAULT "1" NOT NULL COMMENT 'int column'
+	k4 INT NOT NULL DEFAULT "1" COMMENT 'int column'
 )
 DISTRIBUTED BY HASH (k1) BUCKETS 32
