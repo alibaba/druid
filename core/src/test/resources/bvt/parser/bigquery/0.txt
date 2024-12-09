@@ -1,3 +1,17 @@
+CREATE TEMP FUNCTION invalidRoute(polyline1 STRING)
+  RETURNS BOOL
+  LANGUAGE js AS 
+  "return (lengthOfEncodedPolyline(polyline1) <= 1)"
+  OPTIONS (library="gs://bi_cloud_storage_ees6see6/public/lib/polyutil_new.js");
+--------------------
+CREATE TEMPORARY FUNCTION invalidRoute (
+	polyline1 STRING
+)
+RETURNS BOOL
+LANGUAGE js
+OPTIONS (library = 'gs://bi_cloud_storage_ees6see6/public/lib/polyutil_new.js')
+AS """return (lengthOfEncodedPolyline(polyline1) <= 1)""";
+------------------------------------------------------------------------------------------------------------------------
 create temporary function poly(polygon string)
 returns string language js as """
 var res = JSON.parse(polygon);
