@@ -4893,11 +4893,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         final List<SQLName> columns = x.getColumns();
         final String alias = x.getAlias();
         if (alias != null) {
-            if (columns.size() > 0) {
-                print0(ucase ? " AS " : " as ");
-            } else {
-                print(' ');
-            }
+            print0(ucase ? " AS " : " as ");
             print0(alias);
         }
 
@@ -7509,6 +7505,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (trino) {
                 print0(ucase ? "ARRAY" : "array");
             }
+        }
+
+        if (x.getDataType() != null) {
+            print('<');
+            x.getDataType().accept(this);
+            print('>');
         }
 
         boolean brace = arrayValue && (dbType == DbType.hive || dbType == DbType.spark || dbType == DbType.odps);

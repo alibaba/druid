@@ -2,14 +2,10 @@ package com.alibaba.druid.bvt.sql.bigquery;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import com.alibaba.druid.sql.SQLUtils;
-import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Comparator;
 
 public class BigQueryDirTest extends SQLResourceTest {
     public BigQueryDirTest() {
@@ -20,6 +16,7 @@ public class BigQueryDirTest extends SQLResourceTest {
         return new File(path);
     }
 
+    @Ignore
     @Test
     public void dirTest() throws Exception {
 //        File dir = new File("/Users/wenshao/Downloads/goto_1894_sql");
