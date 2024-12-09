@@ -1,3 +1,33 @@
+SELECT
+straight_join o.org_new_no AS org_new_no --AD店铺代号（机构最新编码） 
+,
+o.brd_no AS brd_no -- 品牌部编码 
+,
+year_month -- 年月
+,
+month_target_amt -- 月预算 
+FROM
+paimon.dwd_pub.t15_imp_sal_org_target_detail t
+INNER JOIN dws_hive.dws_dim_org_allinfo o
+--ON split_part(t.organ_no, '_', 2) = o.org_lno AND split_part(t.organ_no, '_', 1) = o.brd_dtl_no
+ON t.org_lno = o.org_lno
+AND t.brd_dtl_no = o.brd_dtl_no
+WHERE year_month >= substr ('${v_year_start}', 1, 6)
+AND year_month <= substr ('${bizdate_yearday_end}', 1, 6)
+AND year_month > from_unixtime(unix_timestamp(cast(date_sub (now (), 1) AS string),'yyyy-MM-dd'),'yyyyMM')
+--------------------
+SELECT STRAIGHT_JOIN o.org_new_no AS org_new_no -- AD店铺代号（机构最新编码）
+	, o.brd_no AS brd_no -- 品牌部编码
+	, year_month -- 年月
+	, month_target_amt -- 月预算
+FROM paimon.dwd_pub.t15_imp_sal_org_target_detail t
+	INNER JOIN dws_hive.dws_dim_org_allinfo o
+	ON t.org_lno = o.org_lno
+		AND t.brd_dtl_no = o.brd_dtl_no
+WHERE year_month >= substr('${v_year_start}', 1, 6)
+	AND year_month <= substr('${bizdate_yearday_end}', 1, 6)
+	AND year_month > from_unixtime(unix_timestamp(CAST(date_sub(now(), 1) AS string), 'yyyy-MM-dd'), 'yyyyMM')
+------------------------------------------------------------------------------------------------------------------------
 select cast(concat('20', strleft(m_brd_season_name, 2)) as int) year
         , strright(m_brd_season_name, 2)                           qtr
         , m_brd_season_name

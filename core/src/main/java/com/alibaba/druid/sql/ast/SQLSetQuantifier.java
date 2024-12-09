@@ -23,6 +23,7 @@ public interface SQLSetQuantifier {
     public static final int UNIQUE = 3;
     public static final int DISTINCTROW = 4;
     public static final int ALL_EXCEPT = 5;
+    public static final int STRAIGHT_JOIN = 6;
 
     // <SetQuantifier>
 }
