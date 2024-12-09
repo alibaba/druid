@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAttrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
@@ -28,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PGCreateDatabaseStatement extends SQLStatementImpl implements PGSQLStatement, SQLCreateStatement {
-    private SQLName          name;
-    private boolean          haveWith;
+    private SQLName name;
+    private boolean haveWith;
     private List<PGAttrExpr> stats = new ArrayList<>();
 
-    public PGCreateDatabaseStatement(DbType dbType){
+    public PGCreateDatabaseStatement(DbType dbType) {
         super(dbType);
     }
 

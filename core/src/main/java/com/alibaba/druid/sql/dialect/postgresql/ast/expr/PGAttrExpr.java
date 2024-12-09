@@ -15,18 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.expr;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 public class PGAttrExpr extends PGExprImpl implements SQLReplaceable {
-    private SQLExpr    name;
-    private SQLExpr    value;
+    private SQLExpr name;
+    private SQLExpr value;
     private PGExprMode mode;
 
     public static enum PGExprMode {
@@ -78,7 +78,9 @@ public class PGAttrExpr extends PGExprImpl implements SQLReplaceable {
         return false;
     }
 
-    public List<SQLObject> getChildren() { return Collections.<SQLObject> singletonList(value); }
+    public List<SQLObject> getChildren() {
+        return Collections.singletonList(value);
+    }
 
     @Override
     public int hashCode() {

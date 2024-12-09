@@ -455,7 +455,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
 
         x.getName().accept(this);
-        if (x.getMode() == PGAttrExpr.PGExprMode.EQ){
+        if (x.getMode() == PGAttrExpr.PGExprMode.EQ) {
             print0(" = ");
         } else {
             print0(" ");
@@ -677,7 +677,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             printUcase(" WITH");
         }
 
-        for (PGAttrExpr attrExpr : x.getStats()){
+        for (PGAttrExpr attrExpr : x.getStats()) {
             attrExpr.accept(this);
         }
 
