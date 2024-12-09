@@ -106,8 +106,8 @@ public class PGAttrExpr extends PGExprImpl implements SQLReplaceable {
         PGAttrExpr other = (PGAttrExpr) obj;
 
         return Objects.equals(this.name, other.name) &&
-                Objects.equals(this.value, other.value) &&
-                Objects.equals(this.mode, other.mode);
+               Objects.equals(this.value, other.value) &&
+               Objects.equals(this.mode, other.mode);
     }
 
 }
