@@ -229,4 +229,14 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTV
                 throw new IllegalArgumentException("operator not support");
         }
     }
+
+    @Override
+    public void printSqlSetQuantifier(SQLSelectQueryBlock x) {
+        final int distinctOption = x.getDistionOption();
+        if (SQLSetQuantifier.STRAIGHT_JOIN == distinctOption) {
+            print0(ucase ? "STRAIGHT_JOIN " : "straight_join ");
+        } else {
+            super.printSqlSetQuantifier(x);
+        }
+    }
 }
