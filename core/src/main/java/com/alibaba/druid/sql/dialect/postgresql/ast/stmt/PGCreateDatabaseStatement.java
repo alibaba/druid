@@ -18,78 +18,36 @@ package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAttrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PGCreateDatabaseStatement extends SQLStatementImpl implements PGSQLStatement, SQLCreateStatement {
-    private SQLName name;
+    private SQLName          name;
+    private boolean          haveWith;
+    private List<PGAttrExpr> stats = new ArrayList<>();
 
-    private boolean haveWith;
-
-    private SQLName ownerName;
-    private PGWithMode ownerWithMode;
-
-    private SQLName templateName;
-    private PGWithMode templateWithMode;
-
-    public static enum PGWithMode {
-        OWNER,
-        EQ
-    }
-
-    public PGCreateDatabaseStatement(DbType dbType) {
+    public PGCreateDatabaseStatement(DbType dbType){
         super(dbType);
     }
 
     @Override
-    public SQLName getName() {
-        return this.name;
-    }
+    public SQLName getName() { return this.name; }
 
-    public void setName(SQLName dbName) {
-        this.name = dbName;
-    }
+    public void setName(SQLName dbName) { this.name = dbName; }
 
-    public boolean isHaveWith() {
-        return haveWith;
-    }
+    public boolean isHaveWith() { return haveWith; }
 
-    public void setHaveWith(boolean haveWith) {
-        this.haveWith = haveWith;
-    }
+    public void setHaveWith(boolean haveWith) { this.haveWith = haveWith; }
 
-    public SQLName getOwnerName() {
-        return ownerName;
-    }
+    public List<PGAttrExpr> getStats() { return stats; }
 
-    public void setOwnerName(SQLName ownerName) {
-        this.ownerName = ownerName;
-    }
-
-    public PGWithMode getOwnerWithMode() {
-        return ownerWithMode;
-    }
-
-    public void setOwnerWithMode(PGWithMode ownerWithMode) {
-        this.ownerWithMode = ownerWithMode;
-    }
-
-    public SQLName getTemplateName() {
-        return templateName;
-    }
-
-    public void setTemplateName(SQLName templateName) {
-        this.templateName = templateName;
-    }
-
-    public PGWithMode getTemplateWithMode() {
-        return templateWithMode;
-    }
-
-    public void setTemplateWithMode(PGWithMode templateWithMode) {
-        this.templateWithMode = templateWithMode;
-    }
+    public void setStats(List<PGAttrExpr> stats) { this.stats = stats; }
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof PGASTVisitor) {
@@ -101,9 +59,7 @@ public class PGCreateDatabaseStatement extends SQLStatementImpl implements PGSQL
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.name);
-            if (this.ownerName != null) {
-                acceptChild(visitor, this.ownerName);
-            }
+            acceptChild(visitor, this.stats);
         }
 
         visitor.endVisit(this);

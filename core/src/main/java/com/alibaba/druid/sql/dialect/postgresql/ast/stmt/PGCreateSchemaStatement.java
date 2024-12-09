@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLStatement, SQLCreateStatement {
@@ -28,7 +29,7 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
     private SQLIdentifierExpr userName;
     private boolean ifNotExists;
     private boolean authorization;
-    private List<SQLCreateStatement> createStatement;
+    private List<SQLCreateStatement> createStatements = new ArrayList<>();
 
     public SQLIdentifierExpr getSchemaName() {
         return schemaName;
@@ -62,12 +63,12 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
         this.authorization = authorization;
     }
 
-    public List<SQLCreateStatement> getCreateStatement() {
-        return createStatement;
+    public List<SQLCreateStatement> getCreateStatements() {
+        return createStatements;
     }
 
-    public void setCreateStatement(List<SQLCreateStatement> createStatement) {
-        this.createStatement = createStatement;
+    public void setCreateStatements(List<SQLCreateStatement> createStatements) {
+        this.createStatements = createStatements;
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -83,8 +84,8 @@ public class PGCreateSchemaStatement extends SQLStatementImpl implements PGSQLSt
             acceptChild(visitor, this.userName);
         }
 
-        if (this.createStatement != null && !this.createStatement.isEmpty()) {
-            for (SQLCreateStatement stat : this.createStatement) {
+        if (this.createStatements != null && !this.createStatements.isEmpty()) {
+            for (SQLCreateStatement stat : this.createStatements) {
                 acceptChild(visitor, stat);
             }
         }

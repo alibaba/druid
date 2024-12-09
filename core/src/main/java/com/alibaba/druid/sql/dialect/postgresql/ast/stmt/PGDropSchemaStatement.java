@@ -21,11 +21,12 @@ import com.alibaba.druid.sql.ast.statement.SQLDropStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PGDropSchemaStatement extends SQLStatementImpl implements PGSQLStatement, SQLDropStatement {
     private SQLIdentifierExpr schemaName;
-    private List<SQLIdentifierExpr> multipleName;
+    private List<SQLIdentifierExpr> multipleNames = new ArrayList<>();
     private boolean ifExists;
     private boolean cascade;
     private boolean restrict;
@@ -38,12 +39,12 @@ public class PGDropSchemaStatement extends SQLStatementImpl implements PGSQLStat
         this.schemaName = schemaName;
     }
 
-    public List<SQLIdentifierExpr> getMultipleName() {
-        return this.multipleName;
+    public List<SQLIdentifierExpr> getMultipleNames() {
+        return this.multipleNames;
     }
 
-    public void setMultipleName(List<SQLIdentifierExpr> multipleName) {
-        this.multipleName = multipleName;
+    public void setMultipleNames(List<SQLIdentifierExpr> multipleNames) {
+        this.multipleNames = multipleNames;
     }
 
     public boolean isIfExists() {

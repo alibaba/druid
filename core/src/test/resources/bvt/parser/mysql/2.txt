@@ -214,3 +214,11 @@ ALTER DATABASE logical_db SET read_only = 1 ON physical_db
 ALTER DATABASE logical_db SET READ_ONLY=1 ,TIME=10 ON physical_db
 --------------------
 ALTER DATABASE logical_db SET READ_ONLY = 1, TIME = 10 ON physical_db
+------------------------------------------------------------------------------------------------------------------------
+alter schema abc default collate utf8mb4_unicode_ci;
+--------------------
+ALTER DATABASE abc COLLATE = utf8mb4_unicode_ci;
+------------------------------------------------------------------------------------------------------------------------
+create schema abc default collate utf8mb4_unicode_ci;
+--------------------
+CREATE DATABASE abc COLLATE utf8mb4_unicode_ci;

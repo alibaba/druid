@@ -8184,12 +8184,28 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (lexer.identifierEquals(FnvHash.Constants.CHARACTER)) {
                 SQLAlterCharacter item = alterTableCharacter();
                 stmt.setCharacter(item);
+            } else if (lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                SQLAlterCharacter character = new SQLAlterCharacter();
+                character.setCollate(this.exprParser.primary());
+                stmt.setCharacter(character);
             } else {
                 throw new ParserException("TODO " + lexer.info());
             }
         } else if (lexer.identifierEquals(FnvHash.Constants.CHARACTER)) {
             SQLAlterCharacter item = alterTableCharacter();
             stmt.setCharacter(item);
+        } else if (lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
+            lexer.nextToken();
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            }
+            SQLAlterCharacter character = new SQLAlterCharacter();
+            character.setCollate(this.exprParser.primary());
+            stmt.setCharacter(character);
         }
 
         return stmt;

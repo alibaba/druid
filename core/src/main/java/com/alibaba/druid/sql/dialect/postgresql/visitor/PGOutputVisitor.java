@@ -445,6 +445,27 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public boolean visit(PGAttrExpr x) {
+        int curLen = this.appender.length();
+        if (curLen > 0) {
+            char c = this.appender.charAt(curLen - 1);
+            if (!(c == ' ' || c == '\t' || c == '\n' || c == '\r')) {
+                this.appender.append(" ");
+            }
+        }
+
+        x.getName().accept(this);
+        if (x.getMode() == PGAttrExpr.PGExprMode.EQ){
+            print0(" = ");
+        } else {
+            print0(" ");
+        }
+
+        x.getValue().accept(this);
+        return false;
+    }
+
+    @Override
     public boolean visit(PGBoxExpr x) {
         print0(ucase ? "BOX " : "box ");
         x.getValue().accept(this);
@@ -656,28 +677,8 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             printUcase(" WITH");
         }
 
-        if (x.getOwnerName() != null) {
-            switch (x.getOwnerWithMode()) {
-                case EQ:
-                    printUcase(" OWNER = ");
-                    break;
-                case OWNER:
-                    printUcase(" OWNER ");
-                    break;
-            }
-            x.getOwnerName().accept(this);
-        }
-
-        if (x.getTemplateName() != null) {
-            switch (x.getTemplateWithMode()) {
-                case EQ:
-                    printUcase(" TEMPLATE = ");
-                    break;
-                case OWNER:
-                    printUcase(" TEMPLATE ");
-                    break;
-            }
-            x.getTemplateName().accept(this);
+        for (PGAttrExpr attrExpr : x.getStats()){
+            attrExpr.accept(this);
         }
 
         return false;
@@ -728,7 +729,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             printUcase("IF EXISTS ");
         }
 
-        List<SQLIdentifierExpr> multipleName = x.getMultipleName();
+        List<SQLIdentifierExpr> multipleName = x.getMultipleNames();
         for (int i = 0; i < multipleName.size(); i++) {
             if (i > 0) {
                 printUcase(", ");

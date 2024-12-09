@@ -16,31 +16,27 @@ CREATE DATABASE abc
 ------------------------------------------------------------------------------------------------------------------------
 create database abc owner zyc
 --------------------
-CREATE DATABASE abc OWNER zyc
-------------------------------------------------------------------------------------------------------------------------
-create database abc owner = zyc
---------------------
-CREATE DATABASE abc OWNER = zyc
+CREATE DATABASE abc owner zyc
 ------------------------------------------------------------------------------------------------------------------------
 create database abc with owner zyc
 --------------------
-CREATE DATABASE abc WITH OWNER zyc
+CREATE DATABASE abc WITH owner zyc
 ------------------------------------------------------------------------------------------------------------------------
 create database abc template template1
 --------------------
-CREATE DATABASE abc TEMPLATE template1
+CREATE DATABASE abc template template1
 ------------------------------------------------------------------------------------------------------------------------
 create database abc template = zyc
 --------------------
-CREATE DATABASE abc TEMPLATE = zyc
+CREATE DATABASE abc template = zyc
 ------------------------------------------------------------------------------------------------------------------------
 create database abc with template zyc
 --------------------
-CREATE DATABASE abc WITH TEMPLATE zyc
+CREATE DATABASE abc WITH template zyc
 ------------------------------------------------------------------------------------------------------------------------
 create database abc with owner = zyc template zyc
 --------------------
-CREATE DATABASE abc WITH OWNER = zyc TEMPLATE zyc
+CREATE DATABASE abc WITH owner = zyc template zyc
 ------------------------------------------------------------------------------------------------------------------------
 drop database if exists abc;
 --------------------

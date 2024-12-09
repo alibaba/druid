@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAttrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -251,26 +252,23 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 break;
             }
 
-            if (lexer.identifierEquals(FnvHash.Constants.OWNER)) {
-                lexer.nextToken();
+            boolean isAttr = lexer.identifierEquals(FnvHash.Constants.TEMPLATE) ||
+                             lexer.identifierEquals(FnvHash.Constants.OWNER);
+
+            if (isAttr) {
+                SQLIdentifierExpr attrName = this.exprParser.identifier();
+
+                PGAttrExpr attrExpr = new PGAttrExpr();
                 if (lexer.token() == EQ) {
                     lexer.nextToken();
-                    stmt.setOwnerName(this.exprParser.identifier());
-                    stmt.setOwnerWithMode(PGCreateDatabaseStatement.PGWithMode.EQ);
+                    attrExpr.setMode(PGAttrExpr.PGExprMode.EQ);
                 } else {
-                    stmt.setOwnerName(this.exprParser.identifier());
-                    stmt.setOwnerWithMode(PGCreateDatabaseStatement.PGWithMode.OWNER);
+                    attrExpr.setMode(PGAttrExpr.PGExprMode.EMPTY);
                 }
-            } else if (lexer.identifierEquals(FnvHash.Constants.TEMPLATE)) {
-                lexer.nextToken();
-                if (lexer.token() == EQ) {
-                    lexer.nextToken();
-                    stmt.setTemplateName(this.exprParser.identifier());
-                    stmt.setTemplateWithMode(PGCreateDatabaseStatement.PGWithMode.EQ);
-                } else {
-                    stmt.setTemplateName(this.exprParser.identifier());
-                    stmt.setTemplateWithMode(PGCreateDatabaseStatement.PGWithMode.OWNER);
-                }
+
+                attrExpr.setName(attrName);
+                attrExpr.setValue(this.exprParser.identifier());
+                stmt.getStats().add(attrExpr);
             } else {
                 throw new ParserException("TODO " + lexer.info());
             }
@@ -314,31 +312,29 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
         }
 
-        stmt.setCreateStatement(new ArrayList<>());
-
         while (lexer.token() != SEMI && !lexer.isEOF()) {
             if (lexer.token() == Token.CREATE) {
                 Lexer.SavePoint mark = lexer.markOut();
                 lexer.nextToken();
                 if (lexer.token() == Token.TABLE) {
                     lexer.reset(mark);
-                    stmt.getCreateStatement().add(this.parseCreateTable());
+                    stmt.getCreateStatements().add(this.parseCreateTable());
                     continue;
                 } else if (lexer.token() == VIEW) {
                     lexer.reset(mark);
-                    stmt.getCreateStatement().add(this.parseCreateView());
+                    stmt.getCreateStatements().add(this.parseCreateView());
                     continue;
                 } else if (lexer.token() == INDEX) {
                     lexer.reset(mark);
-                    stmt.getCreateStatement().add(this.parseCreateIndex());
+                    stmt.getCreateStatements().add(this.parseCreateIndex());
                     continue;
                 } else if (lexer.token() == SEQUENCE) {
                     lexer.reset(mark);
-                    stmt.getCreateStatement().add(this.parseCreateSequence());
+                    stmt.getCreateStatements().add(this.parseCreateSequence());
                     continue;
                 } else if (lexer.token() == TRIGGER) {
                     lexer.reset(mark);
-                    stmt.getCreateStatement().add(this.parseCreateTrigger());
+                    stmt.getCreateStatements().add(this.parseCreateTrigger());
                     continue;
                 }
             }
@@ -422,12 +418,11 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         SQLIdentifierExpr name = this.exprParser.identifier();
         stmt.setSchemaName(name);
-        stmt.setMultipleName(new ArrayList<>());
-        stmt.getMultipleName().add(name);
+        stmt.getMultipleNames().add(name);
 
         while (lexer.token() == COMMA) {
             lexer.nextToken();
-            stmt.getMultipleName().add(this.exprParser.identifier());
+            stmt.getMultipleNames().add(this.exprParser.identifier());
         }
 
         if (lexer.token() == Token.CASCADE) {
