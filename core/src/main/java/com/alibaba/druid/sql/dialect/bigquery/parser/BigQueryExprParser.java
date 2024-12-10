@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.bigquery.BQ;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCharExpr;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -130,7 +131,14 @@ public class BigQueryExprParser extends SQLExprParser {
         SQLStructDataType struct = new SQLStructDataType(dbType);
         accept(Token.LT);
         for (; ; ) {
-            SQLName name = this.name();
+            SQLName name;
+            String str = lexer.stringVal();
+            if (BQ.DIALECT.isBuiltInDataType(str)) {
+                name = null;
+            } else {
+                name = new SQLIdentifierExpr(str);
+                lexer.nextToken();
+            }
 
             SQLDataType dataType = this.parseDataType();
             SQLStructDataType.Field field = struct.addField(name, dataType);

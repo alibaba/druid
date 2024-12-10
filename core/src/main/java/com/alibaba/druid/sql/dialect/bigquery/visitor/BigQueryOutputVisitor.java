@@ -112,11 +112,11 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         SQLName name = x.getName();
         if (name != null) {
             name.accept(this);
+            print(' ');
         }
         SQLDataType dataType = x.getDataType();
 
         if (dataType != null) {
-            print(' ');
             dataType.accept(this);
         }
 
