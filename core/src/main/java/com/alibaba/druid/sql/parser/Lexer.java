@@ -1279,9 +1279,6 @@ public class Lexer {
 
             if (ch == '$') {
                 scanVariable();
-                if (isVariantChar(charAt(pos + 1))) {
-                    scanVariable();
-                }
                 return;
             }
 
