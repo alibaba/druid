@@ -271,6 +271,14 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
             }
         }
 
+        for (SQLObject parent = this.parent; parent != null; parent = parent.getParent()) {
+            if (parent instanceof SQLCreateFunctionStatement) {
+                SQLCreateFunctionStatement createFunction = (SQLCreateFunctionStatement) parent;
+                SQLParameter parameter = createFunction.getParameter(this.name);
+                return parameter != null ? parameter.computeDataType() : null;
+            }
+        }
+
         return null;
     }
 

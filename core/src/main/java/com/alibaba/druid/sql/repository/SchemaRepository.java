@@ -1011,7 +1011,12 @@ public class SchemaRepository {
 
                     if (column == null) {
                         column = new SQLColumnDefinition();
-                        SQLDataType dataType = selectItem.computeDataType();
+                        SQLDataType dataType = null;
+                        try {
+                            dataType = selectItem.computeDataType();
+                        } catch (Throwable ignored) {
+                            // ignore
+                        }
                         if (dataType != null) {
                             column.setDataType(dataType.clone());
                         }
