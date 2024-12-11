@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,6 +68,24 @@ public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
 
     public SQLWithSubqueryClause getWithSubQuery() {
         return withSubQuery;
+    }
+
+    public SQLWithSubqueryClause.Entry findWithSubQueryEntry(String alias) {
+        return withSubQuery == null ? null : withSubQuery.findEntry(alias);
+    }
+
+    public SQLDataType findSelectItemAndComputeDataType(String ident) {
+        if (ident == null) {
+            return null;
+        }
+
+        long hash = FnvHash.hashCode64(ident);
+        return findSelectItemAndComputeDataType(hash);
+    }
+
+    public SQLDataType findSelectItemAndComputeDataType(long identHash) {
+        SQLSelectQueryBlock queryBlock = getFirstQueryBlock();
+        return queryBlock != null ? queryBlock.findSelectItemAndComputeDataType(identHash) : null;
     }
 
     public void setWithSubQuery(SQLWithSubqueryClause x) {

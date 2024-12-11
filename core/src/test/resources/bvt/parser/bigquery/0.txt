@@ -1,3 +1,19 @@
+SELECT ARRAY<STRUCT<
+          id INT64,
+          name STRING,
+          promo_id STRING,
+          quantity FLOAT64,
+          price FLOAT64
+        >>[(
+          SAFE_CAST(NULL AS INT64),
+          SAFE_CAST(NULL AS STRING),
+          SAFE_CAST(NULL AS STRING),
+          SAFE_CAST(NULL AS FLOAT64),
+          SAFE_CAST(NULL AS FLOAT64)
+        )]
+--------------------
+SELECT ARRAY<STRUCT<id INT64, name STRING, promo_id STRING, quantity FLOAT64, price FLOAT64>>[(SAFE_CAST(NULL AS INT64), SAFE_CAST(NULL AS STRING), SAFE_CAST(NULL AS STRING), SAFE_CAST(NULL AS FLOAT64), SAFE_CAST(NULL AS FLOAT64))]
+------------------------------------------------------------------------------------------------------------------------
 SELECT CAST(null as STRUCT<ARRAY<STRUCT<INT64, STRING>>>)
 --------------------
 SELECT CAST(NULL AS STRUCT<ARRAY<STRUCT<INT64, STRING>>>)

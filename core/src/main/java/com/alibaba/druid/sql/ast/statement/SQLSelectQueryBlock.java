@@ -1189,6 +1189,61 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         return findSelectItem(hash);
     }
 
+    public SQLDataType findSelectItemAndComputeDataType(String ident) {
+        if (ident == null) {
+            return null;
+        }
+
+        long hash = FnvHash.hashCode64(ident);
+        return findSelectItemAndComputeDataType(hash);
+    }
+
+    public SQLDataType findSelectItemAndComputeDataType(long identHash) {
+        SQLSelectItem selectItem = findSelectItem(identHash);
+        if (selectItem != null) {
+            return selectItem.computeDataType();
+        }
+
+        if (hasAllColumnSelectItem()) {
+            if (from instanceof SQLSubqueryTableSource) {
+                SQLSelectQueryBlock firstQueryBlock = ((SQLSubqueryTableSource) from).getSelect().getFirstQueryBlock();
+                if (firstQueryBlock != null) {
+                    return firstQueryBlock.findSelectItemAndComputeDataType(identHash);
+                }
+            } else if (from instanceof SQLExprTableSource
+                    && ((SQLExprTableSource) from).getExpr() instanceof SQLIdentifierExpr
+            ) {
+                for (SQLObject parent = this.parent; parent != null; parent = parent.getParent()) {
+                    if (parent instanceof SQLSelect) {
+                        SQLWithSubqueryClause.Entry queryEntry = ((SQLSelect) parent).findWithSubQueryEntry(((SQLIdentifierExpr) ((SQLExprTableSource) from).getExpr()).getName());
+                        if (queryEntry != null) {
+                            return queryEntry.getSubQuery().findSelectItemAndComputeDataType(identHash);
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean hasAllColumnSelectItem() {
+        for (SQLSelectItem selectItem : selectList) {
+            if (selectItem.getExpr() instanceof SQLAllColumnExpr) {
+                SQLAllColumnExpr expr = (SQLAllColumnExpr) selectItem.getExpr();
+                SQLExpr owner = expr.getOwner();
+                if (owner == null) {
+                    return true;
+                }
+                if (owner instanceof SQLIdentifierExpr
+                        && from != null
+                        && ((SQLIdentifierExpr) owner).getName().equals(from.computeAlias())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public SQLSelectItem findSelectItem(long identHash) {
         for (SQLSelectItem item : this.selectList) {
             if (item.match(identHash)) {

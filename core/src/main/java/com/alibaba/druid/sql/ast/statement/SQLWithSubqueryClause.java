@@ -46,6 +46,18 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         return entries;
     }
 
+    public Entry findEntry(String alias) {
+        if (alias == null) {
+            return null;
+        }
+        for (Entry entry : entries) {
+            if (alias.equals(entry.getAlias())) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
     public void addEntry(Entry entry) {
         if (entry != null) {
             entry.setParent(this);

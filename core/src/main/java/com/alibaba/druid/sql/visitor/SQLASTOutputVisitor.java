@@ -2120,7 +2120,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printFunctionName(String name) {
-        print0(name);
+        printName0(name);
     }
 
     public boolean visit(SQLAggregateExpr x) {
@@ -8810,6 +8810,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLExpr literal = x.getLiteral();
         print0(ucase ? "DATETIME " : "datetime ");
         printExpr(literal, parameterized);
+
+        return false;
+    }
+
+    public boolean visit(SQLTimestampNTZExpr x) {
+        String literal = x.getLiteral();
+        print0(ucase ? "TIMESTAMP_NTZ '" : "timestamp_ntz '");
+        print0(literal);
+        print('\'');
 
         return false;
     }

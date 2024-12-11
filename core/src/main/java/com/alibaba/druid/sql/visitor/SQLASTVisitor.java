@@ -975,6 +975,13 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default void endVisit(SQLTimestampNTZExpr x) {
+    }
+
+    default boolean visit(SQLTimestampNTZExpr x) {
+        return true;
+    }
+
     default void endVisit(SQLDateTimeExpr x) {
     }
 

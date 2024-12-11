@@ -587,21 +587,7 @@ public class SQLExprParser extends SQLParser {
                     sqlExpr = new SQLTimestampExpr(lexer.stringVal());
                     lexer.nextToken();
                 } else if (hash_lower == FnvHash.Constants.ARRAY && (lexer.token == Token.LBRACKET || lexer.token == Token.LT)) {
-                    SQLArrayExpr array = new SQLArrayExpr();
-                    array.setExpr(new SQLIdentifierExpr(ident));
-                    if (lexer.nextIf(Token.LT)) {
-                        SQLDataType sqlDataType = this.parseDataType();
-                        array.setDataType(sqlDataType);
-                        accept(Token.GT);
-                    }
-
-                    if (lexer.nextIf(Token.LBRACKET)) {
-                        this.exprList(array.getValues(), array);
-                        accept(Token.RBRACKET);
-                    } else {
-                        throw new ParserException("Syntax error. " + lexer.info());
-                    }
-                    sqlExpr = array;
+                    sqlExpr = parseArrayExpr(ident);
                 } else {
                     sqlExpr = primaryIdentifierRest(hash_lower, ident);
                     if (sqlExpr == null) {
@@ -1283,6 +1269,26 @@ public class SQLExprParser extends SQLParser {
             // expr.addAfterComment(lexer.readAndResetComments());
         }
         return expr;
+    }
+
+    protected SQLExpr parseArrayExpr(String ident) {
+        SQLExpr sqlExpr;
+        SQLArrayExpr array = new SQLArrayExpr();
+        array.setExpr(new SQLIdentifierExpr(ident));
+        if (lexer.nextIf(Token.LT)) {
+            SQLDataType sqlDataType = this.parseDataType();
+            array.setDataType(sqlDataType);
+            accept(Token.GT);
+        }
+
+        if (lexer.nextIf(Token.LBRACKET)) {
+            this.exprList(array.getValues(), array);
+            accept(Token.RBRACKET);
+        } else {
+            throw new ParserException("Syntax error. " + lexer.info());
+        }
+        sqlExpr = array;
+        return sqlExpr;
     }
 
     protected SQLExpr parseCast() {
@@ -4216,36 +4222,7 @@ public class SQLExprParser extends SQLParser {
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
-            lexer.nextToken();
-
-            if (lexer.token == Token.LPAREN) {
-                lexer.nextToken();
-                SQLArrayDataType array = new SQLArrayDataType(null, dbType);
-                this.exprList(array.getArguments(), array, true);
-                accept(Token.RPAREN);
-                return array;
-            }
-
-            accept(Token.LT);
-            SQLDataType itemType = parseDataType();
-
-            if (lexer.token == Token.GTGTGT) {
-                lexer.token = Token.GTGT;
-            } else if (lexer.token == Token.GTGT) {
-                lexer.token = Token.GT;
-            } else {
-                accept(Token.GT);
-            }
-
-            SQLArrayDataType array = new SQLArrayDataType(itemType, dbType);
-
-            if (lexer.token == Token.LPAREN) {
-                lexer.nextToken();
-                this.exprList(array.getArguments(), array, true);
-                accept(Token.RPAREN);
-            }
-
-            return array;
+            return parseArrayDataType();
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.MAP)) {
@@ -4453,6 +4430,39 @@ public class SQLExprParser extends SQLParser {
 
         dataType.setSource(sourceLine, sourceColumn);
         return parseDataTypeRest(dataType);
+    }
+
+    protected SQLArrayDataType parseArrayDataType() {
+        lexer.nextToken();
+
+        if (lexer.token == Token.LPAREN) {
+            lexer.nextToken();
+            SQLArrayDataType array = new SQLArrayDataType(null, dbType);
+            this.exprList(array.getArguments(), array, true);
+            accept(Token.RPAREN);
+            return array;
+        }
+
+        accept(Token.LT);
+        SQLDataType itemType = parseDataType();
+
+        if (lexer.token == Token.GTGTGT) {
+            lexer.token = Token.GTGT;
+        } else if (lexer.token == Token.GTGT) {
+            lexer.token = Token.GT;
+        } else {
+            accept(Token.GT);
+        }
+
+        SQLArrayDataType array = new SQLArrayDataType(itemType, dbType);
+
+        if (lexer.token == Token.LPAREN) {
+            lexer.nextToken();
+            this.exprList(array.getArguments(), array, true);
+            accept(Token.RPAREN);
+        }
+
+        return array;
     }
 
     protected SQLStructDataType parseDataTypeStruct() {

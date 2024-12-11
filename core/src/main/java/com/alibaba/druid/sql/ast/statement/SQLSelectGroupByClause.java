@@ -108,6 +108,11 @@ public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplacea
         return this.items;
     }
 
+    public void setItem(int index, SQLExpr expr) {
+        expr.setParent(this);
+        this.items.set(index, expr);
+    }
+
     public boolean containsItem(SQLExpr item) {
         return this.items.contains(item);
     }

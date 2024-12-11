@@ -108,8 +108,15 @@ public class BigQueryExprParser extends SQLExprParser {
     }
 
     protected SQLExpr parseSelectItemRest(String ident, long hash_lower) {
-        if (ident.length() > 3 && ident.charAt(0) == '`' && ident.charAt(ident.length() - 1) == '`' && ident.indexOf('.') != -1) {
+        if (ident.length() > 3
+                && ident.charAt(0) == '`'
+                && ident.charAt(ident.length() - 1) == '`'
+                && ident.indexOf('.') != -1
+        ) {
             return topPropertyExpr(ident);
+        }
+        if (hash_lower == FnvHash.Constants.ARRAY && lexer.token() == Token.LT) {
+            return parseArrayExpr(ident);
         }
         return null;
     }
