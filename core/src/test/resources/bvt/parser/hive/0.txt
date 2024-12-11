@@ -1,3 +1,7 @@
+select substr(${yesterday},1,4) 
+--------------------
+SELECT substr(${yesterday}, 1, 4)
+------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE if not exists iteblog_06(
     name struct<guo:string,sheng:string,shi:string>, value string
 )
