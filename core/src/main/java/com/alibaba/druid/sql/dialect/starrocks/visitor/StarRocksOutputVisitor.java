@@ -28,13 +28,12 @@ import java.util.Locale;
 
 public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarRocksASTVisitor {
     {
-        this.dbType = DbType.starrocks;
         this.shardingSupport = true;
         this.quote = '`';
     }
 
     public StarRocksOutputVisitor(StringBuilder appender) {
-        super(appender);
+        super(appender, DbType.starrocks);
     }
 
     public StarRocksOutputVisitor(StringBuilder appender, DbType dbType) {
@@ -42,7 +41,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public StarRocksOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
+        super(appender, DbType.starrocks, parameterized);
     }
 
     @Override

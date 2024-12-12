@@ -41,13 +41,11 @@ import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor, OracleASTVisitor {
     public PGOutputVisitor(StringBuilder appender) {
-        super(appender);
-        this.dbType = DbType.postgresql;
+        super(appender, DbType.postgresql);
     }
 
     public PGOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        this.dbType = DbType.postgresql;
+        super(appender, DbType.postgresql, parameterized);
     }
 
     @Override

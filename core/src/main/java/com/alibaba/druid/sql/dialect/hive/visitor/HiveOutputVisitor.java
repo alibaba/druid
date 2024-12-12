@@ -52,8 +52,7 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
     }
 
     public HiveOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.hive;
+        super(appender, DbType.hive, parameterized);
     }
 
     @Override

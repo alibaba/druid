@@ -17,8 +17,7 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
     }
 
     public BigQueryOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        this.dbType = DbType.bigquery;
+        super(appender, DbType.bigquery, parameterized);
     }
 
     protected void printPartitionedBy(SQLCreateTableStatement x) {

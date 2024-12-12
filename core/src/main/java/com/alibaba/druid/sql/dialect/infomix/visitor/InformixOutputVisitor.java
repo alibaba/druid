@@ -12,8 +12,7 @@ public class InformixOutputVisitor extends SQLASTOutputVisitor {
     }
 
     public InformixOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.informix;
+        super(appender, DbType.informix, parameterized);
     }
 
     protected void printSelectListBefore(SQLSelectQueryBlock x) {

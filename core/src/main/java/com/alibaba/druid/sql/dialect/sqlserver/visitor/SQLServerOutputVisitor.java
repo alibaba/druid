@@ -37,8 +37,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     public SQLServerOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        this.dbType = DbType.sqlserver;
+        super(appender, DbType.sqlserver, parameterized);
     }
 
     public boolean visit(SQLServerSelectQueryBlock x) {
