@@ -433,6 +433,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printAlias0(alias);
     }
 
+    protected void printPrefix(boolean predicate, String ucaseMessage, String lcaseMessage) {
+        if (!predicate) {
+            return;
+        }
+        print0(ucase ? ucaseMessage : lcaseMessage);
+    }
+
     protected void printAndAccept(List<? extends SQLObject> nodes, String seperator) {
         for (int i = 0, size = nodes.size(); i < size; ++i) {
             if (i != 0) {
@@ -11332,6 +11339,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAdhocTableSource x) {
         final SQLCreateTableStatement definition = x.getDefinition();
         definition.accept(this);
+        return false;
+    }
+
+    public boolean visit(SQLExecuteImmediateStatement x) {
+        print(ucase ? "EXECUTE IMMEDIATE " : "execute immediate ");
+        x.getDynamicSql().accept(this);
+        List<SQLExpr> into = x.getInto();
+        if (!into.isEmpty()) {
+            print(ucase ? " INTO " : " into ");
+            printAndAccept(into, ", ");
+        }
         return false;
     }
 

@@ -420,4 +420,14 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         print0(ucase ? "END IF" : "end if");
         return false;
     }
+
+    public boolean visit(BigQueryExecuteImmediateStatement x) {
+        super.visit(x);
+        List<SQLAliasedExpr> using = x.getUsing();
+        if (!using.isEmpty()) {
+            print0(ucase ? " USING " : " using ");
+            printAndAccept(using, ", ");
+        }
+        return false;
+    }
 }

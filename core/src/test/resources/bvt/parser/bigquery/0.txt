@@ -1,3 +1,15 @@
+EXECUTE IMMEDIATE "SELECT @a * (@b + 2)" INTO y USING 1 as a, 3 as b;
+--------------------
+EXECUTE IMMEDIATE 'SELECT @a * (@b + 2)' INTO y USING 1 AS a, 3 AS b;
+------------------------------------------------------------------------------------------------------------------------
+EXECUTE IMMEDIATE "SELECT ? * (? + 2)" INTO y USING 1, 3;
+--------------------
+EXECUTE IMMEDIATE 'SELECT ? * (? + 2)' INTO y USING 1, 3;
+------------------------------------------------------------------------------------------------------------------------
+EXECUTE IMMEDIATE "DELETE FROM t1 WHERE x_audit_date = ?" USING audit_date;
+--------------------
+EXECUTE IMMEDIATE 'DELETE FROM t1 WHERE x_audit_date = ?' USING audit_date;
+------------------------------------------------------------------------------------------------------------------------
 SELECT ARRAY<STRUCT<
           id INT64,
           name STRING,

@@ -654,6 +654,13 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.identifierEquals("EXECUTE")) {
+                SQLStatement stmt = parseExecute();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
             int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
                 if (parent != null) {
@@ -672,6 +679,10 @@ public class SQLStatementParser extends SQLParser {
             throw new ParserException(UNSUPPORT_TOKEN_MSG_PREFIX + lexer.info());
         }
 
+    }
+
+    public SQLStatement parseExecute() {
+        throw new ParserException("TODO");
     }
 
     private SQLStatement parseGetDiagnosticsStatement() {

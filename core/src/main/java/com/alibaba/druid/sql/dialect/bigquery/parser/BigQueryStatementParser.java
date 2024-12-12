@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryExecuteImmediateStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -136,6 +137,36 @@ public class BigQueryStatementParser extends SQLStatementParser {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public SQLStatement parseExecute() {
+        acceptIdentifier(FnvHash.Constants.EXECUTE);
+        acceptIdentifier("IMMEDIATE");
+
+        BigQueryExecuteImmediateStatement stmt = new BigQueryExecuteImmediateStatement();
+        stmt.setDynamicSql(
+                this.exprParser.expr()
+        );
+        if (lexer.nextIf(Token.INTO)) {
+            this.exprParser.exprList(stmt.getInto(), stmt);
+        }
+        if (lexer.nextIf(Token.USING)) {
+            for (;;) {
+                SQLExpr expr = this.exprParser.expr();
+                String alias = null;
+                if (lexer.nextIf(Token.AS)) {
+                    alias = lexer.stringVal();
+                    lexer.nextToken();
+                }
+                stmt.addUsing(expr, alias);
+                if (lexer.nextIf(Token.COMMA)) {
+                    continue;
+                }
+                break;
+            }
+        }
+        return stmt;
     }
 
     public SQLStatement parseRaise() {
