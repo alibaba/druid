@@ -1984,7 +1984,7 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token == Token.OVER) {
             if (aggregateExpr == null) {
                 aggregateExpr = new SQLAggregateExpr(methodName);
-                aggregateExpr.getArguments().addAll(methodInvokeExpr.getArguments());
+                aggregateExpr.addArguments(methodInvokeExpr.getArguments());
             }
             over(aggregateExpr);
         }

@@ -1820,6 +1820,7 @@ public class SQLSelectParser extends SQLParser {
                     SQLTableSource unnestTableSource = parseUnnestTableSource();
                     if (unnestTableSource != null) {
                         if (lexer.identifierEquals(FnvHash.Constants.CROSS)
+                                || lexer.token == Token.CROSS
                                 || lexer.token == Token.LEFT
                                 || lexer.token == Token.RIGHT
                                 || lexer.token == Token.COMMA
