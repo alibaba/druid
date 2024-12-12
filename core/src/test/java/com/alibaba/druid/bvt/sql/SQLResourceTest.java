@@ -125,7 +125,7 @@ public class SQLResourceTest {
 
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
             SQLStatement stmt = parser.parseStatement();
-            assertEquals(Token.EOF, parser.getLexer().token());
+            assertEquals(parser.getLexer().info(), Token.EOF, parser.getLexer().token());
             String result = SQLUtils.toSQLString(stmt, dbType).trim();
             assertEquals(expected, result);
 

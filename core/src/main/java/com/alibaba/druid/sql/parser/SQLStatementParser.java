@@ -654,6 +654,27 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.token == LOOP) {
+                SQLStatement stmt = parseLoop();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
+            if (lexer.token == CONTINUE) {
+                SQLStatement stmt = parseContinue();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
+            if (lexer.token == LEAVE) {
+                SQLStatement stmt = parseLeave();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
             if (lexer.identifierEquals("EXECUTE")) {
                 SQLStatement stmt = parseExecute();
                 statementList.add(stmt);
@@ -1322,8 +1343,22 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
+    public SQLStatement parseLoop() {
+        accept(Token.LOOP);
+        SQLLoopStatement stmt = new SQLLoopStatement();
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
+        accept(Token.END);
+        accept(Token.LOOP);
+        return stmt;
+    }
+
     public SQLStatement parseDeclare() {
         throw new ParserException("not supported. " + lexer.info());
+    }
+
+    public SQLStatement parseContinue() {
+        accept(Token.CONTINUE);
+        return new SQLContinueStatement();
     }
 
     public SQLStatement parseRepeat() {
@@ -1331,7 +1366,8 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseLeave() {
-        throw new ParserException("not supported. " + lexer.info());
+        accept(LEAVE);
+        return new SQLLeaveStatement();
     }
 
     public SQLStatement parseCache() {

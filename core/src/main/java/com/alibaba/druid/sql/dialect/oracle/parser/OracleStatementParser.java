@@ -1237,6 +1237,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    @Override
     public SQLLoopStatement parseLoop() {
         accept(Token.LOOP);
 

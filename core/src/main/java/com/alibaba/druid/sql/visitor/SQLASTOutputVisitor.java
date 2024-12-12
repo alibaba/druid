@@ -11353,6 +11353,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLContinueStatement x) {
+        print(ucase ? "CONTINUE" : "continue");
+        return false;
+    }
+
+    public boolean visit(SQLLeaveStatement x) {
+        print(ucase ? "LEAVE" : "leave");
+        return false;
+    }
+
     protected void printCreateTableLike(SQLCreateTableStatement x) {
         SQLExprTableSource like = x.getLike();
         if (like == null) {

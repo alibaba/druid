@@ -102,10 +102,12 @@ public class BigQueryLexer extends Lexer {
         map.put("WINDOW", Token.WINDOW);
         map.put("WITH", Token.WITH);
         map.put("WHILE", Token.WHILE);
+        map.put("LOOP", Token.LOOP);
+        map.put("LEAVE", Token.LEAVE);
+        map.put("CONTINUE", Token.CONTINUE);
         map.put("VIEW", Token.VIEW);
         map.put("TRUNCATE", Token.TRUNCATE);
         map.put("BEGIN", Token.BEGIN);
-        map.put("END", Token.END);
         map.put("TABLE", Token.TABLE);
         map.put("EXCEPTION", Token.EXCEPTION);
         map.put("RAISE", Token.RAISE);
