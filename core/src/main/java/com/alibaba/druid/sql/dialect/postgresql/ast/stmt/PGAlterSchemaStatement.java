@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
@@ -22,15 +23,15 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGAlterSchemaStatement extends SQLStatementImpl implements PGSQLStatement, SQLAlterStatement {
-    private SQLIdentifierExpr schemaName;
+    private SQLName schemaName;
     private SQLIdentifierExpr newName;
     private SQLIdentifierExpr newOwner;
 
-    public SQLIdentifierExpr getSchemaName() {
+    public SQLName getSchemaName() {
         return schemaName;
     }
 
-    public void setSchemaName(SQLIdentifierExpr schemaName) {
+    public void setSchemaName(SQLName schemaName) {
         this.schemaName = schemaName;
     }
 

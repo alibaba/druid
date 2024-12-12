@@ -299,8 +299,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 SQLIdentifierExpr userName = (SQLIdentifierExpr) this.exprParser.expr();
                 stmt.setUserName(userName);
             } else {
-                SQLIdentifierExpr schemaName = (SQLIdentifierExpr) this.exprParser.expr();
-                stmt.setSchemaName(schemaName);
+                stmt.setSchemaName(this.exprParser.name());
 
                 if (lexer.identifierEquals("AUTHORIZATION")) {
                     lexer.nextToken();
@@ -350,7 +349,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         accept(Token.SCHEMA);
 
         PGAlterSchemaStatement stmt = new PGAlterSchemaStatement();
-        stmt.setSchemaName(this.exprParser.identifier());
+        stmt.setSchemaName(this.exprParser.name());
 
         if (lexer.identifierEquals(FnvHash.Constants.RENAME)) {
             lexer.nextToken();
@@ -416,13 +415,13 @@ public class PGSQLStatementParser extends SQLStatementParser {
             stmt.setIfExists(true);
         }
 
-        SQLIdentifierExpr name = this.exprParser.identifier();
+        SQLName name = this.exprParser.name();
         stmt.setSchemaName(name);
         stmt.getMultipleNames().add(name);
 
         while (lexer.token() == COMMA) {
             lexer.nextToken();
-            stmt.getMultipleNames().add(this.exprParser.identifier());
+            stmt.getMultipleNames().add(this.exprParser.name());
         }
 
         if (lexer.token() == Token.CASCADE) {
