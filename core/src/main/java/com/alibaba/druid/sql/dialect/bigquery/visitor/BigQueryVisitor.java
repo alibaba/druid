@@ -45,4 +45,11 @@ public interface BigQueryVisitor extends SQLASTVisitor {
 
     default void endVisit(BigQueryExecuteImmediateStatement x) {
     }
+
+    default boolean visit(BigQueryCreateModelStatement x) {
+        return true;
+    }
+
+    default void endVisit(BigQueryCreateModelStatement x) {
+    }
 }

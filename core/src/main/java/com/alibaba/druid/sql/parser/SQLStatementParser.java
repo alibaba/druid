@@ -4124,6 +4124,9 @@ public class SQLStatementParser extends SQLParser {
                         lexer.reset(mark);
                         return parseCreateTable();
                     }
+                } else if (lexer.identifierEquals(Constants.MODEL)) {
+                    lexer.reset(mark);
+                    return parseCreateModel();
                 }
 
                 SQLStatement stmt = createTableRest(mark);
@@ -4157,6 +4160,10 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreateScan() {
+        throw new ParserException("TODO " + lexer.token);
+    }
+
+    protected SQLStatement parseCreateModel() {
         throw new ParserException("TODO " + lexer.token);
     }
 
@@ -5182,6 +5189,20 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseStatement() {
+        final SQLStatement ret = parseStatement0();
+
+        if (END_TOKEN_CHECKING_ENABLED) {
+            checkEndToken();
+        }
+
+        if (lexer.nextIf(SEMI)) {
+            ret.setAfterSemi(true);
+        }
+
+        return ret;
+    }
+
+    protected SQLStatement parseStatement0() {
         final SQLStatement ret;
         if (lexer.token == Token.SELECT) {
             ret = this.parseSelect();
@@ -5196,15 +5217,6 @@ public class SQLStatementParser extends SQLParser {
             this.parseStatementList(list, 1, null);
             ret = list.get(0);
         }
-
-        if (END_TOKEN_CHECKING_ENABLED) {
-            checkEndToken();
-        }
-
-        if (lexer.nextIf(SEMI)) {
-            ret.setAfterSemi(true);
-        }
-
         return ret;
     }
 

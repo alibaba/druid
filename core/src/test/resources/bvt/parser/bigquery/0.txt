@@ -1,3 +1,38 @@
+CREATE MODEL  m0
+OPTIONS(
+  MODEL_TYPE='ARIMA_PLUS'
+  ,TIME_SERIES_TIMESTAMP_COL='partition_date'
+  ,TIME_SERIES_DATA_COL='increment'
+  ,SEASONALITIES=['WEEKLY']
+  ) AS (
+    training_data AS (
+      SELECT partition_date
+      FROM t1
+    ),
+    custom_holiday AS (
+      SELECT DISTINCT region
+      FROM t2
+    )
+  );
+--------------------
+CREATE MODEL m0
+OPTIONS (
+	MODEL_TYPE = 'ARIMA_PLUS',
+	TIME_SERIES_TIMESTAMP_COL = 'partition_date',
+	TIME_SERIES_DATA_COL = 'increment',
+	SEASONALITIES = ['WEEKLY']
+)
+AS (
+	TRAINING_DATA AS (
+		SELECT partition_date
+		FROM t1
+	),
+	CUSTOM_HOLIDAY AS (
+		SELECT DISTINCT region
+		FROM t2
+	)
+);
+------------------------------------------------------------------------------------------------------------------------
 LOOP
   SET x = x + 1;
   IF x >= 10 THEN

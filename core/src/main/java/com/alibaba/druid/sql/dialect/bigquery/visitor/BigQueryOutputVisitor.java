@@ -430,4 +430,45 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         }
         return false;
     }
+
+    public boolean visit(BigQueryCreateModelStatement x) {
+        print0(ucase ? " CREATE " : " create ");
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+        if (x.isReplace()) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
+        print0(ucase ? "MODEL " : "model ");
+        x.getName().accept(this);
+        println();
+
+        incrementIndent();
+        println(ucase ? "OPTIONS (" : "options (");
+        printlnAndAccept(x.getOptions(), ",");
+        decrementIndent();
+        println();
+        println(')');
+
+        print0(ucase ? "AS (" : "as (");
+        incrementIndent();
+        println();
+
+        incrementIndent();
+        println(ucase ? "TRAINING_DATA AS (" : "training_data AS (");
+        x.getTrainingData().accept(this);
+        decrementIndent();
+        println();
+
+        println("),");
+        incrementIndent();
+        println(ucase ? "CUSTOM_HOLIDAY AS (" : "custom_holiday AS (");
+        x.getCustomHoliday().accept(this);
+        decrementIndent();
+        println();
+        decrementIndent();
+        println(")");
+        print0(')');
+        return false;
+    }
 }
