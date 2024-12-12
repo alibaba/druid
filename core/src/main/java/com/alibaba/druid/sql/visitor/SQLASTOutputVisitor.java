@@ -123,10 +123,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public SQLASTOutputVisitor(StringBuilder appender, DbType dbType) {
         this.appender = appender;
         this.dbType = dbType;
+        this.dialect = SQLDialect.of(dbType);
     }
 
     public SQLASTOutputVisitor(StringBuilder appender, boolean parameterized) {
         this.appender = appender;
+        this.config(VisitorFeature.OutputParameterized, parameterized);
+    }
+    public SQLASTOutputVisitor(StringBuilder appender, DbType dbType, boolean parameterized) {
+        this.appender = appender;
+        this.dbType = dbType;
+        this.dialect = SQLDialect.of(dbType);
         this.config(VisitorFeature.OutputParameterized, parameterized);
     }
 

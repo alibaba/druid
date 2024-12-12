@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.phoenix.visitor;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 /**
@@ -22,10 +23,10 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
  */
 public class PhoenixOutputVisitor extends SQLASTOutputVisitor implements PhoenixASTVisitor {
     public PhoenixOutputVisitor(StringBuilder appender) {
-        super(appender);
+    super(appender, DbType.phoenix);
     }
 
     public PhoenixOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
+        super(appender, DbType.phoenix, parameterized);
     }
 }

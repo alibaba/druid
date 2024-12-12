@@ -45,11 +45,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public MySqlOutputVisitor(StringBuilder appender) {
-        super(appender);
+        super(appender, DbType.mysql);
     }
 
     public MySqlOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
+        super(appender, DbType.mysql, parameterized);
 
         try {
             configFromProperty();

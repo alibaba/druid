@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-import com.alibaba.druid.util.OdpsUtils;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -62,7 +61,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     public OdpsOutputVisitor(StringBuilder appender) {
         super(appender, DbType.odps);
-        dialect = OdpsUtils.DIALECT;
     }
 
     @Override

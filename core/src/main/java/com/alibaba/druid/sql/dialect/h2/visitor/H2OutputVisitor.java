@@ -43,8 +43,7 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
     }
 
     public H2OutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.h2;
+        super(appender, DbType.h2, parameterized);
     }
 
     public boolean visit(SQLReplaceStatement x) {
