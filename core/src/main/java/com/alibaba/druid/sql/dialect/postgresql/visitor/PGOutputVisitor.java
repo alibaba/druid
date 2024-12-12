@@ -729,7 +729,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             printUcase("IF EXISTS ");
         }
 
-        List<SQLIdentifierExpr> multipleName = x.getMultipleNames();
+        List<SQLName> multipleName = x.getMultipleNames();
         for (int i = 0; i < multipleName.size(); i++) {
             if (i > 0) {
                 printUcase(", ");
