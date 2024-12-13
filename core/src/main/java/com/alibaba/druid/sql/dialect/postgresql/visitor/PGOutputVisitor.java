@@ -2857,14 +2857,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.isTruncate()) {
             print0(ucase ? "TRUNCATE " : "truncate ");
         }
-        if (x.isDeltaMerge()) {
-            print0(ucase ? "DELTAMERGE " : "deltamerge ");
-        }
-        if (x.isHdfsDirectory()) {
-            print0(ucase ? "HDFSDIRECTORY " : "hdfsdirectory ");
-        }
+        printVacuumRest(x);
         printAndAccept(x.getTableSources(), ", ");
         return false;
+    }
+
+    protected void printVacuumRest(PGVacuumStatement x){
     }
 
     @Override
