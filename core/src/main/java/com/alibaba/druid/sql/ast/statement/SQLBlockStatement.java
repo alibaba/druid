@@ -165,4 +165,15 @@ public class SQLBlockStatement extends SQLStatementImpl {
     public void setEndOfCommit(boolean value) {
         this.endOfCommit = value;
     }
+
+    public boolean replace(SQLStatement cmp, SQLStatement target) {
+        for (int i = 0; i < statementList.size(); i++) {
+            if (statementList.get(i) == cmp) {
+                statementList.set(i, target);
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

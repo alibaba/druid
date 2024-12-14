@@ -143,6 +143,9 @@ public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable {
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            setExpr(target);
+        }
         for (int i = 0; i < values.size(); i++) {
             if (values.get(i) == expr) {
                 target.setParent(this);

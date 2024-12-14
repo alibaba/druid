@@ -2110,6 +2110,23 @@ public class SQLUtils {
         return false;
     }
 
+    public static boolean replaceInParent(SQLStatement cmp, SQLStatement dest) {
+        if (cmp == null) {
+            return false;
+        }
+
+        SQLObject parent = cmp.getParent();
+        if (parent == null) {
+            return false;
+        }
+
+        if (parent instanceof SQLBlockStatement) {
+            return ((SQLBlockStatement) parent).replace(cmp, dest);
+        }
+
+        return false;
+    }
+
     public static String desensitizeTable(String tableName) {
         if (tableName == null) {
             return null;
