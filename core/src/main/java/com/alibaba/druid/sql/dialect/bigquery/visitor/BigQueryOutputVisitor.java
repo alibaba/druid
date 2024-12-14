@@ -471,4 +471,16 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         print0(')');
         return false;
     }
+
+    public boolean visit(BigQueryModelExpr x) {
+        print0(ucase ? "MODEL " : "model ");
+        x.getName().accept(this);
+        return false;
+    }
+
+    public boolean visit(BigQueryTableExpr x) {
+        print0(ucase ? "TABLE " : "table ");
+        x.getName().accept(this);
+        return false;
+    }
 }

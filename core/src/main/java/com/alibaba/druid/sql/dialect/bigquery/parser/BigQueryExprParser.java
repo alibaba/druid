@@ -6,6 +6,8 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.BQ;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCharExpr;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryModelExpr;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryTableExpr;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -265,6 +267,33 @@ public class BigQueryExprParser extends SQLExprParser {
             return primaryRest(
                     parseQueryExpr()
             );
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.MODEL)) {
+            Lexer.SavePoint mark = lexer.markOut();
+            lexer.nextToken();
+            if (lexer.token() == Token.IDENTIFIER) {
+                BigQueryModelExpr model = new BigQueryModelExpr();
+                model.setName(
+                        name()
+                );
+                return model;
+            } else {
+                lexer.reset(mark);
+            }
+        }
+        if (lexer.token() == Token.TABLE) {
+            Lexer.SavePoint mark = lexer.markOut();
+            lexer.nextToken();
+            if (lexer.token() == Token.IDENTIFIER) {
+                BigQueryTableExpr model = new BigQueryTableExpr();
+                model.setName(
+                        name()
+                );
+                return model;
+            } else {
+                lexer.reset(mark);
+            }
         }
         return super.primary();
     }

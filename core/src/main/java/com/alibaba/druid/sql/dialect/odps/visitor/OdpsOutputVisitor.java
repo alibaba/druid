@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
+import com.alibaba.druid.util.FnvHash;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -1083,5 +1084,40 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         }
 
         return false;
+    }
+
+    protected void printMethodParameters(SQLMethodInvokeExpr x) {
+        List<SQLExpr> arguments = x.getArguments();
+
+        boolean needPrintLine = false;
+        if (arguments.size() > 10
+                && (arguments.size() % 2) == 0
+                && (x.methodNameHashCode64() == FnvHash.Constants.NAMED_STRUCT
+                || x.methodNameHashCode64() == FnvHash.Constants.MAP)
+        ) {
+            needPrintLine = true;
+        }
+        if (needPrintLine) {
+            print0('(');
+            incrementIndent();
+            println();
+            for (int i = 0, size = arguments.size(); i < size; i += 2) {
+                if (i != 0) {
+                    print0(',');
+                    println();
+                }
+
+                SQLExpr arg0 = arguments.get(i);
+                SQLExpr arg1 = arguments.get(i + 1);
+                printExpr(arg0);
+                this.print0(", ");
+                printExpr(arg1);
+            }
+            decrementIndent();
+            println();
+            print0(')');
+            return;
+        }
+        super.printMethodParameters(x);
     }
 }

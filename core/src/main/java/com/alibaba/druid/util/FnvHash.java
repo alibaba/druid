@@ -1176,5 +1176,6 @@ public final class FnvHash {
         long BROKER = fnv1a_64_lower("BROKER");
         long INDEX = fnv1a_64_lower("INDEX");
         long SETPROJECT = fnv1a_64_lower("SETPROJECT");
+        long NAMED_STRUCT = fnv1a_64_lower("NAMED_STRUCT");
     }
 }

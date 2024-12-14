@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.TreeSet;
 
 public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplaceable, SQLDbTypedObject {
+    // for bigquery
+    protected SQLWithSubqueryClause with;
+
     protected int distionOption;
     protected final List<SQLSelectItem> selectList = new ArrayList<SQLSelectItem>();
 
@@ -732,73 +735,77 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
         visitor.endVisit(this);
     }
 
-    protected void acceptChild(SQLASTVisitor visitor) {
+    protected void acceptChild(SQLASTVisitor v) {
+        if (with != null) {
+            with.accept(v);
+        }
+
         for (int i = 0; i < this.selectList.size(); i++) {
             SQLSelectItem item = this.selectList.get(i);
             if (item != null) {
-                item.accept(visitor);
+                item.accept(v);
             }
         }
 
         if (this.from != null) {
-            this.from.accept(visitor);
+            this.from.accept(v);
         }
 
         if (this.windows != null) {
             for (int i = 0; i < windows.size(); i++) {
                 SQLWindow item = windows.get(i);
-                item.accept(visitor);
+                item.accept(v);
             }
         }
 
         if (this.into != null) {
-            this.into.accept(visitor);
+            this.into.accept(v);
         }
 
         if (this.where != null) {
-            this.where.accept(visitor);
+            this.where.accept(v);
         }
 
         if (this.startWith != null) {
-            this.startWith.accept(visitor);
+            this.startWith.accept(v);
         }
 
         if (this.connectBy != null) {
-            this.connectBy.accept(visitor);
+            this.connectBy.accept(v);
         }
 
         if (this.groupBy != null) {
-            this.groupBy.accept(visitor);
+            this.groupBy.accept(v);
         }
 
         if (this.qualify != null) {
-            this.qualify.accept(visitor);
+            this.qualify.accept(v);
         }
 
         if (this.orderBy != null) {
-            this.orderBy.accept(visitor);
+            this.orderBy.accept(v);
         }
 
         if (this.distributeBy != null) {
             for (int i = 0; i < distributeBy.size(); i++) {
                 SQLSelectOrderByItem item = distributeBy.get(i);
-                item.accept(visitor);
+                item.accept(v);
             }
         }
 
         if (this.sortBy != null) {
             for (int i = 0; i < sortBy.size(); i++) {
                 SQLSelectOrderByItem item = sortBy.get(i);
-                item.accept(visitor);
+                item.accept(v);
             }
         }
 
         if (this.waitTime != null) {
-            this.waitTime.accept(visitor);
+            this.waitTime.accept(v);
         }
 
         if (this.limit != null) {
-            this.limit.accept(visitor);
+            this.limit.accept(v);
         }
     }
 
@@ -1026,6 +1033,10 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     public void cloneTo(SQLSelectQueryBlock x) {
         x.parenthesized = parenthesized;
         x.distionOption = distionOption;
+
+        if (with != null) {
+            x.setWith(with.clone());
+        }
 
         if (x.selectList.size() > 0) {
             x.selectList.clear();
@@ -1641,7 +1652,17 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
                 }
             }
         }
-
         return removeCount > 0;
+    }
+
+    public SQLWithSubqueryClause getWith() {
+        return with;
+    }
+
+    public void setWith(SQLWithSubqueryClause x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.with = x;
     }
 }

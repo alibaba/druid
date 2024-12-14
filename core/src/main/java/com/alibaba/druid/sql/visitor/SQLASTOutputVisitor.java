@@ -449,6 +449,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
     }
 
+    protected void printlnAndAccept(List<? extends SQLObject> nodes, boolean needPrintLine) {
+        if (needPrintLine) {
+            incrementIndent();
+            println();
+        }
+        for (int i = 0; i < nodes.size(); i++) {
+            if (i != 0) {
+                if (needPrintLine) {
+                    print0(',');
+                    println();
+                } else {
+                    print0(", ");
+                }
+            }
+            nodes.get(i)
+                    .accept(this);
+        }
+        if (needPrintLine) {
+            decrementIndent();
+            println();
+        }
+    }
+
     protected void printAndAccept(
             String prefix,
             String suffix,
@@ -2639,6 +2662,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (isPrettyFormat() && x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());
         }
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            with.accept(this);
+            println();
+        }
+
         print0(ucase ? "SELECT" : "select");
 
         if (x.getHintsSize() > 0) {
@@ -2853,9 +2882,28 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             print0(ucase ? "STRUCT(" : "struct(");
         }
-        printAndAccept(x.getItems(), ", ");
+        printlnAndAccept(
+                x.getItems(),
+                needPrintLine(x));
         print(')');
         return false;
+    }
+
+    protected boolean needPrintLine(SQLStructExpr x) {
+        List<SQLAliasedExpr> fields = x.getItems();
+        boolean needPrintLine = false;
+        if (fields.size() > 5) {
+            needPrintLine = true;
+        } else {
+            for (SQLAliasedExpr field : fields) {
+                SQLExpr fieldDataType = field.getExpr();
+                if (fieldDataType instanceof SQLArrayDataType || fieldDataType instanceof SQLStructExpr) {
+                    needPrintLine = true;
+                    break;
+                }
+            }
+        }
+        return needPrintLine;
     }
 
     public boolean visit(SQLAliasedExpr x) {
@@ -10035,26 +10083,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 }
             }
         }
-        if (needPrintLine) {
-            incrementIndent();
-            println();
-        }
-        for (int i = 0; i < fields.size(); i++) {
-            if (i != 0) {
-                if (needPrintLine) {
-                    print0(',');
-                    println();
-                } else {
-                    print0(", ");
-                }
-            }
-            SQLStructDataType.Field field = fields.get(i);
-            field.accept(this);
-        }
-        if (needPrintLine) {
-            decrementIndent();
-            println();
-        }
+        printlnAndAccept(x.getFields(), needPrintLine);
         print('>');
         return false;
     }
