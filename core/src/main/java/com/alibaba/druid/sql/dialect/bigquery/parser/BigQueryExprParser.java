@@ -143,7 +143,18 @@ public class BigQueryExprParser extends SQLExprParser {
             SQLName name;
             String str = lexer.stringVal();
             if (BQ.DIALECT.isBuiltInDataType(str)) {
-                name = null;
+                Lexer.SavePoint mark = lexer.markOut();
+                lexer.nextToken();
+                String tokenName = lexer.token() == Token.IDENTIFIER ? lexer.stringVal() : lexer.token().name;
+                if (tokenName != null
+                        && Character.isLetter(tokenName.charAt(0))
+                        && BQ.DIALECT.isBuiltInDataType(lexer.stringVal())
+                ) {
+                    name = new SQLIdentifierExpr(str);
+                } else {
+                    lexer.reset(mark);
+                    name = null;
+                }
             } else {
                 name = new SQLIdentifierExpr(str);
                 lexer.nextToken();

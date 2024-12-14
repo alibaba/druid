@@ -10022,7 +10022,39 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLStructDataType x) {
         print0(ucase ? "STRUCT<" : "struct<");
-        printAndAccept(x.getFields(), ", ");
+        List<SQLStructDataType.Field> fields = x.getFields();
+        boolean needPrintLine = false;
+        if (fields.size() > 5) {
+            needPrintLine = true;
+        } else {
+            for (SQLStructDataType.Field field : fields) {
+                SQLDataType fieldDataType = field.getDataType();
+                if (fieldDataType instanceof SQLArrayDataType || fieldDataType instanceof SQLStructDataType) {
+                    needPrintLine = true;
+                    break;
+                }
+            }
+        }
+        if (needPrintLine) {
+            incrementIndent();
+            println();
+        }
+        for (int i = 0; i < fields.size(); i++) {
+            if (i != 0) {
+                if (needPrintLine) {
+                    print0(',');
+                    println();
+                } else {
+                    print0(", ");
+                }
+            }
+            SQLStructDataType.Field field = fields.get(i);
+            field.accept(this);
+        }
+        if (needPrintLine) {
+            decrementIndent();
+            println();
+        }
         print('>');
         return false;
     }

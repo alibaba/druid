@@ -18,7 +18,10 @@ OPTIONS(
 --------------------
 CREATE TABLE mydataset.newtable (
 	x INT64 OPTIONS (description = 'An optional INTEGER field'),
-	y STRUCT<a ARRAY<STRING> OPTIONS (description = 'A repeated STRING field'), b BOOL>
+	y STRUCT<
+		a ARRAY<STRING> OPTIONS (description = 'A repeated STRING field'),
+		b BOOL
+	>
 )
 DEFAULT COLLATE 'und:ci'
 PARTITION BY _PARTITIONDATE
@@ -58,7 +61,10 @@ OPTIONS(
 --------------------
 CREATE TABLE IF NOT EXISTS mydataset.newtable (
 	x INT64,
-	y STRUCT<a ARRAY<STRING>, b BOOL>
+	y STRUCT<
+		a ARRAY<STRING>,
+		b BOOL
+	>
 )
 OPTIONS (
 	expiration_timestamp = TIMESTAMP '2025-01-01 00:00:00 UTC',
@@ -75,7 +81,10 @@ OPTIONS(
 --------------------
 CREATE OR REPLACE TABLE mydataset.newtable (
 	x INT64,
-	y STRUCT<a ARRAY<STRING>, b BOOL>
+	y STRUCT<
+		a ARRAY<STRING>,
+		b BOOL
+	>
 )
 OPTIONS (
 	expiration_timestamp = TIMESTAMP '2025-01-01 00:00:00 UTC',
