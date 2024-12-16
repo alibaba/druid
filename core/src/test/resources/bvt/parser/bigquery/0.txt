@@ -1,3 +1,9 @@
+merge into a as target using b as source on a.id = b.id when not matched then insert row
+--------------------
+MERGE INTO a target
+USING b source ON a.id = b.id
+WHEN NOT MATCHED THEN INSERT ROW
+------------------------------------------------------------------------------------------------------------------------
 SELECT * EXCEPT (predicted_label),
       predicted_label AS predicted_label1
 FROM
