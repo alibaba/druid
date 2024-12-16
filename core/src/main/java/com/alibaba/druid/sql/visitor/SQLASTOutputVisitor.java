@@ -8593,17 +8593,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             by.accept(this);
         }
         print0(ucase ? " THEN INSERT" : " then insert");
-        if (x.getColumns().size() > 0) {
-            printAndAccept(" (", ")", x.getColumns(), ", ", 5);
+        if (x.isInsertRow()) {
+            printMergeInsertRow();
+        } else {
+            if (x.getColumns().size() > 0) {
+                printAndAccept(" (", ")", x.getColumns(), ", ", 5);
+            }
+            println();
+            printAndAccept(
+                    ucase ? "VALUES (" : "values (",
+                    ")",
+                    x.getValues(),
+                    ", ",
+                    5
+            );
         }
-        println();
-        printAndAccept(
-                ucase ? "VALUES (" : "values (",
-                ")",
-                x.getValues(),
-                ", ",
-                5
-        );
         if (x.getWhere() != null) {
             this.indentCount++;
             println();
@@ -8615,6 +8619,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public void printMergeInsertRow() {
+        print(ucase ? " ROW" : "row");
+    }
     @Override
     public boolean visit(SQLErrorLoggingClause x) {
         print0(ucase ? "LOG ERRORS " : "log errors ");

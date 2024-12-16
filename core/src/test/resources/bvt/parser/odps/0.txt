@@ -7,3 +7,11 @@ select named_struct(a.b, b, a.c, c, a.d, d) from a
 --------------------
 SELECT named_struct(a.b, b, a.c, c, a.d, d)
 FROM a
+------------------------------------------------------------------------------------------------------------------------
+MERGE INTO a target
+USING b source ON a.id = b.id
+WHEN NOT MATCHED THEN INSERT *
+--------------------
+MERGE INTO a target
+USING b source ON a.id = b.id
+WHEN NOT MATCHED THEN INSERT *

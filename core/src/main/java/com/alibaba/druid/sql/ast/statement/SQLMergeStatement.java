@@ -156,6 +156,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public static class WhenInsert extends When {
+        private boolean insertRow;
         private List<SQLExpr> columns = new ArrayList<SQLExpr>();
         private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
@@ -193,6 +194,14 @@ public class SQLMergeStatement extends SQLStatementImpl {
 
         public void setColumns(List<SQLExpr> columns) {
             this.columns = columns;
+        }
+
+        public boolean isInsertRow() {
+            return insertRow;
+        }
+
+        public void setInsertRow(boolean insertRow) {
+            this.insertRow = insertRow;
         }
 
         public List<SQLExpr> getValues() {

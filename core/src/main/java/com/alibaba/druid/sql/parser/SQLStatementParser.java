@@ -5672,13 +5672,14 @@ public class SQLStatementParser extends SQLParser {
             exprParser.exprList(insertClause.getColumns(), insertClause);
             accept(Token.RPAREN);
         }
-        if (lexer.nextIfIdentifier("ROW")) {
-            insertClause.getValues().add(new SQLIdentifierExpr("ROW"));
+        if (lexer.nextIfIdentifier("ROW") || lexer.nextIfIdentifier("*") || lexer.nextIf(Token.STAR)) {
+            insertClause.setInsertRow(true);
         } else {
             accept(Token.VALUES);
             accept(Token.LPAREN);
             exprParser.exprList(insertClause.getValues(), insertClause);
             accept(Token.RPAREN);
+            insertClause.setInsertRow(false);
         }
 
         if (lexer.token == Token.WHERE) {

@@ -1120,4 +1120,9 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         }
         super.printMethodParameters(x);
     }
+
+    @Override
+    public void printMergeInsertRow() {
+        print(" *");
+    }
 }
