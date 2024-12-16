@@ -138,6 +138,21 @@ public class SQLMergeStatement extends SQLStatementImpl {
             cloneTo(x);
             return x;
         }
+
+        @Override
+        public boolean replace(SQLExpr expr, SQLExpr target) {
+            boolean isSuccess = false;
+            if (expr instanceof SQLUpdateSetItem && target instanceof SQLUpdateSetItem) {
+                for (int i = 0; i < items.size(); i++) {
+                    if (items.get(i) == expr) {
+                        target.setParent(this);
+                        items.set(i, (SQLUpdateSetItem) target);
+                        isSuccess = true;
+                    }
+                }
+            }
+            return isSuccess || super.replace(expr, target);
+        }
     }
 
     public static class WhenInsert extends When {
@@ -203,6 +218,27 @@ public class SQLMergeStatement extends SQLStatementImpl {
             cloneTo(x);
             return x;
         }
+
+        @Override
+        public boolean replace(SQLExpr expr, SQLExpr target) {
+            boolean isSuccess = false;
+            for (int i = 0; i < columns.size(); i++) {
+                if (columns.get(i) == expr) {
+                    target.setParent(this);
+                    columns.set(i, target);
+                    isSuccess = true;
+                }
+            }
+
+            for (int i = 0; i < values.size(); i++) {
+                if (values.get(i) == expr) {
+                    target.setParent(this);
+                    values.set(i, target);
+                    isSuccess = true;
+                }
+            }
+            return isSuccess || super.replace(expr, target);
+        }
     }
 
     public static class WhenDelete extends When {
@@ -228,7 +264,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
         }
     }
 
-    public abstract static class When extends SQLObjectImpl {
+    public abstract static class When extends SQLObjectImpl implements SQLReplaceable {
         protected boolean not;
         protected SQLName by;
         protected SQLExpr where;
@@ -280,6 +316,15 @@ public class SQLMergeStatement extends SQLStatementImpl {
                 x.setParent(this);
             }
             this.where = x;
+        }
+
+        public boolean replace(SQLExpr expr, SQLExpr target) {
+            if (this.where == expr) {
+                target.setParent(this);
+                this.where = target;
+                return true;
+            }
+            return false;
         }
     }
 }
