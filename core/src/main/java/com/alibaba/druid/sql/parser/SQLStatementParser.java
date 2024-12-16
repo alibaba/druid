@@ -654,6 +654,34 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.token == LOOP) {
+                SQLStatement stmt = parseLoop();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
+            if (lexer.token == CONTINUE) {
+                SQLStatement stmt = parseContinue();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
+            if (lexer.token == LEAVE) {
+                SQLStatement stmt = parseLeave();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
+            if (lexer.identifierEquals("EXECUTE")) {
+                SQLStatement stmt = parseExecute();
+                statementList.add(stmt);
+                stmt.setParent(parent);
+                continue;
+            }
+
             int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
                 if (parent != null) {
@@ -672,6 +700,10 @@ public class SQLStatementParser extends SQLParser {
             throw new ParserException(UNSUPPORT_TOKEN_MSG_PREFIX + lexer.info());
         }
 
+    }
+
+    public SQLStatement parseExecute() {
+        throw new ParserException("TODO");
     }
 
     private SQLStatement parseGetDiagnosticsStatement() {
@@ -1311,8 +1343,22 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
+    public SQLStatement parseLoop() {
+        accept(Token.LOOP);
+        SQLLoopStatement stmt = new SQLLoopStatement();
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
+        accept(Token.END);
+        accept(Token.LOOP);
+        return stmt;
+    }
+
     public SQLStatement parseDeclare() {
         throw new ParserException("not supported. " + lexer.info());
+    }
+
+    public SQLStatement parseContinue() {
+        accept(Token.CONTINUE);
+        return new SQLContinueStatement();
     }
 
     public SQLStatement parseRepeat() {
@@ -1320,7 +1366,8 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseLeave() {
-        throw new ParserException("not supported. " + lexer.info());
+        accept(LEAVE);
+        return new SQLLeaveStatement();
     }
 
     public SQLStatement parseCache() {
@@ -4077,6 +4124,9 @@ public class SQLStatementParser extends SQLParser {
                         lexer.reset(mark);
                         return parseCreateTable();
                     }
+                } else if (lexer.identifierEquals(Constants.MODEL)) {
+                    lexer.reset(mark);
+                    return parseCreateModel();
                 }
 
                 SQLStatement stmt = createTableRest(mark);
@@ -4110,6 +4160,10 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreateScan() {
+        throw new ParserException("TODO " + lexer.token);
+    }
+
+    protected SQLStatement parseCreateModel() {
         throw new ParserException("TODO " + lexer.token);
     }
 
@@ -5135,6 +5189,20 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseStatement() {
+        final SQLStatement ret = parseStatement0();
+
+        if (END_TOKEN_CHECKING_ENABLED) {
+            checkEndToken();
+        }
+
+        if (lexer.nextIf(SEMI)) {
+            ret.setAfterSemi(true);
+        }
+
+        return ret;
+    }
+
+    protected SQLStatement parseStatement0() {
         final SQLStatement ret;
         if (lexer.token == Token.SELECT) {
             ret = this.parseSelect();
@@ -5149,15 +5217,6 @@ public class SQLStatementParser extends SQLParser {
             this.parseStatementList(list, 1, null);
             ret = list.get(0);
         }
-
-        if (END_TOKEN_CHECKING_ENABLED) {
-            checkEndToken();
-        }
-
-        if (lexer.nextIf(SEMI)) {
-            ret.setAfterSemi(true);
-        }
-
         return ret;
     }
 

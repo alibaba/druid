@@ -1077,19 +1077,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (lexer.identifierEquals("EXECUTE")) {
-            acceptIdentifier("EXECUTE");
-
-            if (lexer.identifierEquals("RESTART") || lexer.identifierEquals("UPDATE")) {
-                MySqlExecuteForAdsStatement stmt = parseExecuteForAds();
-                statementList.add(stmt);
-            } else {
-                MySqlExecuteStatement stmt = parseExecute();
-                statementList.add(stmt);
-            }
-            return true;
-        }
-
         if (lexer.identifierEquals("DEALLOCATE")) {
             MysqlDeallocatePrepareStatement stmt = parseDeallocatePrepare();
             statementList.add(stmt);
@@ -4575,7 +4562,13 @@ public class MySqlStatementParser extends SQLStatementParser {
         return new MySqlPrepareStatement(name, from);
     }
 
-    public MySqlExecuteStatement parseExecute() {
+    @Override
+    public SQLStatement parseExecute() {
+        acceptIdentifier("EXECUTE");
+        if (lexer.identifierEquals("RESTART") || lexer.identifierEquals("UPDATE")) {
+            return parseExecuteForAds();
+        }
+
         MySqlExecuteStatement stmt = new MySqlExecuteStatement();
 
         SQLName statementName = exprParser.name();
@@ -8900,6 +8893,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     /**
      * parse loop statement
      */
+    @Override
     public SQLLoopStatement parseLoop() {
         SQLLoopStatement loopStmt = new SQLLoopStatement();
         accept(Token.LOOP);

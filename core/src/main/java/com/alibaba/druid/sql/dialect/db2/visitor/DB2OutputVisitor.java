@@ -33,8 +33,7 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
     }
 
     public DB2OutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        this.dbType = DbType.db2;
+        super(appender, DbType.db2, parameterized);
     }
 
     @Override

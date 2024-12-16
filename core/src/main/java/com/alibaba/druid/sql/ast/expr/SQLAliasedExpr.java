@@ -12,6 +12,11 @@ public class SQLAliasedExpr extends SQLObjectImpl implements SQLReplaceable {
     protected String alias;
 
     public SQLAliasedExpr() {
+        this(null, null);
+    }
+
+    public SQLAliasedExpr(SQLExpr expr) {
+        this(expr, null);
     }
 
     public SQLAliasedExpr(SQLExpr expr, String alias) {

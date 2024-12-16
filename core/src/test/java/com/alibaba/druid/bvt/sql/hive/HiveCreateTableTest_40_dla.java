@@ -47,7 +47,23 @@ public class HiveCreateTableTest_40_dla extends OracleTest {
 
         assertEquals("CREATE EXTERNAL TABLE IF NOT EXISTS `customer_case`.`shangjian_6e958954-f2c7-11e8-94b7-0c54159e4818.json.snappy` (\n" +
                 "\t`batch_date` string,\n" +
-                "\t`data` STRUCT<`goods_name`:STRING, `thumb_url`:STRING, `country`:STRING, `is_app`:INT, `sales_tip`:STRING, `image_url`:STRING, `cnt`:INT, `goods_id`:BIGINT, `hd_thumb_url`:STRING, `is_use_promotion`:INT, `event_type`:INT, `normal_price`:INT, `market_price`:INT, `short_name`:STRING, group:STRUCT<`price`:INT, `customer_num`:INT>>,\n" +
+                "\t`data` STRUCT<\n" +
+                "\t\t`goods_name`:STRING,\n" +
+                "\t\t`thumb_url`:STRING,\n" +
+                "\t\t`country`:STRING,\n" +
+                "\t\t`is_app`:INT,\n" +
+                "\t\t`sales_tip`:STRING,\n" +
+                "\t\t`image_url`:STRING,\n" +
+                "\t\t`cnt`:INT,\n" +
+                "\t\t`goods_id`:BIGINT,\n" +
+                "\t\t`hd_thumb_url`:STRING,\n" +
+                "\t\t`is_use_promotion`:INT,\n" +
+                "\t\t`event_type`:INT,\n" +
+                "\t\t`normal_price`:INT,\n" +
+                "\t\t`market_price`:INT,\n" +
+                "\t\t`short_name`:STRING,\n" +
+                "\t\tgroup:STRUCT<`price`:INT, `customer_num`:INT>\n" +
+                "\t>,\n" +
                 "\t`goods_id` bigint,\n" +
                 "\t`gtime` bigint,\n" +
                 "\t`hot_tag` int,\n" +

@@ -120,11 +120,80 @@ public class HiveCreateTableTest_33_struct extends OracleTest {
             String text = SQLUtils.toSQLString(stmt, JdbcConstants.HIVE);
 
             assertEquals("CREATE EXTERNAL TABLE user_snp_test_4 (\n" +
-                    "\tvariant STRUCT<contigName:string, start:bigint, end:bigint, names:ARRAY<string>, splitFromMultiAllelic:boolean, referenceAllele:string, alternateAllele:string, quality:double, filtersApplied:boolean, filtersPassed:boolean, filtersFailed:ARRAY<string>, annotation:STRUCT<ancestralAllele:string, alleleCount:int, readDepth:int, forwardReadDepth:int, reverseReadDepth:int, referenceReadDepth:int, referenceForwardReadDepth:int, referenceReverseReadDepth:int, alleleFrequency:float, cigar:string, dbSnp:boolean, hapMap2:boolean, hapMap3:boolean, validated:boolean, thousandGenomes:boolean, somatic:boolean, transcriptEffects:ARRAY<STRUCT<alternateAllele:string, effects:ARRAY<string>, geneName:string, geneId:string, featureType:string, featureId:string, biotype:string, rank:int, total:int, genomicHgvs:string, transcriptHgvs:string, proteinHgvs:string, cdnaPosition:int, cdnaLength:int, cdsPosition:int, cdsLength:int, proteinPosition:int, proteinLength:int, distance:int, messages:ARRAY<string>>>, attributes:MAP<string, string>>>,\n" +
+                    "\tvariant STRUCT<\n" +
+                    "\t\tcontigName:string,\n" +
+                    "\t\tstart:bigint,\n" +
+                    "\t\tend:bigint,\n" +
+                    "\t\tnames:ARRAY<string>,\n" +
+                    "\t\tsplitFromMultiAllelic:boolean,\n" +
+                    "\t\treferenceAllele:string,\n" +
+                    "\t\talternateAllele:string,\n" +
+                    "\t\tquality:double,\n" +
+                    "\t\tfiltersApplied:boolean,\n" +
+                    "\t\tfiltersPassed:boolean,\n" +
+                    "\t\tfiltersFailed:ARRAY<string>,\n" +
+                    "\t\tannotation:STRUCT<\n" +
+                    "\t\t\tancestralAllele:string,\n" +
+                    "\t\t\talleleCount:int,\n" +
+                    "\t\t\treadDepth:int,\n" +
+                    "\t\t\tforwardReadDepth:int,\n" +
+                    "\t\t\treverseReadDepth:int,\n" +
+                    "\t\t\treferenceReadDepth:int,\n" +
+                    "\t\t\treferenceForwardReadDepth:int,\n" +
+                    "\t\t\treferenceReverseReadDepth:int,\n" +
+                    "\t\t\talleleFrequency:float,\n" +
+                    "\t\t\tcigar:string,\n" +
+                    "\t\t\tdbSnp:boolean,\n" +
+                    "\t\t\thapMap2:boolean,\n" +
+                    "\t\t\thapMap3:boolean,\n" +
+                    "\t\t\tvalidated:boolean,\n" +
+                    "\t\t\tthousandGenomes:boolean,\n" +
+                    "\t\t\tsomatic:boolean,\n" +
+                    "\t\t\ttranscriptEffects:ARRAY<STRUCT<\n" +
+                    "\t\t\t\talternateAllele:string,\n" +
+                    "\t\t\t\teffects:ARRAY<string>,\n" +
+                    "\t\t\t\tgeneName:string,\n" +
+                    "\t\t\t\tgeneId:string,\n" +
+                    "\t\t\t\tfeatureType:string,\n" +
+                    "\t\t\t\tfeatureId:string,\n" +
+                    "\t\t\t\tbiotype:string,\n" +
+                    "\t\t\t\trank:int,\n" +
+                    "\t\t\t\ttotal:int,\n" +
+                    "\t\t\t\tgenomicHgvs:string,\n" +
+                    "\t\t\t\ttranscriptHgvs:string,\n" +
+                    "\t\t\t\tproteinHgvs:string,\n" +
+                    "\t\t\t\tcdnaPosition:int,\n" +
+                    "\t\t\t\tcdnaLength:int,\n" +
+                    "\t\t\t\tcdsPosition:int,\n" +
+                    "\t\t\t\tcdsLength:int,\n" +
+                    "\t\t\t\tproteinPosition:int,\n" +
+                    "\t\t\t\tproteinLength:int,\n" +
+                    "\t\t\t\tdistance:int,\n" +
+                    "\t\t\t\tmessages:ARRAY<string>\n" +
+                    "\t\t\t>>,\n" +
+                    "\t\t\tattributes:MAP<string, string>\n" +
+                    "\t\t>\n" +
+                    "\t>,\n" +
                     "\tcontigName string,\n" +
                     "\tstart bigint,\n" +
                     "\tend bigint,\n" +
-                    "\tvariantCallingAnnotations STRUCT<filtersApplied:boolean, filtersPassed:boolean, filtersFailed:ARRAY<string>, downsampled:boolean, baseQRankSum:float, fisherStrandBiasPValue:float, rmsMapQ:float, mapq0Reads:int, mqRankSum:float, readPositionRankSum:float, genotypePriors:ARRAY<float>, genotypePosteriors:ARRAY<float>, vqslod:float, culprit:string, attributes:MAP<string, string>>,\n" +
+                    "\tvariantCallingAnnotations STRUCT<\n" +
+                    "\t\tfiltersApplied:boolean,\n" +
+                    "\t\tfiltersPassed:boolean,\n" +
+                    "\t\tfiltersFailed:ARRAY<string>,\n" +
+                    "\t\tdownsampled:boolean,\n" +
+                    "\t\tbaseQRankSum:float,\n" +
+                    "\t\tfisherStrandBiasPValue:float,\n" +
+                    "\t\trmsMapQ:float,\n" +
+                    "\t\tmapq0Reads:int,\n" +
+                    "\t\tmqRankSum:float,\n" +
+                    "\t\treadPositionRankSum:float,\n" +
+                    "\t\tgenotypePriors:ARRAY<float>,\n" +
+                    "\t\tgenotypePosteriors:ARRAY<float>,\n" +
+                    "\t\tvqslod:float,\n" +
+                    "\t\tculprit:string,\n" +
+                    "\t\tattributes:MAP<string, string>\n" +
+                    "\t>,\n" +
                     "\tsampleId string,\n" +
                     "\tsampleDescription string,\n" +
                     "\tprocessingDescription string,\n" +
@@ -150,11 +219,80 @@ public class HiveCreateTableTest_33_struct extends OracleTest {
             String text = SQLUtils.toSQLString(stmt.clone(), JdbcConstants.HIVE);
 
             assertEquals("CREATE EXTERNAL TABLE user_snp_test_4 (\n" +
-                    "\tvariant STRUCT<contigName:string, start:bigint, end:bigint, names:ARRAY<string>, splitFromMultiAllelic:boolean, referenceAllele:string, alternateAllele:string, quality:double, filtersApplied:boolean, filtersPassed:boolean, filtersFailed:ARRAY<string>, annotation:STRUCT<ancestralAllele:string, alleleCount:int, readDepth:int, forwardReadDepth:int, reverseReadDepth:int, referenceReadDepth:int, referenceForwardReadDepth:int, referenceReverseReadDepth:int, alleleFrequency:float, cigar:string, dbSnp:boolean, hapMap2:boolean, hapMap3:boolean, validated:boolean, thousandGenomes:boolean, somatic:boolean, transcriptEffects:ARRAY<STRUCT<alternateAllele:string, effects:ARRAY<string>, geneName:string, geneId:string, featureType:string, featureId:string, biotype:string, rank:int, total:int, genomicHgvs:string, transcriptHgvs:string, proteinHgvs:string, cdnaPosition:int, cdnaLength:int, cdsPosition:int, cdsLength:int, proteinPosition:int, proteinLength:int, distance:int, messages:ARRAY<string>>>, attributes:MAP<string, string>>>,\n" +
+                    "\tvariant STRUCT<\n" +
+                    "\t\tcontigName:string,\n" +
+                    "\t\tstart:bigint,\n" +
+                    "\t\tend:bigint,\n" +
+                    "\t\tnames:ARRAY<string>,\n" +
+                    "\t\tsplitFromMultiAllelic:boolean,\n" +
+                    "\t\treferenceAllele:string,\n" +
+                    "\t\talternateAllele:string,\n" +
+                    "\t\tquality:double,\n" +
+                    "\t\tfiltersApplied:boolean,\n" +
+                    "\t\tfiltersPassed:boolean,\n" +
+                    "\t\tfiltersFailed:ARRAY<string>,\n" +
+                    "\t\tannotation:STRUCT<\n" +
+                    "\t\t\tancestralAllele:string,\n" +
+                    "\t\t\talleleCount:int,\n" +
+                    "\t\t\treadDepth:int,\n" +
+                    "\t\t\tforwardReadDepth:int,\n" +
+                    "\t\t\treverseReadDepth:int,\n" +
+                    "\t\t\treferenceReadDepth:int,\n" +
+                    "\t\t\treferenceForwardReadDepth:int,\n" +
+                    "\t\t\treferenceReverseReadDepth:int,\n" +
+                    "\t\t\talleleFrequency:float,\n" +
+                    "\t\t\tcigar:string,\n" +
+                    "\t\t\tdbSnp:boolean,\n" +
+                    "\t\t\thapMap2:boolean,\n" +
+                    "\t\t\thapMap3:boolean,\n" +
+                    "\t\t\tvalidated:boolean,\n" +
+                    "\t\t\tthousandGenomes:boolean,\n" +
+                    "\t\t\tsomatic:boolean,\n" +
+                    "\t\t\ttranscriptEffects:ARRAY<STRUCT<\n" +
+                    "\t\t\t\talternateAllele:string,\n" +
+                    "\t\t\t\teffects:ARRAY<string>,\n" +
+                    "\t\t\t\tgeneName:string,\n" +
+                    "\t\t\t\tgeneId:string,\n" +
+                    "\t\t\t\tfeatureType:string,\n" +
+                    "\t\t\t\tfeatureId:string,\n" +
+                    "\t\t\t\tbiotype:string,\n" +
+                    "\t\t\t\trank:int,\n" +
+                    "\t\t\t\ttotal:int,\n" +
+                    "\t\t\t\tgenomicHgvs:string,\n" +
+                    "\t\t\t\ttranscriptHgvs:string,\n" +
+                    "\t\t\t\tproteinHgvs:string,\n" +
+                    "\t\t\t\tcdnaPosition:int,\n" +
+                    "\t\t\t\tcdnaLength:int,\n" +
+                    "\t\t\t\tcdsPosition:int,\n" +
+                    "\t\t\t\tcdsLength:int,\n" +
+                    "\t\t\t\tproteinPosition:int,\n" +
+                    "\t\t\t\tproteinLength:int,\n" +
+                    "\t\t\t\tdistance:int,\n" +
+                    "\t\t\t\tmessages:ARRAY<string>\n" +
+                    "\t\t\t>>,\n" +
+                    "\t\t\tattributes:MAP<string, string>\n" +
+                    "\t\t>\n" +
+                    "\t>,\n" +
                     "\tcontigName string,\n" +
                     "\tstart bigint,\n" +
                     "\tend bigint,\n" +
-                    "\tvariantCallingAnnotations STRUCT<filtersApplied:boolean, filtersPassed:boolean, filtersFailed:ARRAY<string>, downsampled:boolean, baseQRankSum:float, fisherStrandBiasPValue:float, rmsMapQ:float, mapq0Reads:int, mqRankSum:float, readPositionRankSum:float, genotypePriors:ARRAY<float>, genotypePosteriors:ARRAY<float>, vqslod:float, culprit:string, attributes:MAP<string, string>>,\n" +
+                    "\tvariantCallingAnnotations STRUCT<\n" +
+                    "\t\tfiltersApplied:boolean,\n" +
+                    "\t\tfiltersPassed:boolean,\n" +
+                    "\t\tfiltersFailed:ARRAY<string>,\n" +
+                    "\t\tdownsampled:boolean,\n" +
+                    "\t\tbaseQRankSum:float,\n" +
+                    "\t\tfisherStrandBiasPValue:float,\n" +
+                    "\t\trmsMapQ:float,\n" +
+                    "\t\tmapq0Reads:int,\n" +
+                    "\t\tmqRankSum:float,\n" +
+                    "\t\treadPositionRankSum:float,\n" +
+                    "\t\tgenotypePriors:ARRAY<float>,\n" +
+                    "\t\tgenotypePosteriors:ARRAY<float>,\n" +
+                    "\t\tvqslod:float,\n" +
+                    "\t\tculprit:string,\n" +
+                    "\t\tattributes:MAP<string, string>\n" +
+                    "\t>,\n" +
                     "\tsampleId string,\n" +
                     "\tsampleDescription string,\n" +
                     "\tprocessingDescription string,\n" +

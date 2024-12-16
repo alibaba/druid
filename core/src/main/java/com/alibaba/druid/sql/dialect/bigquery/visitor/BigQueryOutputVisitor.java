@@ -17,8 +17,7 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
     }
 
     public BigQueryOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        this.dbType = DbType.bigquery;
+        super(appender, DbType.bigquery, parameterized);
     }
 
     protected void printPartitionedBy(SQLCreateTableStatement x) {
@@ -419,6 +418,69 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         }
         println();
         print0(ucase ? "END IF" : "end if");
+        return false;
+    }
+
+    public boolean visit(BigQueryExecuteImmediateStatement x) {
+        super.visit(x);
+        List<SQLAliasedExpr> using = x.getUsing();
+        if (!using.isEmpty()) {
+            print0(ucase ? " USING " : " using ");
+            printAndAccept(using, ", ");
+        }
+        return false;
+    }
+
+    public boolean visit(BigQueryCreateModelStatement x) {
+        print0(ucase ? " CREATE " : " create ");
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+        if (x.isReplace()) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
+        print0(ucase ? "MODEL " : "model ");
+        x.getName().accept(this);
+        println();
+
+        incrementIndent();
+        println(ucase ? "OPTIONS (" : "options (");
+        printlnAndAccept(x.getOptions(), ",");
+        decrementIndent();
+        println();
+        println(')');
+
+        print0(ucase ? "AS (" : "as (");
+        incrementIndent();
+        println();
+
+        incrementIndent();
+        println(ucase ? "TRAINING_DATA AS (" : "training_data AS (");
+        x.getTrainingData().accept(this);
+        decrementIndent();
+        println();
+
+        println("),");
+        incrementIndent();
+        println(ucase ? "CUSTOM_HOLIDAY AS (" : "custom_holiday AS (");
+        x.getCustomHoliday().accept(this);
+        decrementIndent();
+        println();
+        decrementIndent();
+        println(")");
+        print0(')');
+        return false;
+    }
+
+    public boolean visit(BigQueryModelExpr x) {
+        print0(ucase ? "MODEL " : "model ");
+        x.getName().accept(this);
+        return false;
+    }
+
+    public boolean visit(BigQueryTableExpr x) {
+        print0(ucase ? "TABLE " : "table ");
+        x.getName().accept(this);
         return false;
     }
 }

@@ -137,7 +137,7 @@ public enum Token {
     REPLACE("REPLACE"),
     PERIOD("PERIOD"),
 
-    BITS,
+    BITS("BITS"),
 
     // MySql procedure add by zz
     WHILE("WHILE"),

@@ -1,3 +1,11 @@
+create schema abc
+--------------------
+CREATE SCHEMA abc
+------------------------------------------------------------------------------------------------------------------------
+create schema abc.abc
+--------------------
+CREATE SCHEMA abc.abc
+------------------------------------------------------------------------------------------------------------------------
 create schema abc create table test_user (id int primary key,name varchar(50));
 --------------------
 CREATE SCHEMA abc CREATE TABLE test_user (
@@ -28,3 +36,19 @@ DROP SCHEMA IF EXISTS abc CASCADE
 drop schema abc, ccc ,aac
 --------------------
 DROP SCHEMA abc, ccc, aac
+------------------------------------------------------------------------------------------------------------------------
+create schema abc
+--------------------
+CREATE SCHEMA abc
+------------------------------------------------------------------------------------------------------------------------
+alter schema test.ABC_TEST rename to abc_test
+--------------------
+ALTER SCHEMA test.ABC_TEST RENAME TO abc_test
+------------------------------------------------------------------------------------------------------------------------
+drop schema abc.test
+--------------------
+DROP SCHEMA abc.test
+------------------------------------------------------------------------------------------------------------------------
+drop schema test.abc, test2.ccc ,test3.aac
+--------------------
+DROP SCHEMA test.abc, test2.ccc, test3.aac

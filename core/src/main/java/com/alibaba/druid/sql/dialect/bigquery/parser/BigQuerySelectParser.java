@@ -50,4 +50,13 @@ public class BigQuerySelectParser extends SQLSelectParser {
         }
         return super.tableAlias(must);
     }
+
+    protected void queryBefore(SQLSelectQueryBlock x) {
+        if (lexer.token() == Token.WITH) {
+            BigQuerySelectQueryBlock queryBlock = (BigQuerySelectQueryBlock) x;
+            queryBlock.setWith(
+                    this.parseWith()
+            );
+        }
+    }
 }

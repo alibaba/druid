@@ -44,13 +44,15 @@ public class BigQuerySelectQueryBlock extends SQLSelectQueryBlock
     }
 
     @Override
-    public void accept0(BigQueryVisitor visitor) {
-        if (visitor.visit(this)) {
-            if (differentialPrivacy != null) {
-                differentialPrivacy.accept(visitor);
-            }
-            acceptChild(visitor);
+    public void accept0(BigQueryVisitor v) {
+        super.accept0(v);
+    }
+
+    protected void acceptChild(SQLASTVisitor v) {
+        if (differentialPrivacy != null) {
+            differentialPrivacy.accept(v);
         }
+        super.acceptChild(v);
     }
 
     public static class DifferentialPrivacy

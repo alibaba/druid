@@ -32,7 +32,7 @@ public class OracleSysdateTest extends OracleTest {
         OracleSysdateExpr sysdate = new OracleSysdateExpr();
 
         StringBuilder buf = new StringBuilder();
-        SQLASTOutputVisitor v = new SQLASTOutputVisitor(buf);
+        SQLASTOutputVisitor v = new SQLASTOutputVisitor(buf, DbType.oracle);
         sysdate.accept(v);
         assertEquals("SYSDATE", buf.toString());
     }

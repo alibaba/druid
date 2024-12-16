@@ -25,7 +25,7 @@ import java.util.List;
 
 public class BlinkOutputVisitor extends SQLASTOutputVisitor implements BlinkVisitor {
     public BlinkOutputVisitor(StringBuilder appender) {
-        super(appender);
+        super(appender, DbType.blink);
     }
 
     public BlinkOutputVisitor(StringBuilder appender, DbType dbType) {
@@ -33,7 +33,7 @@ public class BlinkOutputVisitor extends SQLASTOutputVisitor implements BlinkVisi
     }
 
     public BlinkOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
+        super(appender, DbType.blink, parameterized);
     }
 
     @Override

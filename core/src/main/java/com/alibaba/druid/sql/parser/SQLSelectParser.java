@@ -116,6 +116,11 @@ public class SQLSelectParser extends SQLParser {
             accept(Token.RPAREN);
         }
 
+        if (parenCount > 0 && lexer.token == Token.UNION) {
+            select.setQuery(
+                    this.queryRest(select.getQuery(), true));
+        }
+
         return select;
     }
 
@@ -438,6 +443,9 @@ public class SQLSelectParser extends SQLParser {
     protected void parseTop(SQLSelectQueryBlock x) {
     }
 
+    protected void queryBefore(SQLSelectQueryBlock x) {
+    }
+
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
@@ -465,6 +473,8 @@ public class SQLSelectParser extends SQLParser {
             queryBlock.setFrom(parseTableSource());
             return queryRest(queryBlock, acceptUnion);
         }
+
+        queryBefore(queryBlock);
 
         accept(Token.SELECT);
 
@@ -1695,7 +1705,7 @@ public class SQLSelectParser extends SQLParser {
                 joinType = SQLJoinTableSource.JoinType.INNER_JOIN;
                 break;
             case JOIN:
-                lexer.nextToken();
+                lexer.nextIf(Token.JOIN);
                 joinType = natural ? SQLJoinTableSource.JoinType.NATURAL_JOIN : SQLJoinTableSource.JoinType.JOIN;
                 break;
             case COMMA:

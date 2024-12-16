@@ -17,43 +17,42 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.statement.SQLExecuteImmediateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlExecuteStatement extends MySqlStatementImpl {
-    private SQLName statementName;
+public class MySqlExecuteStatement extends SQLExecuteImmediateStatement implements MySqlStatement {
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
     public SQLName getStatementName() {
-        return statementName;
+        return (SQLName) dynamicSql;
     }
 
-    public void setStatementName(SQLName statementName) {
-        this.statementName = statementName;
+    public void setStatementName(SQLName x) {
+        super.setDynamicSql(x);
     }
 
     public List<SQLExpr> getParameters() {
         return parameters;
     }
 
-    public void accept0(MySqlASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, statementName);
-            acceptChild(visitor, parameters);
+    public void accept0(MySqlASTVisitor v) {
+        if (v.visit(this)) {
+            super.acceptChild(v);
+            acceptChild(v, parameters);
         }
-        visitor.endVisit(this);
+        v.endVisit(this);
     }
 
     @Override
-    public List<SQLObject> getChildren() {
-        List<SQLObject> children = new ArrayList<SQLObject>();
-        if (statementName != null) {
-            children.add(statementName);
+    public void accept0(SQLASTVisitor v) {
+        if (v instanceof MySqlASTVisitor) {
+            ((MySqlASTVisitor) v).visit(this);
+        } else {
+            super.accept0(v);
         }
-        children.addAll(this.parameters);
-        return children;
     }
 }

@@ -2694,6 +2694,19 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExceptionStatement.Item x) {}
+
+    default boolean visit(SQLContinueStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLContinueStatement x) {}
+
+    default boolean visit(SQLLeaveStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLLeaveStatement x) {}
+
     static SQLASTVisitor ofMethodInvoke(Consumer<SQLMethodInvokeExpr> p) {
         return new SQLASTVisitor() {
             public boolean visit(SQLMethodInvokeExpr x) {

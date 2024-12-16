@@ -54,7 +54,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public OracleOutputVisitor(StringBuilder appender, boolean printPostSemi) {
-        super(appender);
+        super(appender, DbType.oracle);
         this.printPostSemi = printPostSemi;
     }
 

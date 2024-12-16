@@ -2,13 +2,14 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStructDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLStructExpr extends SQLExprImpl {
+public class SQLStructExpr extends SQLExprImpl implements SQLReplaceable {
     private SQLStructDataType dataType;
     private final List<SQLAliasedExpr> items = new ArrayList<>();
 
@@ -64,5 +65,17 @@ public class SQLStructExpr extends SQLExprImpl {
         for (SQLAliasedExpr item : items) {
             x.addItem(item.clone());
         }
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i) == expr) {
+                target.setParent(this);
+                items.set(i, (SQLAliasedExpr) target);
+                return true;
+            }
+        }
+        return false;
     }
 }
