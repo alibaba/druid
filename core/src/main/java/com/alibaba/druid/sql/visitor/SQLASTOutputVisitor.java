@@ -2306,25 +2306,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "NOT " : "not ");
         SQLExpr expr = x.getExpr();
 
-        boolean needQuote = false;
+        boolean needParentheses = false;
 
         if (expr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
-            needQuote = binaryOpExpr.getOperator().isLogical();
+            needParentheses = binaryOpExpr.getOperator().isLogical();
             if (binaryOpExpr.isParenthesized()) {
-                needQuote = false;
+                needParentheses = false;
             }
         } else if (expr instanceof SQLInListExpr || expr instanceof SQLNotExpr
-                || expr instanceof SQLBinaryOpExprGroup) {
-            needQuote = true;
+                || expr instanceof SQLBinaryOpExprGroup || expr instanceof SQLQueryExpr) {
+            needParentheses = true;
         }
 
-        if (needQuote) {
+        if (needParentheses) {
             print('(');
         }
         printExpr(expr, parameterized);
 
-        if (needQuote) {
+        if (needParentheses) {
             print(')');
         }
 
