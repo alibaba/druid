@@ -1,3 +1,30 @@
+select  CASE 
+			WHEN UPPER(a) = 'a' 
+			AND (SELECT b FROM UNNEST() ORDER BY c DESC LIMIT 1) = 'b' 
+			AND NOT (SELECT d FROM UNNEST(e) ORDER BY f DESC LIMIT 1) 
+			THEN 'IS' 
+			ELSE 'OTHERS'
+		END from g
+--------------------
+SELECT CASE
+		WHEN UPPER(a) = 'a'
+			AND (
+				SELECT b
+				FROM UNNEST()
+				ORDER BY c DESC
+				LIMIT 1
+			) = 'b'
+			AND NOT (
+				SELECT d
+				FROM UNNEST(e)
+				ORDER BY f DESC
+				LIMIT 1
+			)
+		THEN 'IS'
+		ELSE 'OTHERS'
+	END
+FROM g
+------------------------------------------------------------------------------------------------------------------------
 select struct(a.b, a.c as c, a.d) from a
 --------------------
 SELECT STRUCT(a.b, a.c AS c, a.d)
