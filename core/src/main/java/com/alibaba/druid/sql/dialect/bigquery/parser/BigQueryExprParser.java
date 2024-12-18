@@ -338,7 +338,7 @@ public class BigQueryExprParser extends SQLExprParser {
             acceptIdentifier("TYPE");
             return new SQLDataTypeImpl("ANY TYPE");
         }
-        return parseDataType(restrict);
+        return super.parseDataType(restrict);
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
