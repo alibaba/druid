@@ -333,12 +333,12 @@ public class BigQueryExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
 
-    public SQLDataType parseDataType() {
+    public SQLDataType parseDataType(boolean restrict) {
         if (lexer.nextIf(Token.ANY)) {
             acceptIdentifier("TYPE");
             return new SQLDataTypeImpl("ANY TYPE");
         }
-        return parseDataType(true);
+        return parseDataType(restrict);
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
