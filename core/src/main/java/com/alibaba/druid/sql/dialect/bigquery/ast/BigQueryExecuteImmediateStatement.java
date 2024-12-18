@@ -46,4 +46,20 @@ public class BigQueryExecuteImmediateStatement
         super.acceptChild(v);
         acceptChild(v, using);
     }
+
+    protected BigQueryExecuteImmediateStatement cloneTo(BigQueryExecuteImmediateStatement x) {
+        super.cloneTo(x);
+        for (SQLAliasedExpr item : using) {
+            SQLAliasedExpr item2 = item.clone();
+            item2.setParent(x);
+            x.using.add(item2);
+        }
+        return x;
+    }
+
+    public BigQueryExecuteImmediateStatement clone() {
+        BigQueryExecuteImmediateStatement x = new BigQueryExecuteImmediateStatement();
+        cloneTo(x);
+        return x;
+    }
 }

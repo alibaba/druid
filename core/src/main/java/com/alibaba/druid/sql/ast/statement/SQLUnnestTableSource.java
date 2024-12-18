@@ -54,6 +54,10 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
         this.items.add(item);
     }
 
+    public void setItem(int i, SQLExpr item) {
+        this.items.set(i, item);
+    }
+
     public SQLExpr getOffset() {
         return offset;
     }
