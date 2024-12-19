@@ -187,7 +187,7 @@ public class MySqlWallTest91 extends TestCase {
         WallProvider provider = initWallProvider();
         {
             String sql = "SELECT 10006, @";
-            Assert.assertTrue(provider.checkValid(sql));
+            Assert.assertFalse(provider.checkValid(sql));
         }
     }
 

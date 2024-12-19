@@ -3,11 +3,13 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAliasedExpr extends SQLObjectImpl implements SQLReplaceable {
+import java.util.Objects;
+
+public class SQLAliasedExpr extends SQLExprImpl implements SQLReplaceable {
     protected SQLExpr expr;
     protected String alias;
 
@@ -118,5 +120,29 @@ public class SQLAliasedExpr extends SQLObjectImpl implements SQLReplaceable {
             x.setExpr(expr.clone());
         }
         x.setAlias(alias);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        SQLAliasedExpr that = (SQLAliasedExpr) o;
+
+        if (!Objects.equals(expr, that.expr)) {
+            return false;
+        }
+        return Objects.equals(alias, that.alias);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = expr != null ? expr.hashCode() : 0;
+        result = 31 * result + (alias != null ? alias.hashCode() : 0);
+        return result;
     }
 }

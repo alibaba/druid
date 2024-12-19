@@ -1174,21 +1174,71 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
+        boolean isReplaced = false;
         if (where == expr) {
             setWhere(target);
-            return true;
+            isReplaced = true;
         }
 
         if (startWith == expr) {
             setStartWith(target);
-            return true;
+            isReplaced = true;
         }
 
         if (connectBy == expr) {
             setConnectBy(target);
-            return true;
+            isReplaced = true;
         }
-        return false;
+
+        if (with == expr) {
+            setWith((SQLWithSubqueryClause) target);
+            isReplaced = true;
+        }
+
+        if (from == expr) {
+            setFrom((SQLTableSource) target);
+            isReplaced = true;
+        }
+
+        if (into == expr && target instanceof SQLExprTableSource) {
+            setInto((SQLExprTableSource) target);
+            isReplaced = true;
+        }
+
+        if (qualify == expr) {
+            setQualify(target);
+            isReplaced = true;
+        }
+
+        if (waitTime == expr) {
+            setWaitTime(target);
+            isReplaced = true;
+        }
+
+        if (expr instanceof SQLSelectItem && target instanceof SQLSelectItem) {
+            isReplaced = isReplaced || replaceList(selectList, (SQLSelectItem) expr, (SQLSelectItem) target);
+        }
+
+        if (expr instanceof SQLSelectOrderByItem && target instanceof SQLSelectOrderByItem) {
+            isReplaced = isReplaced || replaceList(distributeBy, (SQLSelectOrderByItem) expr, (SQLSelectOrderByItem) target)
+                || replaceList(sortBy, (SQLSelectOrderByItem) expr, (SQLSelectOrderByItem) target)
+                || replaceList(clusterBy, (SQLSelectOrderByItem) expr, (SQLSelectOrderByItem) target);
+        }
+
+        isReplaced = isReplaced || replaceList(forUpdateOf, expr, target);
+        return isReplaced;
+    }
+
+    protected <T extends SQLObject> boolean replaceList(List<T> exprList, T expr, T target) {
+        boolean isReplaced = false;
+        for (int i = 0; i < exprList.size(); i++) {
+            if (exprList.get(i) == expr) {
+                target.setParent(this);
+                exprList.set(i, target);
+                isReplaced = true;
+            }
+        }
+        return isReplaced;
     }
 
     public SQLSelectItem findSelectItem(String ident) {
