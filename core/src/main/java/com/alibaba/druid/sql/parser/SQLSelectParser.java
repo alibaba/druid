@@ -1196,6 +1196,10 @@ public class SQLSelectParser extends SQLParser {
                 SQLSelectQuery query = queryRest(selectQuery, acceptUnion);
                 if (query instanceof SQLUnionQuery) {
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
+                    SQLWithSubqueryClause with = select.getWithSubQuery();
+                    if (with != null) {
+                        ((SQLUnionQuery) query).setWith(with);
+                    }
                 } else {
                     tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                 }

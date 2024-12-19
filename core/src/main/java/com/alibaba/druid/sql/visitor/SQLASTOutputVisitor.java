@@ -4174,6 +4174,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLUnionQuery x) {
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            with.accept(this);
+            println();
+        }
         SQLUnionOperator operator = x.getOperator();
 
         List<SQLSelectQuery> relations = x.getRelations();
