@@ -117,6 +117,18 @@ public class SQLMergeStatement extends SQLStatementImpl {
             this.items.add(item);
         }
 
+        public SQLUpdateSetItem findItemByColumn(SQLExpr column) {
+            if (column == null) {
+                return null;
+            }
+            for (SQLUpdateSetItem item : items) {
+                if (item.getColumn().equals(column)) {
+                    return item;
+                }
+            }
+            return null;
+        }
+
         @Override
         public void accept0(SQLASTVisitor v) {
             if (v.visit(this)) {

@@ -30,6 +30,11 @@ public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
     public SQLUpdateSetItem() {
     }
 
+    public SQLUpdateSetItem(SQLExpr column, SQLExpr value) {
+        this.setColumn(column);
+        this.setValue(value);
+    }
+
     public SQLExpr getColumn() {
         return column;
     }
