@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.List;
 
-public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceable {
+public final class SQLSelectOrderByItem extends SQLExprImpl implements SQLReplaceable {
     protected SQLExpr expr;
     protected String collate;
     protected SQLExpr opclass;
