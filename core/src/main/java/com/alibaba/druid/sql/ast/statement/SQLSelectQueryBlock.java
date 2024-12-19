@@ -1231,6 +1231,9 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
     protected <T extends SQLObject> boolean replaceList(List<T> exprList, T expr, T target) {
         boolean isReplaced = false;
+        if (exprList == null) {
+            return isReplaced;
+        }
         for (int i = 0; i < exprList.size(); i++) {
             if (exprList.get(i) == expr) {
                 target.setParent(this);
