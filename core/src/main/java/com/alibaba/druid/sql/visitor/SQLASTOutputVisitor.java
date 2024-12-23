@@ -8122,22 +8122,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         printPartitionsCountAndSubPartitions(x);
-
-        if (x.getPartitions().size() > 0) {
-            print(" (");
-            this.indentCount++;
-            for (int i = 0, size = x.getPartitions().size(); i < size; ++i) {
-                if (i != 0) {
-                    print(',');
-                }
-                println();
-                x.getPartitions().get(i).accept(this);
-            }
-            this.indentCount--;
-            println();
-            print(')');
-        }
-
+        printSQLPartitions(x.getPartitions());
         return false;
     }
 
@@ -8212,7 +8197,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 println();
                 partitions.get(i).accept(this);
                 if (i != partitionsSize - 1) {
-                    print0(", ");
+                    print0(",");
                 }
             }
             this.indentCount--;

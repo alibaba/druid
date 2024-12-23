@@ -45,10 +45,10 @@ CREATE TABLE `bbbbbb` (
 UNIQUE KEY (`table_name`, `media_platform`, `account_id`)
 COMMENT '广告域-globalad-account误差监控(账户数据是否采集)'
 PARTITION BY LIST (`table_name`) (
-	PARTITION p_dwd_ad_country_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_country_reports"), 
-	PARTITION p_dwd_ad_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_reports"), 
-	PARTITION p_ods_ad_country_reports VALUES IN ("onedata_warehouse.ods_tiktok_country_reports_integrated_basic"), 
-	PARTITION p_ods_ad_reports VALUES IN ("onedata_warehouse.ods_tiktok_reports_integrated_basic"), 
+	PARTITION p_dwd_ad_country_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_country_reports"),
+	PARTITION p_dwd_ad_reports VALUES IN ("onedata_dwd.dwd_tiktok_ad_reports"),
+	PARTITION p_ods_ad_country_reports VALUES IN ("onedata_warehouse.ods_tiktok_country_reports_integrated_basic"),
+	PARTITION p_ods_ad_reports VALUES IN ("onedata_warehouse.ods_tiktok_reports_integrated_basic"),
 	PARTITION p_dws_ad_reports VALUES IN ("tec_cdm.dws_ad_ad_performance_1d")
 )
 DISTRIBUTED BY HASH (`table_name`, `media_platform`, `account_id`) BUCKETS 6
@@ -329,7 +329,7 @@ CREATE TABLE example_db.dynamic_partition (
 	v2 DATETIME DEFAULT "2014-02-04 15:36:00"
 )
 DUPLICATE KEY (k1, k2, k3)
-PARTITION BY RANGE (k1)
+PARTITION BY RANGE (k1) ()
 DISTRIBUTED BY HASH (k2) BUCKETS 32
 PROPERTIES (
 	"dynamic_partition.time_unit" = "DAY",
