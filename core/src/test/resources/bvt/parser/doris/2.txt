@@ -1,3 +1,13 @@
 DROP TABLE IF EXISTS `biz_jxfw_class_attend_data_v1`;
 --------------------
 DROP TABLE IF EXISTS `biz_jxfw_class_attend_data_v1`;
+------------------------------------------------------------------------------------------------------------------------
+insert overwrite table a.b partition (p20210101)
+select
+c,
+d
+from e
+--------------------
+INSERT OVERWRITE TABLE a.b PARTITION (p20210101)
+SELECT c, d
+FROM e

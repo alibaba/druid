@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPivot;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLUnpivot;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSampling;
 import com.alibaba.druid.sql.dialect.doris.ast.DorisExprTableSource;
@@ -134,5 +135,10 @@ public class DorisOutputVisitor extends StarRocksOutputVisitor implements DorisA
 
         print(')');
         return false;
+    }
+
+    @Override
+    public void printInsertOverWrite(SQLInsertStatement x) {
+        print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
     }
 }

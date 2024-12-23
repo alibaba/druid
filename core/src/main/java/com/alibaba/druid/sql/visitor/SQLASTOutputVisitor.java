@@ -3765,6 +3765,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public void printInsertOverWrite(SQLInsertStatement x) {
+        print0(ucase ? "INSERT OVERWRITE " : "insert overwrite ");
+    }
     public boolean visit(SQLInsertStatement x) {
         List<SQLCommentHint> headHints = x.getHeadHintsDirect();
         if (headHints != null) {
@@ -3787,8 +3790,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isUpsert()) {
             print0(ucase ? "UPSERT INTO " : "upsert into ");
         } else {
-            if (x.isOverwrite() && dbType == DbType.odps) {
-                print0(ucase ? "INSERT OVERWRITE " : "insert overwrite ");
+            if (x.isOverwrite()) {
+                printInsertOverWrite(x);
             } else {
                 print0(ucase ? "INSERT INTO " : "insert into ");
             }
@@ -3796,6 +3799,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getTableSource().accept(this);
 
+        if (x.getPartitions() != null && !x.getPartitions().isEmpty()) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            printAndAccept(x.getPartitions(), ", ");
+            print(')');
+        }
         String columnsString = x.getColumnsString();
         if (columnsString != null) {
             print0(columnsString);
