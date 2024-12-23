@@ -65,9 +65,9 @@ public class MySqlCreateTableTest43 extends MysqlTest {
                 "\tname VARCHAR(35)\n" +
                 ")\n" +
                 "PARTITION BY LIST (id) (\n" +
-                "\tPARTITION r0 VALUES IN (1, 5, 9, 13, 17, 21), \n" +
-                "\tPARTITION r1 VALUES IN (2, 6, 10, 14, 18, 22), \n" +
-                "\tPARTITION r2 VALUES IN (3, 7, 11, 15, 19, 23), \n" +
+                "\tPARTITION r0 VALUES IN (1, 5, 9, 13, 17, 21),\n" +
+                "\tPARTITION r1 VALUES IN (2, 6, 10, 14, 18, 22),\n" +
+                "\tPARTITION r2 VALUES IN (3, 7, 11, 15, 19, 23),\n" +
                 "\tPARTITION r3 VALUES IN (4, 8, 12, 16, 20, 24)\n" +
                 ");", output);
 

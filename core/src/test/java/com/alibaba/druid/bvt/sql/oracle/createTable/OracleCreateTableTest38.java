@@ -59,10 +59,10 @@ public class OracleCreateTableTest38 extends OracleTest {
                         "\tcust_email VARCHAR2(40)\n" +
                         ")\n" +
                         "PARTITION BY LIST (nls_territory) (\n" +
-                        "\tPARTITION asia VALUES ('CHINA', 'THAILAND'), \n" +
-                        "\tPARTITION europe VALUES ('GERMANY', 'ITALY', 'SWITZERLAND'), \n" +
-                        "\tPARTITION west VALUES ('AMERICA'), \n" +
-                        "\tPARTITION east VALUES ('INDIA'), \n" +
+                        "\tPARTITION asia VALUES ('CHINA', 'THAILAND'),\n" +
+                        "\tPARTITION europe VALUES ('GERMANY', 'ITALY', 'SWITZERLAND'),\n" +
+                        "\tPARTITION west VALUES ('AMERICA'),\n" +
+                        "\tPARTITION east VALUES ('INDIA'),\n" +
                         "\tPARTITION rest VALUES (DEFAULT)\n" +
                         ");",//
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));

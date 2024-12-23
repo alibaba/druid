@@ -74,13 +74,13 @@ public class MySqlCreateTableTest45 extends MysqlTest {
                 "PARTITION BY LIST (YEAR(adate)) (\n" +
                 "\tPARTITION p1999 VALUES IN (1995, 1999, 2003)\n" +
                 "\t\tDATA DIRECTORY '/var/appdata/95/data'\n" +
-                "\t\tINDEX DIRECTORY '/var/appdata/95/idx', \n" +
+                "\t\tINDEX DIRECTORY '/var/appdata/95/idx',\n" +
                 "\tPARTITION p2000 VALUES IN (1996, 2000, 2004)\n" +
                 "\t\tDATA DIRECTORY '/var/appdata/96/data'\n" +
-                "\t\tINDEX DIRECTORY '/var/appdata/96/idx', \n" +
+                "\t\tINDEX DIRECTORY '/var/appdata/96/idx',\n" +
                 "\tPARTITION p2001 VALUES IN (1997, 2001, 2005)\n" +
                 "\t\tDATA DIRECTORY '/var/appdata/97/data'\n" +
-                "\t\tINDEX DIRECTORY '/var/appdata/97/idx', \n" +
+                "\t\tINDEX DIRECTORY '/var/appdata/97/idx',\n" +
                 "\tPARTITION p2002 VALUES IN (1998, 2002, 2006)\n" +
                 "\t\tDATA DIRECTORY '/var/appdata/98/data'\n" +
                 "\t\tINDEX DIRECTORY '/var/appdata/98/idx'\n" +

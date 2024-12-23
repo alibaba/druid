@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.DistributedByType;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLPartition;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
@@ -306,5 +307,24 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             x.getComment().accept(this);
         }
         return false;
+    }
+
+    @Override
+    protected void printSQLPartitions(List<SQLPartition> partitions) {
+        int partitionsSize = partitions.size();
+        print0(" (");
+        if (partitionsSize > 0) {
+            this.indentCount++;
+            for (int i = 0; i < partitionsSize; ++i) {
+                println();
+                partitions.get(i).accept(this);
+                if (i != partitionsSize - 1) {
+                    print0(",");
+                }
+            }
+            this.indentCount--;
+            println();
+        }
+        print(')');
     }
 }

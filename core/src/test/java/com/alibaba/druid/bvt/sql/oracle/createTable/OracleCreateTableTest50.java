@@ -249,35 +249,35 @@ public class OracleCreateTableTest50 extends OracleTest {
                         ")\n" +
                         "PARTITION BY HASH (\"COMPANY_ID\") (\n" +
                         "\tPARTITION \"PRODUCT_HASH_P1\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P2\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P3\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P4\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P5\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P6\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P7\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P8\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P9\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P10\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P11\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P12\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P13\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P14\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P15\"\n" +
-                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P16\"\n" +
                         "\t\tTABLESPACE \"APPDATA1M\"\n" +
                         ")",//
