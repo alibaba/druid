@@ -34,6 +34,7 @@ public class StarRocksLexer extends Lexer {
         map.put("MOD", Token.MOD);
         map.put("RLIKE", Token.RLIKE);
         map.put("USING", Token.USING);
+        map.put("OVERWRITE", Token.OVERWRITE);
         return new Keywords(map);
     }
 

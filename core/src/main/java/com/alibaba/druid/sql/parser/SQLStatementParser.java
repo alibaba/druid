@@ -3783,21 +3783,49 @@ public class SQLStatementParser extends SQLParser {
     protected void parseInsert0Hints(SQLInsertInto insertStatement, boolean isInsert) {
     }
 
+    protected void parseInsertOverwrite(SQLInsertInto insertStatement) {
+        insertStatement.setOverwrite(true);
+    }
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
-        if (lexer.nextIf(INTO)) {
-            SQLName tableName = this.exprParser.name();
-            insertStatement.setTableName(tableName);
+        if (lexer.nextIf(OVERWRITE) || lexer.nextIfIdentifier(Constants.OVERWRITE)) {
+            parseInsertOverwrite(insertStatement);
+        } else if (lexer.nextIf(INTO)) {
+            insertStatement.setOverwrite(false);
+        }
 
-            if (lexer.token == Token.LITERAL_ALIAS) {
-                insertStatement.setAlias(tableAlias());
+        SQLName tableName = this.exprParser.name();
+        insertStatement.setTableName(tableName);
+
+        if (lexer.token == Token.LITERAL_ALIAS) {
+            insertStatement.setAlias(tableAlias());
+        }
+
+        parseInsert0Hints(insertStatement, false);
+
+        if (lexer.token == Token.IDENTIFIER) {
+            insertStatement.setAlias(lexer.stringVal());
+            lexer.nextToken();
+        }
+
+        if (lexer.token == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            for (; ; ) {
+                SQLAssignItem ptExpr = new SQLAssignItem();
+                ptExpr.setTarget(this.exprParser.name());
+                if (lexer.token == Token.EQ || lexer.token == Token.EQEQ) {
+                    lexer.nextTokenValue();
+                    SQLExpr ptValue = this.exprParser.expr();
+                    ptExpr.setValue(ptValue);
+                }
+                insertStatement.addPartition(ptExpr);
+                if (!(lexer.token == (Token.COMMA))) {
+                    break;
+                } else {
+                    lexer.nextToken();
+                }
             }
-
-            parseInsert0Hints(insertStatement, false);
-
-            if (lexer.token == Token.IDENTIFIER) {
-                insertStatement.setAlias(lexer.stringVal());
-                lexer.nextToken();
-            }
+            accept(Token.RPAREN);
         }
 
         if (lexer.token == (Token.LPAREN)) {

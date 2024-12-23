@@ -236,26 +236,6 @@ public class BigQueryStatementParser extends SQLStatementParser {
         return block;
     }
 
-    protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
-        if (lexer.token() == Token.IDENTIFIER) {
-            SQLName tableName = this.exprParser.name();
-            insertStatement.setTableName(tableName);
-
-            if (lexer.token() == Token.LITERAL_ALIAS) {
-                insertStatement.setAlias(tableAlias());
-            }
-
-            parseInsert0Hints(insertStatement, false);
-
-            if (lexer.token() == Token.IDENTIFIER) {
-                insertStatement.setAlias(lexer.stringVal());
-                lexer.nextToken();
-            }
-        }
-
-        super.parseInsert0(insertStatement, acceptSubQuery);
-    }
-
     protected void createViewAs(SQLCreateViewStatement createView) {
         if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
             exprParser.parseAssignItem(createView.getOptions(), createView);

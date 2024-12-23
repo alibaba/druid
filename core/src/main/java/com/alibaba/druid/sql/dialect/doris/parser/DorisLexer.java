@@ -41,6 +41,7 @@ public class DorisLexer
         map.put("ROW", Token.ROW);
         map.put("MOD", Token.MOD);
         map.put("RLIKE", Token.RLIKE);
+        map.put("OVERWRITE", Token.OVERWRITE);
 
         return new Keywords(map);
     }
