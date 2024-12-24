@@ -99,3 +99,8 @@ x.y.z
 UPDATE a.b.c tbl
 SET tbl.x1 = oba.x2, tbl.x3 = oba.x4, tbl.x5 = oba.x6, tbl.x7 = oba.x8, tbl.x9 = oba.x10, tbl.x11 = oba.x12, tbl.x13 = oba.x14
 FROM x.y.z
+------------------------------------------------------------------------------------------------------------------------
+select b from t, unnest(a) c1 with offset as c2
+--------------------
+SELECT b
+FROM t, UNNEST(a) AS c1 WITH OFFSET AS c2

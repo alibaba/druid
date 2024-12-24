@@ -4913,7 +4913,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         final List<SQLName> columns = x.getColumns();
         final String alias = x.getAlias();
         if (alias != null) {
-            if (columns.size() > 0) {
+            if (!columns.isEmpty()) {
                 print0(" AS ");
             } else {
                 print(' ');
@@ -4921,7 +4921,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(alias);
         }
 
-        if (columns.size() > 0) {
+        if (!columns.isEmpty()) {
             print0(" (");
             for (int i = 0; i < columns.size(); i++) {
                 if (i != 0) {
@@ -4981,6 +4981,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 printExpr(columns.get(i));
             }
             print(')');
+        }
+
+        if (x.getOffset() != null) {
+            print0(ucase ? " WITH OFFSET AS " : " with offset as ");
+            x.getOffset().accept(this);
         }
 
         return false;
