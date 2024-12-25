@@ -89,6 +89,7 @@ public enum DbType {
     athena(1L << 52),
 
     polardbx(1L << 53),
+    supersql(1L << 54),
 
     ingres(0),
     cloudscape(0),

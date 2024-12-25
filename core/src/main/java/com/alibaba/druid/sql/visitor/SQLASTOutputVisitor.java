@@ -5361,7 +5361,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     || dbType == DbType.mariadb) {
                 println();
                 print0(ucase ? "WITH (" : "with (");
-            } else if (dbType == DbType.hive || dbType == DbType.presto || dbType == DbType.trino) {
+            } else if (dbType == DbType.hive || dbType == DbType.presto || dbType == DbType.trino || dbType == DbType.supersql) {
                 println();
                 print0(ucase ? "WITH DBPROPERTIES (" : "with dbproperties (");
             } else {
@@ -7581,7 +7581,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else if (expr != null) {
             expr.accept(this);
         } else {
-            boolean trino = dbType == DbType.trino || dbType == DbType.presto;
+            boolean trino = dbType == DbType.trino || dbType == DbType.presto || dbType == DbType.supersql;
             if (trino) {
                 print0(ucase ? "ARRAY" : "array");
             }
@@ -9538,7 +9538,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "INTERVAL " : "interval ");
         SQLExpr value = x.getValue();
 
-        boolean quote = (dbType == DbType.presto || dbType == DbType.trino)
+        boolean quote = (dbType == DbType.presto || dbType == DbType.trino || dbType == DbType.supersql)
                 && !(value instanceof SQLTextLiteralExpr);
         if (quote) {
             print('\'');

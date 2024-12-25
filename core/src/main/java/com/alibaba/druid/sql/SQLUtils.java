@@ -568,6 +568,7 @@ public class SQLUtils {
                 return new SparkOutputVisitor(out);
             case presto:
             case trino:
+            case supersql:
                 return new PrestoOutputVisitor(out);
             case athena:
                 return new AthenaOutputVisitor(out);
