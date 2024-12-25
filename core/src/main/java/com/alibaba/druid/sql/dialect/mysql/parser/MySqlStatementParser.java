@@ -2417,7 +2417,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         switch (dbType) {
             case mysql:
             case ads:
-            case supersql:    
+            case supersql:
             case presto:
             case trino:
                 Lexer.SavePoint mark = lexer.mark();

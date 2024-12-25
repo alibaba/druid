@@ -64,7 +64,7 @@ public class SQLFunctionBuilder {
             case presto:
             case trino:
             case odps:
-            case supersql:    
+            case supersql:
                 return new SQLMethodInvokeExpr("coalesce", null, expr1, expr2);
             case oracle:
                 return new SQLMethodInvokeExpr("nvl", null, expr1, expr2);
