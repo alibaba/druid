@@ -147,6 +147,7 @@ public class SQLTimeExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
             DbType.oracle,
             DbType.presto,
             DbType.trino,
+            DbType.supersql,
             DbType.postgresql,
             DbType.mariadb,
             DbType.tidb,
