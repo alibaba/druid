@@ -36,6 +36,7 @@ import com.alibaba.druid.stat.TableStat.Condition;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
 import com.alibaba.druid.util.FnvHash;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -43,6 +44,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     protected SchemaRepository repository;
 
     protected final List<SQLName> originalTables = new ArrayList<SQLName>();
+    protected final List<Pair<SQLName, String>> tableReferences = new ArrayList<>();
 
     protected final HashMap<TableStat.Name, TableStat> tableStats = new LinkedHashMap<TableStat.Name, TableStat>();
     protected final Map<Long, Column> columns = new LinkedHashMap<Long, Column>();
@@ -121,6 +123,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             tableStats.put(new TableStat.Name(tableName), stat);
         }
         return stat;
+    }
+
+    public List<Pair<SQLName, String>> getTableReferences() {
+        return tableReferences;
     }
 
     public TableStat getTableStat(SQLName tableName) {
@@ -1972,6 +1978,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 tableSource.getExpr());
     }
 
+    protected void recordTableReference(SQLExprTableSource x) {
+        if (x.getExpr() instanceof SQLName) {
+            tableReferences.add(Pair.of(((SQLName) x.getExpr()), x.getAlias()));
+        }
+    }
     protected TableStat getTableStatWithUnwrap(SQLExpr expr) {
         SQLExpr identExpr = null;
 
@@ -2023,6 +2034,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         if (isSimpleExprTableSource(x)) {
+            recordTableReference(x);
             TableStat stat = getTableStatWithUnwrap(expr);
             if (stat == null) {
                 return false;
