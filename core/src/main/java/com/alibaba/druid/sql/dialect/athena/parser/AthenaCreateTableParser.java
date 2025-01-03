@@ -1,6 +1,5 @@
 package com.alibaba.druid.sql.dialect.athena.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -16,14 +15,8 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 public class AthenaCreateTableParser extends PrestoCreateTableParser {
-    public AthenaCreateTableParser(String sql) {
-        super(sql);
-        this.dbType = DbType.athena;
-    }
-
     public AthenaCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
-        this.dbType = DbType.athena;
     }
 
     @Override

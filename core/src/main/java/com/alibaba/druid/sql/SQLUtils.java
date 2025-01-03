@@ -68,6 +68,7 @@ import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
+import com.alibaba.druid.sql.dialect.supersql.visitor.SuperSqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.teradata.visitor.TDOutputVisitor;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.repository.SchemaRepository;
@@ -568,8 +569,9 @@ public class SQLUtils {
                 return new SparkOutputVisitor(out);
             case presto:
             case trino:
-            case supersql:
                 return new PrestoOutputVisitor(out);
+            case supersql:
+                return new SuperSqlOutputVisitor(out);
             case athena:
                 return new AthenaOutputVisitor(out);
             case clickhouse:

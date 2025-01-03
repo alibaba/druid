@@ -7,12 +7,11 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class AthenaExprParser extends PrestoExprParser {
     public AthenaExprParser(String sql, SQLParserFeature... features) {
-        super(sql, features);
-        this.dbType = DbType.athena;
+        this(new AthenaLexer(sql, features));
+        this.lexer.nextToken();
     }
 
     public AthenaExprParser(Lexer lexer) {
-        super(lexer);
-        this.dbType = DbType.athena;
+        super(lexer, DbType.athena);
     }
 }
