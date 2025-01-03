@@ -47,6 +47,7 @@ import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoPrepareStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -66,10 +67,13 @@ public class PrestoStatementParser extends SQLStatementParser {
     public PrestoStatementParser(String sql) {
         super(new PrestoExprParser(sql));
     }
- public PrestoStatementParser(String sql, SQLParserFeature... features) {
+    public PrestoStatementParser(String sql, SQLParserFeature... features) {
         super(new PrestoExprParser(sql, features));
     }
 
+    public PrestoStatementParser(SQLExprParser exprParser) {
+        super(exprParser);
+    }
     public PrestoStatementParser(Lexer lexer) {
         super(new PrestoExprParser(lexer));
     }

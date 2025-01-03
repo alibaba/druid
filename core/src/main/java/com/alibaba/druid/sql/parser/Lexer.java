@@ -91,9 +91,9 @@ public class Lexer {
         this(input, (CommentHandler) null);
     }
 
-//    public Lexer(String input, DbType dbType){
-//        this(input, (CommentHandler) null, dbType);
-//    }
+    public Lexer(String input, DbType dbType) {
+        this(input, null, dbType);
+    }
 
     public Lexer(String input, CommentHandler commentHandler) {
         this(input, true);

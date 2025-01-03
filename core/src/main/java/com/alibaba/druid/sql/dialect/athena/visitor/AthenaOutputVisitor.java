@@ -7,13 +7,11 @@ import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 
 public class AthenaOutputVisitor extends PrestoOutputVisitor implements AthenaASTVisitor {
     public AthenaOutputVisitor(StringBuilder appender) {
-        super(appender);
-        dbType = DbType.athena;
+        super(appender, DbType.athena);
     }
 
     public AthenaOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.athena;
+        super(appender, DbType.athena, parameterized);
     }
 
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {

@@ -95,6 +95,9 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksExprParser;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksLexer;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
+import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlExprParser;
+import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlLexer;
+import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlStatementParser;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDExprParser;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDLexer;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDStatementParser;
@@ -187,8 +190,9 @@ public class SQLParserUtils {
                 return new HiveStatementParser(sql, features);
             case presto:
             case trino:
-            case supersql:
                 return new PrestoStatementParser(sql, features);
+            case supersql:
+                return new SuperSqlStatementParser(sql, features);
             case athena:
                 return new AthenaStatementParser(sql, features);
             case bigquery:
@@ -256,8 +260,9 @@ public class SQLParserUtils {
                 return new PhoenixExprParser(sql, features);
             case presto:
             case trino:
-            case supersql:
                 return new PrestoExprParser(sql, features);
+            case supersql:
+                return new SuperSqlExprParser(sql, features);
             case athena:
                 return new AthenaExprParser(sql, features);
             case hive:
@@ -324,8 +329,9 @@ public class SQLParserUtils {
                 return new PhoenixLexer(sql, features);
             case presto:
             case trino:
-            case supersql:
                 return new PrestoLexer(sql, features);
+            case supersql:
+                return new SuperSqlLexer(sql, features);
             case athena:
                 return new AthenaLexer(sql, features);
             case spark:
