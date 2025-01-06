@@ -105,3 +105,8 @@ CREATE TABLE IF NOT EXISTS gpark_dwd.dwd_game_review_publish_success_ios (
 PARTITIONED BY (
 	ymd string
 );
+------------------------------------------------------------------------------------------------------------------------
+select if(gameid rlike '^[0-9]+$', 'UGC', 'PGC') from a;
+--------------------
+SELECT if(gameid RLIKE '^[0-9]+$', 'UGC', 'PGC')
+FROM a;
