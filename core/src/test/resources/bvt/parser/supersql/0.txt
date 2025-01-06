@@ -37,7 +37,7 @@ select
 FROM click t1
 full join play_res t2 on t1.pd_uid = t2.pd_uid
 --------------------
-INSERT OVERWRITE a PARTITION (ymd = '${DATE_1D}')
+INSERT OVERWRITE TABLE a PARTITION (ymd = '${DATE_1D}')
 SELECT nvl(t1.pd_uid, t2.pd_uid) AS uuid
 	, nvl(t1.user_click_game_7d_cnt, 0) AS user_click_game_7d_cnt
 	, nvl(t2.user_playtime_1d, 0.0) AS user_playtime_1d
@@ -59,7 +59,7 @@ select  t1.ymd
         ,login_dnu_gpark
 from b
 --------------------
-INSERT OVERWRITE a PARTITION (ymd)
+INSERT OVERWRITE TABLE a PARTITION (ymd)
 SELECT t1.ymd, launcher_download_dnu, launcher_install_dnu, editor_install_dnu, gpark_install_dnu
 	, pge_install_dnu, login_dnu, login_dnu_addr, login_dnu_gpark
 FROM b
@@ -80,3 +80,28 @@ INSERT INTO a PARTITION (ymd)
 SELECT t1.ymd, launcher_download_dnu, launcher_install_dnu, editor_install_dnu, gpark_install_dnu
 	, pge_install_dnu, login_dnu, login_dnu_addr, login_dnu_gpark
 FROM b
+------------------------------------------------------------------------------------------------------------------------
+create table if not exists gpark_dwd.dwd_game_review_publish_success_ios
+(
+    imei_type string  COMMENT '平台级新老'
+    ,imei_type_game string COMMENT '游戏级新老'
+    ,pd_country_en string COMMENT '国家名称（英文）'
+    ,pd_device_id string COMMENT '设备id'
+    ,gameid string COMMENT '游戏id'
+    ,game_tag string COMMENT '游戏类型pgc/ugc'
+    ,reviewtype bigint COMMENT '评论级别'
+) partitioned by (ymd string)
+;
+--------------------
+CREATE TABLE IF NOT EXISTS gpark_dwd.dwd_game_review_publish_success_ios (
+	imei_type string COMMENT '平台级新老',
+	imei_type_game string COMMENT '游戏级新老',
+	pd_country_en string COMMENT '国家名称（英文）',
+	pd_device_id string COMMENT '设备id',
+	gameid string COMMENT '游戏id',
+	game_tag string COMMENT '游戏类型pgc/ugc',
+	reviewtype bigint COMMENT '评论级别'
+)
+PARTITIONED BY (
+	ymd string
+);
