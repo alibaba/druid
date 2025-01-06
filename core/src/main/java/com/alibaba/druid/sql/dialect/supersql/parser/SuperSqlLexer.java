@@ -29,6 +29,7 @@ public class SuperSqlLexer extends PrestoLexer {
         map.put("IF", Token.IF);
         map.put("OVERWRITE", Token.OVERWRITE);
         map.put("PARTITION", Token.PARTITION);
+        map.put("PARTITIONED", Token.PARTITIONED);
 
         return new Keywords(map);
     }
