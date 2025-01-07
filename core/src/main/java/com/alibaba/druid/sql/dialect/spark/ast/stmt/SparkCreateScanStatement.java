@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.dialect.spark.visitor.SparkVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.SparkASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -94,14 +94,14 @@ public class SparkCreateScanStatement extends SQLStatementImpl implements SQLCre
 
     @Override
     protected void accept0(SQLASTVisitor v) {
-        if (v instanceof SparkVisitor) {
-            accept0((SparkVisitor) v);
+        if (v instanceof SparkASTVisitor) {
+            accept0((SparkASTVisitor) v);
         } else {
             super.accept0(v);
         }
     }
 
-    public void accept0(SparkVisitor visitor) {
+    public void accept0(SparkASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, on);

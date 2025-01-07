@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKStatVisitor;
+import com.alibaba.druid.sql.dialect.databricks.visitor.DatabricksOutputASTVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.doris.visitor.DorisOutputVisitor;
@@ -63,8 +64,8 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.redshift.visitor.RedshiftOutputVisitor;
-import com.alibaba.druid.sql.dialect.spark.visitor.SparkOutputVisitor;
-import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.SparkOutputASTVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatASTVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
@@ -566,7 +567,9 @@ public class SQLUtils {
             case blink:
                 return new BlinkOutputVisitor(out);
             case spark:
-                return new SparkOutputVisitor(out);
+                return new SparkOutputASTVisitor(out);
+            case databricks:
+                return new DatabricksOutputASTVisitor(out);
             case presto:
             case trino:
                 return new PrestoOutputVisitor(out);
@@ -641,7 +644,7 @@ public class SQLUtils {
             case hive:
                 return new HiveSchemaStatVisitor(repository);
             case spark:
-                return new SparkSchemaStatVisitor(repository);
+                return new SparkSchemaStatASTVisitor(repository);
             case clickhouse:
                 return new CKStatVisitor(repository);
             default:

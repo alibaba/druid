@@ -7,6 +7,7 @@ package com.alibaba.druid.sql.dialect.spark.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
 import com.alibaba.druid.sql.parser.Keywords;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
 import java.util.HashMap;
@@ -43,15 +44,25 @@ public class SparkLexer extends HiveLexer {
         map.put("RLIKE", Token.RLIKE);
         map.put("CONSTRAINT", Token.CONSTRAINT);
         map.put("CACHE", Token.CACHE);
+        map.put("QUALIFY", Token.QUALIFY);
 
         return new Keywords(map);
     }
 
     public SparkLexer(String input) {
-        super(input);
-        dbType = DbType.spark;
+        this(input, DbType.spark);
     }
 
+    public SparkLexer(String input, DbType dbType) {
+        super(input, dbType);
+    }
+
+    public SparkLexer(String input, SQLParserFeature... features) {
+        super(input, DbType.spark, features);
+    }
+    public SparkLexer(String input, DbType dbType, SQLParserFeature... features) {
+        super(input, dbType, features);
+    }
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();

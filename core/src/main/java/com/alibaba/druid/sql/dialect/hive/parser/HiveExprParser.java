@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.hive.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLCurrentTimeExpr;
 import com.alibaba.druid.sql.ast.SQLCurrentUserExpr;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -54,7 +55,11 @@ public class HiveExprParser extends SQLExprParser {
     }
 
     public HiveExprParser(Lexer lexer) {
-        super(lexer);
+        this(lexer, DbType.hive);
+    }
+
+    public HiveExprParser(Lexer lexer, DbType dbType) {
+        super(lexer, dbType);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }

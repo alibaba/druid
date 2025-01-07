@@ -13,7 +13,7 @@ import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCreateScanStatement;
  * @author peiheng.qph
  * @version $Id: AntsparkVisitor.java, v 0.1 2018年09月14日 15:07 peiheng.qph Exp $
  */
-public interface SparkVisitor extends HiveASTVisitor {
+public interface SparkASTVisitor extends HiveASTVisitor {
     default boolean visit(SparkCreateTableStatement x) {
         return true;
     }

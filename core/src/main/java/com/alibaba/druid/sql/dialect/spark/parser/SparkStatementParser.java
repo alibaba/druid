@@ -16,6 +16,7 @@ import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCacheTableStatement;
 import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCreateScanStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
@@ -31,6 +32,13 @@ public class SparkStatementParser extends HiveStatementParser {
         super(new SparkExprParser(sql));
     }
 
+    public SparkStatementParser(Lexer lexer) {
+        super(lexer);
+    }
+
+    public SparkStatementParser(SQLExprParser sqlExprParser) {
+        super(sqlExprParser);
+    }
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new SparkCreateTableParser(this.exprParser);
     }
