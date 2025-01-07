@@ -58,21 +58,28 @@ public class HiveLexer extends Lexer {
         map.put("RLIKE", Token.RLIKE);
         map.put("CONSTRAINT", Token.CONSTRAINT);
         map.put("DIV", Token.DIV);
+        map.put("QUALIFY", Token.QUALIFY);
 
         return new Keywords(map);
     }
 
-    public HiveLexer(String input) {
-        super(input);
+    public HiveLexer(String input, DbType dbType) {
+        super(input, dbType);
         this.skipComment = true;
         this.keepComments = true;
-        dbType = DbType.hive;
         this.features |= SQLParserFeature.SupportUnicodeCodePoint.mask;
     }
 
+    public HiveLexer(String input) {
+        this(input, DbType.hive);
+    }
+
     public HiveLexer(String input, SQLParserFeature... features) {
-        super(input);
-        dbType = DbType.hive;
+        this(input, DbType.hive, features);
+    }
+
+    public HiveLexer(String input, DbType dbType, SQLParserFeature... features) {
+        super(input, dbType);
         this.skipComment = true;
         this.keepComments = true;
         this.features |= SQLParserFeature.SupportUnicodeCodePoint.mask;

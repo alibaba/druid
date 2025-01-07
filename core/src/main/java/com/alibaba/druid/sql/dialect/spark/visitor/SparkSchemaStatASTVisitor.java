@@ -14,16 +14,16 @@ import com.alibaba.druid.sql.repository.SchemaRepository;
  * @author peiheng.qph
  * @version $Id: AntsparkSchemaStatVisitor.java, v 0.1 2018年09月16日 23:09 peiheng.qph Exp $
  */
-public class SparkSchemaStatVisitor extends HiveSchemaStatVisitor implements SparkVisitor {
+public class SparkSchemaStatASTVisitor extends HiveSchemaStatVisitor implements SparkASTVisitor {
     {
         dbType = DbType.spark;
     }
 
-    public SparkSchemaStatVisitor() {
+    public SparkSchemaStatASTVisitor() {
         super(DbType.spark);
     }
 
-    public SparkSchemaStatVisitor(SchemaRepository repository) {
+    public SparkSchemaStatASTVisitor(SchemaRepository repository) {
         super(repository);
     }
 

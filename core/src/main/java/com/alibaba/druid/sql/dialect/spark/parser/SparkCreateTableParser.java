@@ -13,6 +13,7 @@ import com.alibaba.druid.sql.dialect.hive.parser.HiveCreateTableParser;
 import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
@@ -283,5 +284,9 @@ public class SparkCreateTableParser extends HiveCreateTableParser {
     }
 
     private void parseSortedBy(SparkCreateTableStatement stmt) {
+    }
+
+    public SQLSelectParser createSQLSelectParser() {
+        return new SparkSelectParser(this.exprParser, selectListCache);
     }
 }

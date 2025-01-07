@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.dialect.spark.visitor.SparkVisitor;
+import com.alibaba.druid.sql.dialect.spark.visitor.SparkASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -101,14 +101,14 @@ public class SparkCacheTableStatement extends SQLStatementImpl implements SQLCre
 
     @Override
     protected void accept0(SQLASTVisitor v) {
-        if (v instanceof SparkVisitor) {
-            this.accept0((SparkVisitor) v);
+        if (v instanceof SparkASTVisitor) {
+            this.accept0((SparkASTVisitor) v);
         } else {
             super.accept0(v);
         }
     }
 
-    public void accept0(SparkVisitor visitor) {
+    public void accept0(SparkASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, query);
