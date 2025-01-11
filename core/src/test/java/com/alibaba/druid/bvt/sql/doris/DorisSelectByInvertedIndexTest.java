@@ -14,7 +14,7 @@ import org.junit.Assert;
 public class DorisSelectByInvertedIndexTest extends DorisTest {
 
     public void test_0() throws Exception {
-        String sql = "SELECT t.name, t.age FROM employee t WHERE t.name MATCH_ANY '';";
+        String sql = "SELECT t.name, t.age FROM employee t WHERE t.name MATCH_ANY '张三 李四' and t.age > 10;";
 
         DorisStatementParser parser = new DorisStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
