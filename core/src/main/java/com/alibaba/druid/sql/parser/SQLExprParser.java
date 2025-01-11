@@ -3998,6 +3998,32 @@ public class SQLExprParser extends SQLParser {
                     return expr;
                 }
                 break;
+            case MATCH_ALL:
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.MATCH_ALL, rightExp, dbType);
+                break;
+            case MATCH_ANY:
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.MATCH_ANY, rightExp, dbType);
+                break;
+            case MATCH_PHRASE:
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.MATCH_PHRASE, rightExp, dbType);
+                break;
+            case MATCH_PHRASE_PREFIX:
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.MATCH_PHRASE_PREFIX, rightExp, dbType);
+                break;
+            case MATCH_REGEXP: {
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.MATCH_REGEXP, rightExp, dbType);
+                break;
+            }
             default:
                 return expr;
         }
