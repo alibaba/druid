@@ -893,6 +893,9 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 }
                 // skip comma
                 lexer.nextToken();
+                if (lexer.token() == SEMI) {
+                    break;
+                }
             }
         }
 
