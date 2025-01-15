@@ -1,3 +1,10 @@
+create or replace table c as select a from b
+--------------------
+CREATE OR REPLACE TABLE c
+AS
+SELECT a
+FROM b
+------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS ora_tab
   USING ORACLE
   OPTIONS (
