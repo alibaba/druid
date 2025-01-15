@@ -1,3 +1,8 @@
+select timestamp_add(a, interval 1 millisecond) from b
+--------------------
+SELECT timestamp_add(a, INTERVAL 1 MILLISECOND)
+FROM b
+------------------------------------------------------------------------------------------------------------------------
 merge into a as target using b as source on a.id = b.id when not matched then insert row
 --------------------
 MERGE INTO a target
