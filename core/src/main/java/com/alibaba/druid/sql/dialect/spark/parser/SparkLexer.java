@@ -45,6 +45,7 @@ public class SparkLexer extends HiveLexer {
         map.put("CONSTRAINT", Token.CONSTRAINT);
         map.put("CACHE", Token.CACHE);
         map.put("QUALIFY", Token.QUALIFY);
+        map.put("OR", Token.OR);
 
         return new Keywords(map);
     }

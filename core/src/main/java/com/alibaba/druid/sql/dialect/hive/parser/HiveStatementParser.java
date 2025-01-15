@@ -394,7 +394,7 @@ public class HiveStatementParser extends SQLStatementParser {
     }
 
     public SQLCreateTableStatement parseCreateTable() {
-        SQLCreateTableParser parser = new HiveCreateTableParser(this.exprParser);
+        SQLCreateTableParser parser = getSQLCreateTableParser();
         return parser.parseCreateTable();
     }
 
