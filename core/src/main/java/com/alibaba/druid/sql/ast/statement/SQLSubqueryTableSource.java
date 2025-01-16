@@ -64,12 +64,8 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            if (select != null) {
-                select.accept(visitor);
-            }
-            if (pivot != null) {
-                pivot.accept(visitor);
-            }
+            acceptChild(visitor, this.select);
+            super.accept0(visitor);
         }
         visitor.endVisit(this);
     }

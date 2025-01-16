@@ -24,6 +24,7 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
             acceptChild(v, items);
             acceptChild(v, columns);
             acceptChild(v, offset);
+            super.accept0(v);
         }
         v.endVisit(this);
     }

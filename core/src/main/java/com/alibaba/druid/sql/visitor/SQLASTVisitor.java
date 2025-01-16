@@ -120,6 +120,11 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default boolean visit(SQLTableSourceImpl x) {
+        return true;
+    }
+
+    default void endVisit(SQLTableSourceImpl x) {}
     default boolean visit(SQLBetweenExpr x) {
         return true;
     }

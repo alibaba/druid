@@ -29,6 +29,7 @@ public class SQLGeneratedTableSource extends SQLTableSourceImpl
             acceptChild(v, methodName);
             acceptChild(v, columns);
             acceptChild(v, items);
+            super.accept0(v);
         }
         v.endVisit(this);
     }
