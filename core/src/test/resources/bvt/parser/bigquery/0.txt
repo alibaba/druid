@@ -1,3 +1,9 @@
+select * from a unpivot(ct for type in ('1'))
+--------------------
+SELECT *
+FROM a
+UNPIVOT (ct FOR type IN ('1'))
+------------------------------------------------------------------------------------------------------------------------
 select timestamp_add(a, interval 1 millisecond) from b
 --------------------
 SELECT timestamp_add(a, INTERVAL 1 MILLISECOND)

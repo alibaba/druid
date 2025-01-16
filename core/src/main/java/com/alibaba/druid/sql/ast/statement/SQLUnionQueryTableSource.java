@@ -45,9 +45,9 @@ public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            if (union != null) {
-                union.accept(visitor);
-            }
+            acceptChild(visitor, union);
+            acceptChild(visitor, columns);
+            super.accept0(visitor);
         }
         visitor.endVisit(this);
     }

@@ -32,9 +32,8 @@ public class MySqlUpdateTableSource extends SQLTableSourceImpl {
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {
             accept0((MySqlASTVisitor) visitor);
-        } else {
-            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
         }
+        super.accept0(visitor);
     }
 
     public void accept0(MySqlASTVisitor visitor) {

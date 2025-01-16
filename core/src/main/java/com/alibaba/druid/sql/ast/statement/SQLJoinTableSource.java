@@ -55,28 +55,12 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            if (left != null) {
-                left.accept(visitor);
-            }
-
-            if (right != null) {
-                right.accept(visitor);
-            }
-
-            if (condition != null) {
-                condition.accept(visitor);
-            }
-
-            for (int i = 0; i < using.size(); i++) {
-                SQLExpr item = using.get(i);
-                if (item != null) {
-                    item.accept(visitor);
-                }
-            }
-
-            if (udj != null) {
-                udj.accept(visitor);
-            }
+            acceptChild(visitor, left);
+            acceptChild(visitor, right);
+            acceptChild(visitor, condition);
+            acceptChild(visitor, using);
+            acceptChild(visitor, udj);
+            super.accept0(visitor);
         }
 
         visitor.endVisit(this);
