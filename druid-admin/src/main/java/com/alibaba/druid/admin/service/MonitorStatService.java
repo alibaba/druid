@@ -25,6 +25,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -443,6 +446,11 @@ public class MonitorStatService implements DruidStatServiceMBean {
     public static Map<String, String> getParameters(String url) {
         if (url == null || (url = url.trim()).length() == 0) {
             return Collections.<String, String>emptyMap();
+        }
+        try {
+            url = URLDecoder.decode(url, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            log.error("url decode error", e);
         }
 
         String parametersStr = StringUtils.subString(url, "?", null);

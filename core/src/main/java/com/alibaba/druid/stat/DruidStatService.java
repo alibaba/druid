@@ -31,7 +31,10 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -375,6 +378,12 @@ public final class DruidStatService implements DruidStatServiceMBean {
     public static Map<String, String> getParameters(String url) {
         if (url == null || (url = url.trim()).length() == 0) {
             return Collections.<String, String>emptyMap();
+        }
+
+        try {
+            url = URLDecoder.decode(url, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            LOG.error("url decode error", e);
         }
 
         String parametersStr = StringUtils.subString(url, "?", null);

@@ -520,5 +520,9 @@ public class DruidStatServiceTest extends TestCase {
         url = "/%E4%B8%AD%E6%96%87";
         parameters = DruidStatService.getParameters(url);
         assertThat(parameters.isEmpty(), is(true));
+        url = "/sql.json%3ForderBy%3DHistogram%5B3%5D%26orderType%3Ddesc";
+        parameters = DruidStatService.getParameters(url);
+        assertThat(parameters.get("orderBy"), equalTo("Histogram[3]"));
+        assertThat(parameters.get("orderType"), equalTo("desc"));
     }
 }
