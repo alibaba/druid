@@ -260,6 +260,9 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
         if (visitor.visit(this)) {
             acceptChild(visitor, expr);
             acceptChild(visitor, sampling);
+            acceptChild(visitor, partitions);
+            acceptChild(visitor, columns);
+            super.accept0(visitor);
         }
         visitor.endVisit(this);
     }
