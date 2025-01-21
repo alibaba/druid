@@ -91,6 +91,7 @@ public enum DbType {
     polardbx(1L << 53),
     supersql(1L << 54),
     databricks(1L << 55),
+    adb_mysql(1L << 56),
 
     ingres(0),
     cloudscape(0),
