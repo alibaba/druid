@@ -5864,12 +5864,14 @@ public class MySqlStatementParser extends SQLStatementParser {
                     alterTableAdd(stmt);
                     return true;
                 } else if (lexer.identifierEquals(FnvHash.Constants.ALGORITHM)) {
-                    // ALGORITHM [=] {DEFAULT|INPLACE|COPY}
+                    // ALGORITHM [=] {DEFAULT | INSTANT | INPLACE | COPY}
                     lexer.nextToken();
                     if (lexer.token() == Token.EQ) {
                         lexer.nextToken();
                     }
-                    stmt.addItem(new MySqlAlterTableOption("ALGORITHM", lexer.stringVal()));
+                    MySqlAlterTableAlgorithm item = new MySqlAlterTableAlgorithm();
+                    item.setAlgorithmType(new SQLIdentifierExpr(lexer.stringVal()));
+                    stmt.addItem(item);
                     lexer.nextToken();
                     return true;
                 } else if (lexer.identifierEquals(FnvHash.Constants.CHANGE)) {
