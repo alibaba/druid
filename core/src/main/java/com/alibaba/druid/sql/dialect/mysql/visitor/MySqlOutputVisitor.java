@@ -4474,6 +4474,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
+    public boolean visit(MySqlAlterTableAlgorithm x) {
+        print0(ucase ? "ALGORITHM = " : "algorithm = ");
+        printExpr(x.getAlgorithmType());
+        return false;
+    }
+
     @Override
     public boolean visit(MySqlAlterTableOrderBy x) {
         print0(ucase ? "ORDER BY " : "order by ");
