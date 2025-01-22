@@ -514,7 +514,11 @@ public class Lexer {
         this.startPos = pos;
         if (ch == '\'') {
             bufPos = 0;
-            scanString();
+            if (dbType == DbType.mysql) {
+                scanString2();
+            } else {
+                scanString();
+            }
             return;
         }
 
@@ -1409,7 +1413,11 @@ public class Lexer {
                     }
                     return;
                 case '\'':
-                    scanString();
+                    if (dbType == DbType.mysql) {
+                        scanString2();
+                    } else {
+                        scanString();
+                    }
                     return;
                 case '\"':
                     scanAlias();
