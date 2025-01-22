@@ -32,6 +32,9 @@ import com.alibaba.druid.sql.dialect.blink.parser.BlinkStatementParser;
 import com.alibaba.druid.sql.dialect.clickhouse.parser.CKExprParser;
 import com.alibaba.druid.sql.dialect.clickhouse.parser.CKLexer;
 import com.alibaba.druid.sql.dialect.clickhouse.parser.CKStatementParser;
+import com.alibaba.druid.sql.dialect.databricks.parser.DatabricksExprParser;
+import com.alibaba.druid.sql.dialect.databricks.parser.DatabricksLexer;
+import com.alibaba.druid.sql.dialect.databricks.parser.DatabricksStatementParser;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2Lexer;
@@ -87,6 +90,7 @@ import com.alibaba.druid.sql.dialect.redshift.parser.RedshiftStatementParser;
 import com.alibaba.druid.sql.dialect.snowflake.SnowflakeExprParser;
 import com.alibaba.druid.sql.dialect.snowflake.SnowflakeLexer;
 import com.alibaba.druid.sql.dialect.snowflake.SnowflakeStatementParser;
+import com.alibaba.druid.sql.dialect.spark.parser.SparkExprParser;
 import com.alibaba.druid.sql.dialect.spark.parser.SparkLexer;
 import com.alibaba.druid.sql.dialect.spark.parser.SparkStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -95,6 +99,9 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksExprParser;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksLexer;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
+import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlExprParser;
+import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlLexer;
+import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlStatementParser;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDExprParser;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDLexer;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDStatementParser;
@@ -188,6 +195,8 @@ public class SQLParserUtils {
             case presto:
             case trino:
                 return new PrestoStatementParser(sql, features);
+            case supersql:
+                return new SuperSqlStatementParser(sql, features);
             case athena:
                 return new AthenaStatementParser(sql, features);
             case bigquery:
@@ -196,6 +205,8 @@ public class SQLParserUtils {
                 return new SnowflakeStatementParser(sql, features);
             case spark:
                 return new SparkStatementParser(sql);
+            case databricks:
+                return new DatabricksStatementParser(sql, features);
             case clickhouse:
                 return new CKStatementParser(sql);
             case starrocks:
@@ -256,10 +267,16 @@ public class SQLParserUtils {
             case presto:
             case trino:
                 return new PrestoExprParser(sql, features);
+            case supersql:
+                return new SuperSqlExprParser(sql, features);
             case athena:
                 return new AthenaExprParser(sql, features);
             case hive:
                 return new HiveExprParser(sql, features);
+            case spark:
+                return new SparkExprParser(sql, features);
+            case databricks:
+                return new DatabricksExprParser(sql, features);
             case bigquery:
                 return new BigQueryExprParser(sql, features);
             case snowflake:
@@ -323,10 +340,14 @@ public class SQLParserUtils {
             case presto:
             case trino:
                 return new PrestoLexer(sql, features);
+            case supersql:
+                return new SuperSqlLexer(sql, features);
             case athena:
                 return new AthenaLexer(sql, features);
             case spark:
                 return new SparkLexer(sql);
+            case databricks:
+                return new DatabricksLexer(sql);
             case oscar:
                 return new OscarLexer(sql, features);
             case clickhouse:

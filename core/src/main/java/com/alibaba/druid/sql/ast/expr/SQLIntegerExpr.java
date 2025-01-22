@@ -197,4 +197,18 @@ public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuable
 
         return -1;
     }
+
+    public SQLIntegerExpr negative() {
+        Number number = this.number;
+        if (number instanceof Integer) {
+            number = -number.intValue();
+        } else if (number instanceof Long) {
+            number = -number.longValue();
+        } else if (number instanceof BigInteger) {
+            number = ((BigInteger) number).negate();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        return new SQLIntegerExpr(number);
+    }
 }

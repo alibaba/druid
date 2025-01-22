@@ -6,6 +6,8 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.BQ;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCharExpr;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryModelExpr;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryTableExpr;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -31,6 +33,8 @@ public class BigQueryExprParser extends SQLExprParser {
                 "FIRST_VALUE",
                 "GROUPING",
                 "LAST_VALUE",
+                "LAG",
+                "LEAD",
                 "LOGICAL_AND",
                 "LOGICAL_OR",
                 "MAX",
@@ -108,8 +112,15 @@ public class BigQueryExprParser extends SQLExprParser {
     }
 
     protected SQLExpr parseSelectItemRest(String ident, long hash_lower) {
-        if (ident.length() > 3 && ident.charAt(0) == '`' && ident.charAt(ident.length() - 1) == '`' && ident.indexOf('.') != -1) {
+        if (ident.length() > 3
+                && ident.charAt(0) == '`'
+                && ident.charAt(ident.length() - 1) == '`'
+                && ident.indexOf('.') != -1
+        ) {
             return topPropertyExpr(ident);
+        }
+        if (hash_lower == FnvHash.Constants.ARRAY && lexer.token() == Token.LT) {
+            return parseArrayExpr(ident);
         }
         return null;
     }
@@ -134,7 +145,18 @@ public class BigQueryExprParser extends SQLExprParser {
             SQLName name;
             String str = lexer.stringVal();
             if (BQ.DIALECT.isBuiltInDataType(str)) {
-                name = null;
+                Lexer.SavePoint mark = lexer.markOut();
+                lexer.nextToken();
+                String tokenName = lexer.token() == Token.IDENTIFIER ? lexer.stringVal() : lexer.token().name;
+                if (tokenName != null
+                        && Character.isLetter(tokenName.charAt(0))
+                        && BQ.DIALECT.isBuiltInDataType(lexer.stringVal())
+                ) {
+                    name = new SQLIdentifierExpr(str);
+                } else {
+                    lexer.reset(mark);
+                    name = null;
+                }
             } else {
                 name = new SQLIdentifierExpr(str);
                 lexer.nextToken();
@@ -246,6 +268,33 @@ public class BigQueryExprParser extends SQLExprParser {
                     parseQueryExpr()
             );
         }
+
+        if (lexer.identifierEquals(FnvHash.Constants.MODEL)) {
+            Lexer.SavePoint mark = lexer.markOut();
+            lexer.nextToken();
+            if (lexer.token() == Token.IDENTIFIER) {
+                BigQueryModelExpr model = new BigQueryModelExpr();
+                model.setName(
+                        name()
+                );
+                return model;
+            } else {
+                lexer.reset(mark);
+            }
+        }
+        if (lexer.token() == Token.TABLE) {
+            Lexer.SavePoint mark = lexer.markOut();
+            lexer.nextToken();
+            if (lexer.token() == Token.IDENTIFIER) {
+                BigQueryTableExpr model = new BigQueryTableExpr();
+                model.setName(
+                        name()
+                );
+                return model;
+            } else {
+                lexer.reset(mark);
+            }
+        }
         return super.primary();
     }
 
@@ -284,12 +333,12 @@ public class BigQueryExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
 
-    public SQLDataType parseDataType() {
+    public SQLDataType parseDataType(boolean restrict) {
         if (lexer.nextIf(Token.ANY)) {
             acceptIdentifier("TYPE");
             return new SQLDataTypeImpl("ANY TYPE");
         }
-        return parseDataType(true);
+        return super.parseDataType(restrict);
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {

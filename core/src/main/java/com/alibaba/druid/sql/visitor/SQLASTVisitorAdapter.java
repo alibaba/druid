@@ -25,6 +25,10 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
         return VisitorFeature.isEnabled(this.features, feature);
     }
 
+    public final boolean isEnabled(int features, VisitorFeature feature) {
+        return VisitorFeature.isEnabled(this.features | features, feature);
+    }
+
     public void config(VisitorFeature feature, boolean state) {
         features = VisitorFeature.config(features, feature, state);
     }

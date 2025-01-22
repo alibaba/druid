@@ -23,7 +23,7 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
     }
 
     public CKOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
+        super(appender, DbType.clickhouse, parameterized);
     }
 
     @Override

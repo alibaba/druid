@@ -1,0 +1,44 @@
+select  CASE 
+			WHEN UPPER(a) = 'a' 
+			AND (SELECT b FROM UNNEST() ORDER BY c DESC LIMIT 1) = 'b' 
+			AND NOT (SELECT d FROM UNNEST(e) ORDER BY f DESC LIMIT 1) 
+			THEN 'IS' 
+			ELSE 'OTHERS'
+		END from g
+--------------------
+SELECT CASE
+		WHEN UPPER(a) = 'a'
+			AND (
+				SELECT b
+				FROM UNNEST()
+				ORDER BY c DESC
+				LIMIT 1
+			) = 'b'
+			AND NOT (
+				SELECT d
+				FROM UNNEST(e)
+				ORDER BY f DESC
+				LIMIT 1
+			)
+		THEN 'IS'
+		ELSE 'OTHERS'
+	END
+FROM g
+------------------------------------------------------------------------------------------------------------------------
+select struct(a.b, a.c as c, a.d) from a
+--------------------
+SELECT STRUCT(a.b, a.c AS c, a.d)
+FROM a
+------------------------------------------------------------------------------------------------------------------------
+select named_struct(a.b, b, a.c, c, a.d, d) from a
+--------------------
+SELECT named_struct(a.b, b, a.c, c, a.d, d)
+FROM a
+------------------------------------------------------------------------------------------------------------------------
+MERGE INTO a target
+USING b source ON a.id = b.id
+WHEN NOT MATCHED THEN INSERT *
+--------------------
+MERGE INTO a target
+USING b source ON a.id = b.id
+WHEN NOT MATCHED THEN INSERT *

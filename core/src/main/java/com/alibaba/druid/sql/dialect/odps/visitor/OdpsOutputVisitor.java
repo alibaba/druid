@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-import com.alibaba.druid.util.OdpsUtils;
+import com.alibaba.druid.util.FnvHash;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -62,7 +62,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     public OdpsOutputVisitor(StringBuilder appender) {
         super(appender, DbType.odps);
-        dialect = OdpsUtils.DIALECT;
     }
 
     @Override
@@ -1051,33 +1050,6 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         return false;
     }
 
-    public boolean visit(SQLStructExpr x) {
-        List<SQLAliasedExpr> items = x.getItems();
-        int aliasCount = 0;
-        for (int i = 0, size = items.size(); i < size; ++i) {
-            SQLAliasedExpr item = items.get(i);
-            if (item.getAlias() != null) {
-                aliasCount++;
-            }
-        }
-        if (aliasCount != items.size()) {
-            return super.visit(x);
-        }
-
-        print0(ucase ? "NAMED_STRUCT(" : "named_struct(");
-        for (int i = 0, size = items.size(); i < size; ++i) {
-            if (i != 0) {
-                print0(", ");
-            }
-            SQLAliasedExpr item = items.get(i);
-            visit(new SQLIdentifierExpr(item.getAlias()));
-            print0(", ");
-            item.getExpr().accept(this);
-        }
-        print(')');
-        return false;
-    }
-
     @Override
     public boolean visit(SQLCurrentTimeExpr x) {
         final SQLCurrentTimeExpr.Type type = x.getType();
@@ -1112,5 +1084,45 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
         }
 
         return false;
+    }
+
+    protected void printMethodParameters(SQLMethodInvokeExpr x) {
+        List<SQLExpr> arguments = x.getArguments();
+
+        boolean needPrintLine = false;
+        if (arguments.size() > 10
+                && (arguments.size() % 2) == 0
+                && (x.methodNameHashCode64() == FnvHash.Constants.NAMED_STRUCT
+                || x.methodNameHashCode64() == FnvHash.Constants.MAP)
+        ) {
+            needPrintLine = true;
+        }
+        if (needPrintLine) {
+            print0('(');
+            incrementIndent();
+            println();
+            for (int i = 0, size = arguments.size(); i < size; i += 2) {
+                if (i != 0) {
+                    print0(',');
+                    println();
+                }
+
+                SQLExpr arg0 = arguments.get(i);
+                SQLExpr arg1 = arguments.get(i + 1);
+                printExpr(arg0);
+                this.print0(", ");
+                printExpr(arg1);
+            }
+            decrementIndent();
+            println();
+            print0(')');
+            return;
+        }
+        super.printMethodParameters(x);
+    }
+
+    @Override
+    public void printMergeInsertRow() {
+        print(" *");
     }
 }

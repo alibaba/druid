@@ -120,4 +120,8 @@ public class SQLDecimalExpr extends SQLNumericLiteralExpr implements SQLValuable
     public int compareTo(SQLDecimalExpr o) {
         return value.compareTo(o.value);
     }
+
+    public SQLDecimalExpr negative() {
+        return new SQLDecimalExpr(value.negate());
+    }
 }

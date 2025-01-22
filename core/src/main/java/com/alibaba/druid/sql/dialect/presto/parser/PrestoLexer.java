@@ -36,14 +36,16 @@ public class PrestoLexer extends Lexer {
         return new Keywords(map);
     }
 
-    public PrestoLexer(String input, SQLParserFeature... features) {
-        super(input);
-        this.dbType = DbType.presto;
+    public PrestoLexer(String input, DbType dbType, SQLParserFeature... features) {
+        super(input, dbType);
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
     }
 
+    public PrestoLexer(String input, SQLParserFeature... features) {
+        this(input, DbType.presto, features);
+    }
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();

@@ -38,13 +38,11 @@ import java.util.Set;
 
 public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTVisitor, OracleASTVisitor {
     public OscarOutputVisitor(StringBuilder appender) {
-        super(appender);
-        this.dbType = DbType.oscar;
+        super(appender, DbType.oscar);
     }
 
     public OscarOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        this.dbType = DbType.oscar;
+        super(appender, DbType.oscar, parameterized);
     }
 
     @Override

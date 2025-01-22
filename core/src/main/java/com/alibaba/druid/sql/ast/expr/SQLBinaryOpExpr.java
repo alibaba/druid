@@ -625,6 +625,11 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
                         )) {
                             return new SQLDataTypeImpl("BIGING");
                         }
+
+                        if ((leftDataType.isString() && !rightDataType.isString())
+                                || (!leftDataType.isString() && rightDataType.isString())) {
+                            return null;
+                        }
                     }
 
                     return leftDataType;

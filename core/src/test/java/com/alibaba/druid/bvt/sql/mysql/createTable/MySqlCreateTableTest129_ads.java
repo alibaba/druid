@@ -104,9 +104,9 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 ")\n" +
                 "PARTITION BY HASH KEY(id)\n" +
                 "SUBPARTITION BY RANGE  (\n" +
-                "\tPARTITION p0 VALUES LESS THAN (1991), \n" +
-                "\tPARTITION p1 VALUES LESS THAN (1996), \n" +
-                "\tPARTITION p2 VALUES LESS THAN (2001), \n" +
+                "\tPARTITION p0 VALUES LESS THAN (1991),\n" +
+                "\tPARTITION p1 VALUES LESS THAN (1996),\n" +
+                "\tPARTITION p2 VALUES LESS THAN (2001),\n" +
                 "\tPARTITION p3 VALUES LESS THAN MAXVALUE\n" +
                 ")\n" +
                 "TABLEGROUP group0;", stmt.toString());
@@ -153,9 +153,9 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 ")\n" +
                 "PARTITION BY HASH KEY(id)\n" +
                 "SUBPARTITION BY LIST (store_id)  (\n" +
-                "\tPARTITION pNorth VALUES IN (3, 5, 6, 9, 17), \n" +
-                "\tPARTITION pEast VALUES IN (1, 2, 10, 11, 19, 20), \n" +
-                "\tPARTITION pWest VALUES IN (4, 12, 13, 14, 18), \n" +
+                "\tPARTITION pNorth VALUES IN (3, 5, 6, 9, 17),\n" +
+                "\tPARTITION pEast VALUES IN (1, 2, 10, 11, 19, 20),\n" +
+                "\tPARTITION pWest VALUES IN (4, 12, 13, 14, 18),\n" +
                 "\tPARTITION pCentral VALUES IN (7, 8, 15, 16)\n" +
                 ")\n" +
                 "TABLEGROUP group0;", stmt.toString());
@@ -203,9 +203,9 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 ")\n" +
                 "PARTITION BY HASH KEY(id)\n" +
                 "SUBPARTITION BY LIST (store_id)  (\n" +
-                "\tPARTITION pNorth VALUES IN (3, 5, 6, 9, 17), \n" +
-                "\tPARTITION pEast VALUES IN (1, 2, 10, 11, 19, 20), \n" +
-                "\tPARTITION pWest VALUES IN (4, 12, 13, 14, 18), \n" +
+                "\tPARTITION pNorth VALUES IN (3, 5, 6, 9, 17),\n" +
+                "\tPARTITION pEast VALUES IN (1, 2, 10, 11, 19, 20),\n" +
+                "\tPARTITION pWest VALUES IN (4, 12, 13, 14, 18),\n" +
                 "\tPARTITION pCentral VALUES IN (7, 8, 15, 16)\n" +
                 ")\n" +
                 "TABLEGROUP group0;", stmt.toString());

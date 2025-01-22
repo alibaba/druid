@@ -48,6 +48,10 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
         this.setDefaultValue(defaultValue);
     }
 
+    public SQLDataType computeDataType() {
+        return dataType;
+    }
+
     public SQLExpr getDefaultValue() {
         return defaultValue;
     }

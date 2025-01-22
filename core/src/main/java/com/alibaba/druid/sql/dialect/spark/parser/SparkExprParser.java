@@ -4,6 +4,7 @@
  */
 package com.alibaba.druid.sql.dialect.spark.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -41,12 +42,19 @@ public class SparkExprParser extends HiveExprParser {
         this.lexer.nextToken();
     }
 
+    public SparkExprParser(String sql, SQLParserFeature... features) {
+        this(new SparkLexer(sql, features));
+        this.lexer.nextToken();
+    }
     public SparkExprParser(Lexer lexer) {
-        super(lexer);
+        this(lexer, DbType.spark);
+    }
+
+    public SparkExprParser(Lexer lexer, DbType dbType) {
+        super(lexer, dbType);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
-
     public SQLExpr primaryRest(SQLExpr expr) {
         //        if(lexer.token() == Token.COLON) {
         //            lexer.nextToken();

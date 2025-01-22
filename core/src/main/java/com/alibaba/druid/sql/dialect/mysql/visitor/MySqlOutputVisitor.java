@@ -45,11 +45,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public MySqlOutputVisitor(StringBuilder appender) {
-        super(appender);
+        super(appender, DbType.mysql);
     }
 
     public MySqlOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
+        super(appender, DbType.mysql, parameterized);
 
         try {
             configFromProperty();
@@ -4471,6 +4471,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlAlterTableLock x) {
         print0(ucase ? "LOCK = " : "lock = ");
         printExpr(x.getLockType());
+        return false;
+    }
+
+    public boolean visit(MySqlAlterTableAlgorithm x) {
+        print0(ucase ? "ALGORITHM = " : "algorithm = ");
+        printExpr(x.getAlgorithmType());
         return false;
     }
 

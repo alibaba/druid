@@ -376,7 +376,36 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLRe
             }
         } else if (resolvedOwnerObject instanceof SQLExprTableSource) {
             SQLExpr expr = ((SQLExprTableSource) resolvedOwnerObject).getExpr();
-            if (expr != null) {
+            if (expr instanceof SQLName) {
+                String referencedTableName = ((SQLName) expr).getSimpleName();
+
+                SQLSelect select = null;
+                for (SQLObject parent = resolvedOwnerObject.getParent(); parent != null; parent = parent.getParent()) {
+                    if (parent instanceof SQLSelect) {
+                        select = (SQLSelect) parent;
+                        break;
+                    }
+                }
+                if (select != null) {
+                    SQLWithSubqueryClause.Entry queryEntry = select.findWithSubQueryEntry(referencedTableName);
+                    if (queryEntry != null) {
+                        SQLSelectQueryBlock firstQueryBlock = queryEntry.getSubQuery().getFirstQueryBlock();
+                        if (firstQueryBlock != null) {
+                            return firstQueryBlock.findSelectItemAndComputeDataType(this.name);
+                        }
+                        // ignore
+                    }
+
+                    for (SQLObject parent = select.getParent(); parent != null; parent = parent.getParent()) {
+                        if (parent instanceof SQLSelect) {
+                            queryEntry = ((SQLSelect) parent).findWithSubQueryEntry(referencedTableName);
+                            if (queryEntry != null) {
+                                return queryEntry.getSubQuery().findSelectItemAndComputeDataType(this.name);
+                            }
+                            break;
+                        }
+                    }
+                }
                 // skip
             }
         }

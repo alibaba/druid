@@ -1077,19 +1077,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (lexer.identifierEquals("EXECUTE")) {
-            acceptIdentifier("EXECUTE");
-
-            if (lexer.identifierEquals("RESTART") || lexer.identifierEquals("UPDATE")) {
-                MySqlExecuteForAdsStatement stmt = parseExecuteForAds();
-                statementList.add(stmt);
-            } else {
-                MySqlExecuteStatement stmt = parseExecute();
-                statementList.add(stmt);
-            }
-            return true;
-        }
-
         if (lexer.identifierEquals("DEALLOCATE")) {
             MysqlDeallocatePrepareStatement stmt = parseDeallocatePrepare();
             statementList.add(stmt);
@@ -2430,6 +2417,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         switch (dbType) {
             case mysql:
             case ads:
+            case supersql:
             case presto:
             case trino:
                 Lexer.SavePoint mark = lexer.mark();
@@ -4575,7 +4563,13 @@ public class MySqlStatementParser extends SQLStatementParser {
         return new MySqlPrepareStatement(name, from);
     }
 
-    public MySqlExecuteStatement parseExecute() {
+    @Override
+    public SQLStatement parseExecute() {
+        acceptIdentifier("EXECUTE");
+        if (lexer.identifierEquals("RESTART") || lexer.identifierEquals("UPDATE")) {
+            return parseExecuteForAds();
+        }
+
         MySqlExecuteStatement stmt = new MySqlExecuteStatement();
 
         SQLName statementName = exprParser.name();
@@ -5870,12 +5864,14 @@ public class MySqlStatementParser extends SQLStatementParser {
                     alterTableAdd(stmt);
                     return true;
                 } else if (lexer.identifierEquals(FnvHash.Constants.ALGORITHM)) {
-                    // ALGORITHM [=] {DEFAULT|INPLACE|COPY}
+                    // ALGORITHM [=] {DEFAULT | INSTANT | INPLACE | COPY}
                     lexer.nextToken();
                     if (lexer.token() == Token.EQ) {
                         lexer.nextToken();
                     }
-                    stmt.addItem(new MySqlAlterTableOption("ALGORITHM", lexer.stringVal()));
+                    MySqlAlterTableAlgorithm item = new MySqlAlterTableAlgorithm();
+                    item.setAlgorithmType(new SQLIdentifierExpr(lexer.stringVal()));
+                    stmt.addItem(item);
                     lexer.nextToken();
                     return true;
                 } else if (lexer.identifierEquals(FnvHash.Constants.CHANGE)) {
@@ -8900,6 +8896,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     /**
      * parse loop statement
      */
+    @Override
     public SQLLoopStatement parseLoop() {
         SQLLoopStatement loopStmt = new SQLLoopStatement();
         accept(Token.LOOP);

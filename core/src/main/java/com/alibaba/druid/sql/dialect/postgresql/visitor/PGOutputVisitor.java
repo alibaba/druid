@@ -41,13 +41,11 @@ import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor, OracleASTVisitor {
     public PGOutputVisitor(StringBuilder appender) {
-        super(appender);
-        this.dbType = DbType.postgresql;
+        super(appender, DbType.postgresql);
     }
 
     public PGOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        this.dbType = DbType.postgresql;
+        super(appender, DbType.postgresql, parameterized);
     }
 
     @Override
@@ -2859,14 +2857,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.isTruncate()) {
             print0(ucase ? "TRUNCATE " : "truncate ");
         }
-        if (x.isDeltaMerge()) {
-            print0(ucase ? "DELTAMERGE " : "deltamerge ");
-        }
-        if (x.isHdfsDirectory()) {
-            print0(ucase ? "HDFSDIRECTORY " : "hdfsdirectory ");
-        }
+        printVacuumRest(x);
         printAndAccept(x.getTableSources(), ", ");
         return false;
+    }
+
+    protected void printVacuumRest(PGVacuumStatement x){
     }
 
     @Override

@@ -14,9 +14,8 @@ public class SQLAdhocTableSource extends SQLTableSourceImpl {
     @Override
     protected void accept0(SQLASTVisitor v) {
         if (v.visit(this)) {
-            if (definition != null) {
-                definition.accept(v);
-            }
+            acceptChild(v, definition);
+            super.accept0(v);
         }
         v.endVisit(this);
     }

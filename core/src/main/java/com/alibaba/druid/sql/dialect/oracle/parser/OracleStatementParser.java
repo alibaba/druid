@@ -854,6 +854,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    @Override
     public SQLStatement parseExecute() {
         acceptIdentifier("EXECUTE");
 
@@ -1237,6 +1238,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    @Override
     public SQLLoopStatement parseLoop() {
         accept(Token.LOOP);
 

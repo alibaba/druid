@@ -12,6 +12,7 @@ import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGVacuumStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 
 import java.util.List;
@@ -365,5 +366,15 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
             print('\'');
         }
         return false;
+    }
+
+    @Override
+    protected void printVacuumRest(PGVacuumStatement x) {
+        if (x.isDeltaMerge()) {
+            print0(ucase ? "DELTAMERGE " : "deltamerge ");
+        }
+        if (x.isHdfsDirectory()) {
+            print0(ucase ? "HDFSDIRECTORY " : "hdfsdirectory ");
+        }
     }
 }

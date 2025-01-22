@@ -20,11 +20,16 @@ package com.alibaba.druid.sql.visitor;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryVisitor;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLAlterResourceGroupStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLCreateResourceGroupStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.SQLListResourceGroupStatement;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
@@ -115,6 +120,11 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default boolean visit(SQLTableSourceImpl x) {
+        return true;
+    }
+
+    default void endVisit(SQLTableSourceImpl x) {}
     default boolean visit(SQLBetweenExpr x) {
         return true;
     }
@@ -972,6 +982,13 @@ public interface SQLASTVisitor {
     }
 
     default boolean visit(SQLTimestampExpr x) {
+        return true;
+    }
+
+    default void endVisit(SQLTimestampNTZExpr x) {
+    }
+
+    default boolean visit(SQLTimestampNTZExpr x) {
         return true;
     }
 
@@ -2687,22 +2704,38 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExceptionStatement.Item x) {}
-    static SQLASTVisitor ofMethodInvoke(Consumer<SQLMethodInvokeExpr> p) {
-        return new SQLASTVisitor() {
-            public boolean visit(SQLMethodInvokeExpr x) {
-                p.accept(x);
-                return true;
-            }
 
-            public boolean visit(SQLAggregateExpr x) {
-                p.accept(x);
-                return true;
-            }
-        };
+    default boolean visit(SQLContinueStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLContinueStatement x) {}
+
+    default boolean visit(SQLLeaveStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLLeaveStatement x) {}
+
+    default boolean visit(SQLExecuteImmediateStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLExecuteImmediateStatement x) {}
+
+    static SQLASTVisitor ofMethodInvoke(Consumer<SQLMethodInvokeExpr> p) {
+        return ofMethodInvoke(null, p);
     }
 
     static SQLASTVisitor ofMethodInvoke(Predicate<String> filter, Consumer<SQLMethodInvokeExpr> p) {
-        return new SQLASTVisitor() {
+        class MethodInvokeVisitor implements SQLASTVisitor, BigQueryVisitor, OdpsASTVisitor, OracleASTVisitor, MySqlASTVisitor, PGASTVisitor {
+            final Predicate<String> filter;
+            final Consumer<SQLMethodInvokeExpr> p;
+            public MethodInvokeVisitor(Predicate<String> filter, Consumer<SQLMethodInvokeExpr> p) {
+                this.filter = filter;
+                this.p = p;
+            }
+
             public boolean visit(SQLMethodInvokeExpr x) {
                 if (filter == null || filter.test(x.getMethodName())) {
                     p.accept(x);
@@ -2716,7 +2749,8 @@ public interface SQLASTVisitor {
                 }
                 return true;
             }
-        };
+        }
+        return new MethodInvokeVisitor(filter, p);
     }
 
     static SQLASTVisitor ofAggregate(Consumer<SQLAggregateExpr> p) {

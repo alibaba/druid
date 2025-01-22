@@ -116,6 +116,11 @@ public class SQLSelectParser extends SQLParser {
             accept(Token.RPAREN);
         }
 
+        if (parenCount > 0 && lexer.token == Token.UNION) {
+            select.setQuery(
+                    this.queryRest(select.getQuery(), true));
+        }
+
         return select;
     }
 
@@ -438,6 +443,9 @@ public class SQLSelectParser extends SQLParser {
     protected void parseTop(SQLSelectQueryBlock x) {
     }
 
+    protected void queryBefore(SQLSelectQueryBlock x) {
+    }
+
     public SQLSelectQuery query(SQLObject parent, boolean acceptUnion) {
         if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
@@ -465,6 +473,8 @@ public class SQLSelectParser extends SQLParser {
             queryBlock.setFrom(parseTableSource());
             return queryRest(queryBlock, acceptUnion);
         }
+
+        queryBefore(queryBlock);
 
         accept(Token.SELECT);
 
@@ -1186,6 +1196,10 @@ public class SQLSelectParser extends SQLParser {
                 SQLSelectQuery query = queryRest(selectQuery, acceptUnion);
                 if (query instanceof SQLUnionQuery) {
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
+                    SQLWithSubqueryClause with = select.getWithSubQuery();
+                    if (with != null) {
+                        ((SQLUnionQuery) query).setWith(with);
+                    }
                 } else {
                     tableSource = SQLSubqueryTableSource.fixParenthesized(new SQLSubqueryTableSource(select));
                 }
@@ -1695,7 +1709,7 @@ public class SQLSelectParser extends SQLParser {
                 joinType = SQLJoinTableSource.JoinType.INNER_JOIN;
                 break;
             case JOIN:
-                lexer.nextToken();
+                lexer.nextIf(Token.JOIN);
                 joinType = natural ? SQLJoinTableSource.JoinType.NATURAL_JOIN : SQLJoinTableSource.JoinType.JOIN;
                 break;
             case COMMA:
@@ -1820,6 +1834,7 @@ public class SQLSelectParser extends SQLParser {
                     SQLTableSource unnestTableSource = parseUnnestTableSource();
                     if (unnestTableSource != null) {
                         if (lexer.identifierEquals(FnvHash.Constants.CROSS)
+                                || lexer.token == Token.CROSS
                                 || lexer.token == Token.LEFT
                                 || lexer.token == Token.RIGHT
                                 || lexer.token == Token.COMMA

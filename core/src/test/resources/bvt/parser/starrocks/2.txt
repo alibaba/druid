@@ -87,3 +87,13 @@ CREATE TABLE example_db.table_hash (
 	k4 INT NOT NULL DEFAULT "1" COMMENT 'int column'
 )
 DISTRIBUTED BY HASH (k1) BUCKETS 32
+------------------------------------------------------------------------------------------------------------------------
+insert overwrite a.b partition (p20210101)
+select
+c,
+d
+from e
+--------------------
+INSERT OVERWRITE a.b PARTITION (p20210101)
+SELECT c, d
+FROM e

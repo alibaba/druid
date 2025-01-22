@@ -39,16 +39,20 @@ import java.math.BigDecimal;
  * @since 2022-01-07
  */
 public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoASTVisitor {
-    {
-        dbType = DbType.presto;
+    public PrestoOutputVisitor(StringBuilder appender) {
+        this(appender, DbType.presto);
     }
 
-    public PrestoOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.presto);
+    public PrestoOutputVisitor(StringBuilder appender, DbType dbType) {
+        super(appender, dbType);
     }
 
     public PrestoOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
+        this(appender, DbType.presto, parameterized);
+    }
+
+    public PrestoOutputVisitor(StringBuilder appender, DbType dbType, boolean parameterized) {
+        super(appender, dbType, parameterized);
     }
 
     @Override

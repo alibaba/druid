@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateModelStatement;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryExecuteImmediateStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -138,6 +140,36 @@ public class BigQueryStatementParser extends SQLStatementParser {
         return false;
     }
 
+    @Override
+    public SQLStatement parseExecute() {
+        acceptIdentifier(FnvHash.Constants.EXECUTE);
+        acceptIdentifier("IMMEDIATE");
+
+        BigQueryExecuteImmediateStatement stmt = new BigQueryExecuteImmediateStatement();
+        stmt.setDynamicSql(
+                this.exprParser.expr()
+        );
+        if (lexer.nextIf(Token.INTO)) {
+            this.exprParser.exprList(stmt.getInto(), stmt);
+        }
+        if (lexer.nextIf(Token.USING)) {
+            for (;;) {
+                SQLExpr expr = this.exprParser.expr();
+                String alias = null;
+                if (lexer.nextIf(Token.AS)) {
+                    alias = lexer.stringVal();
+                    lexer.nextToken();
+                }
+                stmt.addUsing(expr, alias);
+                if (lexer.nextIf(Token.COMMA)) {
+                    continue;
+                }
+                break;
+            }
+        }
+        return stmt;
+    }
+
     public SQLStatement parseRaise() {
         accept(Token.RAISE);
         SQLRaiseStatement sqlRaiseStatement = new SQLRaiseStatement();
@@ -204,30 +236,56 @@ public class BigQueryStatementParser extends SQLStatementParser {
         return block;
     }
 
-    protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
-        if (lexer.token() == Token.IDENTIFIER) {
-            SQLName tableName = this.exprParser.name();
-            insertStatement.setTableName(tableName);
-
-            if (lexer.token() == Token.LITERAL_ALIAS) {
-                insertStatement.setAlias(tableAlias());
-            }
-
-            parseInsert0Hints(insertStatement, false);
-
-            if (lexer.token() == Token.IDENTIFIER) {
-                insertStatement.setAlias(lexer.stringVal());
-                lexer.nextToken();
-            }
-        }
-
-        super.parseInsert0(insertStatement, acceptSubQuery);
-    }
-
     protected void createViewAs(SQLCreateViewStatement createView) {
         if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
             exprParser.parseAssignItem(createView.getOptions(), createView);
         }
         super.createViewAs(createView);
+    }
+
+    @Override
+    protected SQLStatement parseCreateModel() {
+        accept(Token.CREATE);
+        acceptIdentifier("MODEL");
+
+        BigQueryCreateModelStatement stmt = new BigQueryCreateModelStatement();
+        if (lexer.nextIf(Token.IF)) {
+           accept(Token.NOT);
+           accept(Token.EXISTS);
+           stmt.setIfNotExists(true);
+        } else if (lexer.nextIf(Token.OR)) {
+            accept(Token.REPLACE);
+            stmt.setReplace(true);
+        }
+        stmt.setName(
+                exprParser.name()
+        );
+
+        if (lexer.nextIfIdentifier("OPTIONS")) {
+            exprParser.parseAssignItem(stmt.getOptions(), stmt);
+        }
+
+        if (lexer.nextIf(Token.AS)) {
+            accept(Token.LPAREN);
+            acceptIdentifier("TRAINING_DATA");
+            accept(Token.AS);
+            accept(Token.LPAREN);
+            stmt.setTrainingData(
+                    parseStatement0()
+            );
+            accept(Token.RPAREN);
+
+            accept(Token.COMMA);
+            acceptIdentifier("CUSTOM_HOLIDAY");
+            accept(Token.AS);
+            accept(Token.LPAREN);
+            stmt.setCustomHoliday(
+                    parseStatement0()
+            );
+            accept(Token.RPAREN);
+            accept(Token.RPAREN);
+        }
+
+        return stmt;
     }
 }

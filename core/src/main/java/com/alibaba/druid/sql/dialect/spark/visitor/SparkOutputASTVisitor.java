@@ -23,12 +23,12 @@ import java.util.Map.Entry;
  * @author peiheng.qph
  * @version $Id: SparkOutputVisitor.java, v 0.1 2018年09月17日 10:40 peiheng.qph Exp $
  */
-public class SparkOutputVisitor extends HiveOutputVisitor implements SparkVisitor {
-    public SparkOutputVisitor(StringBuilder appender, DbType dbType) {
+public class SparkOutputASTVisitor extends HiveOutputVisitor implements SparkASTVisitor {
+    public SparkOutputASTVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public SparkOutputVisitor(StringBuilder appender) {
+    public SparkOutputASTVisitor(StringBuilder appender) {
         super(appender);
     }
 

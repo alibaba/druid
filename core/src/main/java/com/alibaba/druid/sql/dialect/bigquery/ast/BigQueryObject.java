@@ -11,5 +11,5 @@ public interface BigQueryObject extends SQLObject {
         }
     }
 
-    void accept0(BigQueryVisitor visitor);
+    void accept0(BigQueryVisitor v);
 }

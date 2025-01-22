@@ -1,0 +1,112 @@
+WITH aa as (
+    select a, c from b
+)
+select all a from aa group by c having count(1) > 0 order by c desc nulls first
+limit 1
+--------------------
+WITH aa AS (
+		SELECT a, c
+		FROM b
+	)
+SELECT ALL a
+FROM aa
+GROUP BY c
+HAVING count(1) > 0
+ORDER BY c DESC NULLS FIRST
+ LIMIT 1
+------------------------------------------------------------------------------------------------------------------------
+select 
+    'organic' as tag,
+    count(distinct pd_device_id) filter(where app_time_6 is not null) app_uv,
+    sum(games) all_games
+from base_data 
+where af_status='Organic'
+--------------------
+SELECT 'organic' AS tag, count(DISTINCT pd_device_id) FILTER (WHERE app_time_6 IS NOT NULL) AS app_uv, sum(games) AS all_games
+FROM base_data
+WHERE af_status = 'Organic'
+------------------------------------------------------------------------------------------------------------------------
+insert overwrite table a partition (ymd = '${DATE_1D}')
+select
+    nvl(t1.pd_uid, t2.pd_uid) as uuid
+    ,nvl(t1.user_click_game_7d_cnt, 0) as user_click_game_7d_cnt
+    ,nvl(t2.user_playtime_1d, 0.0) as user_playtime_1d
+    ,nvl(t2.user_playtime_3d, 0.0) as user_playtime_3d
+    ,nvl(t2.user_playtime_7d, 0.0) as user_playtime_7d
+    ,nvl(t2.user_play_game_7d_cnt, 0) as user_play_game_7d_cnt
+FROM click t1
+full join play_res t2 on t1.pd_uid = t2.pd_uid
+--------------------
+INSERT OVERWRITE TABLE a PARTITION (ymd = '${DATE_1D}')
+SELECT nvl(t1.pd_uid, t2.pd_uid) AS uuid
+	, nvl(t1.user_click_game_7d_cnt, 0) AS user_click_game_7d_cnt
+	, nvl(t2.user_playtime_1d, 0.0) AS user_playtime_1d
+	, nvl(t2.user_playtime_3d, 0.0) AS user_playtime_3d
+	, nvl(t2.user_playtime_7d, 0.0) AS user_playtime_7d
+	, nvl(t2.user_play_game_7d_cnt, 0) AS user_play_game_7d_cnt
+FROM click t1
+	FULL JOIN play_res t2 ON t1.pd_uid = t2.pd_uid
+------------------------------------------------------------------------------------------------------------------------
+insert overwrite table a partition (ymd )
+select  t1.ymd
+        ,launcher_download_dnu
+        ,launcher_install_dnu
+        ,editor_install_dnu
+        ,gpark_install_dnu
+        ,pge_install_dnu
+        ,login_dnu
+        ,login_dnu_addr
+        ,login_dnu_gpark
+from b
+--------------------
+INSERT OVERWRITE TABLE a PARTITION (ymd)
+SELECT t1.ymd, launcher_download_dnu, launcher_install_dnu, editor_install_dnu, gpark_install_dnu
+	, pge_install_dnu, login_dnu, login_dnu_addr, login_dnu_gpark
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+insert into table a partition (ymd )
+select  t1.ymd
+        ,launcher_download_dnu
+        ,launcher_install_dnu
+        ,editor_install_dnu
+        ,gpark_install_dnu
+        ,pge_install_dnu
+        ,login_dnu
+        ,login_dnu_addr
+        ,login_dnu_gpark
+from b
+--------------------
+INSERT INTO a PARTITION (ymd)
+SELECT t1.ymd, launcher_download_dnu, launcher_install_dnu, editor_install_dnu, gpark_install_dnu
+	, pge_install_dnu, login_dnu, login_dnu_addr, login_dnu_gpark
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+create table if not exists gpark_dwd.dwd_game_review_publish_success_ios
+(
+    imei_type string  COMMENT '平台级新老'
+    ,imei_type_game string COMMENT '游戏级新老'
+    ,pd_country_en string COMMENT '国家名称（英文）'
+    ,pd_device_id string COMMENT '设备id'
+    ,gameid string COMMENT '游戏id'
+    ,game_tag string COMMENT '游戏类型pgc/ugc'
+    ,reviewtype bigint COMMENT '评论级别'
+) partitioned by (ymd string)
+;
+--------------------
+CREATE TABLE IF NOT EXISTS gpark_dwd.dwd_game_review_publish_success_ios (
+	imei_type string COMMENT '平台级新老',
+	imei_type_game string COMMENT '游戏级新老',
+	pd_country_en string COMMENT '国家名称（英文）',
+	pd_device_id string COMMENT '设备id',
+	gameid string COMMENT '游戏id',
+	game_tag string COMMENT '游戏类型pgc/ugc',
+	reviewtype bigint COMMENT '评论级别'
+)
+PARTITIONED BY (
+	ymd string
+);
+------------------------------------------------------------------------------------------------------------------------
+select if(gameid rlike '^[0-9]+$', 'UGC', 'PGC') from a;
+--------------------
+SELECT if(gameid RLIKE '^[0-9]+$', 'UGC', 'PGC')
+FROM a;

@@ -109,6 +109,18 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
         return parameters;
     }
 
+    public SQLParameter getParameter(String name) {
+        if (name == null) {
+            return null;
+        }
+        for (SQLParameter parameter : parameters) {
+            if (name.equals(parameter.getName().getSimpleName())) {
+                return parameter;
+            }
+        }
+        return null;
+    }
+
     public void setParameters(List<SQLParameter> parameters) {
         this.parameters = parameters;
     }

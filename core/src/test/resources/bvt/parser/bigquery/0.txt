@@ -1,6 +1,1064 @@
+select * from a unpivot(ct for type in ('1'))
+--------------------
+SELECT *
+FROM a
+UNPIVOT (ct FOR type IN ('1'))
+------------------------------------------------------------------------------------------------------------------------
+select timestamp_add(a, interval 1 millisecond) from b
+--------------------
+SELECT timestamp_add(a, INTERVAL 1 MILLISECOND)
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+merge into a as target using b as source on a.id = b.id when not matched then insert row
+--------------------
+MERGE INTO a target
+USING b source ON a.id = b.id
+WHEN NOT MATCHED THEN INSERT ROW
+------------------------------------------------------------------------------------------------------------------------
+SELECT * EXCEPT (predicted_label),
+      predicted_label AS predicted_label1
+FROM
+  ML.PREDICT(MODEL `mydataset.mymodel1`,
+    TABLE `mydataset.mytable`)
+--------------------
+SELECT * EXCEPT(predicted_label), predicted_label AS predicted_label1
+FROM ML.PREDICT(MODEL mydataset.mymodel1, TABLE mydataset.mytable)
+------------------------------------------------------------------------------------------------------------------------
+ SELECT category, weight
+FROM
+  UNNEST((
+    SELECT
+      category_weights
+    FROM
+      ML.WEIGHTS(MODEL `mydataset.mymodel`)
+    WHERE
+      processed_input = 'input_col'))
+--------------------
+SELECT category, weight
+FROM UNNEST((
+		SELECT category_weights
+		FROM ML.WEIGHTS(MODEL mydataset.mymodel)
+		WHERE processed_input = 'input_col'
+	))
+------------------------------------------------------------------------------------------------------------------------
+ SELECT 1 from a-b-c.t join a-b-c.t1
+--------------------
+SELECT 1
+FROM `a-b-c`.t
+	JOIN `a-b-c`.t1
+------------------------------------------------------------------------------------------------------------------------
+  SELECT
+    STRUCT(
+      body.acquirer,
+      body.acquirer_transaction_id,
+      body.akulaku_order_id,
+      body.bank,
+      body.bank_response_code,
+      body.batch_number,
+      body.card_type,
+      body.channel,
+      STRUCT(
+        body.g.g_transaction_id,
+        body.g.payment_option_type,
+        body.g.source,
+        body.g.payment_details
+      ) AS g,
+      body.installment_term,
+      body.is_reversal,
+      body.issuer,
+      body.issuer_transaction_id,
+    )
+from t1
+--------------------
+SELECT STRUCT(
+		body.acquirer,
+		body.acquirer_transaction_id,
+		body.akulaku_order_id,
+		body.bank,
+		body.bank_response_code,
+		body.batch_number,
+		body.card_type,
+		body.channel,
+		STRUCT(body.g.g_transaction_id, body.g.payment_option_type, body.g.source, body.g.payment_details) AS g,
+		body.installment_term,
+		body.is_reversal,
+		body.issuer,
+		body.issuer_transaction_id
+	)
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE t1
+(
+  p STRUCT<serviceName STRING, methodName STRING, resourceName STRING, sl STRUCT<currentLocations ARRAY<STRING>, ol ARRAY<STRING>>, nr INT64, status STRUCT<code INT64, message STRING, details_google_protobuf_struct ARRAY<STRUCT<zs STRUCT<zoneresource STRUCT<resourcetype STRING, scope STRUCT<scopename STRING, scopetype STRING>, resourcename STRING, project STRUCT<cd STRING>>, details STRING>>>, details_google_rpc_errorinfo ARRAY<STRUCT<reason STRING, domain STRING, metadata ARRAY<STRUCT<key STRING, value STRING>>>>>, authenticationInfo STRUCT<principalEmail STRING, authoritySelector STRING, serviceAccountKeyName STRING, serviceAccountDelegationInfo ARRAY<STRUCT<principalSubject STRING, firstPartyPrincipal STRUCT<principalEmail STRING>>>, principalSubject STRING, serviceDelegationHistory STRUCT<originalPrincipal STRING, serviceMetadata ARRAY<STRUCT<principalSubject STRING, serviceDomain STRING>>>>, authorizationInfo ARRAY<STRUCT<resource STRING, permission STRING, granted BOOL, resourceAttributes STRUCT<service STRING, name STRING, type STRING, labels ARRAY<STRUCT<key STRING, value STRING>>, uid STRING, annotations ARRAY<STRUCT<key STRING, value STRING>>, displayName STRING, createTime TIMESTAMP, updateTime TIMESTAMP, deleteTime TIMESTAMP, etag STRING, location STRING>, permissionType STRING>>, requestMetadata STRUCT<callerIp STRING, callerSuppliedUserAgent STRING, callerNetwork STRING, requestAttributes STRUCT<id STRING, method STRING, headers ARRAY<STRUCT<key STRING, value STRING>>, path STRING, host STRING, scheme STRING, query STRING, time TIMESTAMP, size INT64, protocol STRING, reason STRING, auth STRUCT<principal STRING, audiences ARRAY<STRING>, presenter STRING, accessLevels ARRAY<STRING>, credentialId STRING>>, destinationAttributes STRUCT<ip STRING, port INT64, labels ARRAY<STRUCT<key STRING, value STRING>>, principal STRING, regionCode STRING>>, requestJson STRING, metadataJson STRING, servicedata_v1_bigquery STRUCT<tableInsertRequest STRUCT<resource STRUCT<tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>, info STRUCT<friendlyName STRING, description STRING, labels ARRAY<STRUCT<key STRING, value STRING>>>, schemaJson STRING, view STRUCT<query STRING>, expireTime TIMESTAMP, createTime TIMESTAMP, truncateTime TIMESTAMP, updateTime TIMESTAMP, encryption STRUCT<kmsKeyName STRING>>>, tableUpdateRequest STRUCT<resource STRUCT<tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>, info STRUCT<friendlyName STRING, description STRING, labels ARRAY<STRUCT<key STRING, value STRING>>>, schemaJson STRING, view STRUCT<query STRING>, expireTime TIMESTAMP, createTime TIMESTAMP, truncateTime TIMESTAMP, updateTime TIMESTAMP, encryption STRUCT<kmsKeyName STRING>>>, datasetListRequest STRUCT<listAll BOOL>, datasetInsertRequest STRUCT<resource STRUCT<datasetName STRUCT<projectId STRING, datasetId STRING>, info STRUCT<friendlyName STRING, description STRING, labels ARRAY<STRUCT<key STRING, value STRING>>>, createTime TIMESTAMP, updateTime TIMESTAMP, acl STRUCT<entries ARRAY<STRUCT<role STRING, groupEmail STRING, userEmail STRING, domain STRING, specialGroup STRING, viewName STRUCT<projectId STRING, datasetId STRING, tableId STRING>>>>, defaultTableExpireDuration FLOAT64>>, datasetUpdateRequest STRUCT<resource STRUCT<datasetName STRUCT<projectId STRING, datasetId STRING>, info STRUCT<friendlyName STRING, description STRING, labels ARRAY<STRUCT<key STRING, value STRING>>>, createTime TIMESTAMP, updateTime TIMESTAMP, acl STRUCT<entries ARRAY<STRUCT<role STRING, groupEmail STRING, userEmail STRING, domain STRING, specialGroup STRING, viewName STRUCT<projectId STRING, datasetId STRING, tableId STRING>>>>, defaultTableExpireDuration FLOAT64>>, jobInsertRequest STRUCT<resource STRUCT<jobName STRUCT<projectId STRING, jobId STRING, location STRING>, jobConfiguration STRUCT<query STRUCT<query STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, defaultDataset STRUCT<projectId STRING, datasetId STRING>, tableDefinitions ARRAY<STRUCT<name STRING, sourceUris ARRAY<STRING>>>, queryPriority STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>, statementType STRING>, load STRUCT<sourceUris ARRAY<STRING>, schemaJson STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, `extract` STRUCT<destinationUris ARRAY<STRING>, sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, tableCopy STRUCT<sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, dryRun BOOL, labels ARRAY<STRUCT<key STRING, value STRING>>>, jobStatus STRUCT<state STRING, error STRUCT<code INT64, message STRING>, additionalErrors ARRAY<STRUCT<code INT64, message STRING>>>, jobStatistics STRUCT<createTime TIMESTAMP, startTime TIMESTAMP, endTime TIMESTAMP, totalProcessedBytes INT64, totalBilledBytes INT64, billingTier INT64, totalSlotMs INT64, reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>, referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalTablesProcessed INT64, referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalViewsProcessed INT64, queryOutputRowCount INT64, totalLoadOutputBytes INT64>>>, jobQueryRequest STRUCT<query STRING, maxResults INT64, defaultDataset STRUCT<projectId STRING, datasetId STRING>, projectId STRING, dryRun BOOL>, jobGetQueryResultsRequest STRUCT<maxResults INT64, startRow INT64>, tableDataListRequest STRUCT<startRow INT64, maxResults INT64>, setIamPolicyRequest STRUCT<resource STRING, policy STRUCT<version INT64, bindings ARRAY<STRUCT<role STRING, members ARRAY<STRING>, condition STRUCT<expression STRING, title STRING, description STRING, location STRING>>>, auditConfigs ARRAY<STRUCT<service STRING, auditLogConfigs ARRAY<STRUCT<logType STRING, exemptedMembers ARRAY<STRING>>>>>, etag STRING>, updateMask STRUCT<paths ARRAY<STRING>>>, tableInsertResponse STRUCT<resource STRUCT<tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>, info STRUCT<friendlyName STRING, description STRING, labels ARRAY<STRUCT<key STRING, value STRING>>>, schemaJson STRING, view STRUCT<query STRING>, expireTime TIMESTAMP, createTime TIMESTAMP, truncateTime TIMESTAMP, updateTime TIMESTAMP, encryption STRUCT<kmsKeyName STRING>>>, tableUpdateResponse STRUCT<resource STRUCT<tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>, info STRUCT<friendlyName STRING, description STRING, labels ARRAY<STRUCT<key STRING, value STRING>>>, schemaJson STRING, view STRUCT<query STRING>, expireTime TIMESTAMP, createTime TIMESTAMP, truncateTime TIMESTAMP, updateTime TIMESTAMP, encryption STRUCT<kmsKeyName STRING>>>, datasetInsertResponse STRUCT<resource STRUCT<datasetName STRUCT<projectId STRING, datasetId STRING>, info STRUCT<friendlyName STRING, description STRING, labels ARRAY<STRUCT<key STRING, value STRING>>>, createTime TIMESTAMP, updateTime TIMESTAMP, acl STRUCT<entries ARRAY<STRUCT<role STRING, groupEmail STRING, userEmail STRING, domain STRING, specialGroup STRING, viewName STRUCT<projectId STRING, datasetId STRING, tableId STRING>>>>, defaultTableExpireDuration FLOAT64>>, datasetUpdateResponse STRUCT<resource STRUCT<datasetName STRUCT<projectId STRING, datasetId STRING>, info STRUCT<friendlyName STRING, description STRING, labels ARRAY<STRUCT<key STRING, value STRING>>>, createTime TIMESTAMP, updateTime TIMESTAMP, acl STRUCT<entries ARRAY<STRUCT<role STRING, groupEmail STRING, userEmail STRING, domain STRING, specialGroup STRING, viewName STRUCT<projectId STRING, datasetId STRING, tableId STRING>>>>, defaultTableExpireDuration FLOAT64>>, jobInsertResponse STRUCT<resource STRUCT<jobName STRUCT<projectId STRING, jobId STRING, location STRING>, jobConfiguration STRUCT<query STRUCT<query STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, defaultDataset STRUCT<projectId STRING, datasetId STRING>, tableDefinitions ARRAY<STRUCT<name STRING, sourceUris ARRAY<STRING>>>, queryPriority STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>, statementType STRING>, load STRUCT<sourceUris ARRAY<STRING>, schemaJson STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, `extract` STRUCT<destinationUris ARRAY<STRING>, sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, tableCopy STRUCT<sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, dryRun BOOL, labels ARRAY<STRUCT<key STRING, value STRING>>>, jobStatus STRUCT<state STRING, error STRUCT<code INT64, message STRING>, additionalErrors ARRAY<STRUCT<code INT64, message STRING>>>, jobStatistics STRUCT<createTime TIMESTAMP, startTime TIMESTAMP, endTime TIMESTAMP, totalProcessedBytes INT64, totalBilledBytes INT64, billingTier INT64, totalSlotMs INT64, reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>, referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalTablesProcessed INT64, referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalViewsProcessed INT64, queryOutputRowCount INT64, totalLoadOutputBytes INT64>>>, jobQueryResponse STRUCT<totalResults INT64, job STRUCT<jobName STRUCT<projectId STRING, jobId STRING, location STRING>, jobConfiguration STRUCT<query STRUCT<query STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, defaultDataset STRUCT<projectId STRING, datasetId STRING>, tableDefinitions ARRAY<STRUCT<name STRING, sourceUris ARRAY<STRING>>>, queryPriority STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>, statementType STRING>, load STRUCT<sourceUris ARRAY<STRING>, schemaJson STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, `extract` STRUCT<destinationUris ARRAY<STRING>, sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, tableCopy STRUCT<sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, dryRun BOOL, labels ARRAY<STRUCT<key STRING, value STRING>>>, jobStatus STRUCT<state STRING, error STRUCT<code INT64, message STRING>, additionalErrors ARRAY<STRUCT<code INT64, message STRING>>>, jobStatistics STRUCT<createTime TIMESTAMP, startTime TIMESTAMP, endTime TIMESTAMP, totalProcessedBytes INT64, totalBilledBytes INT64, billingTier INT64, totalSlotMs INT64, reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>, referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalTablesProcessed INT64, referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalViewsProcessed INT64, queryOutputRowCount INT64, totalLoadOutputBytes INT64>>>, jobGetQueryResultsResponse STRUCT<totalResults INT64, job STRUCT<jobName STRUCT<projectId STRING, jobId STRING, location STRING>, jobConfiguration STRUCT<query STRUCT<query STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, defaultDataset STRUCT<projectId STRING, datasetId STRING>, tableDefinitions ARRAY<STRUCT<name STRING, sourceUris ARRAY<STRING>>>, queryPriority STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>, statementType STRING>, load STRUCT<sourceUris ARRAY<STRING>, schemaJson STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, `extract` STRUCT<destinationUris ARRAY<STRING>, sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, tableCopy STRUCT<sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, dryRun BOOL, labels ARRAY<STRUCT<key STRING, value STRING>>>, jobStatus STRUCT<state STRING, error STRUCT<code INT64, message STRING>, additionalErrors ARRAY<STRUCT<code INT64, message STRING>>>, jobStatistics STRUCT<createTime TIMESTAMP, startTime TIMESTAMP, endTime TIMESTAMP, totalProcessedBytes INT64, totalBilledBytes INT64, billingTier INT64, totalSlotMs INT64, reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>, referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalTablesProcessed INT64, referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalViewsProcessed INT64, queryOutputRowCount INT64, totalLoadOutputBytes INT64>>>, jobQueryDoneResponse STRUCT<job STRUCT<jobName STRUCT<projectId STRING, jobId STRING, location STRING>, jobConfiguration STRUCT<query STRUCT<query STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, defaultDataset STRUCT<projectId STRING, datasetId STRING>, tableDefinitions ARRAY<STRUCT<name STRING, sourceUris ARRAY<STRING>>>, queryPriority STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>, statementType STRING>, load STRUCT<sourceUris ARRAY<STRING>, schemaJson STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, `extract` STRUCT<destinationUris ARRAY<STRING>, sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, tableCopy STRUCT<sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, dryRun BOOL, labels ARRAY<STRUCT<key STRING, value STRING>>>, jobStatus STRUCT<state STRING, error STRUCT<code INT64, message STRING>, additionalErrors ARRAY<STRUCT<code INT64, message STRING>>>, jobStatistics STRUCT<createTime TIMESTAMP, startTime TIMESTAMP, endTime TIMESTAMP, totalProcessedBytes INT64, totalBilledBytes INT64, billingTier INT64, totalSlotMs INT64, reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>, referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalTablesProcessed INT64, referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalViewsProcessed INT64, queryOutputRowCount INT64, totalLoadOutputBytes INT64>>>, policyResponse STRUCT<version INT64, bindings ARRAY<STRUCT<role STRING, members ARRAY<STRING>, condition STRUCT<expression STRING, title STRING, description STRING, location STRING>>>, auditConfigs ARRAY<STRUCT<service STRING, auditLogConfigs ARRAY<STRUCT<logType STRING, exemptedMembers ARRAY<STRING>>>>>, etag STRING>, jobCompletedEvent STRUCT<eventName STRING, job STRUCT<jobName STRUCT<projectId STRING, jobId STRING, location STRING>, jobConfiguration STRUCT<query STRUCT<query STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, defaultDataset STRUCT<projectId STRING, datasetId STRING>, tableDefinitions ARRAY<STRUCT<name STRING, sourceUris ARRAY<STRING>>>, queryPriority STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>, statementType STRING>, load STRUCT<sourceUris ARRAY<STRING>, schemaJson STRING, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, `extract` STRUCT<destinationUris ARRAY<STRING>, sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, tableCopy STRUCT<sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>, createDisposition STRING, writeDisposition STRING, destinationTableEncryption STRUCT<kmsKeyName STRING>>, dryRun BOOL, labels ARRAY<STRUCT<key STRING, value STRING>>>, jobStatus STRUCT<state STRING, error STRUCT<code INT64, message STRING>, additionalErrors ARRAY<STRUCT<code INT64, message STRING>>>, jobStatistics STRUCT<createTime TIMESTAMP, startTime TIMESTAMP, endTime TIMESTAMP, totalProcessedBytes INT64, totalBilledBytes INT64, billingTier INT64, totalSlotMs INT64, reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>, referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalTablesProcessed INT64, referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>, totalViewsProcessed INT64, queryOutputRowCount INT64, totalLoadOutputBytes INT64>>>, tableDataReadEvents ARRAY<STRUCT<tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>, referencedFields ARRAY<STRING>>>>, responseJson STRING, servicedata_v1_iam STRUCT<policyUpdate STRUCT<version INT64, bindings ARRAY<STRUCT<role STRING, members ARRAY<STRING>, condition STRUCT<expression STRING, title STRING, description STRING, location STRING>>>, auditConfigs ARRAY<STRUCT<service STRING, auditLogConfigs ARRAY<STRUCT<logType STRING, exemptedMembers ARRAY<STRING>>>>>, etag STRING>, policyDelta STRUCT<bindingDeltas ARRAY<STRUCT<action STRING, role STRING, member STRING, condition STRUCT<expression STRING, title STRING, description STRING, location STRING>>>, auditConfigDeltas ARRAY<STRUCT<action STRING, service STRING, exemptedMember STRING, logType STRING>>>>, servicedata_v1_iam_admin STRUCT<permissionDelta STRUCT<addedPermissions ARRAY<STRING>, removedPermissions ARRAY<STRING>>>, policyViolationInfo STRUCT<orgPolicyViolationInfo STRUCT<resourceType STRING, resourceTags ARRAY<STRUCT<key STRING, value STRING>>, violationInfo ARRAY<STRUCT<constraint STRING, errorMessage STRING, checkedValue STRING, policyType STRING>>>>, servicedata_v1beta4_appengine STRUCT<setIamPolicy STRUCT<request STRUCT<resource STRING, policy STRUCT<version INT64, bindings ARRAY<STRUCT<role STRING, members ARRAY<STRING>, condition STRUCT<expression STRING, title STRING, description STRING, location STRING>>>, auditConfigs ARRAY<STRUCT<service STRING, auditLogConfigs ARRAY<STRUCT<logType STRING, exemptedMembers ARRAY<STRING>>>>>, etag STRING>, updateMask STRUCT<paths ARRAY<STRING>>>>>, servicedata_v1_appengine STRUCT<updateService STRUCT<request STRUCT<name STRING, service STRUCT<name STRING, id STRING, split STRUCT<shardBy STRING, allocations ARRAY<STRUCT<key STRING, value FLOAT64>>>, labels ARRAY<STRUCT<key STRING, value STRING>>, networkSettings STRUCT<ingressTrafficAllowed STRING>>, updateMask STRUCT<paths ARRAY<STRING>>, migrateTraffic BOOL>>, createVersion STRUCT<request STRUCT<parent STRING, version STRUCT<name STRING, id STRING, automaticScaling STRUCT<cpuUtilization STRUCT<targetUtilization FLOAT64>, maxConcurrentRequests INT64, maxIdleInstances INT64, maxTotalInstances INT64, minIdleInstances INT64, minTotalInstances INT64, requestUtilization STRUCT<targetRequestCountPerSecond INT64, targetConcurrentRequests INT64>, diskUtilization STRUCT<targetWriteBytesPerSecond INT64, targetWriteOpsPerSecond INT64, targetReadBytesPerSecond INT64, targetReadOpsPerSecond INT64>, networkUtilization STRUCT<targetSentBytesPerSecond INT64, targetSentPacketsPerSecond INT64, targetReceivedBytesPerSecond INT64, targetReceivedPacketsPerSecond INT64>, standardSchedulerSettings STRUCT<targetCpuUtilization FLOAT64, targetThroughputUtilization FLOAT64, minInstances INT64, maxInstances INT64>>, basicScaling STRUCT<maxInstances INT64>, manualScaling STRUCT<instances INT64>, inboundServices ARRAY<STRING>, instanceClass STRING, network STRUCT<forwardedPorts ARRAY<STRING>, instanceTag STRING, name STRING, subnetworkName STRING, sessionAffinity BOOL>, zones ARRAY<STRING>, resources STRUCT<cpu FLOAT64, diskGb FLOAT64, memoryGb FLOAT64, volumes ARRAY<STRUCT<name STRING, volumeType STRING, sizeGb FLOAT64>>, kmsKeyReference STRING>, runtime STRING, runtimeChannel STRING, threadsafe BOOL, vm BOOL, appEngineApis BOOL, betaSettings ARRAY<STRUCT<key STRING, value STRING>>, env STRING, servingStatus STRING, createdBy STRING, createTime TIMESTAMP, diskUsageBytes INT64, runtimeApiVersion STRING, runtimeMainExecutablePath STRING, serviceAccount STRING, handlers ARRAY<STRUCT<urlRegex STRING, staticFiles STRUCT<path STRING, uploadPathRegex STRING, httpHeaders ARRAY<STRUCT<key STRING, value STRING>>, mimeType STRING, requireMatchingFile BOOL, applicationReadable BOOL>, script STRUCT<scriptPath STRING>, apiEndpoint STRUCT<scriptPath STRING>, securityLevel STRING, login STRING, authFailAction STRING, redirectHttpResponseCode STRING>>, errorHandlers ARRAY<STRUCT<errorCode STRING, staticFile STRING, mimeType STRING>>, libraries ARRAY<STRUCT<name STRING, version STRING>>, apiConfig STRUCT<authFailAction STRING, login STRING, script STRING, securityLevel STRING, url STRING>, envVariables ARRAY<STRUCT<key STRING, value STRING>>, buildEnvVariables ARRAY<STRUCT<key STRING, value STRING>>, h STRUCT<disableHealthCheck BOOL, host STRING, ht INT64, unhealthyThreshold INT64, restartThreshold INT64>, readinessCheck STRUCT<path STRING, host STRING, failureThreshold INT64, successThreshold INT64>, livenessCheck STRUCT<path STRING, host STRING, failureThreshold INT64, successThreshold INT64>, nobuildFilesRegex STRING, deployment STRUCT<files ARRAY<STRUCT<key STRING, value STRUCT<sourceUrl STRING, sha1Sum STRING, mimeType STRING>>>, container STRUCT<image STRING>, zip STRUCT<sourceUrl STRING, filesCount INT64>, cb STRUCT<appYamlPath STRING>>, versionUrl STRING, endpointsApiService STRUCT<name STRING, configId STRING>, entrypoint STRUCT<shell STRING>, vpcAccessConnector STRUCT<name STRING, es STRING>>>>>, ro STRING>,
+  s STRUCT<file STRING, line BIGINT, function STRING>
+);
+--------------------
+CREATE TABLE t1 (
+	p STRUCT<
+		serviceName STRING,
+		methodName STRING,
+		resourceName STRING,
+		sl STRUCT<
+			currentLocations ARRAY<STRING>,
+			ol ARRAY<STRING>
+		>,
+		nr INT64,
+		status STRUCT<
+			code INT64,
+			message STRING,
+			details_google_protobuf_struct ARRAY<STRUCT<
+				zs STRUCT<
+					zoneresource STRUCT<
+						resourcetype STRING,
+						scope STRUCT<scopename STRING, scopetype STRING>,
+						resourcename STRING,
+						project STRUCT<cd STRING>
+					>,
+					details STRING
+				>
+			>>,
+			details_google_rpc_errorinfo ARRAY<STRUCT<
+				reason STRING,
+				domain STRING,
+				metadata ARRAY<STRUCT<key STRING, value STRING>>
+			>>
+		>,
+		authenticationInfo STRUCT<
+			principalEmail STRING,
+			authoritySelector STRING,
+			serviceAccountKeyName STRING,
+			serviceAccountDelegationInfo ARRAY<STRUCT<
+				principalSubject STRING,
+				firstPartyPrincipal STRUCT<principalEmail STRING>
+			>>,
+			principalSubject STRING,
+			serviceDelegationHistory STRUCT<
+				originalPrincipal STRING,
+				serviceMetadata ARRAY<STRUCT<principalSubject STRING, serviceDomain STRING>>
+			>
+		>,
+		authorizationInfo ARRAY<STRUCT<
+			resource STRING,
+			permission STRING,
+			granted BOOL,
+			resourceAttributes STRUCT<
+				service STRING,
+				name STRING,
+				type STRING,
+				labels ARRAY<STRUCT<key STRING, value STRING>>,
+				uid STRING,
+				annotations ARRAY<STRUCT<key STRING, value STRING>>,
+				displayName STRING,
+				createTime TIMESTAMP,
+				updateTime TIMESTAMP,
+				deleteTime TIMESTAMP,
+				etag STRING,
+				location STRING
+			>,
+			permissionType STRING
+		>>,
+		requestMetadata STRUCT<
+			callerIp STRING,
+			callerSuppliedUserAgent STRING,
+			callerNetwork STRING,
+			requestAttributes STRUCT<
+				id STRING,
+				method STRING,
+				headers ARRAY<STRUCT<key STRING, value STRING>>,
+				path STRING,
+				host STRING,
+				scheme STRING,
+				query STRING,
+				time TIMESTAMP,
+				size INT64,
+				protocol STRING,
+				reason STRING,
+				auth STRUCT<
+					principal STRING,
+					audiences ARRAY<STRING>,
+					presenter STRING,
+					accessLevels ARRAY<STRING>,
+					credentialId STRING
+				>
+			>,
+			destinationAttributes STRUCT<
+				ip STRING,
+				port INT64,
+				labels ARRAY<STRUCT<key STRING, value STRING>>,
+				principal STRING,
+				regionCode STRING
+			>
+		>,
+		requestJson STRING,
+		metadataJson STRING,
+		servicedata_v1_bigquery STRUCT<
+			tableInsertRequest STRUCT<
+				resource STRUCT<
+					tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+					info STRUCT<
+						friendlyName STRING,
+						description STRING,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					schemaJson STRING,
+					view STRUCT<query STRING>,
+					expireTime TIMESTAMP,
+					createTime TIMESTAMP,
+					truncateTime TIMESTAMP,
+					updateTime TIMESTAMP,
+					encryption STRUCT<kmsKeyName STRING>
+				>
+			>,
+			tableUpdateRequest STRUCT<
+				resource STRUCT<
+					tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+					info STRUCT<
+						friendlyName STRING,
+						description STRING,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					schemaJson STRING,
+					view STRUCT<query STRING>,
+					expireTime TIMESTAMP,
+					createTime TIMESTAMP,
+					truncateTime TIMESTAMP,
+					updateTime TIMESTAMP,
+					encryption STRUCT<kmsKeyName STRING>
+				>
+			>,
+			datasetListRequest STRUCT<listAll BOOL>,
+			datasetInsertRequest STRUCT<
+				resource STRUCT<
+					datasetName STRUCT<projectId STRING, datasetId STRING>,
+					info STRUCT<
+						friendlyName STRING,
+						description STRING,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					createTime TIMESTAMP,
+					updateTime TIMESTAMP,
+					acl STRUCT<
+						entries ARRAY<STRUCT<
+							role STRING,
+							groupEmail STRING,
+							userEmail STRING,
+							domain STRING,
+							specialGroup STRING,
+							viewName STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>>
+					>,
+					defaultTableExpireDuration FLOAT64
+				>
+			>,
+			datasetUpdateRequest STRUCT<
+				resource STRUCT<
+					datasetName STRUCT<projectId STRING, datasetId STRING>,
+					info STRUCT<
+						friendlyName STRING,
+						description STRING,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					createTime TIMESTAMP,
+					updateTime TIMESTAMP,
+					acl STRUCT<
+						entries ARRAY<STRUCT<
+							role STRING,
+							groupEmail STRING,
+							userEmail STRING,
+							domain STRING,
+							specialGroup STRING,
+							viewName STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>>
+					>,
+					defaultTableExpireDuration FLOAT64
+				>
+			>,
+			jobInsertRequest STRUCT<
+				resource STRUCT<
+					jobName STRUCT<projectId STRING, jobId STRING, location STRING>,
+					jobConfiguration STRUCT<
+						query STRUCT<
+							query STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							defaultDataset STRUCT<projectId STRING, datasetId STRING>,
+							tableDefinitions ARRAY<STRUCT<
+								name STRING,
+								sourceUris ARRAY<STRING>
+							>>,
+							queryPriority STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>,
+							statementType STRING
+						>,
+						load STRUCT<
+							sourceUris ARRAY<STRING>,
+							schemaJson STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						`extract` STRUCT<
+							destinationUris ARRAY<STRING>,
+							sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>,
+						tableCopy STRUCT<
+							sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						dryRun BOOL,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					jobStatus STRUCT<
+						state STRING,
+						error STRUCT<code INT64, message STRING>,
+						additionalErrors ARRAY<STRUCT<code INT64, message STRING>>
+					>,
+					jobStatistics STRUCT<
+						createTime TIMESTAMP,
+						startTime TIMESTAMP,
+						endTime TIMESTAMP,
+						totalProcessedBytes INT64,
+						totalBilledBytes INT64,
+						billingTier INT64,
+						totalSlotMs INT64,
+						reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>,
+						referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalTablesProcessed INT64,
+						referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalViewsProcessed INT64,
+						queryOutputRowCount INT64,
+						totalLoadOutputBytes INT64
+					>
+				>
+			>,
+			jobQueryRequest STRUCT<
+				query STRING,
+				maxResults INT64,
+				defaultDataset STRUCT<projectId STRING, datasetId STRING>,
+				projectId STRING,
+				dryRun BOOL
+			>,
+			jobGetQueryResultsRequest STRUCT<maxResults INT64, startRow INT64>,
+			tableDataListRequest STRUCT<startRow INT64, maxResults INT64>,
+			setIamPolicyRequest STRUCT<
+				resource STRING,
+				policy STRUCT<
+					version INT64,
+					bindings ARRAY<STRUCT<
+						role STRING,
+						members ARRAY<STRING>,
+						condition STRUCT<expression STRING, title STRING, description STRING, location STRING>
+					>>,
+					auditConfigs ARRAY<STRUCT<
+						service STRING,
+						auditLogConfigs ARRAY<STRUCT<
+							logType STRING,
+							exemptedMembers ARRAY<STRING>
+						>>
+					>>,
+					etag STRING
+				>,
+				updateMask STRUCT<
+					paths ARRAY<STRING>
+				>
+			>,
+			tableInsertResponse STRUCT<
+				resource STRUCT<
+					tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+					info STRUCT<
+						friendlyName STRING,
+						description STRING,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					schemaJson STRING,
+					view STRUCT<query STRING>,
+					expireTime TIMESTAMP,
+					createTime TIMESTAMP,
+					truncateTime TIMESTAMP,
+					updateTime TIMESTAMP,
+					encryption STRUCT<kmsKeyName STRING>
+				>
+			>,
+			tableUpdateResponse STRUCT<
+				resource STRUCT<
+					tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+					info STRUCT<
+						friendlyName STRING,
+						description STRING,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					schemaJson STRING,
+					view STRUCT<query STRING>,
+					expireTime TIMESTAMP,
+					createTime TIMESTAMP,
+					truncateTime TIMESTAMP,
+					updateTime TIMESTAMP,
+					encryption STRUCT<kmsKeyName STRING>
+				>
+			>,
+			datasetInsertResponse STRUCT<
+				resource STRUCT<
+					datasetName STRUCT<projectId STRING, datasetId STRING>,
+					info STRUCT<
+						friendlyName STRING,
+						description STRING,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					createTime TIMESTAMP,
+					updateTime TIMESTAMP,
+					acl STRUCT<
+						entries ARRAY<STRUCT<
+							role STRING,
+							groupEmail STRING,
+							userEmail STRING,
+							domain STRING,
+							specialGroup STRING,
+							viewName STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>>
+					>,
+					defaultTableExpireDuration FLOAT64
+				>
+			>,
+			datasetUpdateResponse STRUCT<
+				resource STRUCT<
+					datasetName STRUCT<projectId STRING, datasetId STRING>,
+					info STRUCT<
+						friendlyName STRING,
+						description STRING,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					createTime TIMESTAMP,
+					updateTime TIMESTAMP,
+					acl STRUCT<
+						entries ARRAY<STRUCT<
+							role STRING,
+							groupEmail STRING,
+							userEmail STRING,
+							domain STRING,
+							specialGroup STRING,
+							viewName STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>>
+					>,
+					defaultTableExpireDuration FLOAT64
+				>
+			>,
+			jobInsertResponse STRUCT<
+				resource STRUCT<
+					jobName STRUCT<projectId STRING, jobId STRING, location STRING>,
+					jobConfiguration STRUCT<
+						query STRUCT<
+							query STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							defaultDataset STRUCT<projectId STRING, datasetId STRING>,
+							tableDefinitions ARRAY<STRUCT<
+								name STRING,
+								sourceUris ARRAY<STRING>
+							>>,
+							queryPriority STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>,
+							statementType STRING
+						>,
+						load STRUCT<
+							sourceUris ARRAY<STRING>,
+							schemaJson STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						`extract` STRUCT<
+							destinationUris ARRAY<STRING>,
+							sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>,
+						tableCopy STRUCT<
+							sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						dryRun BOOL,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					jobStatus STRUCT<
+						state STRING,
+						error STRUCT<code INT64, message STRING>,
+						additionalErrors ARRAY<STRUCT<code INT64, message STRING>>
+					>,
+					jobStatistics STRUCT<
+						createTime TIMESTAMP,
+						startTime TIMESTAMP,
+						endTime TIMESTAMP,
+						totalProcessedBytes INT64,
+						totalBilledBytes INT64,
+						billingTier INT64,
+						totalSlotMs INT64,
+						reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>,
+						referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalTablesProcessed INT64,
+						referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalViewsProcessed INT64,
+						queryOutputRowCount INT64,
+						totalLoadOutputBytes INT64
+					>
+				>
+			>,
+			jobQueryResponse STRUCT<
+				totalResults INT64,
+				job STRUCT<
+					jobName STRUCT<projectId STRING, jobId STRING, location STRING>,
+					jobConfiguration STRUCT<
+						query STRUCT<
+							query STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							defaultDataset STRUCT<projectId STRING, datasetId STRING>,
+							tableDefinitions ARRAY<STRUCT<
+								name STRING,
+								sourceUris ARRAY<STRING>
+							>>,
+							queryPriority STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>,
+							statementType STRING
+						>,
+						load STRUCT<
+							sourceUris ARRAY<STRING>,
+							schemaJson STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						`extract` STRUCT<
+							destinationUris ARRAY<STRING>,
+							sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>,
+						tableCopy STRUCT<
+							sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						dryRun BOOL,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					jobStatus STRUCT<
+						state STRING,
+						error STRUCT<code INT64, message STRING>,
+						additionalErrors ARRAY<STRUCT<code INT64, message STRING>>
+					>,
+					jobStatistics STRUCT<
+						createTime TIMESTAMP,
+						startTime TIMESTAMP,
+						endTime TIMESTAMP,
+						totalProcessedBytes INT64,
+						totalBilledBytes INT64,
+						billingTier INT64,
+						totalSlotMs INT64,
+						reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>,
+						referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalTablesProcessed INT64,
+						referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalViewsProcessed INT64,
+						queryOutputRowCount INT64,
+						totalLoadOutputBytes INT64
+					>
+				>
+			>,
+			jobGetQueryResultsResponse STRUCT<
+				totalResults INT64,
+				job STRUCT<
+					jobName STRUCT<projectId STRING, jobId STRING, location STRING>,
+					jobConfiguration STRUCT<
+						query STRUCT<
+							query STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							defaultDataset STRUCT<projectId STRING, datasetId STRING>,
+							tableDefinitions ARRAY<STRUCT<
+								name STRING,
+								sourceUris ARRAY<STRING>
+							>>,
+							queryPriority STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>,
+							statementType STRING
+						>,
+						load STRUCT<
+							sourceUris ARRAY<STRING>,
+							schemaJson STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						`extract` STRUCT<
+							destinationUris ARRAY<STRING>,
+							sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>,
+						tableCopy STRUCT<
+							sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						dryRun BOOL,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					jobStatus STRUCT<
+						state STRING,
+						error STRUCT<code INT64, message STRING>,
+						additionalErrors ARRAY<STRUCT<code INT64, message STRING>>
+					>,
+					jobStatistics STRUCT<
+						createTime TIMESTAMP,
+						startTime TIMESTAMP,
+						endTime TIMESTAMP,
+						totalProcessedBytes INT64,
+						totalBilledBytes INT64,
+						billingTier INT64,
+						totalSlotMs INT64,
+						reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>,
+						referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalTablesProcessed INT64,
+						referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalViewsProcessed INT64,
+						queryOutputRowCount INT64,
+						totalLoadOutputBytes INT64
+					>
+				>
+			>,
+			jobQueryDoneResponse STRUCT<
+				job STRUCT<
+					jobName STRUCT<projectId STRING, jobId STRING, location STRING>,
+					jobConfiguration STRUCT<
+						query STRUCT<
+							query STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							defaultDataset STRUCT<projectId STRING, datasetId STRING>,
+							tableDefinitions ARRAY<STRUCT<
+								name STRING,
+								sourceUris ARRAY<STRING>
+							>>,
+							queryPriority STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>,
+							statementType STRING
+						>,
+						load STRUCT<
+							sourceUris ARRAY<STRING>,
+							schemaJson STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						`extract` STRUCT<
+							destinationUris ARRAY<STRING>,
+							sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>,
+						tableCopy STRUCT<
+							sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						dryRun BOOL,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					jobStatus STRUCT<
+						state STRING,
+						error STRUCT<code INT64, message STRING>,
+						additionalErrors ARRAY<STRUCT<code INT64, message STRING>>
+					>,
+					jobStatistics STRUCT<
+						createTime TIMESTAMP,
+						startTime TIMESTAMP,
+						endTime TIMESTAMP,
+						totalProcessedBytes INT64,
+						totalBilledBytes INT64,
+						billingTier INT64,
+						totalSlotMs INT64,
+						reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>,
+						referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalTablesProcessed INT64,
+						referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalViewsProcessed INT64,
+						queryOutputRowCount INT64,
+						totalLoadOutputBytes INT64
+					>
+				>
+			>,
+			policyResponse STRUCT<
+				version INT64,
+				bindings ARRAY<STRUCT<
+					role STRING,
+					members ARRAY<STRING>,
+					condition STRUCT<expression STRING, title STRING, description STRING, location STRING>
+				>>,
+				auditConfigs ARRAY<STRUCT<
+					service STRING,
+					auditLogConfigs ARRAY<STRUCT<
+						logType STRING,
+						exemptedMembers ARRAY<STRING>
+					>>
+				>>,
+				etag STRING
+			>,
+			jobCompletedEvent STRUCT<
+				eventName STRING,
+				job STRUCT<
+					jobName STRUCT<projectId STRING, jobId STRING, location STRING>,
+					jobConfiguration STRUCT<
+						query STRUCT<
+							query STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							defaultDataset STRUCT<projectId STRING, datasetId STRING>,
+							tableDefinitions ARRAY<STRUCT<
+								name STRING,
+								sourceUris ARRAY<STRING>
+							>>,
+							queryPriority STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>,
+							statementType STRING
+						>,
+						load STRUCT<
+							sourceUris ARRAY<STRING>,
+							schemaJson STRING,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						`extract` STRUCT<
+							destinationUris ARRAY<STRING>,
+							sourceTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>
+						>,
+						tableCopy STRUCT<
+							sourceTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+							destinationTable STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+							createDisposition STRING,
+							writeDisposition STRING,
+							destinationTableEncryption STRUCT<kmsKeyName STRING>
+						>,
+						dryRun BOOL,
+						labels ARRAY<STRUCT<key STRING, value STRING>>
+					>,
+					jobStatus STRUCT<
+						state STRING,
+						error STRUCT<code INT64, message STRING>,
+						additionalErrors ARRAY<STRUCT<code INT64, message STRING>>
+					>,
+					jobStatistics STRUCT<
+						createTime TIMESTAMP,
+						startTime TIMESTAMP,
+						endTime TIMESTAMP,
+						totalProcessedBytes INT64,
+						totalBilledBytes INT64,
+						billingTier INT64,
+						totalSlotMs INT64,
+						reservationUsage ARRAY<STRUCT<name STRING, slotMs INT64>>,
+						referencedTables ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalTablesProcessed INT64,
+						referencedViews ARRAY<STRUCT<projectId STRING, datasetId STRING, tableId STRING>>,
+						totalViewsProcessed INT64,
+						queryOutputRowCount INT64,
+						totalLoadOutputBytes INT64
+					>
+				>
+			>,
+			tableDataReadEvents ARRAY<STRUCT<
+				tableName STRUCT<projectId STRING, datasetId STRING, tableId STRING>,
+				referencedFields ARRAY<STRING>
+			>>
+		>,
+		responseJson STRING,
+		servicedata_v1_iam STRUCT<
+			policyUpdate STRUCT<
+				version INT64,
+				bindings ARRAY<STRUCT<
+					role STRING,
+					members ARRAY<STRING>,
+					condition STRUCT<expression STRING, title STRING, description STRING, location STRING>
+				>>,
+				auditConfigs ARRAY<STRUCT<
+					service STRING,
+					auditLogConfigs ARRAY<STRUCT<
+						logType STRING,
+						exemptedMembers ARRAY<STRING>
+					>>
+				>>,
+				etag STRING
+			>,
+			policyDelta STRUCT<
+				bindingDeltas ARRAY<STRUCT<
+					action STRING,
+					role STRING,
+					member STRING,
+					condition STRUCT<expression STRING, title STRING, description STRING, location STRING>
+				>>,
+				auditConfigDeltas ARRAY<STRUCT<action STRING, service STRING, exemptedMember STRING, logType STRING>>
+			>
+		>,
+		servicedata_v1_iam_admin STRUCT<
+			permissionDelta STRUCT<
+				addedPermissions ARRAY<STRING>,
+				removedPermissions ARRAY<STRING>
+			>
+		>,
+		policyViolationInfo STRUCT<
+			orgPolicyViolationInfo STRUCT<
+				resourceType STRING,
+				resourceTags ARRAY<STRUCT<key STRING, value STRING>>,
+				violationInfo ARRAY<STRUCT<constraint STRING, errorMessage STRING, checkedValue STRING, policyType STRING>>
+			>
+		>,
+		servicedata_v1beta4_appengine STRUCT<
+			setIamPolicy STRUCT<
+				request STRUCT<
+					resource STRING,
+					policy STRUCT<
+						version INT64,
+						bindings ARRAY<STRUCT<
+							role STRING,
+							members ARRAY<STRING>,
+							condition STRUCT<expression STRING, title STRING, description STRING, location STRING>
+						>>,
+						auditConfigs ARRAY<STRUCT<
+							service STRING,
+							auditLogConfigs ARRAY<STRUCT<
+								logType STRING,
+								exemptedMembers ARRAY<STRING>
+							>>
+						>>,
+						etag STRING
+					>,
+					updateMask STRUCT<
+						paths ARRAY<STRING>
+					>
+				>
+			>
+		>,
+		servicedata_v1_appengine STRUCT<
+			updateService STRUCT<
+				request STRUCT<
+					name STRING,
+					service STRUCT<
+						name STRING,
+						id STRING,
+						split STRUCT<
+							shardBy STRING,
+							allocations ARRAY<STRUCT<key STRING, value FLOAT64>>
+						>,
+						labels ARRAY<STRUCT<key STRING, value STRING>>,
+						networkSettings STRUCT<ingressTrafficAllowed STRING>
+					>,
+					updateMask STRUCT<
+						paths ARRAY<STRING>
+					>,
+					migrateTraffic BOOL
+				>
+			>,
+			createVersion STRUCT<
+				request STRUCT<
+					parent STRING,
+					version STRUCT<
+						name STRING,
+						id STRING,
+						automaticScaling STRUCT<
+							cpuUtilization STRUCT<targetUtilization FLOAT64>,
+							maxConcurrentRequests INT64,
+							maxIdleInstances INT64,
+							maxTotalInstances INT64,
+							minIdleInstances INT64,
+							minTotalInstances INT64,
+							requestUtilization STRUCT<targetRequestCountPerSecond INT64, targetConcurrentRequests INT64>,
+							diskUtilization STRUCT<targetWriteBytesPerSecond INT64, targetWriteOpsPerSecond INT64, targetReadBytesPerSecond INT64, targetReadOpsPerSecond INT64>,
+							networkUtilization STRUCT<targetSentBytesPerSecond INT64, targetSentPacketsPerSecond INT64, targetReceivedBytesPerSecond INT64, targetReceivedPacketsPerSecond INT64>,
+							standardSchedulerSettings STRUCT<targetCpuUtilization FLOAT64, targetThroughputUtilization FLOAT64, minInstances INT64, maxInstances INT64>
+						>,
+						basicScaling STRUCT<maxInstances INT64>,
+						manualScaling STRUCT<instances INT64>,
+						inboundServices ARRAY<STRING>,
+						instanceClass STRING,
+						network STRUCT<
+							forwardedPorts ARRAY<STRING>,
+							instanceTag STRING,
+							name STRING,
+							subnetworkName STRING,
+							sessionAffinity BOOL
+						>,
+						zones ARRAY<STRING>,
+						resources STRUCT<
+							cpu FLOAT64,
+							diskGb FLOAT64,
+							memoryGb FLOAT64,
+							volumes ARRAY<STRUCT<name STRING, volumeType STRING, sizeGb FLOAT64>>,
+							kmsKeyReference STRING
+						>,
+						runtime STRING,
+						runtimeChannel STRING,
+						threadsafe BOOL,
+						vm BOOL,
+						appEngineApis BOOL,
+						betaSettings ARRAY<STRUCT<key STRING, value STRING>>,
+						env STRING,
+						servingStatus STRING,
+						createdBy STRING,
+						createTime TIMESTAMP,
+						diskUsageBytes INT64,
+						runtimeApiVersion STRING,
+						runtimeMainExecutablePath STRING,
+						serviceAccount STRING,
+						handlers ARRAY<STRUCT<
+							urlRegex STRING,
+							staticFiles STRUCT<
+								path STRING,
+								uploadPathRegex STRING,
+								httpHeaders ARRAY<STRUCT<key STRING, value STRING>>,
+								mimeType STRING,
+								requireMatchingFile BOOL,
+								applicationReadable BOOL
+							>,
+							script STRUCT<scriptPath STRING>,
+							apiEndpoint STRUCT<scriptPath STRING>,
+							securityLevel STRING,
+							login STRING,
+							authFailAction STRING,
+							redirectHttpResponseCode STRING
+						>>,
+						errorHandlers ARRAY<STRUCT<errorCode STRING, staticFile STRING, mimeType STRING>>,
+						libraries ARRAY<STRUCT<name STRING, version STRING>>,
+						apiConfig STRUCT<authFailAction STRING, login STRING, script STRING, securityLevel STRING, url STRING>,
+						envVariables ARRAY<STRUCT<key STRING, value STRING>>,
+						buildEnvVariables ARRAY<STRUCT<key STRING, value STRING>>,
+						h STRUCT<disableHealthCheck BOOL, host STRING, ht INT64, unhealthyThreshold INT64, restartThreshold INT64>,
+						readinessCheck STRUCT<path STRING, host STRING, failureThreshold INT64, successThreshold INT64>,
+						livenessCheck STRUCT<path STRING, host STRING, failureThreshold INT64, successThreshold INT64>,
+						nobuildFilesRegex STRING,
+						deployment STRUCT<
+							files ARRAY<STRUCT<
+								key STRING,
+								value STRUCT<sourceUrl STRING, sha1Sum STRING, mimeType STRING>
+							>>,
+							container STRUCT<image STRING>,
+							zip STRUCT<sourceUrl STRING, filesCount INT64>,
+							cb STRUCT<appYamlPath STRING>
+						>,
+						versionUrl STRING,
+						endpointsApiService STRUCT<name STRING, configId STRING>,
+						entrypoint STRUCT<shell STRING>,
+						vpcAccessConnector STRUCT<name STRING, es STRING>
+					>
+				>
+			>
+		>,
+		ro STRING
+	>,
+	s STRUCT<file STRING, line BIGINT, function STRING>
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE MODEL  m0
+OPTIONS(
+  MODEL_TYPE='ARIMA_PLUS'
+  ,TIME_SERIES_TIMESTAMP_COL='partition_date'
+  ,TIME_SERIES_DATA_COL='increment'
+  ,SEASONALITIES=['WEEKLY']
+  ) AS (
+    training_data AS (
+      SELECT partition_date
+      FROM t1
+    ),
+    custom_holiday AS (
+      SELECT DISTINCT region
+      FROM t2
+    )
+  );
+--------------------
+CREATE MODEL m0
+OPTIONS (
+	MODEL_TYPE = 'ARIMA_PLUS',
+	TIME_SERIES_TIMESTAMP_COL = 'partition_date',
+	TIME_SERIES_DATA_COL = 'increment',
+	SEASONALITIES = ['WEEKLY']
+)
+AS (
+	TRAINING_DATA AS (
+		SELECT partition_date
+		FROM t1
+	),
+	CUSTOM_HOLIDAY AS (
+		SELECT DISTINCT region
+		FROM t2
+	)
+);
+------------------------------------------------------------------------------------------------------------------------
+LOOP
+  SET x = x + 1;
+  IF x >= 10 THEN
+    LEAVE;
+  END IF;
+END LOOP;
+--------------------
+LOOP
+	SET x = x + 1;
+	IF x >= 10
+		THEN
+		LEAVE;
+	END IF;
+END LOOP;
+------------------------------------------------------------------------------------------------------------------------
+CONTINUE;
+--------------------
+CONTINUE;
+------------------------------------------------------------------------------------------------------------------------
+EXECUTE IMMEDIATE "SELECT @a * (@b + 2)" INTO y USING 1 as a, 3 as b;
+--------------------
+EXECUTE IMMEDIATE 'SELECT @a * (@b + 2)' INTO y USING 1 AS a, 3 AS b;
+------------------------------------------------------------------------------------------------------------------------
+EXECUTE IMMEDIATE "SELECT ? * (? + 2)" INTO y USING 1, 3;
+--------------------
+EXECUTE IMMEDIATE 'SELECT ? * (? + 2)' INTO y USING 1, 3;
+------------------------------------------------------------------------------------------------------------------------
+EXECUTE IMMEDIATE "DELETE FROM t1 WHERE x_audit_date = ?" USING audit_date;
+--------------------
+EXECUTE IMMEDIATE 'DELETE FROM t1 WHERE x_audit_date = ?' USING audit_date;
+------------------------------------------------------------------------------------------------------------------------
+SELECT ARRAY<STRUCT<
+          id INT64,
+          name STRING,
+          promo_id STRING,
+          quantity FLOAT64,
+          price FLOAT64
+        >>[(
+          SAFE_CAST(NULL AS INT64),
+          SAFE_CAST(NULL AS STRING),
+          SAFE_CAST(NULL AS STRING),
+          SAFE_CAST(NULL AS FLOAT64),
+          SAFE_CAST(NULL AS FLOAT64)
+        )]
+--------------------
+SELECT ARRAY<STRUCT<id INT64, name STRING, promo_id STRING, quantity FLOAT64, price FLOAT64>>[(SAFE_CAST(NULL AS INT64), SAFE_CAST(NULL AS STRING), SAFE_CAST(NULL AS STRING), SAFE_CAST(NULL AS FLOAT64), SAFE_CAST(NULL AS FLOAT64))]
+------------------------------------------------------------------------------------------------------------------------
 SELECT CAST(null as STRUCT<ARRAY<STRUCT<INT64, STRING>>>)
 --------------------
-SELECT CAST(NULL AS STRUCT<ARRAY<STRUCT<INT64, STRING>>>)
+SELECT CAST(NULL AS STRUCT<
+		ARRAY<STRUCT<INT64, STRING>>
+	>)
 ------------------------------------------------------------------------------------------------------------------------
 SELECT `a-b-c-d-e.udfs.st`(1);
 --------------------

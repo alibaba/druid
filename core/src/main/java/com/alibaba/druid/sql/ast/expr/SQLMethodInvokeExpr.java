@@ -33,6 +33,7 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
     protected String methodName;
     protected long methodNameHashCode64;
+    protected long hashCode64;
     protected SQLExpr owner;
     protected SQLExpr from;
     protected SQLExpr using;
@@ -85,6 +86,33 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             methodNameHashCode64 = FnvHash.hashCode64(methodName);
         }
         return methodNameHashCode64;
+    }
+
+    public long hashCode64() {
+        if (hashCode64 == 0) {
+            computeHashCode64();
+        }
+
+        return hashCode64;
+    }
+
+    protected void computeHashCode64() {
+        long hash;
+        if (owner instanceof SQLName) {
+            hash = ((SQLName) owner).hashCode64();
+
+            hash ^= '.';
+            hash *= FnvHash.PRIME;
+        } else if (owner == null) {
+            hash = FnvHash.BASIC;
+        } else {
+            hash = FnvHash.fnv1a_64_lower(owner.toString());
+
+            hash ^= '.';
+            hash *= FnvHash.PRIME;
+        }
+        hash = FnvHash.hashCode64(hash, methodName);
+        hashCode64 = hash;
     }
 
     public String getMethodName() {
@@ -140,6 +168,12 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             arg.setParent(this);
         }
         this.arguments.add(arg);
+    }
+
+    public void addArguments(List<SQLExpr> args) {
+        for (SQLExpr arg : args) {
+            addArgument(arg);
+        }
     }
 
     public SQLExpr getOwner() {

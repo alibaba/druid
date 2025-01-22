@@ -24,6 +24,7 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
             acceptChild(v, items);
             acceptChild(v, columns);
             acceptChild(v, offset);
+            super.accept0(v);
         }
         v.endVisit(this);
     }
@@ -52,6 +53,10 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
     public void addItem(SQLExpr item) {
         item.setParent(this);
         this.items.add(item);
+    }
+
+    public void setItem(int i, SQLExpr item) {
+        this.items.set(i, item);
     }
 
     public SQLExpr getOffset() {

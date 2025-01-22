@@ -44,6 +44,34 @@ SET tbl.x1 = oba.x2, tbl.x3 = oba.x4, tbl.x5 = oba.x6, tbl.x7 = oba.x8, tbl.x9 =
 FROM (
 		SELECT y1 AS z1, y2 AS z2
 		FROM (
+			WITH a1 AS (
+					SELECT t1.y3 AS y4, t1.y5 AS y6
+					FROM a.b.c t1
+						LEFT JOIN UNNEST(t1.y7) AS oba
+					WHERE LOWER(t1.y6) = 'completed'
+				),
+				a2 AS (
+					SELECT x1 AS x2, x3 AS x4, x5 AS x6
+					FROM tbl1
+					WHERE rn = 1
+						AND x5 = 'SUCCESS'
+				),
+				all_data AS (
+					SELECT t
+					FROM a.b.c tbl
+						JOIN (
+							SELECT _PARTITIONDATE AS dt, x1 AS y19, x2 AS y20, x3 AS y21, x4 AS y22
+								, x5 AS y23, x6 AS y24, x7 AS y25, x8 AS y26, x9 AS y27
+							FROM a.b.e
+							WHERE x9 = 'ID'
+						) temp3
+						ON tbl.y4 = temp3.y4
+				),
+				diff AS (
+					SELECT *
+					FROM all_data
+					WHERE y2 != y3
+				)
 			SELECT *
 			FROM all_data
 			UNION ALL
@@ -71,3 +99,8 @@ x.y.z
 UPDATE a.b.c tbl
 SET tbl.x1 = oba.x2, tbl.x3 = oba.x4, tbl.x5 = oba.x6, tbl.x7 = oba.x8, tbl.x9 = oba.x10, tbl.x11 = oba.x12, tbl.x13 = oba.x14
 FROM x.y.z
+------------------------------------------------------------------------------------------------------------------------
+select b from t, unnest(a) c1 with offset as c2
+--------------------
+SELECT b
+FROM t, UNNEST(a) AS c1 WITH OFFSET AS c2

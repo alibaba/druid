@@ -67,11 +67,14 @@ public class PrestoExprParser extends SQLExprParser {
         this.lexer.nextToken();
     }
 
-    public PrestoExprParser(Lexer lexer) {
-        super(lexer);
-        dbType = DbType.presto;
+    public PrestoExprParser(Lexer lexer, DbType dbType) {
+        super(lexer, dbType);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
+    }
+
+    public PrestoExprParser(Lexer lexer) {
+        this(lexer, DbType.presto);
     }
 
     @Override

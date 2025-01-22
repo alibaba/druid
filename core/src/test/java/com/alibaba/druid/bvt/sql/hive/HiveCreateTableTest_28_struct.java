@@ -60,7 +60,13 @@ public class HiveCreateTableTest_28_struct extends OracleTest {
 
             assertEquals("CREATE EXTERNAL TABLE `json_table_1` (\n" +
                     "\t`docid` string COMMENT 'from deserializer',\n" +
-                    "\t`user_1` STRUCT<id:int, username:string, name:string, shippingaddress:STRUCT<address1:string, address2:string, city:string, state:string>, orders:ARRAY<STRUCT<itemid:int, orderdate:string>>> COMMENT 'from deserializer'\n" +
+                    "\t`user_1` STRUCT<\n" +
+                    "\t\tid:int,\n" +
+                    "\t\tusername:string,\n" +
+                    "\t\tname:string,\n" +
+                    "\t\tshippingaddress:STRUCT<address1:string, address2:string, city:string, state:string>,\n" +
+                    "\t\torders:ARRAY<STRUCT<itemid:int, orderdate:string>>\n" +
+                    "\t> COMMENT 'from deserializer'\n" +
                     ")\n" +
                     "ROW FORMAT\n" +
                     "\tSERDE 'org.apache.hive.hcatalog.data.JsonSerDe'\n" +
