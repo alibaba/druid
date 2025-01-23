@@ -34,6 +34,8 @@ public class DorisLexer
         map.put("FALSE", Token.FALSE);
         map.put("FORCE", Token.FORCE);
         map.put("KILL", Token.KILL);
+        map.put("BITMAP", Token.BITMAP);
+        map.put("INVERTED", Token.INVERTED);
 
         map.put("TRUE", Token.TRUE);
         map.put("SHOW", Token.SHOW);

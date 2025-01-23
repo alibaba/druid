@@ -322,6 +322,10 @@ public enum Token {
     ADD("ADD"),
     BOTH("BOTH"),
     FORCE("FORCE"),
+    BITMAP("BITMAP"),
+    NGRAMBF("NGRAMBF"),
+    // Doris
+    INVERTED("INVERTED"),
     // Redshift
     ENCODE("ENCODE"),
     DISTSTYLE("DISTSTYLE"),
