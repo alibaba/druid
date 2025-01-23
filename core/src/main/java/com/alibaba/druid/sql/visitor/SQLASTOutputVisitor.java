@@ -3217,17 +3217,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        SQLPivot pivot = x.getPivot();
-        if (pivot != null) {
-            println();
-            pivot.accept(this);
-        }
+        printPivot(x.getPivot());
 
-        SQLUnpivot unpivot = x.getUnpivot();
-        if (unpivot != null) {
-            println();
-            unpivot.accept(this);
-        }
+        printUnpivot(x.getUnpivot());
 
         if (isPrettyFormat() && x.hasAfterComment()) {
             print(' ');
@@ -3235,6 +3227,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         return false;
+    }
+
+    protected void printPivot(SQLPivot pivot) {
+        if (pivot != null) {
+            println();
+            pivot.accept(this);
+        }
+    }
+
+    protected void printUnpivot(SQLUnpivot unpivot) {
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
+        }
     }
 
     public boolean visit(SQLSelectStatement stmt) {
@@ -4625,6 +4631,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         this.indentCount--;
 
+        printPivot(x.getPivot());
+        printUnpivot(x.getUnpivot());
         return false;
     }
 
@@ -4932,17 +4940,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        SQLPivot pivot = x.getPivot();
-        if (pivot != null) {
-            println();
-            pivot.accept(this);
-        }
+        printPivot(x.getPivot());
 
-        SQLUnpivot unpivot = x.getUnpivot();
-        if (unpivot != null) {
-            println();
-            unpivot.accept(this);
-        }
+        printUnpivot(x.getUnpivot());
 
         if (isPrettyFormat() && x.hasAfterComment()) {
             print(' ');
@@ -4987,7 +4987,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " WITH OFFSET AS " : " with offset as ");
             x.getOffset().accept(this);
         }
-
+        printPivot(x.getPivot());
+        printUnpivot(x.getUnpivot());
         return false;
     }
 
@@ -5020,6 +5021,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
             print(')');
         }
+        printPivot(x.getPivot());
+        printUnpivot(x.getUnpivot());
         return false;
     }
 
@@ -7081,6 +7084,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
             print0(alias);
         }
+        printPivot(x.getPivot());
+        printUnpivot(x.getUnpivot());
 
         return false;
     }
