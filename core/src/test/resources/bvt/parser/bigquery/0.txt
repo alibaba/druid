@@ -1,3 +1,30 @@
+SELECT *
+FROM (
+    SELECT a
+    FROM b
+    UNION ALL
+    SELECT a
+    FROM d
+)
+PIVOT (
+  SUM(a)
+  FOR a in (
+    '1'
+  )
+)
+ORDER BY a
+--------------------
+SELECT *
+FROM (
+	SELECT a
+	FROM b
+	UNION ALL
+	SELECT a
+	FROM d
+)
+PIVOT (SUM(a) FOR a IN ('1'))
+ORDER BY a
+------------------------------------------------------------------------------------------------------------------------
 select * from a unpivot(ct for type in ('1'))
 --------------------
 SELECT *
