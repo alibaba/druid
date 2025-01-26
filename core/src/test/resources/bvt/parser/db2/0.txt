@@ -24,4 +24,4 @@ DROP SCHEMA IF EXISTS abc1 CASCADE
 ------------------------------------------------------------------------------------------------------------------------
 TRUNCATE abc IMMEDIATE
 --------------------
-TRUNCATE abc IMMEDIATE
+TRUNCATE TABLE abc IMMEDIATE
