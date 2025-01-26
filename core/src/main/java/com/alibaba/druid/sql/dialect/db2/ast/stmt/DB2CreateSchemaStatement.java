@@ -29,6 +29,10 @@ public class DB2CreateSchemaStatement extends SQLStatementImpl implements DB2Sta
     private SQLName schemaName;
     private List<SQLCreateStatement> createStatements = new ArrayList<>();
 
+    public SQLName getName() {
+        return this.getSchemaName();
+    }
+
     public SQLName getSchemaName() {
         return schemaName;
     }

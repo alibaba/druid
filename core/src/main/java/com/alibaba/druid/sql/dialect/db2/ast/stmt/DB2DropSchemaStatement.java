@@ -28,6 +28,10 @@ public class DB2DropSchemaStatement extends SQLStatementImpl implements DB2State
     private boolean restrict;
     private boolean cascade;
 
+    public SQLName getName() {
+        return this.getSchemaName();
+    }
+
     public SQLName getSchemaName() {
         return schemaName;
     }
