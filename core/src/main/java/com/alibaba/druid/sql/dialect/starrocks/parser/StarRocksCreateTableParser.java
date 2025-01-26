@@ -116,7 +116,16 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             srStmt.setComment(comment);
         }
 
-        stmt.setPartitionBy(parsePartitionBy());
+        if (lexer.nextIfIdentifier("AUTO")) {
+            SQLPartitionBy partitionBy = this.parsePartitionBy();
+            if (partitionBy != null) {
+                partitionBy.setAuto(true);
+            }
+            stmt.setPartitionBy(partitionBy);
+        } else {
+            stmt.setPartitionBy(this.parsePartitionBy());
+        }
+
         // Distributed by.
         if (lexer.nextIfIdentifier(FnvHash.Constants.DISTRIBUTED)) {
             accept(Token.BY);
