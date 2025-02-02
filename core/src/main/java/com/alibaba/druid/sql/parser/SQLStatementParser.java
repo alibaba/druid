@@ -4973,7 +4973,7 @@ public class SQLStatementParser extends SQLParser {
 
         lexer.nextIfIdentifier(Constants.GLOBAL);
 
-        if (lexer.nextIfIdentifier(Constants.TEMPORARY)) {
+        if (lexer.nextIfIdentifier(Constants.TEMPORARY) || lexer.nextIfIdentifier("TEMP")) {
             createView.setTemporary(true);
         }
 
