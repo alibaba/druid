@@ -2722,6 +2722,12 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExecuteImmediateStatement x) {}
+    default boolean visit(SQLRefreshTableStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLRefreshTableStatement x) {
+    }
 
     static SQLASTVisitor ofMethodInvoke(Consumer<SQLMethodInvokeExpr> p) {
         return ofMethodInvoke(null, p);

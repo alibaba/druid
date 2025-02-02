@@ -5593,7 +5593,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         this.indentCount--;
-
+        if (x.isTemporary()) {
+            print0(ucase ? "TEMP " : "temp ");
+        }
         print0(ucase ? "VIEW " : "view ");
 
         if (x.isIfNotExists()) {
@@ -10778,6 +10780,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    @Override
+    public boolean visit(SQLRefreshTableStatement x) {
+        print0(ucase ? "REFRESH TABLE " : "refresh table ");
+        x.getName().accept(this);
+        return false;
+    }
     @Override
     public boolean visit(SQLExtractExpr x) {
         print0(ucase ? "EXTRACT(" : "extract(");
