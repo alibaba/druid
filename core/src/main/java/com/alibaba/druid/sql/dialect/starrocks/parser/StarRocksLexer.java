@@ -23,6 +23,8 @@ public class StarRocksLexer extends Lexer {
         map.put("FORCE", Token.FORCE);
         map.put("IF", Token.IF);
         map.put("KILL", Token.KILL);
+        map.put("BITMAP", Token.BITMAP);
+        map.put("NGRAMBF", Token.NGRAMBF);
 
         map.put("TRUE", Token.TRUE);
         map.put("SHOW", Token.SHOW);
