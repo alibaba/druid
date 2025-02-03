@@ -10664,6 +10664,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printCreateTableFeatures(SQLCreateTableStatement x) {
+        if (x.isEnabled(SQLCreateTableStatement.Feature.OrReplace)) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
         SQLCreateTableStatement.Feature[] features = {
                 SQLCreateTableStatement.Feature.Global,
                 SQLCreateTableStatement.Feature.Local,
@@ -10681,10 +10684,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? name.toUpperCase() : name.toLowerCase());
                 print(' ');
             }
-        }
-
-        if (x.isEnabled(SQLCreateTableStatement.Feature.OrReplace)) {
-            print0(ucase ? "OR REPLACE " : "or replace ");
         }
     }
 

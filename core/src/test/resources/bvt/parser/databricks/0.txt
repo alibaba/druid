@@ -1,3 +1,10 @@
+create or replace temp table c as select a from b
+--------------------
+CREATE OR REPLACE TEMPORARY TABLE c
+AS
+SELECT a
+FROM b
+------------------------------------------------------------------------------------------------------------------------
 refresh table mc_power_insight_dm_ngbi_uat.dm_td_institution;
 --------------------
 REFRESH TABLE mc_power_insight_dm_ngbi_uat.dm_td_institution;
