@@ -119,3 +119,27 @@ SELECT * EXCEPT(c2.b, c2.a) FROM VALUES(1, named_struct('a', 2, 'b', 3)) AS t(c1
 --------------------
 SELECT * EXCEPT(c2.b, c2.a)
 FROM (VALUES (1, named_struct('a', 2, 'b', 3))) AS t (c1, c2);
+------------------------------------------------------------------------------------------------------------------------
+create or replace table mc_tmp_ngbi_uat.tmp_dm_tf_performance_territory_inst_full 
+with tmp1 as (
+select * from t1),
+tmp2 as
+(
+select * from t2
+)
+select a from tmp1 join tmp2 on tmp1.a = tmp2.a;
+--------------------
+CREATE OR REPLACE TABLE mc_tmp_ngbi_uat.tmp_dm_tf_performance_territory_inst_full
+AS
+WITH tmp1 AS (
+		SELECT *
+		FROM t1
+	),
+	tmp2 AS (
+		SELECT *
+		FROM t2
+	)
+SELECT a
+FROM tmp1
+	JOIN tmp2 ON tmp1.a = tmp2.a;
+
