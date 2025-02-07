@@ -28,7 +28,7 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.Collection;
 import java.util.List;
 
-import static com.alibaba.druid.sql.parser.Token.LITERAL_ALIAS;
+import static com.alibaba.druid.sql.parser.Token.*;
 
 public class SQLServerStatementParser extends SQLStatementParser {
     public SQLServerStatementParser(String sql) {
@@ -634,5 +634,75 @@ public class SQLServerStatementParser extends SQLStatementParser {
             return;
         }
         throw new ParserException("TODO " + lexer.info());
+    }
+
+    @Override
+    public SQLServerDropSchemaStatement parseDropSchema(boolean physical) {
+        SQLServerDropSchemaStatement stmt = new SQLServerDropSchemaStatement();
+
+        if (lexer.token() == Token.SCHEMA) {
+            lexer.nextToken();
+        } else {
+            accept(Token.DATABASE);
+        }
+
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+
+        SQLName name = this.exprParser.name();
+        stmt.setSchemaName(name);
+
+
+        return stmt;
+    }
+
+    @Override
+    public SQLServerCreateSchemaStatement parseCreateSchema() {
+        accept(Token.CREATE);
+        accept(Token.SCHEMA);
+
+        SQLServerCreateSchemaStatement stmt = new SQLServerCreateSchemaStatement();
+
+        if (lexer.token() == Token.IDENTIFIER) {
+            if (lexer.identifierEquals("AUTHORIZATION")) {
+                lexer.nextToken();
+                stmt.setAuthorization(true);
+
+                SQLIdentifierExpr userName = (SQLIdentifierExpr) this.exprParser.expr();
+                stmt.setUserName(userName);
+            } else {
+                stmt.setSchemaName(this.exprParser.name());
+
+                if (lexer.identifierEquals("AUTHORIZATION")) {
+                    lexer.nextToken();
+                    stmt.setAuthorization(true);
+
+                    SQLIdentifierExpr userName = (SQLIdentifierExpr) this.exprParser.expr();
+                    stmt.setUserName(userName);
+                }
+            }
+        }
+
+        while (lexer.token() != SEMI && !lexer.isEOF()) {
+            if (lexer.token() == Token.CREATE) {
+                Lexer.SavePoint mark = lexer.markOut();
+                lexer.nextToken();
+                if (lexer.token() == Token.TABLE) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatements().add(this.parseCreateTable());
+                    continue;
+                } else if (lexer.token() == VIEW) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatements().add(this.parseCreateView());
+                    continue;
+                }
+            }
+            throw new ParserException("syntax error. " + lexer.info());
+        }
+
+        return stmt;
     }
 }

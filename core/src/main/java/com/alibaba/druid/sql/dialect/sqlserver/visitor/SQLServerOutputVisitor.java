@@ -297,6 +297,44 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
+    public boolean visit(SQLServerCreateSchemaStatement x) {
+        print0(ucase ? "CREATE SCHEMA " : "create schema ");
+
+        if (x.getSchemaName() != null) {
+            x.getSchemaName().accept(this);
+        }
+        if (x.isAuthorization()) {
+            printUcase("AUTHORIZATION ");
+            x.getUserName().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLServerDropSchemaStatement x) {
+        printUcase("DROP SCHEMA ");
+        if (x.isIfExists()) {
+            printUcase("IF EXISTS ");
+        }
+        x.getSchemaName().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        int curLen = this.appender.length();
+        if (curLen > 0) {
+            char c = this.appender.charAt(curLen - 1);
+            if (!(c == ' ' || c == '\t' || c == '\n' || c == '\r')) {
+                this.appender.append(" ");
+            }
+        }
+
+        return super.visit(x);
+    }
+
+    @Override
     public boolean visit(SQLServerOutput x) {
         print0(ucase ? "OUTPUT " : "output ");
         printSelectList(x.getSelectList());
