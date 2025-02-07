@@ -73,9 +73,20 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
             if (lexer.token() == Token.USING) {
                 lexer.nextToken();
-                if (lexer.identifierEquals(FnvHash.Constants.BITMAP)) {
+                if (lexer.token() == Token.BITMAP) {
                     lexer.nextToken();
-                    index.setUsingBitmap(true);
+                    index.setIndexType("BITMAP");
+                } else if (lexer.token() == Token.NGRAMBF) {
+                    lexer.nextToken();
+                    index.setIndexType("NGRAMBF");
+                    if (lexer.token() == Token.LPAREN) {
+                        accept(Token.LPAREN);
+                        parseAssignItems(index.getIndexOption(), createTable, false);
+                        accept(Token.RPAREN);
+                    }
+                } else if (lexer.token() == Token.INVERTED) {
+                    lexer.nextToken();
+                    index.setIndexType("INVERTED");
                 }
             }
             if (lexer.token() == Token.COMMENT) {
@@ -86,6 +97,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             createTable.getTableElementList().add(index);
         }
     }
+
     public void parseCreateTableRest(SQLCreateTableStatement stmt) {
         StarRocksCreateTableStatement srStmt = (StarRocksCreateTableStatement) stmt;
 
@@ -104,7 +116,16 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             srStmt.setComment(comment);
         }
 
-        stmt.setPartitionBy(parsePartitionBy());
+        if (lexer.nextIfIdentifier("AUTO")) {
+            SQLPartitionBy partitionBy = this.parsePartitionBy();
+            if (partitionBy != null) {
+                partitionBy.setAuto(true);
+            }
+            stmt.setPartitionBy(partitionBy);
+        } else {
+            stmt.setPartitionBy(this.parsePartitionBy());
+        }
+
         // Distributed by.
         if (lexer.nextIfIdentifier(FnvHash.Constants.DISTRIBUTED)) {
             accept(Token.BY);
@@ -145,10 +166,11 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
     }
 
     /**
-     *  PARTITION BY RANGE (col1[,col2])
-     *  PARTITION BY LIST (col1[,col2])
-     *  PARTITION BY (col1[,col2])
-     *  PARTITION BY FUNC(param1[,param2])
+     * PARTITION BY RANGE (col1[,col2])
+     * PARTITION BY LIST (col1[,col2])
+     * PARTITION BY (col1[,col2])
+     * PARTITION BY FUNC(param1[,param2])
+     *
      * @return
      */
     public SQLPartitionBy parsePartitionBy() {
@@ -174,7 +196,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             for (; ; ) {
                 partitionClause.addColumn(this.exprParser.expr());
                 if (lexer.nextIf(Token.COMMA)) {
-                 continue;
+                    continue;
                 }
                 break;
             }

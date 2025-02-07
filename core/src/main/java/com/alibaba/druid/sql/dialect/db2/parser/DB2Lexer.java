@@ -43,6 +43,10 @@ public class DB2Lexer extends Lexer {
         map.put("MERGE", Token.MERGE);
         map.put("USING", Token.USING);
         map.put("MATCHED", Token.MATCHED);
+        map.put("IF", Token.IF);
+        map.put("EXISTS", Token.EXISTS);
+        map.put("RESTRICT", Token.RESTRICT);
+        map.put("CASCADE", Token.CASCADE);
 
         return new Keywords(map);
     }

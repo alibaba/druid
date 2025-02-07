@@ -3217,17 +3217,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        SQLPivot pivot = x.getPivot();
-        if (pivot != null) {
-            println();
-            pivot.accept(this);
-        }
+        printPivot(x.getPivot());
 
-        SQLUnpivot unpivot = x.getUnpivot();
-        if (unpivot != null) {
-            println();
-            unpivot.accept(this);
-        }
+        printUnpivot(x.getUnpivot());
 
         if (isPrettyFormat() && x.hasAfterComment()) {
             print(' ');
@@ -3235,6 +3227,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         return false;
+    }
+
+    protected void printPivot(SQLPivot pivot) {
+        if (pivot != null) {
+            println();
+            pivot.accept(this);
+        }
+    }
+
+    protected void printUnpivot(SQLUnpivot unpivot) {
+        if (unpivot != null) {
+            println();
+            unpivot.accept(this);
+        }
     }
 
     public boolean visit(SQLSelectStatement stmt) {
@@ -4625,6 +4631,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         this.indentCount--;
 
+        printPivot(x.getPivot());
+        printUnpivot(x.getUnpivot());
         return false;
     }
 
@@ -4932,17 +4940,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        SQLPivot pivot = x.getPivot();
-        if (pivot != null) {
-            println();
-            pivot.accept(this);
-        }
+        printPivot(x.getPivot());
 
-        SQLUnpivot unpivot = x.getUnpivot();
-        if (unpivot != null) {
-            println();
-            unpivot.accept(this);
-        }
+        printUnpivot(x.getUnpivot());
 
         if (isPrettyFormat() && x.hasAfterComment()) {
             print(' ');
@@ -4987,7 +4987,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " WITH OFFSET AS " : " with offset as ");
             x.getOffset().accept(this);
         }
-
+        printPivot(x.getPivot());
+        printUnpivot(x.getUnpivot());
         return false;
     }
 
@@ -5020,6 +5021,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
             print(')');
         }
+        printPivot(x.getPivot());
+        printUnpivot(x.getUnpivot());
         return false;
     }
 
@@ -5590,7 +5593,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         this.indentCount--;
-
+        if (x.isTemporary()) {
+            print0(ucase ? "TEMP " : "temp ");
+        }
         print0(ucase ? "VIEW " : "view ");
 
         if (x.isIfNotExists()) {
@@ -7081,6 +7086,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
             print0(alias);
         }
+        printPivot(x.getPivot());
+        printUnpivot(x.getUnpivot());
 
         return false;
     }
@@ -10657,6 +10664,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printCreateTableFeatures(SQLCreateTableStatement x) {
+        if (x.isEnabled(SQLCreateTableStatement.Feature.OrReplace)) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
         SQLCreateTableStatement.Feature[] features = {
                 SQLCreateTableStatement.Feature.Global,
                 SQLCreateTableStatement.Feature.Local,
@@ -10674,10 +10684,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? name.toUpperCase() : name.toLowerCase());
                 print(' ');
             }
-        }
-
-        if (x.isEnabled(SQLCreateTableStatement.Feature.OrReplace)) {
-            print0(ucase ? "OR REPLACE " : "or replace ");
         }
     }
 
@@ -10773,6 +10779,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    @Override
+    public boolean visit(SQLRefreshTableStatement x) {
+        print0(ucase ? "REFRESH TABLE " : "refresh table ");
+        x.getName().accept(this);
+        return false;
+    }
     @Override
     public boolean visit(SQLExtractExpr x) {
         print0(ucase ? "EXTRACT(" : "extract(");

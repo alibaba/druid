@@ -918,6 +918,13 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     default void endVisit(MySqlAlterTableLock x) {
     }
 
+    default boolean visit(MySqlAlterTableAlgorithm x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableAlgorithm x) {
+    }
+
     default boolean visit(MySqlAlterTableOrderBy x) {
         return true;
     }

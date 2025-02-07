@@ -77,6 +77,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             return super.visit(x);
         }
     }
+
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
         print0(ucase ? "CREATE " : "create ");
         printCreateTableFeatures(x);
@@ -93,6 +94,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         printCreateTableAfterName(x);
         printTableElements(x.getTableElementList());
     }
+
     protected void printUniqueKey(SQLCreateTableStatement x) {
         if (x.getUnique() != null) {
             println();
@@ -150,6 +152,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         incrementIndent();
         println();
     }
+
     @Override
     protected void printTableOptions(SQLCreateTableStatement statement) {
         super.printTableOptions(statement);
@@ -299,14 +302,42 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         print('(');
         printAndAccept(x.getColumns(), ", ");
         print(')');
-        if (x.isUsingBitmap()) {
-            print0(ucase ? " USING BITMAP" : " using bitmap");
+        if (x.getIndexType() != null) {
+            print0(ucase ? " USING " : " using ");
+            print0(x.getIndexType());
+            if (!x.getIndexOption().isEmpty()) {
+                print0("(");
+                int i = 0;
+                for (SQLAssignItem sqlAssignItem : x.getIndexOption()) {
+                    printIndexOption(sqlAssignItem.getTarget(), sqlAssignItem.getValue(), i);
+                    i++;
+                }
+                print0(")");
+            }
         }
         if (x.getComment() != null) {
             print0(ucase ? " COMMENT " : " comment ");
             x.getComment().accept(this);
         }
         return false;
+    }
+
+    protected void printIndexOption(SQLExpr name, SQLExpr value, int index) {
+        if (index != 0) {
+            print(", ");
+        }
+
+        String key = name.toString();
+
+        boolean unquote = false;
+
+        print0(key);
+        if (unquote) {
+            print('\'');
+        }
+
+        print0(" = ");
+        value.accept(this);
     }
 
     @Override
