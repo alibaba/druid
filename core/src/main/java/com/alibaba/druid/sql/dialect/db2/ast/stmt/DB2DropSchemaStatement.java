@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.db2.ast.stmt;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLDropStatement;
@@ -27,6 +28,14 @@ public class DB2DropSchemaStatement extends SQLStatementImpl implements DB2State
     private boolean ifExists;
     private boolean restrict;
     private boolean cascade;
+
+    public DB2DropSchemaStatement() {
+        this.dbType = DbType.db2;
+    }
+
+    public DB2DropSchemaStatement(DbType dbType) {
+        this.dbType = dbType;
+    }
 
     public SQLName getName() {
         return this.getSchemaName();

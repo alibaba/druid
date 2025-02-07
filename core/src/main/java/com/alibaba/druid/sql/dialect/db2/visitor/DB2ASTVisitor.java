@@ -57,4 +57,18 @@ public interface DB2ASTVisitor extends SQLASTVisitor {
 
     default void endVisit(DB2DropSchemaStatement x) {
     }
+
+    default boolean visit(DB2RenameTableStatement x) {
+        return true;
+    }
+
+    default void endVisit(DB2RenameTableStatement x) {
+    }
+
+    default boolean visit(DB2AlterTableDropConstraint x) {
+        return true;
+    }
+
+    default void endVisit(DB2AlterTableDropConstraint x) {
+    }
 }
