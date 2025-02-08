@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-
 public class SQLServerDropSchemaStatement extends SQLStatementImpl implements SQLServerStatement, SQLDropStatement {
     private SQLName schemaName;
     private boolean ifExists;
@@ -43,7 +42,6 @@ public class SQLServerDropSchemaStatement extends SQLStatementImpl implements SQ
         this.ifExists = ifExists;
     }
 
-
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof SQLServerASTVisitor) {
@@ -58,6 +56,5 @@ public class SQLServerDropSchemaStatement extends SQLStatementImpl implements SQ
         }
         visitor.endVisit(this);
     }
-
 
 }

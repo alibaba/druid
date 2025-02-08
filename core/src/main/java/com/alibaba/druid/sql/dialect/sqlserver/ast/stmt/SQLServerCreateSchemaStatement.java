@@ -87,5 +87,4 @@ public class SQLServerCreateSchemaStatement extends SQLStatementImpl implements 
         visitor.endVisit(this);
     }
 
-
 }

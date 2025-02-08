@@ -655,7 +655,6 @@ public class SQLServerStatementParser extends SQLStatementParser {
         SQLName name = this.exprParser.name();
         stmt.setSchemaName(name);
 
-
         return stmt;
     }
 
