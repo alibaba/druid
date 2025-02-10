@@ -42,3 +42,21 @@ WHEN NOT MATCHED THEN INSERT *
 MERGE INTO a target
 USING b source ON a.id = b.id
 WHEN NOT MATCHED THEN INSERT *
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE TABLE `q1.w1.e1` AS (
+  WITH t AS (
+    SELECT a.* 
+    FROM a
+  )
+  SELECT abc 
+  FROM t
+)
+--------------------
+CREATE OR REPLACE TABLE `q1.w1.e1`
+AS
+WITH t AS (
+		SELECT a.*
+		FROM a
+	)
+SELECT abc
+FROM t
