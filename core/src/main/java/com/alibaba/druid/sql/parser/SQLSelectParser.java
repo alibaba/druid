@@ -1188,7 +1188,6 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token == Token.SELECT || lexer.token == Token.WITH
                     || lexer.token == Token.SEL) {
                 SQLSelect select = select();
-                accept(Token.RPAREN);
                 SQLSelectQuery selectQuery = select.getQuery();
                 selectQuery.setParenthesized(true);
 
@@ -1227,12 +1226,12 @@ public class SQLSelectParser extends SQLParser {
                         break;
                     }
                 }
-                accept(Token.RPAREN);
             } else {
                 tableSource = parseTableSource();
-                accept(Token.RPAREN);
             }
-
+            if (lexer.token == Token.RPAREN) {
+                lexer.nextToken();
+            }
             if (lexer.token == Token.AS) {
                 lexer.nextToken();
                 String alias = this.tableAlias(true);
