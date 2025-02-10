@@ -5916,10 +5916,23 @@ public class SQLExprParser extends SQLParser {
 
             if (token == Token.IDENTIFIER
                     && hash_lower != FnvHash.Constants.CURRENT) {
-                Pair<String, SQLExpr> pair = parseSelectItemIdentifier(expr);
-                String as = pair.getKey();
-                expr = pair.getValue();
-                return new SQLSelectItem(expr, as, connectByRoot);
+                // Do not set "bulk" as alias for bulk collect into clause
+                if (lexer.identifierEquals("BULK")) {
+                    Lexer.SavePoint mark = lexer.mark();
+                    lexer.nextToken();
+                    if (lexer.identifierEquals("COLLECT")) {
+                        lexer.nextToken();
+                        if (lexer.token == Token.INTO) {
+                            lexer.reset(mark);
+                            return new SQLSelectItem(expr, (String) null, connectByRoot);
+                        }
+                    }
+                } else {
+                    Pair<String, SQLExpr> pair = parseSelectItemIdentifier(expr);
+                    String as = pair.getKey();
+                    expr = pair.getValue();
+                    return new SQLSelectItem(expr, as, connectByRoot);
+                }
             }
 
             if (token == Token.LPAREN) {
