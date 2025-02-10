@@ -1188,7 +1188,6 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token == Token.SELECT || lexer.token == Token.WITH
                     || lexer.token == Token.SEL) {
                 SQLSelect select = select();
-//                accept(Token.RPAREN);
                 SQLSelectQuery selectQuery = select.getQuery();
                 selectQuery.setParenthesized(true);
 
