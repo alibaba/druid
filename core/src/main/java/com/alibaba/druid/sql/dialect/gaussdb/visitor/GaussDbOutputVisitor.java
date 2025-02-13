@@ -57,12 +57,32 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
             printDistributeBy(x.getDistributeBy());
         }
 
+        if (x.getToGroup() != null) {
+            printToGroup(x);
+        }
+
+        if (x.getToNode() != null) {
+            printToNode(x);
+        }
+
         printComment(x.getComment());
         return false;
     }
 
     public void printDistributeBy(GaussDbDistributeBy x) {
         x.accept(this);
+    }
+
+    public void printToGroup(GaussDbCreateTableStatement x) {
+        println();
+        print0(ucase ? "TO GROUP " : "to group ");
+        x.getToGroup().accept(this);
+    }
+
+    public void printToNode(GaussDbCreateTableStatement x) {
+        println();
+        print0(ucase ? "TO NODE " : "to node ");
+        x.getToNode().accept(this);
     }
 
     @Override
