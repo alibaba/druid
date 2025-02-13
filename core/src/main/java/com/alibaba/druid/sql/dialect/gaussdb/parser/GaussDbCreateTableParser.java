@@ -63,6 +63,18 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
         if (distributeByClause != null) {
             gdStmt.setDistributeBy(distributeByClause);
         }
+
+        if (lexer.nextIf(Token.TO)) {
+            if (lexer.nextIf(Token.GROUP)) {
+                SQLExpr group = this.exprParser.expr();
+                gdStmt.setToGroup(group);
+            }
+            if (lexer.nextIfIdentifier(FnvHash.Constants.NODE)) {
+                SQLExpr node = this.exprParser.expr();
+                gdStmt.setToNode(node);
+            }
+        }
+
         if (lexer.nextIf(Token.COMMENT)) {
             lexer.nextIf(Token.EQ);
             SQLExpr comment = this.exprParser.expr();
