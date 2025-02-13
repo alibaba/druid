@@ -80,6 +80,7 @@ public final class SQLAllColumnExpr extends SQLExprImpl {
 
     public SQLAllColumnExpr clone() {
         SQLAllColumnExpr x = new SQLAllColumnExpr();
+        x.setOwner(owner);
 
         x.resolvedTableSource = resolvedTableSource;
         return x;
