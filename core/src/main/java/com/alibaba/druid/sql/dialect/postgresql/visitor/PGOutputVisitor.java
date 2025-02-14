@@ -814,6 +814,45 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        boolean create = x.isCreate();
+        if (create) {
+            print0(ucase ? "CREATE " : "create ");
+
+            if (x.isOrReplace()) {
+                print0(ucase ? "OR REPLACE " : "or replace ");
+            }
+        }
+
+        if (x.isTemporary()) {
+            print0(ucase ? "TEMPORARY " : "temporary ");
+        }
+        print0(ucase ? "FUNCTION " : "function ");
+
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        print0(" (");
+        this.indentCount++;
+
+        for (int i = 0; i < paramSize; ++i) {
+            if (i != 0) {
+                print0(","); // change: remove extra space
+                println();
+            }
+            SQLParameter param = x.getParameters().get(i);
+            param.accept(this);
+        }
+
+        this.indentCount--;
+        print(')');
+
+        printCreateFunctionBody(x);
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLCreateUserStatement x) {
         print0(ucase ? "CREATE USER " : "create user ");
         x.getUser().accept(this);
