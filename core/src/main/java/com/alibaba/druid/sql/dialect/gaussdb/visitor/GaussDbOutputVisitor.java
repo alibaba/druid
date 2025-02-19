@@ -53,52 +53,67 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
 
         printTableOptions(x);
 
-        if (x.getOnCommitExpr() != null) {
-            printOnCommit(x);
-        }
+        printOnCommit(x);
 
-        if (x.getCompressType() != null) {
-            println();
-            x.getCompressType().accept(this);
-        }
+        printCompressType(x);
 
-        if (x.getDistributeBy() != null) {
-            printDistributeBy(x.getDistributeBy());
-        }
+        printDistributeBy(x);
 
-        if (x.getToGroup() != null) {
-            printToGroup(x);
-        }
+        printToGroup(x);
 
-        if (x.getToNode() != null) {
-            printToNode(x);
-        }
+        printToNode(x);
+
+        printPartitionBy(x);
+
+        printRowMovement(x);
 
         printComment(x.getComment());
         return false;
     }
 
-    public void printOnCommit(GaussDbCreateTableStatement x) {
-        println();
-        print0(ucase ? "ON COMMIT " : "on commit ");
-        x.getOnCommitExpr().accept(this);
-        print0(ucase ? " ROWS" : " rows");
+    public void printRowMovement(GaussDbCreateTableStatement x) {
+        if (x.getRowMovementType() != null) {
+            println();
+            x.getRowMovementType().accept(this);
+            print(ucase ? " ROW MOVEMENT" : " row movement");
+        }
     }
 
-    public void printDistributeBy(GaussDbDistributeBy x) {
-        x.accept(this);
+    public void printCompressType(GaussDbCreateTableStatement x) {
+        if (x.getCompressType() != null) {
+            println();
+            x.getCompressType().accept(this);
+        }
+    }
+    public void printOnCommit(GaussDbCreateTableStatement x) {
+        if (x.getOnCommitExpr() != null) {
+            println();
+            print0(ucase ? "ON COMMIT " : "on commit ");
+            x.getOnCommitExpr().accept(this);
+            print0(ucase ? " ROWS" : " rows");
+        }
+    }
+
+    public void printDistributeBy(GaussDbCreateTableStatement x) {
+        if (x.getDistributeBy() != null) {
+            x.getDistributeBy().accept(this);
+        }
     }
 
     public void printToGroup(GaussDbCreateTableStatement x) {
-        println();
-        print0(ucase ? "TO GROUP " : "to group ");
-        x.getToGroup().accept(this);
+        if (x.getToGroup() != null) {
+            println();
+            print0(ucase ? "TO GROUP " : "to group ");
+            x.getToGroup().accept(this);
+        }
     }
 
     public void printToNode(GaussDbCreateTableStatement x) {
-        println();
-        print0(ucase ? "TO NODE " : "to node ");
-        x.getToNode().accept(this);
+        if (x.getToNode() != null) {
+            println();
+            print0(ucase ? "TO NODE " : "to node ");
+            x.getToNode().accept(this);
+        }
     }
 
     @Override

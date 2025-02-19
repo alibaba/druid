@@ -14,6 +14,7 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
     protected SQLExpr toNode;
     private SQLExpr onCommitExpr;
     private SQLExpr compressType;
+    private SQLExpr rowMovementType;
 
     public GaussDbCreateTableStatement() {
         super(DbType.gaussdb);
@@ -86,5 +87,13 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
 
     public void setCompressType(SQLExpr compressType) {
         this.compressType = compressType;
+    }
+
+    public SQLExpr getRowMovementType() {
+        return rowMovementType;
+    }
+
+    public void setRowMovementType(SQLExpr rowMovementType) {
+        this.rowMovementType = rowMovementType;
     }
 }
