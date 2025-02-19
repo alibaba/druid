@@ -12,6 +12,8 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
     protected GaussDbDistributeBy distributeBy;
     protected SQLExpr toGroup;
     protected SQLExpr toNode;
+    private SQLExpr onCommitExpr;
+    private SQLExpr compressType;
 
     public GaussDbCreateTableStatement() {
         super(DbType.gaussdb);
@@ -68,5 +70,21 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
             acceptChild(visitor, this.distributeBy);
             acceptChild((SQLASTVisitor) visitor);
         }
+    }
+
+    public SQLExpr getOnCommitExpr() {
+        return onCommitExpr;
+    }
+
+    public void setOnCommitExpr(SQLExpr onCommitExpr) {
+        this.onCommitExpr = onCommitExpr;
+    }
+
+    public SQLExpr getCompressType() {
+        return compressType;
+    }
+
+    public void setCompressType(SQLExpr compressType) {
+        this.compressType = compressType;
     }
 }
