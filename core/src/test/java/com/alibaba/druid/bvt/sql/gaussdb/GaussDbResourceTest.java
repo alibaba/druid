@@ -9,5 +9,6 @@ public class GaussDbResourceTest extends SQLResourceTest {
     @Test
     public void gaussdb_parse() throws Exception {
         fileTest(0, 999, i -> "bvt/parser/gaussdb/" + i + ".txt");
+        // test pr check
     }
 }
