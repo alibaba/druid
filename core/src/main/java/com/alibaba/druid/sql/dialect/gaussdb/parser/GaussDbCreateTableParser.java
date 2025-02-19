@@ -59,6 +59,17 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
             parseAssignItems(gdStmt.getTableOptions(), gdStmt, false);
             accept(Token.RPAREN);
         }
+        if (lexer.nextIf(Token.ON)) {
+            if (lexer.nextIfIdentifier(FnvHash.Constants.COMMIT)) {
+                if (lexer.identifierEquals("PRESERVE") || lexer.token() == Token.DELETE) {
+                    gdStmt.setOnCommitExpr(exprParser.name());
+                    accept(Token.ROWS);
+                }
+            }
+        }
+        if (lexer.identifierEquals("COMPRESS") || lexer.identifierEquals("NOCOMPRESS")) {
+            gdStmt.setCompressType(exprParser.name());
+        }
         GaussDbDistributeBy distributeByClause = parseDistributeBy();
         if (distributeByClause != null) {
             gdStmt.setDistributeBy(distributeByClause);
@@ -118,12 +129,12 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
                     accept(Token.RPAREN);
                     return distributeBy;
                 }
-            } else if (lexer.identifierEquals(FnvHash.Constants.RANGE)) {
+            } else if (lexer.identifierEquals(FnvHash.Constants.ROUNDROBIN)) {
                 distributeBy.setType(this.exprParser.name());
-                return distributionByContent(distributeBy);
-            } else if (lexer.identifierEquals(FnvHash.Constants.LIST)) {
+                return distributeBy;
+            } else if (lexer.identifierEquals(FnvHash.Constants.REPLICATION)) {
                 distributeBy.setType(this.exprParser.name());
-                return distributionByContent(distributeBy);
+                return distributeBy;
             }
         }
         return null;
