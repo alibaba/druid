@@ -190,7 +190,12 @@ public class DruidDataSource extends DruidAbstractDataSource
         configFromPropeties(properties);
     }
 
+    @Deprecated
     public void configFromPropeties(Properties properties) {
+        configFromProperties(properties);
+    }
+
+    public void configFromProperties(Properties properties) {
         DruidDataSourceUtils.configFromProperties(this, properties);
     }
 
