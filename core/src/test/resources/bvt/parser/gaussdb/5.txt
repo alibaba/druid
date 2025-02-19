@@ -1,0 +1,137 @@
+CREATE TABLE customer_address_SE
+(
+    ca_address_sk       INTEGER                  NOT NULL   ,
+    ca_address_id       CHARACTER(16)            NOT NULL   ,
+    ca_street_number    CHARACTER(10)                       ,
+    ca_street_name      CHARACTER varying(60)               ,
+    ca_street_type      CHARACTER(15)                       ,
+    ca_suite_number     CHARACTER(10)                    
+)
+WITH (ORIENTATION = COLUMN)
+DISTRIBUTE BY HASH (ca_address_sk)
+PARTITION BY RANGE(ca_address_sk)
+(
+    PARTITION p1 START(1) END(1000) EVERY(200),
+    PARTITION p2 END(2000),
+    PARTITION p3 START(2000) END(5000)
+)
+--------------------
+CREATE TABLE customer_address_SE (
+	ca_address_sk INTEGER NOT NULL,
+	ca_address_id CHARACTER(16) NOT NULL,
+	ca_street_number CHARACTER(10),
+	ca_street_name CHARACTER varying(60),
+	ca_street_type CHARACTER(15),
+	ca_suite_number CHARACTER(10)
+)
+WITH (
+	ORIENTATION = COLUMN
+)
+DISTRIBUTE BY HASH (ca_address_sk)
+PARTITION BY RANGE (ca_address_sk) (
+	PARTITION p1  START (1) END (1000) EVERY (200),
+	PARTITION p2  END (2000),
+	PARTITION p3  START (2000) END (5000)
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE customer_address
+(
+    ca_address_sk       INTEGER                  NOT NULL   ,
+    ca_address_id       CHARACTER(16)            NOT NULL   ,
+    ca_street_number    CHARACTER(10)                       ,
+    ca_street_name      CHARACTER varying(60)               ,
+    ca_street_type      CHARACTER(15)                       ,
+    ca_suite_number     CHARACTER(10)                    
+)
+DISTRIBUTE BY HASH (ca_address_sk)
+PARTITION BY RANGE(ca_address_sk)
+(
+        PARTITION P1 VALUES LESS THAN(2450815),
+        PARTITION P2 VALUES LESS THAN(2451179),
+        PARTITION P3 VALUES LESS THAN(2451544),
+        PARTITION P4 VALUES LESS THAN(MAXVALUE)
+);
+--------------------
+CREATE TABLE customer_address (
+	ca_address_sk INTEGER NOT NULL,
+	ca_address_id CHARACTER(16) NOT NULL,
+	ca_street_number CHARACTER(10),
+	ca_street_name CHARACTER varying(60),
+	ca_street_type CHARACTER(15),
+	ca_suite_number CHARACTER(10)
+)
+DISTRIBUTE BY HASH (ca_address_sk)
+PARTITION BY RANGE (ca_address_sk) (
+	PARTITION P1 VALUES LESS THAN (2450815),
+	PARTITION P2 VALUES LESS THAN (2451179),
+	PARTITION P3 VALUES LESS THAN (2451544),
+	PARTITION P4 VALUES LESS THAN (MAXVALUE)
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE data_list
+(
+    id int,
+    time int, 
+    sarlay decimal(12,2)
+)
+PARTITION BY LIST (time)
+(
+        PARTITION P1 VALUES (202209),
+        PARTITION P2 VALUES (202210,202208),
+        PARTITION P3 VALUES (202211),
+        PARTITION P4 VALUES (202212),
+        PARTITION P5 VALUES (202301)
+);
+--------------------
+CREATE TABLE data_list (
+	id int,
+	time int,
+	sarlay decimal(12, 2)
+)
+PARTITION BY LIST (time) (
+	PARTITION P1 VALUES  (202209),
+	PARTITION P2 VALUES  ((202210, 202208)),
+	PARTITION P3 VALUES  (202211),
+	PARTITION P4 VALUES  (202212),
+	PARTITION P5 VALUES  (202301)
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE cold_hot_table
+(
+    W_WAREHOUSE_ID            CHAR(16)              NOT NULL,
+    W_WAREHOUSE_NAME          VARCHAR(20)                   ,
+    W_STREET_NUMBER           CHAR(10)                      ,
+    W_STREET_NAME             VARCHAR(60)                   ,
+    W_STREET_ID               CHAR(15)                      ,
+    W_SUITE_NUMBER            CHAR(10)                     
+)
+WITH (ORIENTATION = COLUMN, storage_policy = 'LMT:30')
+DISTRIBUTE BY HASH (W_WAREHOUSE_ID)
+PARTITION BY RANGE(W_STREET_ID)
+(
+    PARTITION P1 VALUES LESS THAN(100000),
+    PARTITION P2 VALUES LESS THAN(200000),
+    PARTITION P3 VALUES LESS THAN(300000),
+    PARTITION P4 VALUES LESS THAN(MAXVALUE)
+) DISABLE ROW MOVEMENT;
+--------------------
+CREATE TABLE cold_hot_table (
+	W_WAREHOUSE_ID CHAR(16) NOT NULL,
+	W_WAREHOUSE_NAME VARCHAR(20),
+	W_STREET_NUMBER CHAR(10),
+	W_STREET_NAME VARCHAR(60),
+	W_STREET_ID CHAR(15),
+	W_SUITE_NUMBER CHAR(10)
+)
+WITH (
+	ORIENTATION = COLUMN,
+	storage_policy = 'LMT:30'
+)
+DISTRIBUTE BY HASH (W_WAREHOUSE_ID)
+PARTITION BY RANGE (W_STREET_ID) (
+	PARTITION P1 VALUES LESS THAN (100000),
+	PARTITION P2 VALUES LESS THAN (200000),
+	PARTITION P3 VALUES LESS THAN (300000),
+	PARTITION P4 VALUES LESS THAN (MAXVALUE)
+)
+DISABLE ROW MOVEMENT;
