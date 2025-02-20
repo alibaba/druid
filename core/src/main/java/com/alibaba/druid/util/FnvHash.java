@@ -724,6 +724,7 @@ public final class FnvHash {
         long FILE_BLOCK_SIZE = fnv1a_64_lower("FILE_BLOCK_SIZE");
         long BLOCK_SIZE = fnv1a_64_lower("BLOCK_SIZE");
         long REPLICA_NUM = fnv1a_64_lower("REPLICA_NUM");
+        long REPLICATION = fnv1a_64_lower("REPLICATION");
         long TABLET_SIZE = fnv1a_64_lower("TABLET_SIZE");
         long PCTFREE = fnv1a_64_lower("PCTFREE");
         long USE_BLOOM_FILTER = fnv1a_64_lower("USE_BLOOM_FILTER");
@@ -975,6 +976,7 @@ public final class FnvHash {
         long PERIOD_ADD = fnv1a_64_lower("PERIOD_ADD");
         long PERIOD_DIFF = fnv1a_64_lower("PERIOD_DIFF");
         long ROUND = fnv1a_64_lower("ROUND");
+        long ROUNDROBIN = fnv1a_64_lower("ROUNDROBIN");
         long DBPARTITION = fnv1a_64_lower("DBPARTITION");
         long TBPARTITION = fnv1a_64_lower("TBPARTITION");
         long EXTPARTITION = fnv1a_64_lower("EXTPARTITION");

@@ -53,16 +53,52 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
 
         printTableOptions(x);
 
+        if (x.getOnCommitExpr() != null) {
+            printOnCommit(x);
+        }
+
+        if (x.getCompressType() != null) {
+            println();
+            x.getCompressType().accept(this);
+        }
+
         if (x.getDistributeBy() != null) {
             printDistributeBy(x.getDistributeBy());
+        }
+
+        if (x.getToGroup() != null) {
+            printToGroup(x);
+        }
+
+        if (x.getToNode() != null) {
+            printToNode(x);
         }
 
         printComment(x.getComment());
         return false;
     }
 
+    public void printOnCommit(GaussDbCreateTableStatement x) {
+        println();
+        print0(ucase ? "ON COMMIT " : "on commit ");
+        x.getOnCommitExpr().accept(this);
+        print0(ucase ? " ROWS" : " rows");
+    }
+
     public void printDistributeBy(GaussDbDistributeBy x) {
         x.accept(this);
+    }
+
+    public void printToGroup(GaussDbCreateTableStatement x) {
+        println();
+        print0(ucase ? "TO GROUP " : "to group ");
+        x.getToGroup().accept(this);
+    }
+
+    public void printToNode(GaussDbCreateTableStatement x) {
+        println();
+        print0(ucase ? "TO NODE " : "to node ");
+        x.getToNode().accept(this);
     }
 
     @Override
@@ -237,7 +273,9 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
         println();
         print0(ucase ? "DISTRIBUTE BY " : "distribute by ");
         x.getType().accept(this);
-        printColumns(x.getColumns());
+        if (!x.getColumns().isEmpty()) {
+            printColumns(x.getColumns());
+        }
         if (!x.getDistributions().isEmpty()) {
             printPartitionsValue(x.getDistributions());
         }

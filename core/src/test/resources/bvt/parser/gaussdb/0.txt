@@ -7,7 +7,8 @@ CREATE UNLOGGED TABLE lineitem (
 WITH (
 	'orientation' = column
 )
-DISTRIBUTE BY hash (L_ORDERKEY);
+DISTRIBUTE BY hash (L_ORDERKEY)
+TO GROUP group1;
 --------------------
 CREATE UNLOGGED TABLE lineitem (
 	L_ORDERKEY BIGINT NOT NULL,
@@ -18,15 +19,18 @@ CREATE UNLOGGED TABLE lineitem (
 WITH (
 	'orientation' = column
 )
-DISTRIBUTE BY hash (L_ORDERKEY);
+DISTRIBUTE BY hash (L_ORDERKEY)
+TO GROUP group1;
 ------------------------------------------------------------------------------------------------------------------------
 CREATE GLOBAL TABLE test_global (
 	L_ORDERKEY BIGINT NOT NULL
 )
+TO NODE node01;
 --------------------
 CREATE GLOBAL TABLE test_global (
 	L_ORDERKEY BIGINT NOT NULL
 )
+TO NODE node01;
 ------------------------------------------------------------------------------------------------------------------------
 CREATE LOCAL TABLE test_local (
 	L_ORDERKEY BIGINT NOT NULL

@@ -191,4 +191,11 @@ public class GaussDbExprParser extends PGExprParser {
             return intervalExpr;
         }
     }
+
+    @Override
+    protected String nameCommon() {
+        String identName = lexer.stringVal();
+        lexer.nextToken();
+        return identName;
+    }
 }
