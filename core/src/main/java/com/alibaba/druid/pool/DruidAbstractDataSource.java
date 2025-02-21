@@ -118,6 +118,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int maxPoolPreparedStatementPerConnectionSize = 10;
 
     protected volatile boolean inited;
+    protected volatile int configVersion;
     protected volatile boolean initExceptionThrow = true;
 
     protected PrintWriter logWriter = new PrintWriter(System.out);
@@ -189,6 +190,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long cachedPreparedStatementMissCount;
 
     private volatile FilterChainImpl filterChain;
+
+    static final AtomicIntegerFieldUpdater<DruidAbstractDataSource> versionUpdater = AtomicIntegerFieldUpdater.newUpdater(DruidAbstractDataSource.class, "configVersion");
 
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> errorCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "errorCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> dupCloseCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "dupCloseCount");
@@ -1170,7 +1173,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         if (inited) {
-            throw new UnsupportedOperationException();
+            versionUpdater.incrementAndGet(this);
         }
 
         this.username = username;
@@ -1238,7 +1241,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         if (inited) {
-            throw new UnsupportedOperationException();
+            versionUpdater.incrementAndGet(this);
         }
 
         if (jdbcUrl != null) {
@@ -2291,11 +2294,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public static class PhysicalConnectionInfo {
-        private Connection connection;
-        private long connectStartNanos;
-        private long connectedNanos;
-        private long initedNanos;
-        private long validatedNanos;
+        private final Connection connection;
+        private final long connectStartNanos;
+        private final long connectedNanos;
+        private final long initedNanos;
+        private final long validatedNanos;
         private Map<String, Object> vairiables;
         private Map<String, Object> globalVairiables;
 

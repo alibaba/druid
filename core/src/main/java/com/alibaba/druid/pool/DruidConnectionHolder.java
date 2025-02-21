@@ -80,6 +80,7 @@ public final class DruidConnectionHolder {
     protected boolean underlyingAutoCommit;
     protected volatile boolean discard;
     protected volatile boolean active;
+    protected final int configVersion;
     protected final Map<String, Object> variables;
     protected final Map<String, Object> globalVariables;
     final ReentrantLock lock = new ReentrantLock();
@@ -99,6 +100,18 @@ public final class DruidConnectionHolder {
         );
     }
 
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo, int configVersion)
+            throws SQLException {
+        this(
+                dataSource,
+                pyConnectInfo.getPhysicalConnection(),
+                pyConnectInfo.getConnectNanoSpan(),
+                configVersion,
+                pyConnectInfo.getVairiables(),
+                pyConnectInfo.getGlobalVairiables()
+        );
+    }
+
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan)
             throws SQLException {
         this(dataSource, conn, connectNanoSpan, null, null);
@@ -111,11 +124,23 @@ public final class DruidConnectionHolder {
             Map<String, Object> variables,
             Map<String, Object> globalVariables
     ) throws SQLException {
+        this(dataSource, conn, connectNanoSpan, 0, variables, globalVariables);
+    }
+
+    public DruidConnectionHolder(
+            DruidAbstractDataSource dataSource,
+            Connection conn,
+            long connectNanoSpan,
+            int configVersion,
+            Map<String, Object> variables,
+            Map<String, Object> globalVariables
+    ) throws SQLException {
         this.dataSource = dataSource;
         this.conn = conn;
         this.createNanoSpan = connectNanoSpan;
         this.variables = variables;
         this.globalVariables = globalVariables;
+        this.configVersion = configVersion;
 
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;

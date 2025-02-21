@@ -77,15 +77,10 @@ public class DataSourceTest3 extends PoolTestCase {
 
         conn.close();
 
-        {
-            Exception error = null;
-            try {
-                dataSource.setUsername("xxx");
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
+        int configVersion = dataSource.getConfigVersion();
+        dataSource.setUsername("xxx");
+
+        assertEquals(configVersion + 1, dataSource.getConfigVersion());
     }
 
     public void test_error_1() throws Exception {
@@ -214,20 +209,30 @@ public class DataSourceTest3 extends PoolTestCase {
     }
 
     public void test_error_11() throws Exception {
-        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
-
-        conn.close();
-
+        {
+            long discardCount = dataSource.getDiscardCount();
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            conn.close();
+            assertEquals(discardCount, dataSource.getDiscardCount());
+        }
         dataSource.getUrl();
 
         {
-            Exception error = null;
-            try {
-                dataSource.setUrl("x");
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
+            int configVersion = dataSource.getConfigVersion();
+            dataSource.setUrl("jdbc:mock:xxx1");
+            assertEquals(configVersion + 1, dataSource.getConfigVersion());
+        }
+
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+
+            long discardCount = dataSource.getDiscardCount();
+            int configVersion = dataSource.getConfigVersion();
+            dataSource.setUrl("jdbc:mock:xxx2");
+            assertEquals(configVersion + 1, dataSource.getConfigVersion());
+
+            conn.close();
+            assertEquals(1, dataSource.getDiscardCount() - discardCount);
         }
     }
 
