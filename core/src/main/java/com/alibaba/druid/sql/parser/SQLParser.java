@@ -592,6 +592,11 @@ public class SQLParser {
                 case REFERENCES:
                 case LIKE:
                 case RLIKE:
+                case MATCH_ALL:
+                case MATCH_ANY:
+                case MATCH_PHRASE:
+                case MATCH_PHRASE_PREFIX:
+                case MATCH_REGEXP:
                 case NULL:
                 case RIGHT:
                 case LEFT:
