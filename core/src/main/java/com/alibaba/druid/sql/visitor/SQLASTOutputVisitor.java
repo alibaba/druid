@@ -12471,7 +12471,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
         println();
-        println(ucase ? "AS" : "as");
+        print(ucase ? "AS " : "as ");
         block.accept(this);
     }
 
