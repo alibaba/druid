@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.parser.Token;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.AsDatabase;
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.SQLDateExpr;
 
 public class PrestoLexer extends Lexer {
@@ -49,6 +50,9 @@ public class PrestoLexer extends Lexer {
     @Override
     protected void initDialectFeature() {
         super.initDialectFeature();
-        this.dialectFeature.configFeature(SQLDateExpr);
+        this.dialectFeature.configFeature(
+                SQLDateExpr,
+                AsDatabase
+        );
     }
 }
