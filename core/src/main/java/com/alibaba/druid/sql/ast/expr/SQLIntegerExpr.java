@@ -25,22 +25,25 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuableExpr, Comparable<SQLIntegerExpr> {
+public class SQLIntegerExpr extends SQLNumericLiteralExpr implements Comparable<SQLIntegerExpr> {
     public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("bigint");
 
     private Number number;
     private String type;
 
     public SQLIntegerExpr(Number number) {
+        this();
         this.number = number;
     }
 
     public SQLIntegerExpr(Number number, SQLObject parent) {
+        this();
         this.number = number;
         this.parent = parent;
     }
 
     public SQLIntegerExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.INT));
     }
 
     public Number getNumber() {

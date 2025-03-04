@@ -30,28 +30,30 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
     public static final SQLDataType DATA_TYPE_DOUBLE = new SQLDataTypeImpl("double");
     public static final SQLDataType DATA_TYPE_BIGINT = SQLIntegerExpr.DATA_TYPE;
 
-    private Number number;
-
     private char[] chars;
 
     public SQLNumberExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.NUMBER));
     }
 
     public SQLNumberExpr(Number number) {
-        this.number = number;
+        this();
+        this.value = number;
     }
 
     public SQLNumberExpr(char[] chars, SQLObject parent) {
+        this();
         this.chars = chars;
         this.parent = parent;
     }
 
     public SQLNumberExpr(char[] chars) {
+        this();
         this.chars = chars;
     }
 
     public Number getNumber() {
-        if (chars != null && number == null) {
+        if (chars != null && value == null) {
             boolean exp = false;
             for (int i = 0; i < chars.length; i++) {
                 char ch = chars[i];
@@ -60,28 +62,20 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
                 }
             }
             if (exp) {
-                this.number = Double.parseDouble(new String(chars));
+                this.value = Double.parseDouble(new String(chars));
             } else {
-                this.number = new BigDecimal(chars);
+                this.value = new BigDecimal(chars);
             }
         }
-        return this.number;
-    }
-
-    public String getLiteral() {
-        if (chars == null) {
-            return null;
-        }
-
-        return new String(chars);
+        return getValue();
     }
 
     public Number getValue() {
-        return getNumber();
+        return (Number) value;
     }
 
     public void setNumber(Number number) {
-        this.number = number;
+        this.value = number;
         this.chars = null;
     }
 
@@ -89,7 +83,7 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
         if (chars != null) {
             buf.append(chars);
         } else {
-            buf.append(this.number.toString());
+            buf.append(this.value.toString());
         }
     }
 
@@ -110,8 +104,8 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
 
     @Override
     public boolean equals(Object obj) {
-        if (chars != null && number == null) {
-            this.number = new BigDecimal(chars);
+        if (chars != null && value == null) {
+            this.value = new BigDecimal(chars);
         }
 
         if (this == obj) {
@@ -131,7 +125,7 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
     public SQLNumberExpr clone() {
         SQLNumberExpr x = new SQLNumberExpr();
         x.chars = chars;
-        x.number = number;
+        x.value = value;
         return x;
     }
 

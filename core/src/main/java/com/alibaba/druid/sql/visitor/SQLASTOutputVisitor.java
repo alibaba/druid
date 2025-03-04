@@ -873,6 +873,28 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         return rs;
     }
+
+    public boolean visit(SQLTypeExpr x) {
+        boolean needPrefixDataType = ! (x instanceof SQLBooleanExpr);
+        boolean needQuota = ! (x instanceof SQLBooleanExpr);
+        if (needPrefixDataType) {
+            String dataType = x.getDataType().getName();
+            print(ucase ? dataType.toUpperCase() : dataType.toLowerCase());
+            print(' ');
+        }
+        if (parameterized) {
+            print('?');
+        } else {
+            if (needQuota) {
+                print("'");
+            }
+            print(x.getValue().toString());
+            if (needQuota) {
+                print("'");
+            }
+        }
+        return false;
+    }
     public boolean visitInternal(SQLBinaryOpExpr x) {
         SQLBinaryOperator operator = x.getOperator();
         if (this.parameterized
@@ -7063,9 +7085,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    public void endVisit(SQLBooleanExpr x) {
-    }
-
     @Override
     public boolean visit(SQLUnionQueryTableSource x) {
         print('(');
@@ -7109,7 +7128,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
 
             print('\'');
-            print0(x.getLiteral());
+            print0(x.getValue());
             print('\'');
 
             if (x.getTimeZone() != null) {
@@ -8869,100 +8888,47 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLDateExpr x) {
-        String literal = x.getLiteral();
-        print0(ucase ? "DATE '" : "date '");
-        print0(literal);
-        print('\'');
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLTimeExpr x) {
-        SQLExpr literal = x.getLiteral();
-        print0(ucase ? "TIME " : "time ");
-        printExpr(literal, parameterized);
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLDateTimeExpr x) {
-        SQLExpr literal = x.getLiteral();
-        print0(ucase ? "DATETIME " : "datetime ");
-        printExpr(literal, parameterized);
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLTimestampNTZExpr x) {
-        String literal = x.getLiteral();
-        print0(ucase ? "TIMESTAMP_NTZ '" : "timestamp_ntz '");
-        print0(literal);
-        print('\'');
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLRealExpr x) {
-        Float value = x.getValue();
-        print0(ucase ? "REAL '" : "real '");
-        print(value);
-        print('\'');
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLDecimalExpr x) {
-        BigDecimal value = x.getValue();
-        print0(ucase ? "DECIMAL '" : "decimal '");
-        print(value.toString());
-        print('\'');
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLDoubleExpr x) {
-        Double value = x.getValue();
-        print0(ucase ? "DOUBLE '" : "double '");
-        print(value.toString());
-        print('\'');
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLFloatExpr x) {
-        Float value = x.getValue();
-        print0(ucase ? "FLOAT '" : "float '");
-        print(value.toString());
-        print('\'');
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLSmallIntExpr x) {
-        Short value = x.getValue();
-        print0(ucase ? "SMALLINT '" : "smallint '");
-        print(value.toString());
-        print('\'');
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLTinyIntExpr x) {
-        Byte value = x.getValue();
-        print0(ucase ? "TINYINT '" : "tinyint '");
-        print(value.toString());
-        print('\'');
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLBigIntExpr x) {
-        Long value = x.getValue();
-        print0(ucase ? "BIGINT '" : "bigint '");
-        print(value.toString());
-        print('\'');
-
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     public boolean visit(SQLLimit x) {
@@ -10805,9 +10771,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLJSONExpr x) {
-        print0(ucase ? "JSON " : "json ");
-        printChars(x.getLiteral());
-        return false;
+        return visit((SQLTypeExpr) x);
     }
 
     @Override
