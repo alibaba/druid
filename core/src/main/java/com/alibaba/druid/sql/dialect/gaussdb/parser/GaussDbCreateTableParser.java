@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbCreateTableStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGCreateTableParser;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
@@ -86,11 +87,104 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
             }
         }
 
+        SQLPartitionBy partitionClause = parsePartitionBy();
+        if (partitionClause != null) {
+            gdStmt.setPartitionBy(partitionClause);
+        }
+
+        parseRowMovement(gdStmt);
+
         if (lexer.nextIf(Token.COMMENT)) {
             lexer.nextIf(Token.EQ);
             SQLExpr comment = this.exprParser.expr();
             gdStmt.setComment(comment);
         }
+    }
+    public void parseRowMovement(GaussDbCreateTableStatement stmt) {
+        if (lexer.token() == Token.ENABLE || lexer.token() == Token.DISABLE) {
+            stmt.setRowMovementType(exprParser.name());
+            accept(Token.ROW);
+            acceptIdentifier("MOVEMENT");
+        }
+    }
+
+    public SQLPartitionBy parsePartitionBy() {
+        if (lexer.nextIf(Token.PARTITION)) {
+            accept(Token.BY);
+            if (lexer.nextIfIdentifier(FnvHash.Constants.HASH)) {
+                SQLPartitionBy hashPartition = new SQLPartitionByHash();
+                if (lexer.nextIf(Token.LPAREN)) {
+                    if (lexer.token() != Token.IDENTIFIER) {
+                        throw new ParserException("expect identifier. " + lexer.info());
+                    }
+                    for (; ; ) {
+                        hashPartition.addColumn(this.exprParser.name());
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.RPAREN);
+                    return hashPartition;
+                }
+            } else if (lexer.nextIfIdentifier(FnvHash.Constants.RANGE)) {
+                return partitionByRange();
+            } else if (lexer.nextIfIdentifier(FnvHash.Constants.LIST)) {
+                return partitionByList();
+            }
+        }
+        return null;
+    }
+
+    protected SQLPartitionByRange partitionByRange() {
+        SQLPartitionByRange rangePartition = new SQLPartitionByRange();
+        accept(Token.LPAREN);
+        for (; ; ) {
+            rangePartition.addColumn(this.exprParser.name());
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        accept(Token.RPAREN);
+        accept(Token.LPAREN);
+        for (; ; ) {
+            rangePartition.addPartition(this.getExprParser().parsePartition());
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        accept(Token.RPAREN);
+        return rangePartition;
+    }
+
+    private SQLPartitionByList partitionByList() {
+        SQLPartitionByList listPartition = new SQLPartitionByList();
+        accept(Token.LPAREN);
+        for (; ; ) {
+            listPartition.addColumn(this.exprParser.name());
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        accept(Token.RPAREN);
+        accept(Token.LPAREN);
+        for (; ; ) {
+            listPartition.addPartition(this.getExprParser().parsePartition());
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        accept(Token.RPAREN);
+        return listPartition;
     }
 
     protected void createTableBefore(SQLCreateTableStatement createTable) {

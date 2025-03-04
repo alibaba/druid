@@ -22,6 +22,7 @@ public class GaussDbLexer extends PGLexer {
         map.put("OVERWRITE", Token.OVERWRITE);
         map.put("LOCAL", Token.LOCAL);
         map.putAll(super.loadKeywords().getKeywords());
+        map.remove("LANGUAGE"); // GaussDB does not consider it as a reserved keyword
         return new Keywords(map);
     }
 

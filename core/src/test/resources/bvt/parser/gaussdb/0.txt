@@ -2,6 +2,7 @@ CREATE UNLOGGED TABLE lineitem (
 	L_ORDERKEY BIGINT NOT NULL,
 	L_QUANTITY DECIMAL(15, 2) NOT NULL,
 	L_SHIPDATE DATE NOT NULL,
+	language nvarchar2,
    PARTIAL CLUSTER KEY  (l_shipdate, l_quantity)
 )
 WITH (
@@ -14,6 +15,7 @@ CREATE UNLOGGED TABLE lineitem (
 	L_ORDERKEY BIGINT NOT NULL,
 	L_QUANTITY DECIMAL(15, 2) NOT NULL,
 	L_SHIPDATE DATE NOT NULL,
+	language nvarchar2,
    PARTIAL CLUSTER KEY  (l_shipdate, l_quantity)
 )
 WITH (
