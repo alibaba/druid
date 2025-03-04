@@ -548,7 +548,7 @@ public class SQLExprParser extends SQLParser {
                     String literal = lexer.token == Token.LITERAL_CHARS ? lexer.stringVal() : "?";
                     lexer.nextToken();
                     SQLDateExpr dateExpr = new SQLDateExpr();
-                    dateExpr.setLiteral(literal);
+                    dateExpr.setValue(literal);
                     sqlExpr = dateExpr;
                 } else if (hash_lower == FnvHash.Constants.TIMESTAMP
                         && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
@@ -5752,7 +5752,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
 
                 SQLDateExpr dateExpr = new SQLDateExpr();
-                dateExpr.setLiteral(literal);
+                dateExpr.setValue(literal);
 
                 expr = dateExpr;
             } else if (FnvHash.Constants.TIME == hash_lower

@@ -23,41 +23,37 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class SQLTimestampNTZExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr, SQLReplaceable {
-    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("TIMESTAMP_NTZ");
-
-    private String literal;
-
+public class SQLTimestampNTZExpr extends SQLDateTypeExpr {
     public SQLTimestampNTZExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP_NTZ));
     }
 
     public SQLTimestampNTZExpr(String literal) {
-        this.setLiteral(literal);
+        this();
+        this.setValue(literal);
     }
 
     public SQLTimestampNTZExpr(Date literal) {
-        this.setLiteral(literal);
+        this();
+        this.setValue(literal);
     }
 
     public SQLTimestampNTZExpr(Date literal, TimeZone timeZone) {
-        this.setLiteral(literal, timeZone);
+        this();
+        this.setValue(literal, timeZone);
     }
 
-    public String getLiteral() {
-        return literal;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public void setLiteral(String literal) {
-        this.literal = literal;
+    public void setValue(Date x) {
+        setValue(x, null);
     }
 
-    public void setLiteral(Date x) {
-        setLiteral(x, null);
-    }
-
-    public void setLiteral(Date x, TimeZone timeZone) {
+    public void setValue(Date x, TimeZone timeZone) {
         if (x == null) {
-            this.literal = null;
+            this.value = null;
             return;
         }
 
@@ -66,11 +62,7 @@ public class SQLTimestampNTZExpr extends SQLExprImpl implements SQLLiteralExpr, 
             format.setTimeZone(timeZone);
         }
         String text = format.format(x);
-        setLiteral(text);
-    }
-
-    public String getValue() {
-        return literal;
+        setValue(text);
     }
 
     public Date getDate() {
@@ -78,22 +70,22 @@ public class SQLTimestampNTZExpr extends SQLExprImpl implements SQLLiteralExpr, 
     }
 
     public Date getDate(TimeZone timeZone) {
-        return MySqlUtils.parseDate(literal, timeZone);
+        return MySqlUtils.parseDate(getValue(), timeZone);
     }
 
     public boolean addDay(int delta) {
-        if (literal == null) {
+        if (value == null) {
             return false;
         }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date date = format.parse(literal);
+            Date date = format.parse(getValue());
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.DAY_OF_MONTH, delta);
             String result_chars = format.format(calendar.getTime());
-            setLiteral(result_chars);
+            setValue(result_chars);
             return true;
         } catch (ParseException e) {
             // skip
@@ -103,18 +95,18 @@ public class SQLTimestampNTZExpr extends SQLExprImpl implements SQLLiteralExpr, 
     }
 
     public boolean addMonth(int delta) {
-        if (literal == null) {
+        if (value == null) {
             return false;
         }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date date = format.parse(literal);
+            Date date = format.parse(getValue());
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.MONTH, delta);
             String result_chars = format.format(calendar.getTime());
-            setLiteral(result_chars);
+            setValue(result_chars);
             return true;
         } catch (ParseException e) {
             // skip
@@ -124,24 +116,29 @@ public class SQLTimestampNTZExpr extends SQLExprImpl implements SQLLiteralExpr, 
     }
 
     public boolean addYear(int delta) {
-        if (literal == null) {
+        if (value == null) {
             return false;
         }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date date = format.parse(literal);
+            Date date = format.parse(value.toString());
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.YEAR, delta);
             String result_chars = format.format(calendar.getTime());
-            setLiteral(result_chars);
+            setValue(result_chars);
             return true;
         } catch (ParseException e) {
             // skip
         }
 
         return false;
+    }
+
+    @Override
+    public String getValue() {
+        return (String) value;
     }
 
     @Override
@@ -154,7 +151,7 @@ public class SQLTimestampNTZExpr extends SQLExprImpl implements SQLLiteralExpr, 
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((literal == null) ? 0 : literal.hashCode());
+        result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
 
@@ -170,11 +167,11 @@ public class SQLTimestampNTZExpr extends SQLExprImpl implements SQLLiteralExpr, 
             return false;
         }
         SQLTimestampNTZExpr other = (SQLTimestampNTZExpr) obj;
-        if (literal == null) {
-            if (other.literal != null) {
+        if (value == null) {
+            if (other.value != null) {
                 return false;
             }
-        } else if (!literal.equals(other.literal)) {
+        } else if (!value.equals(other.value)) {
             return false;
         }
         return true;
@@ -182,22 +179,8 @@ public class SQLTimestampNTZExpr extends SQLExprImpl implements SQLLiteralExpr, 
 
     public SQLTimestampNTZExpr clone() {
         SQLTimestampNTZExpr x = new SQLTimestampNTZExpr();
-
-        if (this.literal != null) {
-            x.setLiteral(literal);
-        }
-
+        x.value = this.value;
         return x;
-    }
-
-    @Override
-    public boolean replace(SQLExpr expr, SQLExpr target) {
-        return false;
-    }
-
-    @Override
-    public List<SQLObject> getChildren() {
-        return Collections.emptyList();
     }
 
     public static boolean check(String str) {
@@ -350,9 +333,5 @@ public class SQLTimestampNTZExpr extends SQLExprImpl implements SQLLiteralExpr, 
         chars[9] = (char) (dayOfMonth % 10 + '0');
 
         return new String(chars);
-    }
-
-    public SQLDataType computeDataType() {
-        return DATA_TYPE;
     }
 }

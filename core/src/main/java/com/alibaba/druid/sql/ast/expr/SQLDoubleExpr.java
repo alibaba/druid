@@ -24,20 +24,19 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLDoubleExpr extends SQLNumericLiteralExpr implements SQLValuableExpr, Comparable<SQLDoubleExpr> {
-    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("DOUBLE");
-
     private double value;
 
     public SQLDoubleExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.DOUBLE));
     }
 
     public SQLDoubleExpr(String value) {
-        super();
+        this();
         this.value = Double.parseDouble(value);
     }
 
     public SQLDoubleExpr(double value) {
-        super();
+        this();
         this.value = value;
     }
 

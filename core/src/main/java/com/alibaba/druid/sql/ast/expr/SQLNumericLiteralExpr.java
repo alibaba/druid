@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLDataType;
 
 import java.util.Collections;
 import java.util.List;
 
-public abstract class SQLNumericLiteralExpr extends SQLExprImpl implements SQLLiteralExpr {
-    public SQLNumericLiteralExpr() {
+public abstract class SQLNumericLiteralExpr extends SQLTypeExpr {
+    public SQLNumericLiteralExpr(SQLDataType sqlDataType) {
+        super(sqlDataType);
     }
 
     public abstract Number getNumber();

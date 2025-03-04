@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -22,23 +24,22 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
-    private float value;
-
     public SQLRealExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.REAL));
     }
 
     public SQLRealExpr(float value) {
-        super();
+        this();
         this.value = value;
     }
 
     public SQLRealExpr(String value) {
-        super();
+        this();
         this.value = Float.valueOf(value);
     }
 
     public SQLRealExpr clone() {
-        return new SQLRealExpr(value);
+        return new SQLRealExpr(getValue());
     }
 
     @Override
@@ -48,11 +49,11 @@ public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExp
 
     @Override
     public Number getNumber() {
-        return value;
+        return getValue();
     }
 
     public Float getValue() {
-        return value;
+        return (Float) value;
     }
 
     public void setValue(Float value) {
@@ -80,18 +81,18 @@ public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExp
 
         SQLRealExpr that = (SQLRealExpr) o;
 
-        return Float.compare(that.value, value) == 0;
+        return Float.compare(that.getValue(), getValue()) == 0;
     }
 
     @Override
     public int hashCode() {
-        return (value != +0.0f ? Float.floatToIntBits(value) : 0);
+        return (getValue() != +0.0f ? Float.floatToIntBits(getValue()) : 0);
     }
 
     @Override
     public void setNumber(Number number) {
         if (number == null) {
-            this.setValue(null);
+            value = null;
             return;
         }
 

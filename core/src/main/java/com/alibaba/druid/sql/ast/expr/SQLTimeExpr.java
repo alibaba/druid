@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -25,21 +24,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class SQLTimeExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr, SQLReplaceable {
-    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("time");
+public class SQLTimeExpr extends SQLDateTypeExpr {
+    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl(SQLDataType.Constants.TIME);
 
     private SQLExpr literal;
 
     public SQLTimeExpr() {
+        super(DATA_TYPE);
     }
 
     public SQLTimeExpr(Date now, TimeZone timeZone) {
-        setLiteral(now, timeZone);
+        this();
+        setValue(now, timeZone);
     }
 
-    public void setLiteral(Date x, TimeZone timeZone) {
+    public void setValue(Date x, TimeZone timeZone) {
         if (x == null) {
-            this.literal = null;
+            this.value = null;
             return;
         }
 
@@ -48,93 +49,28 @@ public class SQLTimeExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
             format.setTimeZone(timeZone);
         }
         String text = format.format(x);
-        setLiteral(text);
+        setValue(text);
     }
 
     public SQLTimeExpr(String literal) {
-        this.setLiteral(literal);
+        this();
+        this.setValue(literal);
     }
 
-    public SQLExpr getLiteral() {
-        return literal;
-    }
-
-    public void setLiteral(String literal) {
-        setLiteral(new SQLCharExpr(literal));
-    }
-
-    public void setLiteral(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.literal = x;
-    }
-
-    @Override
-    public SQLDataType computeDataType() {
-        return DATA_TYPE;
-    }
-
-    public String getValue() {
-        if (literal instanceof SQLCharExpr) {
-            return ((SQLCharExpr) literal).getText();
-        }
-        return null;
-    }
-
-    @Override
-    public boolean replace(SQLExpr expr, SQLExpr target) {
-        if (this.literal == expr) {
-            setLiteral(target);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        visitor.visit(this);
-        visitor.endVisit(this);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((literal == null) ? 0 : literal.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        SQLTimeExpr other = (SQLTimeExpr) obj;
-        if (literal == null) {
-            if (other.literal != null) {
-                return false;
-            }
-        } else if (!literal.equals(other.literal)) {
-            return false;
-        }
-        return true;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public SQLTimeExpr clone() {
         SQLTimeExpr x = new SQLTimeExpr();
-
-        if (this.literal != null) {
-            x.setLiteral(literal.clone());
-        }
+        x.value = this.value;
 
         return x;
+    }
+
+    @Override
+    public String getValue() {
+        return (String) value;
     }
 
     @Override

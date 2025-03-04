@@ -371,7 +371,7 @@ public class OdpsExprParser extends HiveExprParser {
     protected SQLExpr parseAssignItemOnLiteralFloat(SQLExpr sqlExpr) {
         while (lexer.token() == Token.LITERAL_FLOAT && lexer.numberString().startsWith(".")) {
             if (sqlExpr instanceof SQLNumberExpr) {
-                String numStr = ((SQLNumberExpr) sqlExpr).getLiteral();
+                String numStr = String.valueOf(((SQLNumberExpr) sqlExpr).getValue());
                 numStr += lexer.numberString();
                 sqlExpr = new SQLIdentifierExpr(numStr);
                 lexer.nextToken();
