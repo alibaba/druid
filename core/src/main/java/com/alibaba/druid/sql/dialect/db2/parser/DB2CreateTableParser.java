@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.db2.parser;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitionByHash;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.AsSelectWith;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -91,5 +92,21 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
 
     protected DB2CreateTableStatement newCreateStatement() {
         return new DB2CreateTableStatement();
+    }
+
+    @Override
+    protected void createTableQuery(SQLCreateTableStatement createTable) {
+        if (lexer.nextIf(Token.AS)) {
+            SQLSelect select = createTableQueryRest();
+            createTable.setSelect(select);
+
+            if (lexer.token() == Token.WITH) {
+                lexer.nextToken();
+                if (lexer.nextIfIdentifier("data")) {
+                    lexer.nextToken();
+                    ((DB2CreateTableStatement) createTable).setSelectWith(AsSelectWith.WITH_DATA);
+                }
+            }
+        }
     }
 }
