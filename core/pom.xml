@@ -222,6 +222,14 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- GaussBD Driver, to be modified -->
+		<dependency>
+			<groupId>com.huawei</groupId>
+			<artifactId>gaussdb-jdbc</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>com.oracle.ojdbc</groupId>
 			<artifactId>ojdbc8</artifactId>

@@ -1066,6 +1066,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.OPENGAUSS_DRIVER)
+                || realDriverClassName.equals(JdbcConstants.GAUSSDB_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
         } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)

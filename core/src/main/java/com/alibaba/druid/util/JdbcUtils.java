@@ -540,6 +540,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.TYDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:opengauss:")) {
             return JdbcConstants.OPENGAUSS_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:gaussdb:")) {
+            return JdbcConstants.GAUSSDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:TAOS:")) {
             return JdbcConstants.TAOS_DATA;
         } else if (rawUrl.startsWith("jdbc:TAOS-RS:")) {
@@ -934,7 +936,7 @@ public final class JdbcUtils implements JdbcConstants {
             return OracleUtils.showTables(conn);
         }
 
-        if (dbType == DbType.postgresql) {
+        if (dbType == DbType.postgresql || dbType == DbType.gaussdb) {
             return PGUtils.showTables(conn);
         }
         throw new SQLException("show tables dbType not support for " + dbType);
