@@ -131,3 +131,22 @@ CREATE TABLE IF NOT EXISTS orders (
 	CONSTRAINT DISABLED PRIMARY KEY (orderkey)
 )
 COMMENT 'A table to keep track of orders.'
+------------------------------------------------------------------------------------------------------------------------
+select * 
+        from a.b.c t
+        inner join d.e.f to on t.trade_no = to.trade_no
+--------------------
+SELECT *
+FROM a.b.c t
+	INNER JOIN d.e.f to ON t.trade_no = to.trade_no
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+  listagg (cast(u.uid AS varchar), ' ') WITHIN GROUP (
+    ORDER BY
+      1
+  ) ids
+FROM
+  sche.public.users u
+--------------------
+SELECT listagg(CAST(u.uid AS varchar), ' ') WITHIN GROUP (ORDER BY 1) AS ids
+FROM sche.public.users u
