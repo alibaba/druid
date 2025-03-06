@@ -18,11 +18,8 @@ public abstract class SQLTypeExpr extends SQLExprImpl implements SQLLiteralExpr,
         this.dataType = sqlDataType;
     }
 
-    public void setValue(SQLExpr value) {
+    public void setValue(Object value) {
         this.value = value;
-        if (value != null) {
-            value.setParent(this);
-        }
     }
 
     public SQLDataType getDataType() {
