@@ -15,13 +15,25 @@ public abstract class SQLTypeExpr extends SQLExprImpl implements SQLLiteralExpr,
     protected Object value;
 
     public SQLTypeExpr(SQLDataType sqlDataType) {
+        if (sqlDataType != null) {
+            sqlDataType.setParent(this);
+        }
         this.dataType = sqlDataType;
     }
 
     public void setValue(Object value) {
         this.value = value;
+        if (value instanceof SQLExpr) {
+            ((SQLExpr) value).setParent(this);
+        }
     }
 
+    public void setDataType(SQLDataType dataType) {
+        if (dataType != null) {
+            dataType.setParent(this);
+        }
+        this.dataType = dataType;
+    }
     public SQLDataType getDataType() {
         return dataType;
     }
@@ -39,12 +51,25 @@ public abstract class SQLTypeExpr extends SQLExprImpl implements SQLLiteralExpr,
     }
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        visitor.visit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.dataType);
+            if (this.value instanceof SQLExpr) {
+                acceptChild(visitor, (SQLExpr) this.value);
+            }
+        }
         visitor.endVisit(this);
     }
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == this.dataType && target instanceof SQLDataType) {
+            setDataType((SQLDataType) target);
+            return true;
+        }
+        if (this.value instanceof SQLExpr && expr == this.value) {
+            this.setValue(target);
+            return true;
+        }
         return false;
     }
     @Override
