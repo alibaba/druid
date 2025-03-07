@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -59,6 +60,13 @@ public class SQLTimeExpr extends SQLDateTypeExpr {
 
     public void setValue(String value) {
         this.value = value;
+    }
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.dataType);
+        }
+        visitor.endVisit(this);
     }
 
     public SQLTimeExpr clone() {
