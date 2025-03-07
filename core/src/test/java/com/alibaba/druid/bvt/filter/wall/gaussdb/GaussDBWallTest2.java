@@ -19,15 +19,13 @@ import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
 
 /**
- * GaussDBWallTest2
- *
  * @author Acewuye
- * @version 1.0, 2025-03-06
- * @see
+ *
+ * Notes: Original code of this class based on com.alibaba.druid.bvt.filter.wall.pg.PGWallTest2
  */
 public class GaussDBWallTest2 extends TestCase {
     public void test_wall() throws Exception {
-        assertTrue(WallUtils.isValidateGaussDB(//
+        assertTrue(WallUtils.isValidateGaussDB(
                 "select u.id, (\n" +
                         "\tWITH RECURSIVE users AS (\n" +
                         "\t\tselect id from t_user limit 1\n" +
@@ -37,7 +35,7 @@ public class GaussDBWallTest2 extends TestCase {
     }
 
     public void test_wall_2() throws Exception {
-        assertTrue(WallUtils.isValidateGaussDB(//
+        assertTrue(WallUtils.isValidateGaussDB(
                 "select 1 from t_user u\n" +
                         "join (\n" +
                         "\tWITH RECURSIVE users AS (\n" +

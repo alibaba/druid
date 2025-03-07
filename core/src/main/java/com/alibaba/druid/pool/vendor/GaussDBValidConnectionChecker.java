@@ -22,6 +22,11 @@ import com.alibaba.druid.util.StringUtils;
 import java.io.Serializable;
 import java.sql.Connection;
 
+/**
+ * @author Acewuye
+ *
+ * Notes: Original code of this class based on com.alibaba.druid.pool.vendor.PGValidConnectionChecker
+ */
 public class GaussDBValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
     private static final long serialVersionUID = -2227528634302168877L;
 

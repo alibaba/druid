@@ -28,6 +28,11 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
+/**
+ * @author Acewuye
+ *
+ * Notes: Original code of this class based on com.alibaba.druid.wall.spi.PGWallVisitor
+ */
 public class GaussDBWallVisitor extends WallVisitorBase implements WallVisitor, GaussDbASTVisitor {
     public GaussDBWallVisitor(WallProvider provider) {
         super(provider);

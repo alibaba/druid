@@ -25,11 +25,30 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLRecoverableException;
+import java.sql.Statement;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.sql.ResultSetMetaData;
+import java.sql.Types;
+import java.sql.Driver;
+import java.sql.PreparedStatement;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import java.util.Collections;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Collection;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
+ * @author Acewuye
  */
 public final class JdbcUtils implements JdbcConstants {
     private static final Log LOG = LogFactory.getLog(JdbcUtils.class);

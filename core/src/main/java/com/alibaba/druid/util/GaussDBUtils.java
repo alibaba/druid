@@ -19,13 +19,21 @@ import com.huawei.gaussdb.jdbc.core.BaseConnection;
 import com.huawei.gaussdb.jdbc.xa.PGXAConnection;
 
 import javax.sql.XAConnection;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Arrays;
 
+/**
+ * @author Acewuye
+ *
+ * Notes: Original code of this class based on com.alibaba.druid.util.PGUtils
+ */
 public class GaussDBUtils {
     public static XAConnection createXAConnection(Connection physicalConn) throws SQLException {
         return new PGXAConnection((BaseConnection) physicalConn);

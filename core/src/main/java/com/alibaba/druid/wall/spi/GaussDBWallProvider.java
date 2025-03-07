@@ -25,6 +25,11 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
+/**
+ * @author Acewuye
+ *
+ * Notes: Original code of this class based on com.alibaba.druid.wall.spi.PGWallProvider
+ */
 public class GaussDBWallProvider extends WallProvider {
     public static final String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/gaussdb";
 

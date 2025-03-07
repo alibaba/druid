@@ -20,15 +20,13 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 /**
- * GaussDBWallTest1
- *
  * @author Acewuye
- * @version 1.0, 2025-03-06
- * @see
+ *
+ * Notes: Original code of this class based on com.alibaba.druid.bvt.filter.wall.pg.PGWallTest1
  */
 public class GaussDBWallTest1 extends TestCase {
     public void test_wall() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateGaussDB(//
+        Assert.assertTrue(WallUtils.isValidateGaussDB(
                 "select pg_encoding_to_char(encoding) from pg_database where datname = current_database()"));
     }
 }

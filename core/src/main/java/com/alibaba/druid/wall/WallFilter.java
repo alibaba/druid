@@ -19,7 +19,14 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.proxy.jdbc.*;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
+import com.alibaba.druid.proxy.jdbc.JdbcParameter;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -30,14 +37,39 @@ import com.alibaba.druid.util.ServletPathMatcher;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
-import com.alibaba.druid.wall.spi.*;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
+import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import com.alibaba.druid.wall.spi.GaussDBWallProvider;
+import com.alibaba.druid.wall.spi.DB2WallProvider;
+import com.alibaba.druid.wall.spi.SQLiteWallProvider;
+import com.alibaba.druid.wall.spi.CKWallProvider;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.sql.*;
-import java.util.*;
+import java.sql.Wrapper;
+import java.sql.DatabaseMetaData;
+import java.sql.Array;
+import java.sql.NClob;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.sql.ResultSetMetaData;
+import java.sql.Ref;
+import java.sql.RowId;
+import java.sql.SQLXML;
+import java.util.Set;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Properties;
+import java.util.Collections;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.ServiceLoader;
+import java.util.HashMap;
 
 import static com.alibaba.druid.util.Utils.getBoolean;
 
@@ -167,6 +199,12 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             case edb:
             case polardb:
             case greenplum:
+                if (config == null) {
+                    config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
+                }
+
+                provider = new PGWallProvider(config);
+                break;
             case gaussdb:
                 if (config == null) {
                     config = new WallConfig(GaussDBWallProvider.DEFAULT_CONFIG_DIR);

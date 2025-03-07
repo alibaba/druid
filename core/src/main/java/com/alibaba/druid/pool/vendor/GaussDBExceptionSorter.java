@@ -21,6 +21,11 @@ import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
+/**
+ * @author Acewuye
+ *
+ * Notes: Original code of this class based on com.alibaba.druid.pool.vendor.PGExceptionSorter
+ */
 public class GaussDBExceptionSorter implements ExceptionSorter {
     @Override
     public boolean isExceptionFatal(SQLException e) {
