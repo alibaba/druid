@@ -238,8 +238,9 @@ public class SQLTimestampExpr extends SQLDateTypeExpr {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        visitor.visit(this);
-
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.dataType);
+        }
         visitor.endVisit(this);
     }
 
