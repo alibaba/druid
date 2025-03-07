@@ -11,7 +11,7 @@ import java.sql.Statement;
 import java.util.List;
 
 /**
- * Created by wenshao on 23/07/2017.
+ * Created by acewuye on 06/03/2025.
  */
 public class GaussDB_getCreateTableScriptTest extends DbTestCase {
     public GaussDB_getCreateTableScriptTest() {
@@ -32,8 +32,11 @@ public class GaussDB_getCreateTableScriptTest extends DbTestCase {
         JdbcUtils.printResultSet(rs);
 
         List<String> tables = JdbcUtils.showTables(conn, JdbcConstants.GAUSSDB);
-        for (String table : tables) {
-            System.out.println(table);
+
+        // Assuming the table name list you expect is as follows
+        String[] expectedTables = {"gs_errors", "gs_source", "pl_profiling_functions", "pl_profiling_details", "pl_profiling_callgraph", "pl_profiling_trackinfo", "snapshot"};
+        for (String expectedTable : expectedTables) {
+            assertTrue("Expected table not found: " + expectedTable, tables.contains(expectedTable));
         }
 
         conn.close();

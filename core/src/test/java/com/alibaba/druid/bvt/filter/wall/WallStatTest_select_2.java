@@ -2,10 +2,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import com.alibaba.druid.wall.spi.OracleWallProvider;
-import com.alibaba.druid.wall.spi.PGWallProvider;
-import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import com.alibaba.druid.wall.spi.*;
 import junit.framework.TestCase;
 
 public class WallStatTest_select_2
@@ -36,6 +33,11 @@ public class WallStatTest_select_2
 
     public void testPG() throws Exception {
         WallProvider provider = new PGWallProvider();
+        assertTrue(provider.checkValid(sql));
+    }
+
+    public void testGaussDB() throws Exception {
+        WallProvider provider = new GaussDBWallProvider();
         assertTrue(provider.checkValid(sql));
     }
 

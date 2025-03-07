@@ -1065,10 +1065,11 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
-                || realDriverClassName.equals(JdbcConstants.OPENGAUSS_DRIVER)
-                || realDriverClassName.equals(JdbcConstants.GAUSSDB_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
+        } else if (realDriverClassName.equals(JdbcConstants.OPENGAUSS_DRIVER)
+                || realDriverClassName.equals(JdbcConstants.GAUSSDB_DRIVER)) {
+            this.validConnectionChecker = new GaussDBValidConnectionChecker();
         } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)
                 || (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER2))) {
             DbType dbType = DbType.of(this.dbTypeName);
@@ -1104,15 +1105,14 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
                 this.exceptionSorter = new InformixExceptionSorter();
-
             } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
                 this.exceptionSorter = new SybaseExceptionSorter();
-
             } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
                 this.exceptionSorter = new PGExceptionSorter();
-
+            } else if (realDriverClassName.equals(JdbcConstants.GAUSSDB_DRIVER)) {
+                this.exceptionSorter = new GaussDBExceptionSorter();
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
                 this.exceptionSorter = new MockExceptionSorter();
             } else if (realDriverClassName.contains("DB2")) {

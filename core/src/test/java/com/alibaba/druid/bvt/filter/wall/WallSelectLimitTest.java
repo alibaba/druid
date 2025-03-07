@@ -80,4 +80,14 @@ public class WallSelectLimitTest extends TestCase {
                 "FROM t\n" +
                 "LIMIT 1000", resultSql);
     }
+
+    public void testGaussDB() throws Exception {
+        WallProvider provider = new GaussDBWallProvider(config);
+        WallCheckResult checkResult = provider.check(sql);
+        String resultSql = checkResult.getSql();
+        System.out.println(resultSql);
+        assertEquals("SELECT *\n" +
+                "FROM t\n" +
+                "LIMIT 1000", resultSql);
+    }
 }
