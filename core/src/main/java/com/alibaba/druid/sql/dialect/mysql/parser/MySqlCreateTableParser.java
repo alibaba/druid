@@ -864,6 +864,21 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     accept(Token.RPAREN);
                     stmt.setDistributeByType(new SQLIdentifierExpr("HASH"));
+                    // syntax: hash(col1,col2)(g1,g2,g3)
+                    if (lexer.token() == Token.LPAREN) {
+                        accept(Token.LPAREN);
+                        for (; ; ) {
+                            SQLName name = this.exprParser.name();
+                            stmt.getDistributeByHashGroup().add(name);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
+                        }
+                        accept(Token.RPAREN);
+                    }
+
                 } else if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE)) {
                     lexer.nextToken();
                     accept(Token.LPAREN);
