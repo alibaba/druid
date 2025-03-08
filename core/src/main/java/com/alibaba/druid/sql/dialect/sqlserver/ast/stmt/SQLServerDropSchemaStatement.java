@@ -13,36 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.db2.ast.stmt;
+package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLDropStatement;
-import com.alibaba.druid.sql.dialect.db2.ast.DB2Statement;
-import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class DB2DropSchemaStatement extends SQLStatementImpl implements DB2Statement, SQLDropStatement {
+public class SQLServerDropSchemaStatement extends SQLStatementImpl implements SQLServerStatement, SQLDropStatement {
     private SQLName schemaName;
     private boolean ifExists;
-    private boolean restrict;
-    private boolean cascade;
-
-    public DB2DropSchemaStatement() {
-        this.dbType = DbType.db2;
-    }
-
-    public DB2DropSchemaStatement(DbType dbType) {
-        this.dbType = dbType;
-    }
-
-    public SQLName getName() {
-        return this.getSchemaName();
-    }
 
     public SQLName getSchemaName() {
-        return schemaName;
+        return this.schemaName;
     }
 
     public void setSchemaName(SQLName schemaName) {
@@ -57,34 +42,19 @@ public class DB2DropSchemaStatement extends SQLStatementImpl implements DB2State
         this.ifExists = ifExists;
     }
 
-    public boolean isRestrict() {
-        return restrict;
-    }
-
-    public void setRestrict(boolean restrict) {
-        this.restrict = restrict;
-    }
-
-    public boolean isCascade() {
-        return cascade;
-    }
-
-    public void setCascade(boolean cascade) {
-        this.cascade = cascade;
-    }
-
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof DB2ASTVisitor) {
-            accept0((DB2ASTVisitor) visitor);
+    @Override
+    public void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof SQLServerASTVisitor) {
+            accept0((SQLServerASTVisitor) visitor);
         }
     }
 
     @Override
-    public void accept0(DB2ASTVisitor visitor) {
+    public void accept0(SQLServerASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.schemaName);
         }
-
         visitor.endVisit(this);
     }
+
 }

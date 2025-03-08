@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.db2.ast.stmt;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.DB2Statement;
@@ -25,9 +26,26 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
     private boolean dataCaptureNone;
     private boolean dataCaptureChanges;
 
+    private AsSelectWith selectWith;
     protected SQLName database;
     protected SQLName validproc;
     protected SQLName indexIn;
+
+    public DB2CreateTableStatement() {
+        this.dbType = DbType.db2;
+    }
+
+    public DB2CreateTableStatement(DbType dbType) {
+        this.dbType = dbType;
+    }
+
+    public AsSelectWith getSelectWith() {
+        return this.selectWith;
+    }
+
+    public void setSelectWith(AsSelectWith selectWith) {
+        this.selectWith = selectWith;
+    }
 
     public boolean isDataCaptureNone() {
         return dataCaptureNone;
