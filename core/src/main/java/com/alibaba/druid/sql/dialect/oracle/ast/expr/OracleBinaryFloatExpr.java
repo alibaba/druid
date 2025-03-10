@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -24,18 +26,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements OracleExpr {
-    private Float value;
-
     public OracleBinaryFloatExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.FLOAT));
     }
 
     public OracleBinaryFloatExpr(Float value) {
-        super();
+        this();
         this.value = value;
     }
 
     public OracleBinaryFloatExpr clone() {
-        return new OracleBinaryFloatExpr(value);
+        return new OracleBinaryFloatExpr(getValue());
     }
 
     @Override
@@ -45,11 +46,11 @@ public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements Orac
 
     @Override
     public Number getNumber() {
-        return value;
+        return getValue();
     }
 
     public Float getValue() {
-        return value;
+        return (Float) value;
     }
 
     public void setValue(Float value) {
@@ -99,7 +100,7 @@ public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements Orac
     @Override
     public void setNumber(Number number) {
         if (number == null) {
-            this.setValue(null);
+            value = null;
             return;
         }
 

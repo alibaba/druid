@@ -1257,7 +1257,7 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     }
 
     public boolean visit(SQLTimestampExpr x) {
-        String literal = x.getLiteral();
+        String literal = x.getValue();
         int precision = 0;
         if (literal.endsWith("00")) {
             char c3 = literal.charAt(literal.length() - 3);
@@ -1272,14 +1272,14 @@ public class CalciteMySqlNodeVisitor extends MySqlASTVisitorAdapter {
     }
 
     public boolean visit(SQLDateExpr x) {
-        String literal = x.getLiteral();
+        String literal = x.getValue();
         DateString ds = new DateString(literal);
         sqlNode = SqlLiteral.createDate(ds, SqlParserPos.ZERO);
         return false;
     }
 
     public boolean visit(SQLTimeExpr x) {
-        String literal = ((SQLCharExpr) x.getLiteral()).getText();
+        String literal = x.getValue();
         TimeString ds = new TimeString(literal);
         sqlNode = SqlLiteral.createTime(ds, 0, SqlParserPos.ZERO);
         return false;

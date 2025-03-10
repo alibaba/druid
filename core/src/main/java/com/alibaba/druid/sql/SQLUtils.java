@@ -2309,7 +2309,7 @@ public class SQLUtils {
 
             String newTime = format.format(x.getDate(from));
 
-            x.setLiteral(newTime);
+            x.setValue(newTime);
 
             return true;
         }

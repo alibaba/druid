@@ -25,31 +25,22 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLDecimalExpr extends SQLNumericLiteralExpr implements SQLValuableExpr, Comparable<SQLDecimalExpr> {
-    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("DECIMAL");
-
-    private BigDecimal value;
-    private transient String literal;
-
     public SQLDecimalExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL));
     }
 
     public SQLDecimalExpr(BigDecimal value) {
-        super();
+        this();
         this.value = value;
     }
 
     public SQLDecimalExpr(String value) {
-        super();
+        this();
         this.value = new BigDecimal(value);
-        this.literal = value;
-    }
-
-    public String getLiteral() {
-        return literal;
     }
 
     public SQLDecimalExpr clone() {
-        return new SQLDecimalExpr(value);
+        return new SQLDecimalExpr(getValue());
     }
 
     @Override
@@ -59,11 +50,11 @@ public class SQLDecimalExpr extends SQLNumericLiteralExpr implements SQLValuable
 
     @Override
     public Number getNumber() {
-        return value;
+        return getValue();
     }
 
     public BigDecimal getValue() {
-        return value;
+        return (BigDecimal) value;
     }
 
     public void setValue(BigDecimal value) {
@@ -109,7 +100,7 @@ public class SQLDecimalExpr extends SQLNumericLiteralExpr implements SQLValuable
     @Override
     public void setNumber(Number number) {
         if (number == null) {
-            this.setValue(null);
+            this.value = null;
             return;
         }
 
@@ -118,10 +109,10 @@ public class SQLDecimalExpr extends SQLNumericLiteralExpr implements SQLValuable
 
     @Override
     public int compareTo(SQLDecimalExpr o) {
-        return value.compareTo(o.value);
+        return getValue().compareTo(o.getValue());
     }
 
     public SQLDecimalExpr negative() {
-        return new SQLDecimalExpr(value.negate());
+        return new SQLDecimalExpr(getValue().negate());
     }
 }

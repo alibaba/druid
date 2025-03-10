@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -22,23 +24,22 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLBigIntExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
-    private Long value;
-
     public SQLBigIntExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.BIGINT));
     }
 
     public SQLBigIntExpr(Long value) {
-        super();
+        this();
         this.value = value;
     }
 
     public SQLBigIntExpr(String value) {
-        super();
+        this();
         this.value = Long.valueOf(value);
     }
 
     public SQLBigIntExpr clone() {
-        return new SQLBigIntExpr(value);
+        return new SQLBigIntExpr(getValue());
     }
 
     @Override
@@ -48,12 +49,12 @@ public class SQLBigIntExpr extends SQLNumericLiteralExpr implements SQLValuableE
 
     @Override
     public Number getNumber() {
-        return value;
+        return getValue();
     }
 
     @Override
     public Long getValue() {
-        return value;
+        return (Long) value;
     }
 
     public void setValue(Long value) {
@@ -99,7 +100,7 @@ public class SQLBigIntExpr extends SQLNumericLiteralExpr implements SQLValuableE
     @Override
     public void setNumber(Number number) {
         if (number == null) {
-            this.setValue(null);
+            value = null;
             return;
         }
 
