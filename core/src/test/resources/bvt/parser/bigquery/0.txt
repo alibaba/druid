@@ -1856,3 +1856,11 @@ GROUP BY item;
 select cast(json_parse(tickets_fields_value) as array<varchar>) as tickets_fields_value
 --------------------
 SELECT CAST(json_parse(tickets_fields_value) AS ARRAY<varchar>) AS tickets_fields_value
+------------------------------------------------------------------------------------------------------------------------
+SELECT *
+ FROM operator_raw_vs_fdm
+ UNPIVOT (discrepancy_amount FOR status IN (`discrepancy on gmv_amount`, `discrepancy on gmv_take_rate_amount`, `discrepancy on insurance_amount`, `discrepancy on discount_amount`))
+--------------------
+SELECT *
+FROM operator_raw_vs_fdm
+UNPIVOT (discrepancy_amount FOR status IN ('discrepancy on gmv_amount', 'discrepancy on gmv_take_rate_amount', 'discrepancy on insurance_amount', 'discrepancy on discount_amount'))

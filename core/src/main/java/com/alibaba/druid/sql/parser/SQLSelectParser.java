@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -2311,6 +2312,26 @@ public class SQLSelectParser extends SQLParser {
         return tableSource;
     }
 
+    protected void parsePivotIn(SQLObjectImpl parent, List<SQLSelectItem> items) {
+        for (; ; ) {
+            SQLSelectItem item = new SQLSelectItem();
+            SQLExpr expr = this.exprParser.expr();
+            if (expr instanceof SQLIdentifierExpr) {
+                String name = ((SQLIdentifierExpr) expr).getName();
+                if (name.length() > 1 && SQLUtils.isQuoteChar(name.charAt(0)) && name.charAt(name.length() - 1) == name.charAt(0)) {
+                    expr = new SQLCharExpr(SQLUtils.removeQuote(name));
+                }
+            }
+            item.setExpr(expr);
+            item.setAlias(as());
+            item.setParent(parent);
+            items.add(item);
+            if (lexer.token() != Token.COMMA) {
+                break;
+            }
+            lexer.nextToken();
+        }
+    }
     protected void parsePivot(SQLTableSource tableSource) {
         SQLSelectItem item;
         if (lexer.identifierEquals(FnvHash.Constants.PIVOT)) {
@@ -2369,19 +2390,7 @@ public class SQLSelectParser extends SQLParser {
                 item.setParent(pivot);
                 pivot.getPivotIn().add(item);
             } else {
-                for (; ; ) {
-                    item = new SQLSelectItem();
-                    item.setExpr(this.exprParser.expr());
-                    item.setAlias(as());
-                    item.setParent(pivot);
-                    pivot.getPivotIn().add(item);
-
-                    if (lexer.token() != Token.COMMA) {
-                        break;
-                    }
-
-                    lexer.nextToken();
-                }
+                parsePivotIn(pivot, pivot.getPivotIn());
             }
 
             accept(Token.RPAREN);
@@ -2404,7 +2413,6 @@ public class SQLSelectParser extends SQLParser {
             }
 
             accept(Token.LPAREN);
-
             if (lexer.token() == (Token.LPAREN)) {
                 lexer.nextToken();
                 this.exprParser.exprList(unPivot.getItems(), unPivot);
@@ -2439,19 +2447,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == (Token.SELECT)) {
                 throw new ParserException("TODO. " + lexer.info());
             }
-
-            for (; ; ) {
-                item = new SQLSelectItem();
-                item.setExpr(this.exprParser.expr());
-                item.setAlias(as());
-                unPivot.getPivotIn().add(item);
-
-                if (lexer.token() != Token.COMMA) {
-                    break;
-                }
-
-                lexer.nextToken();
-            }
+            parsePivotIn(unPivot, unPivot.getPivotIn());
 
             accept(Token.RPAREN);
             accept(Token.RPAREN);
