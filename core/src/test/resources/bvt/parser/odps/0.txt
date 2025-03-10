@@ -1,3 +1,13 @@
+create or replace table a-b.c.d as (
+  SELECT *
+  FROM a
+); 
+--------------------
+CREATE OR REPLACE TABLE a-b.c.d
+AS
+SELECT *
+FROM a;
+------------------------------------------------------------------------------------------------------------------------
 select  CASE 
 			WHEN UPPER(a) = 'a' 
 			AND (SELECT b FROM UNNEST() ORDER BY c DESC LIMIT 1) = 'b' 

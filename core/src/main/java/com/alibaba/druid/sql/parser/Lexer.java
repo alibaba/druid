@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import static com.alibaba.druid.sql.parser.CharTypes.*;
 import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
@@ -2824,6 +2825,13 @@ public class Lexer {
 
                     bufPos++;
                     continue;
+                } else if (ch == '-' && pos > 0 && charAt(pos - 1) != ' ' && pos < text.length() && charAt(pos + 1) != ' ') {
+                    int endIndex = this.text.indexOf(' ', pos);
+                    String name = text.substring(pos, endIndex);
+                    if (Pattern.matches("^\\S+(\\.)\\S+(\\.)\\S+$", name) || Pattern.matches("^\\S+(\\.)\\S+$", name)) {
+                        bufPos++;
+                        continue;
+                    }
                 }
                 break;
             }

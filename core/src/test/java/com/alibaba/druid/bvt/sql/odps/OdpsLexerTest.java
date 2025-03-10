@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 public class OdpsLexerTest extends TestCase {
     public void test_0() throws Exception {
-        String str = "DESC；";
+        String str = "DESC;";
         OdpsLexer lexer = new OdpsLexer(str);
         lexer.nextToken();
         assertEquals(Token.DESC, lexer.token());
