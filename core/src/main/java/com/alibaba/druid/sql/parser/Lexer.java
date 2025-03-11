@@ -2827,6 +2827,9 @@ public class Lexer {
                     continue;
                 } else if (ch == '-' && pos > 0 && charAt(pos - 1) != ' ' && pos < text.length() && charAt(pos + 1) != ' ') {
                     int endIndex = this.text.indexOf(' ', pos);
+                    if (endIndex == -1) {
+                        endIndex = text.length();
+                    }
                     String name = text.substring(pos, endIndex);
                     if (Pattern.matches("^\\S+(\\.)\\S+(\\.)\\S+$", name) || Pattern.matches("^\\S+(\\.)\\S+$", name)) {
                         bufPos++;
