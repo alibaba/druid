@@ -1,3 +1,8 @@
+select timestamp_sub(a, interval -(2*24) hour) from b
+--------------------
+SELECT timestamp_sub(a, INTERVAL -(2 * 24) HOUR)
+FROM b
+------------------------------------------------------------------------------------------------------------------------
 create or replace table a-b.c.d as (
   SELECT *
   FROM a
