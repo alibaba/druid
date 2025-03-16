@@ -3,6 +3,7 @@
 
 ## 中文 | [English](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README_EN.md)  
 Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控。
+druid-spring-boot-starter 适用于Spring boot 2。 如果Spring boot版本 >= 3.0.0请使用 druid-spring-boot-3-starter。
 
 ## 如何使用
 1. 在 Spring Boot 项目中加入```druid-spring-boot-starter```依赖 ([点击查询最新版本](https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter))
