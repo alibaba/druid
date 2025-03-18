@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.parser.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static com.alibaba.druid.sql.parser.CharTypes.*;
 import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.*;
@@ -155,17 +154,6 @@ public class OdpsLexer extends HiveLexer {
                         && bufPos > 7
                         && text.regionMatches(false, mark, "ALIYUN$", 0, 7)) {
                     continue;
-                }
-                if (ch == '-' && pos > 0 && charAt(pos - 1) != ' ' && pos < text.length() && charAt(pos + 1) != ' ') {
-                    int endIndex = this.text.indexOf(' ', pos);
-                    if (endIndex == -1) {
-                        endIndex = text.length();
-                    }
-                    String name = text.substring(pos, endIndex);
-                    if (Pattern.matches("^\\S+(\\.)\\S+(\\.)\\S+$", name) || Pattern.matches("^\\S+(\\.)\\S+$", name)) {
-                        bufPos++;
-                        continue;
-                    }
                 }
                 break;
             }
