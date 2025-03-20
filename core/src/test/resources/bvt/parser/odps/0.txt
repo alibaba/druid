@@ -12,7 +12,8 @@ grouping sets ((a,b), (a))
 SELECT a, b, c, d
 FROM e
 GROUP BY a,
-	b GROUPING SETS ((a, b), (a))
+	b
+	GROUPING SETS ((a, b), (a))
 ------------------------------------------------------------------------------------------------------------------------
 select  CASE 
 			WHEN UPPER(a) = 'a' 
