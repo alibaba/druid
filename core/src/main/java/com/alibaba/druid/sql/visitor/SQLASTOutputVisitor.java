@@ -2573,6 +2573,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     if (groupItemSingleLine) {
                         if (!(item instanceof SQLGroupingSetExpr)) {
                             println(',');
+                        } else {
+                            print(' ');
                         }
                     } else {
                         if (item instanceof SQLGroupingSetExpr) {
