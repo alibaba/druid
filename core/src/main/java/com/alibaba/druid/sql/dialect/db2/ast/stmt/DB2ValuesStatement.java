@@ -15,12 +15,21 @@
  */
 package com.alibaba.druid.sql.dialect.db2.ast.stmt;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.db2.ast.DB2StatementImpl;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 
 public class DB2ValuesStatement extends DB2StatementImpl {
     private SQLExpr expr;
+
+    public DB2ValuesStatement() {
+        this.dbType = DbType.db2;
+    }
+
+    public DB2ValuesStatement(DbType dbType) {
+        this.dbType = dbType;
+    }
 
     @Override
     public void accept0(DB2ASTVisitor visitor) {
