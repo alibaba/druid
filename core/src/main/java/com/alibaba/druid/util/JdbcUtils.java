@@ -672,6 +672,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.gaussdb;
         } else if (rawUrl.startsWith("jdbc:TAOS:") || rawUrl.startsWith("jdbc:TAOS-RS:")) {
             return DbType.taosdata;
+        } else if (rawUrl.startsWith("jdbc:gbasedbt-sqli:")) {
+            return DbType.gbase8s;
         } else if (rawUrl.startsWith("jdbc:oscar:")) {
             return DbType.oscar;
         } else if (rawUrl.startsWith("jdbc:sundb:")) {
