@@ -170,6 +170,9 @@ public abstract class SQLObjectImpl implements SQLObject {
 
     @SuppressWarnings("unchecked")
     public void addBeforeComment(List<String> comments) {
+        if (comments == null) {
+            return;
+        }
         if (attributes == null) {
             attributes = new HashMap<String, Object>(1);
         }
@@ -193,6 +196,9 @@ public abstract class SQLObjectImpl implements SQLObject {
 
     @SuppressWarnings("unchecked")
     public void addAfterComment(String comment) {
+        if (comment == null) {
+            return;
+        }
         if (attributes == null) {
             attributes = new HashMap<String, Object>(1);
         }

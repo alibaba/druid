@@ -2295,6 +2295,14 @@ public class SQLUtils {
         return insertLists;
     }
 
+    public static boolean isQuoteChar(char c) {
+        return c == '`' || c == '\'' || c == '"';
+    }
+
+    public static String removeQuote(String str) {
+        return str.replace("`", "").replace("'", "").replace("\"", "");
+    }
+
     static class TimeZoneVisitor extends SQLASTVisitorAdapter {
         private TimeZone from;
         private TimeZone to;

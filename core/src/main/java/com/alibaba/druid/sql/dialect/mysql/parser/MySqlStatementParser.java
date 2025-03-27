@@ -4067,68 +4067,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLStartTransactionStatement parseStart() {
-        acceptIdentifier("START");
-        acceptIdentifier("TRANSACTION");
-
-        SQLStartTransactionStatement stmt = new SQLStartTransactionStatement(dbType);
-
-        if (lexer.token() == WITH) {
-            lexer.nextToken();
-            acceptIdentifier("CONSISTENT");
-            acceptIdentifier("SNAPSHOT");
-            stmt.setConsistentSnapshot(true);
-        }
-
-        if (lexer.token() == Token.BEGIN) {
-            lexer.nextToken();
-            stmt.setBegin(true);
-            if (lexer.identifierEquals("WORK")) {
-                lexer.nextToken();
-                stmt.setWork(true);
-            }
-        }
-
-        if (lexer.token() == Token.HINT) {
-            stmt.setHints(this.exprParser.parseHints());
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.ISOLATION)) {
-            lexer.nextToken();
-            acceptIdentifier("LEVEL");
-
-            if (lexer.identifierEquals(FnvHash.Constants.READ)) {
-                lexer.nextToken();
-                if (lexer.identifierEquals(FnvHash.Constants.UNCOMMITTED)) {
-                    lexer.nextToken();
-                    stmt.setIsolationLevel(SQLStartTransactionStatement.IsolationLevel.READ_UNCOMMITTED);
-                } else if (lexer.identifierEquals(FnvHash.Constants.COMMITTED)) {
-                    lexer.nextToken();
-                    stmt.setIsolationLevel(SQLStartTransactionStatement.IsolationLevel.READ_COMMITTED);
-                } else {
-                    throw new ParserException(lexer.info());
-                }
-            } else if (lexer.identifierEquals(FnvHash.Constants.REPEATABLE)) {
-                lexer.nextToken();
-                acceptIdentifier("READ");
-                stmt.setIsolationLevel(SQLStartTransactionStatement.IsolationLevel.REPEATABLE_READ);
-            } else if (lexer.identifierEquals(FnvHash.Constants.SERIALIZABLE)) {
-                lexer.nextToken();
-                stmt.setIsolationLevel(SQLStartTransactionStatement.IsolationLevel.SERIALIZABLE);
-            } else {
-                throw new ParserException(lexer.info());
-            }
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.READ)) {
-            lexer.nextToken();
-            acceptIdentifier("ONLY");
-            stmt.setReadOnly(true);
-        }
-
-        return stmt;
-    }
-
     @Override
     public SQLStatement parseRollback() {
         acceptIdentifier("ROLLBACK");
