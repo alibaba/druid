@@ -25,3 +25,29 @@ DROP SCHEMA IF EXISTS abc1 CASCADE
 TRUNCATE abc IMMEDIATE
 --------------------
 TRUNCATE TABLE abc IMMEDIATE
+------------------------------------------------------------------------------------------------------------------------
+rename table abc to cba;
+--------------------
+RENAME TABLE abc TO cba;
+------------------------------------------------------------------------------------------------------------------------
+create table test.abc_select as (select * from test.abc) with data;
+--------------------
+CREATE TABLE test.abc_select
+AS
+(SELECT *
+FROM test.abc) WITH DATA
+------------------------------------------------------------------------------------------------------------------------
+alter table user_table drop address;
+--------------------
+ALTER TABLE user_table
+	DROP COLUMN address;
+------------------------------------------------------------------------------------------------------------------------
+alter table abc drop unique SQL250126102859120
+--------------------
+ALTER TABLE abc
+	DROP UNIQUE SQL250126102859120
+------------------------------------------------------------------------------------------------------------------------
+alter table abc drop foreign key abc_fk
+--------------------
+ALTER TABLE abc
+	DROP FOREIGN KEY abc_fk

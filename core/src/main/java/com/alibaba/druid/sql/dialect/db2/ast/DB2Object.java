@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.db2.ast;
 
+import com.alibaba.druid.sql.ast.SQLDbTypedObject;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-public interface DB2Object extends SQLObject {
+public interface DB2Object extends SQLObject, SQLDbTypedObject {
     void accept0(DB2ASTVisitor visitor);
 
     interface Constants {
