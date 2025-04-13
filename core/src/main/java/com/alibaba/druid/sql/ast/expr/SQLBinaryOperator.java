@@ -92,6 +92,12 @@ public enum SQLBinaryOperator {
     NotRegExp("NOT REGEXP", 110),
     Equality("=", 110),
 
+    MATCH_ALL("MATCH_ALL", 110),
+    MATCH_ANY("MATCH_ANY", 110),
+    MATCH_PHRASE("MATCH_PHRASE", 110),
+    MATCH_PHRASE_PREFIX("MATCH_PHRASE_PREFIX", 110),
+    MATCH_REGEXP("MATCH_REGEXP", 110),
+
     BitwiseNot("!", 130),
     Concat("||", 140),
 

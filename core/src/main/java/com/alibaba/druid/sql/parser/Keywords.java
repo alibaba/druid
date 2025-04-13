@@ -97,6 +97,11 @@ public class Keywords {
 
         map.put("LIKE", Token.LIKE);
         map.put("LOCK", Token.LOCK);
+        map.put("MATCH_ALL", Token.MATCH_ALL);
+        map.put("MATCH_ANY", Token.MATCH_ANY);
+        map.put("MATCH_PHRASE", Token.MATCH_PHRASE);
+        map.put("MATCH_PHRASE_PREFIX", Token.MATCH_PHRASE_PREFIX);
+        map.put("MATCH_REGEXP", Token.MATCH_REGEXP);
         map.put("MINUS", Token.MINUS);
         map.put("NOT", Token.NOT);
 
