@@ -25,11 +25,30 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
-import java.sql.*;
-import java.util.*;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
+ * @author Acewuye
  */
 public final class JdbcUtils implements JdbcConstants {
     private static final Log LOG = LogFactory.getLog(JdbcUtils.class);
@@ -540,6 +559,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.TYDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:opengauss:")) {
             return JdbcConstants.OPENGAUSS_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:gaussdb:")) {
+            return JdbcConstants.GAUSSDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:TAOS:")) {
             return JdbcConstants.TAOS_DATA;
         } else if (rawUrl.startsWith("jdbc:TAOS-RS:")) {
@@ -936,6 +957,10 @@ public final class JdbcUtils implements JdbcConstants {
 
         if (dbType == DbType.postgresql) {
             return PGUtils.showTables(conn);
+        }
+
+        if (dbType == DbType.gaussdb) {
+            return GaussDBUtils.showTables(conn);
         }
         throw new SQLException("show tables dbType not support for " + dbType);
     }
