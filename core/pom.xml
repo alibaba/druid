@@ -224,9 +224,9 @@
 
 		<!-- GaussBD Driver, to be modified -->
 		<dependency>
-			<groupId>com.huawei</groupId>
-			<artifactId>gaussdb-jdbc</artifactId>
-			<version>1.0</version>
+			<groupId>com.huaweicloud.gaussdb</groupId>
+			<artifactId>gaussdbjdbc</artifactId>
+			<version>506.0.0.b058</version>
 			<scope>provided</scope>
 		</dependency>
 
