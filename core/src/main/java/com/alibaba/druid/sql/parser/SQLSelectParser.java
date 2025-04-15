@@ -922,6 +922,7 @@ public class SQLSelectParser extends SQLParser {
                 groupBy.setWithCube(true);
             }
 
+            boolean hasComma = false;
             for (; ; ) {
                 List<String> comments = null;
                 if (lexer.hasComment()) {
@@ -930,6 +931,9 @@ public class SQLSelectParser extends SQLParser {
                 SQLExpr item = parseGroupByItem();
                 if (comments != null) {
                     item.addBeforeComment(comments);
+                }
+                if (item instanceof SQLGroupingSetExpr && hasComma) {
+                    groupBy.setGroupingSetsHaveComma(true);
                 }
 
                 item.setParent(groupBy);
@@ -946,8 +950,10 @@ public class SQLSelectParser extends SQLParser {
                             && lexer.line == line + 1) {
                         item.addAfterComment(lexer.readAndResetComments());
                     }
+                    hasComma = true;
                     continue;
                 } else if (lexer.identifierEquals(FnvHash.Constants.GROUPING)) {
+                    hasComma = false;
                     continue;
                 } else {
                     break;
