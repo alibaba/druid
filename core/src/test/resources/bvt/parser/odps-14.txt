@@ -40,5 +40,4 @@ GROUP BY -- 10 空白注释 ok
 	,
 	e,
 	f -- 13 空白注释 ok
-	,
 	GROUPING SETS ((a, b, c), (b, c, d), (d, e, f))

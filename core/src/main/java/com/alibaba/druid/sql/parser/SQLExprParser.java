@@ -548,7 +548,7 @@ public class SQLExprParser extends SQLParser {
                     String literal = lexer.token == Token.LITERAL_CHARS ? lexer.stringVal() : "?";
                     lexer.nextToken();
                     SQLDateExpr dateExpr = new SQLDateExpr();
-                    dateExpr.setLiteral(literal);
+                    dateExpr.setValue(literal);
                     sqlExpr = dateExpr;
                 } else if (hash_lower == FnvHash.Constants.TIMESTAMP
                         && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
@@ -1488,19 +1488,7 @@ public class SQLExprParser extends SQLParser {
                 return new SQLIdentifierExpr(str);
             case PLUS:
             case SUB: {
-                Lexer.SavePoint mark = lexer.mark();
-                lexer.nextToken();
-                if (lexer.token == Token.LITERAL_INT) {
-                    lexer.nextToken();
-                    if (lexer.token == Token.IDENTIFIER) {
-                        lexer.reset(mark);
-                        break;
-                    }
-                } else {
-                    lexer.reset(mark);
-                }
-
-                return new SQLIdentifierExpr(str);
+                break;
             }
             default:
                 if (lexer.identifierEquals(FnvHash.Constants.GROUPING)) {
@@ -1508,8 +1496,6 @@ public class SQLExprParser extends SQLParser {
                 }
                 break;
         }
-
-        Lexer.SavePoint mark = lexer.mark();
 
         SQLExpr value = expr();
 
@@ -1522,19 +1508,6 @@ public class SQLExprParser extends SQLParser {
                 SQLIntervalUnit unit = SQLIntervalUnit.of(unitStr);
                 return new SQLIntervalExpr(new SQLIntegerExpr(intervalValue), unit);
             }
-        }
-
-        switch (lexer.token) {
-            case COMMA:
-            case RPAREN:
-            case WHERE:
-            case FROM:
-            case AS:
-            case ORDER:
-                lexer.reset(mark);
-                return new SQLIdentifierExpr(str);
-            default:
-                break;
         }
 
         if (lexer.token() != Token.IDENTIFIER) {
@@ -5752,7 +5725,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
 
                 SQLDateExpr dateExpr = new SQLDateExpr();
-                dateExpr.setLiteral(literal);
+                dateExpr.setValue(literal);
 
                 expr = dateExpr;
             } else if (FnvHash.Constants.TIME == hash_lower

@@ -1,3 +1,20 @@
+select 
+a,
+b,
+c,
+d
+from e
+group by
+a,
+b
+grouping sets ((a,b), (a))
+--------------------
+SELECT a, b, c, d
+FROM e
+GROUP BY a,
+	b
+	GROUPING SETS ((a, b), (a))
+------------------------------------------------------------------------------------------------------------------------
 select  CASE 
 			WHEN UPPER(a) = 'a' 
 			AND (SELECT b FROM UNNEST() ORDER BY c DESC LIMIT 1) = 'b' 
@@ -42,3 +59,21 @@ WHEN NOT MATCHED THEN INSERT *
 MERGE INTO a target
 USING b source ON a.id = b.id
 WHEN NOT MATCHED THEN INSERT *
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE TABLE `q1.w1.e1` AS (
+  WITH t AS (
+    SELECT a.* 
+    FROM a
+  )
+  SELECT abc 
+  FROM t
+)
+--------------------
+CREATE OR REPLACE TABLE `q1.w1.e1`
+AS
+WITH t AS (
+		SELECT a.*
+		FROM a
+	)
+SELECT abc
+FROM t

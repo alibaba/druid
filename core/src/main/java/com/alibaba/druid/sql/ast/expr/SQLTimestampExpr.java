@@ -19,7 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.MySqlUtils;
 
@@ -27,57 +26,66 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQLLiteralExpr {
-    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("timestamp");
+public class SQLTimestampExpr extends SQLDateTypeExpr {
+    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP);
 
     protected String literal;
     protected String timeZone;
     protected boolean withTimeZone;
 
     public SQLTimestampExpr() {
+        super(DATA_TYPE);
     }
 
-    public SQLTimestampExpr(String literal) {
-        this.literal = literal;
+    public SQLTimestampExpr(String value) {
+        this();
+        this.value = value;
     }
 
     public SQLTimestampExpr(Date date) {
-        setLiteral(date);
+        this();
+        setValue(date);
     }
 
     public SQLTimestampExpr(Date date, TimeZone timeZone) {
-        setLiteral(date, timeZone);
+        this();
+        setValue(date, timeZone);
+    }
+
+    @Override
+    public String getValue() {
+        return (String) value;
     }
 
     public SQLTimestampExpr clone() {
         SQLTimestampExpr x = new SQLTimestampExpr();
-        x.literal = literal;
+        x.value = value;
         x.timeZone = timeZone;
         x.withTimeZone = withTimeZone;
         return x;
     }
 
     public Date getDate(TimeZone timeZone) {
-        if (literal == null || literal.length() == 0) {
+        if (getValue() == null || getValue().isEmpty()) {
             return null;
         }
 
-        return MySqlUtils.parseDate(literal, timeZone);
+        return MySqlUtils.parseDate(getValue(), timeZone);
     }
 
     public boolean addDay(int delta) {
-        if (literal == null) {
+        if (getValue() == null) {
             return false;
         }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            Date date = format.parse(literal);
+            Date date = format.parse(getValue());
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.DAY_OF_MONTH, delta);
             String result_chars = format.format(calendar.getTime());
-            setLiteral(result_chars);
+            this.setValue(result_chars);
             return true;
         } catch (ParseException e) {
             // skip
@@ -87,18 +95,18 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
     }
 
     public boolean addMonth(int delta) {
-        if (literal == null) {
+        if (getValue() == null) {
             return false;
         }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            Date date = format.parse(literal);
+            Date date = format.parse(getValue());
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.MONTH, delta);
             String result_chars = format.format(calendar.getTime());
-            setLiteral(result_chars);
+            this.setValue(result_chars);
             return true;
         } catch (ParseException e) {
             // skip
@@ -108,18 +116,18 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
     }
 
     public boolean addHour(int delta) {
-        if (literal == null) {
+        if (getValue() == null) {
             return false;
         }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            Date date = format.parse(literal);
+            Date date = format.parse(getValue());
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.HOUR_OF_DAY, delta);
             String result_chars = format.format(calendar.getTime());
-            setLiteral(result_chars);
+            this.setValue(result_chars);
             return true;
         } catch (ParseException e) {
             // skip
@@ -129,18 +137,18 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
     }
 
     public boolean addMiniute(int delta) {
-        if (literal == null) {
+        if (getValue() == null) {
             return false;
         }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            Date date = format.parse(literal);
+            Date date = format.parse(getValue());
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.MINUTE, delta);
             String result_chars = format.format(calendar.getTime());
-            setLiteral(result_chars);
+            this.setValue(result_chars);
             return true;
         } catch (ParseException e) {
             // skip
@@ -149,25 +157,17 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
         return false;
     }
 
-    public String getValue() {
-        return literal;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public String getLiteral() {
-        return literal;
+    public void setValue(Date x) {
+        setValue(x, null);
     }
 
-    public void setLiteral(String literal) {
-        this.literal = literal;
-    }
-
-    public void setLiteral(Date x) {
-        setLiteral(x, null);
-    }
-
-    public void setLiteral(Date x, TimeZone timeZone) {
+    public void setValue(Date x, TimeZone timeZone) {
         if (x == null) {
-            this.literal = null;
+            this.value = null;
             return;
         }
 
@@ -175,7 +175,7 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
         if (timeZone != null) {
             format.setTimeZone(timeZone);
         }
-        this.literal = format.format(x);
+        this.value = format.format(x);
     }
 
     public String getTimeZone() {
@@ -198,7 +198,7 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((literal == null) ? 0 : literal.hashCode());
+        result = prime * result + ((value == null) ? 0 : value.hashCode());
         result = prime * result + ((timeZone == null) ? 0 : timeZone.hashCode());
         result = prime * result + (withTimeZone ? 1231 : 1237);
         return result;
@@ -216,11 +216,11 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
             return false;
         }
         SQLTimestampExpr other = (SQLTimestampExpr) obj;
-        if (literal == null) {
-            if (other.literal != null) {
+        if (value == null) {
+            if (other.value != null) {
                 return false;
             }
-        } else if (!literal.equals(other.literal)) {
+        } else if (!value.equals(other.value)) {
             return false;
         }
         if (timeZone == null) {
@@ -238,17 +238,14 @@ public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr, SQ
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        visitor.visit(this);
-
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.dataType);
+        }
         visitor.endVisit(this);
     }
 
     public String toString() {
         return SQLUtils.toSQLString(this, (DbType) null);
-    }
-
-    public SQLDataType computeDataType() {
-        return DATA_TYPE;
     }
 
     @Override

@@ -2,31 +2,37 @@ CREATE UNLOGGED TABLE lineitem (
 	L_ORDERKEY BIGINT NOT NULL,
 	L_QUANTITY DECIMAL(15, 2) NOT NULL,
 	L_SHIPDATE DATE NOT NULL,
+	language nvarchar2,
    PARTIAL CLUSTER KEY  (l_shipdate, l_quantity)
 )
 WITH (
 	'orientation' = column
 )
-DISTRIBUTE BY hash (L_ORDERKEY);
+DISTRIBUTE BY hash (L_ORDERKEY)
+TO GROUP group1;
 --------------------
 CREATE UNLOGGED TABLE lineitem (
 	L_ORDERKEY BIGINT NOT NULL,
 	L_QUANTITY DECIMAL(15, 2) NOT NULL,
 	L_SHIPDATE DATE NOT NULL,
+	language nvarchar2,
    PARTIAL CLUSTER KEY  (l_shipdate, l_quantity)
 )
 WITH (
 	'orientation' = column
 )
-DISTRIBUTE BY hash (L_ORDERKEY);
+DISTRIBUTE BY hash (L_ORDERKEY)
+TO GROUP group1;
 ------------------------------------------------------------------------------------------------------------------------
 CREATE GLOBAL TABLE test_global (
 	L_ORDERKEY BIGINT NOT NULL
 )
+TO NODE node01;
 --------------------
 CREATE GLOBAL TABLE test_global (
 	L_ORDERKEY BIGINT NOT NULL
 )
+TO NODE node01;
 ------------------------------------------------------------------------------------------------------------------------
 CREATE LOCAL TABLE test_local (
 	L_ORDERKEY BIGINT NOT NULL

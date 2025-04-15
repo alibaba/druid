@@ -15,28 +15,29 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements OracleExpr {
-    private Double value;
-
     public OracleBinaryDoubleExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.DOUBLE));
     }
 
     public OracleBinaryDoubleExpr(Double value) {
-        super();
+        this();
         this.value = value;
     }
 
     @Override
     public Number getNumber() {
-        return value;
+        return getValue();
     }
 
     public Double getValue() {
-        return value;
+        return (Double) value;
     }
 
     public void setValue(Double value) {
@@ -86,7 +87,7 @@ public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements Ora
     @Override
     public void setNumber(Number number) {
         if (number == null) {
-            this.setValue(null);
+            value = null;
             return;
         }
 
@@ -94,6 +95,6 @@ public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements Ora
     }
 
     public OracleBinaryDoubleExpr clone() {
-        return new OracleBinaryDoubleExpr(value);
+        return new OracleBinaryDoubleExpr(getValue());
     }
 }

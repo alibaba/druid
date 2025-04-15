@@ -1,3 +1,60 @@
+select timestamp_sub(a, interval -(2*24) hour) from b
+--------------------
+SELECT timestamp_sub(a, INTERVAL -(2 * 24) HOUR)
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+    select
+      outlet_id,
+      classification,
+      if(
+        products = 'GO-FOOD'
+        and status = 'active',
+        true,
+        false
+      ) as goresto_flag
+    from
+      (
+        select
+          o.body.merchant_id as outlet_id,
+          body.after.entity.classification as classification,
+          p.type as products,
+          p.status as status
+        from
+          `data-gojek-id-raw-internal.mainstream.gomerchant_onboarding_event_log_mid` as o,
+          unnest (body.after.products) as p
+        where
+          o.event_timestamp >= timestamp_sub(current_timestamp, interval 3 day)
+          and body.merchant_id IS NOT NULL
+        qualify
+          row_number() over (
+            partition by
+              o.body.merchant_id
+            order by
+              event_timestamp desc
+          ) = 1
+      )
+    union distinct
+    select
+      merchant_platform_outlet_id as outlet_id,
+      classification_name as classification,
+      goresto_flag
+    from
+      `data-gojek-id-mart.gofood.detail_restaurant_profile_reference`
+--------------------
+SELECT outlet_id, classification
+	, if(products = 'GO-FOOD'
+		AND status = 'active', true, false) AS goresto_flag
+FROM (
+	SELECT o.body.merchant_id AS outlet_id, body.after.entity.classification AS classification, p.type AS products, p.status AS status
+	FROM `data-gojek-id-raw-internal`.mainstream.gomerchant_onboarding_event_log_mid o, UNNEST(body.after.products) AS p
+	WHERE o.event_timestamp >= timestamp_sub(current_timestamp, INTERVAL 3 DAY)
+		AND body.merchant_id IS NOT NULL
+	QUALIFY row_number() OVER (PARTITION BY o.body.merchant_id ORDER BY event_timestamp DESC) = 1
+)
+UNION DISTINCT
+SELECT merchant_platform_outlet_id AS outlet_id, classification_name AS classification, goresto_flag
+FROM `data-gojek-id-mart`.gofood.detail_restaurant_profile_reference
+------------------------------------------------------------------------------------------------------------------------
 SELECT *
 FROM (
     SELECT a
@@ -1804,3 +1861,11 @@ GROUP BY item;
 select cast(json_parse(tickets_fields_value) as array<varchar>) as tickets_fields_value
 --------------------
 SELECT CAST(json_parse(tickets_fields_value) AS ARRAY<varchar>) AS tickets_fields_value
+------------------------------------------------------------------------------------------------------------------------
+SELECT *
+ FROM operator_raw_vs_fdm
+ UNPIVOT (discrepancy_amount FOR status IN (`discrepancy on gmv_amount`, `discrepancy on gmv_take_rate_amount`, `discrepancy on insurance_amount`, `discrepancy on discount_amount`))
+--------------------
+SELECT *
+FROM operator_raw_vs_fdm
+UNPIVOT (discrepancy_amount FOR status IN ('discrepancy on gmv_amount', 'discrepancy on gmv_take_rate_amount', 'discrepancy on insurance_amount', 'discrepancy on discount_amount'))

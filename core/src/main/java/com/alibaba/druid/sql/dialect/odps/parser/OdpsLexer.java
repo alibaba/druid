@@ -158,7 +158,7 @@ public class OdpsLexer extends HiveLexer {
                 break;
             }
 
-            if (ch == '；') {
+            if (ch == ';') {
                 break;
             }
 

@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.gaussdb.ast.stmt;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbObject;
@@ -9,6 +10,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class GaussDbCreateTableStatement extends SQLCreateTableStatement implements GaussDbObject {
     protected GaussDbDistributeBy distributeBy;
+    protected SQLExpr toGroup;
+    protected SQLExpr toNode;
+    private SQLExpr onCommitExpr;
+    private SQLExpr compressType;
+    private SQLExpr rowMovementType;
 
     public GaussDbCreateTableStatement() {
         super(DbType.gaussdb);
@@ -23,6 +29,28 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
 
     public GaussDbDistributeBy getDistributeBy() {
         return distributeBy;
+    }
+
+    public void setToGroup(SQLExpr toGroup) {
+        if (toGroup != null) {
+            toGroup.setParent(this);
+        }
+        this.toGroup = toGroup;
+    }
+
+    public SQLExpr getToGroup() {
+        return toGroup;
+    }
+
+    public void setToNode(SQLExpr toNode) {
+        if (toNode != null) {
+            toNode.setParent(this);
+        }
+        this.toNode = toNode;
+    }
+
+    public SQLExpr getToNode() {
+        return toNode;
     }
 
     @Override
@@ -43,5 +71,29 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
             acceptChild(visitor, this.distributeBy);
             acceptChild((SQLASTVisitor) visitor);
         }
+    }
+
+    public SQLExpr getOnCommitExpr() {
+        return onCommitExpr;
+    }
+
+    public void setOnCommitExpr(SQLExpr onCommitExpr) {
+        this.onCommitExpr = onCommitExpr;
+    }
+
+    public SQLExpr getCompressType() {
+        return compressType;
+    }
+
+    public void setCompressType(SQLExpr compressType) {
+        this.compressType = compressType;
+    }
+
+    public SQLExpr getRowMovementType() {
+        return rowMovementType;
+    }
+
+    public void setRowMovementType(SQLExpr rowMovementType) {
+        this.rowMovementType = rowMovementType;
     }
 }
