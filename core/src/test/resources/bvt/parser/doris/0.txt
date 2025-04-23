@@ -1,9 +1,9 @@
-CREATE TABLE `dim_store_item_state_20240924` (
+CREATE TABLE `dim_store_item_state` (
   `store_code` bigint NULL COMMENT '门店code',
   `item_code` varchar(200) NULL COMMENT '商品code',
 ) ENGINE=OLAP
 DUPLICATE KEY(`store_code`, `item_code`)
-COMMENT '智能选品-合并结果表'
+COMMENT 'xxx'
 DISTRIBUTED BY HASH(`store_code`, `item_code`) BUCKETS AUTO
 PROPERTIES (
 "replication_allocation" = "tag.location.default: 3",
@@ -18,12 +18,12 @@ PROPERTIES (
 "group_commit_data_bytes" = "134217728"
 );
 --------------------
-CREATE TABLE `dim_store_item_state_20240924` (
+CREATE TABLE `dim_store_item_state` (
 	`store_code` bigint NULL COMMENT '门店code',
 	`item_code` varchar(200) NULL COMMENT '商品code'
 ) ENGINE = OLAP
 DUPLICATE KEY (`store_code`, `item_code`)
-COMMENT '智能选品-合并结果表'
+COMMENT 'xxx'
 DISTRIBUTED BY HASH (`store_code`, `item_code`) BUCKETS AUTO
 PROPERTIES (
 	"replication_allocation" = "tag.location.default: 3",
