@@ -143,6 +143,8 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             if (lexer.token() == Token.LITERAL_INT) {
                 stmt.setBuckets(lexer.integerValue().intValue());
                 lexer.nextToken();
+            } else if (lexer.nextIfIdentifier("AUTO")) {
+                stmt.setAutoBucket(true);
             }
         }
 

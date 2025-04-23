@@ -66,6 +66,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected ClusteringType clusteringType;
     protected final List<SQLSelectOrderByItem> clusteredBy = new ArrayList<SQLSelectOrderByItem>();
     protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
+    protected boolean isAutoBucket;
     protected int buckets;
     protected int shards;
     protected final List<SQLAssignItem> tableOptions = new ArrayList<SQLAssignItem>();
@@ -78,10 +79,12 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected SQLExpr lifeCycle;
 
     public SQLCreateTableStatement() {
+        isAutoBucket = false;
     }
 
     public SQLCreateTableStatement(DbType dbType) {
         super(dbType);
+        isAutoBucket = false;
     }
 
     @Override
@@ -114,6 +117,14 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, tableOptions);
 //        this.acceptChild(v, tblProperties);
         this.acceptChild(v, lifeCycle);
+    }
+
+    public boolean isAutoBucket() {
+        return isAutoBucket;
+    }
+
+    public void setAutoBucket(boolean autoBucket) {
+        isAutoBucket = autoBucket;
     }
 
     public SQLExpr getComment() {

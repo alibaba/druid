@@ -1,3 +1,43 @@
+CREATE TABLE `dim_store_item_state_20240924` (
+  `store_code` bigint NULL COMMENT '门店code',
+  `item_code` varchar(200) NULL COMMENT '商品code',
+) ENGINE=OLAP
+DUPLICATE KEY(`store_code`, `item_code`)
+COMMENT '智能选品-合并结果表'
+DISTRIBUTED BY HASH(`store_code`, `item_code`) BUCKETS AUTO
+PROPERTIES (
+"replication_allocation" = "tag.location.default: 3",
+"min_load_replica_num" = "-1",
+"is_being_synced" = "false",
+"storage_format" = "V2",
+"inverted_index_storage_format" = "DEFAULT",
+"light_schema_change" = "true",
+"disable_auto_compaction" = "false",
+"enable_single_replica_compaction" = "false",
+"group_commit_interval_ms" = "10000",
+"group_commit_data_bytes" = "134217728"
+);
+--------------------
+CREATE TABLE `dim_store_item_state_20240924` (
+	`store_code` bigint NULL COMMENT '门店code',
+	`item_code` varchar(200) NULL COMMENT '商品code'
+) ENGINE = OLAP
+DUPLICATE KEY (`store_code`, `item_code`)
+COMMENT '智能选品-合并结果表'
+DISTRIBUTED BY HASH (`store_code`, `item_code`) BUCKETS AUTO
+PROPERTIES (
+	"replication_allocation" = "tag.location.default: 3",
+	"min_load_replica_num" = "-1",
+	"is_being_synced" = "false",
+	"storage_format" = "V2",
+	"inverted_index_storage_format" = "DEFAULT",
+	"light_schema_change" = "true",
+	"disable_auto_compaction" = "false",
+	"enable_single_replica_compaction" = "false",
+	"group_commit_interval_ms" = "10000",
+	"group_commit_data_bytes" = "134217728"
+);
+------------------------------------------------------------------------------------------------------------------------
 select Name from student where age in (18,20,25)
 --------------------
 SELECT Name
