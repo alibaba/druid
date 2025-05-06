@@ -102,6 +102,31 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
         printSQLPartitions(x.getPartitions());
         return false;
     }
+
+    @Override
+    protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
+        print0(ucase ? "CREATE " : "create ");
+
+        printCreateTableFeatures(x);
+
+        print0(ucase ? "TABLE " : "table ");
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        printTableSourceExpr(
+                x.getTableSource()
+                        .getExpr());
+
+        printCreateTableAfterName(x);
+        printTableElements(x.getTableElementList());
+        printPartitionedBy(x);
+        printClusteredBy(x);
+        printCreateTableLike(x);
+
+        printSelectAs(x, printSelect);
+    }
     @Override
     public boolean visit(CKCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
@@ -145,6 +170,7 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
             print0(ucase ? "SETTINGS " : "settings ");
             printAndAccept(settings, ", ");
         }
+        printComment(x.getComment());
         return false;
     }
 
