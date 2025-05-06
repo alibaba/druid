@@ -102,6 +102,10 @@ public class CKCreateTableParser extends SQLCreateTableParser {
                 break;
             }
         }
+
+        if (lexer.nextIf(Token.COMMENT)) {
+            ckStmt.setComment(this.exprParser.expr());
+        }
     }
 
     @Override
