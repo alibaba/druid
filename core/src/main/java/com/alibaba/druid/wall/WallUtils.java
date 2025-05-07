@@ -15,7 +15,12 @@
  */
 package com.alibaba.druid.wall;
 
-import com.alibaba.druid.wall.spi.*;
+import com.alibaba.druid.wall.spi.DB2WallProvider;
+import com.alibaba.druid.wall.spi.GaussDBWallProvider;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
+import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallUtils {
     public static boolean isValidateDB2(String sql) {
@@ -35,6 +40,16 @@ public class WallUtils {
 
     public static boolean isValidatePostgres(String sql, WallConfig config) {
         PGWallProvider provider = new PGWallProvider(config);
+        return provider.checkValid(sql);
+    }
+
+    public static boolean isValidateGaussDB(String sql) {
+        GaussDBWallProvider provider = new GaussDBWallProvider();
+        return provider.checkValid(sql);
+    }
+
+    public static boolean isValidateGaussDB(String sql, WallConfig config) {
+        GaussDBWallProvider provider = new GaussDBWallProvider(config);
         return provider.checkValid(sql);
     }
 

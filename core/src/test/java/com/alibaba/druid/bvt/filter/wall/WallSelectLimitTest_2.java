@@ -20,7 +20,12 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.spi.*;
+import com.alibaba.druid.wall.spi.DB2WallProvider;
+import com.alibaba.druid.wall.spi.GaussDBWallProvider;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
+import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 import junit.framework.TestCase;
 
 public class WallSelectLimitTest_2 extends TestCase {
@@ -65,6 +70,17 @@ public class WallSelectLimitTest_2 extends TestCase {
     public void testPG() throws Exception {
         String sql = "select * from t limit 10";
         WallProvider provider = new PGWallProvider(config);
+        WallCheckResult checkResult = provider.check(sql);
+        String resultSql = checkResult.getSql();
+        System.out.println(resultSql);
+        assertEquals("SELECT *\n" +
+                "FROM t\n" +
+                "LIMIT 10 OFFSET 0", resultSql);
+    }
+
+    public void testGaussDB() throws Exception {
+        String sql = "select * from t limit 10";
+        WallProvider provider = new GaussDBWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
         String resultSql = checkResult.getSql();
         System.out.println(resultSql);
