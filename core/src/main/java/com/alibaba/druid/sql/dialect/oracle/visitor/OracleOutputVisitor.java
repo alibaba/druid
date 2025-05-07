@@ -2995,4 +2995,77 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         return false;
     }
+
+    public boolean visit(OracleJSONTableExpr x) {
+        print0(ucase ? "JSON_TABLE(" : "json_table(");
+        x.getExpr().accept(this);
+        print(',');
+        x.getPath().accept(this);
+        incrementIndent();
+        println();
+        print0(ucase ? "COLUMNS (" : "columns (");
+        incrementIndent();
+        println();
+        printlnAndAccept(x.getColumns(), ",");
+        decrementIndent();
+        println();
+        print(')');
+        decrementIndent();
+        println();
+        print(')');
+
+        return false;
+    }
+
+    public boolean visit(OracleJSONTableExpr.Column x) {
+        x.getName().accept(this);
+
+        if (x.isOrdinality()) {
+            print0(ucase ? " FOR ORDINALITY" : " for ordinality");
+        }
+
+        SQLDataType dataType = x.getDataType();
+        if (dataType != null) {
+            print(' ');
+            dataType.accept(this);
+        }
+
+        if (x.isExists()) {
+            print0(ucase ? " EXISTS" : " exists");
+        }
+
+        SQLExpr path = x.getPath();
+        if (path != null) {
+            print0(ucase ? " PATH " : " path ");
+            path.accept(this);
+        }
+
+        List<OracleJSONTableExpr.Column> nestedColumns = x.getNestedColumns();
+        if (nestedColumns.size() > 0) {
+            print0(ucase ? " COLUMNS (" : " columns (");
+            printAndAccept(nestedColumns, ", ");
+            print(')');
+        }
+
+        SQLExpr onEmpty = x.getOnEmpty();
+        if (onEmpty != null) {
+            print(' ');
+            if (!(onEmpty instanceof SQLNullExpr || onEmpty instanceof SQLIdentifierExpr)) {
+                print0(ucase ? "DEFAULT " : "default ");
+            }
+            onEmpty.accept(this);
+            print0(ucase ? " ON EMPTY" : " on empty");
+        }
+
+        SQLExpr onError = x.getOnError();
+        if (onError != null) {
+            print(' ');
+            if (!(onEmpty instanceof SQLNullExpr || onEmpty instanceof SQLIdentifierExpr)) {
+                print0(ucase ? "DEFAULT " : "default ");
+            }
+            onError.accept(this);
+            print0(ucase ? " ON ERROR" : " on error");
+        }
+        return false;
+    }
 }

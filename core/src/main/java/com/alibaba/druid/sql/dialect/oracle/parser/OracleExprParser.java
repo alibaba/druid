@@ -491,9 +491,101 @@ public class OracleExprParser extends SQLExprParser {
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 return primaryRest(sqlExpr);
+            case IDENTIFIER:
+                // if match json_table, then process and return OracleJSONTableExpr object. else, continue invoke primary()
+                if (lexer.identifierEquals("JSON_TABLE")) {
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    OracleJSONTableExpr jsonTable = new OracleJSONTableExpr();
+                    jsonTable.setExpr(this.expr());
+                    accept(Token.COMMA);
+                    jsonTable.setPath(this.expr());
+                    acceptIdentifier("COLUMNS");
+                    accept(Token.LPAREN);
+                    for (; lexer.token() != Token.RPAREN; ) {
+                        jsonTable.addColumn(parseJsonTableColumn());
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.RPAREN);
+                    accept(Token.RPAREN);
+                    return jsonTable;
+                }
             default:
                 return super.primary();
         }
+    }
+
+    protected OracleJSONTableExpr.Column parseJsonTableColumn() {
+        OracleJSONTableExpr.Column column = new OracleJSONTableExpr.Column();
+
+        SQLName name = this.name();
+        column.setName(name);
+        if (lexer.token() == Token.FOR) {
+            lexer.nextToken();
+            acceptIdentifier("ORDINALITY");
+            column.setOrdinality(true);
+        } else {
+            boolean nested = name instanceof SQLIdentifierExpr
+                    && name.nameHashCode64() == FnvHash.Constants.NESTED;
+            if (!nested) {
+                column.setDataType(
+                        this.parseDataType());
+            }
+
+            if (lexer.token() == Token.EXISTS) {
+                lexer.nextToken();
+                column.setExists(true);
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.PATH)) {
+                lexer.nextToken();
+                column.setPath(
+                        this.primary());
+            }
+
+            if (name instanceof SQLIdentifierExpr
+                    && name.nameHashCode64() == FnvHash.Constants.NESTED) {
+                acceptIdentifier("COLUMNS");
+                accept(Token.LPAREN);
+                for (; lexer.token() != Token.RPAREN; ) {
+                    OracleJSONTableExpr.Column nestedColumn = parseJsonTableColumn();
+                    column.addNestedColumn(nestedColumn);
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+                accept(Token.RPAREN);
+            }
+
+            for (int i = 0; i < 2; ++i) {
+                if (lexer.identifierEquals("ERROR")
+                        || lexer.token() == Token.DEFAULT
+                        || lexer.token() == Token.NULL) {
+                    if (lexer.token() == Token.DEFAULT) {
+                        lexer.nextToken();
+                    }
+
+                    SQLExpr expr = this.expr();
+                    accept(Token.ON);
+                    if (lexer.identifierEquals("ERROR")) {
+                        lexer.nextToken();
+                        column.setOnError(expr);
+                    } else {
+                        acceptIdentifier("EMPTY");
+                        column.setOnEmpty(expr);
+                    }
+                }
+            }
+        }
+
+        return column;
     }
 
     @Override
