@@ -51,13 +51,7 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.NClob;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAmount;
 import java.util.*;
@@ -2575,7 +2569,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (i != 0) {
                     if (groupItemSingleLine) {
                         if (item instanceof SQLGroupingSetExpr) {
-                            if (!item.hasBeforeComment()) {
+                            if (x.isGroupingSetsHaveComma()) {
+                                println(',');
+                            } else if (!item.hasBeforeComment()) {
                                 println();
                             }
                         } else {
@@ -2583,7 +2579,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                         }
                     } else {
                         if (item instanceof SQLGroupingSetExpr) {
-                            println();
+                            if (x.isGroupingSetsHaveComma()) {
+                                println(',');
+                            } else {
+                                println();
+                            }
                         } else {
                             print(", ");
                         }
