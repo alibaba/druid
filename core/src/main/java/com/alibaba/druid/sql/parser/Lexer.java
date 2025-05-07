@@ -1677,10 +1677,6 @@ public class Lexer {
                             scanChar();
                             scanChar();
                             token = Token.LTLT;
-                        } else if (c1 == '@') {
-                            scanChar();
-                            scanChar();
-                            token = Token.LT_MONKEYS_AT;
                         } else if (c1 == '-' && charAt(pos + 2) == '>') {
                             scanChar();
                             scanChar();
