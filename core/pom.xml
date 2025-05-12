@@ -19,7 +19,7 @@
 		<junit.version>4.13.1</junit.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.8</jdk.version>
+		<jdk.version>17</jdk.version>
 	</properties>
 
 	<developers>
