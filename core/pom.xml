@@ -223,12 +223,12 @@
 		</dependency>
 
 		<!-- GaussBD Driver, to be modified -->
-		<!-- <dependency>
+		<dependency>
 			<groupId>com.huaweicloud.gaussdb</groupId>
 			<artifactId>gaussdbjdbc</artifactId>
 			<version>506.0.0.b058</version>
 			<scope>provided</scope>
-		</dependency> -->
+		</dependency>
 
 		<dependency>
 			<groupId>com.oracle.ojdbc</groupId>
