@@ -23,22 +23,7 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
-import com.alibaba.druid.pool.vendor.DB2ExceptionSorter;
-import com.alibaba.druid.pool.vendor.GaussDBExceptionSorter;
-import com.alibaba.druid.pool.vendor.GaussDBValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
-import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.MockExceptionSorter;
-import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
-import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.NullExceptionSorter;
-import com.alibaba.druid.pool.vendor.OceanBaseOracleExceptionSorter;
-import com.alibaba.druid.pool.vendor.OceanBaseValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
-import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.PGExceptionSorter;
-import com.alibaba.druid.pool.vendor.PGValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
+import com.alibaba.druid.pool.vendor.*;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
@@ -56,12 +41,7 @@ import com.alibaba.druid.support.clickhouse.BalancedClickhouseDriver;
 import com.alibaba.druid.support.clickhouse.BalancedClickhouseDriverNative;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.DruidDataSourceUtils;
-import com.alibaba.druid.util.JMXUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.StringUtils;
-import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.util.*;
 import com.alibaba.druid.wall.WallFilter;
 import com.alibaba.druid.wall.WallProviderStatValue;
 
@@ -86,25 +66,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.ServiceLoader;
-import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.locks.Lock;
@@ -1107,6 +1070,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
         } else if (realDriverClassName.equals(JdbcConstants.GAUSSDB_DRIVER)) {
+            DbType dbType = DbType.of(this.dbTypeName);
             this.validConnectionChecker = new GaussDBValidConnectionChecker();
         } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)
                 || (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER2))) {
@@ -1143,8 +1107,10 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
                 this.exceptionSorter = new InformixExceptionSorter();
+
             } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
                 this.exceptionSorter = new SybaseExceptionSorter();
+
             } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {

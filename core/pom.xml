@@ -222,7 +222,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- GaussBD Driver, to be modified -->
+		<!-- GaussBD Driver -->
 		<dependency>
 			<groupId>com.huaweicloud.gaussdb</groupId>
 			<artifactId>gaussdbjdbc</artifactId>

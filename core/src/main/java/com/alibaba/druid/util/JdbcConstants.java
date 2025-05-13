@@ -166,14 +166,13 @@ public interface JdbcConstants {
 
     String GBASE8S_DRIVER = "com.gbasedbt.jdbc.Driver";
 
-    String OPENGAUSS_DRIVER = "org.opengauss.Driver";
-
     /**
      * 华为云GaussDB
      */
     DbType GAUSSDB = DbType.gaussdb;
     String GAUSSDB_DRIVER = "com.huawei.gaussdb.jdbc.Driver";
 
+    String OPENGAUSS_DRIVER = "org.opengauss.Driver";
     String SUNDB = "sundb"; //科蓝数s据
     String SUNDB_DRIVER = "csii.sundb.jdbc.SundbDriver";
 

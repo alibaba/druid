@@ -362,8 +362,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected void printUcase(String text) {
         print0(ucase ? text.toUpperCase() : text.toLowerCase());
     }
-
-    protected void printName0(String name) {
+    protected void printName0(String name, boolean needQuote) {
         StringBuilder appender = this.appender;
         if (appender == null || name.isEmpty()) {
             return;
@@ -372,7 +371,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLDialect dialect = this.dialect;
         char quote = '"';
         boolean keyword = false;
-        if (isEnabled(VisitorFeature.OutputNameQuote) && dialect != null) {
+        if (isEnabled(VisitorFeature.OutputNameQuote) && dialect != null && needQuote) {
             keyword = dialect.isKeyword(name);
             quote = dialect.getQuoteChar();
         }
@@ -384,6 +383,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (keyword) {
             appender.append(quote);
         }
+    }
+
+    protected void printName0(String name) {
+        printName0(name, true);
     }
 
     protected boolean nameHasSpecial(String alias) {
@@ -2179,7 +2182,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printFunctionName(String name) {
-        printName0(name);
+        printName0(name, false);
     }
 
     public boolean visit(SQLAggregateExpr x) {
@@ -2571,7 +2574,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
                 if (i != 0) {
                     if (groupItemSingleLine) {
-                        println(',');
+                        if (item instanceof SQLGroupingSetExpr) {
+                            if (!item.hasBeforeComment()) {
+                                println();
+                            }
+                        } else {
+                            println(',');
+                        }
                     } else {
                         if (item instanceof SQLGroupingSetExpr) {
                             println();
@@ -3145,7 +3154,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
             final String name = identifierExpr.getName();
             if (!this.parameterized) {
-                printName0(name);
+                printName0(name, false);
                 return;
             }
 

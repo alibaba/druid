@@ -15,12 +15,7 @@
  */
 package com.alibaba.druid.wall;
 
-import com.alibaba.druid.wall.spi.DB2WallProvider;
-import com.alibaba.druid.wall.spi.GaussDBWallProvider;
-import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import com.alibaba.druid.wall.spi.OracleWallProvider;
-import com.alibaba.druid.wall.spi.PGWallProvider;
-import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import com.alibaba.druid.wall.spi.*;
 
 public class WallUtils {
     public static boolean isValidateDB2(String sql) {

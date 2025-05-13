@@ -129,7 +129,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                     print0(ucase ? "HASH (" : "hash (");
                     printAndAccept(createTable.getDistributedBy(), ", ");
                     print0(")");
-                    if (createTable.getBuckets() > 0) {
+                    if (createTable.isAutoBucket()) {
+                        print0(ucase ? " BUCKETS AUTO" : " buckets auto");
+                    } else if (createTable.getBuckets() > 0) {
                         print0(ucase ? " BUCKETS " : " buckets ");
                         print0(String.valueOf(createTable.getBuckets()));
                     }

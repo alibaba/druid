@@ -164,6 +164,7 @@ public class PagerUtils {
             case polardbx:
                 return limitMySqlQueryBlock(queryBlock, dbType, offset, count, check);
             case postgresql:
+            case gaussdb:
             case greenplum:
             case edb:
             case hive:
