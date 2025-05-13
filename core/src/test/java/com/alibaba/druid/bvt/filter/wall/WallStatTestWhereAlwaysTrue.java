@@ -75,6 +75,11 @@ public class WallStatTestWhereAlwaysTrue extends TestCase {
         doTest(provider);
     }
 
+    public void testGaussDB() throws Exception {
+        final WallProvider provider = new GaussDBWallProvider();
+        doTest(provider);
+    }
+
     public void testDB2Server() throws Exception {
         final WallProvider provider = new DB2WallProvider();
         doTest(provider);

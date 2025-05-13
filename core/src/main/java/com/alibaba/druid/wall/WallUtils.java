@@ -38,6 +38,16 @@ public class WallUtils {
         return provider.checkValid(sql);
     }
 
+    public static boolean isValidateGaussDB(String sql) {
+        GaussDBWallProvider provider = new GaussDBWallProvider();
+        return provider.checkValid(sql);
+    }
+
+    public static boolean isValidateGaussDB(String sql, WallConfig config) {
+        GaussDBWallProvider provider = new GaussDBWallProvider(config);
+        return provider.checkValid(sql);
+    }
+
     public static boolean isValidateMySql(String sql) {
         MySqlWallProvider provider = new MySqlWallProvider();
         return provider.checkValid(sql);

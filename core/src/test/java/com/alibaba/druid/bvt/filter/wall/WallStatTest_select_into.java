@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.filter.wall;
 
+import com.alibaba.druid.wall.spi.*;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -7,10 +8,6 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
-import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import com.alibaba.druid.wall.spi.OracleWallProvider;
-import com.alibaba.druid.wall.spi.PGWallProvider;
-import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallStatTest_select_into extends TestCase {
     private String sql = "select * into x from t where id = ?";
@@ -48,6 +45,13 @@ public class WallStatTest_select_into extends TestCase {
 
     public void testPG() throws Exception {
         WallProvider provider = new PGWallProvider();
+        Assert.assertTrue(provider.checkValid(sql));
+        WallTableStat tableStat = provider.getTableStat("t");
+        Assert.assertEquals(1, tableStat.getSelectCount());
+    }
+
+    public void testGaussDB() throws Exception {
+        WallProvider provider = new GaussDBWallProvider();
         Assert.assertTrue(provider.checkValid(sql));
         WallTableStat tableStat = provider.getTableStat("t");
         Assert.assertEquals(1, tableStat.getSelectCount());

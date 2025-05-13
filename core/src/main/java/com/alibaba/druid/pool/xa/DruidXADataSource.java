@@ -79,6 +79,8 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
                 return MySqlUtils.createXAConnection(driver, physicalConn);
             case postgresql:
                 return PGUtils.createXAConnection(physicalConn);
+            case gaussdb:
+                return GaussDBUtils.createXAConnection(physicalConn);
             case h2:
                 return H2Utils.createXAConnection(h2Factory, physicalConn);
             case jtds:

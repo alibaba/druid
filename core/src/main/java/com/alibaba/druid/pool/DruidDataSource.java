@@ -76,6 +76,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * @author ljw [ljw2083@alibaba-inc.com]
  * @author wenshao [szujobs@hotmail.com]
+ * @author Acewuye
  */
 public class DruidDataSource extends DruidAbstractDataSource
         implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource, MBeanRegistration {
@@ -1068,6 +1069,9 @@ public class DruidDataSource extends DruidAbstractDataSource
                 || realDriverClassName.equals(JdbcConstants.OPENGAUSS_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
+        } else if (realDriverClassName.equals(JdbcConstants.GAUSSDB_DRIVER)) {
+            DbType dbType = DbType.of(this.dbTypeName);
+            this.validConnectionChecker = new GaussDBValidConnectionChecker();
         } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)
                 || (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER2))) {
             DbType dbType = DbType.of(this.dbTypeName);
@@ -1111,7 +1115,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                     || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
                 this.exceptionSorter = new PGExceptionSorter();
-
+            } else if (realDriverClassName.equals(JdbcConstants.GAUSSDB_DRIVER)) {
+                this.exceptionSorter = new GaussDBExceptionSorter();
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
                 this.exceptionSorter = new MockExceptionSorter();
             } else if (realDriverClassName.contains("DB2")) {

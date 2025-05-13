@@ -167,12 +167,18 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             case edb:
             case polardb:
             case greenplum:
-            case gaussdb:
                 if (config == null) {
                     config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
                 }
 
                 provider = new PGWallProvider(config);
+                break;
+            case gaussdb:
+                if (config == null) {
+                    config = new WallConfig(GaussDBWallProvider.DEFAULT_CONFIG_DIR);
+                }
+
+                provider = new GaussDBWallProvider(config);
                 break;
             case db2:
                 if (config == null) {

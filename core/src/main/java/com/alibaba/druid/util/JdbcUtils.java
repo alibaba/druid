@@ -30,6 +30,7 @@ import java.util.*;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
+ * @author Acewuye
  */
 public final class JdbcUtils implements JdbcConstants {
     private static final Log LOG = LogFactory.getLog(JdbcUtils.class);
@@ -540,6 +541,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.TYDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:opengauss:")) {
             return JdbcConstants.OPENGAUSS_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:gaussdb:")) {
+            return JdbcConstants.GAUSSDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:TAOS:")) {
             return JdbcConstants.TAOS_DATA;
         } else if (rawUrl.startsWith("jdbc:TAOS-RS:")) {
@@ -936,6 +939,10 @@ public final class JdbcUtils implements JdbcConstants {
 
         if (dbType == DbType.postgresql) {
             return PGUtils.showTables(conn);
+        }
+
+        if (dbType == DbType.gaussdb) {
+            return GaussDBUtils.showTables(conn);
         }
         throw new SQLException("show tables dbType not support for " + dbType);
     }

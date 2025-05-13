@@ -45,6 +45,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.GaussDBUtils;
 import com.alibaba.druid.util.PGUtils;
 
 import java.util.ArrayList;
@@ -628,7 +629,7 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
-            if (PGUtils.isPseudoColumn(x.nameHashCode64())) {
+            if (PGUtils.isPseudoColumn(x.nameHashCode64()) || GaussDBUtils.isPseudoColumn(x.nameHashCode64())) {
                 return false;
             }
 

@@ -1964,6 +1964,10 @@ public class SQLUtils {
                         if (PGUtils.isKeyword(normalizeName)) {
                             return name;
                         }
+                    } else if (DbType.gaussdb == dbType) {
+                        if (GaussDBUtils.isKeyword(normalizeName)) {
+                            return name;
+                        }
                     }
                 }
 
