@@ -1,3 +1,11 @@
+COMPUTE INCREMENTAL STATS test.test
+--------------------
+COMPUTE INCREMENTAL STATS test.test
+------------------------------------------------------------------------------------------------------------------------
+COMPUTE INCREMENTAL STATS test.test PARTITION p1
+--------------------
+COMPUTE INCREMENTAL STATS test.test PARTITION p1
+------------------------------------------------------------------------------------------------------------------------
 SELECT
 straight_join o.org_new_no AS org_new_no --AD店铺代号（机构最新编码） 
 ,
