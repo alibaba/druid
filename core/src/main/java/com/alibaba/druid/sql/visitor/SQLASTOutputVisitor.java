@@ -12327,6 +12327,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         return false;
     }
+
+    public boolean visit(SQLComputeIncrementalStatsStatement x) {
+        print0(ucase ? "COMPUTE INCREMENTAL STATS " : "compute incremental stats ");
+        x.getName().accept(this);
+        if (x.getPartition() != null) {
+            print0(ucase ? " PARTITION " : " partition ");
+            x.getPartition().accept(this);
+        }
+        return false;
+    }
     @Override
     public boolean visit(SQLExceptionStatement.Item x) {
         print0(ucase ? "WHEN " : "when ");

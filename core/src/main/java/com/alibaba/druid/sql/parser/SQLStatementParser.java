@@ -688,6 +688,12 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.token == COMPUTE) {
+                SQLStatement stmt = parseCompute();
+                statementList.add(stmt);
+                continue;
+            }
+
             int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
                 if (parent != null) {
@@ -7802,6 +7808,18 @@ public class SQLStatementParser extends SQLParser {
             if (lexer.token() != Token.WHEN) {
                 break;
             }
+        }
+        return stmt;
+    }
+
+    public SQLComputeIncrementalStatsStatement parseCompute() {
+        accept(COMPUTE);
+        acceptIdentifier("INCREMENTAL");
+        acceptIdentifier("STATS");
+        SQLComputeIncrementalStatsStatement stmt = new SQLComputeIncrementalStatsStatement();
+        stmt.setName(this.exprParser.expr());
+        if (lexer.nextIf(PARTITION)) {
+            stmt.setPartition(this.exprParser.expr());
         }
         return stmt;
     }
