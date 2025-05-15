@@ -239,4 +239,15 @@ public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTV
             super.printSqlSetQuantifier(x);
         }
     }
+
+    @Override
+    public boolean visit(SQLRefreshTableStatement x) {
+        print0(ucase ? "REFRESH " : "refresh ");
+        x.getName().accept(this);
+        if (!x.getPartitions().isEmpty()) {
+            print0(ucase ? " PARTITION " : " partition ");
+            printAndAccept(x.getPartitions(), ", ");
+        }
+        return false;
+    }
 }
