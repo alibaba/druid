@@ -212,24 +212,12 @@ public class SQLCreateTableParser extends SQLDDLParser {
         if (lexer.token() == Token.PARTITION) {
             Lexer.SavePoint mark = lexer.mark();
             lexer.nextToken();
+            // For partition of for PG
             if (Token.OF.equals(lexer.token())) {
                 lexer.reset(mark);
                 SQLPartitionOf partitionOf = parsePartitionOf();
                 stmt.setPartitionOf(partitionOf);
-            } else if (Token.BY.equals(lexer.token())) {
-                lexer.reset(mark);
-                SQLPartitionBy partitionClause = parsePartitionBy();
-                stmt.setPartitionBy(partitionClause);
-            }
-        }
-        // For partition by
-        if (lexer.token() == Token.PARTITION) {
-            Lexer.SavePoint mark = lexer.mark();
-            lexer.nextToken();
-            if (Token.OF.equals(lexer.token())) {
-                lexer.reset(mark);
-                SQLPartitionOf partitionOf = parsePartitionOf();
-                stmt.setPartitionOf(partitionOf);
+                // For partition by
             } else if (Token.BY.equals(lexer.token())) {
                 lexer.reset(mark);
                 SQLPartitionBy partitionClause = parsePartitionBy();
