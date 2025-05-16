@@ -82,7 +82,7 @@ public class SQLTableAliasCollectVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLExprTableSource x) {
         String alias = x.getAlias();
 
-        if (alias == null) {
+        if (alias != null) {
             SQLExpr expr = x.getExpr();
             if (expr instanceof SQLName) {
                 long hashCode64 = ((SQLName) expr).nameHashCode64();
