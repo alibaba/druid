@@ -23,7 +23,7 @@ public class HologresOutputVisitor extends PGOutputVisitor {
             return;
         }
         println();
-        if (partitionBy.getLogical()) {
+        if (partitionBy.getLogical() != null && partitionBy.getLogical()) {
             print0(ucase ? "LOGICAL " : "logical ");
         }
         print0(ucase ? "PARTITION BY " : "partition by ");
