@@ -72,7 +72,14 @@ public class PGCreateTableParser extends SQLCreateTableParser {
             if (lexer.token() == Token.LPAREN) {
                 list.setType(SQLPartitionByList.PartitionByListType.LIST_EXPRESSION);
                 lexer.nextToken();
-                list.addColumn(this.exprParser.expr());
+                for (; ; ) {
+                    list.addColumn(this.exprParser.expr());
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                    } else {
+                        break;
+                    }
+                }
                 accept(Token.RPAREN);
             } else {
                 acceptIdentifier("COLUMNS");
