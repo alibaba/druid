@@ -1,3 +1,19 @@
+INSERT INTO
+  test
+WITH
+  aa AS (
+    select a from aaa
+    )
+select a from aa    
+--------------------
+INSERT INTO test
+WITH aa AS (
+		SELECT a
+		FROM aaa
+	)
+SELECT a
+FROM aa
+------------------------------------------------------------------------------------------------------------------------
 CREATE UNLOGGED TABLE lineitem (
 	L_ORDERKEY BIGINT NOT NULL,
 	L_QUANTITY DECIMAL(15, 2) NOT NULL,
