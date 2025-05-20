@@ -1964,7 +1964,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected boolean isSimpleExprTableSource(SQLExprTableSource x) {
         SQLExpr expr = x.getExpr();
-        return expr instanceof SQLName || (expr instanceof SQLAllColumnExpr && ((SQLAllColumnExpr) expr).getOwner() != null);
+        return (expr instanceof SQLName && !(expr instanceof SQLAllColumnExpr)) || (expr instanceof SQLAllColumnExpr && ((SQLAllColumnExpr) expr).getOwner() != null);
     }
 
     public TableStat getTableStat(SQLExprTableSource tableSource) {
@@ -1994,6 +1994,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             tableSource = ((SQLIdentifierExpr) expr).getResolvedTableSource();
         } else if (expr instanceof SQLPropertyExpr) {
             tableSource = ((SQLPropertyExpr) expr).getResolvedTableSource();
+        } else if (expr instanceof SQLAllColumnExpr) {
+            tableSource = ((SQLAllColumnExpr) expr).getResolvedTableSource();
         }
 
         if (tableSource instanceof SQLExprTableSource) {
