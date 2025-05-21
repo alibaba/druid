@@ -7,13 +7,11 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 
 public class HologresOutputVisitor extends PGOutputVisitor {
     public HologresOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.hologres;
+        super(appender, DbType.hologres, parameterized);
     }
 
     public HologresOutputVisitor(StringBuilder appender) {
-        super(appender);
-        dbType = DbType.hologres;
+        super(appender, DbType.hologres);
     }
 
     @Override
