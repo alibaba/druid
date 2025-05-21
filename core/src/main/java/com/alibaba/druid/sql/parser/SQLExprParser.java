@@ -1579,6 +1579,10 @@ public class SQLExprParser extends SQLParser {
                 expr = new SQLIdentifierExpr(text);
             }
 
+            if (expr instanceof SQLDefaultExpr) {
+                expr = new SQLIdentifierExpr(expr.toString());
+            }
+
             expr = dotRest(expr);
             return primaryRest(expr);
         } else if (lexer.identifierEquals(FnvHash.Constants.SETS) //
