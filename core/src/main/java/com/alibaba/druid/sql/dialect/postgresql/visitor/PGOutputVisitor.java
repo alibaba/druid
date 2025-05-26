@@ -2773,8 +2773,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(SQLArrayDataType x) {
-        if (x.getComponentType() != null) {
-            x.getComponentType().accept(this);
+        SQLDataType componentType = x.getComponentType();
+        if (componentType != null) {
+            componentType.accept(this);
         }
         print('[');
         printAndAccept(x.getArguments(), ", ");
