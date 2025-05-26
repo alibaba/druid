@@ -43,8 +43,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public PGOutputVisitor(StringBuilder appender) {
         super(appender, DbType.postgresql);
     }
+    public PGOutputVisitor(StringBuilder appender, DbType dbType) {
+        super(appender, dbType);
+    }
 
     public PGOutputVisitor(StringBuilder appender, boolean parameterized) {
+        super(appender, DbType.postgresql, parameterized);
+    }
+
+    public PGOutputVisitor(StringBuilder appender, DbType dbType, boolean parameterized) {
         super(appender, DbType.postgresql, parameterized);
     }
 
