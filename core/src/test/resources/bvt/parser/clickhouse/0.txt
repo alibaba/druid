@@ -1,9 +1,9 @@
 CREATE TABLE test.test (  
-`a` Array(UInt64) ) 
+`aa` Array(UInt64) ) 
 ENGINE = MergeTree()
 --------------------
 CREATE TABLE test.test (
-	`a` ARRAY(UInt64)
+	`aa` ARRAY(UInt64)
 ) ENGINE = MergeTree()
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE tmp.tmp_exp_mobile_tzfx_tzqy_m_20240506
