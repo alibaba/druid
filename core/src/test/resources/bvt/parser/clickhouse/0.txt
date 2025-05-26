@@ -1,3 +1,11 @@
+CREATE TABLE test.test (  
+`aa` Array(UInt64) ) 
+ENGINE = MergeTree()
+--------------------
+CREATE TABLE test.test (
+	`aa` ARRAY(UInt64)
+) ENGINE = MergeTree()
+------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE tmp.tmp_exp_mobile_tzfx_tzqy_m_20240506
 (
 date_code Int32 COMMENT '日期编码',
@@ -176,8 +184,8 @@ CREATE TABLE if not exists etda.mytable1
 --------------------
 CREATE TABLE IF NOT EXISTS etda.mytable1 (
 	`id` UInt64,
-	`action_parameter_uint64_list` Array(UInt64),
-	`action_parameter_string_list` Array(String)
+	`action_parameter_uint64_list` ARRAY(UInt64),
+	`action_parameter_string_list` ARRAY(String)
 )
 ------------------------------------------------------------------------------------------------------------------------
 SELECT level, sum(cnt) OVER (PARTITION BY NULL ORDER BY level DESC) AS cnt

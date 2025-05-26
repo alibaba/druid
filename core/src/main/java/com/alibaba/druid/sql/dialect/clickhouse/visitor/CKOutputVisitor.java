@@ -181,33 +181,6 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
     }
 
     @Override
-    public boolean visit(SQLArrayDataType x) {
-        final List<SQLExpr> arguments = x.getArguments();
-        if (Boolean.TRUE.equals(x.getAttribute("ads.arrayDataType"))) {
-            x.getComponentType().accept(this);
-            print('[');
-            printAndAccept(arguments, ", ");
-            print(']');
-        } else {
-            SQLDataType componentType = x.getComponentType();
-            if (componentType != null) {
-                print0(ucase ? "Array<" : "array<");
-                componentType.accept(this);
-                print('>');
-            } else {
-                print0(ucase ? "Array" : "array");
-            }
-
-            if (arguments.size() > 0) {
-                print('(');
-                printAndAccept(arguments, ", ");
-                print(')');
-            }
-        }
-        return false;
-    }
-
-    @Override
     public boolean visit(CKAlterTableUpdateStatement x) {
         print0(ucase ? "ALTER TABLE " : "alter table ");
         printExpr(x.getTableName());
@@ -364,6 +337,14 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
         print0(", ");
 
         valueType.accept(this);
+        print(')');
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLArrayDataType x) {
+        print0(ucase ? "ARRAY(" : "array(");
+        x.getComponentType().accept(this);
         print(')');
         return false;
     }
