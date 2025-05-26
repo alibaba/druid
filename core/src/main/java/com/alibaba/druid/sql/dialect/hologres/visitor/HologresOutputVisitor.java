@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.hologres.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLArrayDataType;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
@@ -26,5 +27,13 @@ public class HologresOutputVisitor extends PGOutputVisitor {
         }
         print0(ucase ? "PARTITION BY " : "partition by ");
         partitionBy.accept(this);
+    }
+
+    @Override
+    public boolean visit(SQLArrayDataType x) {
+        print0(ucase ? "ARRAY<" : "array<");
+        x.getComponentType().accept(this);
+        print('>');
+        return false;
     }
 }

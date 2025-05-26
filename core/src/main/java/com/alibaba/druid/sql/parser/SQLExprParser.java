@@ -4200,7 +4200,7 @@ public class SQLExprParser extends SQLParser {
             return null;
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
+        if (lexer.identifierEquals(FnvHash.Constants.ARRAY) || lexer.token() == Token.ARRAY) {
             return parseArrayDataType();
         }
 

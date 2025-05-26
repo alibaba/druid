@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
+import com.alibaba.druid.sql.ast.SQLArrayDataType;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -161,5 +162,15 @@ public class CKExprParser extends SQLExprParser {
         accept(Token.RPAREN);
 
         return struct;
+    }
+
+    @Override
+    protected SQLArrayDataType parseArrayDataType() {
+        lexer.nextToken();
+        accept(Token.LPAREN);
+        SQLDataType itemType = parseDataType();
+        SQLArrayDataType array = new SQLArrayDataType(itemType, dbType);
+        accept(Token.RPAREN);
+        return array;
     }
 }
