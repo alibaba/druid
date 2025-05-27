@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS my_partitioned_table (
 	id INT,
 	name text,
 	value FLOAT,
-	arr ARRAY<INT>,
+	arr INT[],
 	dt TEXT NOT NULL,
 	region TEXT NOT NULL
 )
