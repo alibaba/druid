@@ -19,9 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -137,6 +135,26 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
     }
 
     @Override
+    protected void printSelectAs(SQLCreateTableStatement x, boolean printSelect) {
+        SQLSelect select = x.getSelect();
+        if (printSelect && select != null) {
+            println();
+            print0(ucase ? "AS" : "as");
+
+            println();
+            visit(select);
+
+            AsSelectWith selectWith = ((DB2CreateTableStatement) x).getSelectWith();
+            if (selectWith == AsSelectWith.WITH_DATA) {
+                if (appender.charAt(appender.length() - 1) != ' ') {
+                    print0(" ");
+                }
+                print0(ucase ? "WITH DATA" : "with data");
+            }
+        }
+    }
+
+    @Override
     public boolean visit(DB2CreateSchemaStatement x) {
         printUcase("CREATE SCHEMA ");
         if (x.getSchemaName() != null) {
@@ -174,6 +192,21 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
 
     @Override
     public void endVisit(DB2DropSchemaStatement x) {
+    }
+
+    @Override
+    public boolean visit(DB2RenameTableStatement x) {
+        print0(ucase ? "RENAME TABLE " : "rename table ");
+
+        x.getName().accept(this);
+        print0(ucase ? " TO " : " to ");
+        x.getTo().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(DB2RenameTableStatement x) {
     }
 
     protected void printOperator(SQLBinaryOperator operator) {
@@ -262,6 +295,21 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
     public boolean visit(SQLAlterTableAddColumn x) {
         print0(ucase ? "ADD COLUMNS " : "add columns ");
         printAndAccept(x.getColumns(), ", ");
+        return false;
+    }
+
+    @Override
+    public boolean visit(DB2AlterTableDropConstraint x) {
+        switch (x.getConstraintType()) {
+            case Unique:
+                print0(ucase ? "DROP UNIQUE " : "drop unique ");
+                x.getConstraintName().accept(this);
+                break;
+            case ForeignKey:
+                print0(ucase ? "DROP FOREIGN KEY " : "drop foreign key ");
+                x.getConstraintName().accept(this);
+                break;
+        }
         return false;
     }
 }
