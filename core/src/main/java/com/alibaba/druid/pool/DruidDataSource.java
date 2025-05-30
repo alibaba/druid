@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.AutoLoad;
@@ -190,8 +191,158 @@ public class DruidDataSource extends DruidAbstractDataSource
         configFromPropeties(properties);
     }
 
+    @Deprecated
     public void configFromPropeties(Properties properties) {
-        DruidDataSourceUtils.configFromProperties(this, properties);
+        configFromProperties(properties);
+    }
+
+    /**
+     * support config after init
+     */
+    public void configFromProperties(Properties properties) {
+        boolean init;
+        lock.lock();
+        try {
+            init = this.inited;
+        } finally {
+            lock.unlock();
+        }
+        if (init) {
+            configFromPropertiesAfterInit(properties);
+        } else {
+            DruidDataSourceUtils.configFromProperties(this, properties);
+        }
+    }
+
+    private void configFromPropertiesAfterInit(Properties properties) {
+        String url = properties.getProperty("druid.url");
+        if (url != null) {
+            url = url.trim();
+        }
+
+        String username = properties.getProperty("druid.username");
+        if (username != null) {
+            username = username.trim();
+        }
+
+        String password = properties.getProperty("druid.password");
+
+        Properties connectProperties = new Properties();
+
+        final String connectUrl;
+        final boolean urlUserPasswordChanged;
+        lock.lock();
+        try {
+            urlUserPasswordChanged = (url != null && !this.jdbcUrl.equals(url))
+                    || (username != null && !this.username.equals(username))
+                    || (password != null && !this.password.equals(password));
+
+            String connectUser = username != null ? username : this.username;
+            if (username != null) {
+                connectProperties.put("user", connectUser);
+            }
+
+            String connectPassword = password != null ? password : this.password;
+            if (connectPassword != null) {
+                connectProperties.put("password", connectPassword);
+            }
+            connectUrl = url != null ? url : this.jdbcUrl;
+        } finally {
+            lock.unlock();
+        }
+
+        if (urlUserPasswordChanged) {
+            Connection conn = null;
+            try {
+                conn = getDriver().connect(connectUrl, connectProperties);
+                LOG.info("check connection info success");
+                // ignore
+            } catch (SQLException e) {
+                throw new DruidRuntimeException("check connection info failed", e);
+            } finally {
+                JdbcUtils.close(conn);
+            }
+        }
+
+        lock.lock();
+        try {
+            if (url != null && !this.jdbcUrl.equals(url)) {
+                this.jdbcUrl = url; // direct set url, ignore init check
+                LOG.info("jdbcUrl changed");
+            }
+
+            if (username != null && !this.username.equals(username)) {
+                this.username = username; // direct set, ignore init check
+                LOG.info("username changed");
+            }
+
+            if (password != null && !this.password.equals(password)) {
+                this.password = password; // direct set, ignore init check
+                LOG.info("password changed");
+            }
+
+            {
+                Integer initialSize = DruidDataSourceUtils.getPropertyInt(properties, "druid.initialSize");
+                if (initialSize != null) {
+                    this.initialSize = initialSize;
+                }
+            }
+
+            Integer maxActive = DruidDataSourceUtils.getPropertyInt(properties, "druid.maxActive");
+            Integer minIdle = DruidDataSourceUtils.getPropertyInt(properties, "druid.minIdle");
+            if (maxActive != null || minIdle != null) {
+                int compareMaxActive = maxActive != null ? maxActive.intValue() : this.maxActive;
+                int compareMinIdle = minIdle != null ? minIdle.intValue() : this.minIdle;
+                if (compareMaxActive < compareMinIdle) {
+                    throw new IllegalArgumentException("maxActive less than minIdle, " + compareMaxActive + " < " + compareMinIdle);
+                }
+            }
+            if (maxActive != null) {
+                this.maxActive = maxActive;
+            }
+            if (minIdle != null) {
+                this.minIdle = minIdle;
+            }
+
+            DruidDataSourceUtils.configFromProperties(this, properties);
+
+            if (urlUserPasswordChanged) {
+                for (int i = poolingCount - 1; i >= 0; i--) {
+                    DruidConnectionHolder connection = connections[i];
+                    JdbcUtils.close(connection.conn);
+                    destroyCountUpdater.incrementAndGet(this);
+                    connections[i] = null;
+                }
+                poolingCount = 0;
+                emptySignal();
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        int minIdle = this.minIdle;
+        for (int i = 0; i < minIdle; ++i) {
+            // check need fill
+            lock.lock();
+            try {
+                if (activeCount + poolingCount >= minIdle) {
+                    break;
+                }
+            } finally {
+                lock.unlock();
+            }
+            try {
+                PhysicalConnectionInfo physicalConnection = createPhysicalConnection();
+
+                boolean result = put(physicalConnection);
+                if (!result) {
+                    JdbcUtils.close(physicalConnection.getPhysicalConnection());
+                    LOG.info("put physical connection to pool failed.");
+                }
+            } catch (SQLException e) {
+                LOG.error("fill init connection error", e);
+            }
+        }
     }
 
     public boolean isKillWhenSocketReadTimeout() {
@@ -258,7 +409,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             this.closed = false;
 
             if (properties != null) {
-                configFromPropeties(properties);
+                DruidDataSourceUtils.configFromProperties(this, properties);
             }
         } finally {
             lock.unlock();
