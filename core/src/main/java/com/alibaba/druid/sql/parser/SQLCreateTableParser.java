@@ -145,12 +145,18 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.INCLUDING)) {
                 lexer.nextToken();
-                acceptIdentifier("PROPERTIES");
-                tableLike.setIncludeProperties(true);
+                if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+                    tableLike.setIncludeProperties(true);
+                } else if (lexer.nextIfIdentifier("DISTRIBUTION")) {
+                    tableLike.setIncludeDistribution(true);
+                }
             } else if (lexer.identifierEquals(FnvHash.Constants.EXCLUDING)) {
                 lexer.nextToken();
-                acceptIdentifier("PROPERTIES");
-                tableLike.setExcludeProperties(true);
+                if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+                    tableLike.setExcludeProperties(true);
+                } else if (lexer.nextIfIdentifier("DISTRIBUTION")) {
+                    tableLike.setExcludeDistribution(true);
+                }
             }
         } else if (lexer.token() == Token.INDEX) {
             parseIndex(createTable);
