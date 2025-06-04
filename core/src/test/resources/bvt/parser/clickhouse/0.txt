@@ -1,3 +1,10 @@
+--test
+select a from b
+--------------------
+-- test
+SELECT a
+FROM b
+------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE test.test (  
 `aa` Array(UInt64) ) 
 ENGINE = MergeTree()

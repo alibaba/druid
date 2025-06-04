@@ -3,6 +3,11 @@ alter table test.test truncate partition for (to_date('${day}')-1);
 ALTER TABLE test.test
 	TRUNCATE PARTITION (to_date('${day}') - 1);
 ------------------------------------------------------------------------------------------------------------------------
+alter table test.test truncate partition for (to_date('${day}')-1); 
+--------------------
+ALTER TABLE test.test
+	TRUNCATE PARTITION (to_date('${day}') - 1);
+------------------------------------------------------------------------------------------------------------------------
 CREATE FOREIGN TABLE IF NOT EXISTS test.test
 (
 	id 	bigint 								
