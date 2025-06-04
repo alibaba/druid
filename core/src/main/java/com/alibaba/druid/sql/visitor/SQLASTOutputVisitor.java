@@ -11750,6 +11750,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " INCLUDING PROPERTIES" : " including properties");
         } else if (x.isExcludeProperties()) {
             print0(ucase ? " EXCLUDING PROPERTIES" : " excluding properties");
+        } else if (x.isIncludeDistribution()) {
+            print0(ucase ? " INCLUDING DISTRIBUTION" : " including distribution");
+        } else if (x.isExcludeDistribution()) {
+            print0(ucase ? " EXCLUDING DISTRIBUTION" : " excluding distribution");
         }
         return false;
     }
