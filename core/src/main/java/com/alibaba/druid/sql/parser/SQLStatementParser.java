@@ -2265,6 +2265,9 @@ public class SQLStatementParser extends SQLParser {
                 case PARTITION:
                     alterTablePartition(stmt);
                     break;
+                case TRUNCATE:
+                    alterTableTruncate(stmt);
+                    break;
                 case REPLACE:
                     stmt.addItem(
                             parseAlterTableReplaceColumn()
@@ -2458,6 +2461,24 @@ public class SQLStatementParser extends SQLParser {
         }
 
         stmt.addItem(item);
+    }
+
+    protected void alterTableTruncate(SQLAlterTableStatement stmt) {
+        lexer.nextToken();
+        if (lexer.nextIf(Token.PARTITION)) {
+            SQLAlterTableTruncatePartition item = new SQLAlterTableTruncatePartition();
+            if (lexer.nextIf(Token.FOR)) {
+                accept(Token.LPAREN);
+                do {
+                    item.addPartitionValue(exprParser.expr());
+                }
+                while (lexer.nextIf(Token.COMMA));
+                accept(Token.RPAREN);
+            } else {
+                item.addPartition(exprParser.name());
+            }
+            stmt.addItem(item);
+        }
     }
 
     private void alterTablePartition(SQLAlterTableStatement stmt) {

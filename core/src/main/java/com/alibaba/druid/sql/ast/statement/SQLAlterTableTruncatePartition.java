@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -24,11 +25,21 @@ import java.util.List;
 
 public class SQLAlterTableTruncatePartition extends SQLObjectImpl implements SQLAlterTableItem {
     private final List<SQLName> partitions = new ArrayList<SQLName>(4);
+    private final List<SQLExpr> partitionValues = new ArrayList<>(4);
 
     public List<SQLName> getPartitions() {
         return partitions;
     }
 
+    public void addPartitionValue(SQLExpr partitionValue) {
+        if (partitionValue != null) {
+            partitionValue.setParent(this);
+        }
+        this.partitionValues.add(partitionValue);
+    }
+    public List<SQLExpr> getPartitionValues() {
+        return partitionValues;
+    }
     public void addPartition(SQLName partition) {
         if (partition != null) {
             partition.setParent(this);

@@ -8450,7 +8450,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAlterTableTruncatePartition x) {
         print0(ucase ? "TRUNCATE PARTITION " : "truncate partition ");
-        printPartitions(x.getPartitions());
+        if (x.getPartitionValues().isEmpty()) {
+            printPartitions(x.getPartitions());
+        } else {
+            print0("(");
+            printAndAccept(x.getPartitionValues(), ", ");
+            print0(")");
+        }
         return false;
     }
 
