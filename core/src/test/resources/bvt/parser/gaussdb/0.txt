@@ -1,3 +1,32 @@
+alter table test.test truncate partition for (to_date('${day}')-1); 
+--------------------
+ALTER TABLE test.test
+	TRUNCATE PARTITION (to_date('${day}') - 1);
+------------------------------------------------------------------------------------------------------------------------
+CREATE FOREIGN TABLE IF NOT EXISTS test.test
+(
+	id 	bigint 								
+)
+SERVER obs_server 
+OPTIONS (
+format 'orc', 
+foldername '/test/test',
+   compression 'snappy',
+    version '0.12'
+) write only;
+--------------------
+CREATE FOREIGN TABLE IF NOT EXISTS test.test (
+	id bigint
+)
+SERVER obs_server
+OPTIONS (
+format 'orc',
+	foldername '/test/test',
+	compression 'snappy',
+	version '0.12'
+)
+WRITE ONLY;
+------------------------------------------------------------------------------------------------------------------------
 INSERT INTO
   test
 WITH
