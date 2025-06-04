@@ -42,13 +42,11 @@ public class CKLexer extends Lexer {
 
         return new Keywords(map);
     }
-    public CKLexer(String input) {
-        super(input);
-        dbType = DbType.clickhouse;
-    }
 
     public CKLexer(String input, SQLParserFeature... features) {
-        super(input);
+        super(input, DbType.clickhouse);
+        this.skipComment = true;
+        this.keepComments = true;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
