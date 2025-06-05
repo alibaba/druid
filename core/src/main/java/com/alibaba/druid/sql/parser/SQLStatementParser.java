@@ -694,6 +694,12 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.identifierEquals("RESET")) {
+                SQLStatement stmt = parseReset();
+                statementList.add(stmt);
+                continue;
+            }
+
             int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
                 if (parent != null) {
@@ -7833,6 +7839,30 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
+    public SQLResetStatement parseReset() {
+        acceptIdentifier("RESET");
+        SQLResetStatement stmt = new SQLResetStatement();
+        for (; ; ) {
+            if (lexer.token() == Token.IDENTIFIER) {
+                if (lexer.identifierEquals("QUERY")) {
+                    lexer.nextToken();
+                    accept(Token.CACHE);
+                    stmt.getOptions().add("QUERY CACHE");
+                } else {
+                    stmt.getOptions().add(lexer.stringVal());
+                    lexer.nextToken();
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+            }
+            break;
+        }
+
+        return stmt;
+    }
     public SQLComputeIncrementalStatsStatement parseCompute() {
         accept(COMPUTE);
         acceptIdentifier("INCREMENTAL");

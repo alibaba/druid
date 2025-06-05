@@ -6,6 +6,10 @@ CREATE TABLE test.test (
 PARTITION BY LIST (dt) (
 )
 ------------------------------------------------------------------------------------------------------------------------
+reset enable_index_nestloop ;
+--------------------
+RESET enable_index_nestloop;
+------------------------------------------------------------------------------------------------------------------------
 alter table test.test truncate partition for (concat(substring(date_trunc('month',to_date('${day}') - interval '1' month),1,7), '-01'));
 --------------------
 ALTER TABLE test.test

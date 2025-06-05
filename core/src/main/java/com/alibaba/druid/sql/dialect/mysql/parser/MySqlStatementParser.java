@@ -1043,33 +1043,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLStatement parseReset() {
-        acceptIdentifier(RESET);
-
-        MySqlResetStatement stmt = new MySqlResetStatement();
-
-        for (; ; ) {
-            if (lexer.token() == Token.IDENTIFIER) {
-                if (lexer.identifierEquals("QUERY")) {
-                    lexer.nextToken();
-                    accept(Token.CACHE);
-                    stmt.getOptions().add("QUERY CACHE");
-                } else {
-                    stmt.getOptions().add(lexer.stringVal());
-                    lexer.nextToken();
-                }
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-            }
-            break;
-        }
-
-        return stmt;
-    }
-
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         if (lexer.identifierEquals("PREPARE")) {
             MySqlPrepareStatement stmt = parsePrepare();
