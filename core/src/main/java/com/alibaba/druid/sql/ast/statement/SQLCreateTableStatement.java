@@ -1005,6 +1005,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         } else if (item instanceof SQLAlterTableAddIndex) {
             return apply((SQLAlterTableAddIndex) item);
+        } else if (item instanceof SQLAlterTableTruncatePartition) {
+            return apply((SQLAlterTableTruncatePartition) item);
         }
 
         return false;
@@ -1189,6 +1191,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return true;
     }
 
+    protected boolean apply(SQLAlterTableTruncatePartition item) {
+        return false;
+    }
     protected boolean apply(SQLAlterTableAddIndex item) {
         return false;
     }
