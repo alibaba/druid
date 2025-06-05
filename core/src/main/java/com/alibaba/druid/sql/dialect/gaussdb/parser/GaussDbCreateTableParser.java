@@ -194,10 +194,12 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
         accept(Token.RPAREN);
         accept(Token.LPAREN);
         for (; ; ) {
-            listPartition.addPartition(this.getExprParser().parsePartition());
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
+            if (lexer.token() == Token.PARTITION) {
+                listPartition.addPartition(this.getExprParser().parsePartition());
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
             }
             break;
         }

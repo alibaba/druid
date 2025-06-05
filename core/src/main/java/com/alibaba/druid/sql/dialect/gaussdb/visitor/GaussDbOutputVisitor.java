@@ -147,9 +147,7 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
     public boolean visit(SQLPartitionByRange x) {
         print0(ucase ? "RANGE" : "range");
         printColumns(x.getColumns());
-        if (!x.getPartitions().isEmpty()) {
-            printPartitionsValue(x.getPartitions());
-        }
+        printPartitionsValue(x.getPartitions());
         return false;
     }
 
@@ -157,9 +155,7 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
     public boolean visit(SQLPartitionByList x) {
         print0(ucase ? "LIST" : "list");
         printColumns(x.getColumns());
-        if (!x.getPartitions().isEmpty()) {
-            printPartitionsValue(x.getPartitions());
-        }
+        printPartitionsValue(x.getPartitions());
         return false;
     }
 

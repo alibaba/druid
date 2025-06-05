@@ -1,3 +1,11 @@
+create table test.test (dt int) partition by list (dt) ()
+--------------------
+CREATE TABLE test.test (
+	dt int
+)
+PARTITION BY LIST (dt) (
+)
+------------------------------------------------------------------------------------------------------------------------
 reset enable_index_nestloop ;
 --------------------
 RESET enable_index_nestloop;
