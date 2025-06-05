@@ -1,3 +1,11 @@
+create table test.test (dt int) partition by list (dt) ()
+--------------------
+CREATE TABLE test.test (
+	dt int
+)
+PARTITION BY LIST (dt) (
+)
+------------------------------------------------------------------------------------------------------------------------
 alter table test.test truncate partition for (concat(substring(date_trunc('month',to_date('${day}') - interval '1' month),1,7), '-01'));
 --------------------
 ALTER TABLE test.test
