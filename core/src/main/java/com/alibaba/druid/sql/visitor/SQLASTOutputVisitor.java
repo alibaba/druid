@@ -12456,6 +12456,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    @Override
+    public boolean visit(SQLResetStatement x) {
+        print0(ucase ? "RESET " : "reset ");
+        for (int i = 0; i < x.getOptions().size(); ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            print0(x.getOptions().get(i));
+        }
+        return false;
+    }
     protected void printCreateFunctionBody(SQLCreateFunctionStatement x) {
         printCreateFunctionReturns(x);
 
