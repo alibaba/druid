@@ -1960,18 +1960,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public boolean visit(MySqlResetStatement x) {
-        print0(ucase ? "RESET " : "reset ");
-        for (int i = 0; i < x.getOptions().size(); ++i) {
-            if (i != 0) {
-                print0(", ");
-            }
-            print0(x.getOptions().get(i));
-        }
-        return false;
-    }
-
-    @Override
     public boolean visit(MySqlCreateUserStatement x) {
         print0(ucase ? "CREATE USER " : "create user ");
 

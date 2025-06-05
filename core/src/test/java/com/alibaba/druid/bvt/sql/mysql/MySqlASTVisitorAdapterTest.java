@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.SQLResetStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
@@ -40,7 +41,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new CobarShowStatus().accept(adapter);
         new MySqlKillStatement().accept(adapter);
         new MySqlBinlogStatement().accept(adapter);
-        new MySqlResetStatement().accept(adapter);
+        new SQLResetStatement().accept(adapter);
         new UserSpecification().accept(adapter);
         new MySqlPartitionByKey().accept(adapter);
         new MySqlOutFileExpr().accept(adapter);
