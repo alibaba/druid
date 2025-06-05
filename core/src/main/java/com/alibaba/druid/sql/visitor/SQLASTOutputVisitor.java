@@ -8453,6 +8453,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.getPartitionValues().isEmpty()) {
             printPartitions(x.getPartitions());
         } else {
+            print0(ucase ? "FOR " : "for ");
             print0("(");
             printAndAccept(x.getPartitionValues(), ", ");
             print0(")");

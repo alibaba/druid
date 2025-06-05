@@ -1,7 +1,7 @@
 alter table test.test truncate partition for (concat(substring(date_trunc('month',to_date('${day}') - interval '1' month),1,7), '-01'));
 --------------------
 ALTER TABLE test.test
-	TRUNCATE PARTITION (concat(substring(date_trunc('month', to_date('${day}') - INTERVAL '1' MONTH), 1, 7), '-01'));
+	TRUNCATE PARTITION FOR (concat(substring(date_trunc('month', to_date('${day}') - INTERVAL '1' MONTH), 1, 7), '-01'));
 ------------------------------------------------------------------------------------------------------------------------
 CREATE table IF NOT EXISTS  test.test ( like test.test1 INCLUDING DISTRIBUTION);
 --------------------
@@ -12,12 +12,7 @@ CREATE TABLE IF NOT EXISTS test.test (
 alter table test.test truncate partition for (to_date('${day}')-1); 
 --------------------
 ALTER TABLE test.test
-	TRUNCATE PARTITION (to_date('${day}') - 1);
-------------------------------------------------------------------------------------------------------------------------
-alter table test.test truncate partition for (to_date('${day}')-1); 
---------------------
-ALTER TABLE test.test
-	TRUNCATE PARTITION (to_date('${day}') - 1);
+	TRUNCATE PARTITION FOR (to_date('${day}') - 1);
 ------------------------------------------------------------------------------------------------------------------------
 CREATE FOREIGN TABLE IF NOT EXISTS test.test
 (
