@@ -55,6 +55,20 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     default void endVisit(SQLServerUpdateStatement x) {
     }
 
+    default boolean visit(SQLServerCreateSchemaStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLServerCreateSchemaStatement x) {
+    }
+
+    default boolean visit(SQLServerDropSchemaStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLServerDropSchemaStatement x) {
+    }
+
     default boolean visit(SQLServerExecStatement x) {
         return true;
     }
