@@ -3253,7 +3253,9 @@ public class DruidDataSource extends DruidAbstractDataSource
             lock.lock();
             try {
                 int fillCount = minIdle - (activeCount + poolingCount + createTaskCount);
-                emptySignal(fillCount);
+                if (fillCount > 0) {
+                    emptySignal(fillCount);
+                }
             } finally {
                 lock.unlock();
             }
