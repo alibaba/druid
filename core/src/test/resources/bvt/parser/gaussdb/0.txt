@@ -1,3 +1,35 @@
+select * from a where a.id in (VALUES (4096), (4097))
+--------------------
+SELECT *
+FROM a
+WHERE a.id IN (VALUES(4096), (4097))
+------------------------------------------------------------------------------------------------------------------------
+insert into
+    test.test
+select user_id, order_type from test
+    ON DUPLICATE KEY
+update
+    user_id = user_id - values(user_id),
+    order_type =values(order_type)
+--------------------
+INSERT INTO test.test
+SELECT user_id, order_type
+FROM test
+ON DUPLICATE KEY UPDATE user_id = user_id - VALUES(user_id), order_type = VALUES(order_type)
+------------------------------------------------------------------------------------------------------------------------
+GRANT TRIGGER,
+REFERENCES,
+UPDATE
+,
+    TRUNCATE,
+INSERT
+,
+SELECT
+,
+    DELETE ON TABLE test.test TO user_test;
+--------------------
+GRANT TRIGGER, REFERENCES, UPDATE, TRUNCATE, INSERT, SELECT, DELETE ON TABLE test.test TO user_test;
+------------------------------------------------------------------------------------------------------------------------
 create table test.test (dt int) partition by list (dt) ()
 --------------------
 CREATE TABLE test.test (

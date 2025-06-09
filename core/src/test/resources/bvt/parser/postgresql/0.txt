@@ -355,7 +355,7 @@ select * from a where a.id in (VALUES (4096), (4097))
 --------------------
 SELECT *
 FROM a
-WHERE a.id IN (VALUES ((4096), (4097))
+WHERE a.id IN (VALUES(4096), (4097))
 ------------------------------------------------------------------------------------------------------------------------
 select array_to_string(array ( select jsonb_array_elements ( '[{"aa":"123","bb":"123"},{"aa":"12356","bb":"12356"}]') ->> 'aa' ) ,',') as aa
 --------------------

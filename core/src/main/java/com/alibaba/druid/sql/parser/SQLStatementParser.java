@@ -1725,6 +1725,9 @@ public class SQLStatementParser extends SQLParser {
             } else if (lexer.token == Token.DESC) {
                 privilege = "DESCRIBE";
                 lexer.nextToken();
+            } else if (lexer.token == TRUNCATE) {
+                privilege = "TRUNCATE";
+                lexer.nextToken();
             } else if (lexer.token == Token.CREATE) {
                 lexer.nextToken();
 
