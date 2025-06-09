@@ -288,9 +288,13 @@ public class PGExprParser extends SQLExprParser {
                 listExpr.setParent(values);
 
                 values.getValues().add(listExpr);
-
+                Lexer.SavePoint savePoint = lexer.mark();
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
+                    if (lexer.token() != Token.LPAREN) {
+                        lexer.reset(savePoint);
+                        break;
+                    }
                     continue;
                 }
                 break;
