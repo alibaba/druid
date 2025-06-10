@@ -99,7 +99,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected boolean parameterizedQuesUnMergeInList;
     protected boolean parameterizedQuesUnMergeValuesList;
     protected boolean printNameQuote;
-    protected char quote = '"';
 
     protected boolean parameterized;
     protected boolean shardingSupport;
@@ -371,9 +370,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLDialect dialect = this.dialect;
         char quote = '"';
         boolean keyword = false;
-        if (isEnabled(VisitorFeature.OutputNameQuote) && dialect != null && needQuote) {
+        if (isEnabled(VisitorFeature.OutputNameQuote) && dialect != null && dialect.getQuoteChars() != SQLDialect.DEFAULT_QUOTE_INT && needQuote) {
             keyword = dialect.isKeyword(name);
-            quote = dialect.getQuoteChar();
+            quote = SQLDialect.Quote.getQuote(dialect.getQuoteChars());
         }
 
         if (keyword) {
@@ -409,11 +408,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printAlias0(String alias) {
         boolean special = nameHasSpecial(alias);
-        char quote = this.quote;
         StringBuilder appender = this.appender;
         SQLDialect dialect = this.dialect;
+        char quote = SQLDialect.Quote.getQuote(dialect.getQuoteChars());
         boolean needQuote = special;
-        if (!needQuote && isEnabled(VisitorFeature.OutputNameQuote) && dialect != null) {
+        if (!needQuote && isEnabled(VisitorFeature.OutputNameQuote)) {
             needQuote = dialect.isAliasKeyword(alias);
         }
 
@@ -3179,9 +3178,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (owner instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identOwner = (SQLIdentifierExpr) owner;
 
-                String ownerName = identOwner.getName();
+                String ownerName = replaceQuota(identOwner.getName());
                 if (!this.parameterized) {
-                    printName0(identOwner.getName());
+                    printName0(ownerName);
                 } else {
                     if (shardingSupport) {
                         ownerName = unwrapShardingTable(ownerName);
@@ -3193,9 +3192,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
             print('.');
 
-            final String name = propertyExpr.getName();
+            final String name = replaceQuota(propertyExpr.getName());
             if (!this.parameterized) {
-                printName0(propertyExpr.getName());
+                printName0(name);
                 return;
             }
 
@@ -3221,6 +3220,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     }
 
+    public String replaceQuota(String name) {
+        if (dialect != null && name.length() >= 2 && dialect.getQuoteChars() != SQLDialect.DEFAULT_QUOTE_INT) {
+            if ((name.charAt(0) == '`' && name.charAt(name.length() - 1) == '`')
+                    || (name.charAt(0) == '"' && name.charAt(name.length() - 1) == '"')
+                    || (name.charAt(0) == '\'' && name.charAt(name.length() - 1) == '\'')) {
+                if (!SQLDialect.Quote.isValidQuota(dialect.getQuoteChars(), SQLDialect.Quote.of(name.charAt(0)))) {
+                    name = SQLDialect.Quote.getQuote(dialect.getQuoteChars()) + name.substring(1, name.length() - 1) + SQLDialect.Quote.getQuote(dialect.getQuoteChars());
+                }
+            }
+        }
+        return name;
+    }
     public boolean visit(SQLExprTableSource x) {
         printTableSourceExpr(x.getExpr());
 
@@ -12126,14 +12137,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         return false;
-    }
-
-    public char getNameQuote() {
-        return quote;
-    }
-
-    public void setNameQuote(char quote) {
-        this.quote = quote;
     }
 
     @Override

@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVisitor {
-    {
-        super.quote = '`';
-    }
-
     public HiveOutputVisitor(StringBuilder appender) {
         super(appender, DbType.hive);
     }

@@ -30,7 +30,6 @@ import java.util.Locale;
 public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarRocksASTVisitor {
     {
         this.shardingSupport = true;
-        this.quote = '`';
     }
 
     public StarRocksOutputVisitor(StringBuilder appender) {
