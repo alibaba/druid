@@ -56,6 +56,11 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(StarRocksCreateTableStatement x) {
+        return visit((SQLCreateTableStatement) x);
+    }
+
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, false);
         printEngine(x);
         printUniqueKey(x);
@@ -66,15 +71,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         printTableOptions(x);
         printSelectAs(x, true);
         return false;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTableStatement x) {
-        if (x instanceof StarRocksCreateTableStatement) {
-            return visit((StarRocksCreateTableStatement) x);
-        } else {
-            return super.visit(x);
-        }
     }
 
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
@@ -228,7 +224,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(SQLColumnDefinition x) {
-        x.getName().accept(this);
+        String columnName = replaceQuota(x.getName().getSimpleName());
+        printName0(columnName);
+
         final SQLDataType dataType = x.getDataType();
 
         if (dataType != null) {

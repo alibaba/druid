@@ -199,7 +199,8 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         boolean parameterized = this.parameterized;
         this.parameterized = false;
 
-        x.getName().accept(this);
+        String columnName = replaceQuota(x.getName().getSimpleName());
+        printName0(columnName);
 
         if (x.getDataType() != null) {
             print(' ');

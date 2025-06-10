@@ -259,7 +259,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         boolean parameterized = this.parameterized;
         this.parameterized = false;
 
-        x.getName().accept(this);
+        String columnName = replaceQuota(x.getName().getSimpleName());
+        printName0(columnName);
 
         SQLDataType dataType = x.getDataType();
         if (dataType != null) {
