@@ -41,7 +41,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     {
         this.dbType = DbType.mysql;
         this.shardingSupport = true;
-        this.quote = '`';
     }
 
     public MySqlOutputVisitor(StringBuilder appender) {

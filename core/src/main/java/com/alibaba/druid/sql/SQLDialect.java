@@ -10,7 +10,7 @@ import java.util.*;
  * @since 1.2.25
  */
 public class SQLDialect {
-    private final List<Character> quoteChars;
+    private final int quoteChars;
     private final DbType dbType;
     private final Keyword keywords;
     private final Keyword aliasKeyword;
@@ -20,7 +20,7 @@ public class SQLDialect {
 
     private SQLDialect(
             DbType dbType,
-            List<Character> quoteChars,
+            int quoteChars,
             Keyword keywords,
             Keyword aliasKeyword,
             Keyword builtInDataTypes,
@@ -36,6 +36,7 @@ public class SQLDialect {
         this.builtInTables = builtInTables;
     }
 
+    public static final int DEFAULT_QUOTE_INT = 0;
     public void dumpBuiltInDataTypes(Collection<String> dataTypes) {
         builtInDataTypes.dumpNames(dataTypes);
     }
@@ -44,7 +45,7 @@ public class SQLDialect {
         return dbType;
     }
 
-    public List<Character> getQuoteChars() {
+    public int getQuoteChars() {
         return quoteChars;
     }
 
@@ -72,19 +73,19 @@ public class SQLDialect {
         String dir = "META-INF/druid/parser/".concat(dbType.name().toLowerCase());
         Properties props = Utils.loadProperties(dir.concat("/dialect.properties"));
 
-        List<Character> quoteChars = new ArrayList<>();
+        int quoteChars = DEFAULT_QUOTE_INT;
         {
             String quotes = props.getProperty("quote");
             if (quotes != null) {
                 for (String quote : quotes.split(",")) {
                     if (quote != null && quote.length() == 1) {
-                        quoteChars.add(quote.charAt(0));
+                        quoteChars = Quote.register(quoteChars, quote.charAt(0));
                     }
                 }
             }
         }
-        if (quoteChars.isEmpty()) {
-            quoteChars.add('"');
+        if (quoteChars == DEFAULT_QUOTE_INT) {
+            quoteChars = Quote.register(quoteChars, '"');
         }
         return new SQLDialect(
                 dbType,
@@ -132,6 +133,51 @@ public class SQLDialect {
 
         public void dumpNames(Collection<String> names) {
             names.addAll(Arrays.asList(this.names));
+        }
+    }
+
+    public enum Quote {
+        SINGLE('\''),
+        DOUBLE('"'),
+        BACK_QUOTE('`');
+        public final int mask;
+        public final char sign;
+        private Quote(char sign) {
+            this.mask = 1 << ordinal();
+            this.sign = sign;
+        }
+
+        public static int register(int features, char sign) {
+            if (sign == '\'') {
+                features |= Quote.SINGLE.mask;
+            } else if (sign == '"') {
+                features |= Quote.DOUBLE.mask;
+            } else if (sign == '`') {
+                features |= Quote.BACK_QUOTE.mask;
+            }
+            return features;
+        }
+
+        public static boolean isValidQuota(int features, char sign) {
+            if (sign == '\'') {
+                return (features & Quote.SINGLE.mask) != 0;
+            } else if (sign == '"') {
+                return (features & Quote.DOUBLE.mask) != 0;
+            } else if (sign == '`') {
+                return (features & Quote.BACK_QUOTE.mask) != 0;
+            }
+            return false;
+        }
+
+        public static char getQuote(int features) {
+            if ((features & Quote.BACK_QUOTE.mask) != 0) {
+                return Quote.BACK_QUOTE.sign;
+            } else if ((features & Quote.SINGLE.mask) != 0) {
+                return Quote.SINGLE.sign;
+            } else if ((features & Quote.DOUBLE.mask) != 0) {
+                return Quote.DOUBLE.sign;
+            }
+            return ' ';
         }
     }
 }
