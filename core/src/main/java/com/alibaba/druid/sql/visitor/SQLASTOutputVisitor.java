@@ -2435,7 +2435,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 SQLIdentifierExpr ownerIdent = (SQLIdentifierExpr) owner;
                 printName(
                         ownerIdent,
-                        ownerIdent.getName(),
+                        replaceQuota(ownerIdent.getName()),
                         this.shardingSupport && this.parameterized
                 );
             } else if (owner != null) {
@@ -2447,7 +2447,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             print('.');
         }
-        String name = x.getName();
+        String name = replaceQuota(x.getName());
         if ("*".equals(name)) {
             print0(name);
         } else {
@@ -2960,7 +2960,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLExpr expr = x.getExpr();
 
         if (expr instanceof SQLIdentifierExpr) {
-            printName0(((SQLIdentifierExpr) expr).getName());
+            String name = replaceQuota(((SQLIdentifierExpr) expr).getName());
+            printName0(name);
         } else if (expr instanceof SQLPropertyExpr) {
             visit((SQLPropertyExpr) expr);
         } else if (expr != null) {
@@ -3009,6 +3010,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printExprAlias(String alias) {
+        alias = replaceQuota(alias);
         print0(ucase ? " AS " : " as ");
         printAlias0(alias);
     }
@@ -3596,7 +3598,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isIfNotExists()) {
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
         }
-        x.getName().accept(this);
+        String columnName = replaceQuota(x.getName().getSimpleName());
+        printName0(columnName);
         final SQLDataType dataType = x.getDataType();
         if (dataType != null) {
             if (JdbcUtils.isPgsqlDbType(dbType) && x.getParent() instanceof SQLAlterTableAlterColumn) {
@@ -4026,6 +4029,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected void printCreateTableRest(SQLCreateTableStatement x) {
     }
 
+    protected void printOrderBy(SQLCreateTableStatement x) {
+    }
     public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, false);
         printPartitionOf(x);

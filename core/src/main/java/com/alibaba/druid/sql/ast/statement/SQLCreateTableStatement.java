@@ -56,6 +56,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected SQLExpr storedAs;
     protected SQLExpr storedBy;
     protected SQLExpr location;
+    protected SQLExpr engine;
+    protected SQLOrderBy orderBy;
 
     protected boolean onCommitPreserveRows;
     protected boolean onCommitDeleteRows;
@@ -125,6 +127,27 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     public void setAutoBucket(boolean autoBucket) {
         isAutoBucket = autoBucket;
+    }
+    public SQLExpr getEngine() {
+        return engine;
+    }
+
+    public void setEngine(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.engine = x;
+    }
+
+    public SQLOrderBy getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
+        this.orderBy = orderBy;
     }
 
     public SQLExpr getComment() {
