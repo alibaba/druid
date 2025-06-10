@@ -10,7 +10,7 @@ import java.util.*;
  * @since 1.2.25
  */
 public class SQLDialect {
-    private final char quoteChar;
+    private final List<Character> quoteChars;
     private final DbType dbType;
     private final Keyword keywords;
     private final Keyword aliasKeyword;
@@ -20,7 +20,7 @@ public class SQLDialect {
 
     private SQLDialect(
             DbType dbType,
-            char quoteChar,
+            List<Character> quoteChars,
             Keyword keywords,
             Keyword aliasKeyword,
             Keyword builtInDataTypes,
@@ -28,7 +28,7 @@ public class SQLDialect {
             Keyword builtInTables
     ) {
         this.dbType = dbType;
-        this.quoteChar = quoteChar;
+        this.quoteChars = quoteChars;
         this.keywords = keywords;
         this.aliasKeyword = aliasKeyword;
         this.builtInDataTypes = builtInDataTypes;
@@ -44,8 +44,8 @@ public class SQLDialect {
         return dbType;
     }
 
-    public char getQuoteChar() {
-        return quoteChar;
+    public List<Character> getQuoteChars() {
+        return quoteChars;
     }
 
     public boolean isKeyword(String name) {
@@ -72,17 +72,23 @@ public class SQLDialect {
         String dir = "META-INF/druid/parser/".concat(dbType.name().toLowerCase());
         Properties props = Utils.loadProperties(dir.concat("/dialect.properties"));
 
-        char quoteChar = '"';
+        List<Character> quoteChars = new ArrayList<>();
         {
-            String quote = props.getProperty("quote");
-            if (quote != null && quote.length() == 1) {
-                quoteChar = quote.charAt(0);
+            String quotes = props.getProperty("quote");
+            if (quotes != null) {
+                for (String quote : quotes.split(",")) {
+                    if (quote != null && quote.length() == 1) {
+                        quoteChars.add(quote.charAt(0));
+                    }
+                }
             }
         }
-
+        if (quoteChars.isEmpty()) {
+            quoteChars.add('"');
+        }
         return new SQLDialect(
                 dbType,
-                quoteChar,
+                quoteChars,
                 new Keyword(
                         Utils.readLines(dir.concat("/keywords"))),
                 new Keyword(

@@ -371,9 +371,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLDialect dialect = this.dialect;
         char quote = '"';
         boolean keyword = false;
-        if (isEnabled(VisitorFeature.OutputNameQuote) && dialect != null && needQuote) {
+        if (isEnabled(VisitorFeature.OutputNameQuote) && dialect != null && !dialect.getQuoteChars().isEmpty() && needQuote) {
             keyword = dialect.isKeyword(name);
-            quote = dialect.getQuoteChar();
+            quote = dialect.getQuoteChars().get(0);
         }
 
         if (keyword) {
@@ -3179,9 +3179,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (owner instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identOwner = (SQLIdentifierExpr) owner;
 
-                String ownerName = identOwner.getName();
+                String ownerName = replaceQuota(identOwner.getName());
                 if (!this.parameterized) {
-                    printName0(identOwner.getName());
+                    printName0(ownerName);
                 } else {
                     if (shardingSupport) {
                         ownerName = unwrapShardingTable(ownerName);
@@ -3193,9 +3193,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
             print('.');
 
-            final String name = propertyExpr.getName();
+            final String name = replaceQuota(propertyExpr.getName());
             if (!this.parameterized) {
-                printName0(propertyExpr.getName());
+                printName0(name);
                 return;
             }
 
@@ -3221,6 +3221,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     }
 
+    public String replaceQuota(String name) {
+        if (dialect != null && name.length() >= 2 && !dialect.getQuoteChars().isEmpty()) {
+            if ((name.charAt(0) == '`' && name.charAt(name.length() - 1) == '`')
+                    || (name.charAt(0) == '"' && name.charAt(name.length() - 1) == '"')
+                    || (name.charAt(0) == '\'' && name.charAt(name.length() - 1) == '\'')) {
+                if (!dialect.getQuoteChars().contains(name.charAt(0))) {
+                    name = dialect.getQuoteChars().get(0) + name.substring(1, name.length() - 1) + dialect.getQuoteChars().get(0);
+                }
+            }
+        }
+        return name;
+    }
     public boolean visit(SQLExprTableSource x) {
         printTableSourceExpr(x.getExpr());
 

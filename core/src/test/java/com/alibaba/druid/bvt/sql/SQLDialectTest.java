@@ -12,7 +12,7 @@ public class SQLDialectTest {
         DbType dbType = DbType.odps;
         SQLDialect dialect = SQLDialect.of(dbType);
         assertEquals(dbType, dialect.getDbType());
-        assertEquals('`', dialect.getQuoteChar());
+        assertEquals('`', (char) dialect.getQuoteChars().get(0));
 
         assertFalse(dialect.isKeyword(""));
         assertTrue(dialect.isKeyword("AND"));
@@ -55,7 +55,7 @@ public class SQLDialectTest {
         DbType dbType = DbType.postgresql;
         SQLDialect dialect = SQLDialect.of(dbType);
         assertEquals(dbType, dialect.getDbType());
-        assertEquals('"', dialect.getQuoteChar());
+        assertEquals('"', (char) dialect.getQuoteChars().get(0));
 
         assertFalse(dialect.isKeyword(""));
         assertTrue(dialect.isKeyword("asymmetric"));
