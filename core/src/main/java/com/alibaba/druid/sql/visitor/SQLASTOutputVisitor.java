@@ -3225,7 +3225,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if ((name.charAt(0) == '`' && name.charAt(name.length() - 1) == '`')
                     || (name.charAt(0) == '"' && name.charAt(name.length() - 1) == '"')
                     || (name.charAt(0) == '\'' && name.charAt(name.length() - 1) == '\'')) {
-                if (!SQLDialect.Quote.isValidQuota(dialect.getQuoteChars(), name.charAt(0))) {
+                if (!SQLDialect.Quote.isValidQuota(dialect.getQuoteChars(), SQLDialect.Quote.of(name.charAt(0)))) {
                     name = SQLDialect.Quote.getQuote(dialect.getQuoteChars()) + name.substring(1, name.length() - 1) + SQLDialect.Quote.getQuote(dialect.getQuoteChars());
                 }
             }
