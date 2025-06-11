@@ -38,10 +38,11 @@ public class PolarDBDataSourceTest extends TestCase {
         Assert.assertTrue(JdbcConstants.POLARDB.equals(DbType.of(dataSource.getDbType())));
         Assert.assertTrue(JdbcConstants.POLARDB_DRIVER.equals(dataSource.getDriverClassName()));
 
-        Connection conn = dataSource.getConnection();
+        Connection conn = dataSource.getConnection(1000);
         PreparedStatement stmt = conn.prepareStatement("SELECT 1");
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
+            System.out.println("result: " + rs.getInt(1));
         }
         JdbcUtils.close(rs);
         JdbcUtils.close(stmt);
