@@ -530,6 +530,7 @@ public class SQLUtils {
         switch (dbType) {
             case oracle:
             case oceanbase_oracle:
+            case polardb2:
                 if (statementList == null || statementList.size() == 1) {
                     return new OracleOutputVisitor(out, false);
                 } else {

@@ -140,10 +140,15 @@ public interface JdbcConstants {
     String KDB_DRIVER = "com.inspur.jdbc.KdDriver";
 
     /**
-     * Aliyun PolarDB
+     * Alibaba Cloud PolarDB-Oracle 1.0
      */
     DbType POLARDB = DbType.polardb;
     String POLARDB_DRIVER = "com.aliyun.polardb.Driver";
+    /**
+     * Alibaba Cloud PolarDB-Oracle 2.0
+     */
+    DbType POLARDB2 = DbType.polardb2;
+    String POLARDB2_DRIVER = "com.aliyun.polardb2.Driver";
     /**
      * GreenPlum
      */

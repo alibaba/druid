@@ -150,6 +150,7 @@ public class SQLParserUtils {
         switch (dbType) {
             case oracle:
             case oceanbase_oracle:
+            case polardb2:
                 return new OracleStatementParser(sql, features);
             case mysql:
             case tidb:
