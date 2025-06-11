@@ -410,9 +410,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         boolean special = nameHasSpecial(alias);
         StringBuilder appender = this.appender;
         SQLDialect dialect = this.dialect;
-        char quote = SQLDialect.Quote.getQuote(dialect.getQuoteChars());
+        char quote = dialect != null ? SQLDialect.Quote.getQuote(dialect.getQuoteChars()) : '"';
         boolean needQuote = special;
-        if (!needQuote && isEnabled(VisitorFeature.OutputNameQuote)) {
+        if (!needQuote && isEnabled(VisitorFeature.OutputNameQuote) && dialect != null) {
             needQuote = dialect.isAliasKeyword(alias);
         }
 
