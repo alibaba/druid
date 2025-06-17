@@ -223,6 +223,18 @@ public class DruidDataSourceUtils {
         }
     }
 
+    public static Integer getPropertyInt(Properties properties, String key) {
+        String value = properties.getProperty(key);
+        if (value != null) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException ignored) {
+                 // ignore
+            }
+        }
+        return null;
+    }
+
     public static void configFromProperties(DruidDataSource druidDataSource, Properties properties) {
         trySetStringProperty(properties, "druid.name", druidDataSource::setName);
         trySetStringProperty(properties, "druid.url", druidDataSource::setUrl);

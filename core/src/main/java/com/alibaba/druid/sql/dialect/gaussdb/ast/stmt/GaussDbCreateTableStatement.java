@@ -12,9 +12,11 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
     protected GaussDbDistributeBy distributeBy;
     protected SQLExpr toGroup;
     protected SQLExpr toNode;
+    protected SQLExpr server;
     private SQLExpr onCommitExpr;
     private SQLExpr compressType;
     private SQLExpr rowMovementType;
+    private ForeignTableMode foreignTableMode;
 
     public GaussDbCreateTableStatement() {
         super(DbType.gaussdb);
@@ -95,5 +97,27 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
 
     public void setRowMovementType(SQLExpr rowMovementType) {
         this.rowMovementType = rowMovementType;
+    }
+    public SQLExpr getServer() {
+        return server;
+    }
+
+    public void setServer(SQLExpr server) {
+        if (server != null) {
+            server.setParent(this);
+        }
+        this.server = server;
+    }
+
+    public ForeignTableMode getForeignTableMode() {
+        return foreignTableMode;
+    }
+
+    public void setForeignTableMode(ForeignTableMode foreignTableMode) {
+        this.foreignTableMode = foreignTableMode;
+    }
+
+    public enum ForeignTableMode {
+        WRITE_ONLY, READ_ONLY, READ_WRITE
     }
 }

@@ -2,7 +2,6 @@ package com.alibaba.druid.sql.dialect.clickhouse.ast;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -14,28 +13,14 @@ import java.util.List;
 
 public class CKCreateTableStatement extends SQLCreateTableStatement {
     protected final List<SQLAssignItem> settings = new ArrayList<SQLAssignItem>();
-    private SQLOrderBy orderBy;
     private SQLPrimaryKey primaryKey;
     private SQLExpr sampleBy;
 
     private SQLExpr ttl;
     private String onClusterName;
-    private SQLExpr engine;
 
     public CKCreateTableStatement() {
         super(DbType.clickhouse);
-    }
-
-    public SQLOrderBy getOrderBy() {
-        return orderBy;
-    }
-
-    public void setOrderBy(SQLOrderBy x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-
-        this.orderBy = x;
     }
 
     public SQLExpr getSampleBy() {
@@ -82,17 +67,6 @@ public class CKCreateTableStatement extends SQLCreateTableStatement {
 
     public void setOnClusterName(String onClusterName) {
         this.onClusterName = onClusterName;
-    }
-
-    public SQLExpr getEngine() {
-        return engine;
-    }
-
-    public void setEngine(SQLExpr x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.engine = x;
     }
 
     @Override

@@ -43,8 +43,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public PGOutputVisitor(StringBuilder appender) {
         super(appender, DbType.postgresql);
     }
+    public PGOutputVisitor(StringBuilder appender, DbType dbType) {
+        super(appender, dbType);
+    }
 
     public PGOutputVisitor(StringBuilder appender, boolean parameterized) {
+        super(appender, DbType.postgresql, parameterized);
+    }
+
+    public PGOutputVisitor(StringBuilder appender, DbType dbType, boolean parameterized) {
         super(appender, DbType.postgresql, parameterized);
     }
 
@@ -2773,7 +2780,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(SQLArrayDataType x) {
-        x.getComponentType().accept(this);
+        SQLDataType componentType = x.getComponentType();
+        if (componentType != null) {
+            componentType.accept(this);
+        }
         print('[');
         printAndAccept(x.getArguments(), ", ");
         print(']');
@@ -2951,7 +2961,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         Integer seed = x.getSeed();
         if (seed != null) {
             print0(ucase ? " (INCREMENT BY " : " (increment by ");
-            print(x.getIncrement());
+            if (x.getIncrement() != null) {
+                print(x.getIncrement());
+            } else {
+                print('1');
+            }
             print0(ucase ? " START WITH  " : " start with  ");
             print(seed);
             print(')');

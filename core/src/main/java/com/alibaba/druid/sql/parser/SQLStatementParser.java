@@ -688,6 +688,18 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.token == COMPUTE) {
+                SQLStatement stmt = parseCompute();
+                statementList.add(stmt);
+                continue;
+            }
+
+            if (lexer.identifierEquals("RESET")) {
+                SQLStatement stmt = parseReset();
+                statementList.add(stmt);
+                continue;
+            }
+
             int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
                 if (parent != null) {
@@ -1713,6 +1725,9 @@ public class SQLStatementParser extends SQLParser {
             } else if (lexer.token == Token.DESC) {
                 privilege = "DESCRIBE";
                 lexer.nextToken();
+            } else if (lexer.token == TRUNCATE) {
+                privilege = "TRUNCATE";
+                lexer.nextToken();
             } else if (lexer.token == Token.CREATE) {
                 lexer.nextToken();
 
@@ -2259,6 +2274,9 @@ public class SQLStatementParser extends SQLParser {
                 case PARTITION:
                     alterTablePartition(stmt);
                     break;
+                case TRUNCATE:
+                    alterTableTruncate(stmt);
+                    break;
                 case REPLACE:
                     stmt.addItem(
                             parseAlterTableReplaceColumn()
@@ -2452,6 +2470,24 @@ public class SQLStatementParser extends SQLParser {
         }
 
         stmt.addItem(item);
+    }
+
+    protected void alterTableTruncate(SQLAlterTableStatement stmt) {
+        lexer.nextToken();
+        if (lexer.nextIf(Token.PARTITION)) {
+            SQLAlterTableTruncatePartition item = new SQLAlterTableTruncatePartition();
+            if (lexer.nextIf(Token.FOR)) {
+                accept(Token.LPAREN);
+                do {
+                    item.addPartitionValue(exprParser.expr());
+                }
+                while (lexer.nextIf(Token.COMMA));
+                accept(Token.RPAREN);
+            } else {
+                item.addPartition(exprParser.name());
+            }
+            stmt.addItem(item);
+        }
     }
 
     private void alterTablePartition(SQLAlterTableStatement stmt) {
@@ -7802,6 +7838,42 @@ public class SQLStatementParser extends SQLParser {
             if (lexer.token() != Token.WHEN) {
                 break;
             }
+        }
+        return stmt;
+    }
+
+    public SQLResetStatement parseReset() {
+        acceptIdentifier("RESET");
+        SQLResetStatement stmt = new SQLResetStatement();
+        for (; ; ) {
+            if (lexer.token() == Token.IDENTIFIER) {
+                if (lexer.identifierEquals("QUERY")) {
+                    lexer.nextToken();
+                    accept(Token.CACHE);
+                    stmt.getOptions().add("QUERY CACHE");
+                } else {
+                    stmt.getOptions().add(lexer.stringVal());
+                    lexer.nextToken();
+                }
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+            }
+            break;
+        }
+
+        return stmt;
+    }
+    public SQLComputeIncrementalStatsStatement parseCompute() {
+        accept(COMPUTE);
+        acceptIdentifier("INCREMENTAL");
+        acceptIdentifier("STATS");
+        SQLComputeIncrementalStatsStatement stmt = new SQLComputeIncrementalStatsStatement();
+        stmt.setName(this.exprParser.expr());
+        if (lexer.nextIf(PARTITION)) {
+            stmt.setPartition(this.exprParser.expr());
         }
         return stmt;
     }

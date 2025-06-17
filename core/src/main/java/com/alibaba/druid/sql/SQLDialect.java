@@ -10,7 +10,7 @@ import java.util.*;
  * @since 1.2.25
  */
 public class SQLDialect {
-    private final char quoteChar;
+    private int quoteChars;
     private final DbType dbType;
     private final Keyword keywords;
     private final Keyword aliasKeyword;
@@ -20,7 +20,7 @@ public class SQLDialect {
 
     private SQLDialect(
             DbType dbType,
-            char quoteChar,
+            List<Quote> quotes,
             Keyword keywords,
             Keyword aliasKeyword,
             Keyword builtInDataTypes,
@@ -28,14 +28,18 @@ public class SQLDialect {
             Keyword builtInTables
     ) {
         this.dbType = dbType;
-        this.quoteChar = quoteChar;
         this.keywords = keywords;
         this.aliasKeyword = aliasKeyword;
         this.builtInDataTypes = builtInDataTypes;
         this.builtInFunctions = builtInFunctions;
         this.builtInTables = builtInTables;
+        this.quoteChars = DEFAULT_QUOTE_INT;
+        for (Quote quote : quotes) {
+            quoteChars = Quote.register(quoteChars, quote);
+        }
     }
 
+    public static final int DEFAULT_QUOTE_INT = 0;
     public void dumpBuiltInDataTypes(Collection<String> dataTypes) {
         builtInDataTypes.dumpNames(dataTypes);
     }
@@ -44,8 +48,8 @@ public class SQLDialect {
         return dbType;
     }
 
-    public char getQuoteChar() {
-        return quoteChar;
+    public int getQuoteChars() {
+        return quoteChars;
     }
 
     public boolean isKeyword(String name) {
@@ -72,17 +76,25 @@ public class SQLDialect {
         String dir = "META-INF/druid/parser/".concat(dbType.name().toLowerCase());
         Properties props = Utils.loadProperties(dir.concat("/dialect.properties"));
 
-        char quoteChar = '"';
+        List<Quote> quoteChars = new ArrayList<>();
         {
-            String quote = props.getProperty("quote");
-            if (quote != null && quote.length() == 1) {
-                quoteChar = quote.charAt(0);
+            String quotes = props.getProperty("quote");
+            if (quotes != null) {
+                for (String quote : quotes.split(",")) {
+                    if (quote != null && quote.length() == 1) {
+                        if (Quote.of(quote.charAt(0)) != null) {
+                            quoteChars.add(Quote.of(quote.charAt(0)));
+                        }
+                    }
+                }
             }
         }
-
+        if (quoteChars.isEmpty()) {
+            quoteChars.add(Quote.DOUBLE_QUOTE);
+        }
         return new SQLDialect(
                 dbType,
-                quoteChar,
+                quoteChars,
                 new Keyword(
                         Utils.readLines(dir.concat("/keywords"))),
                 new Keyword(
@@ -126,6 +138,50 @@ public class SQLDialect {
 
         public void dumpNames(Collection<String> names) {
             names.addAll(Arrays.asList(this.names));
+        }
+    }
+
+    public enum Quote {
+        SINGLE_QUOTE('\''),
+        DOUBLE_QUOTE('"'),
+        BACK_QUOTE('`');
+        public final int mask;
+        public final char sign;
+        private Quote(char sign) {
+            this.mask = 1 << ordinal();
+            this.sign = sign;
+        }
+
+        public static int register(int features, Quote quote) {
+            return features | quote.mask;
+        }
+
+        public static Quote of(char sign) {
+            if (sign == '\'') {
+                return SINGLE_QUOTE;
+            } else if (sign == '"') {
+                return DOUBLE_QUOTE;
+            } else if (sign == '`') {
+                return BACK_QUOTE;
+            }
+            return null;
+        }
+        public static boolean isValidQuota(int features, Quote quote) {
+            if (quote == null) {
+                return false;
+            }
+            return (features & quote.mask) != 0;
+        }
+
+        public static char getQuote(int features) {
+            if ((features & Quote.BACK_QUOTE.mask) != 0) {
+                return Quote.BACK_QUOTE.sign;
+            } else if ((features & Quote.SINGLE_QUOTE.mask) != 0) {
+                return Quote.SINGLE_QUOTE.sign;
+            } else if ((features & Quote.DOUBLE_QUOTE.mask) != 0) {
+                return Quote.DOUBLE_QUOTE.sign;
+            }
+            return ' ';
         }
     }
 }

@@ -19,7 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLAliasedExpr;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
@@ -46,17 +45,6 @@ public class OdpsCreateTableStatement extends HiveCreateTableStatement {
 
     public void setLike(SQLExprTableSource like) {
         this.like = like;
-    }
-
-    public List<SQLColumnDefinition> getPartitionColumns() {
-        return partitionColumns;
-    }
-
-    public void addPartitionColumn(SQLColumnDefinition column) {
-        if (column != null) {
-            column.setParent(this);
-        }
-        this.partitionColumns.add(column);
     }
 
     public SQLAliasedExpr getAutoPartitionedBy() {

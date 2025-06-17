@@ -41,7 +41,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     {
         this.dbType = DbType.mysql;
         this.shardingSupport = true;
-        this.quote = '`';
     }
 
     public MySqlOutputVisitor(StringBuilder appender) {
@@ -260,7 +259,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         boolean parameterized = this.parameterized;
         this.parameterized = false;
 
-        x.getName().accept(this);
+        String columnName = replaceQuota(x.getName().getSimpleName());
+        printName0(columnName);
 
         SQLDataType dataType = x.getDataType();
         if (dataType != null) {
@@ -1956,18 +1956,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlBinlogStatement x) {
         print0(ucase ? "BINLOG " : "binlog ");
         x.getExpr().accept(this);
-        return false;
-    }
-
-    @Override
-    public boolean visit(MySqlResetStatement x) {
-        print0(ucase ? "RESET " : "reset ");
-        for (int i = 0; i < x.getOptions().size(); ++i) {
-            if (i != 0) {
-                print0(", ");
-            }
-            print0(x.getOptions().get(i));
-        }
         return false;
     }
 

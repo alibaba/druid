@@ -56,6 +56,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected SQLExpr storedAs;
     protected SQLExpr storedBy;
     protected SQLExpr location;
+    protected SQLExpr engine;
+    protected SQLOrderBy orderBy;
 
     protected boolean onCommitPreserveRows;
     protected boolean onCommitDeleteRows;
@@ -66,6 +68,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected ClusteringType clusteringType;
     protected final List<SQLSelectOrderByItem> clusteredBy = new ArrayList<SQLSelectOrderByItem>();
     protected final List<SQLSelectOrderByItem> sortedBy = new ArrayList<SQLSelectOrderByItem>();
+    protected boolean isAutoBucket;
     protected int buckets;
     protected int shards;
     protected final List<SQLAssignItem> tableOptions = new ArrayList<SQLAssignItem>();
@@ -78,10 +81,12 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected SQLExpr lifeCycle;
 
     public SQLCreateTableStatement() {
+        isAutoBucket = false;
     }
 
     public SQLCreateTableStatement(DbType dbType) {
         super(dbType);
+        isAutoBucket = false;
     }
 
     @Override
@@ -114,6 +119,35 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, tableOptions);
 //        this.acceptChild(v, tblProperties);
         this.acceptChild(v, lifeCycle);
+    }
+
+    public boolean isAutoBucket() {
+        return isAutoBucket;
+    }
+
+    public void setAutoBucket(boolean autoBucket) {
+        isAutoBucket = autoBucket;
+    }
+    public SQLExpr getEngine() {
+        return engine;
+    }
+
+    public void setEngine(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.engine = x;
+    }
+
+    public SQLOrderBy getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
+        this.orderBy = orderBy;
     }
 
     public SQLExpr getComment() {
@@ -994,6 +1028,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         } else if (item instanceof SQLAlterTableAddIndex) {
             return apply((SQLAlterTableAddIndex) item);
+        } else if (item instanceof SQLAlterTableTruncatePartition) {
+            return apply((SQLAlterTableTruncatePartition) item);
         }
 
         return false;
@@ -1178,6 +1214,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return true;
     }
 
+    protected boolean apply(SQLAlterTableTruncatePartition item) {
+        return false;
+    }
     protected boolean apply(SQLAlterTableAddIndex item) {
         return false;
     }

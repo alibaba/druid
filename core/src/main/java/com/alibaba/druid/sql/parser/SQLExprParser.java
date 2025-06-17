@@ -1579,6 +1579,10 @@ public class SQLExprParser extends SQLParser {
                 expr = new SQLIdentifierExpr(text);
             }
 
+            if (expr instanceof SQLDefaultExpr) {
+                expr = new SQLIdentifierExpr(expr.toString());
+            }
+
             expr = dotRest(expr);
             return primaryRest(expr);
         } else if (lexer.identifierEquals(FnvHash.Constants.SETS) //
@@ -4196,7 +4200,7 @@ public class SQLExprParser extends SQLParser {
             return null;
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.ARRAY)) {
+        if (lexer.identifierEquals(FnvHash.Constants.ARRAY) || lexer.token() == Token.ARRAY) {
             return parseArrayDataType();
         }
 

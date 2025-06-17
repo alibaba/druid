@@ -1,3 +1,31 @@
+CREATE TABLE IF NOT EXISTS my_partitioned_table (
+id INT,
+name text,
+value FLOAT ,
+arr ARRAY<INT>,
+dt TEXT  not null,
+region TEXT not null
+)
+LOGICAL PARTITION BY LIST (dt, region) 
+WITH (
+    orientation = 'column',
+    partition_require_filter = FALSE 
+);
+--------------------
+CREATE TABLE IF NOT EXISTS my_partitioned_table (
+	id INT,
+	name text,
+	value FLOAT,
+	arr INT[],
+	dt TEXT NOT NULL,
+	region TEXT NOT NULL
+)
+LOGICAL PARTITION BY LIST (dt, region)
+WITH (
+	orientation = 'column',
+	partition_require_filter = false
+);
+------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE public.tb0 (
     id text NOT NULL,
     name text NOT NULL,

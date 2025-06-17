@@ -102,6 +102,31 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
         printSQLPartitions(x.getPartitions());
         return false;
     }
+
+    @Override
+    protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
+        print0(ucase ? "CREATE " : "create ");
+
+        printCreateTableFeatures(x);
+
+        print0(ucase ? "TABLE " : "table ");
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        printTableSourceExpr(
+                x.getTableSource()
+                        .getExpr());
+
+        printCreateTableAfterName(x);
+        printTableElements(x.getTableElementList());
+        printPartitionedBy(x);
+        printClusteredBy(x);
+        printCreateTableLike(x);
+
+        printSelectAs(x, printSelect);
+    }
     @Override
     public boolean visit(CKCreateTableStatement x) {
         super.visit((SQLCreateTableStatement) x);
@@ -145,39 +170,13 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
             print0(ucase ? "SETTINGS " : "settings ");
             printAndAccept(settings, ", ");
         }
+        printComment(x.getComment());
         return false;
     }
 
     public boolean visit(SQLAlterTableAddColumn x) {
         print0(ucase ? "ADD COLUMN " : "add column ");
         printAndAccept(x.getColumns(), ", ");
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLArrayDataType x) {
-        final List<SQLExpr> arguments = x.getArguments();
-        if (Boolean.TRUE.equals(x.getAttribute("ads.arrayDataType"))) {
-            x.getComponentType().accept(this);
-            print('[');
-            printAndAccept(arguments, ", ");
-            print(']');
-        } else {
-            SQLDataType componentType = x.getComponentType();
-            if (componentType != null) {
-                print0(ucase ? "Array<" : "array<");
-                componentType.accept(this);
-                print('>');
-            } else {
-                print0(ucase ? "Array" : "array");
-            }
-
-            if (arguments.size() > 0) {
-                print('(');
-                printAndAccept(arguments, ", ");
-                print(')');
-            }
-        }
         return false;
     }
 
@@ -338,6 +337,14 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
         print0(", ");
 
         valueType.accept(this);
+        print(')');
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLArrayDataType x) {
+        print0(ucase ? "ARRAY(" : "array(");
+        x.getComponentType().accept(this);
         print(')');
         return false;
     }
