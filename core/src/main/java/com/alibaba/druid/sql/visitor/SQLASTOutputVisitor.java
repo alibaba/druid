@@ -3041,6 +3041,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (expr instanceof SQLIntegerExpr) {
             print(((SQLIntegerExpr) expr).getNumber().longValue());
+        } else if (expr instanceof SQLCharExpr) {
+            if (dialect != null) {
+                String name = "'" + ((SQLCharExpr) expr).getText() + "'";
+                printName0(replaceQuota(name));
+            } else {
+                printExpr(expr, parameterized);
+            }
+        } else if (expr instanceof SQLIdentifierExpr) {
+            ((SQLIdentifierExpr) expr).setName(replaceQuota(((SQLIdentifierExpr) expr).getName()));
+            printExpr(expr, parameterized);
         } else {
             printExpr(expr, parameterized);
         }
