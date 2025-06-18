@@ -1,0 +1,57 @@
+CREATE TABLE users (
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  name NVARCHAR(100) NOT NULL,
+  email VARCHAR(255),
+  created_date DATETIME2 DEFAULT GETDATE()
+)
+--------------------
+CREATE TABLE users (
+	id INT PRIMARY KEY IDENTITY (1, 1),
+	name NVARCHAR(100) NOT NULL,
+	email VARCHAR(255),
+	created_date DATETIME2 DEFAULT GETDATE()
+)
+------------------------------------------------------------------------------------------------------------------------
+UPDATE users 
+SET name = 'Updated Name', 
+    email = 'new@email.com' 
+OUTPUT INSERTED.id, INSERTED.name 
+WHERE id = 1
+--------------------
+UPDATE users
+SET name = 'Updated Name', email = 'new@email.com'
+OUTPUT INSERTED.id, INSERTED.name
+WHERE id = 1
+------------------------------------------------------------------------------------------------------------------------
+WITH CTE AS (
+  SELECT id, name, ROW_NUMBER() OVER (PARTITION BY name ORDER BY id) as rn
+  FROM users
+)
+SELECT * FROM CTE WHERE rn = 1
+--------------------
+WITH CTE AS (
+		SELECT id, name, ROW_NUMBER() OVER (PARTITION BY name ORDER BY id) AS rn
+		FROM users
+	)
+SELECT *
+FROM CTE
+WHERE rn = 1
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO users (name, email) 
+OUTPUT INSERTED.id, INSERTED.name
+VALUES ('John Doe', 'john@example.com')
+--------------------
+INSERT INTO users (name, email)
+OUTPUT INSERTED.id, INSERTED.name
+VALUES ('John Doe', 'john@example.com')
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE ads_crm.tmp_summary_trans_base 
+WITH (DISTRIBUTION = HASH(user_id), 
+      CLUSTERED INDEX (idx_col)) 
+AS 
+SELECT * FROM source
+--------------------
+CREATE TABLE ads_crm.tmp_summary_trans_base
+AS
+SELECT *
+FROM source

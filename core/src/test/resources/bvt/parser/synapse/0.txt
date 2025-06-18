@@ -1,0 +1,40 @@
+SELECT TOP 10 * FROM users WHERE id > 100
+--------------------
+SELECT TOP 10 *
+FROM users
+WHERE id > 100
+------------------------------------------------------------------------------------------------------------------------
+SELECT [column name] FROM [table name] WHERE [id] = 1
+--------------------
+SELECT [column name]
+FROM [table name]
+WHERE [id] = 1
+------------------------------------------------------------------------------------------------------------------------
+SELECT *
+FROM (
+	SELECT *, ROW_NUMBER() OVER (ORDER BY id) AS rn
+	FROM users
+) t
+WHERE t.rn BETWEEN 1 AND 10
+--------------------
+SELECT *
+FROM (
+	SELECT *, ROW_NUMBER() OVER (ORDER BY id) AS rn
+	FROM users
+) t
+WHERE t.rn BETWEEN 1 AND 10
+------------------------------------------------------------------------------------------------------------------------
+EXEC sp_procedure_name @param1 = 'value1', @param2 = 2
+--------------------
+EXEC sp_procedure_name @param1 = 'value1', @param2 = 2
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE ads_crm.tmp_summary_trans_base
+                WITH (DISTRIBUTION = HASH(user_id),
+                      CLUSTERED INDEX (idx_col))
+                AS
+                SELECT * FROM source
+--------------------
+CREATE TABLE ads_crm.tmp_summary_trans_base
+AS
+SELECT *
+FROM source

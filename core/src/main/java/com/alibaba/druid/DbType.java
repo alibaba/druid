@@ -99,6 +99,7 @@ public enum DbType {
      * Alibaba Cloud PolarDB-Oracle 2.0
      */
     polardb2(1L << 57),
+    synapse(1L << 58),
 
     ingres(0),
     cloudscape(0),

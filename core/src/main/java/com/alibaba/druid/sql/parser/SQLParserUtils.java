@@ -102,6 +102,9 @@ import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
 import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlExprParser;
 import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlLexer;
 import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlStatementParser;
+import com.alibaba.druid.sql.dialect.synapse.parser.SynapseExprParser;
+import com.alibaba.druid.sql.dialect.synapse.parser.SynapseLexer;
+import com.alibaba.druid.sql.dialect.synapse.parser.SynapseStatementParser;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDExprParser;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDLexer;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDStatementParser;
@@ -180,6 +183,8 @@ public class SQLParserUtils {
             case sqlserver:
             case jtds:
                 return new SQLServerStatementParser(sql, features);
+            case synapse:
+                return new SynapseStatementParser(sql, features);
             case h2:
             case lealone:
                 return new H2StatementParser(sql, features);
@@ -259,6 +264,8 @@ public class SQLParserUtils {
             case sqlserver:
             case jtds:
                 return new SQLServerExprParser(sql, features);
+            case synapse:
+                return new SynapseExprParser(sql, features);
             case db2:
                 return new DB2ExprParser(sql, features);
             case odps:
@@ -345,6 +352,8 @@ public class SQLParserUtils {
                 return new SuperSqlLexer(sql, features);
             case athena:
                 return new AthenaLexer(sql, features);
+            case synapse:
+                return new SynapseLexer(sql, features);
             case spark:
                 return new SparkLexer(sql);
             case databricks:
@@ -398,6 +407,8 @@ public class SQLParserUtils {
             case odps:
                 return new OdpsSelectQueryBlock();
             case sqlserver:
+                return new SQLServerSelectQueryBlock();
+            case synapse:
                 return new SQLServerSelectQueryBlock();
             case oscar:
                 return new OscarSelectQueryBlock();
