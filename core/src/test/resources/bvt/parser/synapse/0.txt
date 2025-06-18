@@ -28,3 +28,13 @@ EXEC sp_procedure_name @param1 = 'value1', @param2 = 2
 --------------------
 EXEC sp_procedure_name @param1 = 'value1', @param2 = 2
 ------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE ads_crm.tmp_summary_trans_base
+                WITH (DISTRIBUTION = HASH(user_id),
+                      CLUSTERED INDEX (idx_col))
+                AS
+                SELECT * FROM source
+--------------------
+CREATE TABLE ads_crm.tmp_summary_trans_base
+AS
+SELECT *
+FROM source

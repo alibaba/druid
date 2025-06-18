@@ -51,9 +51,7 @@ WITH (DISTRIBUTION = HASH(user_id),
 AS 
 SELECT * FROM source
 --------------------
--- 处理后
-CREATE TABLE ads_crm.tmp_summary_trans_base 
-WITH ( 
-      CLUSTERED INDEX (idx_col)) 
-AS 
-SELECT * FROM source
+CREATE TABLE ads_crm.tmp_summary_trans_base
+AS
+SELECT *
+FROM source
