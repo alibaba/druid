@@ -70,6 +70,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
 import com.alibaba.druid.sql.dialect.supersql.visitor.SuperSqlOutputVisitor;
+import com.alibaba.druid.sql.dialect.synapse.visitor.SynapseOutputVisitor;
 import com.alibaba.druid.sql.dialect.teradata.visitor.TDOutputVisitor;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.repository.SchemaRepository;
@@ -554,6 +555,8 @@ public class SQLUtils {
             case sqlserver:
             case jtds:
                 return new SQLServerOutputVisitor(out);
+            case synapse:
+                return new SynapseOutputVisitor(out);
             case db2:
                 return new DB2OutputVisitor(out);
             case odps:
@@ -634,6 +637,8 @@ public class SQLUtils {
                 return new PGSchemaStatVisitor(repository);
             case sqlserver:
             case jtds:
+                return new SQLServerSchemaStatVisitor(repository);
+            case synapse:
                 return new SQLServerSchemaStatVisitor(repository);
             case db2:
                 return new DB2SchemaStatVisitor(repository);

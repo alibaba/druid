@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
+import com.alibaba.druid.sql.dialect.synapse.visitor.SynapseOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLSelectListCache;
@@ -434,6 +435,8 @@ public class ParameterizedOutputVisitorUtils {
             case sqlserver:
             case jtds:
                 return new SQLServerOutputVisitor(out, true);
+            case synapse:
+                return new SynapseOutputVisitor(out, true);
             case db2:
                 return new DB2OutputVisitor(out, true);
             case phoenix:
