@@ -108,6 +108,16 @@ public abstract class SQLObjectImpl implements SQLObject {
     public SQLObject getParent() {
         return parent;
     }
+    public SQLObject getParent(int level) {
+        SQLObject parent = this;
+        while (level-- > 0) {
+            if (parent == null) {
+                return null;
+            }
+            parent = parent.getParent();
+        }
+        return parent;
+    }
 
     public void setParent(SQLObject parent) {
         this.parent = parent;
