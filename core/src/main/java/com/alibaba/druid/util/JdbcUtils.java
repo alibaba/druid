@@ -1003,6 +1003,8 @@ public final class JdbcUtils implements JdbcConstants {
             case lealone:
             case goldendb:
             case polardbx:
+            case doris:
+            case starrocks:
                 return true;
             default:
                 return false;
