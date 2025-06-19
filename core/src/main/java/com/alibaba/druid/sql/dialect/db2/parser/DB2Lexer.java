@@ -47,6 +47,8 @@ public class DB2Lexer extends Lexer {
         map.put("EXISTS", Token.EXISTS);
         map.put("RESTRICT", Token.RESTRICT);
         map.put("CASCADE", Token.CASCADE);
+        map.put("UNIQUE", Token.UNIQUE);
+        map.put("FOREIGN", Token.FOREIGN);
 
         return new Keywords(map);
     }
