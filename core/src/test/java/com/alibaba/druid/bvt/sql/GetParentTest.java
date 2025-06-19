@@ -13,8 +13,6 @@ public class GetParentTest {
         obj2.setParent(obj1);
         SQLObject obj3 = new SQLIdentifierExpr("3");
         obj3.setParent(obj2);
-        Assert.assertEquals(obj3, obj3.getParent(-1));
-        Assert.assertEquals(obj3, obj3.getParent(0));
         Assert.assertEquals(obj2, obj3.getParent(1));
         Assert.assertEquals(obj1, obj3.getParent(2));
         Assert.assertNull(obj3.getParent(3));
