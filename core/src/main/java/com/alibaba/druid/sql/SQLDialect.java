@@ -144,7 +144,8 @@ public class SQLDialect {
     public enum Quote {
         SINGLE_QUOTE('\''),
         DOUBLE_QUOTE('"'),
-        BACK_QUOTE('`');
+        BACK_QUOTE('`'),
+        BRACKETS_QUOTE('[');
         public final int mask;
         public final char sign;
         private Quote(char sign) {
@@ -157,7 +158,9 @@ public class SQLDialect {
         }
 
         public static Quote of(char sign) {
-            if (sign == '\'') {
+            if (sign == '[') {
+                return BRACKETS_QUOTE;
+            } else if (sign == '\'') {
                 return SINGLE_QUOTE;
             } else if (sign == '"') {
                 return DOUBLE_QUOTE;
@@ -180,6 +183,8 @@ public class SQLDialect {
                 return Quote.SINGLE_QUOTE.sign;
             } else if ((features & Quote.DOUBLE_QUOTE.mask) != 0) {
                 return Quote.DOUBLE_QUOTE.sign;
+            } else if ((features & Quote.BRACKETS_QUOTE.mask) != 0) {
+                return Quote.BRACKETS_QUOTE.sign;
             }
             return ' ';
         }
