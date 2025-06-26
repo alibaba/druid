@@ -4927,7 +4927,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLInSubQueryExpr x) {
-        x.getExpr().accept(this);
+        if (x.getExpr() instanceof SQLIdentifierExpr) {
+            String columnName = replaceQuota(((SQLIdentifierExpr) x.getExpr()).getName());
+            printName0(columnName);
+        } else {
+            x.getExpr().accept(this);
+        }
         if (x.isNot()) {
             if (x.isGlobal()) {
                 print0(ucase ? " GLOBAL NOT IN (" : " global not in (");
