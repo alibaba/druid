@@ -129,7 +129,7 @@ public class SQLServerLexer extends Lexer {
 
         if (ch == '/' || ch == '-') {
             scanChar();
-            bufPos++;
+            bufPos = 2;
 
             for (; ; ) {
                 if (ch == '\r') {
