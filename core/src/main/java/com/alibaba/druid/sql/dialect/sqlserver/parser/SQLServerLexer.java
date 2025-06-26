@@ -129,7 +129,7 @@ public class SQLServerLexer extends Lexer {
 
         if (ch == '/' || ch == '-') {
             scanChar();
-            bufPos++;
+            bufPos = 2;
 
             for (; ; ) {
                 if (ch == '\r') {
@@ -154,7 +154,7 @@ public class SQLServerLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark + 1, bufPos);
+            stringVal = subString(mark, bufPos);
             token = Token.LINE_COMMENT;
             commentCount++;
             if (keepComments) {
