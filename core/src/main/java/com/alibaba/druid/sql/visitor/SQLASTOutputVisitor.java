@@ -10558,6 +10558,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? "HASH(" : "hash(");
                 printAndAccept(x.getDistributeBy(), ",");
                 print0(")");
+                if (!x.getDistributeByHashGroup().isEmpty()) {
+                    print0("(");
+                    printAndAccept(x.getDistributeByHashGroup(), ",");
+                    print0(")");
+                }
 
             } else if ("DUPLICATE".equalsIgnoreCase(distributeByType.getSimpleName())) {
                 print0(ucase ? "DUPLICATE(" : "duplicate(");
