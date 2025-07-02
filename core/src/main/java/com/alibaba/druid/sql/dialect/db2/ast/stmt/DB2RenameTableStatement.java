@@ -18,64 +18,54 @@ package com.alibaba.druid.sql.dialect.db2.ast.stmt;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.DB2Statement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.ArrayList;
-import java.util.List;
+public class DB2RenameTableStatement extends SQLStatementImpl implements DB2Statement, SQLAlterStatement {
+    private SQLName name;
+    private SQLName to;
 
-public class DB2CreateSchemaStatement extends SQLStatementImpl implements DB2Statement, SQLCreateStatement {
-    private SQLName schemaName;
-    private List<SQLCreateStatement> createStatements = new ArrayList<>();
-
-    public DB2CreateSchemaStatement() {
+    public DB2RenameTableStatement() {
         this.dbType = DbType.db2;
     }
 
-    public DB2CreateSchemaStatement(DbType dbType) {
+    public DB2RenameTableStatement(DbType dbType) {
         this.dbType = dbType;
     }
 
     public SQLName getName() {
-        return this.getSchemaName();
+        return name;
     }
 
-    public SQLName getSchemaName() {
-        return schemaName;
+    public void setName(SQLName name) {
+        this.name = name;
     }
 
-    public void setSchemaName(SQLName schemaName) {
-        this.schemaName = schemaName;
+    public SQLName getTo() {
+        return to;
     }
 
-    public List<SQLCreateStatement> getCreateStatements() {
-        return createStatements;
+    public void setTo(SQLName to) {
+        this.to = to;
     }
 
-    public void setCreateStatements(List<SQLCreateStatement> createStatements) {
-        this.createStatements = createStatements;
-    }
-
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof DB2ASTVisitor) {
-            accept0((DB2ASTVisitor) visitor);
+    @Override
+    protected void accept0(SQLASTVisitor v) {
+        if (v instanceof DB2ASTVisitor) {
+            this.accept0((DB2ASTVisitor) v);
+        } else {
+            throw new UnsupportedOperationException(this.getClass().getName());
         }
     }
 
     @Override
     public void accept0(DB2ASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.schemaName);
+            acceptChild(visitor, name);
+            acceptChild(visitor, to);
         }
-
-        if (this.createStatements != null && !this.createStatements.isEmpty()) {
-            for (SQLCreateStatement stat : this.createStatements) {
-                acceptChild(visitor, stat);
-            }
-        }
-
         visitor.endVisit(this);
     }
 }
