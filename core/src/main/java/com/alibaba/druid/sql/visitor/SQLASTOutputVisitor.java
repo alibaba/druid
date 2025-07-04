@@ -1569,7 +1569,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isParenthesized()) {
             print('(');
         }
-        printName0(x.getName());
+        String replacedName = x.getName();
+        if (x.getParent() instanceof SQLBinaryOpExpr
+        || x.getParent() instanceof SQLSelectItem) {
+            replacedName = replaceQuota(x.getName());
+        }
+        printName0(replacedName);
         if (x.getCollate() != null) {
             String collate = x.getCollate();
             print(" COLLATE ");
