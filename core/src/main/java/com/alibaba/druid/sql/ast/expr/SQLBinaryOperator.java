@@ -99,6 +99,7 @@ public enum SQLBinaryOperator {
     BooleanXor("XOR", 150),
     BooleanOr("OR", 160),
     Assignment(":=", 169),
+    Blank("", 170),
 
     PG_And("&&", 140),
     PG_ST_DISTANCE("<->", 20);

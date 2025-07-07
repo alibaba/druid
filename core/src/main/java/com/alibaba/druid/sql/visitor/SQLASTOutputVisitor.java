@@ -1048,7 +1048,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                         && ((SQLIdentifierExpr) right).getName().equalsIgnoreCase("NOTFOUND")) {
                     printOpSpace = false;
                 }
-                if (printOpSpace) {
+                if (printOpSpace && operator != SQLBinaryOperator.Blank) {
                     print(' ');
                 }
             }

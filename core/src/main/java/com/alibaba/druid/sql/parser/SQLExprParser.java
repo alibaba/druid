@@ -3532,6 +3532,9 @@ public class SQLExprParser extends SQLParser {
                 SQLBinaryOperator operator = andRestGetAndOperator();
 
                 expr = new SQLBinaryOpExpr(expr, operator, rightExp, dbType);
+            } else if (token == VARIANT) {
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Blank, new SQLVariantRefExpr(lexer.stringVal()), dbType);
+                lexer.nextToken();
             } else {
                 break;
             }
@@ -3977,6 +3980,11 @@ public class SQLExprParser extends SQLParser {
                     return expr;
                 }
                 break;
+            case VARIANT:
+                rightExp = new SQLVariantRefExpr(lexer.stringVal);
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Blank, rightExp, dbType);
+                lexer.nextToken();
+                return expr;
             default:
                 return expr;
         }
