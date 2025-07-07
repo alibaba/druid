@@ -756,6 +756,7 @@ public class SQLSelectParser extends SQLParser {
                     case BANGEQ:
                     case LIKE:
                     case NOT:
+                    case VARIANT:
                         where = this.exprParser.relationalRest(where);
                         break;
                     default:
