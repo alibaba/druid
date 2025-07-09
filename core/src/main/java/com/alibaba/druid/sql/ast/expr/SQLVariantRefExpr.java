@@ -29,16 +29,30 @@ public class SQLVariantRefExpr extends SQLExprImpl {
 
     private boolean global;
     private boolean session;
+    private boolean isTemplateParameter;
+    private boolean hasPrefixComma;
 
     private int index = -1;
 
     public SQLVariantRefExpr(String name) {
         this.name = name;
+        if (name.startsWith("${") && name.endsWith("}")) {
+            this.isTemplateParameter = true;
+        } else {
+            this.isTemplateParameter = false;
+        }
+        this.hasPrefixComma = true;
     }
 
     public SQLVariantRefExpr(String name, SQLObject parent) {
         this.name = name;
         this.parent = parent;
+        if (name.startsWith("${") && name.endsWith("}")) {
+            this.isTemplateParameter = true;
+        } else {
+            this.isTemplateParameter = false;
+        }
+        this.hasPrefixComma = true;
     }
 
     public SQLVariantRefExpr(String name, boolean global) {
@@ -68,6 +82,22 @@ public class SQLVariantRefExpr extends SQLExprImpl {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isTemplateParameter() {
+        return isTemplateParameter;
+    }
+
+    public void setTemplateParameter(boolean templateParameter) {
+        isTemplateParameter = templateParameter;
+    }
+
+    public boolean isHasPrefixComma() {
+        return hasPrefixComma;
+    }
+
+    public void setHasPrefixComma(boolean hasPrefixComma) {
+        this.hasPrefixComma = hasPrefixComma;
     }
 
     public void output(StringBuilder buf) {

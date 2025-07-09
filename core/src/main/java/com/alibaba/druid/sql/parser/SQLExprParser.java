@@ -5954,46 +5954,47 @@ public class SQLExprParser extends SQLParser {
 
         String alias;
         List<String> aliasList = null;
-        switch (lexer.token) {
-            case FULL:
-            case TABLESPACE:
-                alias = lexer.stringVal();
-                lexer.nextToken();
-                break;
-            case AS:
-                lexer.nextTokenAlias();
-                if (lexer.token == Token.LITERAL_INT) {
-                    alias = '"' + lexer.stringVal() + '"';
+        if (expr instanceof SQLVariantRefExpr && ((SQLVariantRefExpr) expr).isTemplateParameter() && lexer.token != AS) {
+            alias = null;
+        } else {
+            switch (lexer.token) {
+                case FULL:
+                case TABLESPACE:
+                    alias = lexer.stringVal();
                     lexer.nextToken();
-                } else if (lexer.token == Token.LPAREN) {
-                    lexer.nextToken();
-                    aliasList = new ArrayList<String>();
-
-                    for (; ; ) {
-                        String stringVal = lexer.stringVal();
+                    break;
+                case AS:
+                    lexer.nextTokenAlias();
+                    if (lexer.token == Token.LITERAL_INT) {
+                        alias = '"' + lexer.stringVal() + '"';
                         lexer.nextToken();
-
-                        aliasList.add(stringVal);
-
-                        if (lexer.token() == Token.COMMA) {
+                    } else if (lexer.token == Token.LPAREN) {
+                        lexer.nextToken();
+                        aliasList = new ArrayList<String>();
+                        for (; ; ) {
+                            String stringVal = lexer.stringVal();
                             lexer.nextToken();
-                            continue;
+                            aliasList.add(stringVal);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
                         }
-                        break;
-                    }
-                    accept(Token.RPAREN);
+                        accept(Token.RPAREN);
 
+                        alias = null;
+                    } else {
+                        alias = alias();
+                    }
+                    break;
+                case EOF:
                     alias = null;
-                } else {
-                    alias = alias();
-                }
-                break;
-            case EOF:
-                alias = null;
-                break;
-            default:
-                alias = as();
-                break;
+                    break;
+                default:
+                    alias = as();
+                    break;
+            }
         }
 
         if (alias == null && isEnabled(SQLParserFeature.SelectItemGenerateAlias)

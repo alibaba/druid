@@ -1,13 +1,35 @@
+select  ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")} from b
+--------------------
+SELECT ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")}
+FROM b
+------------------------------------------------------------------------------------------------------------------------ 
+        select b.merge_region_code as region_code,b.merge_region_name as region_name,b.govern_region_area_union as region_area_subtotal
+		      ${if(gRegionAreaLevel='合并营运区',",b.govern_region_area_union as region_area_code,b.govern_region_area_union as region_area_name",",b.region_area_code as region_area_code,b.region_area_name as region_area_name")}
+--        	  ${if(len(gQtrMonth)=5,"/*","")}
+              ,sum(case when a.stat_date = ${gQtrMonth} then a.period_loc_amt else 0 end) as bq_amt
+              from b
+--------------------
+SELECT b.merge_region_code AS region_code, b.merge_region_name AS region_name, b.govern_region_area_union AS region_area_subtotal ${if(gRegionAreaLevel='合并营运区',",b.govern_region_area_union as region_area_code,b.govern_region_area_union as region_area_name",",b.region_area_code as region_area_code,b.region_area_name as region_area_name")} --        	  ${if(len(gQtrMonth)=5,"/*","")}
+	, sum(CASE
+		WHEN a.stat_date = ${gQtrMonth} THEN a.period_loc_amt
+		ELSE 0
+	END) AS bq_amt
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+select 
+    ${if(gGyzy_hz=='G'," buyer_name as buyer_name, "," syr as buyer_name, ")}
+    substringUTF8(buyer_name,1,positionUTF8(buyer_name,'(')-1) as tg
+    from a
+--------------------
+SELECT ${if(gGyzy_hz=='G'," buyer_name as buyer_name, "," syr as buyer_name, ")}
+	, substringUTF8(buyer_name, 1, positionUTF8(buyer_name, '(') - 1) AS tg
+FROM a
+------------------------------------------------------------------------------------------------------------------------
 select c from b where c=1 ${if(len(a)=0,'and 1=1',"and a>0")} ${if(len(a)=0,'and 1=1',"and a>0")}
 --------------------
 SELECT c
 FROM b
 WHERE c = 1 ${if(len(a)=0,'and 1=1',"and a>0")} ${if(len(a)=0,'and 1=1',"and a>0")}
-------------------------------------------------------------------------------------------------------------------------
-select  ${if(len(a)=0,' 1=1 ',"c")}， ${if(len(a)=0,' 1=1 ',"c")} from b
---------------------
-SELECT ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")}
-FROM b
 ------------------------------------------------------------------------------------------------------------------------
 --test
 select a from b

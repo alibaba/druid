@@ -2278,7 +2278,7 @@ public class Lexer {
         if (ch != ':' && ch != '#' && ch != '$' && !(ch == '@' && dialectFeatureEnabled(ScanVariableAt))) {
             throw new ParserException("illegal variable. " + info());
         }
-
+        boolean isTemplateParameter = false;
         mark = pos;
         bufPos = 1;
         char ch;
@@ -2296,7 +2296,7 @@ public class Lexer {
             boolean ident = false;
             for (; ; ) {
                 ch = charAt(++pos);
-                if (isEOF() || ch == ';' || ch == '；' || ch == '\r' || ch == '\n') {
+                if (isEOF() || ch == ';' || ch == '；' || ch == '\r') {
                     pos--;
                     bufPos--;
                     break;

@@ -586,8 +586,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     lineItemCount = 0;
                     println();
                 }
-
-                print0(", ");
+                if (selectItem.getExpr() instanceof SQLVariantRefExpr && !((SQLVariantRefExpr) selectItem.getExpr()).isHasPrefixComma()) {
+                    print0(" ");
+                } else {
+                    print0(", ");
+                }
             }
 
             if (selectItem.getClass() == SQLSelectItem.class) {

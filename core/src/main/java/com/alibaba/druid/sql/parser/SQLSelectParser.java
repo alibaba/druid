@@ -1123,11 +1123,16 @@ public class SQLSelectParser extends SQLParser {
 
     protected void parseSelectList(SQLSelectQueryBlock queryBlock) {
         final List<SQLSelectItem> selectList = queryBlock.getSelectList();
+        boolean hasComma = true;
         for (; ; ) {
             final SQLSelectItem selectItem = this.exprParser.parseSelectItem();
             selectList.add(selectItem);
             selectItem.setParent(queryBlock);
-
+            if (!hasComma && selectItem.getExpr() instanceof SQLVariantRefExpr) {
+                SQLVariantRefExpr sqlVariantRefExpr = (SQLVariantRefExpr) selectItem.getExpr();
+                sqlVariantRefExpr.setHasPrefixComma(false);
+                hasComma = true;
+            }
             //https://github.com/alibaba/druid/issues/5708
             if (lexer.hasComment()
                     && lexer.isKeepComments()
@@ -1137,7 +1142,14 @@ public class SQLSelectParser extends SQLParser {
             }
 
             if (lexer.token != Token.COMMA) {
-                break;
+                if (lexer.token == Token.VARIANT) {
+                    hasComma = false;
+                    continue;
+                } else if (selectItem.getExpr() instanceof SQLVariantRefExpr && ((SQLVariantRefExpr) selectItem.getExpr()).isTemplateParameter() && lexer.token != Token.FROM) {
+                    continue;
+                } else {
+                    break;
+                }
             }
 
             int line = lexer.line;
