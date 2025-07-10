@@ -1,3 +1,29 @@
+select a from test where 1=1 ${if(a=1, "and b","and c")} in d
+--------------------
+SELECT a
+FROM test
+WHERE 1 = 1 ${if(a=1, "and b","and c")} IN (d)
+------------------------------------------------------------------------------------------------------------------------ 
+select a from test where 1=1 ${if(a=1, "and b","and c")} in d
+--------------------
+SELECT a
+FROM test
+WHERE 1 = 1
+	AND (a.report_item_code IN ('${gFinReportItem}')
+	OR a.report_item_code = 'B002' ${if(find('E069',gFinReportItem)>0," or (c.yn_offset_report = 'Y' and a.report_item_code ='E06802') "," ")})
+------------------------------------------------------------------------------------------------------------------------ 
+select a from test where 1=1
+				and (
+					a.report_item_code in ('${gFinReportItem}')  or a.report_item_code ='B002'
+					${if(find('E069',gFinReportItem)>0," or (c.yn_offset_report = 'Y' and a.report_item_code ='E06802') "," ")}
+				)
+--------------------
+SELECT a
+FROM test
+WHERE 1 = 1
+	AND (a.report_item_code IN ('${gFinReportItem}')
+	OR a.report_item_code = 'B002' ${if(find('E069',gFinReportItem)>0," or (c.yn_offset_report = 'Y' and a.report_item_code ='E06802') "," ")})
+------------------------------------------------------------------------------------------------------------------------ 
 select  ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")} from b
 --------------------
 SELECT ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")}
