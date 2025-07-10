@@ -2278,7 +2278,7 @@ public class Lexer {
         if (ch != ':' && ch != '#' && ch != '$' && !(ch == '@' && dialectFeatureEnabled(ScanVariableAt))) {
             throw new ParserException("illegal variable. " + info());
         }
-        boolean isTemplateParameter = false;
+        boolean templateParameter = false;
         mark = pos;
         bufPos = 1;
         char ch;
@@ -2296,14 +2296,14 @@ public class Lexer {
             boolean ident = false;
             for (; ; ) {
                 ch = charAt(++pos);
-                if (isEOF() || (isTemplateParameter && (ch == ';' || ch == '；' || ch == '\r'))) {
+                if (isEOF() || (templateParameter && (ch == ';' || ch == '；' || ch == '\r'))) {
                     pos--;
                     bufPos--;
                     break;
                 }
 
                 if (ch == '}' && !ident) {
-                    isTemplateParameter = false;
+                    templateParameter = false;
                     if (isIdentifierChar(charAt(pos + 1))) {
                         bufPos++;
                         ident = true;
@@ -2314,7 +2314,7 @@ public class Lexer {
 
                 if (ident && ch == '$') {
                     if (charAt(pos + 1) == '{') {
-                        isTemplateParameter = true;
+                        templateParameter = true;
                         bufPos++;
                         ident = false;
                         continue;
