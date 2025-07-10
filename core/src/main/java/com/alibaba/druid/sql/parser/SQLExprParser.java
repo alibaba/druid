@@ -2927,8 +2927,7 @@ public class SQLExprParser extends SQLParser {
         SQLSelectOrderByItem item = parseSelectOrderByItem();
         item.setParent(parent);
         items.add(item);
-        while (lexer.token == Token.COMMA) {
-            lexer.nextToken();
+        while (lexer.nextIf(Token.COMMA) || (item.getExpr() instanceof SQLVariantRefExpr && lexer.token == IDENTIFIER)) {
             item = parseSelectOrderByItem();
             item.setParent(parent);
             items.add(item);
@@ -3532,9 +3531,14 @@ public class SQLExprParser extends SQLParser {
                 SQLBinaryOperator operator = andRestGetAndOperator();
 
                 expr = new SQLBinaryOpExpr(expr, operator, rightExp, dbType);
-            } else if (token == VARIANT) {
-                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Blank, new SQLVariantRefExpr(lexer.stringVal()), dbType);
+            } else if (token == Token.VARIANT) {
+                String value = lexer.stringVal();
                 lexer.nextToken();
+                SQLExpr variantExpr = new SQLVariantRefExpr(value);
+                if (lexer.token == Token.IN) {
+                    variantExpr = inRest(variantExpr);
+                }
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Blank, variantExpr, dbType);
             } else {
                 break;
             }
@@ -3622,6 +3626,14 @@ public class SQLExprParser extends SQLParser {
                 SQLBinaryOperator op = orRestGetOrOperator();
 
                 expr = new SQLBinaryOpExpr(expr, op, rightExp, dbType);
+            } else if (lexer.token == Token.VARIANT) {
+                String value = lexer.stringVal();
+                lexer.nextToken();
+                SQLExpr variantExpr = new SQLVariantRefExpr(value);
+                if (lexer.token == Token.IN) {
+                    variantExpr = inRest(variantExpr);
+                }
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Blank, variantExpr, dbType);
             } else {
                 break;
             }
@@ -5954,46 +5966,47 @@ public class SQLExprParser extends SQLParser {
 
         String alias;
         List<String> aliasList = null;
-        switch (lexer.token) {
-            case FULL:
-            case TABLESPACE:
-                alias = lexer.stringVal();
-                lexer.nextToken();
-                break;
-            case AS:
-                lexer.nextTokenAlias();
-                if (lexer.token == Token.LITERAL_INT) {
-                    alias = '"' + lexer.stringVal() + '"';
+        if (expr instanceof SQLVariantRefExpr && ((SQLVariantRefExpr) expr).isTemplateParameter() && lexer.token != AS) {
+            alias = null;
+        } else {
+            switch (lexer.token) {
+                case FULL:
+                case TABLESPACE:
+                    alias = lexer.stringVal();
                     lexer.nextToken();
-                } else if (lexer.token == Token.LPAREN) {
-                    lexer.nextToken();
-                    aliasList = new ArrayList<String>();
-
-                    for (; ; ) {
-                        String stringVal = lexer.stringVal();
+                    break;
+                case AS:
+                    lexer.nextTokenAlias();
+                    if (lexer.token == Token.LITERAL_INT) {
+                        alias = '"' + lexer.stringVal() + '"';
                         lexer.nextToken();
-
-                        aliasList.add(stringVal);
-
-                        if (lexer.token() == Token.COMMA) {
+                    } else if (lexer.token == Token.LPAREN) {
+                        lexer.nextToken();
+                        aliasList = new ArrayList<String>();
+                        for (; ; ) {
+                            String stringVal = lexer.stringVal();
                             lexer.nextToken();
-                            continue;
+                            aliasList.add(stringVal);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
                         }
-                        break;
-                    }
-                    accept(Token.RPAREN);
+                        accept(Token.RPAREN);
 
+                        alias = null;
+                    } else {
+                        alias = alias();
+                    }
+                    break;
+                case EOF:
                     alias = null;
-                } else {
-                    alias = alias();
-                }
-                break;
-            case EOF:
-                alias = null;
-                break;
-            default:
-                alias = as();
-                break;
+                    break;
+                default:
+                    alias = as();
+                    break;
+            }
         }
 
         if (alias == null && isEnabled(SQLParserFeature.SelectItemGenerateAlias)

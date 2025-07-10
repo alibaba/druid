@@ -222,11 +222,11 @@ public class SQLStatementParser extends SQLParser {
                 case SELECT: {
                     MySqlHintStatement hintStatement = null;
                     if (i == 1
-                            && statementList.size() > 0
+                            && !statementList.isEmpty()
                             && statementList.get(statementList.size() - i) instanceof MySqlHintStatement) {
                         hintStatement = (MySqlHintStatement) statementList.get(statementList.size() - i);
                     } else if (i > 0 && dialectFeatureEnabled(ParseStatementListSelectUnsupportedSyntax) && !semi
-                            && !(statementList.size() > 0 && statementList.get(statementList.size() - i).isAfterSemi())
+                            && !(!statementList.isEmpty() && statementList.size() - i >= 0 && statementList.get(statementList.size() - i).isAfterSemi())
                     ) {
                         throw new ParserException("syntax error. " + lexer.info());
                     }
