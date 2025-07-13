@@ -3149,6 +3149,9 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             // shrink connections by HotSpot intrinsic function _arraycopy for performance optimization.
             int removeCount = evictCount + keepAliveCount;
+            if (removeCount > poolingCount) {
+                removeCount = poolingCount;
+            }
             if (removeCount > 0) {
                 int breakedCount = poolingCount - i;
                 if (breakedCount > 0) {
