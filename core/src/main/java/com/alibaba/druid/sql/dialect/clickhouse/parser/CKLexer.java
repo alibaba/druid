@@ -39,6 +39,7 @@ public class CKLexer extends Lexer {
         map.put("FINAL", Token.FINAL);
         map.put("TTL", Token.TTL);
         map.put("CODEC", Token.CODEC);
+        map.remove("ANY");
 
         return new Keywords(map);
     }
