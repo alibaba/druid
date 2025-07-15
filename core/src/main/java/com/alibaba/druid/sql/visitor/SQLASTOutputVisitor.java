@@ -105,7 +105,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected transient int lines;
     private TimeZone timeZone;
-    private boolean endLineComment;
+    protected boolean endLineComment;
 
     protected SQLDialect dialect;
 

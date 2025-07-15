@@ -2527,10 +2527,21 @@ public class Lexer {
             }
 
             if (ch == '*' && charAt(pos + 1) == '/') {
-                scanChar();
-                scanChar();
-                if (0 == --depth) {
-                    break;
+                int curPos = pos;
+                boolean terminated = true;
+                // If '*/' has leading '--' in the same line, just skip it. For example '-- xxxx */'.
+                while (curPos > 0 && charAt(curPos) != '\n') {
+                    if (charAt(curPos) == '-' && (curPos + 1) < text.length() && charAt(curPos + 1) == '-') {
+                        terminated = false;
+                    }
+                    curPos--;
+                }
+                if (terminated) {
+                    scanChar();
+                    scanChar();
+                    if (0 == --depth) {
+                        break;
+                    }
                 }
             }
 
