@@ -2520,10 +2520,7 @@ public class Lexer {
             if (ch == '/' && charAt(pos + 1) == '*') {
                 scanChar();
                 scanChar();
-                if (ch == '!' || ch == '+') {
-                    scanChar();
-                    ++depth;
-                }
+                ++depth;
             }
 
             if (ch == '*' && charAt(pos + 1) == '/') {
