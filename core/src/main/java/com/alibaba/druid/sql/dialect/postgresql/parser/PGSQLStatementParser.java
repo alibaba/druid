@@ -793,6 +793,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
                     accept(Token.TYPE);
                     SQLDataType dataType = this.exprParser.parseDataType();
                     alterColumn.setDataType(dataType);
+                    // using ...
+                    if (lexer.token() == USING) {
+                        lexer.nextToken();
+                        SQLExpr usingExpr = this.exprParser.expr();
+                        alterColumn.setUsing(usingExpr);
+                    }
                 } else {
                     accept(Token.DEFAULT);
                     SQLExpr defaultValue = this.exprParser.expr();
