@@ -1137,7 +1137,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.hasComment()
                     && lexer.isKeepComments()
                     && !lexer.getComments().isEmpty()
-                    && (lexer.getComments().get(0).startsWith("--")) {
+                    && lexer.getComments().get(0).startsWith("--")) {
                 selectItem.addAfterComment(lexer.readAndResetComments());
             }
 
