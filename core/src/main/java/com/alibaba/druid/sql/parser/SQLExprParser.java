@@ -3657,7 +3657,8 @@ public class SQLExprParser extends SQLParser {
     }
 
     protected SQLExpr relationalRestEqeq(SQLExpr expr) {
-        return expr;
+        lexer.nextToken();
+        return new SQLBinaryOpExpr(expr, SQLBinaryOperator.EqEq, expr());
     }
 
     protected SQLExpr relationalRestTilde(SQLExpr expr) {
