@@ -1100,6 +1100,10 @@ public class SQLSelectParser extends SQLParser {
         } else {
             item = this.exprParser.expr();
         }
+        if (lexer.nextIf(Token.AS)) {
+            item = new SQLAliasedExpr(item, lexer.stringVal);
+            lexer.nextToken();
+        }
 
         if (dialectFeatureEnabled(GroupByItemOrder)) {
             if (lexer.token == Token.DESC) {
