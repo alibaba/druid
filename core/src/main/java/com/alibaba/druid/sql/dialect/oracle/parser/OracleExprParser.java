@@ -1210,9 +1210,12 @@ public class OracleExprParser extends SQLExprParser {
             OracleCreateIndexStatement createIndex = new OracleStatementParser(lexer).parseCreateIndex();
             using.setIndex(createIndex);
             accept(Token.RPAREN);
-        } else if (lexer.token() == Token.LITERAL_ALIAS) {
-            SQLName index = new OracleStatementParser(lexer).getExprParser().name();
-            using.setIndex(index);
+        } else if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.IDENTIFIER) {
+            //https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/constraint.html#GUID-1055EA97-BA6F-4764-A15F-1024FD5B6DFE__CJAGEBIG
+            using.setIndex(this.name());
+        } else {
+            throw new ParserException("syntax error, expect '('/LITERAL_ALIAS/IDENTIFIER, actual " + lexer.token() + " "
+                    + lexer.info());
         }
 
         for (; ; ) {
