@@ -3,9 +3,14 @@ package com.alibaba.druid.sql.dialect.hologres.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.parser.CharTypes;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
+
+import java.util.List;
 
 public class HologresOutputVisitor extends PGOutputVisitor {
     public HologresOutputVisitor(StringBuilder appender, boolean parameterized) {
@@ -28,6 +33,27 @@ public class HologresOutputVisitor extends PGOutputVisitor {
         }
         print0(ucase ? "PARTITION BY " : "partition by ");
         partitionBy.accept(this);
+    }
+
+    @Override
+    protected void printFrom(SQLSelectQueryBlock x) {
+        SQLTableSource from = x.getFrom();
+        if (from == null) {
+            return;
+        }
+
+        List<String> beforeComments = from.getBeforeCommentsDirect();
+        if (beforeComments != null) {
+            for (String comment : beforeComments) {
+                println();
+                print0(comment);
+            }
+        }
+
+        super.printFrom(x);
+        if (x instanceof CKSelectQueryBlock && ((CKSelectQueryBlock) x).isFinal()) {
+            print0(ucase ? " FINAL" : " final");
+        }
     }
 
     @Override
