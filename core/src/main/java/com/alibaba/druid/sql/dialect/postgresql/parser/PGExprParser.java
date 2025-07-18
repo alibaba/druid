@@ -353,6 +353,9 @@ public class PGExprParser extends SQLExprParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.SECOND)) {
             lexer.nextToken();
             intervalExpr.setUnit(SQLIntervalUnit.SECOND);
+        } else if (lexer.identifierEquals(FnvHash.Constants.WEEK)) {
+            lexer.nextToken();
+            intervalExpr.setUnit(SQLIntervalUnit.WEEK);
         }
 
         return intervalExpr;
