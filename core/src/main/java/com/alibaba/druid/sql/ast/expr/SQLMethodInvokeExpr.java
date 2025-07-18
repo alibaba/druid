@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
     private static final long serialVersionUID = 1L;
-    private boolean removeBrackets = false;
+    private boolean removeBrackets;
 
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
     protected String methodName;
@@ -42,26 +42,31 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
     protected transient SQLDataType resolvedReturnDataType;
 
     public SQLMethodInvokeExpr() {
+        this.removeBrackets = false;
     }
 
     public SQLMethodInvokeExpr(String methodName) {
         this.methodName = methodName;
+        this.removeBrackets = false;
     }
 
     public SQLMethodInvokeExpr(SQLIdentifierExpr methodName) {
         this.methodName = methodName.name;
         this.methodNameHashCode64 = methodName.hashCode64;
         this.setSource(methodName.getSourceLine(), methodName.getSourceColumn());
+        this.removeBrackets = false;
     }
 
     public SQLMethodInvokeExpr(String methodName, long methodNameHashCode64) {
         this.methodName = methodName;
         this.methodNameHashCode64 = methodNameHashCode64;
+        this.removeBrackets = false;
     }
 
     public SQLMethodInvokeExpr(String methodName, SQLExpr owner) {
         this.methodName = methodName;
         setOwner(owner);
+        this.removeBrackets = false;
     }
 
     public SQLMethodInvokeExpr(String methodName, SQLExpr owner, SQLExpr... params) {
@@ -70,6 +75,7 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         for (SQLExpr param : params) {
             this.addArgument(param);
         }
+        this.removeBrackets = false;
     }
 
     public SQLMethodInvokeExpr(String methodName, SQLExpr owner, List<SQLExpr> params) {
@@ -78,6 +84,7 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         for (SQLExpr param : params) {
             this.addArgument(param);
         }
+        this.removeBrackets = false;
     }
 
     public long methodNameHashCode64() {
