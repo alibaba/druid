@@ -256,7 +256,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> destroyCountUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "destroyCount");
     static final AtomicLongFieldUpdater<DruidAbstractDataSource> createStartNanosUpdater = AtomicLongFieldUpdater.newUpdater(DruidAbstractDataSource.class, "createStartNanos");
 
-    private Boolean useUnfairLock = true;
     private boolean useLocalSessionState = true;
     private boolean keepConnectionUnderlyingTransactionIsolation;
 
@@ -382,8 +381,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     this.lock = new ReentrantLock(!useUnfairLock);
                     this.notEmpty = this.lock.newCondition();
                     this.empty = this.lock.newCondition();
-
-                    this.useUnfairLock = useUnfairLock;
                 }
             } finally {
                 lock.unlock();
