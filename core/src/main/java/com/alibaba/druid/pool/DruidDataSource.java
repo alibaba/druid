@@ -234,8 +234,8 @@ public class DruidDataSource extends DruidAbstractDataSource
         lock.lock();
         try {
             urlUserPasswordChanged = (url != null && !this.jdbcUrl.equals(url))
-                    || (username != null && !this.username.equals(username))
-                    || (password != null && !this.password.equals(password));
+                    || (username != null && !username.equals(this.username))
+                    || (password != null && !password.equals(this.password));
 
             String connectUser = username != null ? username : this.username;
             if (username != null) {
@@ -247,6 +247,9 @@ public class DruidDataSource extends DruidAbstractDataSource
                 connectProperties.put("password", connectPassword);
             }
             connectUrl = url != null ? url : this.jdbcUrl;
+            if (urlUserPasswordChanged) {
+                userPasswordVersion++;
+            }
         } finally {
             lock.unlock();
         }
@@ -266,17 +269,17 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         lock.lock();
         try {
-            if (url != null && !this.jdbcUrl.equals(url)) {
+            if (url != null && !url.equals(this.jdbcUrl)) {
                 this.jdbcUrl = url; // direct set url, ignore init check
                 LOG.info("jdbcUrl changed");
             }
 
-            if (username != null && !this.username.equals(username)) {
+            if (username != null && !username.equals(this.username)) {
                 this.username = username; // direct set, ignore init check
                 LOG.info("username changed");
             }
 
-            if (password != null && !this.password.equals(password)) {
+            if (password != null && !password.equals(this.password)) {
                 this.password = password; // direct set, ignore init check
                 LOG.info("password changed");
             }
@@ -1920,7 +1923,9 @@ public class DruidDataSource extends DruidAbstractDataSource
                 return;
             }
 
-            if (physicalConnection.isClosed()) {
+            if (holder.userPasswordVersion < userPasswordVersion
+                    || physicalConnection.isClosed()
+            ) {
                 lock.lock();
                 try {
                     if (holder.active) {

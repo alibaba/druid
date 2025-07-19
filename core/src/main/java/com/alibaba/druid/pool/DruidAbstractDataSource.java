@@ -187,6 +187,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long cachedPreparedStatementCount;
     protected volatile long cachedPreparedStatementDeleteCount;
     protected volatile long cachedPreparedStatementMissCount;
+    protected volatile long userPasswordVersion;
 
     private volatile FilterChainImpl filterChain;
 
