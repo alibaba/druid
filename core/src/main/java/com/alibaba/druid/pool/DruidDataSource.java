@@ -3099,6 +3099,9 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             // shrink connections by HotSpot intrinsic function _arraycopy for performance optimization.
             int removeCount = evictCount + keepAliveCount;
+            if (removeCount > poolingCount) {
+                removeCount = poolingCount;
+            }
             if (removeCount > 0) {
                 int breakedCount = poolingCount - i;
                 if (breakedCount > 0) {
@@ -3203,7 +3206,9 @@ public class DruidDataSource extends DruidAbstractDataSource
             lock.lock();
             try {
                 int fillCount = minIdle - (activeCount + poolingCount + createTaskCount);
-                emptySignal(fillCount);
+                if (fillCount > 0) {
+                    emptySignal(fillCount);
+                }
             } finally {
                 lock.unlock();
             }
