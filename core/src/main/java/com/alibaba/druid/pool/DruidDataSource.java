@@ -247,9 +247,6 @@ public class DruidDataSource extends DruidAbstractDataSource
                 connectProperties.put("password", connectPassword);
             }
             connectUrl = url != null ? url : this.jdbcUrl;
-            if (urlUserPasswordChanged) {
-                userPasswordVersion++;
-            }
         } finally {
             lock.unlock();
         }
@@ -269,19 +266,22 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         lock.lock();
         try {
-            if (url != null && !url.equals(this.jdbcUrl)) {
-                this.jdbcUrl = url; // direct set url, ignore init check
-                LOG.info("jdbcUrl changed");
-            }
+            if (urlUserPasswordChanged) {
+                if (url != null && !url.equals(this.jdbcUrl)) {
+                    this.jdbcUrl = url; // direct set url, ignore init check
+                    LOG.info("jdbcUrl changed");
+                }
 
-            if (username != null && !username.equals(this.username)) {
-                this.username = username; // direct set, ignore init check
-                LOG.info("username changed");
-            }
+                if (username != null && !username.equals(this.username)) {
+                    this.username = username; // direct set, ignore init check
+                    LOG.info("username changed");
+                }
 
-            if (password != null && !password.equals(this.password)) {
-                this.password = password; // direct set, ignore init check
-                LOG.info("password changed");
+                if (password != null && !password.equals(this.password)) {
+                    this.password = password; // direct set, ignore init check
+                    LOG.info("password changed");
+                }
+                incrementUserPasswordVersion();
             }
 
             {
@@ -308,32 +308,46 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             DruidDataSourceUtils.configFromProperties(this, properties);
-
-            if (urlUserPasswordChanged) {
-                for (int i = poolingCount - 1; i >= 0; i--) {
-                    DruidConnectionHolder connection = connections[i];
-                    JdbcUtils.close(connection.conn);
-                    destroyCountUpdater.incrementAndGet(this);
-                    connections[i] = null;
-                }
-                poolingCount = 0;
-                emptySignal();
-            }
         } finally {
             lock.unlock();
         }
 
-        int minIdle = this.minIdle;
-        for (int i = 0; i < minIdle; ++i) {
-            // check need fill
-            lock.lock();
+        int replaceCount = 0;
+        // replace older version urlUserPassword Connection
+        while ((hasOlderVersionUrlUserPasswordConnection())) {
             try {
-                if (activeCount + poolingCount >= minIdle) {
+                PhysicalConnectionInfo phyConnInfo = createPhysicalConnection();
+
+                boolean result = false;
+                lock.lock();
+                try {
+                    for (int i = poolingCount - 1; i >= 0; i--) {
+                        if (connections[i].getUserPasswordVersion() < userPasswordVersion) {
+                            connections[i] = new DruidConnectionHolder(DruidDataSource.this, phyConnInfo);
+                            result = true;
+                            replaceCount++;
+                            break;
+                        }
+                    }
+                } finally {
+                    lock.unlock();
+                }
+
+                if (!result) {
+                    JdbcUtils.close(phyConnInfo.getPhysicalConnection());
+                    LOG.info("replace older version urlUserPassword failed.");
                     break;
                 }
-            } finally {
-                lock.unlock();
+            } catch (SQLException e) {
+                LOG.error("fill init connection error", e);
             }
+        }
+
+        if (replaceCount > 0) {
+            LOG.info("replace older version urlUserPassword Connection : " + replaceCount);
+        }
+
+        while ((isLowWaterLevel())) {
             try {
                 PhysicalConnectionInfo physicalConnection = createPhysicalConnection();
 
@@ -345,6 +359,30 @@ public class DruidDataSource extends DruidAbstractDataSource
             } catch (SQLException e) {
                 LOG.error("fill init connection error", e);
             }
+        }
+    }
+
+    private boolean hasOlderVersionUrlUserPasswordConnection() {
+        lock.lock();
+        try {
+            long userPasswordVersion = this.userPasswordVersion;
+            for (int i = 0; i < poolingCount; i++) {
+                if (connections[i].getUserPasswordVersion() < userPasswordVersion) {
+                    return true;
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return false;
+    }
+
+    private boolean isLowWaterLevel() {
+        lock.lock();
+        try {
+            return activeCount + poolingCount < minIdle;
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -1918,14 +1956,13 @@ public class DruidDataSource extends DruidAbstractDataSource
                 return;
             }
 
-            if (phyMaxUseCount > 0 && holder.useCount >= phyMaxUseCount) {
+            if ((phyMaxUseCount > 0 && holder.useCount >= phyMaxUseCount)
+                    || holder.userPasswordVersion < getUserPasswordVersion()) {
                 discardConnection(holder);
                 return;
             }
 
-            if (holder.userPasswordVersion < userPasswordVersion
-                    || physicalConnection.isClosed()
-            ) {
+            if (physicalConnection.isClosed()) {
                 lock.lock();
                 try {
                     if (holder.active) {
@@ -1980,6 +2017,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
 
+            boolean full = false;
             lock.lock();
             try {
                 if (holder.active) {
@@ -1990,13 +2028,20 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                 result = putLast(holder, currentTimeMillis);
                 recycleCount++;
+                if (!result) {
+                    full = poolingCount + activeCount >= maxActive;
+                }
             } finally {
                 lock.unlock();
             }
 
             if (!result) {
                 JdbcUtils.close(holder.conn);
-                LOG.info("connection recycle failed.");
+                String msg = "connection recycle failed.";
+                if (full) {
+                    msg += " pool is full";
+                }
+                LOG.info(msg);
             }
         } catch (Throwable e) {
             holder.clearStatementCache();
@@ -2447,7 +2492,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     protected boolean put(PhysicalConnectionInfo physicalConnectionInfo) {
-        DruidConnectionHolder holder = null;
+        DruidConnectionHolder holder;
         try {
             holder = new DruidConnectionHolder(DruidDataSource.this, physicalConnectionInfo);
         } catch (SQLException ex) {

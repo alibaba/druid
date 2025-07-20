@@ -117,7 +117,7 @@ public final class DruidConnectionHolder {
         this.createNanoSpan = connectNanoSpan;
         this.variables = variables;
         this.globalVariables = globalVariables;
-        this.userPasswordVersion = dataSource.userPasswordVersion;
+        this.userPasswordVersion = dataSource.getUserPasswordVersion();
 
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;
