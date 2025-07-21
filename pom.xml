@@ -6,7 +6,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid-parent</artifactId>
-	<version>1.2.27-SNAPSHOT</version>
+	<version>1.2.27</version>
 	<name>${project.artifactId}</name>
 	<description>A JDBC datasource implementation.</description>
 	<packaging>pom</packaging>
@@ -206,7 +206,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.4.1</version>
+					<version>3.8.0</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
