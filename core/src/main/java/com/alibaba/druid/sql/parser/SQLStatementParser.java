@@ -4971,6 +4971,7 @@ public class SQLStatementParser extends SQLParser {
     public void parseCreateViewAfterName(SQLCreateViewStatement createView) {
     }
     public void parseCreateViewAtDataType(SQLColumnDefinition column, SQLName expr) {
+        column.setDataType(this.exprParser.parseDataType());
     }
     public SQLCreateViewStatement parseCreateView() {
         SQLCreateViewStatement createView = new SQLCreateViewStatement(getDbType());

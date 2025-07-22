@@ -1740,6 +1740,8 @@ public class OdpsStatementParser extends HiveStatementParser {
     public void parseCreateViewAtDataType(SQLColumnDefinition column, SQLName expr) {
         if (expr.getSimpleName().startsWith("@")) {
             column.setDataType(this.exprParser.parseDataType());
+        } else {
+            super.parseCreateViewAtDataType(column, expr);
         }
     }
 
