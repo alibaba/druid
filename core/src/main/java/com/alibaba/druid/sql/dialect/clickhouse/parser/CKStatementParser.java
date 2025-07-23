@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
@@ -114,5 +115,8 @@ public class CKStatementParser extends SQLStatementParser {
                 createView.setTo(to);
             }
         }
+    }
+    public void parseCreateViewAtDataType(SQLColumnDefinition column, SQLName expr) {
+        column.setDataType(this.exprParser.parseDataType());
     }
 }
