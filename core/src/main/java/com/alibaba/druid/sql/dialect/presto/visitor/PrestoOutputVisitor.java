@@ -202,4 +202,8 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoAS
         timeZone.accept(this);
         return false;
     }
+
+    public void printArrayExprPrefix() {
+        print0(ucase ? "ARRAY" : "array");
+    }
 }
