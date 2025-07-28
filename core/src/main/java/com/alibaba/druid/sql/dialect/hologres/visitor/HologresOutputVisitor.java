@@ -104,4 +104,8 @@ public class HologresOutputVisitor extends PGOutputVisitor {
             endLineComment = true;
         }
     }
+
+    public void printArrayExprPrefix() {
+        print0(ucase ? "ARRAY" : "array");
+    }
 }

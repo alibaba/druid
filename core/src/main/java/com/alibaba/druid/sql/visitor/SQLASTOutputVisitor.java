@@ -7650,6 +7650,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public void printArrayExprPrefix() {
+    }
     @Override
     public boolean visit(SQLArrayExpr x) {
         SQLExpr expr = x.getExpr();
@@ -7661,10 +7663,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else if (expr != null) {
             expr.accept(this);
         } else {
-            boolean trino = dbType == DbType.trino || dbType == DbType.presto || dbType == DbType.supersql;
-            if (trino) {
-                print0(ucase ? "ARRAY" : "array");
-            }
+            printArrayExprPrefix();
         }
 
         if (x.getDataType() != null) {
