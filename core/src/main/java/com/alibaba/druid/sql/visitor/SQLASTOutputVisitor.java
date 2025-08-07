@@ -9302,11 +9302,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLRefreshMaterializedViewStatement x) {
         print0(ucase ? "REFRESH MATERIALIZED" : "refresh materialized");
 
-        if (x.isConcurrently()) {
-            print0(ucase ? " CONCURRENTLY" : " concurrently");
-        }
-
         print0(ucase ? " VIEW " : " view ");
+
+        if (x.isConcurrently()) {
+            print0(ucase ? "CONCURRENTLY " : "concurrently ");
+        }
 
         x.getName().accept(this);
 
