@@ -818,4 +818,21 @@ public class OdpsExprParser extends HiveExprParser {
         }
         return super.methodRest(expr, acceptLPAREN);
     }
+
+    @Override
+    public SQLName name() {
+        SQLObject locationHolder = null;
+        if (lexer.isKeepSourceLocation()) {
+            locationHolder = new SQLIdentifierExpr("temp");
+            lexer.computeRowAndColumn(locationHolder);
+        }
+
+        SQLName name = super.name();
+
+        if (locationHolder != null) {
+            name.setSource(locationHolder.getSourceLine(), locationHolder.getSourceColumn());
+        }
+
+        return name;
+    }
 }
