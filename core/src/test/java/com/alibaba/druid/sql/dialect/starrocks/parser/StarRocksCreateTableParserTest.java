@@ -236,7 +236,6 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
                     "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
                     ") ENGINE = OLAP\n" +
-                    "COMMENT \"test comments\"\n" +
                     "DUPLICATE KEY (`recruit_date`, `region_num`)\n" +
                     "PARTITION BY recruit_date, region_num \n" +
                     "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n"
