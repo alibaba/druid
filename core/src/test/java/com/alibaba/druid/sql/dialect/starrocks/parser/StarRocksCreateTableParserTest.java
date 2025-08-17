@@ -75,15 +75,15 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "DUPLICATE KEY (`recruit_date`, `region_num`)\n" +
                     "PARTITION BY RANGE(`recruit_date`)\n" +
                     "(\n" +
-                    "  PARTITION partition_name1 VALUES LESS THAN MAXVALUE | (\"value1\", \"value2\"), \n" +
-                    "  PARTITION partition_name2 VALUES LESS THAN MAXVALUE | (\"value1\", \"value2\")\n" +
+                    "  PARTITION partition_name1 VALUES LESS THAN (\"value1\"), \n" +
+                    "  PARTITION partition_name2 VALUES LESS THAN MAXVALUE\n" +
                     ")\n" +
                     "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n" +
                     "PROPERTIES (\n" +
                     "\t\"replication_num\" = \"1\"\n" +
                     ")",
 
-//            // 4.分区类型为 Fixed Range的建表语句
+            // 4.分区类型为 Fixed Range的建表语句
             "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
                     "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
                     "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
@@ -166,12 +166,12 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ")\n" +
                     "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n" +
                     "PROPERTIES (\n" +
-                    "\t\"storage_medium\" = \"[SSD|HDD]\",\n" +
+                    "\t\"storage_medium\" = \"SSD\",\n" +
                     "\t\"dynamic_partition.enable\" = \"true|false\",\n" +
                     "\t\"dynamic_partition.time_unit\" = \"DAY|WEEK|MONTH\",\n" +
                     "\t\"dynamic_partition.start\" = \"${integer_value}\",\n" +
-                    "\t[\"storage_cooldown_time\" = \"yyyy-MM-dd HH:mm:ss\",]\n" +
-                    "\t[\"replication_num\" = \"3\"]\n" +
+                    "\t\"storage_cooldown_time\" = \"yyyy-MM-dd HH:mm:ss\",\n" +
+                    "\t\"replication_num\" = \"3\"\n" +
                     ")",
 
             // 7.含有 Bitmap 索引和聚合函数的建表语句
@@ -217,7 +217,30 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     "\t\"in_memory\" = \"false\",\n" +
                     "\t\"storage_format\" = \"V2\",\n" +
                     "\t\"disable_auto_compaction\" = \"false\"\n" +
-                    ")"
+                    ")",
+
+            // 10. 表达式分区
+            "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
+                    "\t`recruit_date` DATE NOT NULL COMMENT 'YYYY-MM-DD',\n" +
+                    "\t`region_num` TINYINT COMMENT 'range [-128, 127]',\n" +
+                    "\t`num_plate` SMALLINT COMMENT 'range [-32768, 32767] ',\n" +
+                    "\t`tel` INT COMMENT 'range [-2147483648, 2147483647]',\n" +
+                    "\t`id` BIGINT COMMENT 'range [-2^63 + 1 ~ 2^63 - 1]',\n" +
+                    "\t`password` LARGEINT COMMENT 'range [-2^127 + 1 ~ 2^127 - 1]',\n" +
+                    "\t`name` CHAR(20) NOT NULL COMMENT 'range char(m),m in (1-255)',\n" +
+                    "\t`profile` VARCHAR(500) NOT NULL COMMENT 'upper limit value 1048576 bytes',\n" +
+                    "\t`hobby` STRING NOT NULL COMMENT 'upper limit value 65533 bytes',\n" +
+                    "\t`leave_time` DATETIME COMMENT 'YYYY-MM-DD HH:MM:SS',\n" +
+                    "\t`channel` FLOAT COMMENT '4 bytes',\n" +
+                    "\t`income` DOUBLE COMMENT '8 bytes',\n" +
+                    "\t`account` DECIMAL(12, 4) COMMENT '\"\"',\n" +
+                    "\t`ispass` BOOLEAN COMMENT 'true/false'\n" +
+                    ") ENGINE = OLAP\n" +
+                    "COMMENT \"test comments\"\n" +
+                    "DUPLICATE KEY (`recruit_date`, `region_num`)\n" +
+                    "PARTITION BY recruit_date, region_num \n" +
+                    "DISTRIBUTED BY HASH(`recruit_date`, `region_num`) BUCKETS 8\n"
+
     };
 
 
