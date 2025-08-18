@@ -56,7 +56,11 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
     }
 
     public DB2SelectQueryBlock() {
-        dbType = DbType.db2;
+        this.dbType = DbType.db2;
+    }
+
+    public DB2SelectQueryBlock(DbType dbType) {
+        this.dbType = dbType;
     }
 
     public Isolation getIsolation() {
