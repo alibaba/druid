@@ -154,12 +154,13 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("EXPLAIN SELECT name\n" +
-                            "FROM customer\n" +
-                            "\tINNER JOIN orders\n" +
-                            "\tON customer.custkey = orders.custkey/*+ wefwe=true*/\n" +
-                            "\t\tAND customer.nationkey = orders.orderkey /* wef=false */\n\t\t", //
-                    output);
+            Assert.assertEquals(
+              "EXPLAIN SELECT name\n"
+                  + "FROM customer\n"
+                  + "\tINNER JOIN orders\n"
+                  + "\tON customer.custkey = orders.custkey/*+ wefwe=true*/\n"
+                  + "\t\tAND customer.nationkey = orders.orderkey /* wef=false */", //
+              output);
         }
     }
 

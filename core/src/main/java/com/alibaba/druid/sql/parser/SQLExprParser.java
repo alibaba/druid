@@ -1265,8 +1265,7 @@ public class SQLExprParser extends SQLParser {
             expr.addBeforeComment(beforeComments);
         }
         if (lexer.hasComment() && lexer.isKeepComments()) {
-            // @todo 是否保留注释，暂时待定，因为保留的话，有20来个测试用例会失败 by lizongbo
-            // expr.addAfterComment(lexer.readAndResetComments());
+             expr.addAfterComment(lexer.readAndResetComments());
         }
         return expr;
     }
@@ -3223,6 +3222,7 @@ public class SQLExprParser extends SQLParser {
                             }
                             continue;
                         }
+                        item.addAfterComment(lexer.comments);
                         break;
                     }
 

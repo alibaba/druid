@@ -82,55 +82,61 @@ public class Oracle_pl_exception_3 extends OracleTest {
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
             System.out.println(output);
-            assertEquals("DECLARE\n" +
-                            "\tsalary_too_high EXCEPTION;\n" +
-                            "\tcurrent_salary NUMBER := 20000;\n" +
-                            "\tmax_salary NUMBER := 10000;\n" +
-                            "\terroneous_salary NUMBER;\n" +
-                            "BEGIN\n" +
-                            "\tBEGIN\n" +
-                            "\t\tIF current_salary > max_salary THEN\n" +
-                            "\t\t\tRAISE salary_too_high;\n" +
-                            "\t\tEND IF;\n" +
-                            "\tEXCEPTION\n" +
-                            "\t\tWHEN salary_too_high THEN\n" +
-                            "\t\t\terroneous_salary := current_salary;\n" +
-                            "\t\t\tDBMS_OUTPUT.PUT_LINE('Salary ' || erroneous_salary || ' is out of range.');\n" +
-                            "\t\t\tDBMS_OUTPUT.PUT_LINE('Maximum salary is ' || max_salary || '.');\n" +
-                            "\t\t\tRAISE;\n" +
-                            "\tEND;\n" +
-                            "EXCEPTION\n" +
-                            "\tWHEN salary_too_high THEN\n" +
-                            "\t\tcurrent_salary := max_salary;\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Revising salary from ' || erroneous_salary || ' to ' || current_salary || '.');\n" +
-                            "END;", //
-                    output);
+            assertEquals(
+              "DECLARE\n"
+                  + "\tsalary_too_high EXCEPTION;\n"
+                  + "\tcurrent_salary NUMBER := 20000;\n"
+                  + "\tmax_salary NUMBER := 10000;\n"
+                  + "\terroneous_salary NUMBER;\n"
+                  + "BEGIN\n"
+                  + "\tBEGIN\n"
+                  + "\t\tIF current_salary > max_salary THEN\n"
+                  + "\t\t\tRAISE salary_too_high;\n"
+                  + "\t\tEND IF;\n"
+                  + "\tEXCEPTION\n"
+                  + "\t\tWHEN salary_too_high THEN\n"
+                  + "\t\t\t-- start handling exception\n"
+                  + "\t\t\terroneous_salary := current_salary;\n"
+                  + "\t\t\tDBMS_OUTPUT.PUT_LINE('Salary ' || erroneous_salary || ' is out of range.');\n"
+                  + "\t\t\tDBMS_OUTPUT.PUT_LINE('Maximum salary is ' || max_salary || '.');\n"
+                  + "\t\t\tRAISE;\n"
+                  + "\tEND;\n"
+                  + "EXCEPTION\n"
+                  + "\tWHEN salary_too_high THEN\n"
+                  + "\t\t-- finish handling exception\n"
+                  + "\t\tcurrent_salary := max_salary;\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Revising salary from ' || erroneous_salary || ' to ' || current_salary || '.');\n"
+                  + "END;", //
+              output);
         }
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("declare\n" +
-                            "\tsalary_too_high EXCEPTION;\n" +
-                            "\tcurrent_salary NUMBER := 20000;\n" +
-                            "\tmax_salary NUMBER := 10000;\n" +
-                            "\terroneous_salary NUMBER;\n" +
-                            "begin\n" +
-                            "\tbegin\n" +
-                            "\t\tif current_salary > max_salary then\n" +
-                            "\t\t\traise salary_too_high;\n" +
-                            "\t\tend if;\n" +
-                            "\texception\n" +
-                            "\t\twhen salary_too_high then\n" +
-                            "\t\t\terroneous_salary := current_salary;\n" +
-                            "\t\t\tDBMS_OUTPUT.PUT_LINE('Salary ' || erroneous_salary || ' is out of range.');\n" +
-                            "\t\t\tDBMS_OUTPUT.PUT_LINE('Maximum salary is ' || max_salary || '.');\n" +
-                            "\t\t\traise;\n" +
-                            "\tend;\n" +
-                            "exception\n" +
-                            "\twhen salary_too_high then\n" +
-                            "\t\tcurrent_salary := max_salary;\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Revising salary from ' || erroneous_salary || ' to ' || current_salary || '.');\n" +
-                            "end;", //
-                    output);
+            assertEquals(
+              "declare\n"
+                  + "\tsalary_too_high EXCEPTION;\n"
+                  + "\tcurrent_salary NUMBER := 20000;\n"
+                  + "\tmax_salary NUMBER := 10000;\n"
+                  + "\terroneous_salary NUMBER;\n"
+                  + "begin\n"
+                  + "\tbegin\n"
+                  + "\t\tif current_salary > max_salary then\n"
+                  + "\t\t\traise salary_too_high;\n"
+                  + "\t\tend if;\n"
+                  + "\texception\n"
+                  + "\t\twhen salary_too_high then\n"
+                  + "\t\t\t-- start handling exception\n"
+                  + "\t\t\terroneous_salary := current_salary;\n"
+                  + "\t\t\tDBMS_OUTPUT.PUT_LINE('Salary ' || erroneous_salary || ' is out of range.');\n"
+                  + "\t\t\tDBMS_OUTPUT.PUT_LINE('Maximum salary is ' || max_salary || '.');\n"
+                  + "\t\t\traise;\n"
+                  + "\tend;\n"
+                  + "exception\n"
+                  + "\twhen salary_too_high then\n"
+                  + "\t\t-- finish handling exception\n"
+                  + "\t\tcurrent_salary := max_salary;\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Revising salary from ' || erroneous_salary || ' to ' || current_salary || '.');\n"
+                  + "end;", //
+              output);
         }
     }
 }

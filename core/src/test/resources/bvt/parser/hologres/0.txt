@@ -26,6 +26,7 @@ FROM test -- origin
 -- ${if(gFinPeriod="季度","/*","")}
 -- origin end
 -- new
+
 /*
 -- new end
 where 1=1

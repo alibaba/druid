@@ -63,7 +63,7 @@ CREATE TABLE db.replicated_orders ON CLUSTER test (
 	unhexed String,
 	size String
 ) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/replicated_orders', '{replica}')
-PARTITION BY order_date
+PARTITION BY order_date -- 按年月分区
 ORDER BY (order_date, customer_id, order_id)
 ------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE replicated_orders (

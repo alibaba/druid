@@ -49,6 +49,7 @@ public class HintsTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT col1\nFROM table1, table2", output);
+        Assert.assertEquals(
+            "SELECT /* STRAIGHT_JOIN */\n" + "\tcol1\n" + "FROM table1, table2", output);
     }
 }

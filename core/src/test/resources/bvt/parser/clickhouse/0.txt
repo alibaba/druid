@@ -1,3 +1,165 @@
+
+select a from t --aaa
+--------------------
+SELECT a
+FROM t -- aaa
+------------------------------------------------------------------------------------------------------------------------
+        select b.merge_region_code as region_code,b.merge_region_name as region_name,b.govern_region_area_union as region_area_subtotal
+		      ${if(gRegionAreaLevel='合并营运区',",b.govern_region_area_union as region_area_code,b.govern_region_area_union as region_area_name",",b.region_area_code as region_area_code,b.region_area_name as region_area_name")}
+--        	  ${if(len(gQtrMonth)=5,"/*","")}
+              ,sum(case when a.stat_date = ${gQtrMonth} then a.period_loc_amt else 0 end) as bq_amt
+              from b
+--------------------
+SELECT b.merge_region_code AS region_code, b.merge_region_name AS region_name, b.govern_region_area_union AS region_area_subtotal ${if(gRegionAreaLevel='合并营运区',",b.govern_region_area_union as region_area_code,b.govern_region_area_union as region_area_name",",b.region_area_code as region_area_code,b.region_area_name as region_area_name")} --        	  ${if(len(gQtrMonth)=5,"/*","")}
+	, sum(CASE
+		WHEN a.stat_date = ${gQtrMonth} THEN a.period_loc_amt
+		ELSE 0
+	END) AS bq_amt
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+select
+	case when 
+-- origin
+-- '${date}'
+-- origin end
+-- new
+'2025-07-08'
+-- new end
+ = toString(toMonday(yesterday())) and 
+-- origin
+-- '${time_type}'='周'
+-- origin end
+-- new
+'周'='周'
+-- new end
+
+			then toInt32(replace(toString(yesterday()),'-',''))
+		
+		when 
+-- origin
+-- '${date}'
+-- origin end
+-- new
+'2025-07-08'
+-- new end
+ = toString(toStartOfQuarter(yesterday())) and 
+-- origin
+-- '${time_type}'='年'
+-- origin end
+-- new
+'周'='年'
+-- new end
+
+			then toInt32(replace(toString(yesterday()),'-',''))
+		else toInt32(concat(left(
+-- origin
+-- '${date}'
+-- origin end
+-- new
+'2025-07-08'
+-- new end
+,4),'1231'))
+	end as date_e
+--------------------
+SELECT CASE
+		WHEN -- origin
+			-- '${date}'
+			-- origin end
+			-- new
+			'2025-07-08' -- new end
+			 = toString(toMonday(yesterday()))
+			AND -- origin
+			-- '${time_type}'='周'
+			-- origin end
+			-- new
+			'周' = '周' -- new end
+		THEN toInt32(replace(toString(yesterday()), '-', ''))
+		WHEN -- origin
+			-- '${date}'
+			-- origin end
+			-- new
+			'2025-07-08' -- new end
+			 = toString(toStartOfQuarter(yesterday()))
+			AND -- origin
+			-- '${time_type}'='年'
+			-- origin end
+			-- new
+			'周' = '年' -- new end
+		THEN toInt32(replace(toString(yesterday()), '-', ''))
+		ELSE toInt32(concat(LEFT(-- origin
+		-- '${date}'
+		-- origin end
+		-- new
+		'2025-07-08' -- new end, 4
+		), '1231'))
+	END AS date_e
+------------------------------------------------------------------------------------------------------------------------
+select physical_wh--,wh_type
+      ,case when wh_type ='集团仓' then 1 else 0 end as sfjtc
+from dim.dim_wh
+where physical_wh in (
+-- origin
+-- '${warehouse}'
+-- origin end
+-- new
+'0'
+-- new end
+) -- 仓库名称
+group by physical_wh,wh_type
+--------------------
+SELECT physical_wh -- ,wh_type
+	, CASE
+		WHEN wh_type = '集团仓' THEN 1
+		ELSE 0
+	END AS sfjtc
+FROM dim.dim_wh
+WHERE physical_wh IN (-- origin
+-- '${warehouse}'
+-- origin end
+-- new
+'0' -- new end
+) -- 仓库名称
+GROUP BY physical_wh, wh_type
+------------------------------------------------------------------------------------------------------------------------
+select function(
+-- origin
+-- b
+-- origin end
+-- new
+a
+-- new end
+)
+from b1
+--------------------
+SELECT function(-- origin
+	-- b
+	-- origin end
+	-- new
+	a -- new end
+	)
+FROM b1
+------------------------------------------------------------------------------------------------------------------------
+select DISTINCT
+-- origin
+-- ${if(gGyzy_hz=='G',"b1.buyer_name GS_NAME","substringUTF8(b1.buyer_name,1,positionUTF8(b1.buyer_name,'(')-1) GS_NAME")}
+-- origin end
+-- new
+b1.buyer_name GS_NAME
+-- new end
+
+from dim.dim_buyer b1
+where 1=1
+order by GS_NAME
+--------------------
+SELECT DISTINCT -- origin
+	-- ${if(gGyzy_hz=='G',"b1.buyer_name GS_NAME","substringUTF8(b1.buyer_name,1,positionUTF8(b1.buyer_name,'(')-1) GS_NAME")}
+	-- origin end
+	-- new
+	b1.buyer_name AS GS_NAME -- new end
+FROM dim.dim_buyer b1
+WHERE 1 = 1
+ORDER BY GS_NAME
+------------------------------------------------------------------------------------------------------------------------
 create view test (a uint32) as select a from b
 --------------------
 CREATE VIEW test (
@@ -14,7 +176,12 @@ xxx
 */
 */ a from test
 --------------------
-SELECT a
+SELECT 
+	/*
+/*
+xxx
+*
+	a
 FROM test
 ------------------------------------------------------------------------------------------------------------------------
 select if(a=='G', b, c) from test
@@ -62,19 +229,6 @@ select  ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")} from b
 SELECT ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")}
 FROM b
 ------------------------------------------------------------------------------------------------------------------------ 
-        select b.merge_region_code as region_code,b.merge_region_name as region_name,b.govern_region_area_union as region_area_subtotal
-		      ${if(gRegionAreaLevel='合并营运区',",b.govern_region_area_union as region_area_code,b.govern_region_area_union as region_area_name",",b.region_area_code as region_area_code,b.region_area_name as region_area_name")}
---        	  ${if(len(gQtrMonth)=5,"/*","")}
-              ,sum(case when a.stat_date = ${gQtrMonth} then a.period_loc_amt else 0 end) as bq_amt
-              from b
---------------------
-SELECT b.merge_region_code AS region_code, b.merge_region_name AS region_name, b.govern_region_area_union AS region_area_subtotal ${if(gRegionAreaLevel='合并营运区',",b.govern_region_area_union as region_area_code,b.govern_region_area_union as region_area_name",",b.region_area_code as region_area_code,b.region_area_name as region_area_name")} --        	  ${if(len(gQtrMonth)=5,"/*","")}
-	, sum(CASE
-		WHEN a.stat_date = ${gQtrMonth} THEN a.period_loc_amt
-		ELSE 0
-	END) AS bq_amt
-FROM b
-------------------------------------------------------------------------------------------------------------------------
 select 
     ${if(gGyzy_hz=='G'," buyer_name as buyer_name, "," syr as buyer_name, ")}
     substringUTF8(buyer_name,1,positionUTF8(buyer_name,'(')-1) as tg
