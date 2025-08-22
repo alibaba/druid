@@ -66,35 +66,39 @@ public class Oracle_pl_exception_2 extends OracleTest {
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
             System.out.println(output);
-            assertEquals("DECLARE\n" +
-                            "\tstock_price NUMBER := 9.73;\n" +
-                            "\tnet_earnings NUMBER := 0;\n" +
-                            "\tpe_ratio NUMBER;\n" +
-                            "BEGIN\n" +
-                            "\tpe_ratio := stock_price / net_earnings;\n" +
-                            "\tDBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n" +
-                            "EXCEPTION\n" +
-                            "\tWHEN ZERO_DIVIDE THEN\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
-                            "\t\tpe_ratio := NULL;\n" +
-                            "END;", //
-                    output);
+            assertEquals(
+              "DECLARE\n"
+                  + "\tstock_price NUMBER := 9.73;\n"
+                  + "\tnet_earnings NUMBER := 0;\n"
+                  + "\tpe_ratio NUMBER;\n"
+                  + "BEGIN\n"
+                  + "\tpe_ratio := stock_price / net_earnings;\n"
+                  + "\t-- raises ZERO_DIVIDE exception\n"
+                  + "\tDBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n"
+                  + "EXCEPTION\n"
+                  + "\tWHEN ZERO_DIVIDE THEN\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n"
+                  + "\t\tpe_ratio := NULL;\n"
+                  + "END;", //
+              output);
         }
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("declare\n" +
-                            "\tstock_price NUMBER := 9.73;\n" +
-                            "\tnet_earnings NUMBER := 0;\n" +
-                            "\tpe_ratio NUMBER;\n" +
-                            "begin\n" +
-                            "\tpe_ratio := stock_price / net_earnings;\n" +
-                            "\tDBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n" +
-                            "exception\n" +
-                            "\twhen ZERO_DIVIDE then\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
-                            "\t\tpe_ratio := null;\n" +
-                            "end;", //
-                    output);
+            assertEquals(
+              "declare\n"
+                  + "\tstock_price NUMBER := 9.73;\n"
+                  + "\tnet_earnings NUMBER := 0;\n"
+                  + "\tpe_ratio NUMBER;\n"
+                  + "begin\n"
+                  + "\tpe_ratio := stock_price / net_earnings;\n"
+                  + "\t-- raises ZERO_DIVIDE exception\n"
+                  + "\tDBMS_OUTPUT.PUT_LINE('Price/earnings ratio = ' || pe_ratio);\n"
+                  + "exception\n"
+                  + "\twhen ZERO_DIVIDE then\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n"
+                  + "\t\tpe_ratio := null;\n"
+                  + "end;", //
+              output);
         }
     }
 }

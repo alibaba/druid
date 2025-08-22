@@ -41,16 +41,17 @@ public class MySqlSelectTest_243 extends MysqlTest {
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.elastic_search);
 
-        assertEquals("SELECT DISTINCT buyer_id, buyer_full_name\n" +
-                "FROM trade_order_line\n" +
-                "WHERE 1 = 1\n" +
-                "\tAND enable_status = 1 -- AND seller_id= 100154704\n" +
-                "\tAND buyer_full_name LIKE concat('%', 'Zaini Abd', '%')\n" +
-                "\tAND _features.wt = 'dropshipping'\n" +
-                "\tAND _features.ads = 'pending' -- GROUP BY buyer_id,\n" +
-                "--  buyer_full_name\n" +
-                "LIMIT 0, 10", stmt.toString());
-
+        assertEquals(
+            "SELECT DISTINCT buyer_id, buyer_full_name\n"
+                + "FROM trade_order_line\n"
+                + "WHERE 1 = 1\n"
+                + "\tAND enable_status = 1 -- AND seller_id= 100154704\n"
+                + "\tAND buyer_full_name LIKE concat('%', 'Zaini Abd', '%')\n"
+                + "\tAND _features.wt = 'dropshipping'\n"
+                + "\tAND _features.ads = 'pending' -- GROUP BY buyer_id,\n"
+                + "\t--  buyer_full_name \n"
+                + "LIMIT 0, 10",
+            stmt.toString());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);

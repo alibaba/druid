@@ -25,13 +25,15 @@ public class OdpsFormatCommentTest13 extends TestCase {
                 SQLParserFeature.EnableSQLBinaryOpExprGroup);
         System.out.println("第二次生成的sql==="+stmt2.toString());
 
-        Assert.assertEquals("SELECT *"
-                + "\nFROM t"
-                + "\nWHERE f0 > 0 -- comment_0"
-                + "\n\tAND -- comment_1"
-                + "\n\tf1 > 1 -- comment_2"
-                + "\n\tAND -- comment_3"
-                + "\n\tf2 > 2 -- comment_4", SQLUtils.formatOdps(sql));
+        Assert.assertEquals(
+            "SELECT *\n"
+                + "FROM t\n"
+                + "WHERE f0 > 0 -- comment_0\n"
+                + "\tAND -- comment_1\n"
+                + "\tf1 > 1 -- comment_2\n"
+                + "\tAND -- comment_3\n"
+                + "\tf2 > 2 -- comment_4",
+            SQLUtils.formatOdps(sql));
     }
 
 }

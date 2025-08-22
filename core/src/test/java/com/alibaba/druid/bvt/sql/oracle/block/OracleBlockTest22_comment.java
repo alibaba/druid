@@ -42,17 +42,20 @@ public class OracleBlockTest22_comment extends OracleTest {
 
         String result = SQLUtils.toOracleString(stmtList.get(0));
         System.out.println(result);
-        assertEquals("DECLARE\n" +
-                "\thowmany NUMBER;\n" +
-                "\tnum_tables NUMBER;\n" +
-                "BEGIN\n" +
-                "\t-- Begin processing\n" +
-                "\tSELECT COUNT(*)\n" +
-                "\tINTO howmany\n" +
-                "\tFROM USER_OBJECTS\n" +
-                "\tWHERE OBJECT_TYPE = 'TABLE';\n" +
-                "\tnum_tables := howmany;\n" +
-                "END;", result);
+        assertEquals(
+            "DECLARE\n"
+                + "\thowmany NUMBER;\n"
+                + "\tnum_tables NUMBER;\n"
+                + "BEGIN\n"
+                + "\t-- Begin processing\n"
+                + "\tSELECT COUNT(*)\n"
+                + "\tINTO howmany\n"
+                + "\tFROM USER_OBJECTS\n"
+                + "\tWHERE OBJECT_TYPE = 'TABLE';\n"
+                + "\t-- Check number of tables\n"
+                + "\tnum_tables := howmany;\n"
+                + "END;",
+            result);
 
         assertEquals(1, stmtList.size());
 

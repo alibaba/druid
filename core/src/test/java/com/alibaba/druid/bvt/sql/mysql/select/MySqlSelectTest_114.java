@@ -48,25 +48,30 @@ public class MySqlSelectTest_114 extends TestCase {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(1, visitor.getOrderByColumns().size());
 
-        assertEquals("SELECT count(0)\n" +
-                "FROM (\n" +
-                "\tSELECT id\n" +
-                "\tFROM auth\n" +
-                "\tWHERE 1 = 1\n" +
-                "\t\tAND /**/\n" +
-                "\t\tb = 2\n" +
-                "\tORDER BY create_time DESC\n" +
-                ") total", stmt.toString());
+        assertEquals(
+            "SELECT count(0)\n"
+                + "FROM (\n"
+                + "\tSELECT id\n"
+                + "\tFROM auth\n"
+                + "\tWHERE 1 = 1\n"
+                + "\t\tAND /**/\n"
+                + "\t\tb = 2\n"
+                + "\tORDER BY create_time DESC\n"
+                + ") total",
+            stmt.toString());
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL);
-        assertEquals("SELECT count(0)\n" +
-                "FROM (\n" +
-                "\tSELECT id\n" +
-                "\tFROM auth\n" +
-                "\tWHERE 1 = 1\n" +
-                "\t\tAND b = ?\n" +
-                "\tORDER BY create_time DESC\n" +
-                ") total", psql);
+        assertEquals(
+            "SELECT count(0)\n"
+                + "FROM (\n"
+                + "\tSELECT id\n"
+                + "\tFROM auth\n"
+                + "\tWHERE 1 = 1\n"
+                + "\t\tAND /**/\n"
+                + "\t\tb = ?\n"
+                + "\tORDER BY create_time DESC\n"
+                + ") total",
+            psql);
     }
 
 

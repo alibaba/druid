@@ -444,6 +444,9 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
     }
 
     public boolean visit(SQLCharExpr x, boolean parameterized) {
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
         String text = x.getText();
         if (text == null) {
             print0(ucase ? "NULL" : "null");
@@ -489,7 +492,9 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
 
             print0(buf.toString());
         }
-
+        if (x.hasAfterComment()) {
+            printAfterComments(x.getAfterCommentsDirect());
+        }
         return false;
     }
 

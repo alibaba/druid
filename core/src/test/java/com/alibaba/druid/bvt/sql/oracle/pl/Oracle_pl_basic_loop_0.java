@@ -66,35 +66,39 @@ public class Oracle_pl_basic_loop_0 extends OracleTest {
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
             System.out.println(output);
-            assertEquals("DECLARE\n" +
-                            "\tx NUMBER := 0;\n" +
-                            "BEGIN\n" +
-                            "\tLOOP\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n" +
-                            "\t\tx := x + 1;\n" +
-                            "\t\tIF x > 3 THEN\n" +
-                            "\t\t\tEXIT;\n" +
-                            "\t\tEND IF;\n" +
-                            "\tEND LOOP;\n" +
-                            "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n" +
-                            "END;", //
-                    output);
+            assertEquals(
+              "DECLARE\n"
+                  + "\tx NUMBER := 0;\n"
+                  + "BEGIN\n"
+                  + "\tLOOP\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n"
+                  + "\t\tx := x + 1;\n"
+                  + "\t\tIF x > 3 THEN\n"
+                  + "\t\t\tEXIT;\n"
+                  + "\t\tEND IF;\n"
+                  + "\tEND LOOP;\n"
+                  + "\t-- After EXIT, control resumes here\n"
+                  + "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n"
+                  + "END;", //
+              output);
         }
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("declare\n" +
-                            "\tx NUMBER := 0;\n" +
-                            "begin\n" +
-                            "\tloop\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n" +
-                            "\t\tx := x + 1;\n" +
-                            "\t\tif x > 3 then\n" +
-                            "\t\t\texit;\n" +
-                            "\t\tend if;\n" +
-                            "\tend loop;\n" +
-                            "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n" +
-                            "end;", //
-                    output);
+            assertEquals(
+              "declare\n"
+                  + "\tx NUMBER := 0;\n"
+                  + "begin\n"
+                  + "\tloop\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n"
+                  + "\t\tx := x + 1;\n"
+                  + "\t\tif x > 3 then\n"
+                  + "\t\t\texit;\n"
+                  + "\t\tend if;\n"
+                  + "\tend loop;\n"
+                  + "\t-- After EXIT, control resumes here\n"
+                  + "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n"
+                  + "end;", //
+              output);
         }
     }
 }

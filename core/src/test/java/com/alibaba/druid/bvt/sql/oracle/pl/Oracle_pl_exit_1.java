@@ -66,31 +66,35 @@ public class Oracle_pl_exit_1 extends OracleTest {
 
         {
             String output = SQLUtils.toOracleString(stmt);
-            assertEquals("DECLARE\n" +
-                            "\tx NUMBER := 0;\n" +
-                            "BEGIN\n" +
-                            "\tLOOP\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n" +
-                            "\t\tx := x + 1;\n" +
-                            "\t\tEXIT WHEN x > 3;\n" +
-                            "\tEND LOOP;\n" +
-                            "\tDBMS_OUTPUT.PUT_LINE('After loop:  x = ' || TO_CHAR(x));\n" +
-                            "END;", //
-                    output);
+            assertEquals(
+              "DECLARE\n"
+                  + "\tx NUMBER := 0;\n"
+                  + "BEGIN\n"
+                  + "\tLOOP\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n"
+                  + "\t\tx := x + 1;\n"
+                  + "\t\tEXIT WHEN x > 3;\n"
+                  + "\tEND LOOP;\n"
+                  + "\t-- After EXIT statement, control resumes here\n"
+                  + "\tDBMS_OUTPUT.PUT_LINE('After loop:  x = ' || TO_CHAR(x));\n"
+                  + "END;", //
+              output);
         }
         {
             String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("declare\n" +
-                            "\tx NUMBER := 0;\n" +
-                            "begin\n" +
-                            "\tloop\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n" +
-                            "\t\tx := x + 1;\n" +
-                            "\t\texit when x > 3;\n" +
-                            "\tend loop;\n" +
-                            "\tDBMS_OUTPUT.PUT_LINE('After loop:  x = ' || TO_CHAR(x));\n" +
-                            "end;", //
-                    output);
+            assertEquals(
+              "declare\n"
+                  + "\tx NUMBER := 0;\n"
+                  + "begin\n"
+                  + "\tloop\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n"
+                  + "\t\tx := x + 1;\n"
+                  + "\t\texit when x > 3;\n"
+                  + "\tend loop;\n"
+                  + "\t-- After EXIT statement, control resumes here\n"
+                  + "\tDBMS_OUTPUT.PUT_LINE('After loop:  x = ' || TO_CHAR(x));\n"
+                  + "end;", //
+              output);
         }
     }
 }
