@@ -28,7 +28,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.Calendar;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import junit.framework.TestCase;
 
@@ -69,7 +69,7 @@ public class PreparedStatementTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     @SuppressWarnings("deprecation")

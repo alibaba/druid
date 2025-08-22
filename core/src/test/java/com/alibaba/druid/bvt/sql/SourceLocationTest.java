@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.assertEquals;
 
 public class SourceLocationTest {
     @Test

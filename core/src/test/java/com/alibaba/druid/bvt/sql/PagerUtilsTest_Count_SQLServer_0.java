@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;

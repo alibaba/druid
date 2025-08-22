@@ -32,7 +32,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 import junit.framework.TestCase;
 import java.sql.Timestamp;
-import org.junit.Assert;
+import static org.junit.*;
 
 /**
  * lizongbo
@@ -65,7 +65,7 @@ public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
     }
 
     public void test_mysql8datetime() throws Exception {
-        Assert.assertTrue(dataSource.isInited());
+        assertTrue(dataSource.isInited());
 
         MySQL8DateTimeSqlTypeFilter filter = (MySQL8DateTimeSqlTypeFilter) dataSource.getProxyFilters().get(0);
 
@@ -81,10 +81,10 @@ public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
         rs.next();
         Object obj1 = rs.getObject(1);
         System.out.println(obj1.getClass() + "|" + obj1);
-        Assert.assertEquals(Timestamp.class, obj1.getClass());
+        assertEquals(Timestamp.class, obj1.getClass());
         Object obj2 = rs.getObject("cc");
         System.out.println(obj2.getClass() + "|" + obj2);
-        Assert.assertEquals(Timestamp.class, obj2.getClass());
+        assertEquals(Timestamp.class, obj2.getClass());
 
         rs.close();
         stmt.close();

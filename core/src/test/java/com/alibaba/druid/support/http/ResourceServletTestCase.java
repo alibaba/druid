@@ -1,7 +1,7 @@
 package com.alibaba.druid.support.http;
 
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
@@ -29,7 +29,7 @@ public class ResourceServletTestCase extends TestCase {
         final MockHttpServletResponse res = new MockHttpServletResponse();
         try {
             servlet.service(req, res);
-            Assert.assertEquals(302, res.getStatus());
+            assertEquals(302, res.getStatus());
         } catch (final Exception ex) {
             ex.printStackTrace();
         }

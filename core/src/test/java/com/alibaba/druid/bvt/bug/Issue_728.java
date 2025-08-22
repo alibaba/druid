@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.bug;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -29,7 +29,7 @@ public class Issue_728 extends TestCase {
         WallConfig config = new WallConfig();
         config.setConstArithmeticAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test2() throws Exception {
@@ -38,7 +38,7 @@ public class Issue_728 extends TestCase {
         WallConfig config = new WallConfig();
         config.setCaseConditionConstAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test3() throws Exception {
@@ -47,6 +47,6 @@ public class Issue_728 extends TestCase {
         WallConfig config = new WallConfig();
         config.setConditionOpBitwiseAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 }

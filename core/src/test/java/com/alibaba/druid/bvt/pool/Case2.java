@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.util.Properties;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -48,9 +48,9 @@ public class Case2 extends PoolTestCase {
 
         final int COUNT = 10;
 
-        Assert.assertEquals(0, dataSource.getCreateCount());
-        Assert.assertEquals(0, dataSource.getDestroyCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getCreateCount());
+        assertEquals(0, dataSource.getDestroyCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         Connection[] connections = new Connection[COUNT];
         for (int i = 0; i < COUNT; ++i) {
@@ -61,9 +61,9 @@ public class Case2 extends PoolTestCase {
             connections[i].close();
         }
 
-        Assert.assertEquals(0, dataSource.getDestroyCount());
+        assertEquals(0, dataSource.getDestroyCount());
 
         dataSource.close();
-        Assert.assertEquals(dataSource.getCreateCount(), dataSource.getDestroyCount());
+        assertEquals(dataSource.getCreateCount(), dataSource.getDestroyCount());
     }
 }

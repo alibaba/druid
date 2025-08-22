@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.spring;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.support.spring.stat.SpringMethodInfo;
@@ -28,12 +28,12 @@ public class SpringMethodInfoTest extends TestCase {
         SpringMethodInfo c = new SpringMethodInfo(C.class, C.class.getMethod("f", int.class));
         SpringMethodInfo b2 = new SpringMethodInfo(B.class, B.class.getMethod("f", int.class));
 
-        Assert.assertFalse(b1.equals(c));
-        Assert.assertTrue(b1.equals(b1));
-        Assert.assertTrue(b1.equals(b2));
+        assertFalse(b1.equals(c));
+        assertTrue(b1.equals(b1));
+        assertTrue(b1.equals(b2));
 
-        Assert.assertEquals(B.class.getName(), b1.getClassName());
-        Assert.assertEquals(C.class.getName(), c.getClassName());
+        assertEquals(B.class.getName(), b1.getClassName());
+        assertEquals(C.class.getName(), c.getClassName());
     }
 
     public void test_get() throws Exception {
@@ -44,7 +44,7 @@ public class SpringMethodInfoTest extends TestCase {
 
         SpringMethodStat methodStat1 = springStat.getMethodStat(b1, true);
         SpringMethodStat methodStat2 = springStat.getMethodStat(b2, true);
-        Assert.assertSame(methodStat1, methodStat2);
+        assertSame(methodStat1, methodStat2);
     }
 
     public static class A {

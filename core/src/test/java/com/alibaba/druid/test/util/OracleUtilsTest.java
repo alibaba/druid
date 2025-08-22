@@ -22,8 +22,7 @@ import java.lang.reflect.Proxy;
 import junit.framework.TestCase;
 import oracle.jdbc.OracleConnection;
 
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.util.OracleUtils;
 
 public class OracleUtilsTest extends TestCase {
@@ -41,8 +40,8 @@ public class OracleUtilsTest extends TestCase {
         };
         OracleConnection conn = (OracleConnection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[]{OracleConnection.class}, handler);
 
-        Assert.assertNotNull(OracleUtils.unwrap(conn));
+        assertNotNull(OracleUtils.unwrap(conn));
 
-        Assert.assertEquals(1, OracleUtils.pingDatabase(conn));
+        assertEquals(1, OracleUtils.pingDatabase(conn));
     }
 }

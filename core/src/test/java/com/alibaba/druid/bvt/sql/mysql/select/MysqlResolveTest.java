@@ -12,9 +12,9 @@ import org.junit.Test;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.assertEquals;
+import static org.junit.assertNull;
+import static org.junit.assertSame;
 
 /**
  * TODO 功能描述

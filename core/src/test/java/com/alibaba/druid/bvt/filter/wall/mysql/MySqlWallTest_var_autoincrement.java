@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,7 +30,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest_var_autoincrement extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
                 "/* mysql-connector-java-5.? ( Revision: bzr.revision-id ) */SELECT @@session.auto_increment_increment")); //
     }
 }

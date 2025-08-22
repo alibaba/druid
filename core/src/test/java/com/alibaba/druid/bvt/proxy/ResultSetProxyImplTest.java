@@ -20,7 +20,7 @@ import java.sql.Connection;
 import java.sql.NClob;
 import java.sql.Statement;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import junit.framework.TestCase;
 
@@ -38,7 +38,7 @@ public class ResultSetProxyImplTest extends TestCase {
 
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_resultset() throws Exception {

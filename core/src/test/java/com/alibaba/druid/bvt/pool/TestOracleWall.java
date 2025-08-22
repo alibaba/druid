@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -75,7 +75,7 @@ public class TestOracleWall extends TestCase {
             conn.close();
         }
 
-        Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
+        assertEquals(1, dataSource.getCachedPreparedStatementCount());
 
     }
 }

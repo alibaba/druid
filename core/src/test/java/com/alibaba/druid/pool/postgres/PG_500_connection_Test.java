@@ -8,8 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.PGValidConnectionChecker;
 import com.alibaba.druid.util.JdbcUtils;
@@ -46,8 +45,8 @@ public class PG_500_connection_Test extends TestCase {
 
     public void test_conect_500() throws Exception {
         dataSource.init();
-        Assert.assertFalse(dataSource.isOracle());
-        Assert.assertTrue(dataSource.getValidConnectionChecker() instanceof PGValidConnectionChecker);
+        assertFalse(dataSource.isOracle());
+        assertTrue(dataSource.getValidConnectionChecker() instanceof PGValidConnectionChecker);
 
         int taskCount = 1000 * 100;
         final CountDownLatch endLatch = new CountDownLatch(taskCount);

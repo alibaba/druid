@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.pool;
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import junit.framework.TestCase;
 
@@ -60,7 +60,7 @@ public class LastActiveTest_0 extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertNotEquals(t0, t1);
+        assertNotEquals(t0, t1);
     }
 
     private long getLastActiveTime(DruidPooledConnection conn) throws IllegalAccessException {

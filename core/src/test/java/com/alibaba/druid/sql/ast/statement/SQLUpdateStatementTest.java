@@ -7,8 +7,8 @@ import com.alibaba.druid.sql.builder.SQLUpdateBuilder;
 import com.alibaba.druid.sql.builder.impl.SQLUpdateBuilderImpl;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertEquals;
+import static org.junit.assertTrue;
 
 public class SQLUpdateStatementTest {
     @Test

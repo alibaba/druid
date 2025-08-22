@@ -5,7 +5,7 @@ import com.alibaba.druid.sql.SQLParseAssertUtil;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertTrue;
 
 /**
  * 验证 Oracle union sql的问题

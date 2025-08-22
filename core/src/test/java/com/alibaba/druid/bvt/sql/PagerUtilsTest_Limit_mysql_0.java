@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 public class PagerUtilsTest_Limit_mysql_0 extends TestCase {
     public void test_mysql_0() throws Exception {

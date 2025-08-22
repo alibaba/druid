@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnnestTableSource;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertTrue;
 
 public class UnnestTest {
     @Test

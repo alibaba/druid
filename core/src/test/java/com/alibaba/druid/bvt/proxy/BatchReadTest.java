@@ -24,7 +24,7 @@ import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -65,7 +65,7 @@ public class BatchReadTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_stmt_batch() throws Exception {
@@ -133,7 +133,7 @@ public class BatchReadTest extends TestCase {
 
             int[] updateCounts = pstmt.executeBatch();
 
-            Assert.assertArrayEquals(new int[]{1, 1}, updateCounts);
+            assertArrayEquals(new int[]{1, 1}, updateCounts);
 
             pstmt.setFetchDirection(stmt.getFetchDirection());
             pstmt.setFetchSize(pstmt.getFetchSize());

@@ -23,7 +23,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.*;
 import oracle.jdbc.OracleStatement;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -83,7 +83,7 @@ public class TestMigrate extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
         // print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -210,7 +210,7 @@ public class TestMigrate extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
         // print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

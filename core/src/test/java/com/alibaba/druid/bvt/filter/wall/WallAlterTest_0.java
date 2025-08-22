@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.filter.wall;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 public class WallAlterTest_0 extends TestCase {
     private String sql = "alter index idx_t1 rebuild";

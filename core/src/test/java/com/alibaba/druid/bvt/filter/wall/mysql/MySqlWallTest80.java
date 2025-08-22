@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -33,10 +33,10 @@ public class MySqlWallTest80 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "SELECT * FROM T WHERE FID = ? OR FID LIKE 1"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 
     public void test_false() throws Exception {
@@ -44,10 +44,10 @@ public class MySqlWallTest80 extends TestCase {
 
         provider.getConfig().setCommentAllow(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "SELECT * FROM T WHERE FID = ? OR FID LIKE 1 --"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 
 }

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -28,8 +28,8 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallLimitTest extends TestCase {
     public void test_permitTable() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT * FROM T LIMIT 0"));
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT * FROM T LIMIT 10, 0"));
+        assertFalse(WallUtils.isValidateMySql("SELECT * FROM T LIMIT 0"));
+        assertFalse(WallUtils.isValidateMySql("SELECT * FROM T LIMIT 10, 0"));
     }
 
 }

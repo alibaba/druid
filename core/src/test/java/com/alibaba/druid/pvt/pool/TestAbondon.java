@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.pvt.pool;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -40,12 +40,12 @@ public class TestAbondon extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_0() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection();
-        Assert.assertEquals(false, conn.isClosed());
+        assertEquals(false, conn.isClosed());
         Thread.sleep(10);
 
         for (int i = 0; i < 100; ++i) {
@@ -54,6 +54,6 @@ public class TestAbondon extends TestCase {
             }
             Thread.sleep(10);
         }
-        Assert.assertEquals(true, conn.isAbandonded());
+        assertEquals(true, conn.isAbandonded());
     }
 }

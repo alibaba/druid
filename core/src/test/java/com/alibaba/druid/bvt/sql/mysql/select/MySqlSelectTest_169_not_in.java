@@ -10,7 +10,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.assertEquals;
 
 public class MySqlSelectTest_169_not_in extends MysqlTest {
     public void test_0() throws Exception {

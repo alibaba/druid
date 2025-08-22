@@ -1,7 +1,6 @@
 package com.alibaba.druid.sql.parser;
 
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -13,10 +12,10 @@ public class DeallocatePrepareTest extends TestCase {
         String sql = "DEALLOCATE PREPARE stmt1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatement();
-        Assert.assertEquals(MysqlDeallocatePrepareStatement.class, stmt.getClass());
+        assertEquals(MysqlDeallocatePrepareStatement.class, stmt.getClass());
         MysqlDeallocatePrepareStatement dpStmt = (MysqlDeallocatePrepareStatement) stmt;
-        Assert.assertEquals("stmt1", dpStmt.getStatementName().getSimpleName());
-        Assert.assertEquals(sql, dpStmt.toString());
+        assertEquals("stmt1", dpStmt.getStatementName().getSimpleName());
+        assertEquals(sql, dpStmt.toString());
     }
 
 }

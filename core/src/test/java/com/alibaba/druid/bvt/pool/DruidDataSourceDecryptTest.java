@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.pool;
 
 import java.sql.SQLException;
 
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Test;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -23,7 +23,7 @@ public class DruidDataSourceDecryptTest {
 
         try {
             dataSource.init();
-            Assert.assertEquals("The password is " + dataSource.getPassword(), "xiaoyu", dataSource.getPassword());
+            assertEquals("The password is " + dataSource.getPassword(), "xiaoyu", dataSource.getPassword());
         } finally {
             JdbcUtils.close(dataSource);
         }

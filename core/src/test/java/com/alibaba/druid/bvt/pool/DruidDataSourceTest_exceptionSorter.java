@@ -8,7 +8,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockStatementBase;

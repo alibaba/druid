@@ -6,7 +6,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.support.hibernate.DruidConnectionProvider;
 
@@ -29,9 +29,9 @@ public class DruidConnectionProviderTest extends TestCase {
 
     public void test_hibernate() throws Exception {
         Connection conn = provider.getConnection();
-        Assert.assertFalse(conn.isClosed());
+        assertFalse(conn.isClosed());
 
         provider.closeConnection(conn);
-        Assert.assertTrue(conn.isClosed());
+        assertTrue(conn.isClosed());
     }
 }

@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import org.junit.Test;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.assertSame;
 
 public class AggregateTest {
     @Test

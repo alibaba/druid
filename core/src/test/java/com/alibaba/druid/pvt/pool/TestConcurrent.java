@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -52,9 +52,9 @@ public class TestConcurrent extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
 
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(true, dataSource.isEnable());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(true, dataSource.isEnable());
     }
 
     protected void tearDown() throws Exception {
@@ -66,43 +66,43 @@ public class TestConcurrent extends TestCase {
                 dataSource.close();
                 System.out.println("unclosed datasource : " + dataSource.getObjectName() + ", url : " + dataSource.getUrl());
             }
-            Assert.fail("size : " + size);
+            fail("size : " + size);
         }
     }
 
     public void test_0() throws Exception {
         // 第一次建立连接
         {
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(0, dataSource.getPoolingCount());
-            Assert.assertEquals(true, dataSource.isEnable());
+            assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getPoolingCount());
+            assertEquals(true, dataSource.isEnable());
 
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(1, dataSource.getActiveCount());
-            Assert.assertEquals(0, dataSource.getPoolingCount());
-            Assert.assertEquals(true, dataSource.isEnable());
+            assertEquals(1, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getPoolingCount());
+            assertEquals(true, dataSource.isEnable());
 
             conn.close();
 
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(1, dataSource.getPoolingCount());
+            assertEquals(0, dataSource.getActiveCount());
+            assertEquals(1, dataSource.getPoolingCount());
         }
 
-        Assert.assertEquals(true, dataSource.isEnable());
+        assertEquals(true, dataSource.isEnable());
 
         // 连续打开关闭单个连接
         for (int i = 0; i < 1000; ++i) {
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(1, dataSource.getActiveCount());
 
             conn.close();
 
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(1, dataSource.getPoolingCount());
-            Assert.assertEquals(true, dataSource.isEnable());
+            assertEquals(0, dataSource.getActiveCount());
+            assertEquals(1, dataSource.getPoolingCount());
+            assertEquals(true, dataSource.isEnable());
         }
 
         // 使用单个线程模拟并发打开10个连接
@@ -113,21 +113,21 @@ public class TestConcurrent extends TestCase {
             for (int j = 0; j < connections.length; ++j) {
                 connections[j] = dataSource.getConnection();
 
-                Assert.assertEquals(j + 1, dataSource.getActiveCount());
+                assertEquals(j + 1, dataSource.getActiveCount());
             }
 
-            Assert.assertEquals(0, dataSource.getDestroyCount());
-            Assert.assertEquals(COUNT, dataSource.getActiveCount());
-            Assert.assertEquals(COUNT, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getPoolingCount());
+            assertEquals(0, dataSource.getDestroyCount());
+            assertEquals(COUNT, dataSource.getActiveCount());
+            assertEquals(COUNT, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getPoolingCount());
 
             for (int j = 0; j < connections.length; ++j) {
                 connections[j].close();
-                Assert.assertEquals(j + 1, dataSource.getPoolingCount());
+                assertEquals(j + 1, dataSource.getPoolingCount());
             }
 
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(COUNT, dataSource.getPoolingCount());
+            assertEquals(0, dataSource.getActiveCount());
+            assertEquals(COUNT, dataSource.getPoolingCount());
         }
 
         // 2个并发
@@ -197,15 +197,15 @@ public class TestConcurrent extends TestCase {
         }
 
         dataSource.shrink();
-        Assert.assertEquals("actveCount != 0", 0, dataSource.getActiveCount());
-        Assert.assertEquals("minIdle != poolingCount", dataSource.getMinIdle(), dataSource.getPoolingCount());
+        assertEquals("actveCount != 0", 0, dataSource.getActiveCount());
+        assertEquals("minIdle != poolingCount", dataSource.getMinIdle(), dataSource.getPoolingCount());
 
         System.out.println(threadCount + "-threads start");
         startLatch.countDown();
         endLatch.await();
         System.out.println(threadCount + "-threads complete");
 
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertTrue(threadCount >= dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertTrue(threadCount >= dataSource.getPoolingCount());
     }
 }

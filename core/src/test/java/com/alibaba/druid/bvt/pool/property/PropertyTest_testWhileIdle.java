@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.pool.property;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import junit.framework.TestCase;
 
@@ -14,13 +14,13 @@ public class PropertyTest_testWhileIdle extends TestCase {
     public void test_true() {
         System.setProperty("druid.testWhileIdle", "true");
         dataSource = new DruidDataSource();
-        Assert.assertTrue(dataSource.isTestWhileIdle());
+        assertTrue(dataSource.isTestWhileIdle());
     }
 
     public void test_false() {
         System.setProperty("druid.testWhileIdle", "false");
         dataSource = new DruidDataSource();
-        Assert.assertFalse(dataSource.isTestWhileIdle());
+        assertFalse(dataSource.isTestWhileIdle());
     }
 
     protected void tearDown() throws Exception {

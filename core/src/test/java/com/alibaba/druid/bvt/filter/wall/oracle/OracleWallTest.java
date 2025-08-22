@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;

@@ -10,7 +10,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.assertEquals;
 
 /**
  * 优化括号解析之后的sql验证

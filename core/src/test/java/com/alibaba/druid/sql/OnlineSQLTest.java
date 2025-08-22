@@ -24,7 +24,7 @@ import java.sql.Statement;
 import java.util.List;
 
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -137,7 +137,7 @@ public class OnlineSQLTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
@@ -166,7 +166,7 @@ public class OnlineSQLTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         OracleParameterizedOutputVisitor visitor = new OracleParameterizedOutputVisitor(out);

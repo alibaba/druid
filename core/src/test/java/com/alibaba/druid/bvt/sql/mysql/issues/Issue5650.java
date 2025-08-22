@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.assertEquals;
 
 /**
  * 验证 ALTER TABLE t1 ALTER INDEX i_idx INVISIBLE语法

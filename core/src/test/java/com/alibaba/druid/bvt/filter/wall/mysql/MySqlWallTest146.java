@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 public class MySqlWallTest146 extends TestCase {
     public void test_false() throws Exception {
@@ -18,7 +18,7 @@ public class MySqlWallTest146 extends TestCase {
                 "        ADD COLUMN variation_value_3 DECIMAL(30, 20) NULL DEFAULT NULL,\n" +
                 "        ADD COLUMN variation_value_4 DECIMAL(30, 20) NULL DEFAULT NULL,\n" +
                 "        ADD COLUMN variation_value_5 DECIMAL(30, 20) NULL DEFAULT NULL";
-        Assert.assertTrue(
+        assertTrue(
                 provider.checkValid(sql)
         );
     }

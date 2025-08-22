@@ -22,7 +22,7 @@ import java.util.Properties;
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DataSourceDisableException;

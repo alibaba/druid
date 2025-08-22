@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -28,8 +28,8 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class WallUnionTest3 extends TestCase {
     public void testMySql() throws Exception {
-//        Assert.assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x'"));
-//        Assert.assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x';"));
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x'/*,10 ;"));
+//        assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x'"));
+//        assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x';"));
+        assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x'/*,10 ;"));
     }
 }

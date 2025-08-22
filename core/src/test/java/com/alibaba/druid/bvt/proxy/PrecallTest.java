@@ -32,7 +32,7 @@ import java.sql.Types;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -71,7 +71,7 @@ public class PrecallTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_precall() throws Exception {

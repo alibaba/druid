@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -20,7 +20,7 @@ public class OracleExceptionSorterTest_closeStmt extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
 
@@ -35,7 +35,7 @@ public class OracleExceptionSorterTest_closeStmt extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_connect() throws Exception {
@@ -51,7 +51,7 @@ public class OracleExceptionSorterTest_closeStmt extends TestCase {
 
         DruidPooledConnection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);
-        Assert.assertNotNull(mockConn);
+        assertNotNull(mockConn);
 
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setFetchSize(1000);
@@ -65,8 +65,8 @@ public class OracleExceptionSorterTest_closeStmt extends TestCase {
         } catch (SQLException ex) {
             closedErrror = ex;
         }
-        Assert.assertNotNull(closedErrror);
-        Assert.assertSame(exception, closedErrror);
+        assertNotNull(closedErrror);
+        assertSame(exception, closedErrror);
 
         SQLException commitError = null;
         try {
@@ -75,8 +75,8 @@ public class OracleExceptionSorterTest_closeStmt extends TestCase {
             commitError = ex;
         }
 
-        Assert.assertNotNull(commitError);
-        Assert.assertSame(exception, commitError.getCause());
+        assertNotNull(commitError);
+        assertSame(exception, commitError.getCause());
 
         conn.close();
     }

@@ -4,7 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.stat.StatFilter;
 
@@ -13,15 +13,15 @@ public class StatFilterTest3 extends TestCase {
     public void test_dbType() throws Exception {
         StatFilter filter = new StatFilter();
 
-        Assert.assertFalse(filter.isMergeSql());
+        assertFalse(filter.isMergeSql());
 
         filter.setDbType("mysql");
         filter.setMergeSql(true);
 
-        Assert.assertTrue(filter.isMergeSql());
-        Assert.assertEquals(DbType.mysql, filter.getDbType());
+        assertTrue(filter.isMergeSql());
+        assertEquals(DbType.mysql, filter.getDbType());
 
-        Assert.assertEquals("SELECT ?\nLIMIT ?", filter.mergeSql("select 'x' limit 1"));
+        assertEquals("SELECT ?\nLIMIT ?", filter.mergeSql("select 'x' limit 1"));
     }
 
     public void test_dbType_error() throws Exception {
@@ -29,9 +29,9 @@ public class StatFilterTest3 extends TestCase {
         filter.setDbType("mysql");
         filter.setMergeSql(true);
 
-        Assert.assertEquals(DbType.mysql, filter.getDbType());
+        assertEquals(DbType.mysql, filter.getDbType());
 
-        Assert.assertEquals("sdafawer asf ", filter.mergeSql("sdafawer asf "));
+        assertEquals("sdafawer asf ", filter.mergeSql("sdafawer asf "));
     }
 
     public void test_merge() throws Exception {
@@ -39,9 +39,9 @@ public class StatFilterTest3 extends TestCase {
         filter.setDbType("mysql");
         filter.setMergeSql(false);
 
-        Assert.assertEquals(DbType.mysql, filter.getDbType());
+        assertEquals(DbType.mysql, filter.getDbType());
 
-        Assert.assertEquals("select 'x' limit 1", filter.mergeSql("select 'x' limit 1"));
+        assertEquals("select 'x' limit 1", filter.mergeSql("select 'x' limit 1"));
     }
 
 
@@ -50,9 +50,9 @@ public class StatFilterTest3 extends TestCase {
         filter.setDbType(JdbcConstants.POSTGRESQL);
         filter.setMergeSql(true);
 
-        Assert.assertEquals(JdbcConstants.POSTGRESQL, filter.getDbType());
+        assertEquals(JdbcConstants.POSTGRESQL, filter.getDbType());
 
-        Assert.assertEquals("DROP TABLE IF EXISTS test_site_data_select_111;\n" +
+        assertEquals("DROP TABLE IF EXISTS test_site_data_select_111;\n" +
                 "CREATE TABLE test_site_data_select_111\n" +
                 "AS\n" +
                 "SELECT *\n" +
@@ -73,14 +73,14 @@ public class StatFilterTest3 extends TestCase {
     public void test_merge_nodbtype() throws Exception {
         StatFilter filter = new StatFilter();
 
-        Assert.assertFalse(filter.isMergeSql());
+        assertFalse(filter.isMergeSql());
 
         filter.setMergeSql(true);
 
-        Assert.assertTrue(filter.isMergeSql());
-        Assert.assertNull(filter.getDbType());
+        assertTrue(filter.isMergeSql());
+        assertNull(filter.getDbType());
 
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                         "FROM temp.test\n" +
                         "ORDER BY id DESC\n" +
                         "LIMIT ?"

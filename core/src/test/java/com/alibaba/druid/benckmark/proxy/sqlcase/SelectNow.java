@@ -20,8 +20,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
 
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
 import com.alibaba.druid.benckmark.proxy.SQLExecutor;
 
@@ -50,8 +49,8 @@ public class SelectNow extends BenchmarkCase {
             now = rs.getTimestamp(1);
             rowCount++;
         }
-        Assert.assertNotNull(now);
-        Assert.assertEquals(1, rowCount);
+        assertNotNull(now);
+        assertEquals(1, rowCount);
         rs.close();
         stmt.close();
     }

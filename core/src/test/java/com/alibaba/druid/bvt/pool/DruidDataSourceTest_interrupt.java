@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.pool;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -53,11 +53,11 @@ public class DruidDataSourceTest_interrupt extends TestCase {
 
         Thread.sleep(10);
 
-        Assert.assertEquals(0, errorCount.get());
+        assertEquals(0, errorCount.get());
 
         thread.interrupt();
 
         endLatch.await();
-        Assert.assertEquals(1, errorCount.get());
+        assertEquals(1, errorCount.get());
     }
 }

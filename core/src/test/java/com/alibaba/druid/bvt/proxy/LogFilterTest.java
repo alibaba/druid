@@ -26,7 +26,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.logging.CommonsLogFilter;
@@ -50,7 +50,7 @@ import com.alibaba.druid.stat.JdbcStatManager;
 public class LogFilterTest extends TestCase {
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_logFilter_0() throws Exception {
@@ -326,7 +326,7 @@ public class LogFilterTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();

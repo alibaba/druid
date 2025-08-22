@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 import org.osjava.sj.SimpleContext;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -40,10 +40,10 @@ public class DruidDataSourceConverterTest extends TestCase {
     }
 
     public void test_conn() throws Exception {
-        Assert.assertEquals(true, dataSource.isInited());
+        assertEquals(true, dataSource.isInited());
         Connection conn = dataSource.getConnection();
-        Assert.assertEquals(1, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getActiveCount());
         conn.close();
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 }

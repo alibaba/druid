@@ -11,7 +11,7 @@ import javax.sql.PooledConnection;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockStatementBase;
@@ -55,7 +55,7 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
         } catch (UnsupportedOperationException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
     public void test_event_error() throws Exception {
@@ -79,7 +79,7 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
         } catch (SQLException e) {
         }
 
-        Assert.assertEquals(1, errorCount.get());
+        assertEquals(1, errorCount.get());
         conn.close();
     }
 }

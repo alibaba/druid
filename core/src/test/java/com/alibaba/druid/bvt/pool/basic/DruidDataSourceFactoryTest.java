@@ -23,7 +23,7 @@ import javax.naming.Reference;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 
@@ -32,8 +32,8 @@ public class DruidDataSourceFactoryTest extends TestCase {
     public void test_factory() throws Exception {
         DruidDataSourceFactory factory = new DruidDataSourceFactory();
 
-        Assert.assertNull(factory.getObjectInstance(null, null, null, null));
-        Assert.assertNull(factory.getObjectInstance(new Reference("javax.sql.Date"), null, null, null));
+        assertNull(factory.getObjectInstance(null, null, null, null));
+        assertNull(factory.getObjectInstance(new Reference("javax.sql.Date"), null, null, null));
 
         Reference ref = new Reference("javax.sql.DataSource");
         ref.add(new RefAddr("user") {

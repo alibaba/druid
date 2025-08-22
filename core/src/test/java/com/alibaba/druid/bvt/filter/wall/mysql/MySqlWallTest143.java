@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -40,6 +40,6 @@ public class MySqlWallTest143 extends TestCase {
                 + " FROM `paybank` AS `Extent1`" //
                 + " WHERE (`Extent1`.`State` > -1)" //
                 + " AND ((`Extent1`.`Zone`) = (CASE WHEN (1 IS  NULL) THEN (1)  ELSE (1) END))";
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
     }
 }

@@ -12,8 +12,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertFalse;
+import static org.junit.assertTrue;
 
 /**
  * 验证 Postgresql 无法解析 alter database 语句 #5444

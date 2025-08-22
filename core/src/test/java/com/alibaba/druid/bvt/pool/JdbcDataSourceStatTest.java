@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.pool;
 
 import java.util.Properties;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.Constants;
@@ -31,7 +31,7 @@ public class JdbcDataSourceStatTest extends TestCase {
             stat.createSqlStat("select " + i);
         }
 
-        Assert.assertEquals(1000, stat.getSqlStatMap().size());
+        assertEquals(1000, stat.getSqlStatMap().size());
     }
 
     public void test_max_10() throws Exception {
@@ -43,7 +43,7 @@ public class JdbcDataSourceStatTest extends TestCase {
             stat.createSqlStat("select " + i);
         }
 
-        Assert.assertEquals(10, stat.getSqlStatMap().size());
+        assertEquals(10, stat.getSqlStatMap().size());
     }
 
     public void test_max_10_str() throws Exception {
@@ -55,6 +55,6 @@ public class JdbcDataSourceStatTest extends TestCase {
             stat.createSqlStat("select " + i);
         }
 
-        Assert.assertEquals(10, stat.getSqlStatMap().size());
+        assertEquals(10, stat.getSqlStatMap().size());
     }
 }

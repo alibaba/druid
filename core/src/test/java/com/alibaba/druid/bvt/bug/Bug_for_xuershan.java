@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -52,7 +52,7 @@ public class Bug_for_xuershan extends TestCase {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.execute();
-        Assert.assertNull(stmt.getResultSet());
+        assertNull(stmt.getResultSet());
         stmt.close();
         conn.close();
     }

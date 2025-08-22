@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -73,7 +73,7 @@ public class DruidDataSourceTest_fill2 extends TestCase {
 
         fillLatch.await(1000, TimeUnit.MILLISECONDS);
 
-        Assert.assertEquals(0, fillErrorCount.get());
+        assertEquals(0, fillErrorCount.get());
 
         for (int i = 0; i < 100; ++i) {
             endLatch.await(100, TimeUnit.MILLISECONDS);
@@ -81,8 +81,8 @@ public class DruidDataSourceTest_fill2 extends TestCase {
                 break;
             }
         }
-        Assert.assertTrue("not full", dataSource.isFull());
-//        Assert.assertTrue("fillCount zero", fillCount.get() > 0);
+        assertTrue("not full", dataSource.isFull());
+//        assertTrue("fillCount zero", fillCount.get() > 0);
 
     }
 }

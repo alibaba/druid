@@ -11,7 +11,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.assertEquals;
 
 public class TrinoResourceTest extends SQLResourceTest {
 

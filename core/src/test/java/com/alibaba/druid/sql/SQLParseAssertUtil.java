@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.assertEquals;
 
 /**
  * @author lizongbo

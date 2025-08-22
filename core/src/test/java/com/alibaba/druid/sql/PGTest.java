@@ -22,8 +22,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
-import org.junit.Assert;
-
+import static org.junit.*;
 public class PGTest extends TestCase {
     protected String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
@@ -50,12 +49,12 @@ public class PGTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statement = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
-        Assert.assertTrue(type.isAssignableFrom(statement.getClass()));
+        assertEquals(1, statementList.size());
+        assertTrue(type.isAssignableFrom(statement.getClass()));
 
         StringBuilder sb = new StringBuilder();
         PGOutputVisitor visitor = new PGOutputVisitor(sb);
         statement.accept(visitor);
-        Assert.assertEquals(expectedSql, sb.toString());
+        assertEquals(expectedSql, sb.toString());
     }
 }

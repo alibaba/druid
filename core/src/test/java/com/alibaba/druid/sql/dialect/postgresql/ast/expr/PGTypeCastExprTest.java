@@ -6,9 +6,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.assertEquals;
+import static org.junit.assertNotNull;
+import static org.junit.assertNull;
 
 public class PGTypeCastExprTest {
 

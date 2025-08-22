@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;

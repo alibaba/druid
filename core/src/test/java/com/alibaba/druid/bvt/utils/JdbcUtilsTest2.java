@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.utils;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;

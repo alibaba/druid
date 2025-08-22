@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
@@ -40,6 +40,6 @@ public class TimeBetweenLogStatsMillisTest3 extends TestCase {
 
             Thread.sleep(10);
         }
-        Assert.assertEquals(10, dataSource.getTimeBetweenLogStatsMillis());
+        assertEquals(10, dataSource.getTimeBetweenLogStatsMillis());
     }
 }

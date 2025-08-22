@@ -14,8 +14,8 @@ import com.alibaba.druid.wall.WallUtils;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertFalse;
+import static org.junit.assertTrue;
 
 /**
  * 验证 SQLUtils.parseStatements解析PG和GP时不支持analyze和vacuum #5412

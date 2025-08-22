@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 import java.util.List;
 

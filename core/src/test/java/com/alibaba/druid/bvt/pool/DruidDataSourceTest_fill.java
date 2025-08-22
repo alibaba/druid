@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.pool;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -24,22 +24,22 @@ public class DruidDataSourceTest_fill extends TestCase {
 
     public void test_fill_0() throws Exception {
         int fillCount = dataSource.fill(3);
-        Assert.assertEquals(3, fillCount);
+        assertEquals(3, fillCount);
     }
 
     public void test_fill_1() throws Exception {
         int fillCount = dataSource.fill(1000);
-        Assert.assertEquals(maxActive, fillCount);
+        assertEquals(maxActive, fillCount);
     }
 
     public void test_fill_2() throws Exception {
         int fillCount = dataSource.fill(maxActive);
-        Assert.assertEquals(maxActive, fillCount);
+        assertEquals(maxActive, fillCount);
     }
 
     public void test_fill_3() throws Exception {
         int fillCount = dataSource.fill();
-        Assert.assertEquals(maxActive, fillCount);
+        assertEquals(maxActive, fillCount);
     }
 
     public void test_fill_5() throws Exception {
@@ -49,7 +49,7 @@ public class DruidDataSourceTest_fill extends TestCase {
         } catch (IllegalArgumentException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
 }

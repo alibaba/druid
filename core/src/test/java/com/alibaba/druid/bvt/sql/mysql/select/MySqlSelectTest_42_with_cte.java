@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.*;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
@@ -48,10 +48,10 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("table1"));
         assertTrue(visitor.containsTable("table2"));
@@ -62,7 +62,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("WITH cte1 AS (\n" +
+            assertEquals("WITH cte1 AS (\n" +
                             "\t\tSELECT a, b\n" +
                             "\t\tFROM table1\n" +
                             "\t),\n" +
@@ -78,7 +78,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("with cte1 as (\n" +
+            assertEquals("with cte1 as (\n" +
                             "\t\tselect a, b\n" +
                             "\t\tfrom table1\n" +
                             "\t),\n" +
@@ -95,7 +95,7 @@ public class MySqlSelectTest_42_with_cte extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            Assert.assertEquals("WITH cte1 AS (\n" +
+            assertEquals("WITH cte1 AS (\n" +
                             "\t\tSELECT a, b\n" +
                             "\t\tFROM table1\n" +
                             "\t),\n" +

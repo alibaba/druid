@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -15,7 +15,7 @@ public class BigSqlTest extends TestCase {
             sql += " or id=0";
         }
         WallConfig config = new WallConfig();
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test_true2() throws Exception {
@@ -25,6 +25,6 @@ public class BigSqlTest extends TestCase {
             sql += " and id=0";
         }
         WallConfig config = new WallConfig();
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 }

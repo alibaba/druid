@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.support.odps.udf;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.support.opds.udf.ExportConditions;
 
@@ -11,6 +11,6 @@ public class ExportConditionsTest3 extends TestCase {
 
     public void test_export_conditions() throws Exception {
         String result = udf.evaluate("select * from t where trim(name) = 'abc'");
-        Assert.assertEquals("[[\"t\",\"name\",\"=\",\"abc\"]]", result);
+        assertEquals("[[\"t\",\"name\",\"=\",\"abc\"]]", result);
     }
 }

@@ -11,9 +11,9 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertEquals;
+import static org.junit.assertFalse;
+import static org.junit.assertTrue;
 
 public class PoolUpdaterTest {
     private HighAvailableDataSource haDataSource;

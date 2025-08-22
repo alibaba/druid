@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -30,12 +30,12 @@ public class SQLExprParserTest extends TestCase {
         SQLExprParser exprParser = new SQLExprParser("AGE > 5");
         SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) exprParser.expr();
 
-        Assert.assertEquals(SQLBinaryOperator.GreaterThan, binaryOpExpr.getOperator());
+        assertEquals(SQLBinaryOperator.GreaterThan, binaryOpExpr.getOperator());
 
         SQLIdentifierExpr left = (SQLIdentifierExpr) binaryOpExpr.getLeft();
         SQLIntegerExpr right = (SQLIntegerExpr) binaryOpExpr.getRight();
 
-        Assert.assertEquals("AGE", left.getName());
-        Assert.assertEquals(5, right.getNumber().intValue());
+        assertEquals("AGE", left.getName());
+        assertEquals(5, right.getNumber().intValue());
     }
 }

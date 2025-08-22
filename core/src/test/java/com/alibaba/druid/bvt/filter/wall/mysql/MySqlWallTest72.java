@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -35,14 +35,14 @@ public class MySqlWallTest72 extends TestCase {
 
         provider.getConfig().setCommentAllow(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "select * from t /**/ where fid = 123 AND 1=1"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
 
         provider.reset();
         provider.getConfig().setCommentAllow(false);
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "select * from t /**/ where fid = 123 AND 1=1 --")); //FIXME /**/
 
     }

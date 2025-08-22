@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -45,6 +45,6 @@ public class ValidationQueryLogTest extends PoolTestCase {
 
         conn.close();
 
-        Assert.assertEquals(1, log.getErrorCount());
+        assertEquals(1, log.getErrorCount());
     }
 }

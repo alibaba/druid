@@ -3,9 +3,9 @@ package com.alibaba.druid.pool.ha.selector;
 import com.alibaba.druid.pool.ha.MockDataSource;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertEquals;
+import static org.junit.assertNotEquals;
+import static org.junit.assertTrue;
 
 public class StickyRandomDataSourceSelectorTest extends BaseRandomDataSourceSelectorTest {
     @Test

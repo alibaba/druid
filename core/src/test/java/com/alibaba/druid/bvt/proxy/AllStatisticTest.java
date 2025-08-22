@@ -28,7 +28,7 @@ import javax.management.openmbean.TabularData;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -51,12 +51,12 @@ public class AllStatisticTest extends TestCase {
         Connection conn = DriverManager.getConnection(url);
 
         int size = stat.getConnectionList().size();
-        Assert.assertTrue(size >= 1);
+        assertTrue(size >= 1);
         conn.close();
 
         TabularData connectionList = stat.getConnectionList();
 
-        Assert.assertEquals(connectionList.size(), size - 1);
+        assertEquals(connectionList.size(), size - 1);
 
         stat.reset();
 
@@ -66,7 +66,7 @@ public class AllStatisticTest extends TestCase {
     protected void tearDown() throws Exception {
         JdbcUtils.close(globalConnection);
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_stmt() throws Exception {

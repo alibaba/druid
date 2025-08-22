@@ -18,8 +18,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.IntFunction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertEquals;
+import static org.junit.assertTrue;
 
 public class SQLResourceTest {
     protected final static String DELIMITER_LONG = "------------------------------------------------------------------------------------------------------------------------";

@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -89,7 +89,7 @@ public class OnlineSQLTest2 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);

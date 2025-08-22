@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -29,7 +29,7 @@ public class MySqlWallTest124 extends TestCase {
 
         String sql = "SELECT name, '******' password, createTime from user where name like 'admin' AND 5859=5666 AND 'Cuqo' LIKE 'Cuqo'";
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 
 }

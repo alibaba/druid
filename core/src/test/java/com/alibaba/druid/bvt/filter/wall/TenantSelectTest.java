@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
@@ -46,18 +46,18 @@ public class TenantSelectTest extends TestCase {
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
-        Assert.assertEquals(0, checkResult.getViolations().size());
+        assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals(expect_sql, resultSql);
+        assertEquals(expect_sql, resultSql);
     }
 
     public void testMySql2() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider(config_callback);
         WallCheckResult checkResult = provider.check(sql);
-        Assert.assertEquals(0, checkResult.getViolations().size());
+        assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals(expect_sql, resultSql);
+        assertEquals(expect_sql, resultSql);
     }
 }

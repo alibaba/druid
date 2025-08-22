@@ -16,138 +16,138 @@
 
 package com.alibaba.druid.util;
 
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Test;
 
 public class StringUtilsTest {
 
     @Test
     public void testSubStringToInteger() {
-        Assert.assertNull(StringUtils.subStringToInteger("foobar", "1", "3"));
+        assertNull(StringUtils.subStringToInteger("foobar", "1", "3"));
 
-        Assert.assertEquals(new Integer(2),
+        assertEquals(new Integer(2),
                 StringUtils.subStringToInteger("1234", "1", "3"));
     }
 
     @Test
     public void testSubString() {
-        Assert.assertNull(StringUtils.subString(",", "foo", ","));
-        Assert.assertNull(
+        assertNull(StringUtils.subString(",", "foo", ","));
+        assertNull(
                 StringUtils.subString("foo", "foo", "a\'b\'c", false));
-        Assert.assertNull(
+        assertNull(
                 StringUtils.subString("foo", "foo", "a\'b\'c", true));
 
-        Assert.assertEquals("a 2b ",
+        assertEquals("a 2b ",
                 StringUtils.subString("1a 2b 3c", "1", "3"));
-        Assert.assertEquals("c",
+        assertEquals("c",
                 StringUtils.subString("abcdef", "b", "d", true));
     }
 
     @Test
     public void testStringToInteger() {
-        Assert.assertNull(StringUtils.stringToInteger(""));
-        Assert.assertNull(StringUtils.stringToInteger(null));
-        Assert.assertNull(StringUtils.stringToInteger("a"));
+        assertNull(StringUtils.stringToInteger(""));
+        assertNull(StringUtils.stringToInteger(null));
+        assertNull(StringUtils.stringToInteger("a"));
 
-        Assert.assertEquals(new Integer(3), StringUtils.stringToInteger("3"));
+        assertEquals(new Integer(3), StringUtils.stringToInteger("3"));
     }
 
     @Test
     public void testEquals() {
-        Assert.assertFalse(StringUtils.equals(null, ""));
-        Assert.assertFalse(StringUtils.equals("foo", "bar"));
-        Assert.assertFalse(StringUtils.equals("foo", "FOO"));
+        assertFalse(StringUtils.equals(null, ""));
+        assertFalse(StringUtils.equals("foo", "bar"));
+        assertFalse(StringUtils.equals("foo", "FOO"));
 
-        Assert.assertTrue(StringUtils.equals(null, null));
-        Assert.assertTrue(StringUtils.equals("foo", "foo"));
+        assertTrue(StringUtils.equals(null, null));
+        assertTrue(StringUtils.equals("foo", "foo"));
     }
 
     @Test
     public void testEqualsIgnoreCase() {
-        Assert.assertFalse(StringUtils.equalsIgnoreCase(null, ""));
-        Assert.assertFalse(StringUtils.equalsIgnoreCase("foo", "bar"));
+        assertFalse(StringUtils.equalsIgnoreCase(null, ""));
+        assertFalse(StringUtils.equalsIgnoreCase("foo", "bar"));
 
-        Assert.assertTrue(StringUtils.equalsIgnoreCase(null, null));
-        Assert.assertTrue(StringUtils.equalsIgnoreCase("foo", "foo"));
-        Assert.assertTrue(StringUtils.equalsIgnoreCase("foo", "FOO"));
+        assertTrue(StringUtils.equalsIgnoreCase(null, null));
+        assertTrue(StringUtils.equalsIgnoreCase("foo", "foo"));
+        assertTrue(StringUtils.equalsIgnoreCase("foo", "FOO"));
     }
 
     @Test
     public void testIsEmpty() {
-        Assert.assertTrue(StringUtils.isEmpty(null));
-        Assert.assertTrue(StringUtils.isEmpty(""));
+        assertTrue(StringUtils.isEmpty(null));
+        assertTrue(StringUtils.isEmpty(""));
 
-        Assert.assertFalse(StringUtils.isEmpty(" "));
-        Assert.assertFalse(StringUtils.isEmpty("foo"));
+        assertFalse(StringUtils.isEmpty(" "));
+        assertFalse(StringUtils.isEmpty("foo"));
     }
 
     @Test
     public void testLowerHashCode() {
-        Assert.assertEquals(0, StringUtils.lowerHashCode(""));
-        Assert.assertEquals(0, StringUtils.lowerHashCode(null));
-        Assert.assertEquals(97299, StringUtils.lowerHashCode("Bar"));
+        assertEquals(0, StringUtils.lowerHashCode(""));
+        assertEquals(0, StringUtils.lowerHashCode(null));
+        assertEquals(97299, StringUtils.lowerHashCode("Bar"));
     }
 
     @Test
     public void testIsNumberStringInput() {
-        Assert.assertTrue(StringUtils.isNumber("-0x3"));
-        Assert.assertTrue(StringUtils.isNumber("2"));
-        Assert.assertTrue(StringUtils.isNumber("5L"));
-        Assert.assertTrue(StringUtils.isNumber("0e+3"));
+        assertTrue(StringUtils.isNumber("-0x3"));
+        assertTrue(StringUtils.isNumber("2"));
+        assertTrue(StringUtils.isNumber("5L"));
+        assertTrue(StringUtils.isNumber("0e+3"));
 
-        Assert.assertFalse(StringUtils.isNumber(""));
-        Assert.assertFalse(StringUtils.isNumber("-0x"));
-        Assert.assertFalse(StringUtils.isNumber("0xh"));
-        Assert.assertFalse(StringUtils.isNumber("0x\u0018"));
-        Assert.assertFalse(StringUtils.isNumber("0xAc\u8040????????"));
-        Assert.assertFalse(
+        assertFalse(StringUtils.isNumber(""));
+        assertFalse(StringUtils.isNumber("-0x"));
+        assertFalse(StringUtils.isNumber("0xh"));
+        assertFalse(StringUtils.isNumber("0x\u0018"));
+        assertFalse(StringUtils.isNumber("0xAc\u8040????????"));
+        assertFalse(
                 StringUtils.isNumber("0x3c\\u8040????????????????????????"));
-        Assert.assertFalse(StringUtils.isNumber("..."));
-        Assert.assertFalse(StringUtils.isNumber("-0eE#"));
-        Assert.assertFalse(StringUtils.isNumber("E.."));
-        Assert.assertFalse(StringUtils.isNumber("2.+L"));
-        Assert.assertFalse(StringUtils.isNumber("a/b/c"));
-        Assert.assertFalse(StringUtils.isNumber("E"));
-        Assert.assertFalse(StringUtils.isNumber("e"));
-        Assert.assertFalse(StringUtils.isNumber("-d"));
-        Assert.assertFalse(StringUtils.isNumber("-D"));
-        Assert.assertFalse(StringUtils.isNumber("-f"));
-        Assert.assertFalse(StringUtils.isNumber("-F"));
-        Assert.assertFalse(StringUtils.isNumber("-l"));
-        Assert.assertFalse(StringUtils.isNumber("\'"));
-        Assert.assertFalse(StringUtils.isNumber("-"));
+        assertFalse(StringUtils.isNumber("..."));
+        assertFalse(StringUtils.isNumber("-0eE#"));
+        assertFalse(StringUtils.isNumber("E.."));
+        assertFalse(StringUtils.isNumber("2.+L"));
+        assertFalse(StringUtils.isNumber("a/b/c"));
+        assertFalse(StringUtils.isNumber("E"));
+        assertFalse(StringUtils.isNumber("e"));
+        assertFalse(StringUtils.isNumber("-d"));
+        assertFalse(StringUtils.isNumber("-D"));
+        assertFalse(StringUtils.isNumber("-f"));
+        assertFalse(StringUtils.isNumber("-F"));
+        assertFalse(StringUtils.isNumber("-l"));
+        assertFalse(StringUtils.isNumber("\'"));
+        assertFalse(StringUtils.isNumber("-"));
     }
 
     @Test
     public void testIsNumberCharArrayInput() {
-        Assert.assertTrue(
+        assertTrue(
                 StringUtils.isNumber(new char[]{'-', '0', 'x', 'a'}));
-        Assert.assertTrue(StringUtils.isNumber(new char[]{'-', '.', '1'}));
-        Assert.assertTrue(StringUtils.isNumber(new char[]{'6', 'l'}));
-        Assert.assertTrue(
+        assertTrue(StringUtils.isNumber(new char[]{'-', '.', '1'}));
+        assertTrue(StringUtils.isNumber(new char[]{'6', 'l'}));
+        assertTrue(
                 StringUtils.isNumber(new char[]{'0', 'e', '+', '3'}));
 
-        Assert.assertFalse(StringUtils.isNumber(new char[0]));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'0', 'x'}));
-        Assert.assertFalse(
+        assertFalse(StringUtils.isNumber(new char[0]));
+        assertFalse(StringUtils.isNumber(new char[]{'0', 'x'}));
+        assertFalse(
                 StringUtils.isNumber(new char[]{'-', '0', 'x', '9', ' '}));
-        Assert.assertFalse(
+        assertFalse(
                 StringUtils.isNumber(new char[]{'-', '0', 'x', '9', 'i'}));
-        Assert.assertFalse(
+        assertFalse(
                 StringUtils.isNumber(new char[]{'-', '.', '.', 'a'}));
-        Assert.assertFalse(StringUtils.isNumber(
+        assertFalse(StringUtils.isNumber(
                 new char[]{'-', '1', 'e', 'E', '\u0000', '\u0000', '\u0000'}));
-        Assert.assertFalse(
+        assertFalse(
                 StringUtils.isNumber(new char[]{'-', '.', 'E', 'a'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'+', '\u0016'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{';', '\u0016'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'-', '9', 'e'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'f'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'F'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'd'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'D'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'l'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'5', 't'}));
-        Assert.assertFalse(StringUtils.isNumber(new char[]{'-'}));
+        assertFalse(StringUtils.isNumber(new char[]{'+', '\u0016'}));
+        assertFalse(StringUtils.isNumber(new char[]{';', '\u0016'}));
+        assertFalse(StringUtils.isNumber(new char[]{'-', '9', 'e'}));
+        assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'f'}));
+        assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'F'}));
+        assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'd'}));
+        assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'D'}));
+        assertFalse(StringUtils.isNumber(new char[]{'-', '.', 'l'}));
+        assertFalse(StringUtils.isNumber(new char[]{'5', 't'}));
+        assertFalse(StringUtils.isNumber(new char[]{'-'}));
     }
 }

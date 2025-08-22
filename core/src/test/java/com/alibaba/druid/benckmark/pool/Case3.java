@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -200,7 +200,7 @@ public class Case3 extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        Assert.assertEquals(LOOP_COUNT * threadCount, count.get());
+        assertEquals(LOOP_COUNT * threadCount, count.get());
         Thread.sleep(1);
 
         System.out.println("thread " + threadCount + " " + name + " millis : "

@@ -21,7 +21,7 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallUtils;
 import com.alibaba.druid.wall.spi.*;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 public class WallSelectLimitTest extends TestCase {
     private String sql = "select * from t";

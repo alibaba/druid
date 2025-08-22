@@ -22,7 +22,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockCallableStatement;
@@ -66,8 +66,8 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
 
         ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, 1);
 
-        Assert.assertTrue(clob instanceof ResultSetProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ResultSetProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_getObject_1() throws Exception {
@@ -75,8 +75,8 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
 
         ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, "1");
 
-        Assert.assertTrue(clob instanceof ResultSetProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ResultSetProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_getObject_2() throws Exception {
@@ -84,8 +84,8 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
 
         ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof ResultSetProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ResultSetProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_getObject_3() throws Exception {
@@ -93,7 +93,7 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
 
         ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof ResultSetProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ResultSetProxy);
+        assertEquals(1, invokeCount);
     }
 }

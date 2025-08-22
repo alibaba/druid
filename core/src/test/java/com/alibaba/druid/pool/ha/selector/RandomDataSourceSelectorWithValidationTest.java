@@ -8,9 +8,9 @@ import org.junit.Test;
 
 import javax.sql.DataSource;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertFalse;
+import static org.junit.assertNotEquals;
+import static org.junit.assertTrue;
 
 public class RandomDataSourceSelectorWithValidationTest {
     private HighAvailableDataSource highAvailableDataSource;

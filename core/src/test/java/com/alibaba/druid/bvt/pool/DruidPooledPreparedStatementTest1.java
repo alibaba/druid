@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -70,7 +70,7 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select 1");
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -78,21 +78,21 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 
     public void test_executeQuery_error() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select 1");
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -100,21 +100,21 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 
     public void test_executeUpdate_error() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select 1");
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -122,21 +122,21 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 
     public void test_clearParameter_error() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select 1");
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -144,21 +144,21 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 
     public void test_executeBatch_error() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select 1");
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -166,21 +166,21 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 
     public void test_getParameterMetaData_error() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select 1");
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -188,13 +188,13 @@ public class DruidPooledPreparedStatementTest1 extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 }

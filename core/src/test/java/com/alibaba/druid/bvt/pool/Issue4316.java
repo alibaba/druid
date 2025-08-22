@@ -4,7 +4,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.assertFalse;
 
 public class Issue4316 {
     @Test

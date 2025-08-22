@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockResultSet;
@@ -48,7 +48,7 @@ public class DruidPooledResultSetTest2 extends TestCase {
 
         ResultSet raw = rs.unwrap(ResultSet.class);
 
-        Assert.assertTrue(raw instanceof MockResultSet);
+        assertTrue(raw instanceof MockResultSet);
 
         rs.close();
 

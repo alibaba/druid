@@ -3,7 +3,7 @@ package com.alibaba.druid.sql.dialect.oracle.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Test;
 
 public class OracleParameterParserTest {
@@ -21,7 +21,7 @@ public class OracleParameterParserTest {
 			"END;";
 		SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
 		System.out.println(stat);
-		Assert.assertEquals(sql, stat.toString());
+		assertEquals(sql, stat.toString());
 		System.out.println("=============");
 	}
 
@@ -42,7 +42,7 @@ public class OracleParameterParserTest {
 					 "END;";
 		SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
 		System.out.println(stat);
-		Assert.assertEquals(sql, stat.toString());
+		assertEquals(sql, stat.toString());
 		System.out.println("=============");
 	}
 }

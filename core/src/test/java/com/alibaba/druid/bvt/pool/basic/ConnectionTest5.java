@@ -22,7 +22,7 @@ import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -63,7 +63,7 @@ public class ConnectionTest5 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         JdbcStatManager.getInstance().setStatContext(null);
 
@@ -74,16 +74,16 @@ public class ConnectionTest5 extends PoolTestCase {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
         conn.close();
 
-        Assert.assertEquals(true, dataSource.isResetStatEnable());
+        assertEquals(true, dataSource.isResetStatEnable());
         dataSource.setResetStatEnable(false);
-        Assert.assertEquals(false, dataSource.isResetStatEnable());
-        Assert.assertEquals(1, dataSource.getConnectCount());
+        assertEquals(false, dataSource.isResetStatEnable());
+        assertEquals(1, dataSource.getConnectCount());
         dataSource.resetStat();
-        Assert.assertEquals(1, dataSource.getConnectCount());
+        assertEquals(1, dataSource.getConnectCount());
 
         dataSource.setResetStatEnable(true);
         dataSource.resetStat();
-        Assert.assertEquals(0, dataSource.getConnectCount());
+        assertEquals(0, dataSource.getConnectCount());
 
     }
 
@@ -95,7 +95,7 @@ public class ConnectionTest5 extends PoolTestCase {
         try {
             conn.handleException(error);
         } catch (SQLException ex) {
-            Assert.assertEquals(error, ex);
+            assertEquals(error, ex);
         }
     }
 
@@ -110,7 +110,7 @@ public class ConnectionTest5 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -127,7 +127,7 @@ public class ConnectionTest5 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -144,10 +144,10 @@ public class ConnectionTest5 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
-        Assert.assertEquals(true, conn.isClosed());
+        assertEquals(true, conn.isClosed());
     }
 
     public void test_handleException_5() throws Exception {
@@ -171,7 +171,7 @@ public class ConnectionTest5 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
     }
@@ -187,7 +187,7 @@ public class ConnectionTest5 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
     }
@@ -203,7 +203,7 @@ public class ConnectionTest5 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
     }

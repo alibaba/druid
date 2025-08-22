@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -27,7 +27,7 @@ public class MySqlWallTest131 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setCommentAllow(true);
 
-        Assert.assertFalse(provider.checkValid("select * from t where id = 1 /*!30000union all select 2*/"));
+        assertFalse(provider.checkValid("select * from t where id = 1 /*!30000union all select 2*/"));
     }
 
 }

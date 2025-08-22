@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
@@ -18,9 +18,9 @@ public class WallStatTest_alter_table extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setAlterTableAllow(true);
 
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
         WallTableStat tableStat = provider.getTableStat("t");
-        Assert.assertEquals(1, tableStat.getAlterCount());
+        assertEquals(1, tableStat.getAlterCount());
     }
 
     public void testOracle() throws Exception {
@@ -28,27 +28,27 @@ public class WallStatTest_alter_table extends TestCase {
         WallProvider provider = new OracleWallProvider();
         provider.getConfig().setAlterTableAllow(true);
 
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
         WallTableStat tableStat = provider.getTableStat("t");
-        Assert.assertEquals(1, tableStat.getAlterCount());
+        assertEquals(1, tableStat.getAlterCount());
     }
 
 //    public void testPG() throws Exception {
 //        WallProvider provider = new PGWallProvider();
 //        provider.getConfig().setAlterTableAllow(true);
 //        
-//        Assert.assertTrue(provider.checkValid(sql));
+//        assertTrue(provider.checkValid(sql));
 //        WallTableStat tableStat =  provider.getTableStat("t");
-//        Assert.assertEquals(1, tableStat.getAlterCount());
+//        assertEquals(1, tableStat.getAlterCount());
 //    }
 //    
 //    public void testSQLServer() throws Exception {
 //        WallProvider provider = new SQLServerWallProvider();
 //        provider.getConfig().setAlterTableAllow(true);
 //        
-//        Assert.assertTrue(provider.checkValid(sql));
+//        assertTrue(provider.checkValid(sql));
 //        WallTableStat tableStat =  provider.getTableStat("t");
-//        Assert.assertEquals(1, tableStat.getAlterCount());
+//        assertEquals(1, tableStat.getAlterCount());
 //    }
 
 }

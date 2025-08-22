@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -44,7 +44,7 @@ public class DruidDataSourceTest_autocommit3 extends TestCase {
     public void test_autoCommit() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertFalse(conn.getAutoCommit());
+        assertFalse(conn.getAutoCommit());
 
         conn.close();
     }

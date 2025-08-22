@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateFunctionStatement;
 import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.assertNotNull;
 
 /**
  * @author ruansheng

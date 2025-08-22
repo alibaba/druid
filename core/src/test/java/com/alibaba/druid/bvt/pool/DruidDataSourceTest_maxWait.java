@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -69,7 +69,7 @@ public class DruidDataSourceTest_maxWait extends TestCase {
 
         endLatch.await();
 
-        Assert.assertEquals(2, errorCount.get());
+        assertEquals(2, errorCount.get());
 
         conn.close();
     }

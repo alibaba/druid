@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.pool.adapter;
 import java.sql.Connection;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -32,7 +32,7 @@ public class DruidDataSourceC3P0AdapterTest extends PoolTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         driver = new MockDriver();
 

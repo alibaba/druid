@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -60,6 +60,6 @@ public class OracleWallTest6 extends TestCase {
                         + "                   and (ur.nrole_id = '1' or ur.nrole_id = '20'))"
                         + "         order by DCREATE desc)"
                         + " where rownum <= 30";
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

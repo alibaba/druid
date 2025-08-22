@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -97,7 +97,7 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
     public void test_prepare_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -106,15 +106,15 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
     }
 
     public void test_prepare_error_1() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -123,15 +123,15 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
     }
 
     public void test_prepare_error_2() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -140,15 +140,15 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
     }
 
     public void test_prepare_error_3() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -157,15 +157,15 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
     }
 
     public void test_prepare_error_4() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -174,15 +174,15 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
     }
 
     public void test_prepare_error_5() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -191,15 +191,15 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
     }
 
     public void test_prepareCall_error_1() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -208,15 +208,15 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
     }
 
     public void test_prepareCall_error_2() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -225,15 +225,15 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
     }
 
     public void test_prepareCall_error_3() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -242,8 +242,8 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
     }
 }

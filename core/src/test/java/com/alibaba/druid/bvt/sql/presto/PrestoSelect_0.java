@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.*;
 
 public class PrestoSelect_0 {
     protected final DbType dbType = DbType.presto;

@@ -7,7 +7,7 @@ import javax.sql.PooledConnection;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
@@ -53,10 +53,10 @@ public class DruidDataSourceTest_testOnBorrowFailed extends TestCase {
         PooledConnection conn = dataSource.getPooledConnection();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(2, dataSource.getCreateCount());
-        Assert.assertEquals(1, dataSource.getDiscardCount());
-        Assert.assertEquals(2, dataSource.getConnectCount());
-        Assert.assertEquals(1, dataSource.getCloseCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(2, dataSource.getCreateCount());
+        assertEquals(1, dataSource.getDiscardCount());
+        assertEquals(2, dataSource.getConnectCount());
+        assertEquals(1, dataSource.getCloseCount());
     }
 }

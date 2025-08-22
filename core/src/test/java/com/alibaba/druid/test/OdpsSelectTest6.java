@@ -19,8 +19,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
@@ -38,12 +37,12 @@ public class OdpsSelectTest6 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        Assert.assertEquals("SELECT *"
+//        assertEquals("SELECT *"
 //                + "\nFROM t"
 //                + "\nWHERE ds = '20160303'"
 //                + "\n\tAND hour IN ('18')", SQLUtils.formatOdps(sql));

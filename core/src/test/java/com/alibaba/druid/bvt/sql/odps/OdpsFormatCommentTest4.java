@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 
@@ -17,7 +17,7 @@ public class OdpsFormatCommentTest4 extends TestCase {
                 + "\ninsert overwrite table c partition(ds='20150711')" //
                 + "\nselect f0, f1, f2" //
                 + "\nwhere name rlike 'kk';";//
-        Assert.assertEquals("FROM (\n" +
+        assertEquals("FROM (\n" +
                 "\tSELECT *\n" +
                 "\tFROM xxx\n" +
                 ") a\n" +

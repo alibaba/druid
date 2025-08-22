@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 public class PagerUtilsTest_hasUnorderedLimit extends TestCase {
     public void test_false() throws Exception {

@@ -20,7 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLFeatureNotSupportedException;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockResultSet;
@@ -51,7 +51,7 @@ public class DruidPooledResultSetTest extends TestCase {
 
         ResultSet raw = rs.unwrap(ResultSet.class);
 
-        Assert.assertTrue(raw instanceof MockResultSet);
+        assertTrue(raw instanceof MockResultSet);
 
         rs.close();
 
@@ -72,7 +72,7 @@ public class DruidPooledResultSetTest extends TestCase {
         } catch (SQLFeatureNotSupportedException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         rs.close();
 
@@ -93,7 +93,7 @@ public class DruidPooledResultSetTest extends TestCase {
         } catch (SQLFeatureNotSupportedException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         rs.close();
 
@@ -108,22 +108,22 @@ public class DruidPooledResultSetTest extends TestCase {
         stmt.setString(1, "xxx");
         DruidPooledResultSet rs = (DruidPooledResultSet) stmt.executeQuery();
 
-        Assert.assertEquals(true, rs.next());
-        Assert.assertEquals(false, rs.next());
+        assertEquals(true, rs.next());
+        assertEquals(false, rs.next());
 
-        Assert.assertEquals(1, rs.getFetchRowCount());
+        assertEquals(1, rs.getFetchRowCount());
 
-        Assert.assertEquals(true, rs.previous());
-        Assert.assertEquals(false, rs.previous());
+        assertEquals(true, rs.previous());
+        assertEquals(false, rs.previous());
 
-        Assert.assertEquals(1, rs.getFetchRowCount());
+        assertEquals(1, rs.getFetchRowCount());
 
-        Assert.assertEquals(true, rs.next());
-        Assert.assertEquals(false, rs.next());
+        assertEquals(true, rs.next());
+        assertEquals(false, rs.next());
 
-        Assert.assertEquals(1, rs.getFetchRowCount());
+        assertEquals(1, rs.getFetchRowCount());
 
-        Assert.assertFalse(rs.rowUpdated());
+        assertFalse(rs.rowUpdated());
 
         rs.close();
 

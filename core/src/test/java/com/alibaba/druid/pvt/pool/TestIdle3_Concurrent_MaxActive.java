@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -53,44 +53,44 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_idle2() throws Exception {
         // first connect
         {
-            Assert.assertEquals(0, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
 
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
-            Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
+            assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            assertEquals(1, dataSource.getActiveCount());
 
             conn.close();
-            Assert.assertEquals(0, dataSource.getDestroyCount());
-            Assert.assertEquals(1, driver.getConnections().size());
-            Assert.assertEquals(1, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getDestroyCount());
+            assertEquals(1, driver.getConnections().size());
+            assertEquals(1, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
         }
 
         for (int i = 0; i < 10; ++i) {
             concurrent(200);
-            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getPoolingCount());
+            assertEquals(dataSource.getMaxActive(), dataSource.getPoolingCount());
             dataSource.shrink();
-            Assert.assertEquals(dataSource.getMinIdle(), dataSource.getPoolingCount());
+            assertEquals(dataSource.getMinIdle(), dataSource.getPoolingCount());
         }
 
         // 连续打开关闭单个连接
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(1, dataSource.getActiveCount());
             conn.close();
         }
-        // Assert.assertEquals(2, dataSource.getPoolingCount());
+        // assertEquals(2, dataSource.getPoolingCount());
 
     }
 
@@ -125,6 +125,6 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
         endLatch.await();
 
         // int max = count > dataSource.getMaxActive() ? dataSource.getMaxActive() : count;
-        // Assert.assertEquals(max, driver.getConnections().size());
+        // assertEquals(max, driver.getConnections().size());
     }
 }

@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.pool;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -31,6 +31,6 @@ public class DruidDataSourceTest_wrapDriverFilters extends TestCase {
     public void test_autoCommit() throws Exception {
         dataSource.init();
 
-        Assert.assertEquals(2, dataSource.getProxyFilters().size());
+        assertEquals(2, dataSource.getProxyFilters().size());
     }
 }

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -32,9 +32,9 @@ public class OracleWallPermitVariantTest extends TestCase {
         WallConfig config = new WallConfig();
         config.setVariantCheck(false);
 
-        Assert.assertTrue(WallUtils.isValidateOracle("select UID from dual", config));
-        Assert.assertTrue(WallUtils.isValidateOracle("select USER from dual", config));
-        Assert.assertTrue(WallUtils.isValidateOracle("select user from dual", config));
+        assertTrue(WallUtils.isValidateOracle("select UID from dual", config));
+        assertTrue(WallUtils.isValidateOracle("select USER from dual", config));
+        assertTrue(WallUtils.isValidateOracle("select user from dual", config));
     }
 
 }

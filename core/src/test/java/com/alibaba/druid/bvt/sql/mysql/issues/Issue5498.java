@@ -13,8 +13,8 @@ import com.alibaba.druid.stat.TableStat;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertFalse;
+import static org.junit.assertTrue;
 
 /**
  * 验证 select into 语句的解析

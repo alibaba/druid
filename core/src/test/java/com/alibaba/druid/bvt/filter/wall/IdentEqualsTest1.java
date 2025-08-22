@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -31,10 +31,10 @@ public class IdentEqualsTest1 extends TestCase {
     }
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
+        assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

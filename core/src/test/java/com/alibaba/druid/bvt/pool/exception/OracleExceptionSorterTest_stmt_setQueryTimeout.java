@@ -7,7 +7,7 @@ import java.sql.Statement;
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -24,7 +24,7 @@ public class OracleExceptionSorterTest_stmt_setQueryTimeout extends PoolTestCase
     protected void setUp() throws Exception {
         super.setUp();
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
 
@@ -56,7 +56,7 @@ public class OracleExceptionSorterTest_stmt_setQueryTimeout extends PoolTestCase
 
         DruidPooledConnection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);
-        Assert.assertNotNull(mockConn);
+        assertNotNull(mockConn);
 
         Statement stmt = conn.createStatement();
 
@@ -69,8 +69,8 @@ public class OracleExceptionSorterTest_stmt_setQueryTimeout extends PoolTestCase
         } catch (SQLException ex) {
             stmtErrror = ex;
         }
-        Assert.assertNotNull(stmtErrror);
-        Assert.assertSame(exception, stmtErrror);
+        assertNotNull(stmtErrror);
+        assertSame(exception, stmtErrror);
 
         SQLException commitError = null;
         try {
@@ -79,8 +79,8 @@ public class OracleExceptionSorterTest_stmt_setQueryTimeout extends PoolTestCase
             commitError = ex;
         }
 
-        Assert.assertNotNull(commitError);
-        Assert.assertSame(exception, commitError.getCause());
+        assertNotNull(commitError);
+        assertSame(exception, commitError.getCause());
 
         conn.close();
     }

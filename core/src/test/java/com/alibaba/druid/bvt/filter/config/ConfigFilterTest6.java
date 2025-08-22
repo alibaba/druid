@@ -5,7 +5,7 @@ import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 import java.sql.Driver;
 import java.util.List;
@@ -16,8 +16,8 @@ public class ConfigFilterTest6 extends TestCase {
     public void testInitFastFail() {
         ConfigFilter filter = new ConfigFilter();
         IllegalArgumentException exception =
-                Assert.assertThrows(IllegalArgumentException.class, () -> filter.init(new DataSourceProxyImpl()));
-        Assert.assertEquals("ConfigLoader only support DruidDataSource", exception.getMessage());
+                assertThrows(IllegalArgumentException.class, () -> filter.init(new DataSourceProxyImpl()));
+        assertEquals("ConfigLoader only support DruidDataSource", exception.getMessage());
     }
 
 

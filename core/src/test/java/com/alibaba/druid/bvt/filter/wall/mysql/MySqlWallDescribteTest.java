@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -32,13 +32,13 @@ public class MySqlWallDescribteTest extends TestCase {
         WallConfig config = new WallConfig();
         config.setDescribeAllow(true);
 
-        Assert.assertTrue(WallUtils.isValidateMySql("describe t", config));
+        assertTrue(WallUtils.isValidateMySql("describe t", config));
     }
 
     public void test_not_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setDescribeAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateMySql("describe t", config));
+        assertFalse(WallUtils.isValidateMySql("describe t", config));
     }
 }

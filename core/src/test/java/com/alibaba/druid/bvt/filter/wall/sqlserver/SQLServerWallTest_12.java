@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
@@ -34,7 +34,7 @@ public class SQLServerWallTest_12 extends TestCase {
 
         String sql = "EXEC master..xp_msver";
 
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
     }
 

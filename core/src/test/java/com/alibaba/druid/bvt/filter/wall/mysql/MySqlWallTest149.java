@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 public class MySqlWallTest149 extends TestCase {
     public void test_false() throws Exception {

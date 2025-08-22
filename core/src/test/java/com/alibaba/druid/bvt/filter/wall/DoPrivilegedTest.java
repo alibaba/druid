@@ -19,7 +19,7 @@ import java.security.PrivilegedAction;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
@@ -27,11 +27,11 @@ import com.alibaba.druid.wall.WallUtils;
 
 public class DoPrivilegedTest extends TestCase {
     public void test_0() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X"));
+        assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X"));
     }
 
     public void test_0_0() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("select * FROM X where version=@@version_compile_os"));
+        assertFalse(WallUtils.isValidateMySql("select * FROM X where version=@@version_compile_os"));
     }
 
     public void test_1() throws Exception {
@@ -41,7 +41,7 @@ public class DoPrivilegedTest extends TestCase {
         WallProvider.doPrivileged(new PrivilegedAction<Object>() {
             @Override
             public Object run() {
-                Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X", config));
+                assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X", config));
                 return null;
             }
         });

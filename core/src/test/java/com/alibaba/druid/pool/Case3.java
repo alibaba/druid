@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 public class Case3 extends TestCase {
@@ -36,8 +36,8 @@ public class Case3 extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(true, stmt.isClosed());
-        Assert.assertEquals(true, rs.isClosed());
+        assertEquals(true, stmt.isClosed());
+        assertEquals(true, rs.isClosed());
 
         rs.close();
         stmt.close();

@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.*;
 
 import java.util.List;
 
@@ -33,13 +33,13 @@ public class MySqlGrantTest_25 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT REFERENCES ON mydb.* TO 'someuser'@'somehost';", //
+        assertEquals("GRANT REFERENCES ON mydb.* TO 'someuser'@'somehost';", //
                 output);
 
 //        System.out.println("Tables : " + visitor.getTables());

@@ -4,8 +4,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;

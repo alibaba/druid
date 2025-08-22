@@ -3,8 +3,8 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.assertEquals;
+import static org.junit.assertNull;
 
 public class SQLParameterTest {
 

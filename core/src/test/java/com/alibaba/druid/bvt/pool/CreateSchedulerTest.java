@@ -7,7 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -45,6 +45,6 @@ public class CreateSchedulerTest extends PoolTestCase {
         }
 
         Thread.sleep(100);
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getPoolingCount());
     }
 }

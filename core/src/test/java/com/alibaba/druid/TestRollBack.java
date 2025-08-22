@@ -3,7 +3,7 @@ package com.alibaba.druid;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.junit.AfterClass;
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -102,7 +102,7 @@ public class TestRollBack {
         } catch (Exception e) {
         }
         // abc也跟着回滚了
-        Assert.assertNull(dao_c3p0.fetch("msg", Cnd.where("message", "=", "abc")));
+        assertNull(dao_c3p0.fetch("msg", Cnd.where("message", "=", "abc")));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class TestRollBack {
             // e.printStackTrace(); // 把这里的异常打印出来
         }
         // abc插了进去,没有回滚
-        Assert.assertNotNull(dao_druid.fetch("msg", Cnd.where("message", "=", "abc")));
+        assertNotNull(dao_druid.fetch("msg", Cnd.where("message", "=", "abc")));
     }
 
 }

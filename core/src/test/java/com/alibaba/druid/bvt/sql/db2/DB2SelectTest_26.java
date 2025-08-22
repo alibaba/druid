@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.*;
 
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class DB2SelectTest_26 extends DB2Test {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         System.out.println(stmt.getSelect().getQuery());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -74,17 +74,17 @@ public class DB2SelectTest_26 extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(3, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MK.M_BROAD_BAND_USER_FACT")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("MK.M_BROAD_BAND_USER_FACT")));
 
-//         Assert.assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+//         assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT LATN_ID\n" +
+        assertEquals("SELECT LATN_ID\n" +
                         "\t, CASE\n" +
                         "\t\tWHEN BUREAU_KEY = 116 THEN 46\n" +
                         "\t\tELSE BUREAU_KEY\n" +
@@ -125,7 +125,7 @@ public class DB2SelectTest_26 extends DB2Test {
                         "\tEND", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
 
-        Assert.assertEquals("select LATN_ID\n" +
+        assertEquals("select LATN_ID\n" +
                         "\t, case\n" +
                         "\t\twhen BUREAU_KEY = 116 then 46\n" +
                         "\t\telse BUREAU_KEY\n" +

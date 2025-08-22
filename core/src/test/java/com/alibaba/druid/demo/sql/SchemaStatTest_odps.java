@@ -11,8 +11,7 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-
+import static org.junit.*;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
@@ -44,8 +43,8 @@ public class SchemaStatTest_odps extends TestCase {
         System.out.println(statVisitor.getConditions());
 //        assertEquals(3, relationships.size());
 //
-//        Assert.assertEquals(21, statVisitor.getColumns().size());
-//        Assert.assertEquals(20, statVisitor.getConditions().size());
+//        assertEquals(21, statVisitor.getColumns().size());
+//        assertEquals(20, statVisitor.getConditions().size());
 //        assertEquals(1, statVisitor.getFunctions().size());
     }
 }

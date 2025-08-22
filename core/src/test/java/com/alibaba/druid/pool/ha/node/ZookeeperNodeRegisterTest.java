@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertEquals;
+import static org.junit.assertFalse;
+import static org.junit.assertTrue;
 
 public class ZookeeperNodeRegisterTest {
     private static final Log LOG = LogFactory.getLog(ZookeeperNodeRegisterTest.class);

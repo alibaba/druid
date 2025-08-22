@@ -5,7 +5,7 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsNull;
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -26,7 +26,7 @@ public class KylinDriverSupportTest {
     @Test
     public void testDriverClassName() throws SQLException {
         String driverClass = JdbcUtils.getDriverClassName(URL);
-        Assert.assertThat("check get driverClassName", driverClass, Is.is(JdbcConstants.KYLIN_DRIVER));
+        assertThat("check get driverClassName", driverClass, Is.is(JdbcConstants.KYLIN_DRIVER));
     }
 
     @Test
@@ -42,7 +42,7 @@ public class KylinDriverSupportTest {
             Connection conn = dataSource.getConnection();
             PreparedStatement state = conn.prepareStatement(VALIDATION_QUERY);
             ResultSet resultSet = state.executeQuery();
-            Assert.assertThat("check result", resultSet, IsNull.notNullValue());
+            assertThat("check result", resultSet, IsNull.notNullValue());
         } finally {
             dataSource.close();
         }

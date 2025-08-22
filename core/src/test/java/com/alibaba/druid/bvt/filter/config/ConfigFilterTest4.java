@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.config.ConfigFilter;
@@ -42,9 +42,9 @@ public class ConfigFilterTest4 extends TestCase {
 
         dataSource.init();
 
-        Assert.assertEquals("jdbc:mock:xx0", dataSource.getUrl());
-        Assert.assertEquals("sa", dataSource.getUsername());
-        Assert.assertEquals(password, dataSource.getPassword());
+        assertEquals("jdbc:mock:xx0", dataSource.getUrl());
+        assertEquals("sa", dataSource.getUsername());
+        assertEquals(password, dataSource.getPassword());
     }
 
     public void test_sys_property() throws Exception {
@@ -65,9 +65,9 @@ public class ConfigFilterTest4 extends TestCase {
         try {
             dataSource.init();
 
-            Assert.assertEquals("jdbc:mock:xx0", dataSource.getUrl());
-            Assert.assertEquals("sa", dataSource.getUsername());
-            Assert.assertEquals(password, dataSource.getPassword());
+            assertEquals("jdbc:mock:xx0", dataSource.getUrl());
+            assertEquals("sa", dataSource.getUsername());
+            assertEquals(password, dataSource.getPassword());
         } finally {
             System.clearProperty(ConfigFilter.SYS_PROP_CONFIG_KEY);
             System.clearProperty(ConfigFilter.SYS_PROP_CONFIG_FILE);

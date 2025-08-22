@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,10 +30,10 @@ public class WallSelectWhereTest2 extends TestCase {
     private String sql = "SELECT F1, F2  from t WHERE 1 = 1 AND FID = ?";
 
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql));
+        assertTrue(WallUtils.isValidateMySql(sql));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

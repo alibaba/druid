@@ -3,8 +3,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 /**
  * Created by magicdoom on 2016/8/16.
  */
@@ -16,7 +15,7 @@ public class SqlserverGroupByTest extends TestCase {
         try {
             stmt.toString();
         } catch (ClassCastException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
 

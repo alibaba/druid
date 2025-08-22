@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.junit.Assert;
+import static org.junit.*;
 import oracle.jdbc.OracleStatement;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -179,7 +179,7 @@ public class TestTransform extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
         // print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -310,7 +310,7 @@ public class TestTransform extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
         // print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

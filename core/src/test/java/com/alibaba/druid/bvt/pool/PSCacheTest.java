@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.pool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -51,13 +51,13 @@ public class PSCacheTest extends TestCase {
         PreparedStatement stmt1 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt1 = (DruidPooledPreparedStatement) stmt1;
 
-        Assert.assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
-        Assert.assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
+        assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
+        assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
 
         PreparedStatement stmt2 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt2 = (DruidPooledPreparedStatement) stmt2;
 
-        Assert.assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not same
+        assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not same
 
         stmt1.close();
         stmt2.close();
@@ -79,13 +79,13 @@ public class PSCacheTest extends TestCase {
         PreparedStatement stmt1 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt1 = (DruidPooledPreparedStatement) stmt1;
 
-        Assert.assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
-        Assert.assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
+        assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
+        assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
 
         PreparedStatement stmt2 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt2 = (DruidPooledPreparedStatement) stmt2;
 
-        Assert.assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not same
+        assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not same
 
         stmt1.close();
         stmt2.close();

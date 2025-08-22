@@ -8,8 +8,7 @@ import java.sql.SQLException;
 import com.alibaba.druid.DbType;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
@@ -35,8 +34,8 @@ public class PolarDBDataSourceTest extends TestCase {
     public void testDataSource() throws SQLException {
         dataSource.init();
 
-        Assert.assertTrue(JdbcConstants.POLARDB.equals(DbType.of(dataSource.getDbType())));
-        Assert.assertTrue(JdbcConstants.POLARDB_DRIVER.equals(dataSource.getDriverClassName()));
+        assertTrue(JdbcConstants.POLARDB.equals(DbType.of(dataSource.getDbType())));
+        assertTrue(JdbcConstants.POLARDB_DRIVER.equals(dataSource.getDriverClassName()));
 
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT 1");

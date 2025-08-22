@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -51,7 +51,7 @@ public class TestConnectTimeout extends TestCase {
             Connection conn = dataSource.getConnection();
             conn.close();
             dataSource.shrink();
-            Assert.assertEquals(0, dataSource.getPoolingCount());
+            assertEquals(0, dataSource.getPoolingCount());
         }
 
         final List<Connection> connections = new ArrayList<Connection>();
@@ -85,7 +85,7 @@ public class TestConnectTimeout extends TestCase {
         }
 
         latch.await();
-        Assert.assertEquals(0, errorCount.get());
+        assertEquals(0, errorCount.get());
     }
 
     protected void tearDown() throws Exception {

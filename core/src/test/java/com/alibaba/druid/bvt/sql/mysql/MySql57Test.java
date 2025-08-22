@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;

@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertTrue;
 
 /**
  * 验证 Oracle CREATE OR REPLACE TYPE TYPE4 as ENUM 语句的解析

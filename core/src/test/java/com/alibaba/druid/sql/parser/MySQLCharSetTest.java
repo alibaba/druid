@@ -3,8 +3,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 import java.util.List;
 
 /**
@@ -50,7 +49,7 @@ public class MySQLCharSetTest extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(targetSql);
         List<SQLStatement> sqlStatements = parser.parseStatementList();
         System.out.println(sqlStatements.get(0).toString());
-        Assert.assertTrue(sqlStatements.get(0).toString().equals(resultSql));
+        assertTrue(sqlStatements.get(0).toString().equals(resultSql));
 
     }
 }

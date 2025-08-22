@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.*;
 
 public class NamedDataSourceSelectorTest {
     private Map<String, DataSource> dataSourceMap;

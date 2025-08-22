@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -33,9 +33,9 @@ public class MySqlWallTest51 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "REPLACE /* SearchMySQL::update Wikiadmin */ INTO `wiki_searchindex` (si_page,si_title,si_text) VALUES ('15',' u8e5858d u8e8b4a3 u8e5a3b0 u8e6988e')"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 }

@@ -20,7 +20,7 @@ import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -60,7 +60,7 @@ public class MergeStatFilterTest2 extends TestCase {
             conn.close();
         }
 
-        Assert.assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap()
+        assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap()
                 .size());
     }
 

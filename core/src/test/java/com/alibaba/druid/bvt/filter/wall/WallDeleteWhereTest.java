@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -30,24 +30,24 @@ public class WallDeleteWhereTest extends TestCase {
     private String sql2 = "DELETE FROM T WHERE id = 0 and 1 = 1";
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
-        Assert.assertTrue(WallUtils.isValidateMySql(sql2));
+        assertFalse(WallUtils.isValidateMySql(sql));
+        assertTrue(WallUtils.isValidateMySql(sql2));
 
         final WallConfig wallConfig = new WallConfig();
         wallConfig.setDeleteWhereAlwayTrueCheck(false);
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, wallConfig));
+        assertTrue(WallUtils.isValidateMySql(sql, wallConfig));
         wallConfig.setDeleteWhereAlwayTrueCheck(true);
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, wallConfig));
+        assertFalse(WallUtils.isValidateMySql(sql, wallConfig));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
-        Assert.assertTrue(WallUtils.isValidateOracle(sql2));
+        assertFalse(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql2));
 
         final WallConfig wallConfig = new WallConfig();
         wallConfig.setDeleteWhereAlwayTrueCheck(false);
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, wallConfig));
+        assertTrue(WallUtils.isValidateOracle(sql, wallConfig));
         wallConfig.setDeleteWhereAlwayTrueCheck(true);
-        Assert.assertFalse(WallUtils.isValidateOracle(sql, wallConfig));
+        assertFalse(WallUtils.isValidateOracle(sql, wallConfig));
     }
 }

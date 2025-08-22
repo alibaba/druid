@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,7 +30,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest9 extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
                 "REPLACE INTO lhwonline_guest (`ip`, `created_time`, `modify_time`, `fid`, `tid`, `request`)" + //
                         "\nVALUES ('1', '1364366764', '1364368276', '0', '3436'" + //
                         "\n    , 'bbs/read/run')")); // 前置永真

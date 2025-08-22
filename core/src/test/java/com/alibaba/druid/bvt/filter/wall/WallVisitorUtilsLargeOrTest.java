@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -14,6 +14,6 @@ public class WallVisitorUtilsLargeOrTest extends TestCase {
             buf.append(" OR ID = " + i);
         }
 
-        Assert.assertEquals(null, WallVisitorUtils.getValue(SQLUtils.toSQLExpr(buf.toString())));
+        assertEquals(null, WallVisitorUtils.getValue(SQLUtils.toSQLExpr(buf.toString())));
     }
 }

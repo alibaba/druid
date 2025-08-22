@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.pool;
 import java.sql.SQLException;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -45,10 +45,10 @@ public class DruidConnectionHolderTest3 extends PoolTestCase {
             } catch (MySQLException e) {
                 error = e;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         Exception error = null;
         try {
@@ -56,7 +56,7 @@ public class DruidConnectionHolderTest3 extends PoolTestCase {
         } catch (GetConnectionTimeoutException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
     public static class MySQLException extends SQLException {

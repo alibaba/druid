@@ -19,8 +19,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 import java.util.List;
 
 public class MysqlTest extends TestCase {
@@ -47,7 +46,7 @@ public class MysqlTest extends TestCase {
 
     protected void parseTrue(String sql, String except) {
         SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
-        Assert.assertEquals(except, SQLUtils.toMySqlString(statement));
+        assertEquals(except, SQLUtils.toMySqlString(statement));
     }
 
     protected SQLStatement parse(String sql) {

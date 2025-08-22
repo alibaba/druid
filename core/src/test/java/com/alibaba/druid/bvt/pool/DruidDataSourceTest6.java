@@ -10,7 +10,7 @@ import javax.security.auth.callback.NameCallback;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -81,7 +81,7 @@ public class DruidDataSourceTest6 extends TestCase {
             error = e;
         }
         // 'SELECT 1' for connection validation will skip all filters, so error is null.
-        Assert.assertNull(error);
+        assertNull(error);
 
         {
             Connection conn = dataSource.getConnection();
@@ -102,7 +102,7 @@ public class DruidDataSourceTest6 extends TestCase {
             }
             conn.close();
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
         
         {
             returnEmptyCount.set(1);
@@ -125,7 +125,7 @@ public class DruidDataSourceTest6 extends TestCase {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
-        Assert.assertEquals(100, stmt.getQueryTimeout());
+        assertEquals(100, stmt.getQueryTimeout());
         stmt.close();
 
         conn.close();

@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;

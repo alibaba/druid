@@ -28,7 +28,7 @@ import java.sql.Types;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -39,7 +39,7 @@ public class SchemaReadTest extends TestCase {
 
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_schema() throws Exception {
@@ -52,7 +52,7 @@ public class SchemaReadTest extends TestCase {
         try {
             conn = DriverManager.getConnection(url);
 
-            Assert.assertTrue(conn.isReadOnly());
+            assertTrue(conn.isReadOnly());
 
             // just call
             conn.getHoldability();
@@ -92,9 +92,9 @@ public class SchemaReadTest extends TestCase {
                     JdbcUtils.printResultSet(rs, System.out);
 
                     JdbcUtils.close(rs);
-                    Assert.assertTrue(rs.isClosed());
+                    assertTrue(rs.isClosed());
                     JdbcUtils.close(stmt);
-                    Assert.assertTrue(stmt.isClosed());
+                    assertTrue(stmt.isClosed());
                 }
                 JdbcUtils.close(tables);
             }
@@ -102,7 +102,7 @@ public class SchemaReadTest extends TestCase {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
             JdbcUtils.close(conn);
-            Assert.assertTrue(conn.isClosed());
+            assertTrue(conn.isClosed());
         }
     }
 
@@ -116,7 +116,7 @@ public class SchemaReadTest extends TestCase {
         try {
             conn = DriverManager.getConnection(url);
 
-            Assert.assertTrue(conn.isReadOnly());
+            assertTrue(conn.isReadOnly());
 
             // just call
             conn.getHoldability();
@@ -157,9 +157,9 @@ public class SchemaReadTest extends TestCase {
                     printResultSetUseColumnName(rs, System.out);
 
                     JdbcUtils.close(rs);
-                    Assert.assertTrue(rs.isClosed());
+                    assertTrue(rs.isClosed());
                     JdbcUtils.close(stmt);
-                    Assert.assertTrue(stmt.isClosed());
+                    assertTrue(stmt.isClosed());
                 }
                 JdbcUtils.close(tables);
             }
@@ -167,7 +167,7 @@ public class SchemaReadTest extends TestCase {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
             JdbcUtils.close(conn);
-            Assert.assertTrue(conn.isClosed());
+            assertTrue(conn.isClosed());
         }
     }
 

@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import junit.framework.TestCase;
 
@@ -24,13 +24,13 @@ public class FullTest extends TestCase {
     }
 
     public void test_restart() throws Exception {
-        Assert.assertEquals(false, dataSource.isFull());
+        assertEquals(false, dataSource.isFull());
         dataSource.fill();
 
-        Assert.assertEquals(true, dataSource.isFull());
+        assertEquals(true, dataSource.isFull());
         Connection conn = dataSource.getConnection();
-        Assert.assertEquals(true, dataSource.isFull());
+        assertEquals(true, dataSource.isFull());
         conn.close();
-        Assert.assertEquals(true, dataSource.isFull());
+        assertEquals(true, dataSource.isFull());
     }
 }

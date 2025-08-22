@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 public class MockExecuteTest extends PoolTestCase {
     public void test_0() throws Exception {
@@ -32,8 +32,8 @@ public class MockExecuteTest extends PoolTestCase {
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery("SELECT 2");
-        Assert.assertTrue(rs.next());
-        Assert.assertEquals(2, rs.getInt(1));
+        assertTrue(rs.next());
+        assertEquals(2, rs.getInt(1));
         rs.close();
 
         stmt.close();
@@ -45,9 +45,9 @@ public class MockExecuteTest extends PoolTestCase {
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery("SELECT NULL");
-        Assert.assertTrue(rs.next());
-        Assert.assertEquals(0, rs.getInt(1));
-        Assert.assertEquals(null, rs.getObject(1));
+        assertTrue(rs.next());
+        assertEquals(0, rs.getInt(1));
+        assertEquals(null, rs.getObject(1));
         rs.close();
 
         stmt.close();
@@ -59,8 +59,8 @@ public class MockExecuteTest extends PoolTestCase {
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery("SELECT NOW()");
-        Assert.assertTrue(rs.next());
-        Assert.assertTrue(rs.getObject(1) instanceof Timestamp);
+        assertTrue(rs.next());
+        assertTrue(rs.getObject(1) instanceof Timestamp);
         rs.close();
 
         stmt.close();
@@ -72,8 +72,8 @@ public class MockExecuteTest extends PoolTestCase {
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery("SELECT NOW() FROM DUAL");
-        Assert.assertTrue(rs.next());
-        Assert.assertTrue(rs.getObject(1) instanceof Timestamp);
+        assertTrue(rs.next());
+        assertTrue(rs.getObject(1) instanceof Timestamp);
         rs.close();
 
         stmt.close();
@@ -85,8 +85,8 @@ public class MockExecuteTest extends PoolTestCase {
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery("SELECT 'ABCDE' FROM DUAL");
-        Assert.assertTrue(rs.next());
-        Assert.assertEquals("ABCDE", rs.getString(1));
+        assertTrue(rs.next());
+        assertEquals("ABCDE", rs.getString(1));
         rs.close();
 
         stmt.close();
@@ -98,8 +98,8 @@ public class MockExecuteTest extends PoolTestCase {
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery("SELECT true FROM DUAL");
-        Assert.assertTrue(rs.next());
-        Assert.assertEquals(true, rs.getBoolean(1));
+        assertTrue(rs.next());
+        assertEquals(true, rs.getBoolean(1));
 
         rs.close();
 
@@ -112,8 +112,8 @@ public class MockExecuteTest extends PoolTestCase {
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery("SELECT false FROM DUAL");
-        Assert.assertTrue(rs.next());
-        Assert.assertEquals(false, rs.getBoolean(1));
+        assertTrue(rs.next());
+        assertEquals(false, rs.getBoolean(1));
 
         rs.close();
 

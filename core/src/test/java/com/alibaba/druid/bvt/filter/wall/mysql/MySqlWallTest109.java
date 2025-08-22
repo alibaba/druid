@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -29,7 +29,7 @@ public class MySqlWallTest109 extends TestCase {
 
         String sql = "select * from t where id = ? or 97 between 79 and 126";
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 
 }

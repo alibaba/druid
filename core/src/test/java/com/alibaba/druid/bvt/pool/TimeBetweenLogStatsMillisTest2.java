@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.pool;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
@@ -24,6 +24,6 @@ public class TimeBetweenLogStatsMillisTest2 extends TestCase {
 
     public void test_0() throws Exception {
         dataSource.init();
-        Assert.assertEquals(1000, dataSource.getTimeBetweenLogStatsMillis());
+        assertEquals(1000, dataSource.getTimeBetweenLogStatsMillis());
     }
 }

@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -39,7 +39,7 @@ public class DruidDataSourceTest_getConnection extends TestCase {
         } catch (UnsupportedOperationException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
     public void test_conn_password_error() throws Exception {
@@ -49,7 +49,7 @@ public class DruidDataSourceTest_getConnection extends TestCase {
         } catch (UnsupportedOperationException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
 }

@@ -2,8 +2,7 @@ package com.alibaba.druid.pool.mysql;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -38,15 +37,15 @@ public class MySqlTest extends TestCase {
         stmt.execute("select 1;select 1");
 
         ResultSet rs = stmt.getResultSet();
-        Assert.assertFalse(rs.isClosed());
+        assertFalse(rs.isClosed());
 
-        Assert.assertTrue(stmt.getMoreResults());
-        Assert.assertTrue(rs.isClosed());
+        assertTrue(stmt.getMoreResults());
+        assertTrue(rs.isClosed());
 
         ResultSet rs2 = stmt.getResultSet();
-        Assert.assertFalse(rs2.isClosed());
+        assertFalse(rs2.isClosed());
         rs2.close();
-        Assert.assertTrue(rs2.isClosed());
+        assertTrue(rs2.isClosed());
 
         stmt.close();
 

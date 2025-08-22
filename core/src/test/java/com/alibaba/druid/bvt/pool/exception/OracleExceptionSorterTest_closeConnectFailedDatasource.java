@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 import org.springframework.test.util.ReflectionTestUtils;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSource.CreateConnectionThread;
@@ -18,7 +18,7 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
 
@@ -36,7 +36,7 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
 
     @Override
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_connect() throws Exception {
@@ -59,7 +59,7 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
         for (int i = 0; i < 10 && State.TERMINATED != thread.getState(); i++) {
             Thread.sleep(1000);
         }
-        Assert.assertEquals(State.TERMINATED, thread.getState());
+        assertEquals(State.TERMINATED, thread.getState());
     }
 
 }

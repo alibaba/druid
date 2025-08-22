@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
@@ -38,7 +38,7 @@ public class SQLServerWallTest_9 extends TestCase {
                 + " AND islast=0" //
                 + " AND NOT EXISTS (select m.id from project_measures m WHERE m.snapshot_id=s.id)";
 
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
     }
 

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,7 +30,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest17 extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
                 "DELETE FROM as_home_notification WHERE uid>? AND new=? AND dateline<?-?")); //
     }
 }

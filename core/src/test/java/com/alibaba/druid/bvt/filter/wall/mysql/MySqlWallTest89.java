@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -35,11 +35,11 @@ public class MySqlWallTest89 extends TestCase {
 
         provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "select login('', '', 'guest', '47ea3937793101011caaa5dd88d3bcae926526624796b8a26a9615e8d3bea6b4', 'iPad3,4', 'unknown'),     '', (select max(num) from accounts) +  @@auto_increment_increment"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
-        Assert.assertTrue(provider.getTableStats().containsKey("accounts"));
+        assertEquals(1, provider.getTableStats().size());
+        assertTrue(provider.getTableStats().containsKey("accounts"));
     }
 
 }

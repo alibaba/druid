@@ -20,7 +20,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DataSourceDisableException;
@@ -90,6 +90,6 @@ public class TestGraceShutdown extends PoolTestCase {
         }.start();
 
         closeLatch.await();
-        Assert.assertTrue(endLatch.await(60, TimeUnit.SECONDS));
+        assertTrue(endLatch.await(60, TimeUnit.SECONDS));
     }
 }

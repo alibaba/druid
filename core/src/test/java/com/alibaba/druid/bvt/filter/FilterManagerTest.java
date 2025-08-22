@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterAdapter;
@@ -17,7 +17,7 @@ public class FilterManagerTest extends TestCase {
         try {
             Thread.currentThread().setContextClassLoader(null);
 
-            Assert.assertNotNull(FilterManager.getFilter("stat"));
+            assertNotNull(FilterManager.getFilter("stat"));
         } finally {
             Thread.currentThread().setContextClassLoader(current);
         }
@@ -35,7 +35,7 @@ public class FilterManagerTest extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
     public void test_loadFilter_2() throws Exception {
@@ -46,7 +46,7 @@ public class FilterManagerTest extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
 

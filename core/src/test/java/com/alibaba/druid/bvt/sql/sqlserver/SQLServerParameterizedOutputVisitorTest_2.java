@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.sql.sqlserver;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 public class SQLServerParameterizedOutputVisitorTest_2 extends TestCase {
     public void test_0() throws Exception {

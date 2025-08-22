@@ -18,12 +18,12 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.assertEquals;
+import static org.junit.assertFalse;
+import static org.junit.assertNotNull;
+import static org.junit.assertNull;
+import static org.junit.assertTrue;
+import static org.junit.fail;
 
 public class ZookeeperNodeListenerTest {
     private static final Log LOG = LogFactory.getLog(ZookeeperNodeListenerTest.class);

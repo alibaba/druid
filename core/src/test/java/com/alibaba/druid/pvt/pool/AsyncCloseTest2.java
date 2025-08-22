@@ -11,8 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -119,8 +118,8 @@ public class AsyncCloseTest2 extends TestCase {
 
     protected void loop() throws InterruptedException {
         dataSource.shrink();
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         final int COUNT = 1024 * 128;
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
@@ -154,6 +153,6 @@ public class AsyncCloseTest2 extends TestCase {
         }
 
         closeLatch.await();
-        Assert.assertEquals("expect activeCount zero", 0, dataSource.getActiveCount());
+        assertEquals("expect activeCount zero", 0, dataSource.getActiveCount());
     }
 }

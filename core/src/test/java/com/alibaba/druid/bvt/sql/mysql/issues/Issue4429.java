@@ -11,8 +11,8 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.assertEquals;
+import static org.junit.assertFalse;
 
 public class Issue4429 {
     protected final DbType dbType = DbType.mysql;

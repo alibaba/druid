@@ -18,8 +18,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 import java.util.List;
 
 public class SQLLexerTest2 extends TestCase {
@@ -83,7 +82,7 @@ public class SQLLexerTest2 extends TestCase {
             exception = e;
         }
         assert exception != null;
-        Assert.assertEquals("not supported.pos 13, line 2, column 2, token IDENTIFIER FORM", exception.getMessage());
+        assertEquals("not supported.pos 13, line 2, column 2, token IDENTIFIER FORM", exception.getMessage());
     }
 
     public void test_lexer_computePos() {
@@ -94,8 +93,8 @@ public class SQLLexerTest2 extends TestCase {
         lexer.computeRowAndColumn();
         int posLine = lexer.getPosLine();
         int column = lexer.getPosColumn();
-        Assert.assertEquals(posLine, 2);
-        Assert.assertEquals(column, 7);
+        assertEquals(posLine, 2);
+        assertEquals(column, 7);
     }
 
 }

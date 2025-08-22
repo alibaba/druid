@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.bug;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -47,6 +47,6 @@ public class Bug_for_ruiyi extends TestCase {
 
         //System.out.println(out.toString());
 
-        Assert.assertEquals(expected, out.toString());
+        assertEquals(expected, out.toString());
     }
 }

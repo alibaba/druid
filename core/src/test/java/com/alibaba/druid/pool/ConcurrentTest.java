@@ -20,8 +20,7 @@ import java.util.concurrent.CountDownLatch;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
-
+import static org.junit.*;
 public class ConcurrentTest extends TestCase {
     private String jdbcUrl;
     private String user;
@@ -89,9 +88,9 @@ public class ConcurrentTest extends TestCase {
         startLatch.countDown();
         endLatch.await();
 
-        Assert.assertEquals(THREAD_COUNT * LOOP_COUNT, dataSource.getConnectCount());
-        Assert.assertEquals(THREAD_COUNT * LOOP_COUNT, dataSource.getCloseCount());
-        Assert.assertEquals(0, dataSource.getConnectErrorCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(THREAD_COUNT * LOOP_COUNT, dataSource.getConnectCount());
+        assertEquals(THREAD_COUNT * LOOP_COUNT, dataSource.getCloseCount());
+        assertEquals(0, dataSource.getConnectErrorCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 }

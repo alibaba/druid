@@ -15,8 +15,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertEquals;
+import static org.junit.assertTrue;
 
 public class RandomDataSourceSelectorWithFilterTest {
     private static final Log LOG = LogFactory.getLog(RandomDataSourceSelectorWithFilterTest.class);

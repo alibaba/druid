@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -37,14 +37,14 @@ public class WallUnionTest2 extends TestCase {
         config.setSelectUnionCheck(true);
         config.setSelectWhereAlwayTrueCheck(true);
         config.setCommentAllow(true);
-        Assert.assertFalse(WallUtils.isValidateMySql(UNION_SQL1, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(UNION_SQL2, config));
+        assertFalse(WallUtils.isValidateMySql(UNION_SQL1, config));
+        assertFalse(WallUtils.isValidateMySql(UNION_SQL2, config));
 
         config.setSelectUnionCheck(false);
         config.setSelectWhereAlwayTrueCheck(false);
         config.setCommentAllow(false);
-        Assert.assertTrue(WallUtils.isValidateMySql(UNION_SQL1, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(UNION_SQL2, config));
+        assertTrue(WallUtils.isValidateMySql(UNION_SQL1, config));
+        assertFalse(WallUtils.isValidateMySql(UNION_SQL2, config));
     }
 
     public void testOracle() throws Exception {
@@ -52,13 +52,13 @@ public class WallUnionTest2 extends TestCase {
         config.setSelectUnionCheck(true);
         config.setSelectWhereAlwayTrueCheck(true);
         config.setCommentAllow(true);
-        Assert.assertFalse(WallUtils.isValidateOracle(UNION_SQL1, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(UNION_SQL2, config));
+        assertFalse(WallUtils.isValidateOracle(UNION_SQL1, config));
+        assertFalse(WallUtils.isValidateOracle(UNION_SQL2, config));
 
         config.setSelectUnionCheck(false);
         config.setSelectWhereAlwayTrueCheck(false);
         config.setCommentAllow(false);
-        Assert.assertTrue(WallUtils.isValidateOracle(UNION_SQL1, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(UNION_SQL2, config));
+        assertTrue(WallUtils.isValidateOracle(UNION_SQL1, config));
+        assertFalse(WallUtils.isValidateOracle(UNION_SQL2, config));
     }
 }

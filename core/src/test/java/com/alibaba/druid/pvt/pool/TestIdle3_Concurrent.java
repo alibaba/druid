@@ -20,7 +20,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -33,7 +33,7 @@ public class TestIdle3_Concurrent extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_idle2() throws Exception {
@@ -58,20 +58,20 @@ public class TestIdle3_Concurrent extends TestCase {
 
         // 第一次创建连接
         {
-            Assert.assertEquals(0, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
 
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
-            Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
+            assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            assertEquals(1, dataSource.getActiveCount());
 
             conn.close();
-            Assert.assertEquals(0, dataSource.getDestroyCount());
-            Assert.assertEquals(1, driver.getConnections().size());
-            Assert.assertEquals(1, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getDestroyCount());
+            assertEquals(1, driver.getConnections().size());
+            assertEquals(1, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
         }
 
         {
@@ -81,14 +81,14 @@ public class TestIdle3_Concurrent extends TestCase {
 
         // 连续打开关闭单个连接
         for (int i = 0; i < 1000; ++i) {
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(1, dataSource.getActiveCount());
             conn.close();
         }
         Thread.sleep(1000);
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
 
         dataSource.close();
     }
@@ -134,7 +134,7 @@ public class TestIdle3_Concurrent extends TestCase {
         System.out.println("concurrent end");
 
         int max = count > dataSource.getMaxActive() ? dataSource.getMaxActive() : count;
-        Assert.assertEquals(max, driver.getConnections().size());
+        assertEquals(max, driver.getConnections().size());
 
     }
 }

@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -69,10 +69,10 @@ public class TestOracle extends TestCase {
             while (rs.next()) {
                 rowCount++;
             }
-            Assert.assertEquals(true, rowCount > 0);
-            // Assert.isTrue(!rs.isClosed());
+            assertEquals(true, rowCount > 0);
+            // isTrue(!rs.isClosed());
             rs.close();
-            // Assert.isTrue(!stmt.isClosed());
+            // isTrue(!stmt.isClosed());
             stmt.close();
 
             conn.close();

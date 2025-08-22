@@ -11,8 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.sql.DataSource;
 
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -95,11 +94,11 @@ public class Large10ConcurrentTest extends TestCase {
         connLatch.await();
 
         for (int i = 0; i < dataSources.length; ++i) {
-            Assert.assertEquals(8, dataSources[i].getActiveCount());
+            assertEquals(8, dataSources[i].getActiveCount());
         }
 
         for (int i = 0; i < dataSources.length; ++i) {
-            Assert.assertEquals(0, dataSources[i].getPoolingCount());
+            assertEquals(0, dataSources[i].getPoolingCount());
         }
 
         final CountDownLatch closeLatch = new CountDownLatch(connections.length);

@@ -7,8 +7,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ public class SqlserverAlterTest extends TestCase {
         try {
             stmt.toString();
         } catch (ClassCastException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         assert stmt.getTableName().equals("alert_config_detail");
@@ -41,7 +40,7 @@ public class SqlserverAlterTest extends TestCase {
         try {
             stmt.toString();
         } catch (ClassCastException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         assert stmt.getTableName().equals("alert_config_detail");
@@ -60,7 +59,7 @@ public class SqlserverAlterTest extends TestCase {
         try {
             stmt.toString();
         } catch (ClassCastException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         assert stmt.getTableName().equals("alert_config_detail");
@@ -79,7 +78,7 @@ public class SqlserverAlterTest extends TestCase {
         try {
             stmt.toString();
         } catch (ClassCastException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         assert stmt.getTableName().equals("alert_config_detail");

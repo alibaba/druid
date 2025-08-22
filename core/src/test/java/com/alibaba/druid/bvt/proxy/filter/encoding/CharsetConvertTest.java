@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.proxy.filter.encoding;
 
 import java.io.UnsupportedEncodingException;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.encoding.CharsetConvert;
@@ -31,9 +31,9 @@ public class CharsetConvertTest extends TestCase {
     public CharsetConvert charsetConvert = new CharsetConvert(CLIENT_ENCODEING, SERVER_ENCODEING);
 
     public void testIsEmpty() {
-        Assert.assertTrue(charsetConvert.isEmpty(null));
-        Assert.assertTrue(charsetConvert.isEmpty(""));
-        Assert.assertTrue(!charsetConvert.isEmpty("a"));
+        assertTrue(charsetConvert.isEmpty(null));
+        assertTrue(charsetConvert.isEmpty(""));
+        assertTrue(!charsetConvert.isEmpty("a"));
     }
 
     public void testEncoding() {
@@ -44,8 +44,8 @@ public class CharsetConvertTest extends TestCase {
             es = new String(s.getBytes(CLIENT_ENCODEING), SERVER_ENCODEING);
             ds = new String(s.getBytes(SERVER_ENCODEING), CLIENT_ENCODEING);
 
-            Assert.assertEquals(es, charsetConvert.encode(s));
-            Assert.assertEquals(ds, charsetConvert.decode(s));
+            assertEquals(es, charsetConvert.encode(s));
+            assertEquals(ds, charsetConvert.decode(s));
         } catch (UnsupportedEncodingException e) {
         }
 

@@ -17,7 +17,7 @@ package com.alibaba.druid.pool;
 
 import java.sql.Connection;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.util.JMXUtils;
@@ -60,38 +60,38 @@ public class Case0 extends TestCase {
 
         final int LOOP_COUNT = 1000 * 1000;
 
-        Assert.assertEquals(0, dataSource.getCreateCount());
-        Assert.assertEquals(0, dataSource.getDestroyCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getCreateCount());
+        assertEquals(0, dataSource.getDestroyCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             Connection conn = dataSource.getConnection();
 
             conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
-            Assert.assertEquals(initialSize, dataSource.getCreateCount());
+            assertEquals(initialSize, dataSource.getCreateCount());
 
-            Assert.assertEquals(i + 1, dataSource.getConnectCount());
-            Assert.assertEquals(1, dataSource.getActiveCount());
-            Assert.assertEquals(i, dataSource.getCloseCount());
-            Assert.assertEquals(0, dataSource.getConnectErrorCount());
-            Assert.assertEquals(initialSize - 1, dataSource.getPoolingCount());
-            Assert.assertEquals(i, dataSource.getRecycleCount());
+            assertEquals(i + 1, dataSource.getConnectCount());
+            assertEquals(1, dataSource.getActiveCount());
+            assertEquals(i, dataSource.getCloseCount());
+            assertEquals(0, dataSource.getConnectErrorCount());
+            assertEquals(initialSize - 1, dataSource.getPoolingCount());
+            assertEquals(i, dataSource.getRecycleCount());
 
             conn.close();
 
-            Assert.assertEquals(i + 1, dataSource.getConnectCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(i + 1, dataSource.getCloseCount());
-            Assert.assertEquals(0, dataSource.getConnectErrorCount());
-            Assert.assertEquals(initialSize, dataSource.getPoolingCount());
-            Assert.assertEquals(i + 1, dataSource.getRecycleCount());
+            assertEquals(i + 1, dataSource.getConnectCount());
+            assertEquals(0, dataSource.getActiveCount());
+            assertEquals(i + 1, dataSource.getCloseCount());
+            assertEquals(0, dataSource.getConnectErrorCount());
+            assertEquals(initialSize, dataSource.getPoolingCount());
+            assertEquals(i + 1, dataSource.getRecycleCount());
         }
 
-        Assert.assertEquals(initialSize, dataSource.getCreateCount());
-        Assert.assertEquals(0, dataSource.getDestroyCount());
+        assertEquals(initialSize, dataSource.getCreateCount());
+        assertEquals(0, dataSource.getDestroyCount());
 
         dataSource.close();
-        Assert.assertEquals(dataSource.getCreateCount(), dataSource.getDestroyCount());
+        assertEquals(dataSource.getCreateCount(), dataSource.getDestroyCount());
     }
 }

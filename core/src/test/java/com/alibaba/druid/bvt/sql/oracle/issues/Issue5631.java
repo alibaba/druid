@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertTrue;
 
 /**
  * 验证 Oracle merge sql的顺序问题

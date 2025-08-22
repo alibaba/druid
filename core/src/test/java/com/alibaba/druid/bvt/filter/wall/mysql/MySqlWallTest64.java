@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -34,12 +34,12 @@ public class MySqlWallTest64 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "SELECT email, passwd, login_id, full_name" +
                         " FROM members" +
                         " WHERE member_id = 3 AND 1=(SELECT COUNT(*) FROM tabname);'"));
 
-        Assert.assertEquals(2, provider.getTableStats().size());
+        assertEquals(2, provider.getTableStats().size());
     }
 
 

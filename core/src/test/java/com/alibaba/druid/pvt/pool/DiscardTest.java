@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -98,7 +98,7 @@ public class DiscardTest extends TestCase {
             stmt.close();
             conn.close();
 
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         this.failed = false;

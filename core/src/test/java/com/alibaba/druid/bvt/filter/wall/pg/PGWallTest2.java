@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.pg;
 
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 /**
  * SQLServerWallTest

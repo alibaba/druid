@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.support.json;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.support.json.JSONUtils;
@@ -14,6 +14,6 @@ public class JSONParserTest2 extends TestCase {
         String text = Utils.readFromResource("bvt/sql.json");
         Map<String, Object> result = (Map<String, Object>) JSONUtils.parse(text);
         List<Map<String, Object>> sqlList = (List<Map<String, Object>>) result.get("Content");
-        Assert.assertEquals(82, sqlList.size());
+        assertEquals(82, sqlList.size());
     }
 }

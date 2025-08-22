@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import org.nutz.lang.stream.StringReader;
@@ -54,7 +54,7 @@ public class StatFilterOpenReaderCountTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReaderOpenCount());
+        assertEquals(0, sqlStat.getReaderOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -65,10 +65,10 @@ public class StatFilterOpenReaderCountTest extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(2, sqlStat.getReaderOpenCount());
+        assertEquals(2, sqlStat.getReaderOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReaderOpenCount());
+        assertEquals(0, sqlStat.getReaderOpenCount());
     }
 
     public void test_stat_1() throws Exception {
@@ -79,7 +79,7 @@ public class StatFilterOpenReaderCountTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReaderOpenCount());
+        assertEquals(0, sqlStat.getReaderOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -91,9 +91,9 @@ public class StatFilterOpenReaderCountTest extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(3, sqlStat.getReaderOpenCount());
+        assertEquals(3, sqlStat.getReaderOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReaderOpenCount());
+        assertEquals(0, sqlStat.getReaderOpenCount());
     }
 }

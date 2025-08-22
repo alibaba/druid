@@ -4,8 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 /**
  * @author gfChris
  * @version 1.0
@@ -33,7 +32,7 @@ public class OraclePivotCloneTest extends TestCase {
         System.out.println(sqlStatement1.toString());
 
 
-        Assert.assertTrue(sqlStatement1.toString().equals(sql));
+        assertTrue(sqlStatement1.toString().equals(sql));
 
     }
 

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -38,19 +38,19 @@ public class MySqlWallTest63 extends TestCase {
         provider.setWhiteListEnable(false);
 
         final String sql1 = "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA'";
-        Assert.assertTrue(provider.checkValid(sql1));
+        assertTrue(provider.checkValid(sql1));
         final String sql2 = "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA' --";
-        Assert.assertFalse(provider.checkValid(sql2));
+        assertFalse(provider.checkValid(sql2));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
 
         provider.reset();
         provider.getConfig().setCommentAllow(true);
         provider.getConfig().setSelectUnionCheck(false);
 
-        Assert.assertTrue(provider.checkValid(sql2));
+        assertTrue(provider.checkValid(sql2));
 
-        Assert.assertTrue(provider.checkValid(sql2));
+        assertTrue(provider.checkValid(sql2));
     }
 
 }

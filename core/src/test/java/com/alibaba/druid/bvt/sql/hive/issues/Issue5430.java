@@ -16,9 +16,9 @@ import com.alibaba.druid.support.logging.LogFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertEquals;
+import static org.junit.assertFalse;
+import static org.junit.assertTrue;
 
 /**
  * @author lizongbo

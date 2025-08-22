@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import org.junit.Assert;
+import static org.junit.*;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class OracleMergeTest11 extends OracleTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLMergeStatement mergeStatement = (SQLMergeStatement) stmtList.get(0);
         String result = SQLUtils.toOracleString(mergeStatement);
-        Assert.assertEquals("MERGE INTO (\n" +
+        assertEquals("MERGE INTO (\n" +
                         "\tSELECT *\n" +
                         "\tFROM KPI_M_CW_INCOME_FACT_BAK\n" +
                         "\tWHERE THE_DATE = '{THISMONTH}'\n" +
@@ -82,11 +82,11 @@ public class OracleMergeTest11 extends OracleTest {
 
         assertEquals("ROUND(B.TOTAL_CHARGE * 1.00 / 10000, 2)", value.toString());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
     }
 
 }

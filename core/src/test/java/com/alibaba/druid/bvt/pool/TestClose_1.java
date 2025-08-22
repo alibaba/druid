@@ -20,7 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockStatement;
@@ -39,22 +39,22 @@ public class TestClose_1 extends PoolTestCase {
         PreparedStatement stmt = conn.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        Assert.assertEquals(false, rs.isClosed());
+        assertEquals(false, rs.isClosed());
 
-        Assert.assertEquals(false, stmt.isClosed());
+        assertEquals(false, stmt.isClosed());
         stmt.close();
-        Assert.assertEquals(true, stmt.isClosed());
-        Assert.assertEquals(true, rs.isClosed());
+        assertEquals(true, stmt.isClosed());
+        assertEquals(true, rs.isClosed());
 
         PreparedStatement stmt2 = conn.prepareStatement(sql);
-        Assert.assertEquals(true, stmt.isClosed());
+        assertEquals(true, stmt.isClosed());
 
-        Assert.assertEquals(stmt.unwrap(MockStatement.class), stmt2.unwrap(MockStatement.class));
+        assertEquals(stmt.unwrap(MockStatement.class), stmt2.unwrap(MockStatement.class));
 
         conn.close();
 
-        Assert.assertEquals(true, stmt.isClosed());
-        Assert.assertEquals(true, rs.isClosed());
+        assertEquals(true, stmt.isClosed());
+        assertEquals(true, rs.isClosed());
 
         rs.close();
         stmt.close();

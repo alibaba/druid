@@ -8,8 +8,7 @@ import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateReso
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 public class StarRocksOutputVisitorTest extends TestCase {
 
     public void testStarRocksOutputVisitor() {
@@ -63,7 +62,7 @@ public class StarRocksOutputVisitorTest extends TestCase {
         SQLStatement stmt = parser.parseStatement();
         stmt.accept(visitor);
         String result = builder.toString();
-        Assert.assertEquals(message, expected, result);
+        assertEquals(message, expected, result);
     }
 
     public void testCreateResourceStmt() {

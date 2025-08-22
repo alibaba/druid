@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -35,25 +35,25 @@ public class WallUnionTest extends TestCase {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(false);
         config.setCommentAllow(true);
-        Assert.assertTrue(WallUtils.isValidateMySql(UNION_SQL1, config));
-        Assert.assertTrue(WallUtils.isValidateMySql(UNION_SQL2, config));
+        assertTrue(WallUtils.isValidateMySql(UNION_SQL1, config));
+        assertTrue(WallUtils.isValidateMySql(UNION_SQL2, config));
 
         config.setSelectUnionCheck(true);
         config.setCommentAllow(false);
-        Assert.assertFalse(WallUtils.isValidateMySql(UNION_SQL1, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(UNION_SQL2, config));
+        assertFalse(WallUtils.isValidateMySql(UNION_SQL1, config));
+        assertFalse(WallUtils.isValidateMySql(UNION_SQL2, config));
     }
 
     public void testOracle() throws Exception {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(false);
         config.setCommentAllow(true);
-        Assert.assertTrue(WallUtils.isValidateOracle(UNION_SQL1, config));
-        Assert.assertTrue(WallUtils.isValidateOracle(UNION_SQL2, config));
+        assertTrue(WallUtils.isValidateOracle(UNION_SQL1, config));
+        assertTrue(WallUtils.isValidateOracle(UNION_SQL2, config));
 
         config.setSelectUnionCheck(true);
         config.setCommentAllow(false);
-        Assert.assertFalse(WallUtils.isValidateOracle(UNION_SQL1, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(UNION_SQL2, config));
+        assertFalse(WallUtils.isValidateOracle(UNION_SQL1, config));
+        assertFalse(WallUtils.isValidateOracle(UNION_SQL2, config));
     }
 }

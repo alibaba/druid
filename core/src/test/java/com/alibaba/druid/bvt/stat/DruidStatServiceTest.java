@@ -19,7 +19,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.assertThat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +27,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import org.springframework.context.ApplicationContext;
@@ -92,10 +92,10 @@ public class DruidStatServiceTest extends TestCase {
 
         Map<String, Object> sqlStat = sqlList.get(0);
 
-        Assert.assertEquals(0, sqlStat.get("RunningCount"));
-        Assert.assertEquals(1, sqlStat.get("ExecuteCount"));
-        Assert.assertEquals(1, sqlStat.get("FetchRowCount"));
-        Assert.assertEquals(0, sqlStat.get("EffectedRowCount"));
+        assertEquals(0, sqlStat.get("RunningCount"));
+        assertEquals(1, sqlStat.get("ExecuteCount"));
+        assertEquals(1, sqlStat.get("FetchRowCount"));
+        assertEquals(0, sqlStat.get("EffectedRowCount"));
     }
 
     public void test_statService_getSqlById() throws Exception {
@@ -117,14 +117,14 @@ public class DruidStatServiceTest extends TestCase {
 
         Map<String, Object> sqlStat = (Map<String, Object>) resultMap.get("Content");
 
-        Assert.assertEquals(0, sqlStat.get("RunningCount"));
-        Assert.assertEquals(1, sqlStat.get("ExecuteCount"));
-        Assert.assertEquals(1, sqlStat.get("FetchRowCount"));
-        Assert.assertEquals(0, sqlStat.get("EffectedRowCount"));
+        assertEquals(0, sqlStat.get("RunningCount"));
+        assertEquals(1, sqlStat.get("ExecuteCount"));
+        assertEquals(1, sqlStat.get("FetchRowCount"));
+        assertEquals(0, sqlStat.get("EffectedRowCount"));
 
         String result2 = DruidStatService.getInstance().service("/sql-" + Integer.MAX_VALUE + ".json");
         resultMap = (Map<String, Object>) JSONUtils.parse(result2);
-        Assert.assertNull(resultMap.get("Content"));
+        assertNull(resultMap.get("Content"));
     }
 
     public void test_statService_getDataSourceList() throws Exception {
@@ -148,12 +148,12 @@ public class DruidStatServiceTest extends TestCase {
 
         List<Map<String, Object>> dataSourceList = (List<Map<String, Object>>) resultMap.get("Content");
 
-        Assert.assertTrue(dataSourceList.size() > 0);
+        assertTrue(dataSourceList.size() > 0);
 
         Map<String, Object> dataSourceStat = dataSourceList.get(0);
 
-//        Assert.assertEquals(1, dataSourceStat.get("PoolingCount"));
-//        Assert.assertEquals(0, dataSourceStat.get("ActiveCount"));
+//        assertEquals(1, dataSourceStat.get("PoolingCount"));
+//        assertEquals(0, dataSourceStat.get("ActiveCount"));
     }
 
     public void test_statService_getDataSourceIdList() throws Exception {

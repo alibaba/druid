@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
@@ -24,6 +24,6 @@ public class DruidDataSourceFactoryTest2 extends TestCase {
 
         dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-        Assert.assertFalse(dataSource.isPoolPreparedStatements());
+        assertFalse(dataSource.isPoolPreparedStatements());
     }
 }

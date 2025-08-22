@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -45,11 +45,11 @@ public class StatFilterAfterResetTest extends TestCase {
 
     public void test_stat() throws Exception {
         final String sql = "SELECT 1";
-        Assert.assertTrue(dataSource.isInited());
+        assertTrue(dataSource.isInited());
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertNull(sqlStat);
+        assertNull(sqlStat);
 
         {
             Connection conn = dataSource.getConnection();
@@ -59,27 +59,27 @@ public class StatFilterAfterResetTest extends TestCase {
             rs.close();
 
             sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
-            Assert.assertNotNull(sqlStat);
+            assertNotNull(sqlStat);
 
-            Assert.assertEquals("first failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+            assertEquals("first failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
 
             rs.close();
 
-            Assert.assertEquals("second failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+            assertEquals("second failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
 
             stmt.close();
 
             conn.close();
 
-            Assert.assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+            assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
         }
 
         JdbcStatManager.getInstance().reset();
 
-        Assert.assertFalse(sqlStat.isRemoved());
+        assertFalse(sqlStat.isRemoved());
 
         JdbcStatManager.getInstance().reset();
-        Assert.assertTrue(sqlStat.isRemoved());
+        assertTrue(sqlStat.isRemoved());
 
         {
             Connection conn = dataSource.getConnection();
@@ -90,14 +90,14 @@ public class StatFilterAfterResetTest extends TestCase {
             conn.close();
         }
 
-        Assert.assertNotSame(sqlStat, dataSource.getDataSourceStat().getSqlStat(sql));
+        assertNotSame(sqlStat, dataSource.getDataSourceStat().getSqlStat(sql));
 
         {
-            Assert.assertEquals(0, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+            assertEquals(0, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
         }
 
         sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
     }
 }

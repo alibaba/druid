@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.pool;
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -53,7 +53,7 @@ public class TestDisable extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_close() throws Exception {

@@ -11,7 +11,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.assertEquals;
 
 /**
  * 验证 update ant.t1 set name=10 where id >100 limit 1语法

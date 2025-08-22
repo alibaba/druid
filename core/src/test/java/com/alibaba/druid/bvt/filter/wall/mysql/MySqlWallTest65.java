@@ -19,7 +19,7 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 /**
  * SQLServerWallTest
@@ -33,11 +33,11 @@ public class MySqlWallTest65 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         WallConfig config = provider.getConfig();
         config.setSchemaCheck(true);
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "SELECT email, passwd, login_id, full_name" +
                         " FROM test1.members" +
                         " WHERE member_id = 3 OR 0<(SELECT COUNT(*) FROM tabname);"));
 
-        Assert.assertEquals(2, provider.getTableStats().size());
+        assertEquals(2, provider.getTableStats().size());
     }
 }

@@ -20,7 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.util.JdbcUtils;
@@ -57,7 +57,7 @@ public class TestRollBack extends TestCase {
             JdbcUtils.close(conn);
         }
 
-        Assert.assertEquals(0, count());
+        assertEquals(0, count());
     }
 
     public int count() throws Exception {

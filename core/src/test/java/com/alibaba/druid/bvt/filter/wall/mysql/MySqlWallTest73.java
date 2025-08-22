@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -35,7 +35,7 @@ public class MySqlWallTest73 extends TestCase {
 
         provider.getConfig().setCommentAllow(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "DELETE FROM D1 USING PCHS_DETAIL D1 " + //
                         "   INNER JOIN (" + //
                         "       SELECT D.DETAIL_UID " + //
@@ -45,7 +45,7 @@ public class MySqlWallTest73 extends TestCase {
                         "       LIMIT 1000 " + //
                         "   ) D2 ON D1.DETAIL_UID=D2.DETAIL_UID"));
 
-        Assert.assertEquals(3, provider.getTableStats().size());
+        assertEquals(3, provider.getTableStats().size());
     }
 
 }

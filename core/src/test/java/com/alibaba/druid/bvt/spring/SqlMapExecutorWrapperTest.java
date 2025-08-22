@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.alibaba.druid.support.ibatis.SqlMapClientWrapper;
@@ -23,7 +23,7 @@ public class SqlMapExecutorWrapperTest extends TestCase {
 
     public void test_wrap() throws Exception {
         SqlMapClientImpl client = (SqlMapClientImpl) context.getBean("master-sqlMapClient");
-        Assert.assertNotNull(client);
+        assertNotNull(client);
 
         SqlMapClientWrapper wrapper = new SqlMapClientWrapper(client);
         wrapper.getClient();
@@ -44,7 +44,7 @@ public class SqlMapExecutorWrapperTest extends TestCase {
         } catch (Exception ex) {
             error = ex;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
         wrapper.startTransaction();
         wrapper.commitTransaction();
 

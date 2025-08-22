@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 import java.sql.Connection;
 

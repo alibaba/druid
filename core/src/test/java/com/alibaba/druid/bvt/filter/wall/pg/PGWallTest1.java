@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.pg;
 
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.*;
 
 /**
  * SQLServerWallTest
@@ -28,7 +28,7 @@ import org.junit.Assert;
  */
 public class PGWallTest1 extends TestCase {
     public void test_wall() throws Exception {
-        Assert.assertTrue(WallUtils.isValidatePostgres(//
+        assertTrue(WallUtils.isValidatePostgres(//
                 "select pg_encoding_to_char(encoding) from pg_database where datname = current_database()"));
     }
 }

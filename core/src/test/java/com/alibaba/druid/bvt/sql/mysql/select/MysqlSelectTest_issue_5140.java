@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.parser.ParserException;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.assertThrows;
 
 public class MysqlSelectTest_issue_5140 extends MysqlTest {
     @Test

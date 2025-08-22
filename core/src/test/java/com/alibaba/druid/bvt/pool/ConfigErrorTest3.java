@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
@@ -53,8 +53,8 @@ public class ConfigErrorTest3 extends PoolTestCase {
 
         LOG.resetStat();
 
-        Assert.assertEquals(0, LOG.getErrorCount());
+        assertEquals(0, LOG.getErrorCount());
         dataSource.init();
-        Assert.assertEquals(0, LOG.getErrorCount());
+        assertEquals(0, LOG.getErrorCount());
     }
 }

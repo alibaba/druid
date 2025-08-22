@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -27,7 +27,7 @@ public class DruidDataSourceTest_getProperties extends TestCase {
     }
 
     public void test_error() throws Exception {
-        Assert.assertEquals(-1, dataSource.getProperties().indexOf("xxx"));
-        Assert.assertEquals(true, dataSource.getProperties().indexOf("******") != -1);
+        assertEquals(-1, dataSource.getProperties().indexOf("xxx"));
+        assertEquals(true, dataSource.getProperties().indexOf("******") != -1);
     }
 }

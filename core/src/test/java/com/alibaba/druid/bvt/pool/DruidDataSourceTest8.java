@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -32,15 +32,15 @@ public class DruidDataSourceTest8 extends TestCase {
     }
 
     public void testInitError() throws Exception {
-        Assert.assertEquals(0, dataSource.getCreateErrorCount());
+        assertEquals(0, dataSource.getCreateErrorCount());
         Throwable error = null;
         try {
             dataSource.init();
         } catch (Throwable e) {
             error = e;
         }
-        Assert.assertNotNull(error);
-        Assert.assertTrue(dataSource.getCreateErrorCount() > 0);
+        assertNotNull(error);
+        assertTrue(dataSource.getCreateErrorCount() > 0);
 
         dataSource.getCompositeData();
     }

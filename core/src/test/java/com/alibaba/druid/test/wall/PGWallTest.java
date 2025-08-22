@@ -4,7 +4,7 @@ import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Test;
 
 /**
@@ -16,6 +16,6 @@ public class PGWallTest {
         WallProvider provider = new PGWallProvider(new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR));
         String sql = "CREATE TABLE test_pg_wall (col_int INT NOT NULL, col_double_x DOUBLE PRECISION NOT NULL DEFAULT 0, col_varchar VARCHAR(200) NULL)";
         WallCheckResult result = provider.check(sql);
-        Assert.assertTrue(result.getViolations().isEmpty());
+        assertTrue(result.getViolations().isEmpty());
     }
 }

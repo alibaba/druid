@@ -2,8 +2,7 @@ package com.alibaba.druid;
 
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 import javax.management.openmbean.CompositeData;
 
 public class PoolTestCase extends TestCase {
@@ -27,6 +26,6 @@ public class PoolTestCase extends TestCase {
 
             errorInfo = "Name " + name + ", URL " + url + ", initStackTrace=" + initStackTrace;
         }
-        Assert.assertEquals(errorInfo, 0, size);
+        assertEquals(errorInfo, 0, size);
     }
 }

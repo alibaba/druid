@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -34,7 +34,7 @@ public class MySqlWallTest66 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "SELECT LOGFILE_GROUP_NAME, FILE_NAME, TOTAL_EXTENTS, INITIAL_SIZE, ENGINE, EXTRA " + //
                         "FROM INFORMATION_SCHEMA.FILES WHERE FILE_TYPE = 'UNDO LOG' AND FILE_NAME IS NOT NULL " + //
                         "AND LOGFILE_GROUP_NAME IN (" + //
@@ -47,7 +47,7 @@ public class MySqlWallTest66 extends TestCase {
                         "GROUP BY LOGFILE_GROUP_NAME, FILE_NAME, ENGINE " + //
                         "ORDER BY LOGFILE_GROUP_NAME"));
 
-        Assert.assertEquals(2, provider.getTableStats().size());
+        assertEquals(2, provider.getTableStats().size());
     }
 
 }

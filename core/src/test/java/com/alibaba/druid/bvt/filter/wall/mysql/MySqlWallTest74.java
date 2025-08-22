@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -46,12 +46,12 @@ public class MySqlWallTest74 extends TestCase {
                 "order by _t0.`showTime` asc " + //
                 "limit 1000 offset 8000";
         provider.getConfig().setSelectWhereAlwayTrueCheck(true);
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
 
-        Assert.assertEquals(2, provider.getTableStats().size());
+        assertEquals(2, provider.getTableStats().size());
 
         provider.getConfig().setSelectWhereAlwayTrueCheck(false);
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 
 }

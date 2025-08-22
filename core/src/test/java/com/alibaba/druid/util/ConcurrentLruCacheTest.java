@@ -1,8 +1,7 @@
 package com.alibaba.druid.util;
 
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,34 +20,34 @@ public class ConcurrentLruCacheTest extends TestCase {
 
     public void testConcurrentLruCache() {
         ConcurrentLruCache<String, String> cache = new ConcurrentLruCache<>(2);
-        Assert.assertEquals(0, cache.size());
-        Assert.assertEquals("k1value", cache.computeIfAbsent("k1", key -> key + "value"));
+        assertEquals(0, cache.size());
+        assertEquals("k1value", cache.computeIfAbsent("k1", key -> key + "value"));
 
 
-        Assert.assertEquals(1, cache.size());
-        Assert.assertTrue(cache.contains("k1"));
+        assertEquals(1, cache.size());
+        assertTrue(cache.contains("k1"));
 
-        Assert.assertEquals("k2value", cache.computeIfAbsent("k2", key -> key + "value"));
-        Assert.assertEquals(2, cache.size());
-        Assert.assertTrue(cache.contains("k1"));
-        Assert.assertTrue(cache.contains("k2"));
+        assertEquals("k2value", cache.computeIfAbsent("k2", key -> key + "value"));
+        assertEquals(2, cache.size());
+        assertTrue(cache.contains("k1"));
+        assertTrue(cache.contains("k2"));
 
-        Assert.assertEquals("k1value", cache.get("k1"));
-        Assert.assertEquals("k2value", cache.get("k2"));
+        assertEquals("k1value", cache.get("k1"));
+        assertEquals("k2value", cache.get("k2"));
 
 
-        Assert.assertEquals("k3value", cache.computeIfAbsent("k3", key -> key + "value"));
+        assertEquals("k3value", cache.computeIfAbsent("k3", key -> key + "value"));
 
-        Assert.assertEquals(2, cache.size());
-        Assert.assertEquals(2, cache.keys().size());
+        assertEquals(2, cache.size());
+        assertEquals(2, cache.keys().size());
 
-        Assert.assertFalse(cache.contains("k1"));
-        Assert.assertTrue(cache.contains("k2"));
-        Assert.assertTrue(cache.contains("k3"));
+        assertFalse(cache.contains("k1"));
+        assertTrue(cache.contains("k2"));
+        assertTrue(cache.contains("k3"));
 
 
         cache.clear();
-        Assert.assertEquals(0, cache.size());
+        assertEquals(0, cache.size());
 
     }
 
@@ -83,6 +82,6 @@ public class ConcurrentLruCacheTest extends TestCase {
                 .collect(Collectors.toSet());
 
         executorService.shutdown();
-        Assert.assertEquals(1, set.size());
+        assertEquals(1, set.size());
     }
 }

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
@@ -33,7 +33,7 @@ public class SQLServerWallTest_10 extends TestCase {
 
         String sql = "select top 50 * FROM [V_Goods_WithAvailableStockQuantity] where Status='����' and (Code like '%mu%' ESCAPE '\' or Model like '%mu%' ESCAPE '\' or Spec like '%mu%' ESCAPE '\' or BarCode like '%mu%' ESCAPE '\' or ProductName like '%mu%' ESCAPE '\' or dbo.F_GetPY(ProductName) like '%mu%' ESCAPE '\') ";
 
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
     }
 

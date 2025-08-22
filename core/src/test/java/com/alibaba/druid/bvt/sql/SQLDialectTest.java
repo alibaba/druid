@@ -4,7 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLDialect;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.*;
 
 public class SQLDialectTest {
     @Test

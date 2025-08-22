@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockCallableStatement;
@@ -75,11 +75,11 @@ public class CallableStatmentTest extends PoolTestCase {
             rs.close();
             stmt.close();
 
-            Assert.assertFalse(rawStmt.isClosed());
-            Assert.assertTrue(rawRs.isClosed());
+            assertFalse(rawStmt.isClosed());
+            assertTrue(rawRs.isClosed());
 
             rawRs = rs.unwrap(MockResultSet.class);
-            Assert.assertNotNull(rawRs);
+            assertNotNull(rawRs);
 
             conn.close();
         }
@@ -90,8 +90,8 @@ public class CallableStatmentTest extends PoolTestCase {
             CallableStatement stmt = conn.prepareCall("select 1");
             stmt.execute();
 
-            Assert.assertSame(rawStmt, stmt.unwrap(MockCallableStatement.class));
-            Assert.assertFalse(rawStmt.isClosed());
+            assertSame(rawStmt, stmt.unwrap(MockCallableStatement.class));
+            assertFalse(rawStmt.isClosed());
 
             stmt.getObject(0);
 

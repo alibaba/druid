@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
@@ -35,11 +35,11 @@ public class SQLServerWallTest_3 extends TestCase {
 
         provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "select * from t where LEN(HOST_NAME()) > 0"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
-        Assert.assertTrue(provider.getTableStats().containsKey("t"));
+        assertEquals(1, provider.getTableStats().size());
+        assertTrue(provider.getTableStats().containsKey("t"));
     }
 
 }

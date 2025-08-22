@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -71,7 +71,7 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -82,10 +82,10 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(2, sqlStat.getClobOpenCount());
+        assertEquals(2, sqlStat.getClobOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
     }
 
     public void test_stat_1() throws Exception {
@@ -96,7 +96,7 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -108,10 +108,10 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(3, sqlStat.getClobOpenCount());
+        assertEquals(3, sqlStat.getClobOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
     }
 
     public void test_stat_2() throws Exception {
@@ -122,7 +122,7 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -135,10 +135,10 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(4, sqlStat.getClobOpenCount());
+        assertEquals(4, sqlStat.getClobOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
     }
 
     public void test_stat_4() throws Exception {
@@ -149,7 +149,7 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -163,9 +163,9 @@ public class StatFilterOpenClobCountTest2 extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(5, sqlStat.getClobOpenCount());
+        assertEquals(5, sqlStat.getClobOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
     }
 }

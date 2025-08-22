@@ -6,7 +6,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.*;
 
 public class Issue4992 {
     @Test

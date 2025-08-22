@@ -4,7 +4,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.assertEquals;
 
 public class SQLExprStatementTest {
 

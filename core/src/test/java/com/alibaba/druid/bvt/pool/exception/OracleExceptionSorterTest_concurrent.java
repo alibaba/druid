@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -21,7 +21,7 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
 
@@ -38,7 +38,7 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_connect() throws Exception {
@@ -52,7 +52,7 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
                     latch_0.countDown();
 
                     MockConnection mockConn = conn.unwrap(MockConnection.class);
-                    Assert.assertNotNull(mockConn);
+                    assertNotNull(mockConn);
 
                     SQLException exception = new SQLException("xx", "xxx", 28);
                     mockConn.setError(exception);
@@ -96,7 +96,7 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
 
         workCompleteLatch.await();
 
-        Assert.assertEquals(2001, dataSource.getConnectCount());
+        assertEquals(2001, dataSource.getConnectCount());
     }
 
 }

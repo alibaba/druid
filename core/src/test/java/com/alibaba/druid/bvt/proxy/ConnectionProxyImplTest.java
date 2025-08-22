@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.proxy;
 import java.sql.SQLClientInfoException;
 import java.util.Properties;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import junit.framework.TestCase;
 
@@ -33,7 +33,7 @@ import com.alibaba.druid.stat.JdbcStatManager;
 public class ConnectionProxyImplTest extends TestCase {
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_connection() throws Exception {

@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -46,6 +46,6 @@ public class DruidDataSourceTest_createError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

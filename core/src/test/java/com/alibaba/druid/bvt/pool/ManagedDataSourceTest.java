@@ -21,7 +21,7 @@ import java.sql.SQLException;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
@@ -38,7 +38,7 @@ public class ManagedDataSourceTest extends TestCase {
 
     public void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_managed() throws Exception {
@@ -56,7 +56,7 @@ public class ManagedDataSourceTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         dataSource.setEnable(true);

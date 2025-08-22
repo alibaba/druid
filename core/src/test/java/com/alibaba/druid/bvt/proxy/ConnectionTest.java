@@ -28,7 +28,7 @@ import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -66,7 +66,7 @@ public class ConnectionTest extends TestCase {
     protected void tearDown() throws Exception {
         dropTable();
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     @SuppressWarnings("deprecation")
@@ -125,7 +125,7 @@ public class ConnectionTest extends TestCase {
             pstmt.setBlob(2, blob);
 
             int updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             stmt = conn.createStatement();
 

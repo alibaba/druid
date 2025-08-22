@@ -4,7 +4,7 @@ import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.xa.DruidXADataSource;
 import com.alibaba.druid.util.JdbcUtils;
 import com.oceanbase.jdbc.OceanBaseXid;
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Ignore;
 
 import javax.sql.XAConnection;
@@ -133,23 +133,23 @@ public class OceanBaseOracleXATest extends PoolTestCase {
         // This flag will cause an exception
         try {
             xaResource.start(xid, 123);
-            Assert.fail();
+            fail();
         } catch (XAException e) {
-            Assert.assertEquals(XAException.XAER_INVAL, e.errorCode);
+            assertEquals(XAException.XAER_INVAL, e.errorCode);
         }
 
         try {
             xaResource.prepare(xid);
-            Assert.fail();
+            fail();
         } catch (XAException e) {
-            Assert.assertEquals(XAException.XAER_NOTA, e.errorCode);
+            assertEquals(XAException.XAER_NOTA, e.errorCode);
         }
 
         try {
             xaResource.commit(xid, true);
-            Assert.fail();
+            fail();
         } catch (XAException e) {
-            Assert.assertEquals(XAException.XAER_NOTA, e.errorCode);
+            assertEquals(XAException.XAER_NOTA, e.errorCode);
         }
         xaResource.rollback(xid);
     }
@@ -162,15 +162,15 @@ public class OceanBaseOracleXATest extends PoolTestCase {
         Xid xid = new OceanBaseXid(gtridStr.getBytes(), bqualStr.getBytes(), 123);
         XAResource xaResource = xaConnection.getXAResource();
         try {
-            Assert.assertTrue(connection.getAutoCommit());
+            assertTrue(connection.getAutoCommit());
             // This flag will cause an exception
             try {
                 xaResource.start(xid, 123);
-                Assert.fail();
+                fail();
             } catch (XAException e) {
-                Assert.assertEquals(XAException.XAER_INVAL, e.errorCode);
+                assertEquals(XAException.XAER_INVAL, e.errorCode);
             }
-            Assert.assertTrue(connection.getAutoCommit());
+            assertTrue(connection.getAutoCommit());
         } catch (Exception e) {
             xaResource.rollback(xid);
             throw e;
@@ -184,9 +184,9 @@ public class OceanBaseOracleXATest extends PoolTestCase {
 
         Xid xid = new OceanBaseXid(gtridStr.getBytes(), bqualStr.getBytes(), 123);
         try {
-            Assert.assertTrue(connection.getAutoCommit());
+            assertTrue(connection.getAutoCommit());
             xaResource.start(xid, XAResource.TMNOFLAGS);
-            Assert.assertFalse(connection.getAutoCommit());
+            assertFalse(connection.getAutoCommit());
 
             // ps test
             PreparedStatement pstmt = null;
@@ -205,14 +205,14 @@ public class OceanBaseOracleXATest extends PoolTestCase {
 
             try {
                 xaResource.end(xid, 123);
-                Assert.fail();
+                fail();
             } catch (XAException e) {
-                Assert.assertEquals(XAException.XAER_INVAL, e.errorCode);
+                assertEquals(XAException.XAER_INVAL, e.errorCode);
             }
-            Assert.assertFalse(connection.getAutoCommit());
+            assertFalse(connection.getAutoCommit());
 
             xaResource.end(xid, XAResource.TMSUCCESS);
-            Assert.assertTrue(connection.getAutoCommit());
+            assertTrue(connection.getAutoCommit());
 
             xaResource.prepare(xid);
             xaResource.commit(xid, false);

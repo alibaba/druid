@@ -29,7 +29,7 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.proxy.DruidDriver;
@@ -74,7 +74,7 @@ public class BasicTypeTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     @SuppressWarnings("deprecation")
@@ -249,7 +249,7 @@ public class BasicTypeTest extends TestCase {
             rs.cancelRowUpdates();
             rs.deleteRow();
 
-            Assert.assertEquals(12, rs.findColumn("F12"));
+            assertEquals(12, rs.findColumn("F12"));
             JdbcUtils.close(rs);
 
             pstmt = conn.prepareStatement("SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16 FROM T_BASIC_TYPE");

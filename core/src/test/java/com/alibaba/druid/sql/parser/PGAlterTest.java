@@ -7,8 +7,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
+import static org.junit.*;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ public class PGAlterTest extends TestCase {
         try {
             stmtStr = stmt.toString();
         } catch (ClassCastException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         System.out.println(stmtStr);

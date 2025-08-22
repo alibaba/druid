@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -33,10 +33,10 @@ public class MySqlWallTest93 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "desc tablename"));
 
-        Assert.assertEquals(0, provider.getTableStats().size());
+        assertEquals(0, provider.getTableStats().size());
     }
 
 }

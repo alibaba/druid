@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import java.util.Properties;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallConfig;
 
@@ -15,7 +15,7 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
 
-        Assert.assertTrue(config.isSelectAllow());
+        assertTrue(config.isSelectAllow());
     }
 
     public void test_selectAllow_false() throws Exception {
@@ -24,7 +24,7 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
 
-        Assert.assertFalse(config.isSelectAllow());
+        assertFalse(config.isSelectAllow());
     }
 
     public void test_deleteAllow() throws Exception {
@@ -33,7 +33,7 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
 
-        Assert.assertTrue(config.isDeleteAllow());
+        assertTrue(config.isDeleteAllow());
     }
 
     public void test_deleteAllow_false() throws Exception {
@@ -42,7 +42,7 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
 
-        Assert.assertFalse(config.isDeleteAllow());
+        assertFalse(config.isDeleteAllow());
     }
 
     public void test_updateAllow() throws Exception {
@@ -51,7 +51,7 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
 
-        Assert.assertTrue(config.isUpdateAllow());
+        assertTrue(config.isUpdateAllow());
     }
 
     public void test_updateAllow_false() throws Exception {
@@ -60,7 +60,7 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
 
-        Assert.assertFalse(config.isUpdateAllow());
+        assertFalse(config.isUpdateAllow());
     }
 
 
@@ -70,7 +70,7 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
 
-        Assert.assertTrue(config.isInsertAllow());
+        assertTrue(config.isInsertAllow());
     }
 
     public void test_insertAllow_false() throws Exception {
@@ -79,6 +79,6 @@ public class WallConfigTest extends TestCase {
         WallConfig config = new WallConfig();
         config.configFromProperties(properties);
 
-        Assert.assertFalse(config.isInsertAllow());
+        assertFalse(config.isInsertAllow());
     }
 }

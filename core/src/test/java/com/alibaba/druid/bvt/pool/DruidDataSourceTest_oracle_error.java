@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -39,6 +39,6 @@ public class DruidDataSourceTest_oracle_error extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

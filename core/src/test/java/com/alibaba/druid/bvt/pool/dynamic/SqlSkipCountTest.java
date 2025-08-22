@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceStatValue;
@@ -33,7 +33,7 @@ public class SqlSkipCountTest extends PoolTestCase {
         dataSource.setFilters("stat");
         dataSource.init();
 
-        Assert.assertEquals(1, dataSourceLog.getInfoCount());
+        assertEquals(1, dataSourceLog.getInfoCount());
     }
 
     protected void tearDown() throws Exception {
@@ -52,8 +52,8 @@ public class SqlSkipCountTest extends PoolTestCase {
         }
         {
             DruidDataSourceStatValue statValue = dataSource.getStatValueAndReset();
-            Assert.assertEquals(1000, statValue.getSqlList().size());
-            Assert.assertEquals(1000, statValue.getSqlSkipCount());
+            assertEquals(1000, statValue.getSqlList().size());
+            assertEquals(1000, statValue.getSqlSkipCount());
         }
 
         dataSource.setConnectionProperties("druid.stat.sql.MaxSize=2000");
@@ -66,13 +66,13 @@ public class SqlSkipCountTest extends PoolTestCase {
         }
         {
             DruidDataSourceStatValue statValue = dataSource.getStatValueAndReset();
-            Assert.assertEquals(2000, statValue.getSqlList().size());
-            Assert.assertEquals(0, statValue.getSqlSkipCount());
+            assertEquals(2000, statValue.getSqlList().size());
+            assertEquals(0, statValue.getSqlSkipCount());
         }
         {
             DruidDataSourceStatValue statValue = dataSource.getStatValueAndReset();
-            Assert.assertEquals(0, statValue.getSqlList().size());
-            Assert.assertEquals(0, statValue.getSqlSkipCount());
+            assertEquals(0, statValue.getSqlList().size());
+            assertEquals(0, statValue.getSqlSkipCount());
         }
 
         dataSource.setConnectionProperties("druid.stat.sql.MaxSize=2000");
@@ -85,8 +85,8 @@ public class SqlSkipCountTest extends PoolTestCase {
         }
         {
             DruidDataSourceStatValue statValue = dataSource.getStatValueAndReset();
-            Assert.assertEquals(2000, statValue.getSqlList().size());
-            Assert.assertEquals(0, statValue.getSqlSkipCount());
+            assertEquals(2000, statValue.getSqlList().size());
+            assertEquals(0, statValue.getSqlSkipCount());
         }
 
         dataSource.setConnectionProperties("druid.stat.sql.MaxSize=100");
@@ -99,13 +99,13 @@ public class SqlSkipCountTest extends PoolTestCase {
         }
         {
             DruidDataSourceStatValue statValue = dataSource.getStatValueAndReset();
-            Assert.assertEquals(100, statValue.getSqlList().size());
-            Assert.assertEquals(1900, statValue.getSqlSkipCount());
+            assertEquals(100, statValue.getSqlList().size());
+            assertEquals(1900, statValue.getSqlSkipCount());
         }
         {
             DruidDataSourceStatValue statValue = dataSource.getStatValueAndReset();
-            Assert.assertEquals(0, statValue.getSqlList().size());
-            Assert.assertEquals(0, statValue.getSqlSkipCount());
+            assertEquals(0, statValue.getSqlList().size());
+            assertEquals(0, statValue.getSqlSkipCount());
         }
     }
 }

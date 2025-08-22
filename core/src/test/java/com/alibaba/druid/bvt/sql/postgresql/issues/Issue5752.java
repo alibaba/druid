@@ -9,7 +9,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.assertEquals;
 
 /**
  * 来自postgresql的alter table语法测试，大部分场景已经能识别并支持解析

@@ -10,8 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.Log4jImpl;
@@ -95,8 +94,8 @@ public class AsyncCloseTest1 extends TestCase {
 
     protected void loop() throws InterruptedException {
         dataSource.shrink();
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         final int COUNT = 1024 * 128;
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
@@ -122,8 +121,8 @@ public class AsyncCloseTest1 extends TestCase {
         }
 
         closeLatch.await();
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(16, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(16, dataSource.getPoolingCount());
 
 
     }

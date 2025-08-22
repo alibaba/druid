@@ -5,7 +5,7 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import org.junit.Assert;
+import static org.junit.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;

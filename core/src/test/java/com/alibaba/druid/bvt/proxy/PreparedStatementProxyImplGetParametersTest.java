@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Map;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import junit.framework.TestCase;
 
@@ -29,19 +29,19 @@ public class PreparedStatementProxyImplGetParametersTest extends TestCase {
 
         {
             Map<Integer, JdbcParameter> paramMap = stmt.getParameters();
-            Assert.assertNotNull(paramMap);
-            Assert.assertEquals(paramMap.size(), 0);
+            assertNotNull(paramMap);
+            assertEquals(paramMap.size(), 0);
         }
         stmt.setInt(1, 1);
         {
             Map<Integer, JdbcParameter> paramMap1 = stmt.getParameters();
-            Assert.assertNotNull(paramMap1);
+            assertNotNull(paramMap1);
 
             Map<Integer, JdbcParameter> paramMap2 = stmt.getParameters();
-            Assert.assertNotNull(paramMap2);
+            assertNotNull(paramMap2);
 
-            Assert.assertSame(paramMap1, paramMap2);
-            Assert.assertEquals(paramMap1.size(), 1);
+            assertSame(paramMap1, paramMap2);
+            assertEquals(paramMap1.size(), 1);
         }
         stmt.close();
     }

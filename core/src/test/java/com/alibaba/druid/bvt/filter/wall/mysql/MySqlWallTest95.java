@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -34,7 +34,7 @@ public class MySqlWallTest95 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setCommentAllow(false);
 
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "select * from test /*!40101fff*/"));
     }
 

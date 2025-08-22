@@ -3,8 +3,7 @@ package com.alibaba.druid.pvt.pool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import org.junit.Assert;
-
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockPreparedStatement;
@@ -38,7 +37,7 @@ public class PSCacheTest5 extends TestCase {
             Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("select 1");
 
-            Assert.assertSame(mockStmt, ps.unwrap(MockPreparedStatement.class));
+            assertSame(mockStmt, ps.unwrap(MockPreparedStatement.class));
 
             ps.execute();
             ps.close();

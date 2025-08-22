@@ -2,7 +2,7 @@ package com.alibaba.druid.test;
 
 import javax.sql.DataSource;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import org.nutz.dao.Chain;
@@ -51,7 +51,7 @@ public class NutzTransactionTest extends TestCase {
             });
         } catch (Exception e) {
         }
-        Assert.assertEquals(0, dao.count("[test]"));
+        assertEquals(0, dao.count("[test]"));
     }
 
     void doTran2(final Dao dao) {
@@ -66,7 +66,7 @@ public class NutzTransactionTest extends TestCase {
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        Assert.assertEquals(0, dao.count("[test]"));
+        assertEquals(0, dao.count("[test]"));
     }
 
 }

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.TestCase;
 import org.junit.After;
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Before;
 import com.alibaba.druid.pool.DataSourceClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -48,7 +48,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
@@ -65,7 +65,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
@@ -82,7 +82,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 

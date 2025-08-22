@@ -15,8 +15,7 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import org.junit.Assert;
-
+import static org.junit.*;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
@@ -50,7 +49,7 @@ public class ExportAndParameterizedVisitor4db2TestCase extends TestCase {
                 System.out.println("after:" + out);
                 System.out.println("size:" + vistor2.getParameters());
                 final int expectedSize = arr.length>1 ?  (Integer) arr[1] : 0;
-                Assert.assertEquals(expectedSize, vistor2.getParameters().size());
+                assertEquals(expectedSize, vistor2.getParameters().size());
             }
         }
     }

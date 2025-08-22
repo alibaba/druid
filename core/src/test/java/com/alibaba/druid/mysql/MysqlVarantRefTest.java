@@ -9,7 +9,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStat
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -28,8 +28,8 @@ public class MysqlVarantRefTest {
 
         SQLVariantRefExpr resultExpr = (SQLVariantRefExpr) result.getItems().get(0).getTarget();
         SQLVariantRefExpr resultExpr2 = (SQLVariantRefExpr) result.getItems().get(1).getTarget();
-        Assert.assertTrue(resultExpr.isSession());
-        Assert.assertTrue(resultExpr2.isSession());
+        assertTrue(resultExpr.isSession());
+        assertTrue(resultExpr2.isSession());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class MysqlVarantRefTest {
         SQLSetStatement result = (SQLSetStatement) stmtList.get(0);
 
         String text = SQLUtils.toSQLString(stmtList, DbType.mysql);
-        Assert.assertEquals("SET @@session.tx_variables = 1, @@session.asdfsa = 2", text);
+        assertEquals("SET @@session.tx_variables = 1, @@session.asdfsa = 2", text);
 
     }
 
@@ -54,7 +54,7 @@ public class MysqlVarantRefTest {
 
         MySqlSetTransactionStatement x = (MySqlSetTransactionStatement) stmtList.get(0);
 
-        Assert.assertTrue(x.getSession());
+        assertTrue(x.getSession());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class MysqlVarantRefTest {
 
         MySqlSetTransactionStatement x = (MySqlSetTransactionStatement) stmtList.get(0);
 
-        Assert.assertTrue(x.getSession() == null);
+        assertTrue(x.getSession() == null);
     }
 
     @Test
@@ -78,8 +78,8 @@ public class MysqlVarantRefTest {
 
         SQLVariantRefExpr resultExpr = (SQLVariantRefExpr) result.getItems().get(0).getTarget();
         SQLVariantRefExpr resultExpr2 = (SQLVariantRefExpr) result.getItems().get(1).getTarget();
-        Assert.assertTrue(resultExpr.isSession());
-        Assert.assertTrue(!resultExpr2.isSession());
+        assertTrue(resultExpr.isSession());
+        assertTrue(!resultExpr2.isSession());
     }
 
 
@@ -93,8 +93,8 @@ public class MysqlVarantRefTest {
 
         SQLVariantRefExpr resultExpr = (SQLVariantRefExpr) result.getItems().get(0).getTarget();
         SQLVariantRefExpr resultExpr2 = (SQLVariantRefExpr) result.getItems().get(1).getTarget();
-        Assert.assertTrue(!resultExpr.isSession());
-        Assert.assertTrue(!resultExpr2.isSession());
+        assertTrue(!resultExpr.isSession());
+        assertTrue(!resultExpr2.isSession());
     }
 
 
@@ -108,8 +108,8 @@ public class MysqlVarantRefTest {
 
         SQLVariantRefExpr resultExpr = (SQLVariantRefExpr) result.getItems().get(0).getTarget();
         SQLVariantRefExpr resultExpr2 = (SQLVariantRefExpr) result.getItems().get(1).getTarget();
-        Assert.assertTrue(!resultExpr.isSession());
-        Assert.assertTrue(resultExpr2.isSession());
+        assertTrue(!resultExpr.isSession());
+        assertTrue(resultExpr2.isSession());
     }
 
 
@@ -124,9 +124,9 @@ public class MysqlVarantRefTest {
         SQLVariantRefExpr resultExpr = (SQLVariantRefExpr) result.getItems().get(0).getTarget();
         SQLVariantRefExpr resultExpr2 = (SQLVariantRefExpr) result.getItems().get(1).getTarget();
         SQLVariantRefExpr resultExpr3 = (SQLVariantRefExpr) result.getItems().get(2).getTarget();
-        Assert.assertTrue(!resultExpr.isSession());
-        Assert.assertTrue(resultExpr2.isSession());
-        Assert.assertTrue(resultExpr3.isSession());
+        assertTrue(!resultExpr.isSession());
+        assertTrue(resultExpr2.isSession());
+        assertTrue(resultExpr3.isSession());
     }
 
 
@@ -143,11 +143,11 @@ public class MysqlVarantRefTest {
         SQLVariantRefExpr resultExpr3 = (SQLVariantRefExpr) result.getItems().get(2).getTarget();
         SQLVariantRefExpr resultExpr4 = (SQLVariantRefExpr) result.getItems().get(3).getTarget();
         SQLVariantRefExpr resultExpr5 = (SQLVariantRefExpr) result.getItems().get(4).getTarget();
-        Assert.assertTrue(!resultExpr.isSession());
-        Assert.assertTrue(resultExpr2.isSession());
-        Assert.assertTrue(resultExpr3.isSession());
-        Assert.assertTrue(!resultExpr4.isSession());
-        Assert.assertTrue(resultExpr5.isSession());
+        assertTrue(!resultExpr.isSession());
+        assertTrue(resultExpr2.isSession());
+        assertTrue(resultExpr3.isSession());
+        assertTrue(!resultExpr4.isSession());
+        assertTrue(resultExpr5.isSession());
     }
 
 }

@@ -21,7 +21,7 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.management.ObjectName;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -50,20 +50,20 @@ public class TestIdel3 extends TestCase {
 
         // 第一次创建连接
         {
-            Assert.assertEquals(0, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
 
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
-            Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
+            assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            assertEquals(1, dataSource.getActiveCount());
 
             conn.close();
-            Assert.assertEquals(0, dataSource.getDestroyCount());
-            Assert.assertEquals(2, driver.getConnections().size());
-            Assert.assertEquals(2, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getDestroyCount());
+            assertEquals(2, driver.getConnections().size());
+            assertEquals(2, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
         }
 
         {
@@ -72,21 +72,21 @@ public class TestIdel3 extends TestCase {
             Connection[] connections = new Connection[count];
             for (int i = 0; i < count; ++i) {
                 connections[i] = dataSource.getConnection();
-                Assert.assertEquals(i + 1, dataSource.getActiveCount());
+                assertEquals(i + 1, dataSource.getActiveCount());
             }
 
-            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
-            Assert.assertEquals(count, driver.getConnections().size());
+            assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
+            assertEquals(count, driver.getConnections().size());
 
             // 全部关闭
             for (int i = 0; i < count; ++i) {
                 connections[i].close();
-                Assert.assertEquals(count - i - 1, dataSource.getActiveCount());
+                assertEquals(count - i - 1, dataSource.getActiveCount());
             }
 
-            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(14, driver.getConnections().size());
+            assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
+            assertEquals(14, driver.getConnections().size());
         }
 
         concurrent(dataSource, 100, 1000);
@@ -96,20 +96,20 @@ public class TestIdel3 extends TestCase {
         Thread.sleep(1000 * 10);
         concurrent(dataSource, 1000, 1000 * 1000);
 
-        Assert.assertEquals(driver.getConnections().size(), dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(driver.getConnections().size(), dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
 
         // 连续打开关闭单个连接
         for (int i = 0; i < 1000; ++i) {
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(1, dataSource.getActiveCount());
 
             Thread.sleep(10);
             conn.close();
         }
-        // Assert.assertEquals(2, dataSource.getPoolingCount());
+        // assertEquals(2, dataSource.getPoolingCount());
 
         Thread.sleep(1000 * 100);
         dataSource.close();

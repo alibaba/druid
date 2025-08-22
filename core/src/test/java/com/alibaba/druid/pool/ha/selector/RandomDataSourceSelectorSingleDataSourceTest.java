@@ -1,8 +1,8 @@
 package com.alibaba.druid.pool.ha.selector;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.assertFalse;
+import static org.junit.assertNotNull;
+import static org.junit.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;

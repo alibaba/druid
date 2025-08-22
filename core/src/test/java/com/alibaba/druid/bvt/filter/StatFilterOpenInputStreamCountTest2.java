@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.junit.Assert;
+import static org.junit.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -54,7 +54,7 @@ public class StatFilterOpenInputStreamCountTest2 extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
+        assertEquals(0, sqlStat.getInputStreamOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -65,10 +65,10 @@ public class StatFilterOpenInputStreamCountTest2 extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(2, sqlStat.getInputStreamOpenCount());
+        assertEquals(2, sqlStat.getInputStreamOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
+        assertEquals(0, sqlStat.getInputStreamOpenCount());
     }
 
     public void test_stat_1() throws Exception {
@@ -79,7 +79,7 @@ public class StatFilterOpenInputStreamCountTest2 extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
+        assertEquals(0, sqlStat.getInputStreamOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -91,9 +91,9 @@ public class StatFilterOpenInputStreamCountTest2 extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(3, sqlStat.getInputStreamOpenCount());
+        assertEquals(3, sqlStat.getInputStreamOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
+        assertEquals(0, sqlStat.getInputStreamOpenCount());
     }
 }

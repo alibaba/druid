@@ -6,7 +6,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.*;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -34,7 +34,7 @@ public class DruidDataSourceTest_initSql extends TestCase {
 
         MockConnection mockConn = conn.unwrap(MockConnection.class);
 
-        Assert.assertEquals("select 123", mockConn.getLastSql());
+        assertEquals("select 123", mockConn.getLastSql());
 
         conn.close();
     }
