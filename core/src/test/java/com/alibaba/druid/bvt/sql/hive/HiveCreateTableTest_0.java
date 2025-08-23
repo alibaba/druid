@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -70,7 +70,7 @@ public class HiveCreateTableTest_0 extends TestCase {
         SQLStatement statement = statementList.get(0);
         System.out.println(statement);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
@@ -95,7 +95,7 @@ public class HiveCreateTableTest_0 extends TestCase {
         SQLStatement statement = statementList.get(0);
         System.out.println(statement);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);

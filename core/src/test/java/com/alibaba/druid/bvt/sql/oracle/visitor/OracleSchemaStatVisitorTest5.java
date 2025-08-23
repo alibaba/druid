@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
@@ -56,7 +56,7 @@ public class OracleSchemaStatVisitorTest5 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -70,13 +70,13 @@ public class OracleSchemaStatVisitorTest5 extends TestCase {
 
         for (Condition condition : visitor.getConditions()) {
             String table = condition.getColumn().getTable();
-            Assert.assertTrue("table not exists : " + table, visitor.containsTable(table));
+            assertTrue("table not exists : " + table, visitor.containsTable(table));
         }
 
-        Assert.assertEquals(5, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("T_SB_ZNYC_ZFBZ"));
+        assertEquals(5, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("T_SB_ZNYC_ZFBZ"));
 
-        Assert.assertEquals(13, visitor.getColumns().size());
+        assertEquals(13, visitor.getColumns().size());
 
     }
 

@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlDeleteTest_7 {
@@ -22,6 +22,6 @@ public class MySqlDeleteTest_7 {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLDeleteStatement stmt = (SQLDeleteStatement) statementList.get(0);
-        Assert.assertEquals("t1.*", stmt.getTableName().toString());
+        assertEquals("t1.*", stmt.getTableName().toString());
     }
 }

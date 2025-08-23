@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.sql.Driver;
 
 import com.alibaba.druid.DbType;
-import org.junit.Assert;
 
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
@@ -12,21 +15,21 @@ import junit.framework.TestCase;
 
 public class JdbcUtils_driver extends TestCase {
     public void test_null() throws Exception {
-        Assert.assertNull(JdbcUtils.getDriverClassName(null));
+        assertNull(JdbcUtils.getDriverClassName(null));
     }
 
     public void test_driver() throws Exception {
         String url = "jdbc:odps:xxx";
         String className = JdbcUtils.getDriverClassName(url);
         Class<?> clazz = Class.forName(className);
-        Assert.assertNotNull(clazz);
+        assertNotNull(clazz);
         Driver driver = (Driver) clazz.newInstance();
-        Assert.assertNotNull(driver);
+        assertNotNull(driver);
 
-        Assert.assertEquals(3, driver.getMajorVersion());
-        Assert.assertEquals(4, driver.getMinorVersion());
+        assertEquals(3, driver.getMajorVersion());
+        assertEquals(4, driver.getMinorVersion());
 
-        Assert.assertEquals(JdbcConstants.ODPS, JdbcUtils.getDbTypeRaw(url, className));
+        assertEquals(JdbcConstants.ODPS, JdbcUtils.getDbTypeRaw(url, className));
     }
 
     public void test_oceanbase() {

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.alter;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -35,7 +35,7 @@ public class OracleAlterTableTest16 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -46,14 +46,14 @@ public class OracleAlterTableTest16 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("extensions")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("extensions")));
 
-        Assert.assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getColumns().size());
 
-//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_IDS_ZZJ_TBD0209", "discount_amount")));
-//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_affiliate_tran_product", "commission_amount")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+//         assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_IDS_ZZJ_TBD0209", "discount_amount")));
+//         assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_affiliate_tran_product", "commission_amount")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

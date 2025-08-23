@@ -1,6 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
+
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -34,23 +36,23 @@ public class DruidDataSourceTest_oracle2 extends TestCase {
     }
 
     public void test_oracle() throws Exception {
-        Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+        assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
         dataSource.init();
-        Assert.assertTrue(dataSource.isOracle());
-        Assert.assertEquals("true", dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+        assertTrue(dataSource.isOracle());
+        assertEquals("true", dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
 
         dataSource.setUseOracleImplicitCache(false);
-        Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+        assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
 
         dataSource.setUseOracleImplicitCache(true);
         dataSource.setUseOracleImplicitCache(true);
-        Assert.assertEquals("true", dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+        assertEquals("true", dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
 
         dataSource.setUseOracleImplicitCache(false);
-        Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+        assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
         dataSource.setDriver(null);
 
         dataSource.setUseOracleImplicitCache(true);
-        Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+        assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
     }
 }

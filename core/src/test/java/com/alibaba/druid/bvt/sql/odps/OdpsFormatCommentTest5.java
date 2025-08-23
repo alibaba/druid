@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 
@@ -11,7 +11,7 @@ public class OdpsFormatCommentTest5 extends TestCase {
         String sql = "select *" //
                 + "\nfrom t -- xxxx"//
                 + "\nwhere id > 0;";//
-        Assert.assertEquals("SELECT *" //
+        assertEquals("SELECT *" //
                 + "\nFROM t -- xxxx" //
                 + "\nWHERE id > 0;", SQLUtils.formatOdps(sql));
     }
@@ -20,7 +20,7 @@ public class OdpsFormatCommentTest5 extends TestCase {
         String sql = "select *" //
                 + "\nfrom xxxx a-- xxxx"//
                 + "\nwhere id > 0;";//
-        Assert.assertEquals("SELECT *" //
+        assertEquals("SELECT *" //
                 + "\nFROM xxxx a -- xxxx" //
                 + "\nWHERE id > 0;", SQLUtils.formatOdps(sql));
     }
@@ -31,7 +31,7 @@ public class OdpsFormatCommentTest5 extends TestCase {
                 + "\n-- comment_xxx" //
                 + "\nselect * from t" //
                 + "\n) a;";//
-        Assert.assertEquals("SELECT *" //
+        assertEquals("SELECT *" //
                 + "\nFROM (" //
                 + "\n\t-- comment_xxx" //
                 + "\n\tSELECT *" //

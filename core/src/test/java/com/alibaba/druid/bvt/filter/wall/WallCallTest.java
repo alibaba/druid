@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -28,14 +29,14 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class WallCallTest extends TestCase {
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql("{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}"));
+        assertTrue(WallUtils.isValidateMySql("{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}"));
     }
 
     public void testOracle() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle("{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}"));
+        assertTrue(WallUtils.isValidateOracle("{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}"));
     }
 
     public void testSqlServer() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateSqlServer("{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}"));
+        assertTrue(WallUtils.isValidateSqlServer("{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}"));
     }
 }

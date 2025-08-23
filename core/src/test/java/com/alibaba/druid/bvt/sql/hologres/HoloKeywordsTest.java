@@ -9,7 +9,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class HoloKeywordsTest extends TestCase {
     public void test_keywords() {
@@ -22,7 +22,7 @@ public class HoloKeywordsTest extends TestCase {
         assertEquals(Token.EOF, parser.getLexer().token());
         String result = SQLUtils.toSQLString(stmt, dbType, null, VisitorFeature.OutputNameQuote).trim();
         String expectedSql = "SELECT 1 AS \"default\"";
-        Assert.assertEquals(expectedSql, result);
+        assertEquals(expectedSql, result);
     }
 
     public void test_keywords2() {
@@ -35,6 +35,6 @@ public class HoloKeywordsTest extends TestCase {
         assertEquals(Token.EOF, parser.getLexer().token());
         String result = SQLUtils.toSQLString(stmt, dbType, null, VisitorFeature.OutputNameQuote).trim();
     String expectedSql = "SELECT a\n" + "FROM \"DEFAULT\".test";
-        Assert.assertEquals(expectedSql, result);
+        assertEquals(expectedSql, result);
     }
 }

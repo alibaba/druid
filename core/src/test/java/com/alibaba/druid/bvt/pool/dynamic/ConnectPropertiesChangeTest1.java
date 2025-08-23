@@ -15,13 +15,15 @@
  */
 package com.alibaba.druid.bvt.pool.dynamic;
 
+import static org.junit.Assert.*;
+
+
 import java.lang.reflect.Field;
 import java.sql.Connection;
 
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -47,7 +49,7 @@ public class ConnectPropertiesChangeTest1 extends PoolTestCase {
         dataSource.setConnectionProperties("druid.filters=stat;druid.stat.sql.MaxSize=234");
         dataSource.init();
 
-        Assert.assertEquals(1, dataSourceLog.getInfoCount());
+        assertEquals(1, dataSourceLog.getInfoCount());
     }
 
     protected void tearDown() throws Exception {
@@ -57,29 +59,29 @@ public class ConnectPropertiesChangeTest1 extends PoolTestCase {
     }
 
     public void test_connectPropertiesChange() throws Exception {
-        Assert.assertEquals(2, dataSource.getConnectProperties().size());
+        assertEquals(2, dataSource.getConnectProperties().size());
 
         Connection conn = dataSource.getConnection();
         conn.close();
 
         StatFilter filter = dataSource.unwrap(StatFilter.class);
-        Assert.assertNotNull(filter);
-        Assert.assertFalse(filter.isMergeSql());
-        Assert.assertEquals(234, dataSource.getDataSourceStat().getMaxSqlSize());
+        assertNotNull(filter);
+        assertFalse(filter.isMergeSql());
+        assertEquals(234, dataSource.getDataSourceStat().getMaxSqlSize());
 
         dataSource.setConnectionProperties("druid.stat.mergeSql=true;druid.stat.sql.MaxSize=456");
-        Assert.assertEquals(456, dataSource.getDataSourceStat().getMaxSqlSize());
+        assertEquals(456, dataSource.getDataSourceStat().getMaxSqlSize());
 
-        Assert.assertTrue(filter.isMergeSql());
+        assertTrue(filter.isMergeSql());
 
-        Assert.assertEquals(2, dataSource.getConnectProperties().size());
+        assertEquals(2, dataSource.getConnectProperties().size());
 
-        Assert.assertEquals("true", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
+        assertEquals("true", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
 
         dataSource.setConnectionProperties("druid.stat.mergeSql=false");
 
-        Assert.assertFalse(filter.isMergeSql());
+        assertFalse(filter.isMergeSql());
 
-        Assert.assertEquals("false", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
+        assertEquals("false", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
     }
 }

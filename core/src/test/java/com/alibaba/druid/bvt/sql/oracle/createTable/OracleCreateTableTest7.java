@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class OracleCreateTableTest7 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -47,16 +47,16 @@ public class OracleCreateTableTest7 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ALIBABA1949.SYS_JOURNAL_209051")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ALIBABA1949.SYS_JOURNAL_209051")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "C0"));
-        Assert.assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "opcode"));
-        Assert.assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "partno"));
-        Assert.assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "rid"));
-        // Assert.assertTrue(visitor.containsColumn("pivot_table", "order_mode")));
+        assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "C0"));
+        assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "opcode"));
+        assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "partno"));
+        assertTrue(visitor.containsColumn("ALIBABA1949.SYS_JOURNAL_209051", "rid"));
+        // assertTrue(visitor.containsColumn("pivot_table", "order_mode")));
     }
 }

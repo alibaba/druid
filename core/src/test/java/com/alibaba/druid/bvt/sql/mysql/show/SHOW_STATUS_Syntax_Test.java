@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW STATUS LIKE 'Key%';", text);
+        assertEquals("SHOW STATUS LIKE 'Key%';", text);
     }
 
     public void test_where() throws Exception {
@@ -44,7 +44,7 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW STATUS WHERE X LIKE 'Key%';", text);
+        assertEquals("SHOW STATUS WHERE X LIKE 'Key%';", text);
     }
 
     public void test_corba() throws Exception {
@@ -55,7 +55,7 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COBAR_STATUS;", text);
+        assertEquals("SHOW COBAR_STATUS;", text);
     }
 
     public void test_1() throws Exception {
@@ -66,7 +66,7 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW GLOBAL STATUS LIKE 'Key%';", text);
+        assertEquals("SHOW GLOBAL STATUS LIKE 'Key%';", text);
     }
 
     public void test_2() throws Exception {
@@ -77,7 +77,7 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW SESSION STATUS LIKE 'Key%';", text);
+        assertEquals("SHOW SESSION STATUS LIKE 'Key%';", text);
     }
 
     public void test_3() throws Exception {
@@ -88,7 +88,7 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW SESSION STATUS;", text);
+        assertEquals("SHOW SESSION STATUS;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

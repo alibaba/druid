@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.lang.reflect.Field;
 import java.sql.Connection;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -49,11 +51,11 @@ public class ConfigErrorTest extends PoolTestCase {
 
         LOG.resetStat();
 
-        Assert.assertEquals(0, LOG.getErrorCount());
+        assertEquals(0, LOG.getErrorCount());
 
         Connection conn = dataSource.getConnection();
         conn.close();
 
-        Assert.assertEquals(1, LOG.getErrorCount());
+        assertEquals(1, LOG.getErrorCount());
     }
 }

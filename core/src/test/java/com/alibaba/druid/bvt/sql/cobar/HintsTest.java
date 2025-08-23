@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.cobar;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -31,7 +31,7 @@ public class HintsTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE /*!32302 TEMPORARY */ TABLE t (\n\ta INT\n);", output);
+        assertEquals("CREATE /*!32302 TEMPORARY */ TABLE t (\n\ta INT\n);", output);
     }
 
     public void test_hints_1() throws Exception {
@@ -40,7 +40,7 @@ public class HintsTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT /*! STRAIGHT_JOIN */ col1\nFROM table1, table2", output);
+        assertEquals("SELECT /*! STRAIGHT_JOIN */ col1\nFROM table1, table2", output);
     }
 
     public void test_hints_none() throws Exception {
@@ -49,7 +49,7 @@ public class HintsTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals(
+        assertEquals(
             "SELECT /* STRAIGHT_JOIN */\n" + "\tcol1\n" + "FROM table1, table2", output);
     }
 }

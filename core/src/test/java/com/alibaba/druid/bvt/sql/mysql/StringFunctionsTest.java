@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;

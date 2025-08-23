@@ -1,9 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.SQLException;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -44,6 +46,6 @@ public class DruidConnectionHolderTest2 extends PoolTestCase {
         } catch (GetConnectionTimeoutException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

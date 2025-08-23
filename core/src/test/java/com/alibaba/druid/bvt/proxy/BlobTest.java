@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -26,7 +28,6 @@ import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -65,7 +66,7 @@ public class BlobTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_blob() throws Exception {
@@ -94,17 +95,17 @@ public class BlobTest extends TestCase {
             pstmt.setBlob(2, blob);
 
             int updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             pstmt.setInt(1, 2);
             pstmt.setBlob(2, new ByteArrayInputStream("XBCSDasdfasdfasfasfF".getBytes()));
             updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             pstmt.setInt(1, 2);
             pstmt.setBlob(2, new ByteArrayInputStream("XBCSDasdfasdfasfasfF".getBytes()), 20);
             updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
                     ResultSet.CLOSE_CURSORS_AT_COMMIT);

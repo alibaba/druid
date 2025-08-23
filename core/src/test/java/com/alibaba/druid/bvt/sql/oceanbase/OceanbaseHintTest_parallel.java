@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oceanbase;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -34,11 +34,11 @@ public class OceanbaseHintTest_parallel extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT /*+ parallel(5) */ count(*)"
+        assertEquals("SELECT /*+ parallel(5) */ count(*)"
                 + "\nFROM t1;", result);
         print(stmtList);
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -48,12 +48,12 @@ public class OceanbaseHintTest_parallel extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsTable("t1"));
-        Assert.assertTrue(visitor.containsColumn("t1", "*"));
+        assertTrue(visitor.containsTable("t1"));
+        assertTrue(visitor.containsColumn("t1", "*"));
 
     }
 }

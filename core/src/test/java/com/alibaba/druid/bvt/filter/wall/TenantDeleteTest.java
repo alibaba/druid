@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertEquals;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
@@ -42,10 +43,10 @@ public class TenantDeleteTest extends TestCase {
 
         WallProvider.setTenantValue("test");
         WallCheckResult checkResult = provider.check(sql);
-        Assert.assertEquals(0, checkResult.getViolations().size());
+        assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals("DELETE FROM orders" + //
+        assertEquals("DELETE FROM orders" + //
                 "\nWHERE FID = ?", resultSql);
     }
 }

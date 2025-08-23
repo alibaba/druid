@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -27,6 +28,6 @@ public class MySqlWallTest142 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         String sql = "SELECT * FROM `my_crons` WHERE 1 AND nextrun = '0' ";
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
     }
 }

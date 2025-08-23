@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -31,16 +31,16 @@ public class MySqlShowTest_table extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
     }
 }

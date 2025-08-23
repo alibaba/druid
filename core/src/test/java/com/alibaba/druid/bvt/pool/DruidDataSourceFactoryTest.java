@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.util.Hashtable;
 
 import javax.naming.Reference;
@@ -23,7 +26,6 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
@@ -51,9 +53,9 @@ public class DruidDataSourceFactoryTest extends TestCase {
 
         dataSource = (DruidDataSource) factory.getObjectInstance(ref, null, null, env);
 
-        Assert.assertTrue(dataSource.isRemoveAbandoned());
-        Assert.assertEquals(20, dataSource.getMaxActive());
-        Assert.assertEquals(30000, dataSource.getSocketTimeout());
-        Assert.assertEquals(15000, dataSource.getConnectTimeout());
+        assertTrue(dataSource.isRemoveAbandoned());
+        assertEquals(20, dataSource.getMaxActive());
+        assertEquals(30000, dataSource.getSocketTimeout());
+        assertEquals(15000, dataSource.getConnectTimeout());
     }
 }

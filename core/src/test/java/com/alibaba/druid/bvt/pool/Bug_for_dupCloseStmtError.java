@@ -15,13 +15,15 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.util.JdbcUtils;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockConnectionClosedException;
@@ -66,7 +68,7 @@ public class Bug_for_dupCloseStmtError extends PoolTestCase {
                 error = ex;
             }
 
-            Assert.assertNotNull(error);
+            assertNotNull(error);
 
             conn.close();
             stmt.close();
@@ -77,6 +79,6 @@ public class Bug_for_dupCloseStmtError extends PoolTestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(0, dataSource.getDupCloseCount());
+        assertEquals(0, dataSource.getDupCloseCount());
     }
 }

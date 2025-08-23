@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest56 extends MysqlTest {
@@ -38,20 +38,20 @@ public class MySqlCreateTableTest56 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(3, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(3, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE tableA (" //
+            assertEquals("CREATE TABLE tableA (" //
                     + "\n\tdatasn varchar(100) NOT NULL," //
                     + "\n\tPRIMARY KEY (datasn)" //
                     + "\n) ENGINE = MRG_MyISAM CHARSET = utf8 UNION = (tableB, tableC)", output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table tableA (" //
+            assertEquals("create table tableA (" //
                     + "\n\tdatasn varchar(100) not null," //
                     + "\n\tprimary key (datasn)" //
                     + "\n) engine = MRG_MyISAM charset = utf8 union = (tableB, tableC)", output);

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -34,21 +34,21 @@ public class OracleOutputVisitorTest_dblink extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("master@emp"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("master@emp"));
 
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.containsColumn("master@emp", "salary"));
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(true, visitor.containsColumn("master@emp", "salary"));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT salary\nFROM master@emp", buf.toString());
+        assertEquals("SELECT salary\nFROM master@emp", buf.toString());
 
     }
 }

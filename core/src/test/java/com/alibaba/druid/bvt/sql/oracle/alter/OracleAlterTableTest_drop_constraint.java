@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.alter;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -43,11 +43,11 @@ public class OracleAlterTableTest_drop_constraint extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE);
-        Assert.assertEquals("ALTER TABLE TUSER" + //
+        assertEquals("ALTER TABLE TUSER" + //
                 "\n\tDROP CONSTRAINT UK_084c17821a8f47e8b31fbb126b6", output);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
 
 }

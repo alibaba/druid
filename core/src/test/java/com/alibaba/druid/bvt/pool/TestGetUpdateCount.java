@@ -15,12 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockConnection;
@@ -62,12 +64,12 @@ public class TestGetUpdateCount extends TestCase {
 
         MyPreparedStatement myStmt = stmt.unwrap(MyPreparedStatement.class);
 
-        Assert.assertNull(myStmt.updateCount);
+        assertNull(myStmt.updateCount);
 
         stmt.setString(1, "xxx");
         ResultSet rs = stmt.executeQuery();
 
-        Assert.assertEquals(-1, myStmt.updateCount.intValue());
+        assertEquals(-1, myStmt.updateCount.intValue());
 
         rs.close();
         stmt.close();
@@ -81,14 +83,14 @@ public class TestGetUpdateCount extends TestCase {
 
         MyPreparedStatement myStmt = stmt.unwrap(MyPreparedStatement.class);
 
-        Assert.assertNull(myStmt.updateCount);
+        assertNull(myStmt.updateCount);
 
         stmt.setString(1, "xxx");
         stmt.execute();
 
-        Assert.assertNotNull(myStmt.updateCount);
+        assertNotNull(myStmt.updateCount);
 
-        Assert.assertEquals(1, stmt.getUpdateCount());
+        assertEquals(1, stmt.getUpdateCount());
 
         stmt.close();
         conn.close();
@@ -104,14 +106,14 @@ public class TestGetUpdateCount extends TestCase {
 
             myStmtA = stmt.unwrap(MyPreparedStatement.class);
 
-            Assert.assertNull(myStmtA.updateCount);
+            assertNull(myStmtA.updateCount);
 
             stmt.setString(1, "xxx");
             stmt.execute();
 
-            Assert.assertNotNull(myStmtA.updateCount);
+            assertNotNull(myStmtA.updateCount);
 
-            Assert.assertEquals(1, stmt.getUpdateCount());
+            assertEquals(1, stmt.getUpdateCount());
 
             stmt.close();
             conn.close();
@@ -122,15 +124,15 @@ public class TestGetUpdateCount extends TestCase {
             PreparedStatement stmt = conn.prepareStatement("update t set id = ?");
 
             myStmtB = stmt.unwrap(MyPreparedStatement.class);
-            Assert.assertSame(myStmtA, myStmtB);
-            Assert.assertNotNull(myStmtB.updateCount);
+            assertSame(myStmtA, myStmtB);
+            assertNotNull(myStmtB.updateCount);
 
             stmt.setString(1, "xxx");
             stmt.execute();
 
-            Assert.assertNotNull(myStmtB.updateCount);
+            assertNotNull(myStmtB.updateCount);
 
-            Assert.assertEquals(1, stmt.getUpdateCount());
+            assertEquals(1, stmt.getUpdateCount());
 
             stmt.close();
             conn.close();

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -41,7 +41,7 @@ public class OracleMergeTest6 extends OracleTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -51,19 +51,19 @@ public class OracleMergeTest6 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("console_stb_ipstatus")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("console_stb_ipstatus")));
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        assertEquals(7, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "stbid"));
-        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "ip"));
-        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "port"));
-        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "status"));
-        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "time"));
-        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "id"));
-        Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "firsttime"));
+        assertTrue(visitor.containsColumn("console_stb_ipstatus", "stbid"));
+        assertTrue(visitor.containsColumn("console_stb_ipstatus", "ip"));
+        assertTrue(visitor.containsColumn("console_stb_ipstatus", "port"));
+        assertTrue(visitor.containsColumn("console_stb_ipstatus", "status"));
+        assertTrue(visitor.containsColumn("console_stb_ipstatus", "time"));
+        assertTrue(visitor.containsColumn("console_stb_ipstatus", "id"));
+        assertTrue(visitor.containsColumn("console_stb_ipstatus", "firsttime"));
     }
 
 }

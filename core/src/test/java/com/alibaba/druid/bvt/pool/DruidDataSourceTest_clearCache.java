@@ -1,9 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -40,10 +42,10 @@ public class DruidDataSourceTest_clearCache extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(2, dataSource.getCachedPreparedStatementCount());
+        assertEquals(2, dataSource.getCachedPreparedStatementCount());
 
         dataSource.clearStatementCache();
 
-        Assert.assertEquals(0, dataSource.getCachedPreparedStatementCount());
+        assertEquals(0, dataSource.getCachedPreparedStatementCount());
     }
 }

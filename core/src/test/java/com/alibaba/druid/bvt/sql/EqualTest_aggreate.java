@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
@@ -24,13 +24,13 @@ public class EqualTest_aggreate extends TestCase {
             OracleExprParser parser = new OracleExprParser(sql_c);
             exprC = (SQLAggregateExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLAggregateExpr(null), new SQLAggregateExpr(null));
-        Assert.assertEquals(new SQLAggregateExpr(null).hashCode(), new SQLAggregateExpr(null).hashCode());
+        assertEquals(new SQLAggregateExpr(null), new SQLAggregateExpr(null));
+        assertEquals(new SQLAggregateExpr(null).hashCode(), new SQLAggregateExpr(null).hashCode());
     }
 }

@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -34,12 +36,12 @@ public class WallDeleteWhereTest2 extends TestCase {
         config.setDeleteWhereAlwayTrueCheck(true);
         config.setCommentAllow(true);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(sql1, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql1, config));
 
         config.setDeleteWhereAlwayTrueCheck(false);
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
-        Assert.assertTrue(WallUtils.isValidateMySql(sql1, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql1, config));
     }
 
     public void test_check_false() throws Exception {
@@ -48,7 +50,7 @@ public class WallDeleteWhereTest2 extends TestCase {
         config.setConditionAndAlwayTrueAllow(true);
         config.setCommentAllow(true);
 
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
-        Assert.assertTrue(WallUtils.isValidateMySql(sql1, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql1, config));
     }
 }

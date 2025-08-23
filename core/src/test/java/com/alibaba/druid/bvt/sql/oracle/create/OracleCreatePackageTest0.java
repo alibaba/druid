@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -106,9 +106,9 @@ public class OracleCreatePackageTest0 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE PACKAGE BODY emp_mgmt\n" +
+        assertEquals("CREATE OR REPLACE PACKAGE BODY emp_mgmt\n" +
                         "BEGIN\n" +
                         "\ttot_emps NUMBER;\n" +
                         "\ttot_depts NUMBER;\n" +
@@ -220,14 +220,14 @@ public class OracleCreatePackageTest0 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertEquals(5, visitor.getColumns().size());
+        assertEquals(5, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("employees", "employee_id"));
-        Assert.assertTrue(visitor.containsColumn("employees", "*"));
-        Assert.assertTrue(visitor.containsColumn("departments", "department_id"));
-        Assert.assertTrue(visitor.containsColumn("employees", "salary"));
-        Assert.assertTrue(visitor.containsColumn("employees", "commission_pct"));
+        assertTrue(visitor.containsColumn("employees", "employee_id"));
+        assertTrue(visitor.containsColumn("employees", "*"));
+        assertTrue(visitor.containsColumn("departments", "department_id"));
+        assertTrue(visitor.containsColumn("employees", "salary"));
+        assertTrue(visitor.containsColumn("employees", "commission_pct"));
     }
 }

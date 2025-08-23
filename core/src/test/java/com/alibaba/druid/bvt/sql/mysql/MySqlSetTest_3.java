@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class MySqlSetTest_3 extends TestCase {
         SQLStatement stmt = stmtList.get(0);
 //        print(stmtList);
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -44,13 +44,13 @@ public class MySqlSetTest_3 extends TestCase {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
         String text = SQLUtils.toMySqlString(stmt);
 
-        Assert.assertEquals("SET sql_mode = ?, NAMES ?, CHARACTER SET utf8, CHARACTER_SET_RESULTS = utf8, COLLATION_CONNECTION = ?", text);
+        assertEquals("SET sql_mode = ?, NAMES ?, CHARACTER SET utf8, CHARACTER_SET_RESULTS = utf8, COLLATION_CONNECTION = ?", text);
     }
 
     public void test_1() throws Exception {

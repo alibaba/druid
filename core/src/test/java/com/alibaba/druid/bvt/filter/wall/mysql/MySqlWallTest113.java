@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -29,7 +30,7 @@ public class MySqlWallTest113 extends TestCase {
 
         String sql = "select * from t where id = ? or md5('a') = '0cc175b9c0f1b6a831c399e269772661'";
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 
 }

@@ -23,7 +23,7 @@ import java.util.List;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -54,7 +54,7 @@ public class OdpsMultiInsertTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new OdpsSchemaStatVisitor();
         stmt.accept(visitor);
@@ -73,7 +73,7 @@ public class OdpsMultiInsertTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
@@ -81,7 +81,7 @@ public class OdpsMultiInsertTest extends TestCase {
 
 //        System.out.println(out.toString());
 
-        Assert.assertEquals(expect, out.toString());
+        assertEquals(expect, out.toString());
     }
 
 }

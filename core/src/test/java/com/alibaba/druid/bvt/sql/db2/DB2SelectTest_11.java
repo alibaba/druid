@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.db2;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.DB2Test;
 import com.alibaba.druid.sql.SQLUtils;
@@ -48,7 +48,7 @@ public class DB2SelectTest_11 extends DB2Test {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -58,17 +58,17 @@ public class DB2SelectTest_11 extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(7, visitor.getColumns().size());
-        Assert.assertEquals(6, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(7, visitor.getColumns().size());
+        assertEquals(6, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("A")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("A")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("A", "F_0201")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+        assertTrue(visitor.getColumns().contains(new Column("A", "F_0201")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT A.F_0201, A.F_0301, A.F_0802, A.F_2100\n" +
+        assertEquals("SELECT A.F_0201, A.F_0301, A.F_0802, A.F_2100\n" +
                         "FROM A, B\n" +
                         "WHERE B.F_2211 = '5'\n" +
                         "\tAND A.F_0301 = B.F_0301\n" +

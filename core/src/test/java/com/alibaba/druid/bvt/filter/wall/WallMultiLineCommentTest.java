@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -25,10 +26,10 @@ public class WallMultiLineCommentTest extends TestCase {
     private String sql = "select f1 from t where a=1 /* and b=1 */";
 
     public void testOracle() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        assertFalse(WallUtils.isValidateOracle(sql));
     }
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        assertFalse(WallUtils.isValidateMySql(sql));
     }
 }

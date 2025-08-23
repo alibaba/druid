@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.sql.eval;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
@@ -15,6 +15,6 @@ public class EvalSelectTest extends TestCase {
         List<Object> row = new ArrayList<Object>();
         row.add(1);
         rows.add(row);
-        Assert.assertEquals(rows, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "SELECT 1"));
+        assertEquals(rows, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "SELECT 1"));
     }
 }

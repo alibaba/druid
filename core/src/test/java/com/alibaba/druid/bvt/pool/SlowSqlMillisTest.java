@@ -15,7 +15,9 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
+
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.stat.StatFilter;
@@ -42,6 +44,6 @@ public class SlowSqlMillisTest extends TestCase {
 
     public void test_connect() throws Exception {
         StatFilter filter = (StatFilter) dataSource.getProxyFilters().get(0);
-        Assert.assertEquals(500, filter.getSlowSqlMillis());
+        assertEquals(500, filter.getSlowSqlMillis());
     }
 }

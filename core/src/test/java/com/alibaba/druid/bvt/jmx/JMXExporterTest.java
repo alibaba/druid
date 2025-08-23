@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.bvt.jmx;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.management.ManagementFactory;
 
 import javax.management.ObjectName;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -30,14 +32,14 @@ public class JMXExporterTest extends TestCase {
 
         ObjectName objectName = new ObjectName("com.alibaba.druid:type=JdbcStatManager");
 
-        Assert.assertFalse(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName)); // before jmx register
+        assertFalse(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName)); // before jmx register
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(file);
 
-        Assert.assertTrue(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName)); // after jmx register
+        assertTrue(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName)); // after jmx register
 
         context.close();
 
-        Assert.assertFalse(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName));
+        assertFalse(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName));
     }
 }

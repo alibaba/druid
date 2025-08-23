@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlError_test_3 extends MysqlTest {
     public void test_0() throws Exception {
@@ -35,8 +35,8 @@ public class MySqlError_test_3 extends MysqlTest {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 //        error.printStackTrace();
-        Assert.assertEquals("not supported.pos 248, line 1, column 248, token ?", error.getMessage());
+        assertEquals("not supported.pos 248, line 1, column 248, token ?", error.getMessage());
     }
 }

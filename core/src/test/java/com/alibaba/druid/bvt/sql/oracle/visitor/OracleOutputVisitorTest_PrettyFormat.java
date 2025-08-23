@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class OracleOutputVisitorTest_PrettyFormat {
         }
 
         String expectResult = "SELECT *\nFROM ge_rms_company\nSTART WITH comcode = '00'\nCONNECT BY NOCYCLE PRIOR comcode = uppercomcode";
-        Assert.assertEquals(expectResult, out.toString());
+        assertEquals(expectResult, out.toString());
 
         out.setLength(0);
         visitor = new OracleOutputVisitor(out);
@@ -43,6 +43,6 @@ public class OracleOutputVisitorTest_PrettyFormat {
             statement.accept(visitor);
         }
         expectResult = "SELECT * FROM ge_rms_company START WITH comcode = '00' CONNECT BY NOCYCLE PRIOR comcode = uppercomcode";
-        Assert.assertEquals(expectResult, out.toString());
+        assertEquals(expectResult, out.toString());
     }
 }

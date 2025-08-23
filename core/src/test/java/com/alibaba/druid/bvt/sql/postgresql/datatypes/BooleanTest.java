@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.postgresql.datatypes;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -20,7 +20,7 @@ public class BooleanTest extends PGTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
@@ -29,14 +29,14 @@ public class BooleanTest extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test1")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("test1")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "kind")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "code")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "date_prod")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "title")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "did")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "kind")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "code")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "date_prod")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "title")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "did")));
     }
 }

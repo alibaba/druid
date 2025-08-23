@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oceanbase;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -35,7 +35,7 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
 
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE tnhash ("
+            assertEquals("CREATE TABLE tnhash ("
                             + "\n\tid INT,"
                             + "\n\tname VARCHAR(5)"
                             + "\n)"
@@ -44,7 +44,7 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table tnhash ("
+            assertEquals("create table tnhash ("
                             + "\n\tid INT,"
                             + "\n\tname VARCHAR(5)"
                             + "\n)"
@@ -52,7 +52,7 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
                     result);
         }
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -62,11 +62,11 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 
     }
 }

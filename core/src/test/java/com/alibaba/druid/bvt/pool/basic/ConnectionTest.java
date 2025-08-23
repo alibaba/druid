@@ -15,13 +15,15 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;

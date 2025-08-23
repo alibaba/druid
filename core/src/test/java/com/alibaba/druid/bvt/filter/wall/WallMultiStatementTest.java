@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,10 +31,10 @@ public class WallMultiStatementTest extends TestCase {
     private String sql = "SELECT email FROM members WHERE email = 'x'; UPDATE members SET email = 'steve@unixwiz.net' WHERE email = 'bob@example.com';";
 
     public void testOracle() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        assertFalse(WallUtils.isValidateOracle(sql));
     }
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        assertFalse(WallUtils.isValidateMySql(sql));
     }
 }

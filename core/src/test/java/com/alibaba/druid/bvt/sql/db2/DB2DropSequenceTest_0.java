@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.db2;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.DB2Test;
 import com.alibaba.druid.sql.SQLUtils;
@@ -35,7 +35,7 @@ public class DB2DropSequenceTest_0 extends DB2Test {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -45,20 +45,20 @@ public class DB2DropSequenceTest_0 extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("A")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("A")));
 
-//         Assert.assertTrue(visitor.getColumns().contains(new Column("A", "F_0201")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+//         assertTrue(visitor.getColumns().contains(new Column("A", "F_0201")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("DROP SEQUENCE sales1_seq", //
+        assertEquals("DROP SEQUENCE sales1_seq", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
 
-        Assert.assertEquals("drop sequence sales1_seq", //
+        assertEquals("drop sequence sales1_seq", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

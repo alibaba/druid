@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,7 +30,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.Calendar;
 
-import org.junit.Assert;
 
 import junit.framework.TestCase;
 
@@ -69,7 +70,7 @@ public class PreparedStatementTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     @SuppressWarnings("deprecation")

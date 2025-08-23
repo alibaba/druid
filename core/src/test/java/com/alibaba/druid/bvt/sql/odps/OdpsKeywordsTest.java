@@ -8,10 +8,9 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class OdpsKeywordsTest {
     @Test
@@ -25,6 +24,6 @@ public class OdpsKeywordsTest {
         assertEquals(Token.EOF, parser.getLexer().token());
         String result = SQLUtils.toSQLString(stmt, dbType, null, VisitorFeature.OutputNameQuote).trim();
         String expectedSql = "SELECT 1 AS `function`";
-        Assert.assertEquals(expectedSql, result);
+        assertEquals(expectedSql, result);
     }
 }

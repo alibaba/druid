@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid.bvt.spring;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockCallableStatement;
@@ -38,24 +39,24 @@ public class DruidJdbcExtractorTest extends TestCase {
 
             dataSource.setUrl("jdbc:mock:xx1");
             Connection conn = dataSource.getConnection();
-            Assert.assertEquals(true, extractor.getNativeConnection(conn) instanceof MockConnection);
+            assertEquals(true, extractor.getNativeConnection(conn) instanceof MockConnection);
 
             Statement stmt = conn.createStatement();
-            Assert.assertEquals(true, extractor.getNativeConnectionFromStatement(stmt) instanceof MockConnection);
-            Assert.assertEquals(true, extractor.getNativeStatement(stmt) instanceof MockStatement);
+            assertEquals(true, extractor.getNativeConnectionFromStatement(stmt) instanceof MockConnection);
+            assertEquals(true, extractor.getNativeStatement(stmt) instanceof MockStatement);
 
             stmt.close();
 
             PreparedStatement preStmt = conn.prepareStatement("select 1");
-            Assert.assertEquals(true, extractor.getNativeConnectionFromStatement(preStmt) instanceof MockConnection);
-            Assert.assertEquals(true, extractor.getNativeStatement(preStmt) instanceof MockPreparedStatement);
-            Assert.assertEquals(true, extractor.getNativePreparedStatement(preStmt) instanceof MockPreparedStatement);
+            assertEquals(true, extractor.getNativeConnectionFromStatement(preStmt) instanceof MockConnection);
+            assertEquals(true, extractor.getNativeStatement(preStmt) instanceof MockPreparedStatement);
+            assertEquals(true, extractor.getNativePreparedStatement(preStmt) instanceof MockPreparedStatement);
             preStmt.close();
 
             PreparedStatement callStmt = conn.prepareCall("select 1");
-            Assert.assertEquals(true, extractor.getNativeConnectionFromStatement(callStmt) instanceof MockConnection);
-            Assert.assertEquals(true, extractor.getNativeStatement(callStmt) instanceof MockCallableStatement);
-            Assert.assertEquals(true, extractor.getNativePreparedStatement(callStmt) instanceof MockCallableStatement);
+            assertEquals(true, extractor.getNativeConnectionFromStatement(callStmt) instanceof MockConnection);
+            assertEquals(true, extractor.getNativeStatement(callStmt) instanceof MockCallableStatement);
+            assertEquals(true, extractor.getNativePreparedStatement(callStmt) instanceof MockCallableStatement);
             callStmt.close();
 
             conn.close();
@@ -73,24 +74,24 @@ public class DruidJdbcExtractorTest extends TestCase {
             dataSource.setUrl("jdbc:mock:xx1");
             dataSource.setFilters("stat");
             Connection conn = dataSource.getConnection();
-            Assert.assertEquals(true, extractor.getNativeConnection(conn) instanceof MockConnection);
+            assertEquals(true, extractor.getNativeConnection(conn) instanceof MockConnection);
 
             Statement stmt = conn.createStatement();
-            Assert.assertEquals(true, extractor.getNativeConnectionFromStatement(stmt) instanceof MockConnection);
-            Assert.assertEquals(true, extractor.getNativeStatement(stmt) instanceof MockStatement);
+            assertEquals(true, extractor.getNativeConnectionFromStatement(stmt) instanceof MockConnection);
+            assertEquals(true, extractor.getNativeStatement(stmt) instanceof MockStatement);
 
             stmt.close();
 
             PreparedStatement preStmt = conn.prepareStatement("select 1");
-            Assert.assertEquals(true, extractor.getNativeConnectionFromStatement(preStmt) instanceof MockConnection);
-            Assert.assertEquals(true, extractor.getNativeStatement(preStmt) instanceof MockPreparedStatement);
-            Assert.assertEquals(true, extractor.getNativePreparedStatement(preStmt) instanceof MockPreparedStatement);
+            assertEquals(true, extractor.getNativeConnectionFromStatement(preStmt) instanceof MockConnection);
+            assertEquals(true, extractor.getNativeStatement(preStmt) instanceof MockPreparedStatement);
+            assertEquals(true, extractor.getNativePreparedStatement(preStmt) instanceof MockPreparedStatement);
             preStmt.close();
 
             PreparedStatement callStmt = conn.prepareCall("select 1");
-            Assert.assertEquals(true, extractor.getNativeConnectionFromStatement(callStmt) instanceof MockConnection);
-            Assert.assertEquals(true, extractor.getNativeStatement(callStmt) instanceof MockCallableStatement);
-            Assert.assertEquals(true, extractor.getNativePreparedStatement(callStmt) instanceof MockCallableStatement);
+            assertEquals(true, extractor.getNativeConnectionFromStatement(callStmt) instanceof MockConnection);
+            assertEquals(true, extractor.getNativeStatement(callStmt) instanceof MockCallableStatement);
+            assertEquals(true, extractor.getNativePreparedStatement(callStmt) instanceof MockCallableStatement);
             callStmt.close();
 
             conn.close();

@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest53 extends MysqlTest {
@@ -48,14 +48,14 @@ public class MySqlCreateTableTest53 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(7, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(7, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ins_ebay_auth")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ins_ebay_auth")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE `ins_ebay_auth` ("//
+        assertEquals("CREATE TABLE `ins_ebay_auth` ("//
                 + "\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id'," //
                 + "\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表',"//
                 + "\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效',"//
@@ -90,14 +90,14 @@ public class MySqlCreateTableTest53 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(7, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(7, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ins_ebay_auth")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ins_ebay_auth")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE `ins_ebay_auth` ("//
+        assertEquals("CREATE TABLE `ins_ebay_auth` ("//
                 + "\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id'," //
                 + "\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表',"//
                 + "\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效',"//
@@ -133,14 +133,14 @@ public class MySqlCreateTableTest53 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(7, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(7, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ins_ebay_auth")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ins_ebay_auth")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE `ins_ebay_auth` ("//
+        assertEquals("CREATE TABLE `ins_ebay_auth` ("//
                 + "\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id'," //
                 + "\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表',"//
                 + "\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效',"//

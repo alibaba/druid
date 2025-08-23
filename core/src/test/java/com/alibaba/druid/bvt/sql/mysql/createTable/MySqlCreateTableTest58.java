@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest58 extends MysqlTest {
@@ -46,7 +46,7 @@ public class MySqlCreateTableTest58 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE `appservice_account` (" + //
+            assertEquals("CREATE TABLE `appservice_account` (" + //
                     "\n\t`id` integer NOT NULL PRIMARY KEY AUTO_INCREMENT," + //
                     "\n\t`password` varchar(128) NOT NULL," + //
                     "\n\t`last_login` datetime NOT NULL," + //
@@ -74,7 +74,7 @@ public class MySqlCreateTableTest58 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table `appservice_account` (" + //
+            assertEquals("create table `appservice_account` (" + //
                     "\n\t`id` integer not null primary key auto_increment," + //
                     "\n\t`password` varchar(128) not null," + //
                     "\n\t`last_login` datetime not null," + //

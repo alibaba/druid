@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -42,7 +44,7 @@ public class TestStat extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_stat() throws Exception {
@@ -55,8 +57,8 @@ public class TestStat extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(true, stmt.isClosed());
-        Assert.assertEquals(true, rs.isClosed());
+        assertEquals(true, stmt.isClosed());
+        assertEquals(true, rs.isClosed());
 
         rs.close();
         stmt.close();
@@ -64,7 +66,7 @@ public class TestStat extends TestCase {
         dataSource.shrink();
 
         JdbcStatManager.getInstance().getDataSourceList();
-        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
     }
 }

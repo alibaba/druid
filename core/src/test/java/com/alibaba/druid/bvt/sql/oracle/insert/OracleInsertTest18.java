@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.insert;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -36,9 +36,9 @@ public class OracleInsertTest18 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("INSERT INTO sys_log (ID, \"EXCEPTION\")"
+        assertEquals("INSERT INTO sys_log (ID, \"EXCEPTION\")"
                         + "\nVALUES (?, ?)",//
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
@@ -50,13 +50,13 @@ public class OracleInsertTest18 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys_log")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys_log")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "EXCEPTION")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "ID")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "EXCEPTION")));
     }
 
 }

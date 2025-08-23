@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 
@@ -12,7 +12,7 @@ public class OdpsFormatCommentTest8 extends TestCase {
                 + "\n" //
                 + "\nselect * from table2;;select * from table3;" //
                 + "\n--comment2 goes here";//
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                 "FROM table1;-- comment1 goes here\n" +
                 "\n" +
                 "SELECT *\n" +
@@ -23,7 +23,7 @@ public class OdpsFormatCommentTest8 extends TestCase {
                 "\n" +
                 "-- comment2 goes here", SQLUtils.formatOdps(sql));
 
-        Assert.assertEquals("select *\n" +
+        assertEquals("select *\n" +
                 "from table1;-- comment1 goes here\n" +
                 "\n" +
                 "select *\n" +

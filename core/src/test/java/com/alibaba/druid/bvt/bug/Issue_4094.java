@@ -21,7 +21,6 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 /**
  * https://github.com/alibaba/druid/issues/4094

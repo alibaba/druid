@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class MySqlSelectTest_29 extends MysqlTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -48,10 +48,10 @@ public class MySqlSelectTest_29 extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(6, visitor.getColumns().size());
-        Assert.assertEquals(4, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(6, visitor.getColumns().size());
+        assertEquals(4, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
         {
             String output = SQLUtils.toMySqlString(stmt);

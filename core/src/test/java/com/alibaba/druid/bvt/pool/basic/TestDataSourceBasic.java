@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.Statement;
@@ -22,7 +25,6 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -56,17 +58,17 @@ public class TestDataSourceBasic extends PoolTestCase {
         dataSource.setRemoveAbandoned(true);
         dataSource.setExceptionSorterClassName(null);
 
-        Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
+        assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
         dataSource.setExceptionSorterClassName("");
-        Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
+        assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
     }
 
     protected void tearDown() throws Exception {
         if (dataSource.getCreateCount() > 0) {
-            Assert.assertEquals(true, dataSource.getCreateTimespanNano() > 0);
+            assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         }
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         super.tearDown();
     }
@@ -82,14 +84,14 @@ public class TestDataSourceBasic extends PoolTestCase {
 
         {
             DruidPooledConnection wrap = conn.unwrap(DruidPooledConnection.class);
-            Assert.assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
-            Assert.assertNotNull(wrap);
+            assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
+            assertNotNull(wrap);
         }
 
         {
             Statement wrap = conn.unwrap(Statement.class);
-            Assert.assertTrue(!conn.isWrapperFor(Statement.class));
-            Assert.assertNull(wrap);
+            assertTrue(!conn.isWrapperFor(Statement.class));
+            assertNull(wrap);
         }
 
         conn.setAutoCommit(false);
@@ -98,26 +100,26 @@ public class TestDataSourceBasic extends PoolTestCase {
         stmt.execute("SELECT 1");
         stmt.close();
 
-        Assert.assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
-        Assert.assertEquals(1, dataSource.getActiveConnections().size());
+        assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
+        assertEquals(1, dataSource.getActiveConnections().size());
         conn.commit();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getStartTransactionCount());
-        Assert.assertEquals(1, dataSource.getCommitCount());
-        Assert.assertEquals(0, dataSource.getRollbackCount());
+        assertEquals(1, dataSource.getStartTransactionCount());
+        assertEquals(1, dataSource.getCommitCount());
+        assertEquals(0, dataSource.getRollbackCount());
 
-        Assert.assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
-        Assert.assertEquals(0, dataSource.getActiveConnections().size());
+        assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
+        assertEquals(0, dataSource.getActiveConnections().size());
     }
 
     public void test_wrap() throws Exception {
-        Assert.assertTrue(!dataSource.isWrapperFor(Date.class));
-        Assert.assertTrue(!dataSource.isWrapperFor(null));
-        Assert.assertTrue(dataSource.isWrapperFor(DataSource.class));
+        assertTrue(!dataSource.isWrapperFor(Date.class));
+        assertTrue(!dataSource.isWrapperFor(null));
+        assertTrue(dataSource.isWrapperFor(DataSource.class));
 
-        Assert.assertTrue(dataSource.unwrap(Date.class) == null);
-        Assert.assertTrue(dataSource.unwrap(null) == null);
-        Assert.assertTrue(dataSource.unwrap(DataSource.class) != null);
+        assertTrue(dataSource.unwrap(Date.class) == null);
+        assertTrue(dataSource.unwrap(null) == null);
+        assertTrue(dataSource.unwrap(DataSource.class) != null);
     }
 }

@@ -2,10 +2,10 @@ package com.alibaba.druid.bvt.sql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
+
+import static org.junit.Assert.*;
 
 public class PagerUtilsTest_Count_SQLServer_0 extends TestCase {
     public void test_sqlserver_0() throws Exception {

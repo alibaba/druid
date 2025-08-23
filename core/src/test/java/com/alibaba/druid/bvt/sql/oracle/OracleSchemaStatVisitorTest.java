@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
@@ -39,7 +39,7 @@ public class OracleSchemaStatVisitorTest extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         List<Object> parameters = new ArrayList<Object>();
         parameters.add(23456);
@@ -52,21 +52,21 @@ public class OracleSchemaStatVisitorTest extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("department")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("department")));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
+        assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("department", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("department", "name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("department", "id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("department", "name")));
 
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getConditions().size());
 
         Condition condition = visitor.getConditions().get(0);
-        Assert.assertSame(parameters.get(0), condition.getValues().get(0));
+        assertSame(parameters.get(0), condition.getValues().get(0));
 
         Column orderByColumn = visitor.getOrderByColumns().iterator().next();
-        Assert.assertEquals(SQLOrderingSpecification.DESC, orderByColumn.getAttributes().get("orderBy.type"));
+        assertEquals(SQLOrderingSpecification.DESC, orderByColumn.getAttributes().get("orderBy.type"));
     }
 }

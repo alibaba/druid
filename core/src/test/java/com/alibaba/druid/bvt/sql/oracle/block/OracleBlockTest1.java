@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.block;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -32,7 +32,7 @@ public class OracleBlockTest1 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         System.out.println(stmt);
 
@@ -45,13 +45,13 @@ public class OracleBlockTest1 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-//        Assert.assertEquals(0, visitor.getColumns().size());
+//        assertEquals(0, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("UNKNOWN", "location_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("UNKNOWN", "location_id")));
     }
 }

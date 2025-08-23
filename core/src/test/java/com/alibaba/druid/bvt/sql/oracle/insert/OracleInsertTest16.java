@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.insert;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -37,9 +37,9 @@ public class OracleInsertTest16 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("INSERT INTO departments" //
+        assertEquals("INSERT INTO departments" //
                         + "\nVALUES (departments_seq.NEXTVAL, 'Entertainment', 162, 1400);",//
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
@@ -51,12 +51,12 @@ public class OracleInsertTest16 extends OracleTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
 
 }

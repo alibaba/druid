@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.db2;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.DB2Test;
 import com.alibaba.druid.sql.SQLUtils;
@@ -38,7 +38,7 @@ public class DB2SelectTest_12 extends DB2Test {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -48,26 +48,26 @@ public class DB2SelectTest_12 extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("TASK_POLICE_QUERY_BATCH")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("TASK_POLICE_QUERY_BATCH")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "STATUS")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "*")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "PRIORITY")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+        assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "STATUS")));
+        assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "*")));
+        assertTrue(visitor.getColumns().contains(new Column("TASK_POLICE_QUERY_BATCH", "PRIORITY")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT *"
+        assertEquals("SELECT *"
                         + "\nFROM TASK_POLICE_QUERY_BATCH"
                         + "\nWHERE STATUS = '0'"
                         + "\nORDER BY PRIORITY"
                         + "\nFETCH FIRST 100 ROWS ONLY", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
 
-        Assert.assertEquals("select *"
+        assertEquals("select *"
                         + "\nfrom TASK_POLICE_QUERY_BATCH"
                         + "\nwhere STATUS = '0'"
                         + "\norder by PRIORITY"

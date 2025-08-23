@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class OracleAlterSequence_0 extends TestCase {
     public void test_alter_seq_0() throws Exception {
@@ -29,7 +29,7 @@ public class OracleAlterSequence_0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOracleString(stmt);
-        Assert.assertEquals("ALTER SEQUENCE SEQ_XXX INCREMENT BY 2", output);
+        assertEquals("ALTER SEQUENCE SEQ_XXX INCREMENT BY 2", output);
     }
 
     public void test_alter_seq_1() throws Exception {
@@ -39,7 +39,7 @@ public class OracleAlterSequence_0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOracleString(stmt);
-        Assert.assertEquals("ALTER SEQUENCE customers_seq MAXVALUE 1500;", output);
+        assertEquals("ALTER SEQUENCE customers_seq MAXVALUE 1500;", output);
     }
 
     public void test_alter_seq_2() throws Exception {
@@ -50,6 +50,6 @@ public class OracleAlterSequence_0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOracleString(stmt);
-        Assert.assertEquals("ALTER SEQUENCE customers_seq CYCLE CACHE 5;", output);
+        assertEquals("ALTER SEQUENCE customers_seq CYCLE CACHE 5;", output);
     }
 }

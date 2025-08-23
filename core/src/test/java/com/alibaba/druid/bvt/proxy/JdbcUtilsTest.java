@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -28,7 +31,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockResultSet;
@@ -42,7 +44,7 @@ import com.alibaba.druid.util.JdbcUtils;
 public class JdbcUtilsTest extends TestCase {
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_print() throws Exception {
@@ -201,7 +203,7 @@ public class JdbcUtilsTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         {
             Exception error = null;
@@ -221,7 +223,7 @@ public class JdbcUtilsTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -237,7 +239,7 @@ public class JdbcUtilsTest extends TestCase {
                 }
 
             }, 1);
-            Assert.assertEquals("", text);
+            assertEquals("", text);
         }
         {
             String text = Utils.read(new Reader() {
@@ -255,7 +257,7 @@ public class JdbcUtilsTest extends TestCase {
                 }
 
             }, 2);
-            Assert.assertEquals("AA", text);
+            assertEquals("AA", text);
         }
         {
             Reader reader = new Reader() {
@@ -272,7 +274,7 @@ public class JdbcUtilsTest extends TestCase {
 
             };
             String text = Utils.read(reader, 2);
-            Assert.assertEquals("AA", text);
+            assertEquals("AA", text);
         }
     }
 

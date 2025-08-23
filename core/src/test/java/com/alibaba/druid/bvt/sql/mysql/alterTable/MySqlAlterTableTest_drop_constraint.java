@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest_drop_constraint extends TestCase {
     public void test_alter_constraint() throws Exception {
@@ -38,14 +38,14 @@ public class MySqlAlterTableTest_drop_constraint extends TestCase {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals("ALTER TABLE TUSER" + //
+        assertEquals("ALTER TABLE TUSER" + //
                 "\n\tDROP CONSTRAINT UK_084c17821a8f47e8b31fbb126b6", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table TUSER" + //
+        assertEquals("alter table TUSER" + //
                 "\n\tdrop constraint UK_084c17821a8f47e8b31fbb126b6", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
 
 }

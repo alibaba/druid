@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,7 +31,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest28 extends TestCase {
     public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        assertFalse(WallUtils.isValidateMySql(//
                 "select * from t where FID = 1 OR hex(123) = '7B'")); //
     }
 }

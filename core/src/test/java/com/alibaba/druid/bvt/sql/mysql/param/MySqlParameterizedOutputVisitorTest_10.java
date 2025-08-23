@@ -12,6 +12,7 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import java.util.List;
+import static org.junit.Assert.*;
 
 /**
  * Created by wenshao on 16/8/23.
@@ -29,7 +30,7 @@ public class MySqlParameterizedOutputVisitorTest_10 extends TestCase {
 
         String sql = "SELECT `SURVEY_ANSWER`.`TIME_UPDATED`, `SURVEY_ANSWER`.`ANSWER_VALUE` FROM `S_ANSWER_P0115` `SURVEY_ANSWER` WHERE `SURVEY_ANSWER`.`SURVEY_ID` = 11 AND `SURVEY_ANSWER`.`QUESTION_CODE` = 'qq' ORDER BY `SURVEY_ANSWER`.`TIME_UPDATED` DESC LIMIT 1, 2";
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
-       /* Assert.assertEquals("SELECT *\n" +
+       /* assertEquals("SELECT *\n" +
                 "FROM t\n" +
                 "LIMIT ?, ?", psql);*/
 
@@ -53,8 +54,8 @@ public class MySqlParameterizedOutputVisitorTest_10 extends TestCase {
             stmt.accept(visitor);
         }
         System.out.println(visitor.getParameters());
-      /*  Assert.assertEquals(2, visitor.getArguments().size());
-        Assert.assertEquals(3, visitor.getArguments().get(0));
-        Assert.assertEquals(4, visitor.getArguments().get(1));*/
+      /*  assertEquals(2, visitor.getArguments().size());
+        assertEquals(3, visitor.getArguments().get(0));
+        assertEquals(4, visitor.getArguments().get(1));*/
     }
 }

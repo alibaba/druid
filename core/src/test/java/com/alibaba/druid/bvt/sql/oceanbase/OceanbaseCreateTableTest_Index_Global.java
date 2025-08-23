@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class OceanbaseCreateTableTest_Index_Global extends MysqlTest {
 
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE `test_01` (\n" +
+            assertEquals("CREATE TABLE `test_01` (\n" +
                             "\t`id` varchar(16) NOT NULL,\n" +
                             "\t`name` varchar(128) DEFAULT NULL,\n" +
                             "\tPRIMARY KEY (`id`),\n" +
@@ -49,7 +49,7 @@ public class OceanbaseCreateTableTest_Index_Global extends MysqlTest {
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table `test_01` (\n" +
+            assertEquals("create table `test_01` (\n" +
                             "\t`id` varchar(16) not null,\n" +
                             "\t`name` varchar(128) default null,\n" +
                             "\tprimary key (`id`),\n" +
@@ -58,6 +58,6 @@ public class OceanbaseCreateTableTest_Index_Global extends MysqlTest {
                     result);
         }
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
     }
 }

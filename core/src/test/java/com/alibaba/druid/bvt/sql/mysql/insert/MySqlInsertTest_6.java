@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.insert;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -38,16 +38,16 @@ public class MySqlInsertTest_6 extends MysqlTest {
 
         MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
 
-        Assert.assertEquals(6, insertStmt.getColumns().size());
-        Assert.assertEquals(1, insertStmt.getValuesList().size());
-        Assert.assertEquals(6, insertStmt.getValuesList().get(0).getValues().size());
+        assertEquals(6, insertStmt.getColumns().size());
+        assertEquals(1, insertStmt.getValuesList().size());
+        assertEquals(6, insertStmt.getValuesList().get(0).getValues().size());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals("INSERT INTO document (the_key, the_namespace, Gmt_create, Gmt_modify, Expired_time" + //
+        assertEquals("INSERT INTO document (the_key, the_namespace, Gmt_create, Gmt_modify, Expired_time" + //
                         "\n\t, the_value)" + //
                         "\nVALUES (?, ?, now(), now(), date_add(now(), INTERVAL ? SECOND)" + //
                         "\n\t, ?)" + //
@@ -55,7 +55,7 @@ public class MySqlInsertTest_6 extends MysqlTest {
                 SQLUtils.toMySqlString(insertStmt));
 
 
-        Assert.assertEquals("insert into document (the_key, the_namespace, Gmt_create, Gmt_modify, Expired_time" + //
+        assertEquals("insert into document (the_key, the_namespace, Gmt_create, Gmt_modify, Expired_time" + //
                         "\n\t, the_value)" + //
                         "\nvalues (?, ?, now(), now(), date_add(now(), interval ? second)" + //
                         "\n\t, ?)" + //

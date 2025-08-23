@@ -1,10 +1,12 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -39,7 +41,7 @@ public class DruidDataSourceTest_getConnection extends TestCase {
         } catch (UnsupportedOperationException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
     public void test_conn_password_error() throws Exception {
@@ -49,7 +51,7 @@ public class DruidDataSourceTest_getConnection extends TestCase {
         } catch (UnsupportedOperationException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
 }

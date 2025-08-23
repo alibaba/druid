@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -44,7 +46,7 @@ public class DruidDataSourceTest_autocommit2 extends TestCase {
     public void test_autoCommit() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertFalse(conn.getAutoCommit());
+        assertFalse(conn.getAutoCommit());
 
         conn.close();
     }

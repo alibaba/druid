@@ -5,7 +5,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
@@ -22,7 +22,7 @@ public class MSSQLServerExportParameterVisitorTest extends TestCase {
         MSSQLServerExportParameterVisitor visitor = new MSSQLServerExportParameterVisitor(parameters);
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, parameters.size());
-        Assert.assertEquals(1, parameters.get(0));
+        assertEquals(1, parameters.size());
+        assertEquals(1, parameters.get(0));
     }
 }

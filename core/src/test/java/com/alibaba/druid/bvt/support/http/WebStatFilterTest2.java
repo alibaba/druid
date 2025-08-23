@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -41,8 +44,8 @@ public class WebStatFilterTest2 extends TestCase {
 
         WebAppStat appStat = filter.getWebAppStat();
 
-        Assert.assertEquals(3, filter.getSessionStatMaxCount());
-        Assert.assertEquals(0, appStat.getSessionStatDataList().size());
+        assertEquals(3, filter.getSessionStatMaxCount());
+        assertEquals(0, appStat.getSessionStatDataList().size());
 
         final MockHttpSession session_0 = new MockHttpSession(servletContext);
         final MockHttpSession session_1 = new MockHttpSession(servletContext);
@@ -52,7 +55,7 @@ public class WebStatFilterTest2 extends TestCase {
 
         // 第一个session请求2次
         {
-            Assert.assertNull(appStat.getSessionStat(session_0.getId()));
+            assertNull(appStat.getSessionStat(session_0.getId()));
 
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpServletResponse response = new MockHttpServletResponse();
@@ -66,10 +69,10 @@ public class WebStatFilterTest2 extends TestCase {
 
             filter.doFilter(request, response, chain);
 
-            Assert.assertEquals(1, appStat.getSessionStatDataList().size());
-            Assert.assertEquals(1, appStat.getSessionStat(session_0.getId()).getRequestCount());
+            assertEquals(1, appStat.getSessionStatDataList().size());
+            assertEquals(1, appStat.getSessionStat(session_0.getId()).getRequestCount());
 
-            Assert.assertTrue(appStat.getSessionStat(session_0.getId()).getLastAccessTimeMillis() > 0);
+            assertTrue(appStat.getSessionStat(session_0.getId()).getLastAccessTimeMillis() > 0);
         }
         {
             MockHttpServletRequest request = new MockHttpServletRequest();
@@ -84,8 +87,8 @@ public class WebStatFilterTest2 extends TestCase {
 
             filter.doFilter(request, response, chain);
 
-            Assert.assertEquals(1, appStat.getSessionStatDataList().size());
-            Assert.assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
+            assertEquals(1, appStat.getSessionStatDataList().size());
+            assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
         }
 
 
@@ -103,9 +106,9 @@ public class WebStatFilterTest2 extends TestCase {
 
             filter.doFilter(request, response, chain);
 
-            Assert.assertEquals(2, appStat.getSessionStatDataList().size());
-            Assert.assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
-            Assert.assertEquals(1, appStat.getSessionStat(session_1.getId()).getRequestCount());
+            assertEquals(2, appStat.getSessionStatDataList().size());
+            assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
+            assertEquals(1, appStat.getSessionStat(session_1.getId()).getRequestCount());
         }
 
         // 第3个sesion请求1次
@@ -122,10 +125,10 @@ public class WebStatFilterTest2 extends TestCase {
 
             filter.doFilter(request, response, chain);
 
-            Assert.assertEquals(3, appStat.getSessionStatDataList().size());
-            Assert.assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
-            Assert.assertEquals(1, appStat.getSessionStat(session_1.getId()).getRequestCount());
-            Assert.assertEquals(1, appStat.getSessionStat(session_2.getId()).getRequestCount());
+            assertEquals(3, appStat.getSessionStatDataList().size());
+            assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
+            assertEquals(1, appStat.getSessionStat(session_1.getId()).getRequestCount());
+            assertEquals(1, appStat.getSessionStat(session_2.getId()).getRequestCount());
         }
 
         // 第4个sesion请求1次
@@ -142,11 +145,11 @@ public class WebStatFilterTest2 extends TestCase {
 
             filter.doFilter(request, response, chain);
 
-            Assert.assertEquals(3, appStat.getSessionStatDataList().size());
-            Assert.assertNull(appStat.getSessionStat(session_0.getId()));
-            Assert.assertEquals(1, appStat.getSessionStat(session_1.getId()).getRequestCount());
-            Assert.assertEquals(1, appStat.getSessionStat(session_2.getId()).getRequestCount());
-            Assert.assertEquals(1, appStat.getSessionStat(session_3.getId()).getRequestCount());
+            assertEquals(3, appStat.getSessionStatDataList().size());
+            assertNull(appStat.getSessionStat(session_0.getId()));
+            assertEquals(1, appStat.getSessionStat(session_1.getId()).getRequestCount());
+            assertEquals(1, appStat.getSessionStat(session_2.getId()).getRequestCount());
+            assertEquals(1, appStat.getSessionStat(session_3.getId()).getRequestCount());
         }
 
         // 第5个sesion请求1次
@@ -163,12 +166,12 @@ public class WebStatFilterTest2 extends TestCase {
 
             filter.doFilter(request, response, chain);
 
-            Assert.assertEquals(3, appStat.getSessionStatDataList().size());
-            Assert.assertNull(appStat.getSessionStat(session_0.getId()));
-            Assert.assertNull(appStat.getSessionStat(session_1.getId()));
-            Assert.assertEquals(1, appStat.getSessionStat(session_2.getId()).getRequestCount());
-            Assert.assertEquals(1, appStat.getSessionStat(session_3.getId()).getRequestCount());
-            Assert.assertEquals(1, appStat.getSessionStat(session_4.getId()).getRequestCount());
+            assertEquals(3, appStat.getSessionStatDataList().size());
+            assertNull(appStat.getSessionStat(session_0.getId()));
+            assertNull(appStat.getSessionStat(session_1.getId()));
+            assertEquals(1, appStat.getSessionStat(session_2.getId()).getRequestCount());
+            assertEquals(1, appStat.getSessionStat(session_3.getId()).getRequestCount());
+            assertEquals(1, appStat.getSessionStat(session_4.getId()).getRequestCount());
         }
     }
 }

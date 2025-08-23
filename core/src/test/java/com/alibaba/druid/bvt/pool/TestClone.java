@@ -15,12 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockConnection;
@@ -61,11 +63,11 @@ public class TestClone extends PoolTestCase {
 
         dataSource.close();
 
-        Assert.assertEquals(dataSource.getUrl(), clone.getUrl());
-        Assert.assertEquals(dataSource.getUsername(), clone.getUsername());
-        Assert.assertEquals(dataSource.getPassword(), clone.getPassword());
-        Assert.assertEquals(dataSource.getFilterClassNames(), clone.getFilterClassNames());
-        Assert.assertEquals(dataSource.getMaxOpenPreparedStatements(), clone.getMaxOpenPreparedStatements());
+        assertEquals(dataSource.getUrl(), clone.getUrl());
+        assertEquals(dataSource.getUsername(), clone.getUsername());
+        assertEquals(dataSource.getPassword(), clone.getPassword());
+        assertEquals(dataSource.getFilterClassNames(), clone.getFilterClassNames());
+        assertEquals(dataSource.getMaxOpenPreparedStatements(), clone.getMaxOpenPreparedStatements());
 
         PreparedStatement ps_0 = conn_0.prepareStatement("select 1");
         ResultSet rs = ps_0.executeQuery();
@@ -74,26 +76,26 @@ public class TestClone extends PoolTestCase {
         ps_0.close();
 
         // dataSource is closed, but connections is not closed
-        Assert.assertFalse(conn_0.isClosed());
-        Assert.assertFalse(conn_1.isClosed());
-        Assert.assertFalse(conn_2.isClosed());
+        assertFalse(conn_0.isClosed());
+        assertFalse(conn_1.isClosed());
+        assertFalse(conn_2.isClosed());
 
         MockConnection mockConn_0 = conn_0.unwrap(MockConnection.class);
         MockConnection mockConn_1 = conn_1.unwrap(MockConnection.class);
         MockConnection mockConn_2 = conn_2.unwrap(MockConnection.class);
 
-        Assert.assertFalse(mockConn_0.isClosed());
-        Assert.assertFalse(mockConn_1.isClosed());
-        Assert.assertFalse(mockConn_2.isClosed());
+        assertFalse(mockConn_0.isClosed());
+        assertFalse(mockConn_1.isClosed());
+        assertFalse(mockConn_2.isClosed());
 
         conn_0.close(); // no error
         conn_1.close(); // no error
         conn_2.close(); // no error
 
         // real connection already closed
-        Assert.assertTrue(mockConn_0.isClosed());
-        Assert.assertTrue(mockConn_1.isClosed());
-        Assert.assertTrue(mockConn_2.isClosed());
+        assertTrue(mockConn_0.isClosed());
+        assertTrue(mockConn_1.isClosed());
+        assertTrue(mockConn_2.isClosed());
 
         // now is new dataSource;
         dataSource = clone;

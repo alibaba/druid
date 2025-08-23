@@ -15,12 +15,15 @@
  */
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.encoding.EncodingConvertFilter;
@@ -68,7 +71,7 @@ public class EncodingConvertFilterTest extends TestCase {
     }
 
     public void test_stat() throws Exception {
-        Assert.assertTrue(dataSource.isInited());
+        assertTrue(dataSource.isInited());
 
         EncodingConvertFilter filter = (EncodingConvertFilter) dataSource.getProxyFilters().get(0);
 
@@ -82,8 +85,8 @@ public class EncodingConvertFilterTest extends TestCase {
 
         String param1 = (String) raw.getParameters().get(0);
 
-        Assert.assertEquals(PARAM_VALUE, new String(param1.getBytes(SERVER_ENCODING), CLIENT_ENCODING));
-        Assert.assertFalse(param1.equals(PARAM_VALUE));
+        assertEquals(PARAM_VALUE, new String(param1.getBytes(SERVER_ENCODING), CLIENT_ENCODING));
+        assertFalse(param1.equals(PARAM_VALUE));
 
         ResultSet rs = stmt.executeQuery();
 
@@ -92,7 +95,7 @@ public class EncodingConvertFilterTest extends TestCase {
 
         rs.next();
 
-        Assert.assertEquals(text, rs.getString(1));
+        assertEquals(text, rs.getString(1));
 
         rs.close();
         stmt.close();

@@ -1,11 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.SQLException;
 import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -37,9 +39,9 @@ public class DruidDataSourceTest_lastCreateError extends TestCase {
     }
 
     public void test_error() throws Exception {
-        Assert.assertNull(dataSource.getLastCreateError());
-        Assert.assertNull(dataSource.getLastCreateErrorTime());
-        Assert.assertEquals(0, dataSource.getLastCreateErrorTimeMillis());
+        assertNull(dataSource.getLastCreateError());
+        assertNull(dataSource.getLastCreateErrorTime());
+        assertEquals(0, dataSource.getLastCreateErrorTimeMillis());
 
         Exception error = null;
         try {
@@ -48,10 +50,10 @@ public class DruidDataSourceTest_lastCreateError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertNotNull(dataSource.getLastCreateError());
-        Assert.assertNotNull(dataSource.getLastCreateErrorTime());
-        Assert.assertEquals(true, dataSource.getLastCreateErrorTimeMillis() > 0);
+        assertNotNull(dataSource.getLastCreateError());
+        assertNotNull(dataSource.getLastCreateErrorTime());
+        assertEquals(true, dataSource.getLastCreateErrorTimeMillis() > 0);
     }
 }

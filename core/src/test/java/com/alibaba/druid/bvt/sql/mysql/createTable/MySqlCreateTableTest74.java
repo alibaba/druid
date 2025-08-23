@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest74 extends MysqlTest {
@@ -43,12 +43,12 @@ public class MySqlCreateTableTest74 extends MysqlTest {
         stmt.accept(visitor);
 
         Column column = visitor.getColumn("test.simple_test", "col_key");
-        Assert.assertNotNull(column);
-        Assert.assertEquals("bigint", column.getDataType());
+        assertNotNull(column);
+        assertEquals("bigint", column.getDataType());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE test.simple_test (\n" +
+            assertEquals("CREATE TABLE test.simple_test (\n" +
                     "\tcol_key bigint(20) NOT NULL AUTO_INCREMENT,\n" +
                     "\tcol1 varchar(45) NULL,\n" +
                     "\tcol2 tinyint(4) NULL,\n" +
@@ -61,7 +61,7 @@ public class MySqlCreateTableTest74 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table test.simple_test (\n" +
+            assertEquals("create table test.simple_test (\n" +
                     "\tcol_key bigint(20) not null auto_increment,\n" +
                     "\tcol1 varchar(45) null,\n" +
                     "\tcol2 tinyint(4) null,\n" +

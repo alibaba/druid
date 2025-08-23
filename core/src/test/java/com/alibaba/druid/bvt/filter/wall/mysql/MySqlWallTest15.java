@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,7 +31,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest15 extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
                 "SELECT m.*, m.icon AS micon, md.uid as md.uid, md.lastmsg,md.postnum," + //
                         "md.rvrc,md.money,md.credit,md.currency,md.lastvisit,md.thisvisit," + //
                         "md.onlinetime,md.lastpost,md.todaypost, md.monthpost,md.onlineip," + //

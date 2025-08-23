@@ -15,7 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -23,40 +24,40 @@ import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class WallVisitorUtilsTest extends TestCase {
     public void test_isTrue() throws Exception {
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 != 2")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 != 2 AND 2 = 2")));
-        Assert.assertEquals(Boolean.FALSE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 != 2 AND 2 != 2")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("23 = 23")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("NOT 23 != 23")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("f1 like '%'")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("f1 like '%%'")));
-        Assert.assertEquals(null, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 AND f1 like '%%'")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 OR f1 like '%%'")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 != 2")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 != 2 AND 2 = 2")));
+        assertEquals(Boolean.FALSE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 != 2 AND 2 != 2")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("23 = 23")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("NOT 23 != 23")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("f1 like '%'")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("f1 like '%%'")));
+        assertEquals(null, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 AND f1 like '%%'")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 OR f1 like '%%'")));
 
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 < 2")));
-        Assert.assertEquals(Boolean.FALSE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 < 2")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 <= 2")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 < 2")));
+        assertEquals(Boolean.FALSE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 < 2")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 <= 2")));
 
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 > 1")));
-        Assert.assertEquals(Boolean.FALSE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 > 2")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 >= 2")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 > 1")));
+        assertEquals(Boolean.FALSE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 > 2")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 >= 2")));
 
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("len('44') > 0")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("len('44') >= 2")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("len('44') > 0")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("len('44') >= 2")));
 
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) > 0")));
-        Assert.assertEquals(Boolean.TRUE,
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) > 0")));
+        assertEquals(Boolean.TRUE,
                 WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) >= 0")));
-        Assert.assertEquals(Boolean.FALSE,
+        assertEquals(Boolean.FALSE,
                 WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) < 0")));
-        Assert.assertEquals(Boolean.TRUE,
+        assertEquals(Boolean.TRUE,
                 WallVisitorUtils.getValue(SQLUtils.toSQLExpr("NOT (select count(*) from t) < 0")));
 
         //
     }
 
     public void test_chr() throws Exception {
-        Assert.assertEquals("CAT", WallVisitorUtils.getValue(SQLUtils.toSQLExpr("CHR(67)||CHR(65)||CHR(84)")));
-        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("CHR(67)||CHR(65)||CHR(84) = 'CAT'")));
+        assertEquals("CAT", WallVisitorUtils.getValue(SQLUtils.toSQLExpr("CHR(67)||CHR(65)||CHR(84)")));
+        assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("CHR(67)||CHR(65)||CHR(84) = 'CAT'")));
     }
 }

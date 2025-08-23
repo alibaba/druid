@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.insert;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -39,9 +39,9 @@ public class OracleInsertTest15 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("INSERT INTO employees@remote" //
+        assertEquals("INSERT INTO employees@remote" //
                         + "\nVALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL"//
                         + "\n\t, TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, NULL, 121"//
                         + "\n\t, 20);",//
@@ -55,15 +55,15 @@ public class OracleInsertTest15 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor
+        assertTrue(visitor
                 .getTables()
                 .containsKey(
                         new TableStat.Name("employees@remote")));
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
 
 }

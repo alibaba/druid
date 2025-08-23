@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
@@ -31,26 +33,26 @@ public class WallCommentTest extends TestCase {
         String sql = "SELECT F1, F2 FROM ABC --test";
 
         OracleWallProvider provider = new OracleWallProvider();
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
 
-        Assert.assertEquals(1, provider.getCommentDenyStat().getDenyCount());
+        assertEquals(1, provider.getCommentDenyStat().getDenyCount());
     }
 
     public void testmysql() throws Exception {
         String sql = "SELECT F1, F2 FROM ABC -- test";
 
         MySqlWallProvider provider = new MySqlWallProvider();
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
 
-        Assert.assertEquals(1, provider.getCommentDenyStat().getDenyCount());
+        assertEquals(1, provider.getCommentDenyStat().getDenyCount());
     }
 
     public void testsqlserver() throws Exception {
         String sql = "SELECT F1, F2 FROM ABC --test";
 
         SQLServerWallProvider provider = new SQLServerWallProvider();
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
 
-        Assert.assertEquals(1, provider.getCommentDenyStat().getDenyCount());
+        assertEquals(1, provider.getCommentDenyStat().getDenyCount());
     }
 }

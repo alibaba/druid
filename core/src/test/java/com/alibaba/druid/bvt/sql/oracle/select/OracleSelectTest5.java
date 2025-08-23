@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class OracleSelectTest5 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -44,15 +44,15 @@ public class OracleSelectTest5 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("hr_info")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("hr_info.people")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("hr_info")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("hr_info.people")));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("hr_info", "department_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("hr_info.people", "*")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("hr_info.people", "department_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("hr_info", "department_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("hr_info.people", "*")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("hr_info.people", "department_id")));
     }
 }

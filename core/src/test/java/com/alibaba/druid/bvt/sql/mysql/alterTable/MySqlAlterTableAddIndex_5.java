@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.alterTable;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -34,10 +34,10 @@ public class MySqlAlterTableAddIndex_5 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE t_order\n" +
+        assertEquals("ALTER TABLE t_order\n" +
                 "\tADD UNIQUE GLOBAL INDEX `g_i_buyer` (`buyer_id`) COVERING (order_snapshot) DBPARTITION BY hash(`buyer_id`) TBPARTITION BY hash(`buyer_id`);", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table t_order\n" +
+        assertEquals("alter table t_order\n" +
                 "\tadd unique global index `g_i_buyer` (`buyer_id`) covering (order_snapshot) dbpartition by hash(`buyer_id`) tbpartition by hash(`buyer_id`);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);

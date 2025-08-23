@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest68 extends MysqlTest {
@@ -47,7 +47,7 @@ public class MySqlCreateTableTest68 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE t1 ("
+            assertEquals("CREATE TABLE t1 ("
                     + "\n\tyear_col INT,"
                     + "\n\tsome_data INT"
                     + "\n)"
@@ -63,7 +63,7 @@ public class MySqlCreateTableTest68 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table t1 ("
+            assertEquals("create table t1 ("
                     + "\n\tyear_col INT,"
                     + "\n\tsome_data INT"
                     + "\n)"

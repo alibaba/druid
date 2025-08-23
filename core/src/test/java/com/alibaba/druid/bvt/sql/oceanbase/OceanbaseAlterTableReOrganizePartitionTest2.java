@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oceanbase;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -39,18 +39,18 @@ public class OceanbaseAlterTableReOrganizePartitionTest2 extends MysqlTest {
 
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("ALTER TABLE members"
+            assertEquals("ALTER TABLE members"
                             + "\n\tREORGANIZE s0, s1, p1, p2, p3 INTO (PARTITION m0 VALUES LESS THAN (1980), PARTITION m1 VALUES LESS THAN (2000));",
                     result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("alter table members"
+            assertEquals("alter table members"
                             + "\n\treorganize s0, s1, p1, p2, p3 into (partition m0 values less than (1980), partition m1 values less than (2000));",
                     result);
         }
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -60,11 +60,11 @@ public class OceanbaseAlterTableReOrganizePartitionTest2 extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 
     }
 }

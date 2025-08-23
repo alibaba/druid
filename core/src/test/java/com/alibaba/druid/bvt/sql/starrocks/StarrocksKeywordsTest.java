@@ -8,10 +8,9 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class StarrocksKeywordsTest {
     @Test
@@ -60,6 +59,6 @@ public class StarrocksKeywordsTest {
                 + "\t\"replication_num\" = \"tag.location.default: 3\",\n"
                 + "\t\"storage_format\" = \"V2\"\n"
                 + ");";
-        Assert.assertEquals(expectedSql, result);
+        assertEquals(expectedSql, result);
     }
 }

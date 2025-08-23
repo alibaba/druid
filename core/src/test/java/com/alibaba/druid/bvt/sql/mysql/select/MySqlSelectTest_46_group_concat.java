@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class MySqlSelectTest_46_group_concat extends MysqlTest {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
@@ -45,21 +45,21 @@ public class MySqlSelectTest_46_group_concat extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-//        Assert.assertEquals(1, visitor.getTables().size());
-//        Assert.assertEquals(1, visitor.getColumns().size());
-//        Assert.assertEquals(0, visitor.getConditions().size());
-//        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+//        assertEquals(1, visitor.getTables().size());
+//        assertEquals(1, visitor.getColumns().size());
+//        assertEquals(0, visitor.getConditions().size());
+//        assertEquals(0, visitor.getOrderByColumns().size());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT student_name, GROUP_CONCAT(test_score)\n" +
+            assertEquals("SELECT student_name, GROUP_CONCAT(test_score)\n" +
                             "FROM student\n" +
                             "GROUP BY student_name;", //
                     output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select student_name, group_concat(test_score)\n" +
+            assertEquals("select student_name, group_concat(test_score)\n" +
                             "from student\n" +
                             "group by student_name;", //
                     output);
@@ -67,7 +67,7 @@ public class MySqlSelectTest_46_group_concat extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            Assert.assertEquals("SELECT student_name, GROUP_CONCAT(test_score)\n" +
+            assertEquals("SELECT student_name, GROUP_CONCAT(test_score)\n" +
                             "FROM student\n" +
                             "GROUP BY student_name;", //
                     output);

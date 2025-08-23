@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class DB2SelectTest_25_concat extends DB2Test {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         System.out.println(stmt.getSelect().getQuery());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -46,22 +46,22 @@ public class DB2SelectTest_25_concat extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_authority")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_authority")));
 
-//         Assert.assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+//         assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT ID, AUTHORITY_TYPE\n" +
+        assertEquals("SELECT ID, AUTHORITY_TYPE\n" +
                         "FROM t_authority a\n" +
                         "WHERE authority_type LIKE CONCAT('%', ?)", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
 
-        Assert.assertEquals("select ID, AUTHORITY_TYPE\n" +
+        assertEquals("select ID, AUTHORITY_TYPE\n" +
                         "from t_authority a\n" +
                         "where authority_type like CONCAT('%', ?)", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

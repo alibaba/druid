@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.wall.WallUtils;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class MySqlUpdateTest_12 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -47,20 +47,20 @@ public class MySqlUpdateTest_12 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(3, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        // Assert.assertEquals(2, visitor.getConditions().size());
+        assertEquals(3, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        // assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsTable("t1"));
-        Assert.assertTrue(visitor.containsTable("t2"));
-        Assert.assertTrue(visitor.containsTable("t3"));
+        assertTrue(visitor.containsTable("t1"));
+        assertTrue(visitor.containsTable("t2"));
+        assertTrue(visitor.containsTable("t3"));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t3", "id2")));
+        assertTrue(visitor.getColumns().contains(new Column("t1", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("t3", "id2")));
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("UPDATE t1\n" +
+            assertEquals("UPDATE t1\n" +
                             "\tINNER JOIN t2 ON t1.id = t2.id\n" +
                             "\tINNER JOIN t3 cm ON t3.id2 = t1.id2\n" +
                             "SET gps_url = NULL\n" +
@@ -69,7 +69,7 @@ public class MySqlUpdateTest_12 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("update t1\n" +
+            assertEquals("update t1\n" +
                             "\tinner join t2 on t1.id = t2.id\n" +
                             "\tinner join t3 cm on t3.id2 = t1.id2\n" +
                             "set gps_url = null\n" +

@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class MySqlCreateFullTextTokenizeTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE FULLTEXT TOKENIZER test1(\n"
+        assertEquals("CREATE FULLTEXT TOKENIZER test1(\n"
                 + "\"type\" = 'typename',\n"
                 + "\"user_defined_dict\" = 'dictionary-name',\n"
                 + "'key' = 'name'\n"
@@ -54,7 +54,7 @@ public class MySqlCreateFullTextTokenizeTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW FULLTEXT TOKENFILTERS", output);
+        assertEquals("SHOW FULLTEXT TOKENFILTERS", output);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class MySqlCreateFullTextTokenizeTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW CREATE FULLTEXT TOKENFILTER test1", output);
+        assertEquals("SHOW CREATE FULLTEXT TOKENFILTER test1", output);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class MySqlCreateFullTextTokenizeTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER FULLTEXT TOKENFILTER test1 SET k = 'a';", output);
+        assertEquals("ALTER FULLTEXT TOKENFILTER test1 SET k = 'a';", output);
     }
 
     @Test
@@ -90,6 +90,6 @@ public class MySqlCreateFullTextTokenizeTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DROP FULLTEXT TOKENFILTER test1", output);
+        assertEquals("DROP FULLTEXT TOKENFILTER test1", output);
     }
 }

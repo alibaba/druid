@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -58,12 +60,12 @@ public class DruidDataSourceTest_interrupt2 extends TestCase {
 
             Thread.sleep(10);
 
-            Assert.assertEquals(0, errorCount.get());
+            assertEquals(0, errorCount.get());
 
             thread.interrupt();
 
             endLatch.await();
-            Assert.assertEquals(1, errorCount.get());
+            assertEquals(1, errorCount.get());
         } finally {
             dataSource.getLock().unlock();
         }

@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
@@ -25,13 +25,13 @@ public class EqualTest_boolean extends TestCase {
             SQLExprParser parser = new MySqlExprParser(sql_c);
             exprC = (SQLBooleanExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLBooleanExpr(), new SQLBooleanExpr());
-        Assert.assertEquals(new SQLBooleanExpr().hashCode(), new SQLBooleanExpr().hashCode());
+        assertEquals(new SQLBooleanExpr(), new SQLBooleanExpr());
+        assertEquals(new SQLBooleanExpr().hashCode(), new SQLBooleanExpr().hashCode());
     }
 }

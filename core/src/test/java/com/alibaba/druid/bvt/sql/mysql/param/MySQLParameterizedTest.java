@@ -26,7 +26,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class MySQLParameterizedTest extends TestCase {
     void paramaterizeAST(String sql, String expected) {
         SQLStatement stmt = ParameterizedOutputVisitorUtils.parameterizeOf(sql, DbType.mysql);
 
-        Assert.assertEquals(expected, stmt.toString());
+        assertEquals(expected, stmt.toString());
     }
 
     void validate(String sql, String expect) {
@@ -45,15 +45,15 @@ public class MySQLParameterizedTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
         stmt.accept(visitor);
 
-        Assert.assertTrue(visitor.getReplaceCount() > 0);
+        assertTrue(visitor.getReplaceCount() > 0);
 
-        Assert.assertEquals(expect, out.toString());
+        assertEquals(expect, out.toString());
     }
 
     void validateOracle(String sql, String expect) {
@@ -61,14 +61,14 @@ public class MySQLParameterizedTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         OracleParameterizedOutputVisitor visitor = new OracleParameterizedOutputVisitor(out, false);
         stmt.accept(visitor);
 
-        Assert.assertTrue(visitor.getReplaceCount() > 0);
+        assertTrue(visitor.getReplaceCount() > 0);
 
-        Assert.assertEquals(expect, out.toString());
+        assertEquals(expect, out.toString());
     }
 }

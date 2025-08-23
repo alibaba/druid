@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,22 +32,22 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest8 extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where 1=1 AND FID = ?")); // AND永真不拦截
     }
 
     public void test_false_1() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        assertFalse(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where FID = ? OR 1=1")); // 永真，拦截
     }
 
     public void test_false_2() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        assertFalse(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where FID = ? OR (FID = ? OR 1=1)")); // 永真，拦截
     }
 
     public void test_false_3() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        assertFalse(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where FID = ? OR (1=1 or FID = ?)")); // 永真，拦截
     }
 }

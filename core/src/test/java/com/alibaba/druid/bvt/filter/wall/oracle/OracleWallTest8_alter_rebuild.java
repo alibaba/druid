@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
+import static org.junit.Assert.assertTrue;
+
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class OracleWallTest8_alter_rebuild extends TestCase {
     public void test_true() throws Exception {
         String sql = //
                 "alter index idx_t1 rebuild";
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

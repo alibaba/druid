@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -37,6 +37,6 @@ public class MySqlCreateIndex2Test extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE INDEX index1 ON t1 (col1) USING BTREE COMMENT 'some test';", output);
+        assertEquals("CREATE INDEX index1 ON t1 (col1) USING BTREE COMMENT 'some test';", output);
     }
 }

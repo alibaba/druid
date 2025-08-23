@@ -23,6 +23,7 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+import static org.junit.Assert.*;
 
 public class OracleBlockTest19 extends OracleTest {
     public void test_0() throws Exception {
@@ -70,6 +71,6 @@ public class OracleBlockTest19 extends OracleTest {
         assertEquals(0, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
 }

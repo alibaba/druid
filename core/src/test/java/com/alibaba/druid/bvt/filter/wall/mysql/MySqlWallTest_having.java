@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,17 +32,17 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest_having extends TestCase {
     public void test_having() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        assertFalse(WallUtils.isValidateMySql(//
                 "select id, count(*) from t group by id having 1 = 1"));
     }
 
     public void test_having_true_first() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
                 "select id, count(*) from t group by id having 1 = 1 AND count(*) > 2"));
     }
 
     public void test_having_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        assertFalse(WallUtils.isValidateMySql(//
                 "select id, count(*) from t group by id having count(*) > 2 OR 1 = 1"));
     }
 }

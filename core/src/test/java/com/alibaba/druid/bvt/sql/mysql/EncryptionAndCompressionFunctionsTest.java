@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -34,7 +34,7 @@ public class EncryptionAndCompressionFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("INSERT INTO t\nVALUES (1, AES_ENCRYPT('text', 'password'));", text);
+        assertEquals("INSERT INTO t\nVALUES (1, AES_ENCRYPT('text', 'password'));", text);
     }
 
     public void test_1() throws Exception {
@@ -45,7 +45,7 @@ public class EncryptionAndCompressionFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT LENGTH(COMPRESS(REPEAT('a', 1000)));", text);
+        assertEquals("SELECT LENGTH(COMPRESS(REPEAT('a', 1000)));", text);
     }
 
     public void test_2() throws Exception {
@@ -56,7 +56,7 @@ public class EncryptionAndCompressionFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT LENGTH(COMPRESS(REPEAT('a', 16)));", text);
+        assertEquals("SELECT LENGTH(COMPRESS(REPEAT('a', 16)));", text);
     }
 
     public void test_3() throws Exception {
@@ -67,7 +67,7 @@ public class EncryptionAndCompressionFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT MD5('testing');", text);
+        assertEquals("SELECT MD5('testing');", text);
     }
 
     public void test_4() throws Exception {
@@ -78,7 +78,7 @@ public class EncryptionAndCompressionFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SHA1('abc');", text);
+        assertEquals("SELECT SHA1('abc');", text);
     }
 
     public void test_5() throws Exception {
@@ -89,7 +89,7 @@ public class EncryptionAndCompressionFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SHA2('abc');", text);
+        assertEquals("SELECT SHA2('abc');", text);
     }
 
     public void test_6() throws Exception {
@@ -100,7 +100,7 @@ public class EncryptionAndCompressionFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT PASSWORD('badpwd');", text);
+        assertEquals("SELECT PASSWORD('badpwd');", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

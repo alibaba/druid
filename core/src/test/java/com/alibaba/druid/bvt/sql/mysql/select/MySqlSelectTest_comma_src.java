@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class MySqlSelectTest_comma_src extends MysqlTest {
 
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SQLStatement stmt = statementList.get(0);
 
@@ -49,14 +49,14 @@ public class MySqlSelectTest_comma_src extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-//        Assert.assertEquals(1, visitor.getTables().size());
-//        Assert.assertEquals(1, visitor.getColumns().size());
-//        Assert.assertEquals(0, visitor.getConditions().size());
-//        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+//        assertEquals(1, visitor.getTables().size());
+//        assertEquals(1, visitor.getColumns().size());
+//        assertEquals(0, visitor.getConditions().size());
+//        assertEquals(0, visitor.getOrderByColumns().size());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT *\n" +
+            assertEquals("SELECT *\n" +
                             "FROM t1, t2, t3", //
                     output);
         }

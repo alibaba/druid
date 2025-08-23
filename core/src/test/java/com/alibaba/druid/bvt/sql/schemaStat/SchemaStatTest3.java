@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class SchemaStatTest3 extends TestCase {
     public void test_schemaStat() throws Exception {
@@ -23,7 +23,7 @@ public class SchemaStatTest3 extends TestCase {
 
         System.out.println(visitor.getColumns());
 
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertTrue(visitor.containsColumn("t", "*"));
+        assertEquals(1, visitor.getColumns().size());
+        assertTrue(visitor.containsColumn("t", "*"));
     }
 }

@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 /**
  * @version 1.0
@@ -24,10 +24,10 @@ public class MySqlAlterTableAddIndex_11 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2\n" +
+        assertEquals("ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2\n" +
                 "\tADD FULLTEXT INDEX title_fulltext_idx (title) WITH INDEX ANALYZER index_analyzer2 WITH QUERY ANALYZER query_analyzer2 WITH DICT user_dict;", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table aliyun_poc_db.tbl_custom_analyzer2\n" +
+        assertEquals("alter table aliyun_poc_db.tbl_custom_analyzer2\n" +
                 "\tadd fulltext index title_fulltext_idx (title) with index analyzer index_analyzer2 with query analyzer query_analyzer2 with dict user_dict;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -44,10 +44,10 @@ public class MySqlAlterTableAddIndex_11 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2\n" +
+        assertEquals("ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2\n" +
                 "\tADD FULLTEXT INDEX title_fulltext_idx (title) WITH INDEX ANALYZER index_analyzer2", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table aliyun_poc_db.tbl_custom_analyzer2\n" +
+        assertEquals("alter table aliyun_poc_db.tbl_custom_analyzer2\n" +
                 "\tadd fulltext index title_fulltext_idx (title) with index analyzer index_analyzer2", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -64,10 +64,10 @@ public class MySqlAlterTableAddIndex_11 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2\n" +
+        assertEquals("ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2\n" +
                 "\tADD FULLTEXT INDEX title_fulltext_idx (title) WITH QUERY ANALYZER query_analyzer2 WITH DICT user_dict;", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table aliyun_poc_db.tbl_custom_analyzer2\n" +
+        assertEquals("alter table aliyun_poc_db.tbl_custom_analyzer2\n" +
                 "\tadd fulltext index title_fulltext_idx (title) with query analyzer query_analyzer2 with dict user_dict;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -84,10 +84,10 @@ public class MySqlAlterTableAddIndex_11 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2\n" +
+        assertEquals("ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2\n" +
                 "\tADD FULLTEXT INDEX title_fulltext_idx (title) WITH DICT user_dict;", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table aliyun_poc_db.tbl_custom_analyzer2\n" +
+        assertEquals("alter table aliyun_poc_db.tbl_custom_analyzer2\n" +
                 "\tadd fulltext index title_fulltext_idx (title) with dict user_dict;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);

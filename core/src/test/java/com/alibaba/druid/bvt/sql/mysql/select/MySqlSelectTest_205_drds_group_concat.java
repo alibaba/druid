@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,19 +37,19 @@ public class MySqlSelectTest_205_drds_group_concat extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
-        Assert.assertEquals(1, visitor.getOrderByColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getOrderByColumns().size());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT student_name, GROUP_CONCAT(DISTINCT test_score ORDER BY test_score DESC SEPARATOR ' ')\n" +
+            assertEquals("SELECT student_name, GROUP_CONCAT(DISTINCT test_score ORDER BY test_score DESC SEPARATOR ' ')\n" +
                             "FROM student\n" +
                             "GROUP BY student_name;", //
                     output);

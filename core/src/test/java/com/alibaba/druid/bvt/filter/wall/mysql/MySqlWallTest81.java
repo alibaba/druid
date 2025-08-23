@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -34,10 +36,10 @@ public class MySqlWallTest81 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setStrictSyntaxCheck(false);
 
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "SELECT * FROM T WHERE FID = '\\'a' OR LEAST(2,1,9,8) = 1"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 
 }

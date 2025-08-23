@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -80,7 +80,7 @@ public class DB2InsertTest_1 extends DB2Test {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -90,18 +90,18 @@ public class DB2InsertTest_1 extends DB2Test {
         System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(11, visitor.getColumns().size());
-        Assert.assertEquals(4, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(11, visitor.getColumns().size());
+        assertEquals(4, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MK.KPI_AREA_SORT_FACT_LATN_ID_MID")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("MK.KPI_AREA_SORT_FACT_LATN_ID_MID")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("MK.M_USER_COUNT_FACT_CDMA", "LATN_ID")));
-//         Assert.assertTrue(visitor.getColumns().contains(new Column("t", "name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+        assertTrue(visitor.getColumns().contains(new Column("MK.M_USER_COUNT_FACT_CDMA", "LATN_ID")));
+//         assertTrue(visitor.getColumns().contains(new Column("t", "name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
-        Assert.assertEquals("INSERT INTO MK.KPI_AREA_SORT_FACT_LATN_ID_MID\n" +
+        assertEquals("INSERT INTO MK.KPI_AREA_SORT_FACT_LATN_ID_MID\n" +
                         "SELECT LATN_ID, BUREAU_KEY, SUM(ADD_SUM)\n" +
                         "\t, SUM(USER_ACCT), SUM(USER_ACCT_LY)\n" +
                         "\t, 1\n" +

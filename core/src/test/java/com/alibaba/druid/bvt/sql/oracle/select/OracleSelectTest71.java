@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class OracleSelectTest71 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -90,9 +90,9 @@ public class OracleSelectTest71 extends OracleTest {
                     "WHERE rn > ? * (? - 1)\n" +
                     "\tAND rn <= ? * ?", text);
         }
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
-        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+        // assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 
     public void testSelectWithJoin_UnderParen() {
@@ -113,12 +113,12 @@ public class OracleSelectTest71 extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
 
-        Assert.assertEquals(3, visitor.getTables().size());
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(3, visitor.getTables().size());
+        assertEquals(6, visitor.getColumns().size());
     }
 }

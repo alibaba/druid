@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.sql.Blob;
@@ -32,7 +34,6 @@ import java.sql.Types;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -71,7 +72,7 @@ public class PrecallTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_precall() throws Exception {

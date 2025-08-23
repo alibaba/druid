@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -47,9 +47,9 @@ public class OracleCreateTableTest18 extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"AUTHORS\" (\n" +
+        assertEquals("CREATE TABLE \"SONAR\".\"AUTHORS\" (\n" +
                         "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
                         "\t\"PERSON_ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
                         "\t\"LOGIN\" VARCHAR2(100 BYTE),\n" +
@@ -82,10 +82,10 @@ public class OracleCreateTableTest18 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(5, visitor.getColumns().size());
+        assertEquals(5, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("SONAR.AUTHORS", "ID"));
+        assertTrue(visitor.containsColumn("SONAR.AUTHORS", "ID"));
     }
 }

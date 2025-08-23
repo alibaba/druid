@@ -4,7 +4,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 
@@ -22,7 +22,7 @@ public class ReplaceTest {
         SQLMethodInvokeExpr current_timestamp_method2 = new SQLMethodInvokeExpr("current_timestamp");
         SQLUtils.replaceInParent(current_timestamp_identifier1, current_timestamp_method1);
         SQLUtils.replaceInParent(current_timestamp_identifier2, current_timestamp_method2);
-        Assert.assertEquals(current_timestamp_method1, when.getValues().get(0));
-        Assert.assertEquals(current_timestamp_method2, when.getValues().get(1));
+        assertEquals(current_timestamp_method1, when.getValues().get(0));
+        assertEquals(current_timestamp_method2, when.getValues().get(1));
     }
 }

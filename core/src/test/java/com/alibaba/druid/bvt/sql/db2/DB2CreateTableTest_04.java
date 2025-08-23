@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class DB2CreateTableTest_04 extends DB2Test {
         SQLStatement stmt = statementList.get(0);
         System.out.println(SQLUtils.toDB2String(stmt));
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -52,17 +52,17 @@ public class DB2CreateTableTest_04 extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(7, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(7, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsTable("CUSTOMER"));
+        assertTrue(visitor.containsTable("CUSTOMER"));
 
-//         Assert.assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+//         assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("CREATE TABLE CUSTOMER (\n" +
+        assertEquals("CREATE TABLE CUSTOMER (\n" +
                         "\tCUSTOMERNUM INTEGER,\n" +
                         "\tCUSTOMERNAME VARCHAR(80),\n" +
                         "\tADDRESS VARCHAR(200),\n" +
@@ -74,7 +74,7 @@ public class DB2CreateTableTest_04 extends DB2Test {
                         "COMPRESS YES;", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
 
-        Assert.assertEquals("create table CUSTOMER (\n" +
+        assertEquals("create table CUSTOMER (\n" +
                         "\tCUSTOMERNUM INTEGER,\n" +
                         "\tCUSTOMERNAME VARCHAR(80),\n" +
                         "\tADDRESS VARCHAR(200),\n" +

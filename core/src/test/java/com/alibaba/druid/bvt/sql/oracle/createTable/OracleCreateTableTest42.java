@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -50,9 +50,9 @@ public class OracleCreateTableTest42 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+        assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
                         "\t\"GROUP_NAME\" VARCHAR2(8) NOT NULL ENABLE,\n" +
                         "\t\"GROUP_KEY\" NUMBER(19, 0) NOT NULL ENABLE,\n" +
                         "\t\"LOG_CMPLT_CSN\" VARCHAR2(128) NOT NULL ENABLE,\n" +
@@ -91,10 +91,10 @@ public class OracleCreateTableTest42 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "GROUP_NAME"));
+        assertTrue(visitor.containsColumn("SC_001.TB_001", "GROUP_NAME"));
     }
 }

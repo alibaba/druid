@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class OracleCreateProcedureTest1 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         print(statementList);
 
-        Assert.assertEquals(3, statementList.size());
+        assertEquals(3, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         for (SQLStatement statement : statementList) {
@@ -63,14 +63,14 @@ public class OracleCreateProcedureTest1 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getRelationships().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
+        assertEquals(0, visitor.getRelationships().size());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dept_temp")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("dept_temp", "department_id")));
+        assertEquals(1, visitor.getTables().size());
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("dept_temp")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("dept_temp", "department_id")));
     }
 
     public void test_1() throws Exception {
@@ -98,7 +98,7 @@ public class OracleCreateProcedureTest1 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         print(statementList);
 
-        Assert.assertEquals(3, statementList.size());
+        assertEquals(3, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         for (SQLStatement statement : statementList) {
@@ -111,13 +111,13 @@ public class OracleCreateProcedureTest1 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getRelationships().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
+        assertEquals(0, visitor.getRelationships().size());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dept_temp")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("dept_temp", "department_id")));
+        assertEquals(1, visitor.getTables().size());
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("dept_temp")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("dept_temp", "department_id")));
     }
 }

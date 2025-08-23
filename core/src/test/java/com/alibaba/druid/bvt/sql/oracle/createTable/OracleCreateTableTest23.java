@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -44,9 +44,9 @@ public class OracleCreateTableTest23 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE promotions_var1 (" //
+        assertEquals("CREATE TABLE promotions_var1 (" //
                         + "\n\tpromo_id NUMBER(6)" //
                         + "\n\t\tCONSTRAINT promo_id_u UNIQUE," //
                         + "\n\tpromo_name VARCHAR2(20)," //
@@ -66,10 +66,10 @@ public class OracleCreateTableTest23 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("promotions_var1", "promo_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("promotions_var1", "promo_id")));
     }
 }

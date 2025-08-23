@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -31,7 +33,7 @@ public class TestDefault extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_close() throws Exception {
@@ -45,9 +47,9 @@ public class TestDefault extends TestCase {
             ResultSet rs = stmt.executeQuery();
             rs.next();
 
-            Assert.assertEquals(0, conn.getHoldability());
-            Assert.assertEquals(false, conn.isReadOnly());
-            Assert.assertEquals(0, conn.getTransactionIsolation());
+            assertEquals(0, conn.getHoldability());
+            assertEquals(false, conn.isReadOnly());
+            assertEquals(0, conn.getTransactionIsolation());
 
             conn.setHoldability(ResultSet.HOLD_CURSORS_OVER_COMMIT);
             conn.setReadOnly(false);
@@ -55,8 +57,8 @@ public class TestDefault extends TestCase {
 
             conn.close();
 
-            Assert.assertEquals(true, stmt.isClosed());
-            Assert.assertEquals(true, rs.isClosed());
+            assertEquals(true, stmt.isClosed());
+            assertEquals(true, rs.isClosed());
 
             rs.close();
             stmt.close();
@@ -64,9 +66,9 @@ public class TestDefault extends TestCase {
 
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, conn.getHoldability());
-        Assert.assertEquals(false, conn.isReadOnly());
-        Assert.assertEquals(0, conn.getTransactionIsolation());
+        assertEquals(0, conn.getHoldability());
+        assertEquals(false, conn.isReadOnly());
+        assertEquals(0, conn.getTransactionIsolation());
 
         conn.close();
 

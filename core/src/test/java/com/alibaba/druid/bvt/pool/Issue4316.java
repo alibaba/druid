@@ -1,10 +1,10 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import org.junit.Test;
-
-import static org.junit.Assert.assertFalse;
 
 public class Issue4316 {
     @Test

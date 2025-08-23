@@ -15,12 +15,13 @@
  */
 package com.alibaba.druid.bvt.bug;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -48,7 +49,7 @@ public class Bug_for_happyday517 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         super.tearDown();
     }
@@ -60,8 +61,8 @@ public class Bug_for_happyday517 extends PoolTestCase {
 
         MockStatement mockStmt = stmt.unwrap(MockStatement.class);
 
-        Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
-        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
+        assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
 
         stmt.close();
 
@@ -76,9 +77,9 @@ public class Bug_for_happyday517 extends PoolTestCase {
 
         MockStatement mockStmt = stmt.unwrap(MockStatement.class);
 
-        Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
-        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
-        Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, mockStmt.getResultSetHoldability());
+        assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
+        assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, mockStmt.getResultSetHoldability());
 
         stmt.close();
 
@@ -93,8 +94,8 @@ public class Bug_for_happyday517 extends PoolTestCase {
 
         MockPreparedStatement mockStmt = stmt.unwrap(MockPreparedStatement.class);
 
-        Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
-        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
+        assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
 
         stmt.close();
 
@@ -110,9 +111,9 @@ public class Bug_for_happyday517 extends PoolTestCase {
 
         MockPreparedStatement mockStmt = stmt.unwrap(MockPreparedStatement.class);
 
-        Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
-        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
-        Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, mockStmt.getResultSetHoldability());
+        assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
+        assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, mockStmt.getResultSetHoldability());
 
         stmt.close();
 
@@ -127,8 +128,8 @@ public class Bug_for_happyday517 extends PoolTestCase {
 
         Statement mockStmt = stmt.unwrap(Statement.class);
 
-        Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
-        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
+        assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
 
         stmt.close();
 
@@ -144,9 +145,9 @@ public class Bug_for_happyday517 extends PoolTestCase {
 
         Statement mockStmt = stmt.unwrap(Statement.class);
 
-        Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
-        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
-        Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, mockStmt.getResultSetHoldability());
+        assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
+        assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, mockStmt.getResultSetHoldability());
 
         stmt.close();
 

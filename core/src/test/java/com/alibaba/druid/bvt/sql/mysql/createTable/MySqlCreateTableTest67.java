@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest67 extends MysqlTest {
@@ -41,7 +41,7 @@ public class MySqlCreateTableTest67 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE t1 (\n" +
+            assertEquals("CREATE TABLE t1 (\n" +
                     "\ta INT NOT NULL,\n" +
                     "\tPRIMARY KEY (a)\n" +
                     ") ENGINE = InnoDB TABLESPACE ts1\n" +
@@ -55,7 +55,7 @@ public class MySqlCreateTableTest67 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table t1 (\n" +
+            assertEquals("create table t1 (\n" +
                     "\ta INT not null,\n" +
                     "\tprimary key (a)\n" +
                     ") engine = InnoDB tablespace ts1\n" +

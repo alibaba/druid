@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class OracleSelectTest_issue_5109 extends OracleTest {
@@ -54,7 +54,7 @@ public class OracleSelectTest_issue_5109 extends OracleTest {
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
         System.out.println(stmt);
     }
 
@@ -77,7 +77,7 @@ public class OracleSelectTest_issue_5109 extends OracleTest {
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
         System.out.println(stmt);
     }
 }

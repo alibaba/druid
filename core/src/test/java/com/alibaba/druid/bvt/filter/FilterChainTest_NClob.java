@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -22,7 +25,6 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockNClob;
@@ -66,8 +68,8 @@ public class FilterChainTest_NClob extends TestCase {
 
         Clob clob = chain.resultSet_getClob(new ResultSetProxyImpl(statement, mockResultSet, 1, null), 1);
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_resultSet_getClob_1() throws Exception {
@@ -75,8 +77,8 @@ public class FilterChainTest_NClob extends TestCase {
 
         Clob clob = chain.resultSet_getClob(new ResultSetProxyImpl(statement, mockResultSet, 1, null), "1");
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_resultSet_getObject() throws Exception {
@@ -84,8 +86,8 @@ public class FilterChainTest_NClob extends TestCase {
 
         Clob clob = (Clob) chain.resultSet_getObject(new ResultSetProxyImpl(statement, mockResultSet, 1, null), 1);
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_resultSet_getObject_1() throws Exception {
@@ -93,8 +95,8 @@ public class FilterChainTest_NClob extends TestCase {
 
         Clob clob = (Clob) chain.resultSet_getObject(new ResultSetProxyImpl(statement, mockResultSet, 1, null), "1");
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_resultSet_getObject_2() throws Exception {
@@ -102,8 +104,8 @@ public class FilterChainTest_NClob extends TestCase {
 
         Clob clob = (Clob) chain.resultSet_getObject(new ResultSetProxyImpl(statement, mockResultSet, 1, null), 1, Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_resultSet_getObject_3() throws Exception {
@@ -111,7 +113,7 @@ public class FilterChainTest_NClob extends TestCase {
 
         Clob clob = (Clob) chain.resultSet_getObject(new ResultSetProxyImpl(statement, mockResultSet, 1, null), "1", Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 }

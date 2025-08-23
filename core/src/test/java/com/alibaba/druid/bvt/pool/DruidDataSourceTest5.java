@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.TestCase;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import com.alibaba.druid.pool.DataSourceClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -48,7 +50,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
@@ -65,7 +67,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
@@ -82,7 +84,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 

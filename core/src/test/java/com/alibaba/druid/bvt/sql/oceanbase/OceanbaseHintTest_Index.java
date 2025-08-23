@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oceanbase;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -35,18 +35,18 @@ public class OceanbaseHintTest_Index extends MysqlTest {
 
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ *"
+            assertEquals("SELECT /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ *"
                     + "\nFROM t1, t2"
                     + "\nWHERE t1.c1 = t2.c1;", result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ *"
+            assertEquals("select /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ *"
                     + "\nfrom t1, t2"
                     + "\nwhere t1.c1 = t2.c1;", result);
         }
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -56,11 +56,11 @@ public class OceanbaseHintTest_Index extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 
     }
 }

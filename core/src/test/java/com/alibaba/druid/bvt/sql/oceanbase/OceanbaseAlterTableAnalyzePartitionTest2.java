@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oceanbase;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -35,18 +35,18 @@ public class OceanbaseAlterTableAnalyzePartitionTest2 extends MysqlTest {
 
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("ALTER TABLE tnrange"
+            assertEquals("ALTER TABLE tnrange"
                             + "\n\tANALYZE PARTITION ALL;",
                     result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("alter table tnrange"
+            assertEquals("alter table tnrange"
                             + "\n\tanalyze partition all;",
                     result);
         }
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -56,11 +56,11 @@ public class OceanbaseAlterTableAnalyzePartitionTest2 extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 
     }
 }

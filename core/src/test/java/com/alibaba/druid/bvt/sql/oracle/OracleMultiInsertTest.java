@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -51,7 +51,7 @@ public class OracleMultiInsertTest extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -61,26 +61,26 @@ public class OracleMultiInsertTest extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sales")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sales_input_table")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sales")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sales_input_table")));
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(14, visitor.getColumns().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(14, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "prod_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "cust_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "time_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "amount")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "product_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "customer_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "weekly_start_date")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_sun")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_mon")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_tue")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_wed")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_thu")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_fri")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_sat")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "prod_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "cust_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "time_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "amount")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "product_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "customer_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "weekly_start_date")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_sun")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_mon")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_tue")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_wed")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_thu")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_fri")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales_input_table", "sales_sat")));
 
     }
 

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oceanbase;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -35,18 +35,18 @@ public class OceanbaseAlterTableReOrganizePartitionTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("ALTER TABLE members" //
+            assertEquals("ALTER TABLE members" //
                             + "\n\tREORGANIZE p0 INTO (PARTITION s0 VALUES LESS THAN (1960), PARTITION s1 VALUES LESS THAN (1970));",
                     result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("alter table members" //
+            assertEquals("alter table members" //
                             + "\n\treorganize p0 into (partition s0 values less than (1960), partition s1 values less than (1970));",
                     result);
         }
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -56,11 +56,11 @@ public class OceanbaseAlterTableReOrganizePartitionTest extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 
     }
 }

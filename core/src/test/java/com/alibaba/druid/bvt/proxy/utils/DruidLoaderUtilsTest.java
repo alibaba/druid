@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.bvt.proxy.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,7 +26,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.bvt.proxy.DruidDriverTest.PublicJdbcFilterAdapter;
 import com.alibaba.druid.filter.Filter;
@@ -41,43 +44,43 @@ public class DruidLoaderUtilsTest extends TestCase {
         String filterItem = "log4j";
         FilterManager.loadFilter(filters, filterItem);
         Filter filterConfig = filters.get(0);
-        Assert.assertNotNull(filterConfig);
-        Assert.assertEquals("com.alibaba.druid.filter.logging.Log4jFilter", filterConfig.getClass().getName());
+        assertNotNull(filterConfig);
+        assertEquals("com.alibaba.druid.filter.logging.Log4jFilter", filterConfig.getClass().getName());
         // stat
         filterItem = "stat";
         filters.clear();
         FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
-        Assert.assertNotNull(filterConfig);
-        Assert.assertEquals("com.alibaba.druid.filter.stat.StatFilter", filterConfig.getClass().getName());
+        assertNotNull(filterConfig);
+        assertEquals("com.alibaba.druid.filter.stat.StatFilter", filterConfig.getClass().getName());
         // default
         filterItem = "default";
         filters.clear();
         FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
-        Assert.assertNotNull(filterConfig);
-        Assert.assertEquals("com.alibaba.druid.filter.stat.StatFilter", filterConfig.getClass().getName());
+        assertNotNull(filterConfig);
+        assertEquals("com.alibaba.druid.filter.stat.StatFilter", filterConfig.getClass().getName());
         // counter
         filterItem = "stat";
         filters.clear();
         FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
-        Assert.assertNotNull(filterConfig);
-        Assert.assertEquals("com.alibaba.druid.filter.stat.StatFilter", filterConfig.getClass().getName());
+        assertNotNull(filterConfig);
+        assertEquals("com.alibaba.druid.filter.stat.StatFilter", filterConfig.getClass().getName());
         // commonLogging
         filterItem = "commonLogging";
         filters.clear();
         FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
-        Assert.assertNotNull(filterConfig);
-        Assert.assertEquals("com.alibaba.druid.filter.logging.CommonsLogFilter", filterConfig.getClass().getName());
+        assertNotNull(filterConfig);
+        assertEquals("com.alibaba.druid.filter.logging.CommonsLogFilter", filterConfig.getClass().getName());
         // encoding
         filterItem = "encoding";
         filters.clear();
         FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
-        Assert.assertNotNull(filterConfig);
-        Assert.assertEquals("com.alibaba.druid.filter.encoding.EncodingConvertFilter",
+        assertNotNull(filterConfig);
+        assertEquals("com.alibaba.druid.filter.encoding.EncodingConvertFilter",
                 filterConfig.getClass().getName());
         // 判定重复
         filterItem = "stat";
@@ -93,12 +96,12 @@ public class DruidLoaderUtilsTest extends TestCase {
     }
 
     public void twest_loadClass() throws Exception {
-        Assert.assertEquals(null, Utils.loadClass(null));
-        Assert.assertEquals(null, Utils.loadClass("xxx"));
-        Assert.assertEquals(PublicJdbcFilterAdapter.class,
+        assertEquals(null, Utils.loadClass(null));
+        assertEquals(null, Utils.loadClass("xxx"));
+        assertEquals(PublicJdbcFilterAdapter.class,
                 Utils.loadClass(PublicJdbcFilterAdapter.class.getName()));
-        Assert.assertNull(Utils.loadClass(null));
-        Assert.assertNull(Utils.loadClass(""));
+        assertNull(Utils.loadClass(null));
+        assertNull(Utils.loadClass(""));
     }
 
 }

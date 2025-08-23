@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class OracleCreateTableTest10 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -47,14 +47,14 @@ public class OracleCreateTableTest10 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.ora_temp_1_ds_16247")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("SYS.WRI$_OPTSTAT_HISTHEAD_HISTORY")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.ora_temp_1_ds_16247")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("SYS.WRI$_OPTSTAT_HISTHEAD_HISTORY")));
 
-        Assert.assertEquals(21, visitor.getColumns().size());
+        assertEquals(21, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("SYS.WRI$_OPTSTAT_HISTHEAD_HISTORY", "OBJ#"));
-        // Assert.assertTrue(visitor.containsColumn("pivot_table", "order_mode"));
+        assertTrue(visitor.containsColumn("SYS.WRI$_OPTSTAT_HISTHEAD_HISTORY", "OBJ#"));
+        // assertTrue(visitor.containsColumn("pivot_table", "order_mode"));
     }
 }

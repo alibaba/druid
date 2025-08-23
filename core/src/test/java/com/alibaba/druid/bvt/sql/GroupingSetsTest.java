@@ -1,7 +1,7 @@
 package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.DbType;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 
@@ -13,7 +13,7 @@ public class GroupingSetsTest extends TestCase {
 
         String result = SQLUtils.format(sql, (DbType) null);
 
-        Assert.assertEquals("SELECT brand, size, sum(sales)"
+        assertEquals("SELECT brand, size, sum(sales)"
                 + "\nFROM items_sold"
                 + "\nGROUP BY GROUPING SETS ((brand), (size), ());", result);
     }

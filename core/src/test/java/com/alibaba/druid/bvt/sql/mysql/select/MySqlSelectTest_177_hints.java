@@ -16,7 +16,7 @@ import com.alibaba.druid.sql.parser.SQLType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -53,41 +53,41 @@ public class MySqlSelectTest_177_hints extends MysqlTest {
                     List<SQLStatement> stmtList = parser.parseStatementList();
                     for (SQLStatement statement : stmtList) {
                         if (statement instanceof MySqlInsertStatement) {
-                            Assert.assertNotNull(((MySqlInsertStatement) statement).getHeadHintsDirect().size() > 0);
-                            Assert.assertNotNull(((MySqlInsertStatement) statement).getHint() != null);
+                            assertNotNull(((MySqlInsertStatement) statement).getHeadHintsDirect().size() > 0);
+                            assertNotNull(((MySqlInsertStatement) statement).getHint() != null);
                             System.out.println(((MySqlInsertStatement) statement).getHeadHintsDirect());
                             System.out.println(((MySqlInsertStatement) statement).getHint());
                         } else if (statement instanceof SQLReplaceStatement) {
-                            Assert.assertNotNull(((SQLReplaceStatement) statement).getHeadHintsDirect().size() > 0);
-                            Assert.assertNotNull(((SQLReplaceStatement) statement).getHints().size() > 0);
+                            assertNotNull(((SQLReplaceStatement) statement).getHeadHintsDirect().size() > 0);
+                            assertNotNull(((SQLReplaceStatement) statement).getHints().size() > 0);
                             System.out.println(((SQLReplaceStatement) statement).getHeadHintsDirect());
                             System.out.println(((SQLReplaceStatement) statement).getHints());
                         } else if (statement instanceof MySqlDeleteStatement) {
-                            Assert.assertNotNull(((MySqlDeleteStatement) statement).getHeadHintsDirect().size() > 0);
-                            Assert.assertNotNull(((MySqlDeleteStatement) statement).getHints().size() > 0);
+                            assertNotNull(((MySqlDeleteStatement) statement).getHeadHintsDirect().size() > 0);
+                            assertNotNull(((MySqlDeleteStatement) statement).getHints().size() > 0);
                             System.out.println(((MySqlDeleteStatement) statement).getHeadHintsDirect());
                             System.out.println(((MySqlDeleteStatement) statement).getHints());
                         } else if (statement instanceof MySqlUpdateStatement) {
-                            Assert.assertNotNull(((MySqlUpdateStatement) statement).getHeadHintsDirect().size() > 0);
-                            Assert.assertNotNull(((MySqlUpdateStatement) statement).getHints().size() > 0);
+                            assertNotNull(((MySqlUpdateStatement) statement).getHeadHintsDirect().size() > 0);
+                            assertNotNull(((MySqlUpdateStatement) statement).getHints().size() > 0);
                             System.out.println(((MySqlUpdateStatement) statement).getHeadHintsDirect());
                             System.out.println(((MySqlUpdateStatement) statement).getHints());
                         } else if (statement instanceof MySqlExplainStatement) {
                             SQLStatement statement1 = ((MySqlExplainStatement) statement).getStatement();
                             if (statement1 instanceof MySqlInsertStatement) {
-                                Assert.assertNotNull(((MySqlInsertStatement) statement1).getHint() != null);
+                                assertNotNull(((MySqlInsertStatement) statement1).getHint() != null);
                                 System.out.println(((MySqlInsertStatement) statement1).getHeadHintsDirect());
                                 System.out.println(((MySqlInsertStatement) statement1).getHint());
                             } else if (statement1 instanceof MySqlDeleteStatement) {
-                                Assert.assertNotNull(((MySqlDeleteStatement) statement1).getHints().size() > 0);
+                                assertNotNull(((MySqlDeleteStatement) statement1).getHints().size() > 0);
                                 System.out.println(((MySqlDeleteStatement) statement1).getHeadHintsDirect());
                                 System.out.println(((MySqlDeleteStatement) statement1).getHints());
                             } else if (statement1 instanceof MySqlUpdateStatement) {
-                                Assert.assertNotNull(((MySqlUpdateStatement) statement1).getHints().size() > 0);
+                                assertNotNull(((MySqlUpdateStatement) statement1).getHints().size() > 0);
                                 System.out.println(((MySqlUpdateStatement) statement1).getHeadHintsDirect());
                                 System.out.println(((MySqlUpdateStatement) statement1).getHints());
                             }
-                            Assert.assertNotNull(((MySqlExplainStatement) statement).getHints().size() > 0);
+                            assertNotNull(((MySqlExplainStatement) statement).getHints().size() > 0);
                             System.out.println(((MySqlExplainStatement) statement).getHints());
                         }
                     }

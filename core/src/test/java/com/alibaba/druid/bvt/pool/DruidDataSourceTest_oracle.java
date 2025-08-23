@@ -1,6 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
+
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -34,6 +36,6 @@ public class DruidDataSourceTest_oracle extends TestCase {
 
     public void test_error() throws Exception {
         dataSource.init();
-        Assert.assertTrue(dataSource.isOracle());
+        assertTrue(dataSource.isOracle());
     }
 }

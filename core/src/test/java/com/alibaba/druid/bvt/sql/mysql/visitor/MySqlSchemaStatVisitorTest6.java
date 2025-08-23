@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class MySqlSchemaStatVisitorTest6 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -41,13 +41,13 @@ public class MySqlSchemaStatVisitorTest6 extends TestCase {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("t"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("t"));
 
-        Assert.assertEquals(1, visitor.getColumns().size());
-        // Assert.assertEquals(true, visitor.getFields().contains(new
+        assertEquals(1, visitor.getColumns().size());
+        // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "id")));
-        // Assert.assertEquals(true, visitor.getFields().contains(new
+        // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "name")));
 
     }

@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+import static org.junit.Assert.*;
 
 public class MySql_Create_Function_0 extends MysqlTest {
     public void test_0() throws Exception {
@@ -60,9 +61,9 @@ public class MySql_Create_Function_0 extends MysqlTest {
         assertEquals(1, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
 
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
+//        assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

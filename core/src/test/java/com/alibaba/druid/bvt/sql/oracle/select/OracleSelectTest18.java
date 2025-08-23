@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class OracleSelectTest18 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -57,15 +57,15 @@ public class OracleSelectTest18 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("v$instance")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dba_hist_snapshot")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("v$instance")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("dba_hist_snapshot")));
 
-        Assert.assertEquals(5, visitor.getColumns().size());
+        assertEquals(5, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

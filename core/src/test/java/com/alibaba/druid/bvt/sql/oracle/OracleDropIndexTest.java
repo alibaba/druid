@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -36,13 +36,13 @@ public class OracleDropIndexTest extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals("DROP INDEX async_m_s_snapshot_id",
+        assertEquals("DROP INDEX async_m_s_snapshot_id",
                 SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
     }
 
 

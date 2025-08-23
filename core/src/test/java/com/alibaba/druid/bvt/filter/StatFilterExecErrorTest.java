@@ -1,12 +1,13 @@
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -55,7 +56,7 @@ public class StatFilterExecErrorTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
+        assertEquals(0, sqlStat.getReadStringLength());
 
         try {
             stmt.executeQuery();
@@ -65,8 +66,8 @@ public class StatFilterExecErrorTest extends TestCase {
             JdbcUtils.close(conn);
         }
 
-        Assert.assertEquals(1, sqlStat.getErrorCount());
-        Assert.assertEquals(0, sqlStat.getRunningCount());
+        assertEquals(1, sqlStat.getErrorCount());
+        assertEquals(0, sqlStat.getRunningCount());
 
         sqlStat.reset();
     }

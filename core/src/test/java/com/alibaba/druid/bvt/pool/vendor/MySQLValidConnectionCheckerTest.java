@@ -1,11 +1,13 @@
 package com.alibaba.druid.bvt.pool.vendor;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
@@ -38,11 +40,11 @@ public class MySQLValidConnectionCheckerTest extends PoolTestCase {
         }
 
         MySqlValidConnectionChecker checker = (MySqlValidConnectionChecker) dataSource.getValidConnectionChecker();
-        Assert.assertFalse(checker.isUsePingMethod());
+        assertFalse(checker.isUsePingMethod());
 
         dataSource.setConnectionProperties("druid.mysql.usePingMethod=true");
 
-        Assert.assertTrue(checker.isUsePingMethod());
+        assertTrue(checker.isUsePingMethod());
 
         Connection conn = dataSource.getConnection();
         conn.close();

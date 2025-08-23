@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -42,7 +42,7 @@ public class OracleMultiInsertTest2 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -52,18 +52,18 @@ public class OracleMultiInsertTest2 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("orders")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("small_orders")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("medium_orders")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("large_orders")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("orders")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("small_orders")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("medium_orders")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("large_orders")));
 
-        Assert.assertEquals(4, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(4, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_total")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "sales_rep_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "customer_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_total")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "sales_rep_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "customer_id")));
 
     }
 

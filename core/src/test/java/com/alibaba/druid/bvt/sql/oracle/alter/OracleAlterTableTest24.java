@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class OracleAlterTableTest24 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -47,16 +47,16 @@ public class OracleAlterTableTest24 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals("RENAME new_duplications_index TO duplications_index", //
+        assertEquals("RENAME new_duplications_index TO duplications_index", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("new_duplications_index")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("new_duplications_index")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
     }
 }

@@ -15,13 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import static org.junit.Assert.assertTrue;
+
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class OracleDeleteTest_2 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -43,18 +45,18 @@ public class OracleDeleteTest_2 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ABC")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ABC")));
         //
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ABC", "ID")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("ABC", "ID")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
 
         {
             String output = SQLUtils.toOracleString(stmt);
-            Assert.assertEquals("DELETE FROM (\n" +
+            assertEquals("DELETE FROM (\n" +
                             "\tSELECT *\n" +
                             "\tFROM ABC\n" +
                             "\tWHERE ID = 6000\n" +
@@ -63,7 +65,7 @@ public class OracleDeleteTest_2 extends OracleTest {
         }
         {
             String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("delete from (\n" +
+            assertEquals("delete from (\n" +
                             "\tselect *\n" +
                             "\tfrom ABC\n" +
                             "\twhere ID = 6000\n" +

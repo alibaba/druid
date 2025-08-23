@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class OracleSelectTest27 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -48,16 +48,16 @@ public class OracleSelectTest27 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(3, visitor.getTables().size());
+        assertEquals(3, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dba_objects")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("search.retl_table_config_search")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.col$")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("dba_objects")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("search.retl_table_config_search")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.col$")));
 
-        Assert.assertEquals(17, visitor.getColumns().size());
+        assertEquals(17, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("search.retl_table_config_search", "tid"));
-        Assert.assertTrue(visitor.containsColumn("dba_objects", "owner"));
-        Assert.assertTrue(visitor.containsColumn("search.retl_table_config_search", "TSCHEMA"));
+        assertTrue(visitor.containsColumn("search.retl_table_config_search", "tid"));
+        assertTrue(visitor.containsColumn("dba_objects", "owner"));
+        assertTrue(visitor.containsColumn("search.retl_table_config_search", "TSCHEMA"));
     }
 }

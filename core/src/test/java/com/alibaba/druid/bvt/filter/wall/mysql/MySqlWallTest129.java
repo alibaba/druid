@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.net.URLDecoder;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -29,13 +31,13 @@ public class MySqlWallTest129 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setCommentAllow(false);
 
-        Assert.assertTrue(provider.checkValid("select * from t where id = 1"));
+        assertTrue(provider.checkValid("select * from t where id = 1"));
 
         String sql = "select * from t where id = ";
         sql += URLDecoder.decode("999999.9%0A%2F*!30000union%0Aall%0Aselect%0A0x31303235343830303536%2Cconcat%280x7e%2C0x27%2C%28Select%0A%40%40version%29%2C0x27%2C0x7e%29%2C0x31303235343830303536%2C0x31303235343830303536%2C0x31303235343830303536%2C0x31303235343830303536%2C0x31303235343830303536%2C0x31303235343830303536%2C0x31303235343830303536%2C0x31303235343830303536%2C0x31303235343830303536%2C0x31303235343830303536*%2F--");
 
         System.out.println(sql);
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
 
     }
 

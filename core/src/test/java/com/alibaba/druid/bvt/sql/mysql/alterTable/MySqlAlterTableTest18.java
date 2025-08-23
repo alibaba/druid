@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest18 extends TestCase {
     public void test_alter_charset() throws Exception {
@@ -29,7 +29,7 @@ public class MySqlAlterTableTest18 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET gbk NULL FIRST;", output);
+        assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET gbk NULL FIRST;", output);
     }
 
     public void test_alter_collate() throws Exception {
@@ -38,7 +38,7 @@ public class MySqlAlterTableTest18 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) COLLATE utf8_bin NULL FIRST;", output);
+        assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) COLLATE utf8_bin NULL FIRST;", output);
     }
 
     public void test_alter_charset_collate() throws Exception {
@@ -47,6 +47,6 @@ public class MySqlAlterTableTest18 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_bin NULL FIRST;", output);
+        assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_bin NULL FIRST;", output);
     }
 }

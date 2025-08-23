@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 
@@ -11,7 +11,7 @@ public class OdpsFormatCommentTest7 extends TestCase {
         String sql = "--这里是注释" //
                 + "\nselect * from table1;" //
                 + "\nselect * from table2;;";//
-        Assert.assertEquals("-- 这里是注释"
+        assertEquals("-- 这里是注释"
                 + "\nSELECT *"
                 + "\nFROM table1;"
                 + "\n"

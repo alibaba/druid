@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,7 +31,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest1 extends TestCase {
     public void test_stuff() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
                 "select count(*) from (select DATE_FORMAT(staydate,'%m月') as month,sum(a) as addnum,sum(q) as quitnum from (select staydate,1 as a,0 as q from add_person union all select quitdate,0 as a,1 as q from quit_person) t where  (DATE_FORMAT(staydate,'%Y')= ? )  group by DATE_FORMAT(staydate,'%Y-%m'))"));
     }
 }

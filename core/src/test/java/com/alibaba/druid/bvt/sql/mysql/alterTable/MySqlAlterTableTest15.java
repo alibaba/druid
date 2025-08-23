@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest15 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -39,11 +39,11 @@ public class MySqlAlterTableTest15 extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE st_jklsxxb" + //
+        assertEquals("ALTER TABLE st_jklsxxb" + //
                 "\n\tDISABLE CONSTRAINT FK_ST_xxx_REFERENCE_ST_xxx", output);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
 
 }

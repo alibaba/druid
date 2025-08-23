@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -25,7 +27,6 @@ import javax.management.openmbean.TabularData;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -40,7 +41,7 @@ public class StatFilterTest extends TestCase {
         JdbcStatManager.getInstance().reset();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_stat() throws Exception {
@@ -58,7 +59,7 @@ public class StatFilterTest extends TestCase {
         conn.close();
 
         TabularData sqlList = JdbcStatManager.getInstance().getSqlList();
-        Assert.assertEquals(true, sqlList.size() > 0);
+        assertEquals(true, sqlList.size() > 0);
 
         int count = 0;
         for (Object item : sqlList.values()) {
@@ -67,9 +68,9 @@ public class StatFilterTest extends TestCase {
                 count++;
             }
             long[] histogram = (long[]) row.get("Histogram");
-            Assert.assertEquals(0L, histogram[histogram.length - 1]);
+            assertEquals(0L, histogram[histogram.length - 1]);
         }
-        Assert.assertEquals(true, count > 0);
+        assertEquals(true, count > 0);
 
         System.out.println(JSONUtils.toJSONString(sqlList));
     }

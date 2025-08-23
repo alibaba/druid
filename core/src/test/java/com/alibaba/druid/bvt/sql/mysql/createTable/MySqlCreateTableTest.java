@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class MySqlCreateTableTest extends MysqlTest {
         SQLStatement statement = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
@@ -43,13 +43,13 @@ public class MySqlCreateTableTest extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t")));
 
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
+//        assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
     }
 
 
@@ -70,7 +70,7 @@ public class MySqlCreateTableTest extends MysqlTest {
         SQLStatement statement = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
@@ -80,9 +80,9 @@ public class MySqlCreateTableTest extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(7, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(7, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
     }
 
 
@@ -94,7 +94,7 @@ public class MySqlCreateTableTest extends MysqlTest {
         SQLStatement statement = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
@@ -114,7 +114,7 @@ public class MySqlCreateTableTest extends MysqlTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
@@ -134,7 +134,7 @@ public class MySqlCreateTableTest extends MysqlTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);

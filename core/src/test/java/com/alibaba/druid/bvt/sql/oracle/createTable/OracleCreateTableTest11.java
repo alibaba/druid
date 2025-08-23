@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class OracleCreateTableTest11 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -78,19 +78,19 @@ public class OracleCreateTableTest11 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("zfj_en_click")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("zfj_en_click")));
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        assertEquals(7, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "P_M")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "KEYWORD")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "REGION_NAME")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "COUNTRY_ACCORD_NAME")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "P_NAME")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "P_VALUE")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "CLICK_CNT")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "P_M")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "KEYWORD")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "REGION_NAME")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "COUNTRY_ACCORD_NAME")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "P_NAME")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "P_VALUE")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("zfj_en_click", "CLICK_CNT")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

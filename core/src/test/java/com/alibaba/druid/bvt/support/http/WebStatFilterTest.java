@@ -15,11 +15,15 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -40,32 +44,32 @@ public class WebStatFilterTest extends TestCase {
 
         WebStatFilter filter = new WebStatFilter();
 
-        Assert.assertNull(filter.getWebAppStat());
+        assertNull(filter.getWebAppStat());
 
         filter.init(filterConfig);
 
         WebAppStat appStat = filter.getWebAppStat();
 
-        Assert.assertFalse(filter.isSessionStatEnable());
-        Assert.assertTrue(WebAppStatManager.getInstance().getWebAppStatSet().contains(appStat));
-        Assert.assertTrue(StatFilterContext.getInstance().getListeners().contains(filter.getStatFilterContextListener()));
+        assertFalse(filter.isSessionStatEnable());
+        assertTrue(WebAppStatManager.getInstance().getWebAppStatSet().contains(appStat));
+        assertTrue(StatFilterContext.getInstance().getListeners().contains(filter.getStatFilterContextListener()));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain chain = new MockFilterChain();
 
-        Assert.assertNull(filter.getSessionStat(request));
+        assertNull(filter.getSessionStat(request));
 
         filter.doFilter(request, response, chain);
 
-        Assert.assertEquals(0, appStat.getSessionStatDataList().size());
+        assertEquals(0, appStat.getSessionStatDataList().size());
 
         filter.destroy();
 
-        Assert.assertFalse(WebAppStatManager.getInstance().getWebAppStatSet().contains(appStat));
-        Assert.assertFalse(StatFilterContext.getInstance().getListeners().contains(filter.getStatFilterContextListener()));
+        assertFalse(WebAppStatManager.getInstance().getWebAppStatSet().contains(appStat));
+        assertFalse(StatFilterContext.getInstance().getListeners().contains(filter.getStatFilterContextListener()));
 
         Map<String, Object> statData = appStat.getStatData();
-        Assert.assertEquals(1L, statData.get("RequestCount"));
+        assertEquals(1L, statData.get("RequestCount"));
     }
 }

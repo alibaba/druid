@@ -15,7 +15,9 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -33,9 +35,9 @@ public class StatViewSerlvetTest_allow extends TestCase {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("128.242.127.2");
-        Assert.assertTrue(servlet.isPermittedRequest(request));
+        assertTrue(servlet.isPermittedRequest(request));
 
-        Assert.assertFalse(servlet.isPermittedRequest("128.242.127.3"));
+        assertFalse(servlet.isPermittedRequest("128.242.127.3"));
     }
 
     public void test_allow_1() throws Exception {
@@ -47,9 +49,9 @@ public class StatViewSerlvetTest_allow extends TestCase {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("128.242.127.2");
-        Assert.assertTrue(servlet.isPermittedRequest(request));
+        assertTrue(servlet.isPermittedRequest(request));
 
-        Assert.assertFalse(servlet.isPermittedRequest("128.242.127.3"));
+        assertFalse(servlet.isPermittedRequest("128.242.127.3"));
     }
 
     public void test_allow_2() throws Exception {
@@ -61,9 +63,9 @@ public class StatViewSerlvetTest_allow extends TestCase {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("128.242.127.2");
-        Assert.assertTrue(servlet.isPermittedRequest(request));
+        assertTrue(servlet.isPermittedRequest(request));
 
-        Assert.assertFalse(servlet.isPermittedRequest("128.242.127.3"));
+        assertFalse(servlet.isPermittedRequest("128.242.127.3"));
     }
 
     public void test_allow_3() throws Exception {
@@ -76,10 +78,10 @@ public class StatViewSerlvetTest_allow extends TestCase {
         for (int i = 1; i <= 255; ++i) {
             MockHttpServletRequest request = new MockHttpServletRequest();
             request.setRemoteAddr("128.242.127." + i);
-            Assert.assertTrue(servlet.isPermittedRequest(request));
+            assertTrue(servlet.isPermittedRequest(request));
         }
 
-        Assert.assertFalse(servlet.isPermittedRequest("128.242.128.1"));
+        assertFalse(servlet.isPermittedRequest("128.242.128.1"));
     }
 
     public void test_allow_4() throws Exception {
@@ -90,10 +92,10 @@ public class StatViewSerlvetTest_allow extends TestCase {
         StatViewServlet servlet = new StatViewServlet();
         servlet.init(servletConfig);
 
-        Assert.assertTrue(servlet.isPermittedRequest("128.242.127.1"));
-        Assert.assertTrue(servlet.isPermittedRequest("128.242.127.2"));
-        Assert.assertTrue(servlet.isPermittedRequest("128.242.127.3"));
-        Assert.assertFalse(servlet.isPermittedRequest("128.242.127.4"));
-        Assert.assertTrue(servlet.isPermittedRequest("128.242.127.5"));
+        assertTrue(servlet.isPermittedRequest("128.242.127.1"));
+        assertTrue(servlet.isPermittedRequest("128.242.127.2"));
+        assertTrue(servlet.isPermittedRequest("128.242.127.3"));
+        assertFalse(servlet.isPermittedRequest("128.242.127.4"));
+        assertTrue(servlet.isPermittedRequest("128.242.127.5"));
     }
 }

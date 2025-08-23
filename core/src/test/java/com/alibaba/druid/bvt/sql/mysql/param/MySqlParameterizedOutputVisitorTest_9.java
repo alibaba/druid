@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class MySqlParameterizedOutputVisitorTest_9 extends com.alibaba.druid.bvt
         String expected = "SELECT *\n" +
                 "FROM t\n" +
                 "LIMIT ?, ?";
-        Assert.assertEquals(expected, psql);
+        assertEquals(expected, psql);
 
         paramaterizeAST(sql, expected);
 
@@ -37,9 +37,9 @@ public class MySqlParameterizedOutputVisitorTest_9 extends com.alibaba.druid.bvt
             stmt.accept(visitor);
         }
 
-        Assert.assertEquals(2, visitor.getParameters().size());
-        Assert.assertEquals(3, visitor.getParameters().get(0));
-        Assert.assertEquals(4, visitor.getParameters().get(1));
+        assertEquals(2, visitor.getParameters().size());
+        assertEquals(3, visitor.getParameters().get(0));
+        assertEquals(4, visitor.getParameters().get(1));
     }
 }
 

@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class OracleCreateTableTest56 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
                         "\t\"SNAP_ID\" NUMBER(6, 0) NOT NULL ENABLE,\n" +
@@ -114,10 +114,10 @@ public class OracleCreateTableTest56 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertEquals(10, visitor.getColumns().size());
+        assertEquals(10, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "SNAP_ID"));
+        assertTrue(visitor.containsColumn("SC_001.TB_001", "SNAP_ID"));
     }
 }

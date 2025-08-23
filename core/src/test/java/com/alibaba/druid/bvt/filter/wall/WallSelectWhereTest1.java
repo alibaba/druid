@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -28,18 +30,18 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class WallSelectWhereTest1 extends TestCase {
     public void testMySql_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ?"));
+        assertTrue(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ?"));
     }
 
     public void testORACLE_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ?"));
+        assertTrue(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ?"));
     }
 
     public void testMySql_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ? OR 1 = 1"));
+        assertFalse(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ? OR 1 = 1"));
     }
 
     public void testORACLE_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ? OR 1 = 1"));
+        assertFalse(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ? OR 1 = 1"));
     }
 }

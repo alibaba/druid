@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
@@ -40,6 +42,6 @@ public class TimeBetweenLogStatsMillisTest3 extends TestCase {
 
             Thread.sleep(10);
         }
-        Assert.assertEquals(10, dataSource.getTimeBetweenLogStatsMillis());
+        assertEquals(10, dataSource.getTimeBetweenLogStatsMillis());
     }
 }

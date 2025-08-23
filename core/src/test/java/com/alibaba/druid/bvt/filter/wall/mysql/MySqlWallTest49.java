@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -33,7 +35,7 @@ public class MySqlWallTest49 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "select temp.*, u.CanComment, u.CanBeShared, " + //
                         "   u.CanForward, COALESCE(b.UserID,0) as isBlocked, " + //
                         "   COALESCE(f.UserID,0) as Followed, COALESCE(ff.UserID,0) as IsFollowed, " + //
@@ -59,6 +61,6 @@ public class MySqlWallTest49 extends TestCase {
                         "left join Fans as fff ON fff.FansID = 281319 and fff.UserID = temp.RUserID   " + //
                         "left join UserLikes as ul on ul.PicID = temp.PicID and ul.UserID = 281319"));
 
-        Assert.assertEquals(4, provider.getTableStats().size());
+        assertEquals(4, provider.getTableStats().size());
     }
 }

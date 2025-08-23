@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.*;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class WallStatTestWhereAlwaysTrue extends TestCase {
     private String[] sqls = new String[]{
@@ -49,14 +51,14 @@ public class WallStatTestWhereAlwaysTrue extends TestCase {
         //config.setUpdateWhereAlwayTrueCheck(true);
         config.setSelectWhereAlwayTrueCheck(true);
         for (final String sql : sqls) {
-            Assert.assertFalse(sql, provider.checkValid(sql));
+            assertFalse(sql, provider.checkValid(sql));
             final WallTableStat tableStat = provider.getTableStat("t");
             if (sql.startsWith("delete")) {
-                Assert.assertTrue(tableStat.getDeleteCount() > 0);
+                assertTrue(tableStat.getDeleteCount() > 0);
             }
         }
         for (final String sql : okSqls) {
-            Assert.assertTrue(sql, provider.checkValid(sql));
+            assertTrue(sql, provider.checkValid(sql));
         }
     }
 

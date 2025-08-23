@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -29,7 +30,7 @@ public class MySqlWallTest125 extends TestCase {
 
         String sql = "SELECT name, '******' password, createTime from user where name like 'admin' AND 5963=CONVERT(INT,(CHAR(58)+CHAR(108)+CHAR(105)+CHAR(112)+CHAR(58)+(SELECT (CASE WHEN (5963=5963) THEN CHAR(49) ELSE CHAR(48) END))+CHAR(58)+CHAR(117)+CHAR(107)+CHAR(114)+CHAR(58))) AND 'bSho' LIKE 'bSho'";
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 
 }

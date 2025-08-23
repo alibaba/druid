@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -32,8 +32,8 @@ public class MySqlError_test_1 extends MysqlTest {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 //        error.printStackTrace();
-//        Assert.assertEquals("ERROR. token : ORDER, pos : 39", error.getMessage());
+//        assertEquals("ERROR. token : ORDER, pos : 39", error.getMessage());
     }
 }

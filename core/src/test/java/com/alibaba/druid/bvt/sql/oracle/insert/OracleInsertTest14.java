@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.insert;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -39,9 +39,9 @@ public class OracleInsertTest14 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("INSERT INTO raises" //
+        assertEquals("INSERT INTO raises" //
                         + "\nSELECT employee_id, salary * 1.1"//
                         + "\nFROM employees"//
                         + "\nWHERE commission_pct > .2"//
@@ -56,15 +56,15 @@ public class OracleInsertTest14 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("raises")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("raises")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
     }
 
 }

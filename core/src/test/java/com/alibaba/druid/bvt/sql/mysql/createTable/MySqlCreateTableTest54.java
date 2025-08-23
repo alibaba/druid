@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest54 extends MysqlTest {
@@ -38,12 +38,12 @@ public class MySqlCreateTableTest54 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE t1 (" + "\n\tyear YEAR(4)," + "\n\tmonth INT(2) UNSIGNED ZEROFILL,"
+        assertEquals("CREATE TABLE t1 (" + "\n\tyear YEAR(4)," + "\n\tmonth INT(2) UNSIGNED ZEROFILL,"
                 + "\n\tday INT(2) UNSIGNED ZEROFILL" + "\n)", output);
 
     }
@@ -90,13 +90,13 @@ public class MySqlCreateTableTest54 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(24, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(24, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE `t_activity_node` ("
+            assertEquals("CREATE TABLE `t_activity_node` ("
                     + "\n\t`id` bigint(20) NOT NULL,"
                     + "\n\t`sellerId` bigint(20) DEFAULT NULL,"
                     + "\n\t`canvas_id` bigint(20) NOT NULL COMMENT '画布ID',"
@@ -128,7 +128,7 @@ public class MySqlCreateTableTest54 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table `t_activity_node` ("
+            assertEquals("create table `t_activity_node` ("
                     + "\n\t`id` bigint(20) not null,"
                     + "\n\t`sellerId` bigint(20) default null,"
                     + "\n\t`canvas_id` bigint(20) not null comment '画布ID',"

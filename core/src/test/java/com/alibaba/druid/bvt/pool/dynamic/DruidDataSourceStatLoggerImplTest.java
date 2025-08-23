@@ -1,11 +1,13 @@
 package com.alibaba.druid.bvt.pool.dynamic;
 
+import static org.junit.Assert.*;
+
+
 import java.lang.reflect.Field;
 
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceStatLogger;
@@ -42,12 +44,12 @@ public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
     }
 
     public void test_connectPropertiesChange() throws Exception {
-        Assert.assertTrue(dataSource.isWrapperFor(DruidDataSourceStatLogger.class));
-        Assert.assertTrue(dataSource.isWrapperFor(DruidDataSourceStatLoggerImpl.class));
+        assertTrue(dataSource.isWrapperFor(DruidDataSourceStatLogger.class));
+        assertTrue(dataSource.isWrapperFor(DruidDataSourceStatLoggerImpl.class));
         DruidDataSourceStatLoggerImpl loggerImpl = dataSource.unwrap(DruidDataSourceStatLoggerImpl.class);
-        Assert.assertSame(statLog, loggerImpl.getLogger());
+        assertSame(statLog, loggerImpl.getLogger());
 
         dataSource.setConnectionProperties("druid.stat.loggerName=xxx");
-        Assert.assertNotSame(statLog, loggerImpl.getLogger());
+        assertNotSame(statLog, loggerImpl.getLogger());
     }
 }

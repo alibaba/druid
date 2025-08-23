@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -36,7 +36,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT something\nFROM tbl_name\nWHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date_col",
+        assertEquals("SELECT something\nFROM tbl_name\nWHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date_col",
                 text);
     }
 
@@ -48,7 +48,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DAYOFMONTH('2001-11-00'), MONTH('2005-00-00')", text);
+        assertEquals("SELECT DAYOFMONTH('2001-11-00'), MONTH('2005-00-00')", text);
     }
 
     public void test_2() throws Exception {
@@ -59,7 +59,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DAYNAME('2006-05-00')", text);
+        assertEquals("SELECT DAYNAME('2006-05-00')", text);
     }
 
     public void test_3() throws Exception {
@@ -70,7 +70,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DAYNAME('2006-05-00')", text);
+        assertEquals("SELECT DAYNAME('2006-05-00')", text);
     }
 
     public void test_4() throws Exception {
@@ -81,7 +81,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATE_ADD('2008-01-02', INTERVAL 31 DAY)", text);
+        assertEquals("SELECT DATE_ADD('2008-01-02', INTERVAL 31 DAY)", text);
     }
 
     public void test_5() throws Exception {
@@ -92,7 +92,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ADDDATE('2008-01-02', INTERVAL 31 DAY)", text);
+        assertEquals("SELECT ADDDATE('2008-01-02', INTERVAL 31 DAY)", text);
     }
 
     public void test_6() throws Exception {
@@ -103,7 +103,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ADDDATE('2008-01-02', 31)", text);
+        assertEquals("SELECT ADDDATE('2008-01-02', 31)", text);
     }
 
     public void test_7() throws Exception {
@@ -114,7 +114,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ADDTIME('2007-12-31 23:59:59.999999', '1 1:1:1.000002')", text);
+        assertEquals("SELECT ADDTIME('2007-12-31 23:59:59.999999', '1 1:1:1.000002')", text);
     }
 
     public void test_8() throws Exception {
@@ -125,7 +125,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ADDTIME('01:00:00.999999', '02:00:00.999998')", text);
+        assertEquals("SELECT ADDTIME('01:00:00.999999', '02:00:00.999998')", text);
     }
 
     public void test_9() throws Exception {
@@ -136,7 +136,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CONVERT_TZ('2004-01-01 12:00:00', 'GMT', 'MET');", text);
+        assertEquals("SELECT CONVERT_TZ('2004-01-01 12:00:00', 'GMT', 'MET');", text);
     }
 
     public void test_10() throws Exception {
@@ -147,7 +147,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CONVERT_TZ('2004-01-01 12:00:00', '+00:00', '+10:00');", text);
+        assertEquals("SELECT CONVERT_TZ('2004-01-01 12:00:00', '+00:00', '+10:00');", text);
     }
 
     public void test_11() throws Exception {
@@ -158,7 +158,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CURDATE();", text);
+        assertEquals("SELECT CURDATE();", text);
     }
 
     public void test_12() throws Exception {
@@ -169,7 +169,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CURDATE() + 0;", text);
+        assertEquals("SELECT CURDATE() + 0;", text);
     }
 
     public void test_13() throws Exception {
@@ -180,7 +180,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CURTIME();", text);
+        assertEquals("SELECT CURTIME();", text);
     }
 
     public void test_14() throws Exception {
@@ -191,7 +191,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CURDATE() + 0;", text);
+        assertEquals("SELECT CURDATE() + 0;", text);
     }
 
     public void test_15() throws Exception {
@@ -202,7 +202,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATE('2003-12-31 01:02:03');", text);
+        assertEquals("SELECT DATE('2003-12-31 01:02:03');", text);
     }
 
     public void test_16() throws Exception {
@@ -213,7 +213,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATEDIFF('2007-12-31 23:59:59', '2007-12-30');", text);
+        assertEquals("SELECT DATEDIFF('2007-12-31 23:59:59', '2007-12-30');", text);
     }
 
     public void test_17() throws Exception {
@@ -224,7 +224,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATEDIFF('2010-11-30 23:59:59', '2010-12-31');", text);
+        assertEquals("SELECT DATEDIFF('2010-11-30 23:59:59', '2010-12-31');", text);
     }
 
     public void test_18() throws Exception {
@@ -235,7 +235,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT '2008-12-31 23:59:59' + INTERVAL 1 SECOND;", text);
+        assertEquals("SELECT '2008-12-31 23:59:59' + INTERVAL 1 SECOND;", text);
     }
 
     public void test_19() throws Exception {
@@ -246,7 +246,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT INTERVAL 1 DAY + '2008-12-31';", text);
+        assertEquals("SELECT INTERVAL 1 DAY + '2008-12-31';", text);
     }
 
     public void test_20() throws Exception {
@@ -257,7 +257,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT '2005-01-01' - INTERVAL 1 SECOND;", text);
+        assertEquals("SELECT '2005-01-01' - INTERVAL 1 SECOND;", text);
     }
 
     public void test_21() throws Exception {
@@ -268,7 +268,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATE_ADD('2000-12-31 23:59:59', INTERVAL 1 SECOND);", text);
+        assertEquals("SELECT DATE_ADD('2000-12-31 23:59:59', INTERVAL 1 SECOND);", text);
     }
 
     public void test_22() throws Exception {
@@ -279,7 +279,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATE_ADD('2009-01-01', INTERVAL 6 / 4 HOUR_MINUTE);", text);
+        assertEquals("SELECT DATE_ADD('2009-01-01', INTERVAL 6 / 4 HOUR_MINUTE);", text);
     }
 
     public void test_23() throws Exception {
@@ -290,7 +290,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATE_ADD('2009-01-01', INTERVAL 6 / 4 MINUTE_SECOND);", text);
+        assertEquals("SELECT DATE_ADD('2009-01-01', INTERVAL 6 / 4 MINUTE_SECOND);", text);
     }
 
     public void test_24() throws Exception {
@@ -301,7 +301,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT INTERVAL '-1 10' DAY_HOUR;", text);
+        assertEquals("SELECT INTERVAL '-1 10' DAY_HOUR;", text);
     }
 
     public void test_25() throws Exception {
@@ -312,7 +312,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT INTERVAL '1 1:1:1' DAY_SECOND;", text);
+        assertEquals("SELECT INTERVAL '1 1:1:1' DAY_SECOND;", text);
     }
 
     public void test_26() throws Exception {
@@ -323,7 +323,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT INTERVAL '-1 10' DAY_HOUR;", text);
+        assertEquals("SELECT INTERVAL '-1 10' DAY_HOUR;", text);
     }
 
     public void test_27() throws Exception {
@@ -334,7 +334,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT INTERVAL 31 DAY;", text);
+        assertEquals("SELECT INTERVAL 31 DAY;", text);
     }
 
     public void test_28() throws Exception {
@@ -345,7 +345,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT INTERVAL '1.999999' SECOND_MICROSECOND;", text);
+        assertEquals("SELECT INTERVAL '1.999999' SECOND_MICROSECOND;", text);
     }
 
     public void test_29() throws Exception {
@@ -356,7 +356,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT '2005-03-32' + INTERVAL 1 MONTH;", text);
+        assertEquals("SELECT '2005-03-32' + INTERVAL 1 MONTH;", text);
     }
 
     public void test_30() throws Exception {
@@ -367,7 +367,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATE_FORMAT('2009-10-04 22:23:00', '%W %M %Y');", text);
+        assertEquals("SELECT DATE_FORMAT('2009-10-04 22:23:00', '%W %M %Y');", text);
     }
 
     public void test_31() throws Exception {
@@ -378,7 +378,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT EXTRACT(YEAR FROM '2009-07-02');", text);
+        assertEquals("SELECT EXTRACT(YEAR FROM '2009-07-02');", text);
     }
 
     public void test_32() throws Exception {
@@ -389,7 +389,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT EXTRACT(YEAR_MONTH FROM '2009-07-02 01:02:03');", text);
+        assertEquals("SELECT EXTRACT(YEAR_MONTH FROM '2009-07-02 01:02:03');", text);
     }
 
     public void test_33() throws Exception {
@@ -400,7 +400,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT EXTRACT(DAY_MINUTE FROM '2009-07-02 01:02:03');", text);
+        assertEquals("SELECT EXTRACT(DAY_MINUTE FROM '2009-07-02 01:02:03');", text);
     }
 
     public void test_34() throws Exception {
@@ -411,7 +411,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT EXTRACT(MICROSECOND FROM '2003-01-02 10:30:00.000123');", text);
+        assertEquals("SELECT EXTRACT(MICROSECOND FROM '2003-01-02 10:30:00.000123');", text);
     }
 
     public void test_35() throws Exception {
@@ -422,7 +422,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT FROM_UNIXTIME(1196440219);", text);
+        assertEquals("SELECT FROM_UNIXTIME(1196440219);", text);
     }
 
     public void test_36() throws Exception {
@@ -433,7 +433,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT FROM_UNIXTIME(1196440219) + 0;", text);
+        assertEquals("SELECT FROM_UNIXTIME(1196440219) + 0;", text);
     }
 
     public void test_37() throws Exception {
@@ -444,7 +444,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT HOUR('10:05:03');", text);
+        assertEquals("SELECT HOUR('10:05:03');", text);
     }
 
     public void test_38() throws Exception {
@@ -455,7 +455,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT NOW(), SLEEP(2), NOW();", text);
+        assertEquals("SELECT NOW(), SLEEP(2), NOW();", text);
     }
 
     public void test_39() throws Exception {
@@ -466,7 +466,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SYSDATE(), SLEEP(2), SYSDATE();", text);
+        assertEquals("SELECT SYSDATE(), SLEEP(2), SYSDATE();", text);
     }
 
     public void test_40() throws Exception {
@@ -477,7 +477,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SUBDATE('2008-01-02', INTERVAL 31 DAY);", text);
+        assertEquals("SELECT SUBDATE('2008-01-02', INTERVAL 31 DAY);", text);
     }
 
     public void test_41() throws Exception {
@@ -488,7 +488,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TIME('2003-12-31 01:02:03.000123');", text);
+        assertEquals("SELECT TIME('2003-12-31 01:02:03.000123');", text);
     }
 
     public void test_42() throws Exception {
@@ -499,7 +499,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SECOND('10:05:03');", text);
+        assertEquals("SELECT SECOND('10:05:03');", text);
     }
 
     public void test_43() throws Exception {
@@ -510,7 +510,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TIMESTAMPADD(MINUTE, 1, '2003-01-02');", text);
+        assertEquals("SELECT TIMESTAMPADD(MINUTE, 1, '2003-01-02');", text);
     }
 
     public void test_44() throws Exception {
@@ -521,7 +521,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TIMESTAMPADD(WEEK, 1, '2003-01-02');", text);
+        assertEquals("SELECT TIMESTAMPADD(WEEK, 1, '2003-01-02');", text);
     }
 
     public void test_45() throws Exception {
@@ -532,7 +532,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TIMESTAMPDIFF(MONTH, '2003-02-01', '2003-05-01');", text);
+        assertEquals("SELECT TIMESTAMPDIFF(MONTH, '2003-02-01', '2003-05-01');", text);
     }
 
     public void test_46() throws Exception {
@@ -543,7 +543,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TIMESTAMPDIFF(MINUTE, '2003-02-01', '2003-05-01 12:05:55');", text);
+        assertEquals("SELECT TIMESTAMPDIFF(MINUTE, '2003-02-01', '2003-05-01 12:05:55');", text);
     }
 
     public void test_47() throws Exception {
@@ -554,7 +554,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TO_DAYS('2007-10-07');", text);
+        assertEquals("SELECT TO_DAYS('2007-10-07');", text);
     }
 
     public void test_48() throws Exception {
@@ -565,7 +565,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TO_DAYS(950501);", text);
+        assertEquals("SELECT TO_DAYS(950501);", text);
     }
 
     public void test_49() throws Exception {
@@ -576,7 +576,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TO_DAYS('0000-01-01');", text);
+        assertEquals("SELECT TO_DAYS('0000-01-01');", text);
     }
 
     public void test_50() throws Exception {
@@ -587,7 +587,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT UNIX_TIMESTAMP();", text);
+        assertEquals("SELECT UNIX_TIMESTAMP();", text);
     }
 
     public void test_51() throws Exception {
@@ -598,7 +598,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT WEEK('2008-02-20');", text);
+        assertEquals("SELECT WEEK('2008-02-20');", text);
     }
 
     public void test_52() throws Exception {
@@ -609,7 +609,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT MID(YEARWEEK('2000-01-01'), 5, 2);", text);
+        assertEquals("SELECT MID(YEARWEEK('2000-01-01'), 5, 2);", text);
     }
 
     public void test_53() throws Exception {
@@ -620,7 +620,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT YEARWEEK('1987-01-01');", text);
+        assertEquals("SELECT YEARWEEK('1987-01-01');", text);
     }
 
 
@@ -632,7 +632,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL +t.c1 DAY)\nFROM t", text);
+        assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL +t.c1 DAY)\nFROM t", text);
     }
 
     public void test_55() throws Exception {
@@ -643,7 +643,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL -t.c1 DAY)\nFROM t", text);
+        assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL -t.c1 DAY)\nFROM t", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

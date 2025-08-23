@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -47,6 +48,6 @@ public class MySqlWallTest139 extends TestCase {
                 + "    where 1=1  and seller_nick in ('创维官方旗舰店') " //
                 + "    ) seller_nick using(buyer_nick) "//
                 + ") b using(buyer_nick)";
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
     }
 }

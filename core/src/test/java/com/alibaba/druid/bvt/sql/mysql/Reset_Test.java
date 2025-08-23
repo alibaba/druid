@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -33,7 +33,7 @@ public class Reset_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("BINLOG 'str';", text);
+        assertEquals("BINLOG 'str';", text);
     }
 
 

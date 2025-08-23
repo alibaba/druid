@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 
 public class ArrayTest extends PGTest {
@@ -15,6 +15,6 @@ public class ArrayTest extends PGTest {
         String sql = "cast(xx as varchar(12)[])";
         PGExprParser parser = new PGExprParser(sql);
         SQLExpr expr = parser.expr();
-        Assert.assertEquals("CAST(xx AS varchar(12)[])", SQLUtils.toPGString(expr));
+        assertEquals("CAST(xx AS varchar(12)[])", SQLUtils.toPGString(expr));
     }
 }

@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
@@ -42,7 +44,7 @@ public class TestActiveTrace extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_activeTrace() throws Exception {
@@ -53,10 +55,10 @@ public class TestActiveTrace extends TestCase {
             conn.close();
             // sleep 10ms for checking stability, see https://github.com/alibaba/druid/issues/5620
             Thread.sleep(10);
-            // Assert.assertEquals(1, dataSource.getPoolingCount());
+            // assertEquals(1, dataSource.getPoolingCount());
             dataSource.shrink();
-            Assert.assertEquals("createCount : " + dataSource.getCreateCount(), 0, dataSource.getPoolingCount());
-            Assert.assertEquals(0, dataSource.getActiveConnections().size());
+            assertEquals("createCount : " + dataSource.getCreateCount(), 0, dataSource.getPoolingCount());
+            assertEquals(0, dataSource.getActiveConnections().size());
         }
     }
 }

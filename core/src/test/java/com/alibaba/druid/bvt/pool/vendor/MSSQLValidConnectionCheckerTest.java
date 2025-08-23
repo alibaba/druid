@@ -1,11 +1,13 @@
 package com.alibaba.druid.bvt.pool.vendor;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.SQLException;
 
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
@@ -16,7 +18,7 @@ public class MSSQLValidConnectionCheckerTest extends PoolTestCase {
 
         MockConnection conn = new MockConnection();
 
-        Assert.assertTrue(checker.isValidConnection(conn, "select 1", 10));
+        assertTrue(checker.isValidConnection(conn, "select 1", 10));
 
     }
 
@@ -26,7 +28,7 @@ public class MSSQLValidConnectionCheckerTest extends PoolTestCase {
         MockConnection conn = new MockConnection();
 
         conn.close();
-        Assert.assertFalse(checker.isValidConnection(conn, "select 1", 10));
+        assertFalse(checker.isValidConnection(conn, "select 1", 10));
     }
 
     public void test_error() throws Exception {
@@ -41,7 +43,7 @@ public class MSSQLValidConnectionCheckerTest extends PoolTestCase {
         } catch (SQLException ex) {
             error = ex;
         }
-        Assert.assertNotNull(error);
-        Assert.assertSame(error, conn.getError());
+        assertNotNull(error);
+        assertSame(error, conn.getError());
     }
 }

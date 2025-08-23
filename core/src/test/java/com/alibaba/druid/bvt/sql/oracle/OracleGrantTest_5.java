@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -33,9 +33,9 @@ public class OracleGrantTest_5 extends OracleTest {
         System.out.println(stmt.toString());
         System.out.println(SQLUtils.toPGString(stmt));
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("GRANT RESOURCE, CONNECT, CREATE VIEW, CREATE PROCEDURE, CREATE SEQUENCE TO DZFP_CX;",//
+        assertEquals("GRANT RESOURCE, CONNECT, CREATE VIEW, CREATE PROCEDURE, CREATE SEQUENCE TO DZFP_CX;",//
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
@@ -47,12 +47,12 @@ public class OracleGrantTest_5 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("UNKNOWN", "location_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("UNKNOWN", "location_id")));
     }
 }

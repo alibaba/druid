@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 import org.junit.After;
@@ -8,8 +10,6 @@ import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static org.junit.Assert.assertEquals;
 
 public class DruidDataSourceShrinkTest {
     protected DruidDataSource dataSource;

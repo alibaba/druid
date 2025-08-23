@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+import static org.junit.Assert.*;
 
 public class OracleBlockTest17 extends OracleTest {
     public void test_0() throws Exception {
@@ -80,12 +81,12 @@ public class OracleBlockTest17 extends OracleTest {
 
         assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
 }

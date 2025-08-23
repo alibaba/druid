@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.update;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -38,7 +38,7 @@ public class MySqlUpdateTest_7 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -48,19 +48,19 @@ public class MySqlUpdateTest_7 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(9, visitor.getColumns().size());
-        Assert.assertEquals(6, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(9, visitor.getColumns().size());
+        assertEquals(6, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("table_3966")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("table_3966")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("table_3966", "sub_biz_order_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("table_3966", "feature")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("table_3966", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("table_3966", "sub_biz_order_id")));
+        assertTrue(visitor.getColumns().contains(new Column("table_3966", "feature")));
+        assertTrue(visitor.getColumns().contains(new Column("table_3966", "id")));
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("UPDATE ROLLBACK_ON_FAIL TARGET_AFFECT_ROW 1 `table_3966` `table_3966_11`"
+            assertEquals("UPDATE ROLLBACK_ON_FAIL TARGET_AFFECT_ROW 1 `table_3966` `table_3966_11`"
                             + "\nSET `version` = `version` + 3, `gmt_modified` = NOW(), `optype` = ?, `feature` = ?"
                             + "\nWHERE `sub_biz_order_id` = ?"
                             + "\n\tAND `biz_order_type` = ?"
@@ -72,7 +72,7 @@ public class MySqlUpdateTest_7 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("update rollback_on_fail target_affect_row 1 `table_3966` `table_3966_11`"
+            assertEquals("update rollback_on_fail target_affect_row 1 `table_3966` `table_3966_11`"
                             + "\nset `version` = `version` + 3, `gmt_modified` = NOW(), `optype` = ?, `feature` = ?"
                             + "\nwhere `sub_biz_order_id` = ?"
                             + "\n\tand `biz_order_type` = ?"

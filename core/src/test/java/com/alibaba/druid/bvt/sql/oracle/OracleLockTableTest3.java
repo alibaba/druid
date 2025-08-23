@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class OracleLockTableTest3 extends OracleTest {
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
     }
 
 }

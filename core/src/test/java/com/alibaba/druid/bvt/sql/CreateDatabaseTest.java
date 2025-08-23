@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.sql;
 import java.util.List;
 
 import com.alibaba.druid.DbType;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -32,7 +32,7 @@ public class CreateDatabaseTest extends TestCase {
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, null);
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("CREATE DATABASE mydb", SQLUtils.toSQLString(stmt, (DbType) null));
+        assertEquals("CREATE DATABASE mydb", SQLUtils.toSQLString(stmt, (DbType) null));
     }
 
     public void test_mysql() throws Exception {
@@ -40,6 +40,6 @@ public class CreateDatabaseTest extends TestCase {
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcUtils.MYSQL);
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("CREATE DATABASE mydb", SQLUtils.toSQLString(stmt, JdbcUtils.MYSQL));
+        assertEquals("CREATE DATABASE mydb", SQLUtils.toSQLString(stmt, JdbcUtils.MYSQL));
     }
 }

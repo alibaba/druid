@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class OracleSelectTest19 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -55,14 +55,14 @@ public class OracleSelectTest19 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(4, visitor.getTables().size());
+        assertEquals(4, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.dba_data_files")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.dba_data_files")));
 
-        Assert.assertEquals(17, visitor.getColumns().size());
+        assertEquals(17, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("sys.dba_data_files", "file_name"));
-        Assert.assertTrue(visitor.containsColumn("v$datafile", "status"));
-        Assert.assertTrue(visitor.containsColumn("sys.dba_data_files", "tablespace_name"));
+        assertTrue(visitor.containsColumn("sys.dba_data_files", "file_name"));
+        assertTrue(visitor.containsColumn("v$datafile", "status"));
+        assertTrue(visitor.containsColumn("sys.dba_data_files", "tablespace_name"));
     }
 }

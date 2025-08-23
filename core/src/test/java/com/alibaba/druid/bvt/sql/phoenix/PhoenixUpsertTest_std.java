@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class PhoenixUpsertTest_std extends TestCase {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, (DbType) null);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new PhoenixSchemaStatVisitor();
         stmt.accept(visitor);
@@ -32,20 +32,20 @@ public class PhoenixUpsertTest_std extends TestCase {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_1")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_1")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("t_1", "a")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("t_1", "b")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("t_1", "c")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("t_1", "a")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("t_1", "b")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("t_1", "c")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.PHOENIX);
-        Assert.assertEquals("UPSERT INTO t_1 (a, b, c)\n" +
+        assertEquals("UPSERT INTO t_1 (a, b, c)\n" +
                         "VALUES (?, ?, ?)", //
                 output);
     }

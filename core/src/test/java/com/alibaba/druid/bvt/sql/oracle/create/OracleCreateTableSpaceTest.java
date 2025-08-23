@@ -4,7 +4,7 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableSpaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -20,16 +20,16 @@ public class OracleCreateTableSpaceTest extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         print(statementList);
         SQLStatement statement = statementList.get(0);
-        Assert.assertTrue(statement instanceof OracleCreateTableSpaceStatement);
-        Assert.assertEquals("CREATE TABLESPACE omf_ts1", ((OracleCreateTableSpaceStatement) statement).getSql());
+        assertTrue(statement instanceof OracleCreateTableSpaceStatement);
+        assertEquals("CREATE TABLESPACE omf_ts1", ((OracleCreateTableSpaceStatement) statement).getSql());
 
         sql = "CREATE TABLESPACE omf_ts2 DATAFILE AUTOEXTEND OFF";
         parser = new OracleStatementParser(sql);
         statementList = parser.parseStatementList();
         print(statementList);
         statement = statementList.get(0);
-        Assert.assertTrue(statement instanceof OracleCreateTableSpaceStatement);
-        Assert.assertEquals("CREATE TABLESPACE omf_ts2 DATAFILE AUTOEXTEND OFF", ((OracleCreateTableSpaceStatement) statement).getSql());
+        assertTrue(statement instanceof OracleCreateTableSpaceStatement);
+        assertEquals("CREATE TABLESPACE omf_ts2 DATAFILE AUTOEXTEND OFF", ((OracleCreateTableSpaceStatement) statement).getSql());
 
         sql = "CREATE TABLESPACE tbs_01 DATAFILE 'tbs_f2.dbf' SIZE 40M ONLINE";
         // parser need to update

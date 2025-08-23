@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockResultSet;
@@ -40,40 +42,40 @@ public class UnwrapTest2 extends TestCase {
     public void test_unwrap() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
-        Assert.assertNotNull(conn.unwrap(DruidPooledConnection.class));
-        Assert.assertSame(conn, conn.unwrap(DruidPooledConnection.class));
+        assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
+        assertNotNull(conn.unwrap(DruidPooledConnection.class));
+        assertSame(conn, conn.unwrap(DruidPooledConnection.class));
 
-        Assert.assertTrue(conn.isWrapperFor(MockConnection.class));
-        Assert.assertNotNull(conn.unwrap(MockConnection.class));
+        assertTrue(conn.isWrapperFor(MockConnection.class));
+        assertNotNull(conn.unwrap(MockConnection.class));
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertTrue(stmt.isWrapperFor(Statement.class));
-        Assert.assertNotNull(stmt.unwrap(Statement.class));
+        assertTrue(stmt.isWrapperFor(Statement.class));
+        assertNotNull(stmt.unwrap(Statement.class));
 
-        Assert.assertTrue(stmt.isWrapperFor(StatementProxy.class));
-        Assert.assertNotNull(stmt.unwrap(StatementProxy.class));
+        assertTrue(stmt.isWrapperFor(StatementProxy.class));
+        assertNotNull(stmt.unwrap(StatementProxy.class));
 
-        Assert.assertTrue(stmt.isWrapperFor(StatementProxyImpl.class));
-        Assert.assertNotNull(stmt.unwrap(StatementProxyImpl.class));
+        assertTrue(stmt.isWrapperFor(StatementProxyImpl.class));
+        assertNotNull(stmt.unwrap(StatementProxyImpl.class));
 
-        Assert.assertTrue(stmt.isWrapperFor(MockStatement.class));
-        Assert.assertNotNull(stmt.unwrap(MockStatement.class));
+        assertTrue(stmt.isWrapperFor(MockStatement.class));
+        assertNotNull(stmt.unwrap(MockStatement.class));
 
         ResultSet rs = stmt.executeQuery("select 1");
 
-        Assert.assertTrue(rs.isWrapperFor(ResultSet.class));
-        Assert.assertNotNull(rs.unwrap(ResultSet.class));
+        assertTrue(rs.isWrapperFor(ResultSet.class));
+        assertNotNull(rs.unwrap(ResultSet.class));
 
-        Assert.assertTrue(rs.isWrapperFor(ResultSetProxy.class));
-        Assert.assertNotNull(rs.unwrap(ResultSetProxy.class));
+        assertTrue(rs.isWrapperFor(ResultSetProxy.class));
+        assertNotNull(rs.unwrap(ResultSetProxy.class));
 
-        Assert.assertTrue(rs.isWrapperFor(ResultSetProxyImpl.class));
-        Assert.assertNotNull(rs.unwrap(ResultSetProxyImpl.class));
+        assertTrue(rs.isWrapperFor(ResultSetProxyImpl.class));
+        assertNotNull(rs.unwrap(ResultSetProxyImpl.class));
 
-        Assert.assertTrue(rs.isWrapperFor(MockResultSet.class));
-        Assert.assertNotNull(rs.unwrap(MockResultSet.class));
+        assertTrue(rs.isWrapperFor(MockResultSet.class));
+        assertNotNull(rs.unwrap(MockResultSet.class));
 
         rs.close();
 

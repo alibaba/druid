@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.builder;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.builder.SQLBuilderFactory;
 import com.alibaba.druid.sql.builder.SQLSelectBuilder;
@@ -21,7 +21,7 @@ public class BuilderSelectTest extends TestCase {
 
         String sql = builder.toString();
         System.out.println(sql);
-        Assert.assertEquals("SELECT f1, f2, f3 AS F3, count(*) AS cnt\n" +
+        assertEquals("SELECT f1, f2, f3 AS F3, count(*) AS cnt\n" +
                 "FROM mytable\n" +
                 "WHERE f1 > 0\n" +
                 "GROUP BY f1\n" +

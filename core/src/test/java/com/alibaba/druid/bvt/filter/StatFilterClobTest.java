@@ -15,11 +15,14 @@
  */
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockClob;
@@ -57,7 +60,7 @@ public class StatFilterClobTest extends TestCase {
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        Assert.assertTrue(rs.getObject(1) instanceof ClobProxy);
+        assertTrue(rs.getObject(1) instanceof ClobProxy);
         rs.close();
 
         stmt.close();
@@ -65,11 +68,11 @@ public class StatFilterClobTest extends TestCase {
         conn.close();
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
-        Assert.assertNotNull(sqlStat);
+        assertNotNull(sqlStat);
 
-        Assert.assertEquals(1, sqlStat.getClobOpenCount());
+        assertEquals(1, sqlStat.getClobOpenCount());
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
     }
 
 }

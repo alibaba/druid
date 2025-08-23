@@ -1,5 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import com.alibaba.druid.mock.MockConnectionClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -12,8 +15,6 @@ import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static org.junit.Assert.assertEquals;
 
 public class DruidDataSourceAsyncCloseTest {
     protected DruidDataSource dataSource;

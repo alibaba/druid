@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class OracleSelectTest31 extends OracleTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -51,17 +51,17 @@ public class OracleSelectTest31 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "hire_date")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "manager_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "hire_date")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "manager_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
 
-        Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+        assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
@@ -38,7 +39,7 @@ public class SQLServerWallTest_11 extends TestCase {
                 + "UNION ALL "//
                 + "SELECT (SELECT TOP 1 CHAR(58)+CHAR(108)+CHAR(107)+CHAR(103)+CHAR(58)+ISNULL(CAST(name AS NVARCHAR(4000)),CHAR(32))+CHAR(58)+CHAR(109)+CHAR(122)+CHAR(104)+CHAR(58) FROM sys.sql_logins WHERE ISNULL(name,CHAR(32)) NOT IN (SELECT TOP 0 ISNULL(name,CHAR(32)) FROM sys.sql_logins ORDER BY 1) ORDER BY 1),NULL-- ";
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
 
     }
 

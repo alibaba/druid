@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
@@ -25,7 +25,7 @@ public class OdpsFormatCommentTest13 extends TestCase {
                 SQLParserFeature.EnableSQLBinaryOpExprGroup);
         System.out.println("第二次生成的sql==="+stmt2.toString());
 
-        Assert.assertEquals(
+        assertEquals(
             "SELECT *\n"
                 + "FROM t\n"
                 + "WHERE f0 > 0 -- comment_0\n"

@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest66 extends MysqlTest {
@@ -45,7 +45,7 @@ public class MySqlCreateTableTest66 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE hp_db.g20_relationship_communication_daily ("
+            assertEquals("CREATE TABLE hp_db.g20_relationship_communication_daily ("
                     + "\n\ta_iden_string varchar,"
                     + "\n\tb_iden_string varchar,"
                     + "\n\tcounter bigint,"
@@ -58,7 +58,7 @@ public class MySqlCreateTableTest66 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table hp_db.g20_relationship_communication_daily ("
+            assertEquals("create table hp_db.g20_relationship_communication_daily ("
                     + "\n\ta_iden_string varchar,"
                     + "\n\tb_iden_string varchar,"
                     + "\n\tcounter bigint,"

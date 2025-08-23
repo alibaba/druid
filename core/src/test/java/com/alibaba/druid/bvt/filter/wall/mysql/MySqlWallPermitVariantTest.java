@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
@@ -33,13 +35,13 @@ public class MySqlWallPermitVariantTest extends TestCase {
         MySqlWallProvider provider = new MySqlWallProvider();
         provider.getConfig().setVariantCheck(false);
 
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
     }
 
     public void test_not_allow() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider();
         provider.getConfig().setVariantCheck(true);
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 }

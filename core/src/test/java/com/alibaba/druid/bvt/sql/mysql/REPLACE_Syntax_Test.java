@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -36,7 +36,7 @@ public class REPLACE_Syntax_Test extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("REPLACE INTO T\n\tSELECT *\n\tFROM T;", text);
+        assertEquals("REPLACE INTO T\n\tSELECT *\n\tFROM T;", text);
     }
 
     public void test_1() throws Exception {
@@ -47,7 +47,7 @@ public class REPLACE_Syntax_Test extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("REPLACE DELAYED INTO `online_users` (`session_id`, `user_id`, `page`, `lastview`)\nVALUES ('3580cc4e61117c0785372c426eddd11c', 'XXX', '/', NOW());",
+        assertEquals("REPLACE DELAYED INTO `online_users` (`session_id`, `user_id`, `page`, `lastview`)\nVALUES ('3580cc4e61117c0785372c426eddd11c', 'XXX', '/', NOW());",
                 text);
     }
 
@@ -59,7 +59,7 @@ public class REPLACE_Syntax_Test extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("REPLACE INTO t (col1, col2)\nVALUES (?, ?)", text);
+        assertEquals("REPLACE INTO t (col1, col2)\nVALUES (?, ?)", text);
     }
 
 }

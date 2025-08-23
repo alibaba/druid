@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.db2;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.DB2Test;
 import com.alibaba.druid.sql.SQLUtils;
@@ -36,7 +36,7 @@ public class DB2SelectTest_8 extends DB2Test {
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -46,21 +46,21 @@ public class DB2SelectTest_8 extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("DSN81010.EMP")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("DSN81010.EMP")));
 
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT UNIQUE id" //
+        assertEquals("SELECT UNIQUE id" //
                         + "\nFROM DSN81010.EMP"
                         + "\nWHERE id = 1;", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        Assert.assertEquals("select unique id" //
+        assertEquals("select unique id" //
                         + "\nfrom DSN81010.EMP"
                         + "\nwhere id = 1;", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

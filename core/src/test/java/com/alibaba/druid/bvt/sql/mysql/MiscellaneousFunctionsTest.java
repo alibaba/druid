@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -36,7 +36,7 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("UPDATE t\nSET i = DEFAULT(i) + 1\nWHERE id < 100;", text);
+        assertEquals("UPDATE t\nSET i = DEFAULT(i) + 1\nWHERE id < 100;", text);
     }
 
     public void test_1() throws Exception {
@@ -47,7 +47,7 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT GET_LOCK('lock1', 10);", text);
+        assertEquals("SELECT GET_LOCK('lock1', 10);", text);
     }
 
     public void test_2() throws Exception {
@@ -58,7 +58,7 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT INET_ATON('209.207.224.40');", text);
+        assertEquals("SELECT INET_ATON('209.207.224.40');", text);
     }
 
     public void test_3() throws Exception {
@@ -69,7 +69,7 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT UUID();", text);
+        assertEquals("SELECT UUID();", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.Utils;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlSelectTestIssue5431
         extends MysqlTest {
@@ -36,7 +36,7 @@ public class MySqlSelectTestIssue5431
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statement = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
@@ -54,7 +54,7 @@ public class MySqlSelectTestIssue5431
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statement = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);

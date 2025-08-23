@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.wall.WallUtils;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class MySqlUpdateTest_11_using extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -47,18 +47,18 @@ public class MySqlUpdateTest_11_using extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(4, visitor.getTables().size());
-        Assert.assertEquals(8, visitor.getColumns().size());
-        // Assert.assertEquals(2, visitor.getConditions().size());
+        assertEquals(4, visitor.getTables().size());
+        assertEquals(8, visitor.getColumns().size());
+        // assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsTable("t4"));
+        assertTrue(visitor.containsTable("t4"));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "value_col")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "pk")));
+        assertTrue(visitor.getColumns().contains(new Column("t1", "value_col")));
+        assertTrue(visitor.getColumns().contains(new Column("t1", "pk")));
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("UPDATE (t1, t2, t3)\n" +
+            assertEquals("UPDATE (t1, t2, t3)\n" +
                             "\tINNER JOIN t4 USING (col_name1, col_name2)\n" +
                             "SET t1.value_col = t3.new_value_col, t4.`some-col*` = `t2`.`***` * 2\n" +
                             "WHERE t1.pk = t2.fk_t1_pk\n" +
@@ -67,7 +67,7 @@ public class MySqlUpdateTest_11_using extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("update (t1, t2, t3)\n" +
+            assertEquals("update (t1, t2, t3)\n" +
                             "\tinner join t4 using (col_name1, col_name2)\n" +
                             "set t1.value_col = t3.new_value_col, t4.`some-col*` = `t2`.`***` * 2\n" +
                             "where t1.pk = t2.fk_t1_pk\n" +

@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -33,13 +35,13 @@ public class MySqlWallTest48 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "select sum(size) as total " + //
                         "from file " + //
                         "join file_to_post on file_to_post.file_id = file.id " + //
                         "join notice on file_to_post.post_id = notice.id " + //
                         "where profile_id = 18544 and file.url like '%/notice/%/file' AND EXTRACT(month FROM file.modified) = EXTRACT(month FROM now()) and EXTRACT(year FROM file.modified) = EXTRACT(year FROM now())"));
 
-        Assert.assertEquals(3, provider.getTableStats().size());
+        assertEquals(3, provider.getTableStats().size());
     }
 }

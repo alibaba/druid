@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -31,20 +33,20 @@ public class WallDropTest extends TestCase {
     public void testMySql() throws Exception {
         WallConfig config = new WallConfig();
         config.setDropTableAllow(false);
-        Assert.assertFalse(WallUtils.isValidateMySql("DROP TABLE T1", config));
+        assertFalse(WallUtils.isValidateMySql("DROP TABLE T1", config));
     }
 
     public void testOracle() throws Exception {
         WallConfig config = new WallConfig();
         config.setDropTableAllow(false);
-        Assert.assertFalse(WallUtils.isValidateOracle("DROP TABLE T1", config));
+        assertFalse(WallUtils.isValidateOracle("DROP TABLE T1", config));
     }
 
     public void testMySql_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql("DROP TABLE T1"));
+        assertTrue(WallUtils.isValidateMySql("DROP TABLE T1"));
     }
 
     public void testOracle_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle("DROP TABLE T1"));
+        assertTrue(WallUtils.isValidateOracle("DROP TABLE T1"));
     }
 }

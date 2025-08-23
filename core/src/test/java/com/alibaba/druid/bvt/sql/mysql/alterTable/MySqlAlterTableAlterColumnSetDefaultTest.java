@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableAlterColumnSetDefaultTest extends TestCase {
     public void test_alter_first() throws Exception {
@@ -29,10 +29,10 @@ public class MySqlAlterTableAlterColumnSetDefaultTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE tabelname" + //
+        assertEquals("ALTER TABLE tabelname" + //
                 "\n\tALTER COLUMN operateVersion SET DEFAULT 0", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table tabelname" + //
+        assertEquals("alter table tabelname" + //
                 "\n\talter column operateVersion set default 0", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 

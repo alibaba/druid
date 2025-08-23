@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class OracleCreateTableTest12 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -60,22 +60,22 @@ public class OracleCreateTableTest12 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(13, visitor.getColumns().size());
+        assertEquals(13, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "DDBH")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "IDNO")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JKKH")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JYDW")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JYJE")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JYNO")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JYZT")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "NAME")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "OPDATE")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "REMARK")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "TYPE")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "OPID")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "ID")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "DDBH")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "IDNO")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JKKH")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JYDW")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JYJE")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JYNO")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "JYZT")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "NAME")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "OPDATE")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "REMARK")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "TYPE")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("CARD_MONEYOPERATION", "OPID")));
     }
 }

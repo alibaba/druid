@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableAddIndex_8 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -33,11 +33,11 @@ public class MySqlAlterTableAddIndex_8 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE `seller_table2`\n" +
+        assertEquals("ALTER TABLE `seller_table2`\n" +
                 "\tRENAME TO `seller_table3`,\n" +
                 "\tADD KEY `idx_create` (`gmt_create`)", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table `seller_table2`\n" +
+        assertEquals("alter table `seller_table2`\n" +
                 "\trename to `seller_table3`,\n" +
                 "\tadd key `idx_create` (`gmt_create`)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 

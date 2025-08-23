@@ -15,7 +15,9 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
+
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidConnectionHolder;
@@ -52,7 +54,7 @@ public class PSCacheTest3 extends TestCase {
         final String sql_3 = "select 3";
         final String sql_4 = "select 4";
 
-        Assert.assertEquals(0, stmtPool.size());
+        assertEquals(0, stmtPool.size());
 
         PreparedStatementHolder stmtHoler_0;
         PreparedStatementHolder stmtHoler_1;
@@ -64,128 +66,128 @@ public class PSCacheTest3 extends TestCase {
         {
             DruidPooledPreparedStatement stmt_0 = (DruidPooledPreparedStatement) conn.prepareStatement(sql_0);
 
-            Assert.assertFalse(stmt_0.getPreparedStatementHolder().isPooling());
+            assertFalse(stmt_0.getPreparedStatementHolder().isPooling());
 
             stmt_0.close();
-            Assert.assertEquals(1, stmtPool.size());
-            Assert.assertTrue(stmt_0.getPreparedStatementHolder().isPooling());
+            assertEquals(1, stmtPool.size());
+            assertTrue(stmt_0.getPreparedStatementHolder().isPooling());
         }
         {
             DruidPooledPreparedStatement stmt_0 = (DruidPooledPreparedStatement) conn.prepareStatement(sql_0);
-            Assert.assertEquals(1, stmtPool.size());
-            Assert.assertTrue(stmt_0.getPreparedStatementHolder().isInUse());
-            Assert.assertTrue(stmt_0.getPreparedStatementHolder().isPooling());
+            assertEquals(1, stmtPool.size());
+            assertTrue(stmt_0.getPreparedStatementHolder().isInUse());
+            assertTrue(stmt_0.getPreparedStatementHolder().isPooling());
 
             stmt_0.close();
 
-            Assert.assertFalse(stmt_0.getPreparedStatementHolder().isInUse());
-            Assert.assertTrue(stmt_0.getPreparedStatementHolder().isPooling());
-            Assert.assertEquals(1, stmtPool.size());
+            assertFalse(stmt_0.getPreparedStatementHolder().isInUse());
+            assertTrue(stmt_0.getPreparedStatementHolder().isPooling());
+            assertEquals(1, stmtPool.size());
         }
 
         DruidPooledPreparedStatement stmt_0 = (DruidPooledPreparedStatement) conn.prepareStatement(sql_0);
 
         stmtHoler_0 = stmt_0.getPreparedStatementHolder();
 
-        Assert.assertTrue(stmtHoler_0.isInUse());
-        Assert.assertTrue(stmtHoler_0.isPooling());
+        assertTrue(stmtHoler_0.isInUse());
+        assertTrue(stmtHoler_0.isPooling());
 
         stmt_0.execute();
 
         {
             DruidPooledPreparedStatement stmt_1 = (DruidPooledPreparedStatement) conn.prepareStatement(sql_1);
-            Assert.assertEquals(1, stmtPool.size());
+            assertEquals(1, stmtPool.size());
 
             stmtHoler_1 = stmt_1.getPreparedStatementHolder();
 
-            Assert.assertTrue(stmt_1.getPreparedStatementHolder().isInUse());
-            Assert.assertFalse(stmt_1.getPreparedStatementHolder().isPooling());
+            assertTrue(stmt_1.getPreparedStatementHolder().isInUse());
+            assertFalse(stmt_1.getPreparedStatementHolder().isPooling());
 
             stmt_1.close();
 
-            Assert.assertFalse(stmt_1.getPreparedStatementHolder().isInUse());
-            Assert.assertTrue(stmt_1.getPreparedStatementHolder().isPooling());
-            Assert.assertTrue(stmt_1.getPreparedStatementHolder().isPooling());
-            Assert.assertEquals(2, stmtPool.size());
+            assertFalse(stmt_1.getPreparedStatementHolder().isInUse());
+            assertTrue(stmt_1.getPreparedStatementHolder().isPooling());
+            assertTrue(stmt_1.getPreparedStatementHolder().isPooling());
+            assertEquals(2, stmtPool.size());
         }
 
-        Assert.assertTrue(stmtHoler_0.isPooling());
-        Assert.assertTrue(stmtHoler_1.isPooling());
+        assertTrue(stmtHoler_0.isPooling());
+        assertTrue(stmtHoler_1.isPooling());
 
         {
             DruidPooledPreparedStatement stmt_2 = (DruidPooledPreparedStatement) conn.prepareStatement(sql_2);
-            Assert.assertEquals(2, stmtPool.size());
+            assertEquals(2, stmtPool.size());
 
             stmtHoler_2 = stmt_2.getPreparedStatementHolder();
 
-            Assert.assertTrue(stmt_2.getPreparedStatementHolder().isInUse());
-            Assert.assertFalse(stmt_2.getPreparedStatementHolder().isPooling());
+            assertTrue(stmt_2.getPreparedStatementHolder().isInUse());
+            assertFalse(stmt_2.getPreparedStatementHolder().isPooling());
 
             stmt_2.close();
 
-            Assert.assertFalse(stmt_2.getPreparedStatementHolder().isInUse());
-            Assert.assertTrue(stmt_2.getPreparedStatementHolder().isPooling());
-            Assert.assertTrue(stmt_2.getPreparedStatementHolder().isPooling());
-            Assert.assertEquals(3, stmtPool.size());
+            assertFalse(stmt_2.getPreparedStatementHolder().isInUse());
+            assertTrue(stmt_2.getPreparedStatementHolder().isPooling());
+            assertTrue(stmt_2.getPreparedStatementHolder().isPooling());
+            assertEquals(3, stmtPool.size());
         }
 
-        Assert.assertTrue(stmtHoler_0.isPooling());
-        Assert.assertTrue(stmtHoler_1.isPooling());
-        Assert.assertTrue(stmtHoler_2.isPooling());
+        assertTrue(stmtHoler_0.isPooling());
+        assertTrue(stmtHoler_1.isPooling());
+        assertTrue(stmtHoler_2.isPooling());
 
         {
             DruidPooledPreparedStatement stmt_3 = (DruidPooledPreparedStatement) conn.prepareStatement(sql_3);
-            Assert.assertEquals(3, stmtPool.size());
+            assertEquals(3, stmtPool.size());
 
             stmtHoler_3 = stmt_3.getPreparedStatementHolder();
 
-            Assert.assertTrue(stmt_3.getPreparedStatementHolder().isInUse());
-            Assert.assertFalse(stmt_3.getPreparedStatementHolder().isPooling());
+            assertTrue(stmt_3.getPreparedStatementHolder().isInUse());
+            assertFalse(stmt_3.getPreparedStatementHolder().isPooling());
 
             stmt_3.close();
 
-            Assert.assertFalse(stmt_3.getPreparedStatementHolder().isInUse());
-            Assert.assertTrue(stmt_3.getPreparedStatementHolder().isPooling());
-            Assert.assertTrue(stmt_3.getPreparedStatementHolder().isPooling());
-            Assert.assertEquals(3, stmtPool.size());
+            assertFalse(stmt_3.getPreparedStatementHolder().isInUse());
+            assertTrue(stmt_3.getPreparedStatementHolder().isPooling());
+            assertTrue(stmt_3.getPreparedStatementHolder().isPooling());
+            assertEquals(3, stmtPool.size());
         }
 
 
-        Assert.assertFalse(stmtHoler_0.isPooling());
-        Assert.assertTrue(stmtHoler_1.isPooling());
-        Assert.assertTrue(stmtHoler_2.isPooling());
-        Assert.assertTrue(stmtHoler_3.isPooling());
+        assertFalse(stmtHoler_0.isPooling());
+        assertTrue(stmtHoler_1.isPooling());
+        assertTrue(stmtHoler_2.isPooling());
+        assertTrue(stmtHoler_3.isPooling());
 
         {
             DruidPooledPreparedStatement stmt_4 = (DruidPooledPreparedStatement) conn.prepareStatement(sql_4);
-            Assert.assertEquals(3, stmtPool.size());
+            assertEquals(3, stmtPool.size());
 
             stmtHoler_4 = stmt_4.getPreparedStatementHolder();
 
-            Assert.assertTrue(stmt_4.getPreparedStatementHolder().isInUse());
-            Assert.assertFalse(stmt_4.getPreparedStatementHolder().isPooling());
+            assertTrue(stmt_4.getPreparedStatementHolder().isInUse());
+            assertFalse(stmt_4.getPreparedStatementHolder().isPooling());
 
             stmt_4.close();
 
-            Assert.assertFalse(stmt_4.getPreparedStatementHolder().isInUse());
-            Assert.assertTrue(stmt_4.getPreparedStatementHolder().isPooling());
-            Assert.assertTrue(stmt_4.getPreparedStatementHolder().isPooling());
-            Assert.assertEquals(3, stmtPool.size());
+            assertFalse(stmt_4.getPreparedStatementHolder().isInUse());
+            assertTrue(stmt_4.getPreparedStatementHolder().isPooling());
+            assertTrue(stmt_4.getPreparedStatementHolder().isPooling());
+            assertEquals(3, stmtPool.size());
         }
 
-        Assert.assertFalse(stmtHoler_0.isPooling());
-        Assert.assertFalse(stmtHoler_1.isPooling());
-        Assert.assertTrue(stmtHoler_2.isPooling());
-        Assert.assertTrue(stmtHoler_3.isPooling());
-        Assert.assertTrue(stmtHoler_4.isPooling());
+        assertFalse(stmtHoler_0.isPooling());
+        assertFalse(stmtHoler_1.isPooling());
+        assertTrue(stmtHoler_2.isPooling());
+        assertTrue(stmtHoler_3.isPooling());
+        assertTrue(stmtHoler_4.isPooling());
 
         stmt_0.close();
 
-        Assert.assertTrue(stmtHoler_0.isPooling());
-        Assert.assertFalse(stmtHoler_1.isPooling());
-        Assert.assertFalse(stmtHoler_2.isPooling());
-        Assert.assertTrue(stmtHoler_3.isPooling());
-        Assert.assertTrue(stmtHoler_4.isPooling());
+        assertTrue(stmtHoler_0.isPooling());
+        assertFalse(stmtHoler_1.isPooling());
+        assertFalse(stmtHoler_2.isPooling());
+        assertTrue(stmtHoler_3.isPooling());
+        assertTrue(stmtHoler_4.isPooling());
 
         conn.close();
     }

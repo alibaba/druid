@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class MySqlUpdateTest_6 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -51,19 +51,19 @@ public class MySqlUpdateTest_6 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(19, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(19, visitor.getColumns().size());
+        assertEquals(3, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("table_3966")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("table_3966")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("table_3966", "user_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("table_3966", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("table_3966", "item_id")));
+        assertTrue(visitor.getColumns().contains(new Column("table_3966", "user_id")));
+        assertTrue(visitor.getColumns().contains(new Column("table_3966", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("table_3966", "item_id")));
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT id, user_id, item_id, sku_id, flag, sellable_quantity, fff03, status, feature, feature_lock, version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id, occupy_quantity, user_type\n" +
+            assertEquals("SELECT id, user_id, item_id, sku_id, flag, sellable_quantity, fff03, status, feature, feature_lock, version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id, occupy_quantity, user_type\n" +
                             "FROM UPDATE COMMIT_ON_SUCCESS ROLLBACK_ON_FAIL TARGET_AFFECT_ROW ? `table_3966`\n" +
                             "SET `fff03` = `fff03` + ?, `flag` = `flag` & (~(1 << 10)) & ~(1 << 11), `version` = `version` + 3, `gmt_modified` = NOW()\n" +
                             "WHERE `root_id` = ?\n" +
@@ -74,7 +74,7 @@ public class MySqlUpdateTest_6 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select id, user_id, item_id, sku_id, flag, sellable_quantity, fff03, status, feature, feature_lock, version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id, occupy_quantity, user_type\n" +
+            assertEquals("select id, user_id, item_id, sku_id, flag, sellable_quantity, fff03, status, feature, feature_lock, version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id, occupy_quantity, user_type\n" +
                             "from update commit_on_success rollback_on_fail target_affect_row ? `table_3966`\n" +
                             "set `fff03` = `fff03` + ?, `flag` = `flag` & (~(1 << 10)) & ~(1 << 11), `version` = `version` + 3, `gmt_modified` = NOW()\n" +
                             "where `root_id` = ?\n" +

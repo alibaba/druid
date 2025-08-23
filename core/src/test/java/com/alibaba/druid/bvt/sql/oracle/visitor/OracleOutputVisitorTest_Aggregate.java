@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -34,22 +34,22 @@ public class OracleOutputVisitorTest_Aggregate extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("emp"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("emp"));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("emp", "salary")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("emp", "F1")));
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("emp", "salary")));
+        assertEquals(true, visitor.getColumns().contains(new Column("emp", "F1")));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT MAX(salary)\nFROM emp\nWHERE F1 = DATE '2011-10-01'", buf.toString());
+        assertEquals("SELECT MAX(salary)\nFROM emp\nWHERE F1 = DATE '2011-10-01'", buf.toString());
 
     }
 }

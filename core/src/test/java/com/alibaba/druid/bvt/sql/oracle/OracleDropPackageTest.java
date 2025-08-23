@@ -4,7 +4,7 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropPackageStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ public class OracleDropPackageTest extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         print(statementList);
         SQLStatement statement = statementList.get(0);
-        Assert.assertTrue(statement instanceof OracleDropPackageStatement);
-        Assert.assertEquals("TEST.PACK_TEST1", ((OracleDropPackageStatement) statement).getName().toString());
-        Assert.assertFalse(((OracleDropPackageStatement) statement).isBody());
+        assertTrue(statement instanceof OracleDropPackageStatement);
+        assertEquals("TEST.PACK_TEST1", ((OracleDropPackageStatement) statement).getName().toString());
+        assertFalse(((OracleDropPackageStatement) statement).isBody());
     }
 }

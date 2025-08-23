@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlParameterizedOutputVisitorTest_3 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
     protected void setUp() throws Exception {
@@ -30,6 +30,6 @@ public class MySqlParameterizedOutputVisitorTest_3 extends com.alibaba.druid.bvt
 
     public void test_0() throws Exception {
         String sql = "delete from alerts where not (exists (select metric1_.id from metrics metric1_ where id=alerts.metric_id))";
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
+        assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
     }
 }

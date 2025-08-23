@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,7 +31,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest26 extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
                 "delete from cmsdj_feed where DATEDIFF(DATE(cd_addtime),?)<=-?")); //
     }
 }

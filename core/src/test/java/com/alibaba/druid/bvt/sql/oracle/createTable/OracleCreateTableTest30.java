@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -48,9 +48,9 @@ public class OracleCreateTableTest30 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE order_detail (" //
+        assertEquals("CREATE TABLE order_detail (" //
                         + "\n\tCONSTRAINT pk_od PRIMARY KEY (order_id, part_no)," //
                         + "\n\torder_id NUMBER" //
                         + "\n\t\tCONSTRAINT fk_oid REFERENCES oe.orders (order_id)," //
@@ -73,10 +73,10 @@ public class OracleCreateTableTest30 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("order_detail", "order_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("order_detail", "order_id")));
     }
 }

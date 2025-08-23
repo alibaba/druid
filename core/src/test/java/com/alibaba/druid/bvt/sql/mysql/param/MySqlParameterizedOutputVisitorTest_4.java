@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlParameterizedOutputVisitorTest_4 extends MySQLParameterizedTest {
     public void test_0() throws Exception {
@@ -26,7 +26,7 @@ public class MySqlParameterizedOutputVisitorTest_4 extends MySQLParameterizedTes
                 + "user0_.password as password0_ " //
                 + "from acct_user user0_ "//
                 + "where user0_.login_name=? limit ?";
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
+        assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
     }
 
 }

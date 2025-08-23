@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+import static org.junit.Assert.*;
 
 public class OracleCreatePackageTest5 extends OracleTest {
     public void test_types() throws Exception {
@@ -85,14 +86,14 @@ public class OracleCreatePackageTest5 extends OracleTest {
         SQLUtils.toPGString(stmt);
         stmt.clone();
 
-//        Assert.assertEquals(2, visitor.getTables().size());
+//        assertEquals(2, visitor.getTables().size());
 //
-//        Assert.assertEquals(5, visitor.getColumns().size());
+//        assertEquals(5, visitor.getColumns().size());
 //
-//        Assert.assertTrue(visitor.containsColumn("employees", "employee_id"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "*"));
-//        Assert.assertTrue(visitor.containsColumn("departments", "department_id"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "salary"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "commission_pct"));
+//        assertTrue(visitor.containsColumn("employees", "employee_id"));
+//        assertTrue(visitor.containsColumn("employees", "*"));
+//        assertTrue(visitor.containsColumn("departments", "department_id"));
+//        assertTrue(visitor.containsColumn("employees", "salary"));
+//        assertTrue(visitor.containsColumn("employees", "commission_pct"));
     }
 }

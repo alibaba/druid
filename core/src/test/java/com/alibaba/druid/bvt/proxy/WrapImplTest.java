@@ -15,11 +15,16 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.Properties;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterChain;
@@ -46,43 +51,43 @@ public class WrapImplTest extends TestCase {
 
         DataSourceProxyImpl dataSource = (DataSourceProxyImpl) connection.getDirectDataSource();
         dataSource.getId();
-        Assert.assertEquals(4, dataSource.getProxyFilters().size());
-        Assert.assertEquals(4, dataSource.getFilterClasses().length);
-        Assert.assertNotNull(dataSource.getCreatedTime());
-        Assert.assertTrue(dataSource.getCreatedTime().getTime() != 0);
-        Assert.assertEquals("org.apache.derby.jdbc.EmbeddedDriver", dataSource.getRawDriverClassName());
+        assertEquals(4, dataSource.getProxyFilters().size());
+        assertEquals(4, dataSource.getFilterClasses().length);
+        assertNotNull(dataSource.getCreatedTime());
+        assertTrue(dataSource.getCreatedTime().getTime() != 0);
+        assertEquals("org.apache.derby.jdbc.EmbeddedDriver", dataSource.getRawDriverClassName());
 
-        Assert.assertEquals(url, dataSource.getUrl());
-        Assert.assertEquals("jdbc:derby:classpath:petstore-db", dataSource.getRawUrl());
-        Assert.assertEquals(10, dataSource.getRawDriverMajorVersion());
-        Assert.assertEquals(12, dataSource.getRawDriverMinorVersion());
+        assertEquals(url, dataSource.getUrl());
+        assertEquals("jdbc:derby:classpath:petstore-db", dataSource.getRawUrl());
+        assertEquals(10, dataSource.getRawDriverMajorVersion());
+        assertEquals(12, dataSource.getRawDriverMinorVersion());
 
         Class<?> mysql5ConnectionClass = Utils.loadClass("com.mysql.jdbc.Connection");
         if (mysql5ConnectionClass != null) {
-            Assert.assertFalse(connection.isWrapperFor(mysql5ConnectionClass));
+            assertFalse(connection.isWrapperFor(mysql5ConnectionClass));
         }
-        Assert.assertTrue(connection.isWrapperFor(ConnectionProxyImpl.class));
-        Assert.assertTrue(connection.isWrapperFor(org.apache.derby.impl.jdbc.EmbedConnection.class));
-        Assert.assertNotNull(connection.unwrap(ConnectionProxyImpl.class));
-        Assert.assertNull(connection.unwrap(null));
+        assertTrue(connection.isWrapperFor(ConnectionProxyImpl.class));
+        assertTrue(connection.isWrapperFor(org.apache.derby.impl.jdbc.EmbedConnection.class));
+        assertNotNull(connection.unwrap(ConnectionProxyImpl.class));
+        assertNull(connection.unwrap(null));
 
         org.apache.derby.impl.jdbc.EmbedConnection derbyConnection = connection.unwrap(org.apache.derby.impl.jdbc.EmbedConnection.class);
-        Assert.assertNotNull(derbyConnection);
+        assertNotNull(derbyConnection);
 
         Statement statement = connection.createStatement();
         if (mysql5ConnectionClass != null) {
-            Assert.assertFalse(statement.isWrapperFor(Class.forName("com.mysql.jdbc.Statement")));
+            assertFalse(statement.isWrapperFor(Class.forName("com.mysql.jdbc.Statement")));
         }
-        Assert.assertFalse(statement.isWrapperFor(null));
-        Assert.assertTrue(statement.isWrapperFor(org.apache.derby.impl.jdbc.EmbedStatement.class));
+        assertFalse(statement.isWrapperFor(null));
+        assertTrue(statement.isWrapperFor(org.apache.derby.impl.jdbc.EmbedStatement.class));
 
         org.apache.derby.impl.jdbc.EmbedStatement rayStatement = statement.unwrap(org.apache.derby.impl.jdbc.EmbedStatement.class);
-        Assert.assertNotNull(rayStatement);
+        assertNotNull(rayStatement);
         statement.close();
     }
 
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 }
