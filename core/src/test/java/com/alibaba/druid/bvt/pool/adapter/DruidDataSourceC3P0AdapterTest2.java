@@ -15,18 +15,20 @@
  */
 package com.alibaba.druid.bvt.pool.adapter;
 
+import static org.junit.Assert.*;
+
+
 import java.io.Closeable;
 import javax.sql.DataSource;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class DruidDataSourceC3P0AdapterTest2 extends PoolTestCase {
     public void test_0() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
         dataSource.setJdbcUrl("jdbc:mock:xxx");
@@ -34,15 +36,15 @@ public class DruidDataSourceC3P0AdapterTest2 extends PoolTestCase {
         dataSource.setLogWriter(dataSource.getLogWriter());
         dataSource.setLoginTimeout(dataSource.getLoginTimeout());
 
-        Assert.assertTrue(dataSource.isWrapperFor(DruidDataSourceC3P0Adapter.class));
-        Assert.assertTrue(dataSource.isWrapperFor(DruidDataSource.class));
-        Assert.assertTrue(dataSource.isWrapperFor(DataSource.class));
-        Assert.assertFalse(dataSource.isWrapperFor(null));
+        assertTrue(dataSource.isWrapperFor(DruidDataSourceC3P0Adapter.class));
+        assertTrue(dataSource.isWrapperFor(DruidDataSource.class));
+        assertTrue(dataSource.isWrapperFor(DataSource.class));
+        assertFalse(dataSource.isWrapperFor(null));
 
-        Assert.assertNotNull(dataSource.unwrap(DruidDataSourceC3P0Adapter.class));
-        Assert.assertNotNull(dataSource.unwrap(DruidDataSource.class));
-        Assert.assertNotNull(dataSource.unwrap(DataSource.class));
-        Assert.assertNull(dataSource.unwrap(null));
+        assertNotNull(dataSource.unwrap(DruidDataSourceC3P0Adapter.class));
+        assertNotNull(dataSource.unwrap(DruidDataSource.class));
+        assertNotNull(dataSource.unwrap(DataSource.class));
+        assertNull(dataSource.unwrap(null));
 
         dataSource.setProperties(dataSource.getProperties());
         dataSource.setUser(dataSource.getUser());

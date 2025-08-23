@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.canal;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.alibaba.druid.sql.repository.SchemaObject;
@@ -20,7 +20,7 @@ public class CanalSQLSchemaTest {
         repository.console(sql2);
         repository.setDefaultSchema("test");
         SchemaObject table = repository.findTable("table_x1");
-        Assert.assertTrue(
+        assertTrue(
                 table.findColumn("value1") != null);
     }
 
@@ -33,7 +33,7 @@ public class CanalSQLSchemaTest {
         repository.console(sql);
         repository.setDefaultSchema("test");
         SchemaObject table = repository.findTable("parent");
-        Assert.assertTrue(table.findColumn("id") != null);
+        assertTrue(table.findColumn("id") != null);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class CanalSQLSchemaTest {
         repository.console(sql);
         repository.setDefaultSchema("test");
         SchemaObject table = repository.findTable("articles");
-        Assert.assertTrue(table.findColumn("article_id") != null);
+        assertTrue(table.findColumn("article_id") != null);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class CanalSQLSchemaTest {
         repository.console(sql);
         repository.setDefaultSchema("test");
         SchemaObject table = repository.findTable("proposal_order_info");
-        Assert.assertTrue(table.findColumn("id") != null);
+        assertTrue(table.findColumn("id") != null);
     }
 
     @Test
@@ -77,6 +77,6 @@ public class CanalSQLSchemaTest {
         repository.console(sql);
         repository.setDefaultSchema("test");
         SchemaObject table = repository.findTable("example_vc_tbl");
-        Assert.assertTrue(table.findColumn("DIM_SUM") != null);
+        assertTrue(table.findColumn("DIM_SUM") != null);
     }
 }

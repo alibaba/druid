@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -17,7 +17,7 @@ public class OdpsListTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
-        Assert.assertEquals("LIST roles", output);
+        assertEquals("LIST roles", output);
     }
 
     public void test_1() throws Exception {
@@ -27,7 +27,7 @@ public class OdpsListTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
-        Assert.assertEquals("LIST users", output);
+        assertEquals("LIST users", output);
     }
 
     public void test_2() throws Exception {
@@ -37,7 +37,7 @@ public class OdpsListTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
-        Assert.assertEquals("LIST functions", output);
+        assertEquals("LIST functions", output);
     }
 
     public void test_3() throws Exception {
@@ -47,7 +47,7 @@ public class OdpsListTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
-        Assert.assertEquals("LIST resources", output);
+        assertEquals("LIST resources", output);
     }
 
     public void test_4() throws Exception {
@@ -57,7 +57,7 @@ public class OdpsListTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
-        Assert.assertEquals("LIST accountproviders", output);
+        assertEquals("LIST accountproviders", output);
     }
 
     public void test_5() throws Exception {
@@ -67,7 +67,7 @@ public class OdpsListTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
-        Assert.assertEquals("LIST jobs", output);
+        assertEquals("LIST jobs", output);
     }
 
     public void test_6() throws Exception {
@@ -77,7 +77,7 @@ public class OdpsListTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
-        Assert.assertEquals("LIST trustedprojects", output);
+        assertEquals("LIST trustedprojects", output);
     }
 
 }

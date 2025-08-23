@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class H2_MergeTest_0 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.H2);
         stmt.accept(visitor);
@@ -60,8 +60,8 @@ public class H2_MergeTest_0 extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.containsTable("person"));
-        Assert.assertTrue(visitor.containsTable("person_test"));
+        assertTrue(visitor.containsTable("person"));
+        assertTrue(visitor.containsTable("person_test"));
 
     }
 }

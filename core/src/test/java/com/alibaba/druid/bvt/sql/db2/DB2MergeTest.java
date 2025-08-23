@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class DB2MergeTest extends DB2Test {
         SQLStatement stmt = statementList.get(0);
 
         System.out.println(stmt);
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -48,24 +48,24 @@ public class DB2MergeTest extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsTable("sales"));
-        Assert.assertTrue(visitor.containsTable("product"));
+        assertTrue(visitor.containsTable("sales"));
+        assertTrue(visitor.containsTable("product"));
 
-//         Assert.assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+//         assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("MERGE INTO product T\n" +
+        assertEquals("MERGE INTO product T\n" +
                         "USING sales S ON S.id = T.id\n" +
                         "WHEN MATCHED THEN UPDATE\n" +
                         "SET inventory = T.inventory - S.sold;", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
 
-        Assert.assertEquals("merge into product T\n" +
+        assertEquals("merge into product T\n" +
                         "using sales S on S.id = T.id\n" +
                         "when matched then update\n" +
                         "set inventory = T.inventory - S.sold;", //

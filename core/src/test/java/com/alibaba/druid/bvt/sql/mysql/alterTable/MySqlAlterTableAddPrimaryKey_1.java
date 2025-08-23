@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableAddPrimaryKey_1 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -32,10 +32,10 @@ public class MySqlAlterTableAddPrimaryKey_1 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE tabelname" + //
+        assertEquals("ALTER TABLE tabelname" + //
                 "\n\tADD PRIMARY KEY (id)", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table tabelname" + //
+        assertEquals("alter table tabelname" + //
                 "\n\tadd primary key (id)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.db2;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.DB2Test;
 import com.alibaba.druid.sql.SQLUtils;
@@ -42,7 +42,7 @@ public class DB2SelectTest_22 extends DB2Test {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -52,28 +52,28 @@ public class DB2SelectTest_22 extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("BUSINESS_ENTERPRISE_BUSIINFO")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("BUSINESS_ENTERPRISE_BUSIINFO")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "IDENTITY")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "BUSICODE")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "SYSCODE")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "INTIME")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+        assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "ID")));
+        assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "IDENTITY")));
+        assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "BUSICODE")));
+        assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "SYSCODE")));
+        assertTrue(visitor.getColumns().contains(new Column("BUSINESS_ENTERPRISE_BUSIINFO", "INTIME")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT ID, IDENTITY, BUSICODE"
+        assertEquals("SELECT ID, IDENTITY, BUSICODE"
                         + "\nFROM BUSINESS_ENTERPRISE_BUSIINFO"
                         + "\nWHERE SYSCODE = '603'"
                         + "\nORDER BY INTIME DESC"
                         + "\nFETCH FIRST 1 ROWS ONLY", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
 
-        Assert.assertEquals("select ID, IDENTITY, BUSICODE"
+        assertEquals("select ID, IDENTITY, BUSICODE"
                         + "\nfrom BUSINESS_ENTERPRISE_BUSIINFO"
                         + "\nwhere SYSCODE = '603'"
                         + "\norder by INTIME desc"

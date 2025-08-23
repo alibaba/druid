@@ -18,12 +18,12 @@ package com.alibaba.druid.bvt.sql.mysql;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlFormatTest3 extends TestCase {
     public void test_0() throws Exception {
         String text = "select * from db_00.t_00_00 where id > 1;";
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                 "FROM db_00.t_00_00\n" +
                 "WHERE id > 1;", SQLUtils.format(text, JdbcUtils.MYSQL));
     }

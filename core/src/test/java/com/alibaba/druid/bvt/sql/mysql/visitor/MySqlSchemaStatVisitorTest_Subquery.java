@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.visitor;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -33,7 +33,7 @@ public class MySqlSchemaStatVisitorTest_Subquery extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -43,13 +43,13 @@ public class MySqlSchemaStatVisitorTest_Subquery extends TestCase {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("conditions : " + visitor.getConditions());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("users"));
-        Assert.assertEquals(22, visitor.getConditions().get(0).getValues().get(0));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("users"));
+        assertEquals(22, visitor.getConditions().get(0).getValues().get(0));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
 
     }
 

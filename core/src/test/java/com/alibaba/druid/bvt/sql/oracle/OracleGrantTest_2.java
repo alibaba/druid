@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -42,9 +42,9 @@ public class OracleGrantTest_2 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("GRANT CREATE ANY MATERIALIZED VIEW,"//
+        assertEquals("GRANT CREATE ANY MATERIALIZED VIEW,"//
                         + " ALTER ANY MATERIALIZED VIEW,"//
                         + " DROP ANY MATERIALIZED VIEW,"//
                         + " QUERY REWRITE,"//
@@ -62,12 +62,12 @@ public class OracleGrantTest_2 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("UNKNOWN", "location_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("UNKNOWN", "location_id")));
     }
 }

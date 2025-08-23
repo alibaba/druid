@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class SQLite_SelectTest_2 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -45,13 +45,13 @@ public class SQLite_SelectTest_2 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "*")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("mytable", "*")));
+        assertTrue(visitor.getColumns().contains(new Column("mytable", "id")));
     }
 }

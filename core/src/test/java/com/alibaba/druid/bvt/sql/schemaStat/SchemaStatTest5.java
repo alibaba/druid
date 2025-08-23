@@ -6,7 +6,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -25,6 +25,6 @@ public class SchemaStatTest5 extends TestCase {
         System.out.println(statVisitor.getTables());
         System.out.println(statVisitor.getConditions());
 
-        Assert.assertEquals(2, statVisitor.getColumns().size());
+        assertEquals(2, statVisitor.getColumns().size());
     }
 }

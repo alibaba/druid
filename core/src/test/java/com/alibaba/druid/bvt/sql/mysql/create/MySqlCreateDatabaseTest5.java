@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class MySqlCreateDatabaseTest5 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS schema_name\n" +
+        assertEquals("CREATE DATABASE IF NOT EXISTS schema_name\n" +
                 "WITH (\n" +
                 "\tproperty_name = 'expression'\n" +
                 ")", output);
@@ -52,7 +52,7 @@ public class MySqlCreateDatabaseTest5 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS schema_name\n" +
+        assertEquals("CREATE DATABASE IF NOT EXISTS schema_name\n" +
                 "WITH (\n" +
                 "\tproperty_name = 'expression'\n" +
                 ")", output);

@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -66,9 +66,9 @@ public class OracleCreateTableTest36 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE composite_sales ("
+        assertEquals("CREATE TABLE composite_sales ("
                         + "\n\tprod_id NUMBER(6),"
                         + "\n\tcust_id NUMBER,"
                         + "\n\ttime_id DATE,"
@@ -111,10 +111,10 @@ public class OracleCreateTableTest36 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        assertEquals(7, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("composite_sales", "prod_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("composite_sales", "prod_id")));
     }
 }

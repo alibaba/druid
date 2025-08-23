@@ -6,7 +6,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class SchemaTest {
@@ -18,6 +18,6 @@ public class SchemaTest {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.gaussdb);
         SQLStatement sqlStatement = parser.parseStatement();
         repository.accept(sqlStatement);
-        Assert.assertNotNull(((SQLAlterTableStatement) sqlStatement).getTableSource().getSchemaObject());
+        assertNotNull(((SQLAlterTableStatement) sqlStatement).getTableSource().getSchemaObject());
     }
 }

@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,17 +35,17 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER TABLE mytable\n\t ENABLE ROW MOVEMENT ",
+        assertEquals("ALTER TABLE mytable\n\t ENABLE ROW MOVEMENT ",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
     }
 
     public void test_1() throws Exception {
@@ -56,18 +56,18 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
+        assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
                         "\t SHRINK SPACE CHECK ",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
     }
 
     public void test_2() throws Exception {
@@ -78,18 +78,18 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
+        assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
                         "\t SHRINK SPACE COMPACT ",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
     }
 
     public void test_3() throws Exception {
@@ -100,18 +100,18 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
+        assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
                         "\t SHRINK SPACE CASCADE ",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
     }
 
     public void test_4() throws Exception {
@@ -122,18 +122,18 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
+        assertEquals("ALTER TABLE \"EIFINI_BCS\".\"SHEET_DA\"\n" +
                         "\t SHRINK SPACE COMPACT CASCADE ",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
     }
 
     public void test_5() throws Exception {
@@ -144,17 +144,17 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("RENAME tester.t1 TO tester.\"BIN$9SBcFDaAYgDgUykdEKzT1Q==$0\"",
+        assertEquals("RENAME tester.t1 TO tester.\"BIN$9SBcFDaAYgDgUykdEKzT1Q==$0\"",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tester.t1")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("tester.t1")));
     }
 
     public void test_6() throws Exception {
@@ -165,17 +165,17 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER TABLE customers\n\tMODIFY (\n\t\tcity varchar2(75) DEFAULT 'Seattle' NOT NULL\n\t);",
+        assertEquals("ALTER TABLE customers\n\tMODIFY (\n\t\tcity varchar2(75) DEFAULT 'Seattle' NOT NULL\n\t);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("customers")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("customers")));
     }
 
 
@@ -229,9 +229,9 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"JUNYU_ORCL\".\"KBS_QUESTION\" (\n" +
+        assertEquals("CREATE TABLE \"JUNYU_ORCL\".\"KBS_QUESTION\" (\n" +
                         "\t\"ID\" number(19, 0) NOT NULL,\n" +
                         "\t\"QUESTION\" varchar2(1500) NULL,\n" +
                         "\t\"GRADE\" number(3, 0) DEFAULT 0 NOT NULL,\n" +
@@ -280,9 +280,9 @@ public class OracleAlterTableTest26 extends OracleTest {
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.KBS_QUESTION")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.KBS_QUESTION")));
     }
 
     public void test_8() throws Exception {
@@ -293,18 +293,18 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER TABLE \"JUNYU_ORCL\".\"MYSQL_ALL_TYPES_FOR_8_0\"\n" +
+        assertEquals("ALTER TABLE \"JUNYU_ORCL\".\"MYSQL_ALL_TYPES_FOR_8_0\"\n" +
                         "\tADD CONSTRAINT \"uk_c_serial_7049_f_759141250\" UNIQUE (\"C_SERIAL\")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.MYSQL_ALL_TYPES_FOR_8_0")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.MYSQL_ALL_TYPES_FOR_8_0")));
     }
 
     public void test_9() throws Exception {
@@ -315,18 +315,18 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER TABLE \"JUNYU_ORCL\".\"KBS_QUESTION\"\n" +
+        assertEquals("ALTER TABLE \"JUNYU_ORCL\".\"KBS_QUESTION\"\n" +
                         "\tRENAME CONSTRAINT \"SYS_C007896\" TO \"BIN$9Ue7xItcBs3gUyUdEKzZKg==$0\"",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.KBS_QUESTION")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.KBS_QUESTION")));
     }
 
     public void test_10() throws Exception {
@@ -337,17 +337,17 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("DROP TABLE KBS_QUESTION  AS \"BIN$9Ue7xItyBs3gUyUdEKzZKg==$0\"",
+        assertEquals("DROP TABLE KBS_QUESTION  AS \"BIN$9Ue7xItyBs3gUyUdEKzZKg==$0\"",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("KBS_QUESTION")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("KBS_QUESTION")));
     }
 
     public void test_11() throws Exception {
@@ -358,17 +358,17 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ANALYZE TABLE JUNYU_ORCL.EQ_DRAGONCARD_TEMP COMPUTE STATISTICS",
+        assertEquals("ANALYZE TABLE JUNYU_ORCL.EQ_DRAGONCARD_TEMP COMPUTE STATISTICS",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.EQ_DRAGONCARD_TEMP")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.EQ_DRAGONCARD_TEMP")));
     }
 
     public void test_12() throws Exception {
@@ -379,18 +379,18 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER TABLE \"JUNYU_ORCL\".\"WORKER_STATS\"\n" +
+        assertEquals("ALTER TABLE \"JUNYU_ORCL\".\"WORKER_STATS\"\n" +
                         "\tDROP CONSTRAINT \"SYS_C007550\" CASCADE;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.WORKER_STATS")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.WORKER_STATS")));
     }
 
     public void test_13() throws Exception {
@@ -401,9 +401,9 @@ public class OracleAlterTableTest26 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("ALTER SUMMARY \"CHJMESPRO\".\"MV_PRODUCTION_OVERVIEW_HOUR\" COMPILE ;",
+        assertEquals("ALTER SUMMARY \"CHJMESPRO\".\"MV_PRODUCTION_OVERVIEW_HOUR\" COMPILE ;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
     }
 }

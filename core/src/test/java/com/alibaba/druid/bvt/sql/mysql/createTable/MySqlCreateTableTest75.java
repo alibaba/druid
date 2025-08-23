@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest75 extends MysqlTest {
@@ -55,12 +55,12 @@ public class MySqlCreateTableTest75 extends MysqlTest {
         stmt.accept(visitor);
 
         Column column = visitor.getColumn("sys_msg_entry_0320", "provider_dsp_name");
-        Assert.assertNotNull(column);
-        Assert.assertEquals("varchar", column.getDataType());
+        assertNotNull(column);
+        assertEquals("varchar", column.getDataType());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE `sys_msg_entry_0320` (\n" +
+            assertEquals("CREATE TABLE `sys_msg_entry_0320` (\n" +
                     "\t`provider_dsp_name` varchar(256) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '消息提供者的显示名，提供给一些需要统一发送名称的系统消息',\n" +
                     "\t`template_data` varchar(2048) NOT NULL /*!50616 COLUMN_FORMAT COMPRESSED */ COMMENT '模板渲染时使用的数据,key-value对',\n" +
                     "\t`template_merge_data` varchar(512) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '对于需要合并的消息，被合并的参数放在此处理',\n" +
@@ -84,7 +84,7 @@ public class MySqlCreateTableTest75 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table `sys_msg_entry_0320` (\n" +
+            assertEquals("create table `sys_msg_entry_0320` (\n" +
                     "\t`provider_dsp_name` varchar(256) /*!50616 COLUMN_FORMAT COMPRESSED */ default null comment '消息提供者的显示名，提供给一些需要统一发送名称的系统消息',\n" +
                     "\t`template_data` varchar(2048) not null /*!50616 COLUMN_FORMAT COMPRESSED */ comment '模板渲染时使用的数据,key-value对',\n" +
                     "\t`template_merge_data` varchar(512) /*!50616 COLUMN_FORMAT COMPRESSED */ default null comment '对于需要合并的消息，被合并的参数放在此处理',\n" +

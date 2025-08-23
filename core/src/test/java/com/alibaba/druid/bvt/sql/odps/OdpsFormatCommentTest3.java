@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 
@@ -16,7 +16,7 @@ public class OdpsFormatCommentTest3 extends TestCase {
                 + "\nfrom t0;"//
                 + "\nselect f2 -- aa"//
                 + "\nfrom t1;";//
-        Assert.assertEquals("-- 使用服务模式"//
+        assertEquals("-- 使用服务模式"//
                 + "\nSET odps.service.mode = all;-- 使用新引擎"//
                 + "\nSET odps.nvm.enabled = true;"//
                 + "\n" //

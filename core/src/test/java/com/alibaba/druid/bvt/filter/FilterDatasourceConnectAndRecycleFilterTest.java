@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.Filter;
@@ -46,14 +47,14 @@ public class FilterDatasourceConnectAndRecycleFilterTest extends TestCase {
     }
 
     public void test() throws Exception {
-        Assert.assertEquals(0, filter.getDataSourceConnectCount());
-        Assert.assertEquals(0, filter.getDataSourceRecycleCount());
+        assertEquals(0, filter.getDataSourceConnectCount());
+        assertEquals(0, filter.getDataSourceRecycleCount());
         Connection conn = dataSource.getConnection();
-        Assert.assertEquals(1, filter.getDataSourceConnectCount());
-        Assert.assertEquals(0, filter.getDataSourceRecycleCount());
+        assertEquals(1, filter.getDataSourceConnectCount());
+        assertEquals(0, filter.getDataSourceRecycleCount());
         conn.close();
-        Assert.assertEquals(1, filter.getDataSourceConnectCount());
-        Assert.assertEquals(1, filter.getDataSourceRecycleCount());
+        assertEquals(1, filter.getDataSourceConnectCount());
+        assertEquals(1, filter.getDataSourceRecycleCount());
     }
 
     public static class TestFilter extends FilterAdapter {

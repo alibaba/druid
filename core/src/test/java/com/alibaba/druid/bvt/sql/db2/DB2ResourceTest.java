@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
+import static org.junit.Assert.*;
 
 public class DB2ResourceTest extends OracleTest {
     public void test_0() throws Exception {
@@ -54,7 +55,7 @@ public class DB2ResourceTest extends OracleTest {
         DB2StatementParser parser = new DB2StatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        // Assert.assertEquals(1, statementList.size());
+        // assertEquals(1, statementList.size());
 
         System.out.println(sql);
 

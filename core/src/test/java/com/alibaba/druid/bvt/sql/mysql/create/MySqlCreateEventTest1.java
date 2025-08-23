@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class MySqlCreateEventTest1 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DEFINER = 'ivan'@'%' EVENT testevent1 ON SCHEDULE EVERY 1 HOUR ENDS '2016-11-05 23:59:00'\n" +
+        assertEquals("CREATE DEFINER = 'ivan'@'%' EVENT testevent1 ON SCHEDULE EVERY 1 HOUR ENDS '2016-11-05 23:59:00'\n" +
                 "DO\n" +
                 "BEGIN\n" +
                 "\tSELECT *\n" +

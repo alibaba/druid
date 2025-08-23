@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -18,7 +18,7 @@ public class OdpsDescTest extends TestCase {
         String output = SQLUtils.toOdpsString(stmt);
         stmt.toString();
         System.out.println(output);
-        Assert.assertEquals("DESC coupon_dataset_4_feature", output);
+        assertEquals("DESC coupon_dataset_4_feature", output);
     }
 
     public void test_1() throws Exception {
@@ -28,7 +28,7 @@ public class OdpsDescTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         System.out.println(output);
-        Assert.assertEquals("DESC ROLE admin", output);
+        assertEquals("DESC ROLE admin", output);
     }
 
     public void test_2() throws Exception {
@@ -38,7 +38,7 @@ public class OdpsDescTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         System.out.println(output);
-        Assert.assertEquals("DESC INSTANCE 20150715103441522gond1qa2", output);
+        assertEquals("DESC INSTANCE 20150715103441522gond1qa2", output);
     }
 
     public void test_3() throws Exception {
@@ -48,7 +48,7 @@ public class OdpsDescTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         System.out.println(output);
-        Assert.assertEquals("DESC idl_cheka_ent_sql_fht PARTITION (ds = '20151010', hh = '10')", output);
+        assertEquals("DESC idl_cheka_ent_sql_fht PARTITION (ds = '20151010', hh = '10')", output);
     }
 
     public void test_4() throws Exception {
@@ -58,7 +58,7 @@ public class OdpsDescTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         System.out.println(output);
-        Assert.assertEquals("DESC idl_cheka_ent_sql_fdt PARTITION (ds = '20151010')", output);
+        assertEquals("DESC idl_cheka_ent_sql_fdt PARTITION (ds = '20151010')", output);
     }
 
 }

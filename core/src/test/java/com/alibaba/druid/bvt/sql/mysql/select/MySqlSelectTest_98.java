@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class MySqlSelectTest_98 extends MysqlTest {
 //        print(statementList);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -72,14 +72,14 @@ public class MySqlSelectTest_98 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(3, visitor.getTables().size());
-        Assert.assertEquals(12, visitor.getColumns().size());
-        Assert.assertEquals(6, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(3, visitor.getTables().size());
+        assertEquals(12, visitor.getColumns().size());
+        assertEquals(6, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("INSERT INTO brand_crm_ship.imp_order_lock (tid, pid, __aid, pv)\n" +
+            assertEquals("INSERT INTO brand_crm_ship.imp_order_lock (tid, pid, __aid, pv)\n" +
                             "SELECT 121, 48868196, t2.__aid, t3.pv\n" +
                             "FROM (\n" +
                             "\tSELECT DISTINCT __aid\n" +
@@ -102,7 +102,7 @@ public class MySqlSelectTest_98 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("insert into brand_crm_ship.imp_order_lock (tid, pid, __aid, pv)\n" +
+            assertEquals("insert into brand_crm_ship.imp_order_lock (tid, pid, __aid, pv)\n" +
                             "select 121, 48868196, t2.__aid, t3.pv\n" +
                             "from (\n" +
                             "\tselect distinct __aid\n" +

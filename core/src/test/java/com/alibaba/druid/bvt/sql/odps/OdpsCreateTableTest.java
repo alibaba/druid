@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -24,7 +24,7 @@ public class OdpsCreateTableTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("CREATE TABLE IF NOT EXISTS sale_detail ("//
+        assertEquals("CREATE TABLE IF NOT EXISTS sale_detail ("//
                 + "\n\tshop_name STRING,"//
                 + "\n\tcustomer_id STRING,"//
                 + "\n\ttotal_price DOUBLE"//

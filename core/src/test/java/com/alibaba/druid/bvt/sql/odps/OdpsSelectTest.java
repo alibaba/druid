@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class OdpsSelectTest extends TestCase {
     public void test_distribute_by() throws Exception {

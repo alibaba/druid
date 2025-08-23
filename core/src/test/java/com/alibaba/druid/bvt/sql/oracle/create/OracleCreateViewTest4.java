@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -53,9 +53,9 @@ public class OracleCreateViewTest4 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE VIEW \"SC_001\".\"V_001\" (\n" +
+        assertEquals("CREATE OR REPLACE VIEW \"SC_001\".\"V_001\" (\n" +
                         "\t\"OBJ_OWNER\", \n" +
                         "\t\"OBJ_NAME\", \n" +
                         "\t\"OBJ_TYPE\", \n" +
@@ -93,12 +93,12 @@ public class OracleCreateViewTest4 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(3, visitor.getTables().size());
+        assertEquals(3, visitor.getTables().size());
 
-        Assert.assertEquals(12, visitor.getColumns().size());
+        assertEquals(12, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("sys.V_$SESSION", "username"));
-        Assert.assertTrue(visitor.containsColumn("sys.V_$SESSION", "SID"));
-        Assert.assertTrue(visitor.containsColumn("sys.V_$SESSION", "row_wait_obj#"));
+        assertTrue(visitor.containsColumn("sys.V_$SESSION", "username"));
+        assertTrue(visitor.containsColumn("sys.V_$SESSION", "SID"));
+        assertTrue(visitor.containsColumn("sys.V_$SESSION", "row_wait_obj#"));
     }
 }

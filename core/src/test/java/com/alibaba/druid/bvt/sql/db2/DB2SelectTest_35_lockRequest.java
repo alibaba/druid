@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class DB2SelectTest_35_lockRequest extends DB2Test {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -43,17 +43,17 @@ public class DB2SelectTest_35_lockRequest extends DB2Test {
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("KEYIDS")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("KEYIDS")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("KEYIDS", "KEYVALUE")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("KEYIDS", "KEYVALUE")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("KEYIDS", "KEYVALUE")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("KEYIDS", "KEYVALUE")));
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
-        Assert.assertEquals("SELECT KEYID, KEYVALUE"
+        assertEquals("SELECT KEYID, KEYVALUE"
                         + "\nFROM KEYIDS"
                         + "\nWHERE KEYID = ?"
                         + "\nFOR READ ONLY"

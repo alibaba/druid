@@ -1,8 +1,9 @@
 package com.alibaba.druid.bvt.utils;
 
+import static org.junit.Assert.assertEquals;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.util.DaemonThreadFactory;
 
@@ -14,7 +15,7 @@ public class DaemonThreadFactoryTest extends TestCase {
             }
         };
         DaemonThreadFactory factory = new DaemonThreadFactory("test");
-        Assert.assertEquals("[test-1]", factory.newThread(task).getName());
-        Assert.assertEquals("[test-2]", factory.newThread(task).getName());
+        assertEquals("[test-1]", factory.newThread(task).getName());
+        assertEquals("[test-2]", factory.newThread(task).getName());
     }
 }

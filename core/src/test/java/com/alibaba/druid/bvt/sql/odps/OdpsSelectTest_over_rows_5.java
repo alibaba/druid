@@ -20,22 +20,22 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OdpsSelectTest_over_rows_5 extends TestCase {
     public void test_select() throws Exception {
         String sql = "SELECT sum(c) over(order by ds rows UNBOUNDED following) s, ds FROM t1";//
-        Assert.assertEquals("SELECT sum(c) OVER (ORDER BY ds ROWS UNBOUNDED FOLLOWING) AS s, ds\n" +
+        assertEquals("SELECT sum(c) OVER (ORDER BY ds ROWS UNBOUNDED FOLLOWING) AS s, ds\n" +
                 "FROM t1", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select sum(c) over (order by ds rows unbounded following) as s, ds\n" +
+        assertEquals("select sum(c) over (order by ds rows unbounded following) as s, ds\n" +
                 "from t1", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
@@ -45,11 +45,11 @@ public class OdpsSelectTest_over_rows_5 extends TestCase {
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
+//        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
 
 }

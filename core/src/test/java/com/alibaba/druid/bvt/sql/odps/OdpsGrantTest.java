@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -43,7 +43,7 @@ public class OdpsGrantTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
-        Assert.assertEquals("GRANT ROLE_PROJECT_ADMIN TO aliyun$DXP_xxxxx@aliyun.com", output);
+        assertEquals("GRANT ROLE_PROJECT_ADMIN TO aliyun$DXP_xxxxx@aliyun.com", output);
     }
 
     public void test_2() throws Exception {
@@ -53,7 +53,7 @@ public class OdpsGrantTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         // System.out.println(output);
-        Assert.assertEquals("GRANT SUPER WRITE TO USER aliyun$DXP_xxxxx@aliyun.com", output);
+        assertEquals("GRANT SUPER WRITE TO USER aliyun$DXP_xxxxx@aliyun.com", output);
     }
 
     public void test_3() throws Exception {

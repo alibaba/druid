@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.insert;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -38,17 +38,17 @@ public class MySqlInsertTest_11 extends MysqlTest {
 
         MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
 
-        Assert.assertEquals(1, insertStmt.getValuesList().size());
-        Assert.assertEquals(2, insertStmt.getValues().getValues().size());
-        Assert.assertEquals(2, insertStmt.getColumns().size());
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, insertStmt.getValuesList().size());
+        assertEquals(2, insertStmt.getValues().getValues().size());
+        assertEquals(2, insertStmt.getColumns().size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         String formatSql = "INSERT ROLLBACK_ON_FAIL INTO t (a, b)"//
                 + "\nVALUES ('a1', 'b1')";
-        Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
+        assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 
 }

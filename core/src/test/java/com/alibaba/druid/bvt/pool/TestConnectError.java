@@ -15,12 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -51,7 +53,7 @@ public class TestConnectError extends TestCase {
             }
         };
 
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         dataSource = new DruidDataSource();
         dataSource.setDriver(driver);
@@ -67,11 +69,11 @@ public class TestConnectError extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_connect_error() throws Exception {
-        Assert.assertEquals(0, dataSource.getCreateErrorCount());
+        assertEquals(0, dataSource.getCreateErrorCount());
 
         int count = 10;
         Connection[] connections = new Connection[count];
@@ -83,6 +85,6 @@ public class TestConnectError extends TestCase {
             connections[i].close();
         }
 
-        Assert.assertEquals(10, dataSource.getCreateErrorCount());
+        assertEquals(10, dataSource.getCreateErrorCount());
     }
 }

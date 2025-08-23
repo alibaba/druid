@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -24,7 +24,7 @@ import com.alibaba.druid.util.JdbcUtils;
 public class MySqlFormatTest extends TestCase {
     public void test_0() throws Exception {
         String text = "CREATE TABLE customer (a INT, b CHAR (20), INDEX (a));";
-        Assert.assertEquals("CREATE TABLE customer (\n" + //
+        assertEquals("CREATE TABLE customer (\n" + //
                 "\ta INT,\n" + //
                 "\tb CHAR(20),\n" + //
                 "\tINDEX(a)\n" + //

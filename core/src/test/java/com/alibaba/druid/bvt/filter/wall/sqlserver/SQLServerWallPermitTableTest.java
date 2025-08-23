@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,13 +31,13 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class SQLServerWallPermitTableTest extends TestCase {
     public void test01() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION select * from sysObjects"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION select * from sysdatabases"));
+        assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION select * from sysObjects"));
+        assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION select * from sysdatabases"));
     }
 
     public void test03() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION SELECT sysobjects.name as tablename, syscolumns.name as columnname FROM sysobjects JOIN syscolumns ON sysobjects.id = syscolumns.id WHERE sysobjects.xtype = ‘U’ AND syscolumns.name LIKE ‘%PASSWORD%’ "));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION SELECT name FROM syscolumns WHERE id = (SELECT id FROM sysobjects WHERE name = ‘mytable’);"));
+        assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION SELECT sysobjects.name as tablename, syscolumns.name as columnname FROM sysobjects JOIN syscolumns ON sysobjects.id = syscolumns.id WHERE sysobjects.xtype = ‘U’ AND syscolumns.name LIKE ‘%PASSWORD%’ "));
+        assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION SELECT name FROM syscolumns WHERE id = (SELECT id FROM sysobjects WHERE name = ‘mytable’);"));
     }
 
 }

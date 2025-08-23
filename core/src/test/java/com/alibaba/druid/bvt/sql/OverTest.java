@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -24,7 +24,7 @@ public class OverTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new SchemaStatVisitor();
         statemen.accept(visitor);
@@ -33,7 +33,7 @@ public class OverTest extends TestCase {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
     }
 }

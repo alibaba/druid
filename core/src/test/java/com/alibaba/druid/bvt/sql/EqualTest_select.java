@@ -7,9 +7,10 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class EqualTest_select extends TestCase {
     public void test_eq_select() throws Exception {

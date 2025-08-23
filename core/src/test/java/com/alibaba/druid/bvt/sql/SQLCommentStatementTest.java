@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import junit.framework.TestCase;
 
@@ -17,6 +17,6 @@ public class SQLCommentStatementTest extends TestCase {
 
         String text = TestUtils.outputSqlServer(stmt);
 
-        Assert.assertEquals("COMMENT ON TABLE t1 IS 'xxx'", text);
+        assertEquals("COMMENT ON TABLE t1 IS 'xxx'", text);
     }
 }

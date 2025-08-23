@@ -15,11 +15,14 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.log4j.Priority;
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.logging.CommonsLogFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
@@ -29,7 +32,7 @@ import com.alibaba.druid.stat.JdbcStatManager;
 public class CommonsLogFilterTest extends TestCase {
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_logger() throws Exception {
@@ -40,51 +43,51 @@ public class CommonsLogFilterTest extends TestCase {
         filter.setStatementLoggerName("_statement_name_");
         filter.setResultSetLoggerName("_resultset_name_");
 
-        Assert.assertEquals(filter.getDataSourceLoggerName(), "_datasource_name_");
-        Assert.assertEquals(filter.getConnectionLoggerName(), "_connection_name_");
-        Assert.assertEquals(filter.getStatementLoggerName(), "_statement_name_");
-        Assert.assertEquals(filter.getResultSetLoggerName(), "_resultset_name_");
+        assertEquals(filter.getDataSourceLoggerName(), "_datasource_name_");
+        assertEquals(filter.getConnectionLoggerName(), "_connection_name_");
+        assertEquals(filter.getStatementLoggerName(), "_statement_name_");
+        assertEquals(filter.getResultSetLoggerName(), "_resultset_name_");
 
         filter.setDataSourceLogger(new FakeLogger("_datasoure_", true));
         filter.setConnectionLogger(new FakeLogger("_connection_", true));
         filter.setStatementLogger(new FakeLogger("_statement_", true));
         filter.setResultSetLogger(new FakeLogger("_resultset_", true));
 
-        Assert.assertEquals(filter.getDataSourceLoggerName(), "_datasoure_");
-        Assert.assertEquals(filter.getConnectionLoggerName(), "_connection_");
-        Assert.assertEquals(filter.getStatementLoggerName(), "_statement_");
-        Assert.assertEquals(filter.getResultSetLoggerName(), "_resultset_");
+        assertEquals(filter.getDataSourceLoggerName(), "_datasoure_");
+        assertEquals(filter.getConnectionLoggerName(), "_connection_");
+        assertEquals(filter.getStatementLoggerName(), "_statement_");
+        assertEquals(filter.getResultSetLoggerName(), "_resultset_");
 
         setLogEnableAll(filter, true);
 
-        Assert.assertTrue(filter.isDataSourceLogEnabled());
+        assertTrue(filter.isDataSourceLogEnabled());
 
-        Assert.assertTrue(filter.isConnectionLogEnabled());
-        Assert.assertTrue(filter.isConnectionLogErrorEnabled());
-        Assert.assertTrue(filter.isConnectionConnectBeforeLogEnabled());
-        Assert.assertTrue(filter.isConnectionConnectAfterLogEnabled());
-        Assert.assertTrue(filter.isConnectionCloseAfterLogEnabled());
-        Assert.assertTrue(filter.isConnectionCommitAfterLogEnabled());
-        Assert.assertTrue(filter.isConnectionRollbackAfterLogEnabled());
+        assertTrue(filter.isConnectionLogEnabled());
+        assertTrue(filter.isConnectionLogErrorEnabled());
+        assertTrue(filter.isConnectionConnectBeforeLogEnabled());
+        assertTrue(filter.isConnectionConnectAfterLogEnabled());
+        assertTrue(filter.isConnectionCloseAfterLogEnabled());
+        assertTrue(filter.isConnectionCommitAfterLogEnabled());
+        assertTrue(filter.isConnectionRollbackAfterLogEnabled());
 
-        Assert.assertTrue(filter.isStatementLogEnabled());
-        Assert.assertTrue(filter.isStatementLogErrorEnabled());
-        Assert.assertTrue(filter.isStatementCreateAfterLogEnabled());
-        Assert.assertTrue(filter.isStatementCloseAfterLogEnabled());
-        Assert.assertTrue(filter.isStatementExecuteAfterLogEnabled());
-        Assert.assertTrue(filter.isStatementExecuteBatchAfterLogEnabled());
-        Assert.assertTrue(filter.isStatementExecuteQueryAfterLogEnabled());
-        Assert.assertTrue(filter.isStatementExecuteUpdateAfterLogEnabled());
-        Assert.assertTrue(filter.isStatementLogErrorEnabled());
-        Assert.assertTrue(filter.isStatementParameterSetLogEnabled());
-        Assert.assertTrue(filter.isStatementPrepareAfterLogEnabled());
-        Assert.assertTrue(filter.isStatementPrepareCallAfterLogEnabled());
+        assertTrue(filter.isStatementLogEnabled());
+        assertTrue(filter.isStatementLogErrorEnabled());
+        assertTrue(filter.isStatementCreateAfterLogEnabled());
+        assertTrue(filter.isStatementCloseAfterLogEnabled());
+        assertTrue(filter.isStatementExecuteAfterLogEnabled());
+        assertTrue(filter.isStatementExecuteBatchAfterLogEnabled());
+        assertTrue(filter.isStatementExecuteQueryAfterLogEnabled());
+        assertTrue(filter.isStatementExecuteUpdateAfterLogEnabled());
+        assertTrue(filter.isStatementLogErrorEnabled());
+        assertTrue(filter.isStatementParameterSetLogEnabled());
+        assertTrue(filter.isStatementPrepareAfterLogEnabled());
+        assertTrue(filter.isStatementPrepareCallAfterLogEnabled());
 
-        Assert.assertTrue(filter.isResultSetLogEnabled());
-        Assert.assertTrue(filter.isResultSetLogErrorEnabled());
-        Assert.assertTrue(filter.isResultSetCloseAfterLogEnabled());
-        Assert.assertTrue(filter.isResultSetNextAfterLogEnabled());
-        Assert.assertTrue(filter.isResultSetOpenAfterLogEnabled());
+        assertTrue(filter.isResultSetLogEnabled());
+        assertTrue(filter.isResultSetLogErrorEnabled());
+        assertTrue(filter.isResultSetCloseAfterLogEnabled());
+        assertTrue(filter.isResultSetNextAfterLogEnabled());
+        assertTrue(filter.isResultSetOpenAfterLogEnabled());
 
         // ////
 
@@ -93,34 +96,34 @@ public class CommonsLogFilterTest extends TestCase {
         filter.setStatementLogger(new FakeLogger("_statement_", false));
         filter.setResultSetLogger(new FakeLogger("_resultset_", false));
 
-        Assert.assertFalse(filter.isDataSourceLogEnabled());
+        assertFalse(filter.isDataSourceLogEnabled());
 
-        Assert.assertFalse(filter.isConnectionLogEnabled());
-        Assert.assertFalse(filter.isConnectionLogErrorEnabled());
-        Assert.assertFalse(filter.isConnectionConnectBeforeLogEnabled());
-        Assert.assertFalse(filter.isConnectionConnectAfterLogEnabled());
-        Assert.assertFalse(filter.isConnectionCloseAfterLogEnabled());
-        Assert.assertFalse(filter.isConnectionCommitAfterLogEnabled());
-        Assert.assertFalse(filter.isConnectionRollbackAfterLogEnabled());
+        assertFalse(filter.isConnectionLogEnabled());
+        assertFalse(filter.isConnectionLogErrorEnabled());
+        assertFalse(filter.isConnectionConnectBeforeLogEnabled());
+        assertFalse(filter.isConnectionConnectAfterLogEnabled());
+        assertFalse(filter.isConnectionCloseAfterLogEnabled());
+        assertFalse(filter.isConnectionCommitAfterLogEnabled());
+        assertFalse(filter.isConnectionRollbackAfterLogEnabled());
 
-        Assert.assertFalse(filter.isStatementLogEnabled());
-        Assert.assertFalse(filter.isStatementLogErrorEnabled());
-        Assert.assertFalse(filter.isStatementCreateAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementCloseAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteBatchAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteQueryAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteUpdateAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementLogErrorEnabled());
-        Assert.assertFalse(filter.isStatementParameterSetLogEnabled());
-        Assert.assertFalse(filter.isStatementPrepareAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementPrepareCallAfterLogEnabled());
+        assertFalse(filter.isStatementLogEnabled());
+        assertFalse(filter.isStatementLogErrorEnabled());
+        assertFalse(filter.isStatementCreateAfterLogEnabled());
+        assertFalse(filter.isStatementCloseAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteBatchAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteQueryAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteUpdateAfterLogEnabled());
+        assertFalse(filter.isStatementLogErrorEnabled());
+        assertFalse(filter.isStatementParameterSetLogEnabled());
+        assertFalse(filter.isStatementPrepareAfterLogEnabled());
+        assertFalse(filter.isStatementPrepareCallAfterLogEnabled());
 
-        Assert.assertFalse(filter.isResultSetLogEnabled());
-        Assert.assertFalse(filter.isResultSetLogErrorEnabled());
-        Assert.assertFalse(filter.isResultSetCloseAfterLogEnabled());
-        Assert.assertFalse(filter.isResultSetNextAfterLogEnabled());
-        Assert.assertFalse(filter.isResultSetOpenAfterLogEnabled());
+        assertFalse(filter.isResultSetLogEnabled());
+        assertFalse(filter.isResultSetLogErrorEnabled());
+        assertFalse(filter.isResultSetCloseAfterLogEnabled());
+        assertFalse(filter.isResultSetNextAfterLogEnabled());
+        assertFalse(filter.isResultSetOpenAfterLogEnabled());
 
         // ////////////////////////////////////////
         // ////////////////////////////////////////
@@ -141,38 +144,38 @@ public class CommonsLogFilterTest extends TestCase {
         filter.setResultSetLogger(new FakeLogger("_resultset_", false));
 
         filter.setStatementLogErrorEnabled(true);
-        Assert.assertFalse(filter.isStatementLogErrorEnabled());
+        assertFalse(filter.isStatementLogErrorEnabled());
         filter.setStatementLogErrorEnabled(false);
-        Assert.assertFalse(filter.isStatementLogErrorEnabled());
+        assertFalse(filter.isStatementLogErrorEnabled());
 
-        Assert.assertFalse(filter.isDataSourceLogEnabled());
+        assertFalse(filter.isDataSourceLogEnabled());
 
-        Assert.assertFalse(filter.isConnectionLogEnabled());
-        Assert.assertFalse(filter.isConnectionLogErrorEnabled());
-        Assert.assertFalse(filter.isConnectionConnectBeforeLogEnabled());
-        Assert.assertFalse(filter.isConnectionConnectAfterLogEnabled());
-        Assert.assertFalse(filter.isConnectionCloseAfterLogEnabled());
-        Assert.assertFalse(filter.isConnectionCommitAfterLogEnabled());
-        Assert.assertFalse(filter.isConnectionRollbackAfterLogEnabled());
+        assertFalse(filter.isConnectionLogEnabled());
+        assertFalse(filter.isConnectionLogErrorEnabled());
+        assertFalse(filter.isConnectionConnectBeforeLogEnabled());
+        assertFalse(filter.isConnectionConnectAfterLogEnabled());
+        assertFalse(filter.isConnectionCloseAfterLogEnabled());
+        assertFalse(filter.isConnectionCommitAfterLogEnabled());
+        assertFalse(filter.isConnectionRollbackAfterLogEnabled());
 
-        Assert.assertFalse(filter.isStatementLogEnabled());
-        Assert.assertFalse(filter.isStatementLogErrorEnabled());
-        Assert.assertFalse(filter.isStatementCreateAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementCloseAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteBatchAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteQueryAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteUpdateAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementLogErrorEnabled());
-        Assert.assertFalse(filter.isStatementParameterSetLogEnabled());
-        Assert.assertFalse(filter.isStatementPrepareAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementPrepareCallAfterLogEnabled());
+        assertFalse(filter.isStatementLogEnabled());
+        assertFalse(filter.isStatementLogErrorEnabled());
+        assertFalse(filter.isStatementCreateAfterLogEnabled());
+        assertFalse(filter.isStatementCloseAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteBatchAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteQueryAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteUpdateAfterLogEnabled());
+        assertFalse(filter.isStatementLogErrorEnabled());
+        assertFalse(filter.isStatementParameterSetLogEnabled());
+        assertFalse(filter.isStatementPrepareAfterLogEnabled());
+        assertFalse(filter.isStatementPrepareCallAfterLogEnabled());
 
-        Assert.assertFalse(filter.isResultSetLogEnabled());
-        Assert.assertFalse(filter.isResultSetLogErrorEnabled());
-        Assert.assertFalse(filter.isResultSetCloseAfterLogEnabled());
-        Assert.assertFalse(filter.isResultSetNextAfterLogEnabled());
-        Assert.assertFalse(filter.isResultSetOpenAfterLogEnabled());
+        assertFalse(filter.isResultSetLogEnabled());
+        assertFalse(filter.isResultSetLogErrorEnabled());
+        assertFalse(filter.isResultSetCloseAfterLogEnabled());
+        assertFalse(filter.isResultSetNextAfterLogEnabled());
+        assertFalse(filter.isResultSetOpenAfterLogEnabled());
 
         // //
 
@@ -183,44 +186,44 @@ public class CommonsLogFilterTest extends TestCase {
         filter.setStatementLogger(new FakeLogger("_statement_", true));
         filter.setResultSetLogger(new FakeLogger("_resultset_", true));
 
-        Assert.assertFalse(filter.isConnectionLogEnabled());
-        Assert.assertFalse(filter.isStatementLogEnabled());
-        Assert.assertFalse(filter.isResultSetLogEnabled());
+        assertFalse(filter.isConnectionLogEnabled());
+        assertFalse(filter.isStatementLogEnabled());
+        assertFalse(filter.isResultSetLogEnabled());
 
-        Assert.assertFalse(filter.isStatementLogErrorEnabled());
+        assertFalse(filter.isStatementLogErrorEnabled());
         filter.setStatementLogErrorEnabled(true);
-        Assert.assertTrue(filter.isStatementLogErrorEnabled());
+        assertTrue(filter.isStatementLogErrorEnabled());
         filter.setStatementLogErrorEnabled(false);
 
         filter.setConnectionLogEnabled(true);
         filter.setStatementLogEnabled(true);
         filter.setResultSetLogEnabled(true);
 
-        Assert.assertFalse(filter.isDataSourceLogEnabled());
+        assertFalse(filter.isDataSourceLogEnabled());
 
-        Assert.assertFalse(filter.isConnectionLogErrorEnabled());
-        Assert.assertFalse(filter.isConnectionConnectBeforeLogEnabled());
-        Assert.assertFalse(filter.isConnectionConnectAfterLogEnabled());
-        Assert.assertFalse(filter.isConnectionCloseAfterLogEnabled());
-        Assert.assertFalse(filter.isConnectionCommitAfterLogEnabled());
-        Assert.assertFalse(filter.isConnectionRollbackAfterLogEnabled());
+        assertFalse(filter.isConnectionLogErrorEnabled());
+        assertFalse(filter.isConnectionConnectBeforeLogEnabled());
+        assertFalse(filter.isConnectionConnectAfterLogEnabled());
+        assertFalse(filter.isConnectionCloseAfterLogEnabled());
+        assertFalse(filter.isConnectionCommitAfterLogEnabled());
+        assertFalse(filter.isConnectionRollbackAfterLogEnabled());
 
-        Assert.assertFalse(filter.isStatementLogErrorEnabled());
-        Assert.assertFalse(filter.isStatementCreateAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementCloseAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteBatchAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteQueryAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementExecuteUpdateAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementLogErrorEnabled());
-        Assert.assertFalse(filter.isStatementParameterSetLogEnabled());
-        Assert.assertFalse(filter.isStatementPrepareAfterLogEnabled());
-        Assert.assertFalse(filter.isStatementPrepareCallAfterLogEnabled());
+        assertFalse(filter.isStatementLogErrorEnabled());
+        assertFalse(filter.isStatementCreateAfterLogEnabled());
+        assertFalse(filter.isStatementCloseAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteBatchAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteQueryAfterLogEnabled());
+        assertFalse(filter.isStatementExecuteUpdateAfterLogEnabled());
+        assertFalse(filter.isStatementLogErrorEnabled());
+        assertFalse(filter.isStatementParameterSetLogEnabled());
+        assertFalse(filter.isStatementPrepareAfterLogEnabled());
+        assertFalse(filter.isStatementPrepareCallAfterLogEnabled());
 
-        Assert.assertFalse(filter.isResultSetLogErrorEnabled());
-        Assert.assertFalse(filter.isResultSetCloseAfterLogEnabled());
-        Assert.assertFalse(filter.isResultSetNextAfterLogEnabled());
-        Assert.assertFalse(filter.isResultSetOpenAfterLogEnabled());
+        assertFalse(filter.isResultSetLogErrorEnabled());
+        assertFalse(filter.isResultSetCloseAfterLogEnabled());
+        assertFalse(filter.isResultSetNextAfterLogEnabled());
+        assertFalse(filter.isResultSetOpenAfterLogEnabled());
 
     }
 

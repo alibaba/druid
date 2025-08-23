@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.sql.ast.expr.SQLExtractExpr;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 
@@ -24,13 +24,13 @@ public class EqualTest_extract_mysql extends TestCase {
             MySqlExprParser parser = new MySqlExprParser(sql_c);
             exprC = (SQLExtractExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLExtractExpr(), new SQLExtractExpr());
-        Assert.assertEquals(new SQLExtractExpr().hashCode(), new SQLExtractExpr().hashCode());
+        assertEquals(new SQLExtractExpr(), new SQLExtractExpr());
+        assertEquals(new SQLExtractExpr().hashCode(), new SQLExtractExpr().hashCode());
     }
 }

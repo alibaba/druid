@@ -15,12 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.alibaba.druid.DbType;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -43,7 +45,7 @@ public class TestH2 extends TestCase {
     }
 
     public void test_h2() throws Exception {
-        Assert.assertSame(JdbcUtils.H2, DbType.of(dataSource.getDbType()));
+        assertSame(JdbcUtils.H2, DbType.of(dataSource.getDbType()));
 
         Connection conn = dataSource.getConnection();
 
@@ -54,7 +56,7 @@ public class TestH2 extends TestCase {
         ResultSet rs = stmt.executeQuery();
 
         rs.next();
-        Assert.assertEquals("xxxx", rs.getString(1));
+        assertEquals("xxxx", rs.getString(1));
 
         rs.close();
 

@@ -15,10 +15,12 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.Statement;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -52,9 +54,9 @@ public class TestCommit extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(true, dataSource.getCreateTimespanNano() > 0);
+        assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_prepare() throws Exception {
@@ -62,14 +64,14 @@ public class TestCommit extends TestCase {
 
         {
             DruidPooledConnection wrap = conn.unwrap(DruidPooledConnection.class);
-            Assert.assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
-            Assert.assertNotNull(wrap);
+            assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
+            assertNotNull(wrap);
         }
 
         {
             Statement wrap = conn.unwrap(Statement.class);
-            Assert.assertTrue(!conn.isWrapperFor(Statement.class));
-            Assert.assertNull(wrap);
+            assertTrue(!conn.isWrapperFor(Statement.class));
+            assertNull(wrap);
         }
 
         conn.setAutoCommit(false);
@@ -77,16 +79,16 @@ public class TestCommit extends TestCase {
         Statement stmt = conn.createStatement();
         stmt.execute("SELECT 1");
         stmt.close();
-        Assert.assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
-        Assert.assertEquals(1, dataSource.getActiveConnections().size());
+        assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
+        assertEquals(1, dataSource.getActiveConnections().size());
         conn.rollback();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getStartTransactionCount());
-        Assert.assertEquals(0, dataSource.getCommitCount());
-        Assert.assertEquals(1, dataSource.getRollbackCount());
+        assertEquals(1, dataSource.getStartTransactionCount());
+        assertEquals(0, dataSource.getCommitCount());
+        assertEquals(1, dataSource.getRollbackCount());
 
-        Assert.assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
-        Assert.assertEquals(0, dataSource.getActiveConnections().size());
+        assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
+        assertEquals(0, dataSource.getActiveConnections().size());
     }
 }

@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -103,7 +105,7 @@ public class DumpTest extends TestCase {
         conn1.close();
 
         List<Map<String, Object>> poolingList = dataSource.getPoolingConnectionInfo();
-        Assert.assertEquals(2, poolingList.size());
+        assertEquals(2, poolingList.size());
     }
 
     public void test_getStatData() throws Exception {
@@ -122,17 +124,17 @@ public class DumpTest extends TestCase {
         conn1.close();
 
         Map<String, Object> statData = dataSource.getStatData();
-        Assert.assertEquals(2, statData.get("PoolingCount"));
-        Assert.assertEquals(2, statData.get("PoolingPeak"));
-        Assert.assertEquals(2L, statData.get("LogicConnectCount"));
-        Assert.assertEquals(2L, statData.get("LogicCloseCount"));
-        Assert.assertEquals(0L, statData.get("LogicConnectErrorCount"));
+        assertEquals(2, statData.get("PoolingCount"));
+        assertEquals(2, statData.get("PoolingPeak"));
+        assertEquals(2L, statData.get("LogicConnectCount"));
+        assertEquals(2L, statData.get("LogicCloseCount"));
+        assertEquals(0L, statData.get("LogicConnectErrorCount"));
 
-        Assert.assertEquals(1, dataSource.getSqlStatMap().size());
+        assertEquals(1, dataSource.getSqlStatMap().size());
         JdbcSqlStat sqlStat = dataSource.getSqlStatMap().get(sql);
-        Assert.assertNotNull(sqlStat);
-        Assert.assertNotNull(dataSource.getSqlStat(sqlStat.getId()));
-        Assert.assertNotNull(dataSource.getSqlStat((int) sqlStat.getId()));
+        assertNotNull(sqlStat);
+        assertNotNull(dataSource.getSqlStat(sqlStat.getId()));
+        assertNotNull(dataSource.getSqlStat((int) sqlStat.getId()));
     }
 
     public void test_getReference() throws Exception {

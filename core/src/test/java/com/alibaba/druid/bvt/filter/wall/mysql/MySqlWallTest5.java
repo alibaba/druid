@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,7 +31,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest5 extends TestCase {
     public void test_stuff() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        assertFalse(WallUtils.isValidateMySql(//
                 "select * from tbl_product WHERE delFlag=0 AND cateId = 40 OR EXTRACTVALUE(1,CONCAT(0x7c,database(),0x7c)) order by sort desc, productId desc limit 20,20"));
     }
 }

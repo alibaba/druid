@@ -1,8 +1,10 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ValidConnectionChecker;
-import org.junit.Assert;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -35,7 +37,7 @@ public class DruidDataSourceTestValidConnectionChecker {
         String user = "test";
         String password = "test";
 
-        Assert.assertTrue("运行此用例之前请先修改上面的连接信息, 并注释此行", false);
+        assertTrue("运行此用例之前请先修改上面的连接信息, 并注释此行", false);
 
         String driverClass = "com.mysql.jdbc.Driver";
 
@@ -45,11 +47,11 @@ public class DruidDataSourceTestValidConnectionChecker {
         dataSource.setDriverClassName(driverClass);
 
         dataSource.setValidConnectionChecker(checker);
-        Assert.assertEquals(checker, dataSource.getValidConnectionChecker());
+        assertEquals(checker, dataSource.getValidConnectionChecker());
 
         dataSource.init();
 
         // 已经设置了自定义的validConnectionChecker的情况下, 即使加载了MySQL Driver之后checker对象也不应该发生变化.
-        Assert.assertEquals(checker, dataSource.getValidConnectionChecker());
+        assertEquals(checker, dataSource.getValidConnectionChecker());
     }
 }

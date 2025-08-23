@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import org.junit.Assert;
 
 import junit.framework.TestCase;
 
@@ -44,7 +46,7 @@ import com.alibaba.druid.stat.JdbcStatManager;
 public class JdbcFilterEventAdapterTest extends TestCase {
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_filterEventAdapter() throws Exception {
@@ -71,7 +73,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -87,7 +89,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -103,7 +105,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -122,7 +124,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -139,7 +141,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -156,7 +158,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -175,7 +177,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -192,7 +194,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -209,7 +211,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -228,7 +230,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -245,7 +247,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -262,7 +264,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -280,7 +282,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -296,7 +298,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -312,7 +314,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -330,7 +332,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -346,7 +348,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -362,7 +364,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -380,7 +382,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -396,7 +398,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -412,7 +414,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Error ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -432,7 +434,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -448,7 +450,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -464,7 +466,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Error ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -483,7 +485,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -500,7 +502,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -517,7 +519,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Error ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -536,7 +538,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -553,7 +555,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -570,7 +572,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -589,7 +591,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -606,7 +608,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -623,7 +625,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Throwable ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // ///////////////////////////
@@ -664,7 +666,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -680,7 +682,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -696,7 +698,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Error ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -715,7 +717,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -732,7 +734,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -749,7 +751,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Error ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
 
@@ -768,7 +770,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -784,7 +786,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -800,7 +802,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Error ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // //////////////////////////
@@ -819,7 +821,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -836,7 +838,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -853,7 +855,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             } catch (Error ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 }

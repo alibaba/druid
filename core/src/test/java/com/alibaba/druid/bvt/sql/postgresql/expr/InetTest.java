@@ -1,7 +1,7 @@
 package com.alibaba.druid.bvt.sql.postgresql.expr;
 
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
@@ -13,7 +13,7 @@ public class InetTest extends PGTest {
         String sql = "inet '0.0.0.255'";
         PGExprParser parser = new PGExprParser(sql);
         PGInetExpr expr = (PGInetExpr) parser.expr();
-        Assert.assertEquals("inet '0.0.0.255'", expr.toString());
+        assertEquals("inet '0.0.0.255'", expr.toString());
 
     }
 }

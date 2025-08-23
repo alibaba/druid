@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class MySqlUpdateTest_9 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -44,27 +44,27 @@ public class MySqlUpdateTest_9 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
-        // Assert.assertEquals(2, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
+        // assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsTable("tb1"));
-        Assert.assertTrue(visitor.containsTable("tb2"));
+        assertTrue(visitor.containsTable("tb1"));
+        assertTrue(visitor.containsTable("tb2"));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tb1", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tb1", "name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("tb2", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("tb1", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("tb1", "name")));
+        assertTrue(visitor.getColumns().contains(new Column("tb2", "id")));
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("UPDATE tb1 a, tb2 b\n" +
+            assertEquals("UPDATE tb1 a, tb2 b\n" +
                             "SET a.name = 'abc'\n" +
                             "WHERE a.id = b.id", //
                     output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("update tb1 a, tb2 b\n" +
+            assertEquals("update tb1 a, tb2 b\n" +
                             "set a.name = 'abc'\n" +
                             "where a.id = b.id", //
                     output);

@@ -1,11 +1,13 @@
 package com.alibaba.druid.bvt.pool.exception;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.SQLException;
 
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 
@@ -24,15 +26,15 @@ public class OracleExceptionSorter_userDefined extends PoolTestCase {
 
     public void test_userDefinedErrorCodes() throws Exception {
         OracleExceptionSorter sorter = new OracleExceptionSorter();
-        Assert.assertEquals(3, sorter.getFatalErrorCodes().size());
-        Assert.assertTrue(sorter.getFatalErrorCodes().contains(1));
-        Assert.assertTrue(sorter.getFatalErrorCodes().contains(2));
-        Assert.assertTrue(sorter.getFatalErrorCodes().contains(3));
+        assertEquals(3, sorter.getFatalErrorCodes().size());
+        assertTrue(sorter.getFatalErrorCodes().contains(1));
+        assertTrue(sorter.getFatalErrorCodes().contains(2));
+        assertTrue(sorter.getFatalErrorCodes().contains(3));
 
-        Assert.assertTrue(sorter.isExceptionFatal(new SQLException("xx", "xx", 1)));
-        Assert.assertTrue(sorter.isExceptionFatal(new SQLException("xx", "xx", 2)));
-        Assert.assertTrue(sorter.isExceptionFatal(new SQLException("xx", "xx", 3)));
-        Assert.assertFalse(sorter.isExceptionFatal(new SQLException("xx", "xx", 4)));
-        Assert.assertTrue(sorter.isExceptionFatal(new SQLException("xx", "xx", 28)));
+        assertTrue(sorter.isExceptionFatal(new SQLException("xx", "xx", 1)));
+        assertTrue(sorter.isExceptionFatal(new SQLException("xx", "xx", 2)));
+        assertTrue(sorter.isExceptionFatal(new SQLException("xx", "xx", 3)));
+        assertFalse(sorter.isExceptionFatal(new SQLException("xx", "xx", 4)));
+        assertTrue(sorter.isExceptionFatal(new SQLException("xx", "xx", 28)));
     }
 }

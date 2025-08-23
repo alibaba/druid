@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.insert;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -40,7 +40,7 @@ public class OracleInsertTest9 extends OracleTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -50,14 +50,14 @@ public class OracleInsertTest9 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-//        Assert.assertEquals(14, visitor.getColumns().size());
+        assertEquals(2, visitor.getTables().size());
+//        assertEquals(14, visitor.getColumns().size());
 //
-//         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ZFJ_EN_CLICK")));
-//         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ZFJ_EN_CLICK_201202@!")));
+//         assertTrue(visitor.getTables().containsKey(new TableStat.Name("ZFJ_EN_CLICK")));
+//         assertTrue(visitor.getTables().containsKey(new TableStat.Name("ZFJ_EN_CLICK_201202@!")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ZFJ_EN_CLICK", "P_M")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("ZFJ_EN_CLICK", "P_M")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
     }
 
 }

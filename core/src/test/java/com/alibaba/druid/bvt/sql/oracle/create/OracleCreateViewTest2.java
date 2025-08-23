@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -61,9 +61,9 @@ public class OracleCreateViewTest2 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE VIEW \"RMAN\".\"V_001\" (\n" +
+        assertEquals("CREATE OR REPLACE VIEW \"RMAN\".\"V_001\" (\n" +
                         "\t\"DB_KEY\", \n" +
                         "\t\"DB_ID\", \n" +
                         "\t\"BS_KEY\", \n" +
@@ -106,10 +106,10 @@ public class OracleCreateViewTest2 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertEquals(18, visitor.getColumns().size());
+        assertEquals(18, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("db", "db_key")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("db", "db_key")));
     }
 }

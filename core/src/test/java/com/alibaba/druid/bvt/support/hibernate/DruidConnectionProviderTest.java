@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.support.hibernate;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.support.hibernate.DruidConnectionProvider;
 
@@ -29,9 +31,9 @@ public class DruidConnectionProviderTest extends TestCase {
 
     public void test_hibernate() throws Exception {
         Connection conn = provider.getConnection();
-        Assert.assertFalse(conn.isClosed());
+        assertFalse(conn.isClosed());
 
         provider.closeConnection(conn);
-        Assert.assertTrue(conn.isClosed());
+        assertTrue(conn.isClosed());
     }
 }

@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class MySqlCreateViewTest2 extends MysqlTest {
         SQLCreateViewStatement stmt = (SQLCreateViewStatement) statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -54,7 +54,7 @@ public class MySqlCreateViewTest2 extends MysqlTest {
                         "GROUP BY l_suppkey", //
                 SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("create view revenue0\n" +
+        assertEquals("create view revenue0\n" +
                         "as\n" +
                         "select l_suppkey as supplier_no, sum(l_extendedprice * (1 - l_discount)) as total_revenue\n" +
                         "from lineitem\n" +
@@ -68,13 +68,13 @@ public class MySqlCreateViewTest2 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("lineitem")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("lineitem")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("lineitem", "l_shipdate")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("lineitem", "l_suppkey")));
+        assertTrue(visitor.getColumns().contains(new Column("lineitem", "l_shipdate")));
+        assertTrue(visitor.getColumns().contains(new Column("lineitem", "l_suppkey")));
     }
 }

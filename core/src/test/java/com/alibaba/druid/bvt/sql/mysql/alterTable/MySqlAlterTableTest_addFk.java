@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest_addFk extends TestCase {
     public void test_alter_first() throws Exception {
@@ -41,18 +41,18 @@ public class MySqlAlterTableTest_addFk extends TestCase {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals("ALTER TABLE Test2" + //
+        assertEquals("ALTER TABLE Test2" + //
                         "\n\tADD INDEX FK4CF5DC0F5DD7C31 (test1_name)," + //
                         "\n\tADD CONSTRAINT FK4CF5DC0F5DD7C31 FOREIGN KEY (test1_name) REFERENCES Test1 (name)",
                 SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table Test2" + //
+        assertEquals("alter table Test2" + //
                         "\n\tadd index FK4CF5DC0F5DD7C31 (test1_name)," + //
                         "\n\tadd constraint FK4CF5DC0F5DD7C31 foreign key (test1_name) references Test1 (name)",
                 SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
 
         TableStat tableStat = visitor.getTableStat("Test2");
         assertNotNull(tableStat);

@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -27,9 +27,9 @@ public class OracleListAggTest extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("SELECT prod_id\n" +
+        assertEquals("SELECT prod_id\n" +
                         "\t, LISTAGG(cust_first_name || ' ' || cust_last_name, '; ') WITHIN GROUP (ORDER BY amount_sold DESC) AS cust_list\n" +
                         "FROM sales, customers\n" +
                         "WHERE sales.cust_id = customers.cust_id\n" +
@@ -49,14 +49,14 @@ public class OracleListAggTest extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(10, visitor.getColumns().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(10, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sales")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("customers")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sales")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("customers")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "cust_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("customers", "cust_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("sales", "cust_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("customers", "cust_id")));
     }
 
 }

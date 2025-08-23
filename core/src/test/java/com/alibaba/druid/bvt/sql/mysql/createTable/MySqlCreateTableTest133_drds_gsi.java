@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.alibaba.druid.sql.MysqlTest;
@@ -124,7 +124,7 @@ public class MySqlCreateTableTest133_drds_gsi extends MysqlTest {
             for (String e : errorGsiDefs) {
                 System.out.println(e);
             }
-            Assert.fail(errors.size() + " out of " + GSI_DEFINITIONS.size() + " CREATE TABLE statement failed");
+            fail(errors.size() + " out of " + GSI_DEFINITIONS.size() + " CREATE TABLE statement failed");
         } else {
             System.out.println(GSI_DEFINITIONS.size() + " CREATE TABLE statement success!");
         }

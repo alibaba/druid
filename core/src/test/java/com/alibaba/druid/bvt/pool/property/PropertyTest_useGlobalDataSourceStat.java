@@ -1,6 +1,8 @@
 package com.alibaba.druid.bvt.pool.property;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
+
+
 
 import junit.framework.TestCase;
 
@@ -14,13 +16,13 @@ public class PropertyTest_useGlobalDataSourceStat extends TestCase {
     public void test_true() {
         System.setProperty("druid.useGlobalDataSourceStat", "true");
         dataSource = new DruidDataSource();
-        Assert.assertTrue(dataSource.isUseGlobalDataSourceStat());
+        assertTrue(dataSource.isUseGlobalDataSourceStat());
     }
 
     public void test_false() {
         System.setProperty("druid.useGlobalDataSourceStat", "false");
         dataSource = new DruidDataSource();
-        Assert.assertFalse(dataSource.isUseGlobalDataSourceStat());
+        assertFalse(dataSource.isUseGlobalDataSourceStat());
     }
 
     protected void tearDown() throws Exception {

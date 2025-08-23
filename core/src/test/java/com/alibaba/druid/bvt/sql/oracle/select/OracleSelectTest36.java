@@ -26,7 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -42,13 +42,13 @@ public class OracleSelectTest36 extends OracleTest {
 
         String result = SQLUtils.toOracleString(stmt);
         String result_lcase = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-        Assert.assertEquals("SELECT ID, name"
+        assertEquals("SELECT ID, name"
                 + "\nFROM fastsql_test"
                 + "\nWHERE (name >= ?"
                 + "\n\t\tOR name IS NULL)"
                 + "\n\tAND card_id < ?", result);
 
-        Assert.assertEquals("select ID, name"
+        assertEquals("select ID, name"
                 + "\nfrom fastsql_test"
                 + "\nwhere (name >= ?"
                 + "\n\t\tor name is null)"
@@ -58,19 +58,19 @@ public class OracleSelectTest36 extends OracleTest {
             SQLSelect select = ((SQLSelectStatement) stmt).getSelect();
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) select.getQuery();
             SQLBinaryOpExpr where = (SQLBinaryOpExpr) queryBlock.getWhere();
-            Assert.assertEquals(SQLBinaryOperator.BooleanAnd, where.getOperator());
+            assertEquals(SQLBinaryOperator.BooleanAnd, where.getOperator());
 
             SQLBinaryOpExpr left = (SQLBinaryOpExpr) where.getLeft();
-            Assert.assertEquals(SQLBinaryOperator.BooleanOr, left.getOperator());
+            assertEquals(SQLBinaryOperator.BooleanOr, left.getOperator());
 
             SQLBinaryOpExpr nameGTEQ = (SQLBinaryOpExpr) left.getLeft();
-            Assert.assertEquals(SQLBinaryOperator.GreaterThanOrEqual, nameGTEQ.getOperator());
+            assertEquals(SQLBinaryOperator.GreaterThanOrEqual, nameGTEQ.getOperator());
 
             SQLBinaryOpExpr nameIS = (SQLBinaryOpExpr) left.getRight();
-            Assert.assertEquals(SQLBinaryOperator.Is, nameIS.getOperator());
+            assertEquals(SQLBinaryOperator.Is, nameIS.getOperator());
         }
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -81,16 +81,16 @@ public class OracleSelectTest36 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("fastsql_test")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("fastsql_test")));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "name")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "card_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "ID")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("fastsql_test", "card_id")));
 
-        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+        // assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,15 +34,15 @@ public class MySqlCreateUserTest_3 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY PASSWORD '*90E462C37378CED12064BB3388827D2BA3A9B689';", //
+        assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY PASSWORD '*90E462C37378CED12064BB3388827D2BA3A9B689';", //
                 SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("create user 'jeffrey'@'localhost' identified by password '*90E462C37378CED12064BB3388827D2BA3A9B689';", //
+        assertEquals("create user 'jeffrey'@'localhost' identified by password '*90E462C37378CED12064BB3388827D2BA3A9B689';", //
                 SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
 //        System.out.println("Tables : " + visitor.getTables());
@@ -50,13 +50,13 @@ public class MySqlCreateUserTest_3 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("City")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
 
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
+//        assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

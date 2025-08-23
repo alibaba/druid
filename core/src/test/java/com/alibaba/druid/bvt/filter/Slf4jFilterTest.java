@@ -1,8 +1,9 @@
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Connection;
 
-import org.junit.Assert;
 
 import junit.framework.TestCase;
 
@@ -29,7 +30,7 @@ public class Slf4jFilterTest extends TestCase {
         dataSource.init();
 
         Slf4jLogFilter filter = dataSource.unwrap(Slf4jLogFilter.class);
-        Assert.assertNotNull(filter);
+        assertNotNull(filter);
 
         Connection conn = dataSource.getConnection();
         conn.close();

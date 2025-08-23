@@ -23,7 +23,7 @@ import java.util.List;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -120,7 +120,7 @@ public class OracleResourceTest extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        // Assert.assertEquals(1, statementList.size());
+        // assertEquals(1, statementList.size());
 
         System.out.println(sql);
 

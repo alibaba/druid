@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,7 +28,6 @@ import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -93,7 +95,7 @@ public class CallStatementTest extends TestCase {
     protected void tearDown() throws Exception {
         dropTable();
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_precall() throws Exception {
@@ -111,7 +113,7 @@ public class CallStatementTest extends TestCase {
             error = sqle;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
         stmt.close();
         connect.close();
     }
@@ -127,7 +129,7 @@ public class CallStatementTest extends TestCase {
         } catch (SQLException sqle) {
             error = sqle;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
         cs.close();
         connect.close();
     }

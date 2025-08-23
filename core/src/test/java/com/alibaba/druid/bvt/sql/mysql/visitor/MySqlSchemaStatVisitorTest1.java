@@ -19,7 +19,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -34,7 +34,7 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -43,15 +43,15 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("users"));
-        Assert.assertEquals(true, visitor.containsTable("usergroups"));
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("users"));
+        assertEquals(true, visitor.containsTable("usergroups"));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "groupId")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "id")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "name")));
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "groupId")));
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
+        assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "id")));
+        assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "name")));
 
     }
 
@@ -62,7 +62,7 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -71,23 +71,23 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("users"));
-        Assert.assertEquals(true, visitor.containsTable("usergroups"));
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("users"));
+        assertEquals(true, visitor.containsTable("usergroups"));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "groupId")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "id")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "name")));
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "groupId")));
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
+        assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "id")));
+        assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "name")));
 
-        Assert.assertTrue(visitor.getColumn("users", "name").isSelect());
-        Assert.assertTrue(visitor.getColumn("usergroups", "name").isSelect());
+        assertTrue(visitor.getColumn("users", "name").isSelect());
+        assertTrue(visitor.getColumn("usergroups", "name").isSelect());
 
-        Assert.assertTrue(visitor.getColumn("users", "groupId").isJoin());
-        Assert.assertTrue(visitor.getColumn("usergroups", "id").isJoin());
+        assertTrue(visitor.getColumn("users", "groupId").isJoin());
+        assertTrue(visitor.getColumn("usergroups", "id").isJoin());
 
-        Assert.assertTrue(visitor.getColumn("users", "groupId").isWhere());
+        assertTrue(visitor.getColumn("users", "groupId").isWhere());
 
     }
 }

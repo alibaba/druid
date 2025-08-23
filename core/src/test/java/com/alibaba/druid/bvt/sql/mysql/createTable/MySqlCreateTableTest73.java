@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest73 extends MysqlTest {
@@ -39,12 +39,12 @@ public class MySqlCreateTableTest73 extends MysqlTest {
         stmt.accept(visitor);
 
         Column column = visitor.getColumn("total", "id");
-        Assert.assertNotNull(column);
-        Assert.assertEquals("INT", column.getDataType());
+        assertNotNull(column);
+        assertEquals("INT", column.getDataType());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE total ("
+            assertEquals("CREATE TABLE total ("
                     + "\n\tid INT NOT NULL AUTO_INCREMENT,"
                     + "\n\tmessage CHAR(20),"
                     + "\n\tINDEX(a)"
@@ -53,7 +53,7 @@ public class MySqlCreateTableTest73 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table total ("
+            assertEquals("create table total ("
                     + "\n\tid INT not null auto_increment,"
                     + "\n\tmessage CHAR(20),"
                     + "\n\tindex(a)"

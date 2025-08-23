@@ -1,5 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,7 +10,6 @@ import java.sql.Types;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
@@ -50,23 +52,23 @@ public class PreparedStatementProxyImplTest extends TestCase {
         stmt.execute();
 
         PreparedStatementProxy stmtProxy = stmt.unwrap(PreparedStatementProxy.class);
-        Assert.assertNotNull(stmtProxy);
+        assertNotNull(stmtProxy);
 
-        Assert.assertEquals(Types.TINYINT, stmtProxy.getParameter(0).getSqlType());
-        Assert.assertEquals(Types.SMALLINT, stmtProxy.getParameter(1).getSqlType());
-        Assert.assertEquals(Types.INTEGER, stmtProxy.getParameter(2).getSqlType());
-        Assert.assertEquals(Types.BIGINT, stmtProxy.getParameter(3).getSqlType());
-        Assert.assertEquals(Types.FLOAT, stmtProxy.getParameter(4).getSqlType());
+        assertEquals(Types.TINYINT, stmtProxy.getParameter(0).getSqlType());
+        assertEquals(Types.SMALLINT, stmtProxy.getParameter(1).getSqlType());
+        assertEquals(Types.INTEGER, stmtProxy.getParameter(2).getSqlType());
+        assertEquals(Types.BIGINT, stmtProxy.getParameter(3).getSqlType());
+        assertEquals(Types.FLOAT, stmtProxy.getParameter(4).getSqlType());
 
-        Assert.assertEquals(Types.DOUBLE, stmtProxy.getParameter(5).getSqlType());
-        Assert.assertEquals(Types.DECIMAL, stmtProxy.getParameter(6).getSqlType());
-        Assert.assertEquals(Types.BOOLEAN, stmtProxy.getParameter(7).getSqlType());
-        Assert.assertEquals(Types.VARCHAR, stmtProxy.getParameter(8).getSqlType());
-        Assert.assertEquals(Types.DATE, stmtProxy.getParameter(9).getSqlType());
+        assertEquals(Types.DOUBLE, stmtProxy.getParameter(5).getSqlType());
+        assertEquals(Types.DECIMAL, stmtProxy.getParameter(6).getSqlType());
+        assertEquals(Types.BOOLEAN, stmtProxy.getParameter(7).getSqlType());
+        assertEquals(Types.VARCHAR, stmtProxy.getParameter(8).getSqlType());
+        assertEquals(Types.DATE, stmtProxy.getParameter(9).getSqlType());
 
-        Assert.assertEquals(Types.DATE, stmtProxy.getParameter(10).getSqlType());
-        Assert.assertEquals(Types.TIMESTAMP, stmtProxy.getParameter(11).getSqlType());
-        Assert.assertEquals(Types.TIME, stmtProxy.getParameter(12).getSqlType());
+        assertEquals(Types.DATE, stmtProxy.getParameter(10).getSqlType());
+        assertEquals(Types.TIMESTAMP, stmtProxy.getParameter(11).getSqlType());
+        assertEquals(Types.TIME, stmtProxy.getParameter(12).getSqlType());
 
         stmt.close();
 

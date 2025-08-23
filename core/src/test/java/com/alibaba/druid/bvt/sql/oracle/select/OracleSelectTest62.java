@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class OracleSelectTest62 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -58,9 +58,9 @@ public class OracleSelectTest62 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(5, visitor.getTables().size());
+        assertEquals(5, visitor.getTables().size());
 
-        Assert.assertEquals(14, visitor.getColumns().size());
+        assertEquals(14, visitor.getColumns().size());
 
         {
             String text = SQLUtils.toOracleString(stmt);
@@ -81,7 +81,7 @@ public class OracleSelectTest62 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            Assert.assertEquals("select channel_desc, calendar_month_desc, co.country_id\n" +
+            assertEquals("select channel_desc, calendar_month_desc, co.country_id\n" +
                     "\t, TO_CHAR(sum(amount_sold), '9,999,999,999') as SALES$\n" +
                     "from sales, customers, times, channels, countries co\n" +
                     "where sales.time_id = times.time_id\n" +
@@ -93,8 +93,8 @@ public class OracleSelectTest62 extends OracleTest {
                     "\tand co.country_iso_code in ('UK', 'US')\n" +
                     "group by grouping sets ((channel_desc, calendar_month_desc, co.country_id), (channel_desc, co.country_id), (calendar_month_desc, co.country_id));", text);
         }
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
-        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+        // assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

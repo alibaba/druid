@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -36,9 +36,9 @@ public class OracleCreateTableTest34 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE long_tab ("//
+        assertEquals("CREATE TABLE long_tab ("//
                         + "\n\tpic_id NUMBER,"//
                         + "\n\tlong_pics LONG RAW"//
                         + "\n);",//
@@ -53,11 +53,11 @@ public class OracleCreateTableTest34 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(2, visitor.getColumns().size());
+        assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("long_tab", "pic_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("long_tab", "long_pics")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("long_tab", "pic_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("long_tab", "long_pics")));
     }
 }

@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest29 extends TestCase {
     public void test_alter_add_key() throws Exception {
@@ -37,7 +37,7 @@ public class MySqlAlterTableTest29 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE project_measures\n" +
+        assertEquals("ALTER TABLE project_measures\n" +
                 "\tDROP COLUMN diff_value_1,\n" +
                 "\tDROP COLUMN diff_value_2,\n" +
                 "\tDROP COLUMN diff_value_3,\n" +

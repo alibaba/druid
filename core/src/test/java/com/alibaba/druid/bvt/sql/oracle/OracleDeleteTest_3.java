@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -33,29 +33,29 @@ public class OracleDeleteTest_3 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("credit_corp_baseinfo")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("credit_corp_baseinfo")));
         //
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("credit_corp_baseinfo", "applyid")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("credit_corp_baseinfo", "applyid")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
 
         {
             String output = SQLUtils.toOracleString(stmt);
-            Assert.assertEquals("DELETE FROM credit_corp_baseinfo o\n" +
+            assertEquals("DELETE FROM credit_corp_baseinfo o\n" +
                             "WHERE o.applyid IN (24032, 23942, 23579, 23511, 23408, 23327, 23322, 23230, 23228, 23218);", //
                     output);
         }
         {
             String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("delete from credit_corp_baseinfo o\n" +
+            assertEquals("delete from credit_corp_baseinfo o\n" +
                             "where o.applyid in (24032, 23942, 23579, 23511, 23408, 23327, 23322, 23230, 23228, 23218);", //
                     output);
         }

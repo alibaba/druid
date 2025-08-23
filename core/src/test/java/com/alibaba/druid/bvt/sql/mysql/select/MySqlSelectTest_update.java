@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class MySqlSelectTest_update extends MysqlTest {
 
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         String expected = "SELECT current_no"
                 + "\nFROM UPDATE wlb_waybill_branch_rule"
@@ -48,7 +48,7 @@ public class MySqlSelectTest_update extends MysqlTest {
                 + "\nORDER BY current_no DESC"
                 + "\nLIMIT 10";
 
-        Assert.assertEquals(expected, stmt.toString());
+        assertEquals(expected, stmt.toString());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -58,15 +58,15 @@ public class MySqlSelectTest_update extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(4, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(4, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "current_no"));
-        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "gmt_modified"));
-        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "id"));
-        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "status"));
-        Assert.assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "end_no"));
+        assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "current_no"));
+        assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "gmt_modified"));
+        assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "id"));
+        assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "status"));
+        assertTrue(visitor.containsColumn("wlb_waybill_branch_rule", "end_no"));
     }
 }

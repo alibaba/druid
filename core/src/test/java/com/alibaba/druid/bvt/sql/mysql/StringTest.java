@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -36,7 +36,7 @@ public class StringTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SELECT _latin1 'string' COLLATE latin1_danish_ci;", text);
+        assertEquals("SELECT _latin1 'string' COLLATE latin1_danish_ci;", text);
     }
 
     public void test_utf8() throws Exception {
@@ -47,6 +47,6 @@ public class StringTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SELECT _utf8 'some text';", text);
+        assertEquals("SELECT _utf8 'some text';", text);
     }
 }

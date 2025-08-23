@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -33,7 +33,7 @@ public class OracleSchemaStatVisitorTest_Update extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -42,12 +42,12 @@ public class OracleSchemaStatVisitorTest_Update extends TestCase {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("users"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("users"));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "loginCount")));
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "loginCount")));
 
     }
 

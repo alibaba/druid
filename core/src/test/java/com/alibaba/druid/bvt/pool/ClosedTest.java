@@ -15,10 +15,12 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DataSourceClosedException;
@@ -42,6 +44,6 @@ public class ClosedTest extends PoolTestCase {
             error = ex;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

@@ -14,7 +14,7 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlNodeList;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,12 +68,12 @@ public class MySqlParameterizedOutputVisitorTest_47_hints extends TestCase {
         System.out.println(sqlNode);
 
         SqlNodeList hints = ((TDDLSqlSelect) sqlNode).getHints();
-        Assert.assertEquals(hints.size(), 1);
-        Assert.assertEquals(((SqlNodeList) hints.get(0)).size(), 4);
+        assertEquals(hints.size(), 1);
+        assertEquals(((SqlNodeList) hints.get(0)).size(), 4);
 
         SqlNodeList headHints = ((TDDLSqlSelect) sqlNode).getHeadHints();
-        Assert.assertEquals(headHints.size(), 1);
-        Assert.assertEquals(((SqlNodeList) headHints.get(0)).size(), 1);
+        assertEquals(headHints.size(), 1);
+        assertEquals(((SqlNodeList) headHints.get(0)).size(), 1);
     }
 
     public void test_headHint_3() throws Exception {
@@ -85,6 +85,6 @@ public class MySqlParameterizedOutputVisitorTest_47_hints extends TestCase {
 
         System.out.println(statement);
 
-        Assert.assertEquals(statement.getHeadHintsDirect().size(), 1);
+        assertEquals(statement.getHeadHintsDirect().size(), 1);
     }
 }

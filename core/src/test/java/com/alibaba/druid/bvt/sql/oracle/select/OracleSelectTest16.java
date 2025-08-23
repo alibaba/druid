@@ -23,6 +23,7 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+import static org.junit.Assert.*;
 
 public class OracleSelectTest16 extends OracleTest {
     public void test_0() throws Exception {
@@ -49,8 +50,8 @@ public class OracleSelectTest16 extends OracleTest {
 
         assertEquals(2, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

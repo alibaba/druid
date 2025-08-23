@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.cobar;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -30,7 +30,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SAVEPOINT xx", output);
+        assertEquals("SAVEPOINT xx", output);
     }
 
     public void test_mts_1() throws Exception {
@@ -39,7 +39,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SAVEPOINT SAVEPOINT", output);
+        assertEquals("SAVEPOINT SAVEPOINT", output);
     }
 
     public void test_mts_2() throws Exception {
@@ -48,7 +48,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SAVEPOINT `select`", output);
+        assertEquals("SAVEPOINT `select`", output);
     }
 
     public void test_mts_3() throws Exception {
@@ -57,7 +57,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("RELEASE SAVEPOINT xx", output);
+        assertEquals("RELEASE SAVEPOINT xx", output);
     }
 
     public void test_rollback_0() throws Exception {
@@ -66,7 +66,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ROLLBACK TO x1", output);
+        assertEquals("ROLLBACK TO x1", output);
     }
 
     public void test_rollback_1() throws Exception {
@@ -75,7 +75,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ROLLBACK TO x1", output);
+        assertEquals("ROLLBACK TO x1", output);
     }
 
     public void test_rollback_2() throws Exception {
@@ -84,7 +84,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ROLLBACK TO x1", output);
+        assertEquals("ROLLBACK TO x1", output);
     }
 
     public void test_lockTable() throws Exception {
@@ -93,7 +93,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("LOCK TABLES t1 READ;", output);
+        assertEquals("LOCK TABLES t1 READ;", output);
     }
 
     public void test_lockTable_1() throws Exception {
@@ -102,7 +102,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("LOCK TABLES t2 READ LOCAL;", output);
+        assertEquals("LOCK TABLES t2 READ LOCAL;", output);
     }
 
     public void test_unlockTable() throws Exception {
@@ -111,6 +111,6 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("UNLOCK TABLES", output);
+        assertEquals("UNLOCK TABLES", output);
     }
 }

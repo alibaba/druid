@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -31,7 +31,7 @@ public class OracleNumberLiteralTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT 7, 255, 0.5, 6.34, 25e-03\n\t, 6.34F, 0.5D, -1.0D\nFROM DUAL", text);
+        assertEquals("SELECT 7, 255, 0.5, 6.34, 25e-03\n\t, 6.34F, 0.5D, -1.0D\nFROM DUAL", text);
 
         System.out.println(text);
     }
@@ -44,7 +44,7 @@ public class OracleNumberLiteralTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT BINARY_FLOAT_INFINITY\nFROM DUAL", text);
+        assertEquals("SELECT BINARY_FLOAT_INFINITY\nFROM DUAL", text);
 
         System.out.println(text);
     }

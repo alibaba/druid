@@ -28,7 +28,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -43,22 +43,22 @@ public class MySqlSelectTest_16 extends MysqlTest {
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
 
         SQLSelect select = selectStmt.getSelect();
-        Assert.assertNotNull(select.getQuery());
+        assertNotNull(select.getQuery());
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
-        Assert.assertNull(queryBlock.getOrderBy());
+        assertNull(queryBlock.getOrderBy());
 
         {
             SQLExpr where = queryBlock.getWhere();
-            Assert.assertTrue(where instanceof SQLBinaryOpExpr);
+            assertTrue(where instanceof SQLBinaryOpExpr);
             SQLBinaryOpExpr binaryWhere = (SQLBinaryOpExpr) where;
-            Assert.assertEquals(binaryWhere.getOperator(), SQLBinaryOperator.BooleanAnd);
+            assertEquals(binaryWhere.getOperator(), SQLBinaryOperator.BooleanAnd);
 
-            Assert.assertTrue(binaryWhere.getLeft() instanceof SQLNotExpr);
-            Assert.assertTrue(binaryWhere.getRight() instanceof SQLNotExpr);
+            assertTrue(binaryWhere.getLeft() instanceof SQLNotExpr);
+            assertTrue(binaryWhere.getRight() instanceof SQLNotExpr);
         }
 
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -68,15 +68,15 @@ public class MySqlSelectTest_16 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT a\n" +
+        assertEquals("SELECT a\n" +
                         "FROM t\n" +
                         "WHERE NOT a > 1\n" +
                         "\tAND NOT b < 1", //

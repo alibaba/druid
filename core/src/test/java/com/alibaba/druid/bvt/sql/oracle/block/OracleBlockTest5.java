@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -62,19 +62,19 @@ public class OracleBlockTest5 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(3, visitor.getTables().size());
+        assertEquals(3, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("escrow_trade")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab_ipay_out_order_ids")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ipay_contract")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("escrow_trade")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab_ipay_out_order_ids")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ipay_contract")));
 
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(3, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsColumn("escrow_trade", "id"));
-        Assert.assertTrue(visitor.containsColumn("escrow_trade", "out_order_id"));
-        Assert.assertTrue(visitor.containsColumn("tab_ipay_out_order_ids", "out_order_id"));
-        Assert.assertTrue(visitor.containsColumn("ipay_contract", "is_chargeback"));
-        Assert.assertTrue(visitor.containsColumn("ipay_contract", "out_ref"));
+        assertTrue(visitor.containsColumn("escrow_trade", "id"));
+        assertTrue(visitor.containsColumn("escrow_trade", "out_order_id"));
+        assertTrue(visitor.containsColumn("tab_ipay_out_order_ids", "out_order_id"));
+        assertTrue(visitor.containsColumn("ipay_contract", "is_chargeback"));
+        assertTrue(visitor.containsColumn("ipay_contract", "out_ref"));
     }
 }

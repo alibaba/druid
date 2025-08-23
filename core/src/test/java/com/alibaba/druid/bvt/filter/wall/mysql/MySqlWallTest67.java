@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -34,7 +36,7 @@ public class MySqlWallTest67 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "SELECT c.table_name, column_name, column_type, is_nullable, column_key" + //
                         "   , column_default, extra, collation_name, character_set_name, column_comment " + //
                         "FROM information_schema.columns c " + //
@@ -47,7 +49,7 @@ public class MySqlWallTest67 extends TestCase {
                         "   AND ('Y' = '' OR LOWER(c.table_name) IN ('leader01_weibo')) " + //
                         "ORDER BY t.table_name"));
 
-        Assert.assertEquals(2, provider.getTableStats().size());
+        assertEquals(2, provider.getTableStats().size());
     }
 
 }

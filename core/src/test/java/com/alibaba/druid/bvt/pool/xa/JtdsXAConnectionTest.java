@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.pool.xa;
 
+import static org.junit.Assert.*;
+
+
 import java.lang.reflect.Constructor;
 
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 import net.sourceforge.jtds.jdbc.JtdsConnection;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.xa.JtdsXAConnection;
 import com.alibaba.druid.pool.xa.JtdsXAResource;
@@ -17,11 +19,11 @@ public class JtdsXAConnectionTest extends PoolTestCase {
         constrcutor.setAccessible(true);
         JtdsConnection jtdsConn = constrcutor.newInstance();
         JtdsXAConnection xaConn = new JtdsXAConnection(jtdsConn);
-        Assert.assertSame(jtdsConn, xaConn.getConnection());
+        assertSame(jtdsConn, xaConn.getConnection());
 
         JtdsXAResource xaResource = (JtdsXAResource) xaConn.getXAResource();
-        Assert.assertTrue(xaResource.isSameRM(xaResource));
-        Assert.assertFalse(xaResource.isSameRM(null));
+        assertTrue(xaResource.isSameRM(xaResource));
+        assertFalse(xaResource.isSameRM(null));
 
         {
             Exception error = null;
@@ -30,7 +32,7 @@ public class JtdsXAConnectionTest extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         {
             Exception error = null;
@@ -39,7 +41,7 @@ public class JtdsXAConnectionTest extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         {
             Exception error = null;
@@ -48,7 +50,7 @@ public class JtdsXAConnectionTest extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         {
             Exception error = null;
@@ -57,7 +59,7 @@ public class JtdsXAConnectionTest extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         {
             Exception error = null;
@@ -66,7 +68,7 @@ public class JtdsXAConnectionTest extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         xaResource.recover(0);
         {
@@ -76,7 +78,7 @@ public class JtdsXAConnectionTest extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         xaConn.close();
     }

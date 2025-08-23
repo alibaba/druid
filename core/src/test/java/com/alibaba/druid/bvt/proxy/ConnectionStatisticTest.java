@@ -15,23 +15,25 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.stat.JdbcConnectionStat;
 
 public class ConnectionStatisticTest extends TestCase {
     public void test_connection_stat() throws Exception {
         JdbcConnectionStat.Entry stat = new JdbcConnectionStat.Entry(null, 1001L);
-        Assert.assertEquals(null, stat.getEstablishTime());
-        Assert.assertEquals(null, stat.getConnectStackTrace());
-        Assert.assertEquals(null, stat.getLastStatementStatckTrace());
+        assertEquals(null, stat.getEstablishTime());
+        assertEquals(null, stat.getConnectStackTrace());
+        assertEquals(null, stat.getLastStatementStatckTrace());
 
         stat.setLastStatementStatckTrace(new Exception());
-        Assert.assertNotNull(stat.getLastStatementStatckTrace());
+        assertNotNull(stat.getLastStatementStatckTrace());
 
         stat.error(new Exception());
-        Assert.assertNotNull(stat.getLastErrorTime());
+        assertNotNull(stat.getLastErrorTime());
     }
 }

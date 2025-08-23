@@ -1,6 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
+
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -34,6 +36,6 @@ public class DruidDataSourceTest2 extends TestCase {
         } catch (IllegalArgumentException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

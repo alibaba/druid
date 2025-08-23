@@ -1,5 +1,8 @@
 package com.alibaba.druid.bvt.spring;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Collections;
@@ -8,7 +11,6 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.alibaba.druid.spring.User;
@@ -59,7 +61,7 @@ public class SqlMapExecutorWrapperTest_2 extends TestCase {
 
     public void test_wrap() throws Exception {
         SqlMapClientImpl client = (SqlMapClientImpl) context.getBean("master-sqlMapClient");
-        Assert.assertNotNull(client);
+        assertNotNull(client);
 
         SqlMapExecutorWrapper wrapper = new SqlMapExecutorWrapper(client, client);
 
@@ -71,7 +73,7 @@ public class SqlMapExecutorWrapperTest_2 extends TestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         wrapper.update("User.update", new User(12345678, "bbb"));
         {
@@ -81,16 +83,16 @@ public class SqlMapExecutorWrapperTest_2 extends TestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
-        Assert.assertNotNull((User) wrapper.queryForObject("User.select"));
-        Assert.assertNotNull((User) wrapper.queryForObject("User.select", Collections.emptyMap()));
-        Assert.assertNotNull((User) wrapper.queryForObject("User.select", Collections.emptyMap(), new User()));
+        assertNotNull((User) wrapper.queryForObject("User.select"));
+        assertNotNull((User) wrapper.queryForObject("User.select", Collections.emptyMap()));
+        assertNotNull((User) wrapper.queryForObject("User.select", Collections.emptyMap(), new User()));
 
-        Assert.assertEquals(1, wrapper.queryForList("User.select").size());
-        Assert.assertEquals(1, wrapper.queryForList("User.select", Collections.emptyMap()).size());
-        Assert.assertEquals(1, wrapper.queryForList("User.select", Collections.emptyMap(), 0, 2).size());
+        assertEquals(1, wrapper.queryForList("User.select").size());
+        assertEquals(1, wrapper.queryForList("User.select", Collections.emptyMap()).size());
+        assertEquals(1, wrapper.queryForList("User.select", Collections.emptyMap(), 0, 2).size());
 
         wrapper.queryWithRowHandler("User.select", new RowHandler() {
             @Override
@@ -103,11 +105,11 @@ public class SqlMapExecutorWrapperTest_2 extends TestCase {
             }
         });
 
-        Assert.assertEquals(1, wrapper.queryForPaginatedList("User.select", 10).size());
-        Assert.assertEquals(1, wrapper.queryForPaginatedList("User.select", Collections.emptyMap(), 10).size());
+        assertEquals(1, wrapper.queryForPaginatedList("User.select", 10).size());
+        assertEquals(1, wrapper.queryForPaginatedList("User.select", Collections.emptyMap(), 10).size());
 
-        Assert.assertNotNull(wrapper.queryForMap("User.select", Collections.emptyMap(), "id"));
-        Assert.assertNotNull(wrapper.queryForMap("User.select", Collections.emptyMap(), "id", "name"));
+        assertNotNull(wrapper.queryForMap("User.select", Collections.emptyMap(), "id"));
+        assertNotNull(wrapper.queryForMap("User.select", Collections.emptyMap(), "id", "name"));
 
         wrapper.delete("User.delete", 12345678L);
         {
@@ -117,7 +119,7 @@ public class SqlMapExecutorWrapperTest_2 extends TestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         wrapper.startBatch();

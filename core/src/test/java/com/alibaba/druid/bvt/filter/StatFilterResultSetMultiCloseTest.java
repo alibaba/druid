@@ -15,12 +15,16 @@
  */
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -47,11 +51,11 @@ public class StatFilterResultSetMultiCloseTest extends PoolTestCase {
 
     public void test_stat() throws Exception {
         final String sql = "SELECT 1";
-        Assert.assertTrue(dataSource.isInited());
+        assertTrue(dataSource.isInited());
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertNull(sqlStat);
+        assertNull(sqlStat);
 
         Connection conn = dataSource.getConnection();
 
@@ -61,18 +65,18 @@ public class StatFilterResultSetMultiCloseTest extends PoolTestCase {
         rs.close();
 
         sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
-        Assert.assertNotNull(sqlStat);
+        assertNotNull(sqlStat);
 
-        Assert.assertEquals("first failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals("first failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
 
         rs.close();
 
-        Assert.assertEquals("second failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals("second failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
 
         stmt.close();
 
         conn.close();
 
-        Assert.assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
     }
 }

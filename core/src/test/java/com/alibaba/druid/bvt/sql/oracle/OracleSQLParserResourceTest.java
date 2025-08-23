@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -70,7 +70,7 @@ public class OracleSQLParserResourceTest extends TestCase {
 
         System.out.println(text);
         if (expect != null && !expect.isEmpty()) {
-            Assert.assertEquals(expect, text.trim());
+            assertEquals(expect, text.trim());
         }
 
     }

@@ -1,10 +1,11 @@
 package com.alibaba.druid.bvt.jmx;
 
+import static org.junit.Assert.assertTrue;
+
 import java.lang.management.ManagementFactory;
 
 import javax.management.MBeanServer;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -18,7 +19,7 @@ public class DupRegisterTest extends TestCase {
 
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
         mbeanServer.registerMBean(dataSource, dataSource.getObjectName());
-        Assert.assertTrue(mbeanServer.isRegistered(dataSource.getObjectName()));
+        assertTrue(mbeanServer.isRegistered(dataSource.getObjectName()));
     }
 
     protected void setUp() throws Exception {

@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**

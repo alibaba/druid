@@ -1,5 +1,8 @@
 package com.alibaba.druid.bvt.pool.profile;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -8,7 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DataSourceNotAvailableException;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -57,7 +59,7 @@ public class FailFastTest extends PoolTestCase {
     }
 
     public void testDefault() throws Exception {
-        Assert.assertTrue(dataSource.isFailFast());
+        assertTrue(dataSource.isFailFast());
 
         final AtomicReference<SQLException> errorHolder = new AtomicReference<SQLException>(null);
         final CountDownLatch connectStartLatch = new CountDownLatch(1);
@@ -82,7 +84,7 @@ public class FailFastTest extends PoolTestCase {
         latch.countDown();
         connectEndLatch.await(3, TimeUnit.SECONDS);
         SQLException ex = errorHolder.get();
-        Assert.assertTrue(ex instanceof DataSourceNotAvailableException);
+        assertTrue(ex instanceof DataSourceNotAvailableException);
 
         for (int i = 0; i < 300; ++i) {
             if (!dataSource.isFailContinuous()) {

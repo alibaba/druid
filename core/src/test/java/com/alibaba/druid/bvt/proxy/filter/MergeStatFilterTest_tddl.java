@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Connection;
 import java.sql.Statement;
 
@@ -22,7 +24,6 @@ import javax.management.openmbean.TabularData;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -41,7 +42,7 @@ public class MergeStatFilterTest_tddl extends TestCase {
             }
         }
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
@@ -71,7 +72,7 @@ public class MergeStatFilterTest_tddl extends TestCase {
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_merge() throws Exception {
@@ -87,7 +88,7 @@ public class MergeStatFilterTest_tddl extends TestCase {
             conn.close();
         }
 
-        Assert.assertEquals(2, dataSource.getDataSourceStat().getSqlStatMap().size());
+        assertEquals(2, dataSource.getDataSourceStat().getSqlStatMap().size());
 
     }
 

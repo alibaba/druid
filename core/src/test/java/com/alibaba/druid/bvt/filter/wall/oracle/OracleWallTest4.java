@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -29,6 +30,6 @@ public class OracleWallTest4 extends TestCase {
                         + "   from all_synonyms us, all_sequences asq" //
                         + "  where asq.sequence_name = us.table_name" //
                         + "    and asq.sequence_owner = us.table_owner"; //
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

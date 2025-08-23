@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableAddIndex_9 extends TestCase {
     public void test_0() throws Exception {
@@ -33,10 +33,10 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE t_order\n" +
+        assertEquals("ALTER TABLE t_order\n" +
                 "\tADD FULLTEXT INDEX `g_i_buyer` (`buyer_id`);", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table t_order\n" +
+        assertEquals("alter table t_order\n" +
                 "\tadd fulltext index `g_i_buyer` (`buyer_id`);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -54,10 +54,10 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE t_order\n" +
+        assertEquals("ALTER TABLE t_order\n" +
                 "\tADD CLUSTERED INDEX `g_i_buyer` (`buyer_id`);", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table t_order\n" +
+        assertEquals("alter table t_order\n" +
                 "\tadd clustered index `g_i_buyer` (`buyer_id`);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -75,10 +75,10 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE t_order\n" +
+        assertEquals("ALTER TABLE t_order\n" +
                 "\tADD CLUSTERED KEY `g_i_buyer` (`buyer_id`);", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table t_order\n" +
+        assertEquals("alter table t_order\n" +
                 "\tadd clustered key `g_i_buyer` (`buyer_id`);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -96,10 +96,10 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE xxx\n" +
+        assertEquals("ALTER TABLE xxx\n" +
                 "\tADD KEY `idx_001` (`col1`, `current_date`, `col2`)", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table xxx\n" +
+        assertEquals("alter table xxx\n" +
                 "\tadd key `idx_001` (`col1`, `current_date`, `col2`)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -117,10 +117,10 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE xxx\n" +
+        assertEquals("ALTER TABLE xxx\n" +
                 "\tADD KEY `idx_001` (`col1`, `current_time`, `col2`)", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table xxx\n" +
+        assertEquals("alter table xxx\n" +
                 "\tadd key `idx_001` (`col1`, `current_time`, `col2`)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -138,10 +138,10 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE xxx\n" +
+        assertEquals("ALTER TABLE xxx\n" +
                 "\tADD KEY `idx_001` (`current_timestamp`, `curdate`, `LOCALTIME`, `LOCALTIMESTAMP`)", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table xxx\n" +
+        assertEquals("alter table xxx\n" +
                 "\tadd key `idx_001` (`current_timestamp`, `curdate`, `LOCALTIME`, `LOCALTIMESTAMP`)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);

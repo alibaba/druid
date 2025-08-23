@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.postgresql;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -64,7 +64,7 @@ public class PGCommentTest extends PGTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
@@ -73,7 +73,7 @@ public class PGCommentTest extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("a")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("a")));
 
     }
 }

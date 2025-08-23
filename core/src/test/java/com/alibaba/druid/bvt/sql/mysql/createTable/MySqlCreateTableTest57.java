@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest57 extends MysqlTest {
@@ -43,12 +43,12 @@ public class MySqlCreateTableTest57 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(10, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(10, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE `t_cpi_driskconfig_bak` (" + "\n\t`Sequence` bigint(20) NOT NULL AUTO_INCREMENT,"
+        assertEquals("CREATE TABLE `t_cpi_driskconfig_bak` (" + "\n\t`Sequence` bigint(20) NOT NULL AUTO_INCREMENT,"
                 + "\n\t`comcode` varchar(20) BINARY  NOT NULL," + "\n\t`riskcode` varchar(10) BINARY  NOT NULL,"
                 + "\n\t`configcodehead` varchar(30) BINARY  NOT NULL," + "\n\t`configcodebody` varchar(100) BINARY ,"
                 + "\n\t`configvalue` varchar(200) BINARY ," + "\n\t`inputdate` datetime NOT NULL,"
@@ -76,12 +76,12 @@ public class MySqlCreateTableTest57 extends MysqlTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(10, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(10, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE `t_cpi_driskconfig_bak` (" + "\n\t`Sequence` bigint(20) NOT NULL AUTO_INCREMENT,"
+        assertEquals("CREATE TABLE `t_cpi_driskconfig_bak` (" + "\n\t`Sequence` bigint(20) NOT NULL AUTO_INCREMENT,"
                 + "\n\t`comcode` binary(20) NOT NULL," + "\n\t`riskcode` varchar(10) BINARY  NOT NULL,"
                 + "\n\t`configcodehead` varchar(30) BINARY  NOT NULL," + "\n\t`configcodebody` varchar(100) BINARY ,"
                 + "\n\t`configvalue` varchar(200) BINARY ," + "\n\t`inputdate` datetime NOT NULL,"

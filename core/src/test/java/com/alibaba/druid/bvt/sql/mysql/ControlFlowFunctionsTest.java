@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -36,7 +36,7 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CASE 1\n" +
+        assertEquals("SELECT CASE 1\n" +
                 "\t\tWHEN 1 THEN 'one'\n" +
                 "\t\tWHEN 2 THEN 'two'\n" +
                 "\t\tELSE 'more'\n" +
@@ -51,7 +51,7 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IF(1 > 2, 2, 3);", text);
+        assertEquals("SELECT IF(1 > 2, 2, 3);", text);
     }
 
     public void test_2() throws Exception {
@@ -62,7 +62,7 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IF(1 < 2, 'yes', 'no');", text);
+        assertEquals("SELECT IF(1 < 2, 'yes', 'no');", text);
     }
 
     public void test_3() throws Exception {
@@ -73,7 +73,7 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IF(STRCMP('test', 'test1'), 'no', 'yes');", text);
+        assertEquals("SELECT IF(STRCMP('test', 'test1'), 'no', 'yes');", text);
     }
 
     public void test_4() throws Exception {
@@ -84,7 +84,7 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IFNULL(1, 0);", text);
+        assertEquals("SELECT IFNULL(1, 0);", text);
     }
 
     public void test_5() throws Exception {
@@ -95,7 +95,7 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IFNULL(1 / 0, 'yes');", text);
+        assertEquals("SELECT IFNULL(1 / 0, 'yes');", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -62,38 +64,38 @@ public class TestOracleWall2 extends TestCase {
         {
             Connection conn = dataSource.getConnection();
 
-            Assert.assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
-            Assert.assertNotNull(conn.unwrap(DruidPooledConnection.class));
+            assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
+            assertNotNull(conn.unwrap(DruidPooledConnection.class));
 
-            Assert.assertFalse(conn.isWrapperFor(oracle.jdbc.OracleConnection.class));
-            Assert.assertNull(conn.unwrap(oracle.jdbc.OracleConnection.class));
+            assertFalse(conn.isWrapperFor(oracle.jdbc.OracleConnection.class));
+            assertNull(conn.unwrap(oracle.jdbc.OracleConnection.class));
 
-            Assert.assertFalse(conn.isWrapperFor(java.sql.Connection.class));
-            Assert.assertNull(conn.unwrap(java.sql.Connection.class));
+            assertFalse(conn.isWrapperFor(java.sql.Connection.class));
+            assertNull(conn.unwrap(java.sql.Connection.class));
 
             // /////////////
 
             PreparedStatement stmt = conn.prepareStatement(sql);
 
-            Assert.assertNull(stmt.unwrap(oracle.jdbc.OraclePreparedStatement.class));
-            Assert.assertFalse(stmt.isWrapperFor(oracle.jdbc.OraclePreparedStatement.class));
+            assertNull(stmt.unwrap(oracle.jdbc.OraclePreparedStatement.class));
+            assertFalse(stmt.isWrapperFor(oracle.jdbc.OraclePreparedStatement.class));
 
-            Assert.assertTrue(stmt.isWrapperFor(DruidPooledPreparedStatement.class));
-            Assert.assertNotNull(stmt.unwrap(DruidPooledPreparedStatement.class));
+            assertTrue(stmt.isWrapperFor(DruidPooledPreparedStatement.class));
+            assertNotNull(stmt.unwrap(DruidPooledPreparedStatement.class));
 
-            Assert.assertFalse(stmt.isWrapperFor(java.sql.PreparedStatement.class));
-            Assert.assertNull(stmt.unwrap(java.sql.PreparedStatement.class));
+            assertFalse(stmt.isWrapperFor(java.sql.PreparedStatement.class));
+            assertNull(stmt.unwrap(java.sql.PreparedStatement.class));
 
             ResultSet rs = stmt.executeQuery();
 
-            Assert.assertNull(rs.unwrap(oracle.jdbc.OracleResultSet.class));
-            Assert.assertFalse(rs.isWrapperFor(oracle.jdbc.OracleResultSet.class));
+            assertNull(rs.unwrap(oracle.jdbc.OracleResultSet.class));
+            assertFalse(rs.isWrapperFor(oracle.jdbc.OracleResultSet.class));
 
-            Assert.assertTrue(rs.isWrapperFor(DruidPooledResultSet.class));
-            Assert.assertNotNull(rs.unwrap(DruidPooledResultSet.class));
+            assertTrue(rs.isWrapperFor(DruidPooledResultSet.class));
+            assertNotNull(rs.unwrap(DruidPooledResultSet.class));
 
-            Assert.assertFalse(rs.isWrapperFor(java.sql.ResultSet.class));
-            Assert.assertNull(rs.unwrap(java.sql.ResultSet.class));
+            assertFalse(rs.isWrapperFor(java.sql.ResultSet.class));
+            assertNull(rs.unwrap(java.sql.ResultSet.class));
 
             rs.next();
 
@@ -115,7 +117,7 @@ public class TestOracleWall2 extends TestCase {
             conn.close();
         }
 
-        Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
+        assertEquals(1, dataSource.getCachedPreparedStatementCount());
 
     }
 }

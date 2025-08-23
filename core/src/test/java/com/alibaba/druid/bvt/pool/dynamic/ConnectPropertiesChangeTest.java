@@ -15,13 +15,15 @@
  */
 package com.alibaba.druid.bvt.pool.dynamic;
 
+import static org.junit.Assert.*;
+
+
 import java.lang.reflect.Field;
 import java.sql.Connection;
 
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -48,7 +50,7 @@ public class ConnectPropertiesChangeTest extends PoolTestCase {
         dataSource.setFilters("stat");
         dataSource.init();
 
-        Assert.assertEquals(1, dataSourceLog.getInfoCount());
+        assertEquals(1, dataSourceLog.getInfoCount());
     }
 
     protected void tearDown() throws Exception {
@@ -58,45 +60,45 @@ public class ConnectPropertiesChangeTest extends PoolTestCase {
     }
 
     public void test_connectPropertiesChange() throws Exception {
-        Assert.assertEquals(2, dataSource.getConnectProperties().size());
+        assertEquals(2, dataSource.getConnectProperties().size());
 
-        Assert.assertEquals("3", dataSource.getConnectProperties().getProperty("a"));
-        Assert.assertEquals("4", dataSource.getConnectProperties().getProperty("b"));
+        assertEquals("3", dataSource.getConnectProperties().getProperty("a"));
+        assertEquals("4", dataSource.getConnectProperties().getProperty("b"));
 
         Connection conn = dataSource.getConnection();
         conn.close();
 
         dataSource.setConnectionProperties("a=3;b=4");
-        Assert.assertEquals(1, dataSourceLog.getInfoCount());
+        assertEquals(1, dataSourceLog.getInfoCount());
 
         dataSource.setConnectionProperties("b=5;c=6");
-        Assert.assertEquals(2, dataSourceLog.getInfoCount());
+        assertEquals(2, dataSourceLog.getInfoCount());
 
-        Assert.assertEquals(2, dataSource.getConnectProperties().size());
+        assertEquals(2, dataSource.getConnectProperties().size());
 
-        Assert.assertEquals("5", dataSource.getConnectProperties().getProperty("b"));
-        Assert.assertEquals("6", dataSource.getConnectProperties().getProperty("c"));
+        assertEquals("5", dataSource.getConnectProperties().getProperty("b"));
+        assertEquals("6", dataSource.getConnectProperties().getProperty("c"));
 
         StatFilter filter = dataSource.unwrap(StatFilter.class);
-        Assert.assertNotNull(filter);
-        Assert.assertFalse(filter.isMergeSql());
+        assertNotNull(filter);
+        assertFalse(filter.isMergeSql());
 
         dataSource.setConnectionProperties("b=5;c=6;druid.stat.mergeSql=true");
 
-        Assert.assertTrue(filter.isMergeSql());
+        assertTrue(filter.isMergeSql());
 
-        Assert.assertEquals(3, dataSource.getConnectProperties().size());
+        assertEquals(3, dataSource.getConnectProperties().size());
 
-        Assert.assertEquals("true", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
-        Assert.assertEquals("5", dataSource.getConnectProperties().getProperty("b"));
-        Assert.assertEquals("6", dataSource.getConnectProperties().getProperty("c"));
+        assertEquals("true", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
+        assertEquals("5", dataSource.getConnectProperties().getProperty("b"));
+        assertEquals("6", dataSource.getConnectProperties().getProperty("c"));
 
         dataSource.setConnectionProperties("b=5;c=6;druid.stat.mergeSql=false");
 
-        Assert.assertFalse(filter.isMergeSql());
+        assertFalse(filter.isMergeSql());
 
-        Assert.assertEquals("false", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
-        Assert.assertEquals("5", dataSource.getConnectProperties().getProperty("b"));
-        Assert.assertEquals("6", dataSource.getConnectProperties().getProperty("c"));
+        assertEquals("false", dataSource.getConnectProperties().getProperty("druid.stat.mergeSql"));
+        assertEquals("5", dataSource.getConnectProperties().getProperty("b"));
+        assertEquals("6", dataSource.getConnectProperties().getProperty("c"));
     }
 }

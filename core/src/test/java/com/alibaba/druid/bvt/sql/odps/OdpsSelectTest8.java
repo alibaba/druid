@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -30,13 +30,13 @@ import junit.framework.TestCase;
 public class OdpsSelectTest8 extends TestCase {
     public void test_select() throws Exception {
         String sql = "select * from (select * from abc limit 1) a;";//
-        Assert.assertEquals("SELECT *"
+        assertEquals("SELECT *"
                 + "\nFROM ("
                 + "\n\tSELECT *"
                 + "\n\tFROM abc"
                 + "\n\tLIMIT 1"
                 + "\n) a;", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select *"
+        assertEquals("select *"
                 + "\nfrom ("
                 + "\n\tselect *"
                 + "\n\tfrom abc"
@@ -46,7 +46,7 @@ public class OdpsSelectTest8 extends TestCase {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
@@ -56,11 +56,11 @@ public class OdpsSelectTest8 extends TestCase {
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "*")));
+        assertTrue(visitor.getColumns().contains(new Column("abc", "*")));
     }
 
 }

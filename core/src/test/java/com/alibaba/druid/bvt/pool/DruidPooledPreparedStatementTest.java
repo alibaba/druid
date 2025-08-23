@@ -1,11 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
@@ -31,12 +33,12 @@ public class DruidPooledPreparedStatementTest extends TestCase {
             Connection conn = dataSource.getConnection();
             DruidPooledPreparedStatement stmt = (DruidPooledPreparedStatement) conn.prepareStatement(sql);
 
-            Assert.assertEquals(0, stmt.getFetchSize());
-            Assert.assertEquals(0, stmt.getFetchDirection());
-            Assert.assertEquals(0, stmt.getMaxRows());
-            Assert.assertEquals(0, stmt.getMaxFieldSize());
-            Assert.assertEquals(0, stmt.getQueryTimeout());
-            Assert.assertEquals(sql, stmt.getSql());
+            assertEquals(0, stmt.getFetchSize());
+            assertEquals(0, stmt.getFetchDirection());
+            assertEquals(0, stmt.getMaxRows());
+            assertEquals(0, stmt.getMaxFieldSize());
+            assertEquals(0, stmt.getQueryTimeout());
+            assertEquals(sql, stmt.getSql());
 
             stmt.setFetchSize(1);
             stmt.setFetchDirection(2);
@@ -44,40 +46,40 @@ public class DruidPooledPreparedStatementTest extends TestCase {
             stmt.setMaxFieldSize(4);
             stmt.setQueryTimeout(5);
 
-            Assert.assertEquals(1, stmt.getFetchSize());
-            Assert.assertEquals(2, stmt.getFetchDirection());
-            Assert.assertEquals(3, stmt.getMaxRows());
-            Assert.assertEquals(4, stmt.getMaxFieldSize());
-            Assert.assertEquals(5, stmt.getQueryTimeout());
+            assertEquals(1, stmt.getFetchSize());
+            assertEquals(2, stmt.getFetchDirection());
+            assertEquals(3, stmt.getMaxRows());
+            assertEquals(4, stmt.getMaxFieldSize());
+            assertEquals(5, stmt.getQueryTimeout());
 
             stmt.setString(1, "xx");
             ResultSet rs = stmt.executeQuery();
-            Assert.assertTrue(rs.next());
-            Assert.assertFalse(rs.next());
+            assertTrue(rs.next());
+            assertFalse(rs.next());
             rs.close();
             conn.close();
 
-            Assert.assertEquals(0, stmt.getHitCount());
+            assertEquals(0, stmt.getHitCount());
         }
         {
             Connection conn = dataSource.getConnection();
             DruidPooledPreparedStatement stmt = (DruidPooledPreparedStatement) conn.prepareStatement(sql);
 
-            Assert.assertEquals(0, stmt.getFetchSize());
-            Assert.assertEquals(0, stmt.getFetchDirection());
-            Assert.assertEquals(0, stmt.getMaxRows());
-            Assert.assertEquals(0, stmt.getMaxFieldSize());
-            Assert.assertEquals(0, stmt.getQueryTimeout());
+            assertEquals(0, stmt.getFetchSize());
+            assertEquals(0, stmt.getFetchDirection());
+            assertEquals(0, stmt.getMaxRows());
+            assertEquals(0, stmt.getMaxFieldSize());
+            assertEquals(0, stmt.getQueryTimeout());
 
             stmt.setString(1, "xx");
             ResultSet rs = stmt.executeQuery();
-            Assert.assertTrue(rs.next());
-            Assert.assertFalse(rs.next());
+            assertTrue(rs.next());
+            assertFalse(rs.next());
             rs.close();
             conn.close();
 
-            Assert.assertEquals(1, stmt.getHitCount());
-            Assert.assertNotNull(stmt.getKey());
+            assertEquals(1, stmt.getHitCount());
+            assertNotNull(stmt.getKey());
         }
     }
 }

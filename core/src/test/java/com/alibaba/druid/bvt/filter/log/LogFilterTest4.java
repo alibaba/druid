@@ -1,10 +1,11 @@
 package com.alibaba.druid.bvt.filter.log;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
@@ -13,10 +14,10 @@ public class LogFilterTest4 extends TestCase {
     public void test_properties() throws Exception {
         LogFilter filter = new Log4jFilter();
 
-        Assert.assertEquals(true, filter.isConnectionLogEnabled());
-        Assert.assertEquals(true, filter.isStatementLogEnabled());
-        Assert.assertEquals(false, filter.isStatementExecutableSqlLogEnable());
-        Assert.assertEquals(true, filter.isResultSetLogEnabled());
+        assertEquals(true, filter.isConnectionLogEnabled());
+        assertEquals(true, filter.isStatementLogEnabled());
+        assertEquals(false, filter.isStatementExecutableSqlLogEnable());
+        assertEquals(true, filter.isResultSetLogEnabled());
     }
 
     public void test_properties_1() throws Exception {
@@ -28,10 +29,10 @@ public class LogFilterTest4 extends TestCase {
         try {
             LogFilter filter = new Log4jFilter();
 
-            Assert.assertEquals(false, filter.isConnectionLogEnabled());
-            Assert.assertEquals(false, filter.isStatementLogEnabled());
-            Assert.assertEquals(true, filter.isStatementExecutableSqlLogEnable());
-            Assert.assertEquals(false, filter.isResultSetLogEnabled());
+            assertEquals(false, filter.isConnectionLogEnabled());
+            assertEquals(false, filter.isStatementLogEnabled());
+            assertEquals(true, filter.isStatementExecutableSqlLogEnable());
+            assertEquals(false, filter.isResultSetLogEnabled());
 
             Properties properties = new Properties();
             properties.setProperty("druid.log.conn", "true");
@@ -41,10 +42,10 @@ public class LogFilterTest4 extends TestCase {
 
             filter.configFromProperties(properties);
 
-            Assert.assertEquals(true, filter.isConnectionLogEnabled());
-            Assert.assertEquals(true, filter.isStatementLogEnabled());
-            Assert.assertEquals(false, filter.isStatementExecutableSqlLogEnable());
-            Assert.assertEquals(true, filter.isResultSetLogEnabled());
+            assertEquals(true, filter.isConnectionLogEnabled());
+            assertEquals(true, filter.isStatementLogEnabled());
+            assertEquals(false, filter.isStatementExecutableSqlLogEnable());
+            assertEquals(true, filter.isResultSetLogEnabled());
         } finally {
             System.clearProperty("druid.log.conn");
             System.clearProperty("druid.log.stmt");

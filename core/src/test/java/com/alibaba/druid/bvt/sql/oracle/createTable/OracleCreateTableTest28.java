@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -46,9 +46,9 @@ public class OracleCreateTableTest28 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE divisions (" //
+        assertEquals("CREATE TABLE divisions (" //
                         + "\n\tdiv_no NUMBER" //
                         + "\n\t\tCONSTRAINT check_divno CHECK (div_no BETWEEN 10 AND 99) DISABLE," //
                         + "\n\tdiv_name VARCHAR2(9)" //
@@ -67,10 +67,10 @@ public class OracleCreateTableTest28 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("divisions", "div_no")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("divisions", "div_no")));
     }
 }

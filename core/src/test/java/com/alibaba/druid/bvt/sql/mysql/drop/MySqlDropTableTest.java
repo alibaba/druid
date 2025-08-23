@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.drop;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -34,7 +34,7 @@ public class MySqlDropTableTest extends MysqlTest {
         SQLStatement statemen = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -44,14 +44,14 @@ public class MySqlDropTableTest extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(3, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(3, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("A")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("B")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("C")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("A")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("B")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("C")));
 
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
+//        assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
     }
 }

@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COLUMNS FROM City;", text);
+        assertEquals("SHOW COLUMNS FROM City;", text);
     }
 
     public void test_1() throws Exception {
@@ -45,7 +45,7 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
+        assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
     }
 
     public void test_2() throws Exception {
@@ -56,7 +56,7 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
+        assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
     }
 
     public void test_3() throws Exception {
@@ -67,7 +67,7 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
+        assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

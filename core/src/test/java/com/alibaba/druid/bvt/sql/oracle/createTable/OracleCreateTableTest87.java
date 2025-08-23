@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -66,7 +66,7 @@ public class OracleCreateTableTest87 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -77,13 +77,13 @@ public class OracleCreateTableTest87 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.containsTable("\"HX_DJ\".\"DJ_JZYXMDJ_THJJFGQK\""));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("mid_users_restore_account_598")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("subtotal_bill")));
+//        assertTrue(visitor.containsTable("\"HX_DJ\".\"DJ_JZYXMDJ_THJJFGQK\""));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("mid_users_restore_account_598")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("subtotal_bill")));
 //
-//        Assert.assertEquals(8, visitor.getColumns().size());
+//        assertEquals(8, visitor.getColumns().size());
 
     }
 }

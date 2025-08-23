@@ -1,9 +1,10 @@
 package com.alibaba.druid.bvt.bug;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -25,6 +26,6 @@ public class Issue_697 extends TestCase {
                 "VALUES (1010103, now(), now(), 10101, 0\n" +
                 "\t, 'flow=''Ctr''', 'be:login,dev:pc, env:web, type:ctr, from:$loginfrom, result:true');";
 
-        Assert.assertEquals(expected, SQLUtils.formatMySql(sql));
+        assertEquals(expected, SQLUtils.formatMySql(sql));
     }
 }

@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlCreateTableTest48 extends MysqlTest {
     public void test_0() throws Exception {
@@ -47,14 +47,14 @@ public class MySqlCreateTableTest48 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(3, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(3, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("AO_E8B6CC_REPO_TO_CHANGESET")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("AO_E8B6CC_REPO_TO_CHANGESET")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE AO_E8B6CC_REPO_TO_CHANGESET ("//
+        assertEquals("CREATE TABLE AO_E8B6CC_REPO_TO_CHANGESET ("//
                         + "\n\tCHANGESET_ID INTEGER,"//
                         + "\n\tID INTEGER NOT NULL AUTO_INCREMENT,"//
                         + "\n\tREPOSITORY_ID INTEGER,"//

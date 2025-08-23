@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -29,22 +31,22 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class OracleWallPermitObjectTest extends TestCase {
     public void test_permitTable() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("select  sys.LinxReadFile('c:/boot.ini') from dual"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select  sys.LinxRunCMD('cmd /c net user linx /add') from dual"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select utl_inaddr.get_host_address from DUAL"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select TO_CHAR(utl_inaddr.get_host_address) from DUAL"));
-        Assert.assertFalse(WallUtils.isValidateOracle("SELECT SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT'.PUT(:P1));"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES()"));
+        assertFalse(WallUtils.isValidateOracle("select  sys.LinxReadFile('c:/boot.ini') from dual"));
+        assertFalse(WallUtils.isValidateOracle("select  sys.LinxRunCMD('cmd /c net user linx /add') from dual"));
+        assertFalse(WallUtils.isValidateOracle("select utl_inaddr.get_host_address from DUAL"));
+        assertFalse(WallUtils.isValidateOracle("select TO_CHAR(utl_inaddr.get_host_address) from DUAL"));
+        assertFalse(WallUtils.isValidateOracle("SELECT SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT'.PUT(:P1));"));
+        assertFalse(WallUtils.isValidateOracle("select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES()"));
     }
 
     public void test_permitTable_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setObjectCheck(false);
-        Assert.assertTrue(WallUtils.isValidateOracle("select  sys.LinxReadFile('c:/boot.ini') from dual", config));
-        Assert.assertTrue(WallUtils.isValidateOracle("select  sys.LinxRunCMD('cmd /c net user linx /add') from dual", config));
-        Assert.assertTrue(WallUtils.isValidateOracle("select utl_inaddr.get_host_address from DUAL", config));
-        Assert.assertTrue(WallUtils.isValidateOracle("select TO_CHAR(utl_inaddr.get_host_address) from DUAL", config));
-        Assert.assertTrue(WallUtils.isValidateOracle("SELECT SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT'.PUT(:P1));", config));
-        Assert.assertTrue(WallUtils.isValidateOracle("select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES()", config));
+        assertTrue(WallUtils.isValidateOracle("select  sys.LinxReadFile('c:/boot.ini') from dual", config));
+        assertTrue(WallUtils.isValidateOracle("select  sys.LinxRunCMD('cmd /c net user linx /add') from dual", config));
+        assertTrue(WallUtils.isValidateOracle("select utl_inaddr.get_host_address from DUAL", config));
+        assertTrue(WallUtils.isValidateOracle("select TO_CHAR(utl_inaddr.get_host_address) from DUAL", config));
+        assertTrue(WallUtils.isValidateOracle("SELECT SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT'.PUT(:P1));", config));
+        assertTrue(WallUtils.isValidateOracle("select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES()", config));
     }
 }

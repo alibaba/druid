@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -37,6 +37,6 @@ public class MySqlCreateIndexTest_3 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE UNIQUE INDEX index_1_id ON index_1 (id) USING BTREE KEY_BLOCK_SIZE = 10 COMMENT '分表index'", output);
+        assertEquals("CREATE UNIQUE INDEX index_1_id ON index_1 (id) USING BTREE KEY_BLOCK_SIZE = 10 COMMENT '分表index'", output);
     }
 }

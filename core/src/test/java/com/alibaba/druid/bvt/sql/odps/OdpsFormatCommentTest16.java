@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 
@@ -16,7 +16,7 @@ public class OdpsFormatCommentTest16 extends TestCase {
                 + "ds string, -- c_1"
                 + "\nhh string -- c_2"
                 + "\n);";
-        Assert.assertEquals("CREATE TABLE t1 ("
+        assertEquals("CREATE TABLE t1 ("
                 + "\n\tf0 BIGINT, -- fc_0"
                 + "\n\tf1 STRING, -- fc_1"
                 + "\n\tf2 STRING -- fc_2"

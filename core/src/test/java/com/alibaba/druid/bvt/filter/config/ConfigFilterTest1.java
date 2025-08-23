@@ -1,6 +1,8 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.config.ConfigFilter;
@@ -26,13 +28,13 @@ public class ConfigFilterTest1 extends TestCase {
 
         dataSource.setPassword(ConfigTools.encrypt(plainPassword));
 
-        Assert.assertFalse(plainPassword.equals(dataSource.getPassword()));
+        assertFalse(plainPassword.equals(dataSource.getPassword()));
 
         dataSource.addConnectionProperty(ConfigFilter.CONFIG_DECRYPT, "true");
 
         dataSource.init();
 
-        Assert.assertEquals(plainPassword, dataSource.getPassword());
+        assertEquals(plainPassword, dataSource.getPassword());
     }
 
 }

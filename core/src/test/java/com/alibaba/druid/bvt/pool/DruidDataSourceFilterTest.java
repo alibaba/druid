@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -31,18 +33,18 @@ public class DruidDataSourceFilterTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_filter() throws Exception {
         System.out.println(System.nanoTime() / (1000 * 1000));
         DruidDataSource dataSource = new DruidDataSource();
 
-        Assert.assertEquals(0, dataSource.getProxyFilters().size());
+        assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
 
-        Assert.assertEquals(1, dataSource.getProxyFilters().size());
+        assertEquals(1, dataSource.getProxyFilters().size());
 
         dataSource.close();
     }
@@ -51,7 +53,7 @@ public class DruidDataSourceFilterTest extends TestCase {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
 
-        Assert.assertEquals(0, dataSource.getProxyFilters().size());
+        assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
 
@@ -59,30 +61,30 @@ public class DruidDataSourceFilterTest extends TestCase {
 
         dataSource.init();
         JdbcDataSourceStat dataSourceStat = dataSource.getDataSourceStat();
-//        Assert.assertEquals(1, JdbcStatManager.getInstance().getDataSources().size());
+//        assertEquals(1, JdbcStatManager.getInstance().getDataSources().size());
 //        JdbcDataSourceStat dataSourceStat = JdbcStatManager.getInstance().getDataSources().values().iterator().next();
 
-        Assert.assertEquals(0, dataSourceStat.getConnectionStat().getConnectCount());
-        Assert.assertEquals(1, dataSource.getProxyFilters().size());
+        assertEquals(0, dataSourceStat.getConnectionStat().getConnectCount());
+        assertEquals(1, dataSource.getProxyFilters().size());
 
         for (int i = 0; i < 2; ++i) {
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(1, dataSourceStat.getConnectionStat().getConnectCount());
-            Assert.assertEquals(0, dataSourceStat.getConnectionStat().getCloseCount());
+            assertEquals(1, dataSourceStat.getConnectionStat().getConnectCount());
+            assertEquals(0, dataSourceStat.getConnectionStat().getCloseCount());
 
             conn.close();
 
-            Assert.assertEquals(1, dataSourceStat.getConnectionStat().getConnectCount());
-            Assert.assertEquals(0, dataSourceStat.getConnectionStat().getCloseCount()); // logic
+            assertEquals(1, dataSourceStat.getConnectionStat().getConnectCount());
+            assertEquals(0, dataSourceStat.getConnectionStat().getCloseCount()); // logic
             // close不会导致计数器＋1
         }
 
-        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         dataSource.close();
 
-        Assert.assertEquals(1, dataSourceStat.getConnectionStat().getConnectCount());
-        Assert.assertEquals(1, dataSourceStat.getConnectionStat().getCloseCount());
+        assertEquals(1, dataSourceStat.getConnectionStat().getConnectCount());
+        assertEquals(1, dataSourceStat.getConnectionStat().getCloseCount());
     }
 }

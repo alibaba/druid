@@ -15,12 +15,14 @@
  */
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockConnection;
@@ -56,14 +58,14 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
     }
 
     public void test_stat() throws Exception {
-        Assert.assertTrue(dataSource.isInited());
+        assertTrue(dataSource.isInited());
         final String sql = "select 1";
 
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement(sql);
         boolean firstResult = stmt.execute();
-        Assert.assertTrue(firstResult);
+        assertTrue(firstResult);
 
         ResultSet rs = stmt.getResultSet();
         rs.next();
@@ -75,10 +77,10 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(1, sqlStat.getHistogramSum());
+        assertEquals(1, sqlStat.getHistogramSum());
 
 
-        Assert.assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
     }
 
     static class MyMockPreparedStatement extends MockPreparedStatement {

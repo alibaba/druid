@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -41,7 +41,7 @@ public class MySqlDeleteTest_3 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        Assert.assertEquals("DELETE FROM t1\n" +
+        assertEquals("DELETE FROM t1\n" +
                 "WHERE s11 > ANY (\n" +
                 "\t\tSELECT COUNT(*)\n" +
                 "\t\tFROM  /* no hint */\n\t\tt2\n" +
@@ -80,7 +80,7 @@ public class MySqlDeleteTest_3 extends MysqlTest {
                 "\t\t)\n" +
                 "\t);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -92,18 +92,18 @@ public class MySqlDeleteTest_3 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(5, visitor.getTables().size());
-        Assert.assertEquals(6, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(5, visitor.getTables().size());
+        assertEquals(6, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "s11")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "s1")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "*")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t3", "*")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t4", "s1")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t5", "*")));
+        assertTrue(visitor.getColumns().contains(new Column("t1", "s11")));
+        assertTrue(visitor.getColumns().contains(new Column("t2", "s1")));
+        assertTrue(visitor.getColumns().contains(new Column("t2", "*")));
+        assertTrue(visitor.getColumns().contains(new Column("t3", "*")));
+        assertTrue(visitor.getColumns().contains(new Column("t4", "s1")));
+        assertTrue(visitor.getColumns().contains(new Column("t5", "*")));
     }
 }

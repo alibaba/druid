@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertNull;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -55,7 +56,7 @@ public class FilterChainImplTest3 extends TestCase {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
-        Assert.assertNull(stmt.executeQuery());
+        assertNull(stmt.executeQuery());
         stmt.close();
         conn.close();
     }
@@ -64,7 +65,7 @@ public class FilterChainImplTest3 extends TestCase {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareCall("select ?");
         stmt.setNull(1, Types.VARCHAR);
-        Assert.assertNull(stmt.executeQuery());
+        assertNull(stmt.executeQuery());
         stmt.close();
         conn.close();
     }
@@ -72,7 +73,7 @@ public class FilterChainImplTest3 extends TestCase {
     public void test_executeQuery_3() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        Assert.assertNull(stmt.executeQuery("select 1"));
+        assertNull(stmt.executeQuery("select 1"));
         stmt.close();
         conn.close();
     }
@@ -81,7 +82,7 @@ public class FilterChainImplTest3 extends TestCase {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
         stmt.execute("select 1");
-        Assert.assertNull(stmt.getResultSet());
+        assertNull(stmt.getResultSet());
         stmt.close();
         conn.close();
     }

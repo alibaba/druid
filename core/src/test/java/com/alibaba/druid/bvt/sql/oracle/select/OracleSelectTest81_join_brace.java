@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         print(statementList);
 
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -87,8 +87,8 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
 
-        Assert.assertTrue(visitor.containsColumn("tcp_cpr.con_config", "contract_config_id"));
-        Assert.assertTrue(visitor.containsColumn("tcp_cpr.con_osg3a_headers", "parent_id"));
+        assertTrue(visitor.containsColumn("tcp_cpr.con_config", "contract_config_id"));
+        assertTrue(visitor.containsColumn("tcp_cpr.con_osg3a_headers", "parent_id"));
 //
     }
 }

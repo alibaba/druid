@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -43,9 +43,9 @@ public class OracleCreateTableTest25 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE locations_demo (" //
+        assertEquals("CREATE TABLE locations_demo (" //
                         + "\n\tlocation_id NUMBER(4)," //
                         + "\n\tstreet_address VARCHAR2(40)," //
                         + "\n\tpostal_code VARCHAR2(12)," //

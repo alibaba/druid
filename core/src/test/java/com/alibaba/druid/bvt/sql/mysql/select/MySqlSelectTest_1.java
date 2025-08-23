@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class MySqlSelectTest_1 extends MysqlTest {
         SQLStatement statemen = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -44,15 +44,15 @@ public class MySqlSelectTest_1 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employee")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("info")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employee")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("info")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("employee", "name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("info", "name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("info", "salary")));
+        assertTrue(visitor.getColumns().contains(new Column("employee", "name")));
+        assertTrue(visitor.getColumns().contains(new Column("info", "name")));
+        assertTrue(visitor.getColumns().contains(new Column("info", "salary")));
     }
 }

@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
@@ -35,11 +37,11 @@ public class SQLServerWallTest_4 extends TestCase {
 
         provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "insert into t (fid, name) values (1, HOST_NAME())"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
-        Assert.assertTrue(provider.getTableStats().containsKey("t"));
+        assertEquals(1, provider.getTableStats().size());
+        assertTrue(provider.getTableStats().containsKey("t"));
     }
 
 }

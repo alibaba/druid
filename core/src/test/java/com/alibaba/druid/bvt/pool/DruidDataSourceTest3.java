@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -68,7 +70,7 @@ public class DruidDataSourceTest3 extends TestCase {
 
         Thread.sleep(10);
 
-        Assert.assertFalse(dataSource.isInited());
+        assertFalse(dataSource.isInited());
 
         final CountDownLatch startedLatchB = new CountDownLatch(1);
         final CountDownLatch endLatchB = new CountDownLatch(1);
@@ -90,16 +92,16 @@ public class DruidDataSourceTest3 extends TestCase {
         threadB.interrupt();
         endLatchB.await();
 
-        Assert.assertNotNull(errorB);
-        Assert.assertTrue(errorB.getCause() instanceof InterruptedException);
+        assertNotNull(errorB);
+        assertTrue(errorB.getCause() instanceof InterruptedException);
 
         threadA.interrupt();
 
         endLatch.await();
         endLatchB.await();
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getCreateErrorCount());
+        assertEquals(1, dataSource.getCreateErrorCount());
 
     }
 }

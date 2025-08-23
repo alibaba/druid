@@ -15,12 +15,14 @@
  */
 package com.alibaba.druid.bvt.proxy.fake;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Connection;
 import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.proxy.DruidDriver;
 
@@ -30,14 +32,14 @@ public class DruidDriverTest extends TestCase {
         Properties info = new Properties();
         DruidDriver driver = new DruidDriver();
         Connection conn = driver.connect(url, info);
-        Assert.assertNotNull(conn);
-        Assert.assertEquals("c1", conn.getCatalog());
+        assertNotNull(conn);
+        assertEquals("c1", conn.getCatalog());
 
         conn.setCatalog("c2");
-        Assert.assertEquals("c2", conn.getCatalog());
+        assertEquals("c2", conn.getCatalog());
 
         conn.setTransactionIsolation(100);
-        Assert.assertEquals(100, conn.getTransactionIsolation());
+        assertEquals(100, conn.getTransactionIsolation());
 
         conn.close();
     }

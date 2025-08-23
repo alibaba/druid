@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class OracleCreateTableTest9 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -50,19 +50,19 @@ public class OracleCreateTableTest9 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR", "ID"));
-        Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
+        assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR", "ID"));
+        assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
                 "dmltype$$"));
-        Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
+        assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
                 "snapid"));
-        Assert.assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
+        assertTrue(visitor.containsColumn("ESCROW.RUPD$_HT_TASK_TRADE_HISTOR",
                 "change_vector$$"));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

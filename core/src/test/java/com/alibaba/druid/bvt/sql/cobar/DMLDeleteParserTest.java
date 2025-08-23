@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.cobar;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -31,7 +31,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE LOW_PRIORITY FROM id1.id, id\n" +
+        assertEquals("DELETE LOW_PRIORITY FROM id1.id, id\n" +
                 "USING t1 a\n" +
                 "WHERE col1 = ?", output);
     }
@@ -42,7 +42,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE FROM id1.id" + //
+        assertEquals("DELETE FROM id1.id" + //
                 "\nUSING t1", output);
     }
 
@@ -52,7 +52,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE FROM offer.*, wp_image.*\n" +
+        assertEquals("DELETE FROM offer.*, wp_image.*\n" +
                 "USING offer a, wp_image b\n" +
                 "WHERE a.member_id = b.member_id\n" +
                 "\tAND a.member_id = 'abc'", output);
@@ -64,7 +64,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE FROM id1.id\n" + //
+        assertEquals("DELETE FROM id1.id\n" + //
                 "WHERE col1 = 'adf'\n" + //
                 "LIMIT 1, ?", output);
     }
@@ -75,7 +75,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE FROM id\n" + //
+        assertEquals("DELETE FROM id\n" + //
                 "WHERE col1 = 'adf'\n" + //
                 "ORDER BY d\n" + //
                 "LIMIT ? OFFSET 2", output);
@@ -87,7 +87,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE id.*\n" + //
+        assertEquals("DELETE id.*\n" + //
                 "FROM t1, t2\n" + //
                 "WHERE col1 = 'adf'\n" + //
                 "\tAND col2 = 1", output);
@@ -99,7 +99,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE id, id.t\n" + //
+        assertEquals("DELETE id, id.t\n" + //
                 "FROM t1", output);
     }
 
@@ -109,7 +109,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE FROM t1\n" + //
+        assertEquals("DELETE FROM t1\n" + //
                 "WHERE t1.id1 = 'abc'\n" + //
                 "ORDER BY a\n" + //
                 "LIMIT 5", output);
@@ -121,7 +121,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE FROM t1", output);
+        assertEquals("DELETE FROM t1", output);
     }
 
     public void testDelete_9() throws Exception {
@@ -130,7 +130,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE IGNORE tb1.*, id1.t\n" +
+        assertEquals("DELETE IGNORE tb1.*, id1.t\n" +
                 "FROM t1", output);
     }
 
@@ -140,7 +140,7 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE QUICK tb1.*, id1.t\n" +
+        assertEquals("DELETE QUICK tb1.*, id1.t\n" +
                 "FROM t1", output);
     }
 }

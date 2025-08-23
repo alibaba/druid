@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +9,6 @@ import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallFilter;
@@ -38,7 +39,7 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(1, wallFilter.getProvider().getTableStat("t").getCreateCount());
+        assertEquals(1, wallFilter.getProvider().getTableStat("t").getCreateCount());
 
         {
             Connection conn = dataSource.getConnection();
@@ -61,7 +62,7 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(10, wallFilter.getProvider().getTableStat("t").getFetchRowCount());
+        assertEquals(10, wallFilter.getProvider().getTableStat("t").getFetchRowCount());
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
@@ -69,7 +70,7 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(1, wallFilter.getProvider().getTableStat("t").getDeleteDataCount());
+        assertEquals(1, wallFilter.getProvider().getTableStat("t").getDeleteDataCount());
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
@@ -77,7 +78,7 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(3, wallFilter.getProvider().getTableStat("t").getDeleteDataCount());
+        assertEquals(3, wallFilter.getProvider().getTableStat("t").getDeleteDataCount());
 
         {
             Connection conn = dataSource.getConnection();
@@ -86,7 +87,7 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(2, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
+        assertEquals(2, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
 
         {
             Connection conn = dataSource.getConnection();
@@ -97,7 +98,7 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(4, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
+        assertEquals(4, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
 
         {
             Connection conn = dataSource.getConnection();
@@ -108,7 +109,7 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(6, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
+        assertEquals(6, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
         {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("update t SET fname = 'xx' where FID = ?");
@@ -123,7 +124,7 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(8, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
+        assertEquals(8, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
 
         {
             Connection conn = dataSource.getConnection();
@@ -132,7 +133,7 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(1, wallFilter.getProvider().getTableStat("t").getTruncateCount());
+        assertEquals(1, wallFilter.getProvider().getTableStat("t").getTruncateCount());
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
@@ -140,6 +141,6 @@ public class WallFilterTest extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertEquals(1, wallFilter.getProvider().getTableStat("t").getDropCount());
+        assertEquals(1, wallFilter.getProvider().getTableStat("t").getDropCount());
     }
 }

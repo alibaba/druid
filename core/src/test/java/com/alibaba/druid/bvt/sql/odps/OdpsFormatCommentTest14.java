@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 
@@ -19,7 +19,7 @@ public class OdpsFormatCommentTest14 extends TestCase {
                 + "\n --c_3" //
                 + "\nselect 3 from t3" //
                 + ") xx";
-        Assert.assertEquals("SELECT *"
+        assertEquals("SELECT *"
                 + "\nFROM ("
                 + "\n\tSELECT 1"
                 + "\n\tFROM t1 -- c_0"

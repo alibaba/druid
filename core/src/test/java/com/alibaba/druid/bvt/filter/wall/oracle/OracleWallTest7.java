@@ -15,16 +15,17 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
+import static org.junit.Assert.assertTrue;
+
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class OracleWallTest7 extends TestCase {
     public void test_true() throws Exception {
         String sql = //
                 "begin\n"
                         + "end";
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 
     public void test_insert_all() throws Exception {

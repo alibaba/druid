@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class OracleSelectTest85_in extends OracleTest {
         print(statementList);
 
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -62,12 +62,12 @@ public class OracleSelectTest85_in extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-//        Assert.assertTrue(visitor.containsTable("sup_registration"));
-//        Assert.assertTrue(visitor.containsTable("sup_task"));
-//        Assert.assertTrue(visitor.containsTable("sys_org"));
+//        assertTrue(visitor.containsTable("sup_registration"));
+//        assertTrue(visitor.containsTable("sup_task"));
+//        assertTrue(visitor.containsTable("sys_org"));
 //
-//         Assert.assertTrue(visitor.containsColumn("sup_task", "orgid"));
-//         Assert.assertTrue(visitor.containsColumn("sup_task", "orgid"));
+//         assertTrue(visitor.containsColumn("sup_task", "orgid"));
+//         assertTrue(visitor.containsColumn("sup_task", "orgid"));
 //
     }
 }

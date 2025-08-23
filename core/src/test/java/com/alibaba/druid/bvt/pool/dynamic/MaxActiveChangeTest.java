@@ -15,10 +15,12 @@
  */
 package com.alibaba.druid.bvt.pool.dynamic;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -49,68 +51,68 @@ public class MaxActiveChangeTest extends PoolTestCase {
 
     public void test_maxActive() throws Exception {
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(1, connect(1));
-            Assert.assertEquals(1, dataSource.getPoolingCount());
+            assertEquals(1, connect(1));
+            assertEquals(1, dataSource.getPoolingCount());
         }
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(2, connect(2));
-            Assert.assertEquals(2, dataSource.getPoolingCount());
+            assertEquals(2, connect(2));
+            assertEquals(2, dataSource.getPoolingCount());
         }
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(3, connect(3));
-            Assert.assertEquals(3, dataSource.getPoolingCount());
+            assertEquals(3, connect(3));
+            assertEquals(3, dataSource.getPoolingCount());
         }
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(3, connect(4));
-            Assert.assertEquals(3, dataSource.getPoolingCount());
+            assertEquals(3, connect(4));
+            assertEquals(3, dataSource.getPoolingCount());
         }
 
         dataSource.setMaxActive(5);
 
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(5, connect(5));
-            Assert.assertEquals(5, dataSource.getPoolingCount());
+            assertEquals(5, connect(5));
+            assertEquals(5, dataSource.getPoolingCount());
         }
 
         dataSource.shrink();
-        Assert.assertEquals(2, dataSource.getPoolingCount());
+        assertEquals(2, dataSource.getPoolingCount());
 
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(5, connect(5));
-            Assert.assertEquals(5, dataSource.getPoolingCount());
+            assertEquals(5, connect(5));
+            assertEquals(5, dataSource.getPoolingCount());
         }
 
-        Assert.assertEquals(5, dataSource.getPoolingCount());
+        assertEquals(5, dataSource.getPoolingCount());
         dataSource.setMaxActive(3);
 
-        Assert.assertEquals(5, dataSource.getPoolingCount());
+        assertEquals(5, dataSource.getPoolingCount());
 
         dataSource.shrink();
-        Assert.assertEquals(2, dataSource.getPoolingCount());
+        assertEquals(2, dataSource.getPoolingCount());
 
         // 确保收缩之后不会再长上去
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(3, connect(5));
-            Assert.assertEquals(3, dataSource.getPoolingCount());
+            assertEquals(3, connect(5));
+            assertEquals(3, dataSource.getPoolingCount());
         }
 
         dataSource.setMaxActive(2);
         dataSource.shrink();
-        Assert.assertEquals(2, dataSource.getPoolingCount());
+        assertEquals(2, dataSource.getPoolingCount());
 
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(2, connect(3));
-            Assert.assertEquals(2, dataSource.getPoolingCount());
+            assertEquals(2, connect(3));
+            assertEquals(2, dataSource.getPoolingCount());
         }
 
         dataSource.setMinIdle(1);
         dataSource.setMaxActive(1);
         dataSource.shrink();
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
 
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(1, connect(2));
-            Assert.assertEquals(1, dataSource.getPoolingCount());
+            assertEquals(1, connect(2));
+            assertEquals(1, dataSource.getPoolingCount());
         }
 
         Exception error = null;
@@ -119,8 +121,8 @@ public class MaxActiveChangeTest extends PoolTestCase {
         } catch (IllegalArgumentException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
-        Assert.assertEquals(1, dataSource.getMaxActive());
+        assertNotNull(error);
+        assertEquals(1, dataSource.getMaxActive());
     }
 
     public int connect(int count) throws Exception {

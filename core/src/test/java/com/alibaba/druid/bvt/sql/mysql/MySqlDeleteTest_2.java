@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -34,16 +34,16 @@ public class MySqlDeleteTest_2 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        Assert.assertEquals("DELETE t1"
+        assertEquals("DELETE t1"
                 + "\nFROM t1"
                 + "\n\tLEFT JOIN t2 ON t1.id = t2.id"
                 + "\nWHERE t2.id IS NULL;", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("delete t1"
+        assertEquals("delete t1"
                 + "\nfrom t1"
                 + "\n\tleft join t2 on t1.id = t2.id"
                 + "\nwhere t2.id is null;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -53,14 +53,14 @@ public class MySqlDeleteTest_2 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(3, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("t1", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

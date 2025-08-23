@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 import java.util.List;
 
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -37,8 +37,8 @@ public class SELECT_Syntax_Test extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH ROLLUP;", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with rollup;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH ROLLUP;", SQLUtils.toMySqlString(stmt));
+        assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with rollup;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_1() throws Exception {
@@ -49,7 +49,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM T\nFOR UPDATE;", text);
+        assertEquals("SELECT *\nFROM T\nFOR UPDATE;", text);
     }
 
     public void test_with_cube() throws Exception {
@@ -60,8 +60,8 @@ public class SELECT_Syntax_Test extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH CUBE;", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with cube;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH CUBE;", SQLUtils.toMySqlString(stmt));
+        assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with cube;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_2() throws Exception {
@@ -72,7 +72,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM T\nLOCK IN SHARE MODE;", text);
+        assertEquals("SELECT *\nFROM T\nLOCK IN SHARE MODE;", text);
     }
 
     public void test_3() throws Exception {
@@ -83,7 +83,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT a, b, a + b\nINTO OUTFILE '/tmp/result.txt' COLUMNS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n'\nFROM test_table;",
+        assertEquals("SELECT a, b, a + b\nINTO OUTFILE '/tmp/result.txt' COLUMNS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n'\nFROM test_table;",
                 text);
     }
 
@@ -95,7 +95,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 + 1\nFROM DUAL;", text);
+        assertEquals("SELECT 1 + 1\nFROM DUAL;", text);
     }
 
     public void test_5() throws Exception {
@@ -106,7 +106,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 + 1;", text);
+        assertEquals("SELECT 1 + 1;", text);
     }
 
     public void test_6() throws Exception {
@@ -133,7 +133,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT column1" //
+        assertEquals("SELECT column1" //
                 + "\nFROM t1" //
                 + "\nWHERE EXISTS (" //
                 + "\n\tSELECT *" //
@@ -149,7 +149,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DISTINCT store_type" //
+        assertEquals("SELECT DISTINCT store_type" //
                         + "\nFROM stores" //
                         + "\nWHERE NOT EXISTS (" //
                         + "\n\tSELECT *"
@@ -183,7 +183,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT s1\n" +
+        assertEquals("SELECT s1\n" +
                 "FROM t1\n" +
                 "WHERE s1 = ANY (\n" +
                 "\tSELECT s1\n" +
@@ -256,8 +256,8 @@ public class SELECT_Syntax_Test extends TestCase {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 IN (?, ?, ?);", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select s1\nfrom t1\nwhere s1 in (?, ?, ?);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("SELECT s1\nFROM t1\nWHERE s1 IN (?, ?, ?);", SQLUtils.toMySqlString(stmt));
+        assertEquals("select s1\nfrom t1\nwhere s1 in (?, ?, ?);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_15() throws Exception {
@@ -267,8 +267,8 @@ public class SELECT_Syntax_Test extends TestCase {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 NOT IN (?, ?, ?);", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select s1\nfrom t1\nwhere s1 not in (?, ?, ?);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("SELECT s1\nFROM t1\nWHERE s1 NOT IN (?, ?, ?);", SQLUtils.toMySqlString(stmt));
+        assertEquals("select s1\nfrom t1\nwhere s1 not in (?, ?, ?);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_16() throws Exception {
@@ -324,8 +324,8 @@ public class SELECT_Syntax_Test extends TestCase {
         for (int i = 0; i < sqls.length; i++) {
             MySqlStatementParser parser = new MySqlStatementParser(sqls[i]);
             List<SQLStatement> parseStatementList = parser.parseStatementList();
-            Assert.assertEquals(1, parseStatementList.size());
-            Assert.assertEquals(expectedSqls[i], parseStatementList.get(0).toString());
+            assertEquals(1, parseStatementList.size());
+            assertEquals(expectedSqls[i], parseStatementList.get(0).toString());
         }
     }
 

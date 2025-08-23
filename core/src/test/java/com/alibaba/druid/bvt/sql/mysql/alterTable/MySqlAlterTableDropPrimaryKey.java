@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableDropPrimaryKey extends TestCase {
     public void test_alter_first() throws Exception {
@@ -38,14 +38,14 @@ public class MySqlAlterTableDropPrimaryKey extends TestCase {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals("ALTER TABLE tableName" + //
+        assertEquals("ALTER TABLE tableName" + //
                 "\n\tDROP PRIMARY KEY", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table tableName" + //
+        assertEquals("alter table tableName" + //
                 "\n\tdrop primary key", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
 
 }

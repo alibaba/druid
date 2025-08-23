@@ -1,7 +1,7 @@
 package com.alibaba.druid.bvt.sql.postgresql.expr;
 
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
@@ -13,7 +13,7 @@ public class CidrTest extends PGTest {
         String sql = "cidr '10.1.0.0/16'";
         PGExprParser parser = new PGExprParser(sql);
         PGCidrExpr expr = (PGCidrExpr) parser.expr();
-        Assert.assertEquals("cidr '10.1.0.0/16'", expr.toString());
+        assertEquals("cidr '10.1.0.0/16'", expr.toString());
 
     }
 }

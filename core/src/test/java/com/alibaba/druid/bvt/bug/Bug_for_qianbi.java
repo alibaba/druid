@@ -1,10 +1,11 @@
 package com.alibaba.druid.bvt.bug;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
@@ -32,6 +33,6 @@ public class Bug_for_qianbi extends TestCase {
 
         // System.out.println(out.toString());
 
-        Assert.assertEquals(expected, out.toString());
+        assertEquals(expected, out.toString());
     }
 }

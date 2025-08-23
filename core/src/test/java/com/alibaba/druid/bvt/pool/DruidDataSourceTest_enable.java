@@ -1,8 +1,10 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DataSourceDisableException;
@@ -32,11 +34,11 @@ public class DruidDataSourceTest_enable extends TestCase {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
-        Assert.assertTrue(dataSource.isEnable());
+        assertTrue(dataSource.isEnable());
 
         dataSource.setEnable(false);
 
-        Assert.assertFalse(dataSource.isEnable());
+        assertFalse(dataSource.isEnable());
 
         dataSource.shrink();
 
@@ -47,13 +49,13 @@ public class DruidDataSourceTest_enable extends TestCase {
         } catch (DataSourceDisableException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
     public void test_disable_() throws Exception {
         dataSource.setEnable(false);
 
-        Assert.assertFalse(dataSource.isEnable());
+        assertFalse(dataSource.isEnable());
 
         Exception error = null;
         try {
@@ -62,6 +64,6 @@ public class DruidDataSourceTest_enable extends TestCase {
         } catch (DataSourceDisableException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

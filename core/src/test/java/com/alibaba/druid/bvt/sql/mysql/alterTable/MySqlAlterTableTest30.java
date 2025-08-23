@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest30 extends TestCase {
     public void test_alter_add_key() throws Exception {
@@ -31,7 +31,7 @@ public class MySqlAlterTableTest30 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE test_table_normal\n" +
+        assertEquals("ALTER TABLE test_table_normal\n" +
                 "\tADD FOREIGN KEY (stuID) REFERENCES Persons (stuID);", output);
     }
 }

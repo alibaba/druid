@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.sqlserver;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
@@ -25,7 +25,7 @@ import com.alibaba.druid.util.JdbcConstants;
 public class SQLServerParameterizedOutputVisitorTest_1 extends TestCase {
     public void test_0() throws Exception {
         String sql = "SELECT TOP 10 ID FROM dbo.jiraissue WHERE PROJECT IN (?) ORDER BY UPDATED DESC";
-        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
+        assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
     }
 
 }

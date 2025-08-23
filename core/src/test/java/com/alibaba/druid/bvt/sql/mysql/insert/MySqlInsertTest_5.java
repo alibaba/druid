@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.insert;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -36,16 +36,16 @@ public class MySqlInsertTest_5 extends MysqlTest {
 
         MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
 
-        Assert.assertEquals(3, insertStmt.getColumns().size());
-        Assert.assertEquals(1, insertStmt.getValuesList().size());
-        Assert.assertEquals(9, insertStmt.getValuesList().get(0).getValues().size());
+        assertEquals(3, insertStmt.getColumns().size());
+        assertEquals(1, insertStmt.getValuesList().size());
+        assertEquals(9, insertStmt.getValuesList().get(0).getValues().size());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals("INSERT INTO tbl_name (a, b, c)" + //
+        assertEquals("INSERT INTO tbl_name (a, b, c)" + //
                 "\nVALUES (1, 2, 3, 4, 5" + //
                 "\n\t, 6, 7, 8, 9);", SQLUtils.toMySqlString(insertStmt));
     }

@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class OracleSelectTest21 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -61,23 +61,23 @@ public class OracleSelectTest21 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("DBA_HIST_SYSTEM_EVENT")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("DBA_HIST_SYSTEM_EVENT")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "EVENT_NAME")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "TOTAL_WAITS")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "TIME_WAITED_MICRO")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "SNAP_ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "INSTANCE_NUMBER")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "DBID")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "WAIT_CLASS")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "EVENT_ID")));
+        assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "EVENT_NAME")));
+        assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "TOTAL_WAITS")));
+        assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "TIME_WAITED_MICRO")));
+        assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "SNAP_ID")));
+        assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "INSTANCE_NUMBER")));
+        assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "DBID")));
+        assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "WAIT_CLASS")));
+        assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "EVENT_ID")));
 
-        Assert.assertEquals(8, visitor.getColumns().size());
+        assertEquals(8, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

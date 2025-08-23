@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,14 +35,14 @@ public class MySqlSelectTest_straight_join extends MysqlTest {
 
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         String expected = "SELECT count(*)\n" +
                 "FROM nation n1\n" +
                 "\tJOIN nation n2 ON n1.nationkey = n2.nationkey\n" +
                 "\tSTRAIGHT_JOIN nation n3 ON n2.nationkey = n3.nationkey;";
 
-        Assert.assertEquals(expected, stmt.toString());
+        assertEquals(expected, stmt.toString());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -52,10 +52,10 @@ public class MySqlSelectTest_straight_join extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("nation", "nationkey"));
+        assertTrue(visitor.containsColumn("nation", "nationkey"));
     }
 
     public void test_1() throws Exception {
@@ -70,7 +70,7 @@ public class MySqlSelectTest_straight_join extends MysqlTest {
                 "\tSTRAIGHT_JOIN nation n2 ON n1.nationkey = n2.nationkey\n" +
                 "\tSTRAIGHT_JOIN nation n3 ON n2.nationkey = n3.nationkey;";
 
-        Assert.assertEquals(expected, stmt.toString());
+        assertEquals(expected, stmt.toString());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -80,9 +80,9 @@ public class MySqlSelectTest_straight_join extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("nation", "nationkey"));
+        assertTrue(visitor.containsColumn("nation", "nationkey"));
     }
 }

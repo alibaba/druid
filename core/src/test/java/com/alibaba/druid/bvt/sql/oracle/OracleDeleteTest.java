@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -37,7 +37,7 @@ public class OracleDeleteTest extends OracleTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -47,15 +47,15 @@ public class OracleDeleteTest extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("BILLING_LOG_MONITOR")));
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("BILLING_LOG_MONITOR")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
         //
-        Assert.assertTrue(visitor.containsColumn("BILLING_LOG_MONITOR", "guid"));
-        // Assert.assertTrue(visitor.containsColumn("employees", "salary"));
-        // Assert.assertTrue(visitor.containsColumn("employees", "commission_pct"));
+        assertTrue(visitor.containsColumn("BILLING_LOG_MONITOR", "guid"));
+        // assertTrue(visitor.containsColumn("employees", "salary"));
+        // assertTrue(visitor.containsColumn("employees", "commission_pct"));
     }
 
 }

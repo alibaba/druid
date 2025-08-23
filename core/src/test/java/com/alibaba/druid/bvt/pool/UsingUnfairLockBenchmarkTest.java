@@ -1,10 +1,12 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import org.junit.Assert;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -72,7 +74,7 @@ public class UsingUnfairLockBenchmarkTest {
     @TearDown(Level.Trial)
     public void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     @Benchmark
@@ -82,14 +84,14 @@ public class UsingUnfairLockBenchmarkTest {
         try {
             for (; i < count; ++i) {
                 Connection conn = dataSource.getConnection();
-                Assert.assertNotNull(conn);
+                assertNotNull(conn);
                 conn.close();
-                Assert.assertTrue(conn.isClosed());
+                assertTrue(conn.isClosed());
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            Assert.assertEquals(count, i);
+            assertEquals(count, i);
         }
     }
 

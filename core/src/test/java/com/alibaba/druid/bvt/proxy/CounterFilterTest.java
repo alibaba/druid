@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,7 +26,6 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
@@ -41,7 +44,7 @@ public class CounterFilterTest extends TestCase {
 
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_countFilter() throws Exception {
@@ -56,9 +59,9 @@ public class CounterFilterTest extends TestCase {
 
         dataSourceStat.reset();
 
-        Assert.assertNull(StatFilter.getStatFilter(dataSource));
-        Assert.assertNull(dataSourceStat.getSqlStat(Integer.MAX_VALUE));
-        Assert.assertNull(dataSourceStat.getConnectionStat().getConnectLastTime());
+        assertNull(StatFilter.getStatFilter(dataSource));
+        assertNull(dataSourceStat.getSqlStat(Integer.MAX_VALUE));
+        assertNull(dataSourceStat.getConnectionStat().getConnectLastTime());
 
         FilterChain chain = new FilterChainImpl(dataSource) {
             public ConnectionProxy connection_connect(Properties info) throws SQLException {
@@ -72,9 +75,9 @@ public class CounterFilterTest extends TestCase {
         } catch (SQLException ex) {
             error = ex;
         }
-        Assert.assertNotNull(error);
-        Assert.assertEquals(1, dataSourceStat.getConnectionStat().getConnectErrorCount());
-        Assert.assertNotNull(dataSourceStat.getConnectionStat().getConnectLastTime());
+        assertNotNull(error);
+        assertEquals(1, dataSourceStat.getConnectionStat().getConnectErrorCount());
+        assertNotNull(dataSourceStat.getConnectionStat().getConnectLastTime());
     }
 
     public void test_count_filter() throws Exception {

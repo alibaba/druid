@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest20 extends TestCase {
     public void test_alter_add_key() throws Exception {
@@ -28,10 +28,10 @@ public class MySqlAlterTableTest20 extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        Assert.assertEquals("ALTER TABLE score1"
+        assertEquals("ALTER TABLE score1"
                 + "\n\tADD COLUMN (test3 int(11), test4 int(11))", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table score1"
+        assertEquals("alter table score1"
                 + "\n\tadd column (test3 int(11), test4 int(11))", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

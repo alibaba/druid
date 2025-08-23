@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableDrop_Test_2 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -32,12 +32,12 @@ public class MySqlAlterTableDrop_Test_2 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE test_ddl\n" +
+        assertEquals("ALTER TABLE test_ddl\n" +
                 "\tDROP COLUMN display_name,\n" +
                 "\tMODIFY COLUMN id bigint(20) UNSIGNED NOT NULL,\n" +
                 "\tCHANGE COLUMN content content VARCHAR(3000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '未填写' COMMENT '默认'", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table test_ddl\n" +
+        assertEquals("alter table test_ddl\n" +
                 "\tdrop column display_name,\n" +
                 "\tmodify column id bigint(20) unsigned not null,\n" +
                 "\tchange column content content VARCHAR(3000) character set utf8mb4 collate utf8mb4_unicode_ci not null default '未填写' comment '默认'", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

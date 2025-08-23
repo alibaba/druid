@@ -1,11 +1,15 @@
 package com.alibaba.druid.bvt.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Types;
 import java.util.Collections;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -36,7 +40,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getURL(1));
+        assertNull(stmt.getURL(1));
 
         stmt.close();
         conn.close();
@@ -47,7 +51,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getURL("1"));
+        assertNull(stmt.getURL("1"));
 
         stmt.close();
         conn.close();
@@ -58,7 +62,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getString(1));
+        assertNull(stmt.getString(1));
 
         stmt.close();
         conn.close();
@@ -69,7 +73,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getString("1"));
+        assertNull(stmt.getString("1"));
 
         stmt.close();
         conn.close();
@@ -80,7 +84,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertFalse(stmt.getBoolean(1));
+        assertFalse(stmt.getBoolean(1));
 
         stmt.close();
         conn.close();
@@ -91,7 +95,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertFalse(stmt.getBoolean("1"));
+        assertFalse(stmt.getBoolean("1"));
 
         stmt.close();
         conn.close();
@@ -103,7 +107,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertEquals(0, stmt.getByte(1));
+        assertEquals(0, stmt.getByte(1));
 
         stmt.close();
         conn.close();
@@ -114,7 +118,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertEquals(0, stmt.getByte("1"));
+        assertEquals(0, stmt.getByte("1"));
 
         stmt.close();
         conn.close();
@@ -125,7 +129,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertEquals(0, stmt.getShort(1));
+        assertEquals(0, stmt.getShort(1));
 
         stmt.close();
         conn.close();
@@ -136,7 +140,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertEquals(0, stmt.getShort("1"));
+        assertEquals(0, stmt.getShort("1"));
 
         stmt.close();
         conn.close();
@@ -147,7 +151,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertEquals(0, stmt.getInt(1));
+        assertEquals(0, stmt.getInt(1));
 
         stmt.close();
         conn.close();
@@ -158,7 +162,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertEquals(0, stmt.getInt("1"));
+        assertEquals(0, stmt.getInt("1"));
 
         stmt.close();
         conn.close();
@@ -169,7 +173,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertEquals(0, stmt.getLong(1));
+        assertEquals(0, stmt.getLong(1));
 
         stmt.close();
         conn.close();
@@ -180,7 +184,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertEquals(0, stmt.getLong("1"));
+        assertEquals(0, stmt.getLong("1"));
 
         stmt.close();
         conn.close();
@@ -191,7 +195,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertTrue(0F == stmt.getFloat(1));
+        assertTrue(0F == stmt.getFloat(1));
 
         stmt.close();
         conn.close();
@@ -202,7 +206,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertTrue(0F == stmt.getFloat("1"));
+        assertTrue(0F == stmt.getFloat("1"));
 
         stmt.close();
         conn.close();
@@ -213,7 +217,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertTrue(0D == stmt.getDouble(1));
+        assertTrue(0D == stmt.getDouble(1));
 
         stmt.close();
         conn.close();
@@ -224,7 +228,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertTrue(0D == stmt.getDouble("1"));
+        assertTrue(0D == stmt.getDouble("1"));
 
         stmt.close();
         conn.close();
@@ -236,7 +240,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getBytes(1));
+        assertNull(stmt.getBytes(1));
 
         stmt.close();
         conn.close();
@@ -247,7 +251,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getBytes("1"));
+        assertNull(stmt.getBytes("1"));
 
         stmt.close();
         conn.close();
@@ -259,7 +263,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getDate(1));
+        assertNull(stmt.getDate(1));
 
         stmt.close();
         conn.close();
@@ -270,7 +274,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getDate("1"));
+        assertNull(stmt.getDate("1"));
 
         stmt.close();
         conn.close();
@@ -281,7 +285,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getTime(1));
+        assertNull(stmt.getTime(1));
 
         stmt.close();
         conn.close();
@@ -292,7 +296,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getTime("1"));
+        assertNull(stmt.getTime("1"));
 
         stmt.close();
         conn.close();
@@ -303,7 +307,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getTimestamp(1));
+        assertNull(stmt.getTimestamp(1));
 
         stmt.close();
         conn.close();
@@ -314,7 +318,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getTimestamp("1"));
+        assertNull(stmt.getTimestamp("1"));
 
         stmt.close();
         conn.close();
@@ -325,7 +329,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getBigDecimal(1));
+        assertNull(stmt.getBigDecimal(1));
 
         stmt.close();
         conn.close();
@@ -336,7 +340,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getBigDecimal("1"));
+        assertNull(stmt.getBigDecimal("1"));
 
         stmt.close();
         conn.close();
@@ -347,7 +351,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getRef(1));
+        assertNull(stmt.getRef(1));
 
         stmt.close();
         conn.close();
@@ -358,7 +362,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getRef("1"));
+        assertNull(stmt.getRef("1"));
 
         stmt.close();
         conn.close();
@@ -369,7 +373,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getBlob(1));
+        assertNull(stmt.getBlob(1));
 
         stmt.close();
         conn.close();
@@ -380,7 +384,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getBlob("1"));
+        assertNull(stmt.getBlob("1"));
 
         stmt.close();
         conn.close();
@@ -391,7 +395,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getArray(1));
+        assertNull(stmt.getArray(1));
 
         stmt.close();
         conn.close();
@@ -402,7 +406,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getArray("1"));
+        assertNull(stmt.getArray("1"));
 
         stmt.close();
         conn.close();
@@ -413,7 +417,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getDate(1, null));
+        assertNull(stmt.getDate(1, null));
 
         stmt.close();
         conn.close();
@@ -424,7 +428,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getDate("1", null));
+        assertNull(stmt.getDate("1", null));
 
         stmt.close();
         conn.close();
@@ -435,7 +439,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getTime(1, null));
+        assertNull(stmt.getTime(1, null));
 
         stmt.close();
         conn.close();
@@ -446,7 +450,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getTime("1", null));
+        assertNull(stmt.getTime("1", null));
 
         stmt.close();
         conn.close();
@@ -457,7 +461,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getTimestamp(1, null));
+        assertNull(stmt.getTimestamp(1, null));
 
         stmt.close();
         conn.close();
@@ -468,7 +472,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getTimestamp("1", null));
+        assertNull(stmt.getTimestamp("1", null));
 
         stmt.close();
         conn.close();
@@ -479,7 +483,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getRowId(1));
+        assertNull(stmt.getRowId(1));
 
         stmt.close();
         conn.close();
@@ -490,7 +494,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getRowId("1"));
+        assertNull(stmt.getRowId("1"));
 
         stmt.close();
         conn.close();
@@ -501,7 +505,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getNClob(1));
+        assertNull(stmt.getNClob(1));
 
         stmt.close();
         conn.close();
@@ -512,7 +516,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getNClob("1"));
+        assertNull(stmt.getNClob("1"));
 
         stmt.close();
         conn.close();
@@ -523,7 +527,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getSQLXML(1));
+        assertNull(stmt.getSQLXML(1));
 
         stmt.close();
         conn.close();
@@ -534,7 +538,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getSQLXML("1"));
+        assertNull(stmt.getSQLXML("1"));
 
         stmt.close();
         conn.close();
@@ -545,7 +549,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getNString(1));
+        assertNull(stmt.getNString(1));
 
         stmt.close();
         conn.close();
@@ -556,7 +560,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getNString("1"));
+        assertNull(stmt.getNString("1"));
 
         stmt.close();
         conn.close();
@@ -567,7 +571,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getNCharacterStream(1));
+        assertNull(stmt.getNCharacterStream(1));
 
         stmt.close();
         conn.close();
@@ -578,7 +582,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getNCharacterStream("1"));
+        assertNull(stmt.getNCharacterStream("1"));
 
         stmt.close();
         conn.close();
@@ -589,7 +593,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getCharacterStream(1));
+        assertNull(stmt.getCharacterStream(1));
 
         stmt.close();
         conn.close();
@@ -600,7 +604,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getCharacterStream("1"));
+        assertNull(stmt.getCharacterStream("1"));
 
         stmt.close();
         conn.close();
@@ -611,7 +615,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getObject(1));
+        assertNull(stmt.getObject(1));
 
         stmt.close();
         conn.close();
@@ -622,7 +626,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getObject("1"));
+        assertNull(stmt.getObject("1"));
 
         stmt.close();
         conn.close();
@@ -633,7 +637,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getObject(1, Collections.<String, Class<?>>emptyMap()));
+        assertNull(stmt.getObject(1, Collections.<String, Class<?>>emptyMap()));
 
         stmt.close();
         conn.close();
@@ -644,7 +648,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
 
-        Assert.assertNull(stmt.getObject("1", Collections.<String, Class<?>>emptyMap()));
+        assertNull(stmt.getObject("1", Collections.<String, Class<?>>emptyMap()));
 
         stmt.close();
         conn.close();

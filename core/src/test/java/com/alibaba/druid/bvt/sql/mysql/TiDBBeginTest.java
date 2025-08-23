@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 /**
  * @author lizongbo
@@ -92,13 +92,13 @@ public class TiDBBeginTest extends MysqlTest {
         SQLStatement statement = statementList.get(0);
         //System.out.println(statement.getClass());
         print(statementList);
-        Assert.assertEquals(1, statementList.size());
-        Assert.assertTrue(statement instanceof SQLBlockStatement);
+        assertEquals(1, statementList.size());
+        assertTrue(statement instanceof SQLBlockStatement);
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
     }
 
 
@@ -109,15 +109,15 @@ public class TiDBBeginTest extends MysqlTest {
         SQLStatement statement = statementList.get(0);
         //System.out.println(statement.getClass());
         print(statementList);
-        Assert.assertEquals(1, statementList.size());
-        Assert.assertTrue(statement instanceof SQLBeginStatement);
+        assertEquals(1, statementList.size());
+        assertTrue(statement instanceof SQLBeginStatement);
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
     }
 
 

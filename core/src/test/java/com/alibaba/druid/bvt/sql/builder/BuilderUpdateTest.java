@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.builder;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.builder.SQLBuilderFactory;
 import com.alibaba.druid.sql.builder.SQLUpdateBuilder;
@@ -19,7 +19,7 @@ public class BuilderUpdateTest extends TestCase {
 
         String sql = builder.toString();
         System.out.println(sql);
-        Assert.assertEquals("UPDATE mytable" //
+        assertEquals("UPDATE mytable" //
                 + "\nSET f1 = f1 + 1, f2 = ?" //
                 + "\nWHERE f1 > 0", sql);
     }

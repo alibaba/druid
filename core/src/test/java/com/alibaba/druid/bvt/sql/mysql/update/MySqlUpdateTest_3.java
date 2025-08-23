@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.update;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -37,7 +37,7 @@ public class MySqlUpdateTest_3 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -47,17 +47,17 @@ public class MySqlUpdateTest_3 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(3, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("scheme.table")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("scheme.table")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("scheme.table", "col_1")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("scheme.table", "col2")));
+        assertTrue(visitor.getColumns().contains(new Column("scheme.table", "col_1")));
+        assertTrue(visitor.getColumns().contains(new Column("scheme.table", "col2")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("UPDATE scheme.table" //
+        assertEquals("UPDATE scheme.table" //
                         + "\nSET col_1 = 1, col2 = '2'"//
                         + "\nWHERE col_3 = 3" //
                         + "\n\tAND (length(col_4) > 4" //

@@ -15,12 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidPooledStatement;
@@ -46,10 +48,10 @@ public class PoolableStatementTest extends TestCase {
     }
 
     public void test_basic() throws Exception {
-        Assert.assertEquals(raw, stmt.getStatement());
-        Assert.assertEquals(null, stmt.getPoolableConnection());
-        Assert.assertEquals(null, stmt.getConnection());
-        Assert.assertEquals(false, stmt.isPoolable());
+        assertEquals(raw, stmt.getStatement());
+        assertEquals(null, stmt.getPoolableConnection());
+        assertEquals(null, stmt.getConnection());
+        assertEquals(false, stmt.isPoolable());
         stmt.toString();
     }
 

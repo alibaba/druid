@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 /**
  * test java.sql.Time parameter format and Boolean parameterized
@@ -53,7 +53,7 @@ public class MySqlFormatTest4 extends TestCase {
         System.out.println("orgSql=========" + text);
         System.out.println("formrtedSql=========" + formrtedSql);
         System.out.println("mergedSql=========" + mergedSql);
-        Assert.assertEquals("SELECT *\n"
+        assertEquals("SELECT *\n"
             + "FROM tabletest\n"
             + "WHERE ccc LIKE '%tidb_txn_mode%'\n"
             + "\tAND open_flag = true\n"
@@ -61,7 +61,7 @@ public class MySqlFormatTest4 extends TestCase {
             + "\tAND ddd = 4567.9888\n"
             + "\tAND added_time > TIME '11:22:33'\n"
             + "\tAND added_time < TIME '20:21:23';", formrtedSql);
-        Assert.assertEquals("SELECT *\n"
+        assertEquals("SELECT *\n"
             + "FROM tabletest\n"
             + "WHERE ccc LIKE ?\n"
             + "\tAND open_flag = ?\n"

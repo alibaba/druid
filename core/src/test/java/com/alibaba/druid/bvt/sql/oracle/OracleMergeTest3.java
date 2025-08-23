@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -36,7 +36,7 @@ public class OracleMergeTest3 extends OracleTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -46,19 +46,19 @@ public class OracleMergeTest3 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(3, visitor.getTables().size());
+        assertEquals(3, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.mon_mods$")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab$")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.mon_mods_all$")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.mon_mods$")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab$")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.mon_mods_all$")));
 
-        Assert.assertEquals(15, visitor.getColumns().size());
+        assertEquals(15, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("sys.mon_mods$", "obj#"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "salary"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "department_id"));
-//        Assert.assertTrue(visitor.containsColumn("bonuses", "employee_id"));
-//        Assert.assertTrue(visitor.containsColumn("bonuses", "bonus"));
+        assertTrue(visitor.containsColumn("sys.mon_mods$", "obj#"));
+//        assertTrue(visitor.containsColumn("employees", "salary"));
+//        assertTrue(visitor.containsColumn("employees", "department_id"));
+//        assertTrue(visitor.containsColumn("bonuses", "employee_id"));
+//        assertTrue(visitor.containsColumn("bonuses", "bonus"));
     }
 
 }

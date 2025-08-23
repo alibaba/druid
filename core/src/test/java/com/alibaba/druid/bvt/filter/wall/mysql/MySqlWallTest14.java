@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -30,7 +31,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest14 extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
                 "SELECT index_privacy AS index,info_privacy AS ?,msgboard_privacy AS messageboard,photos_privacy AS photos," + //
                         "diary_privacy AS diary,owrite_privacy AS weibo " + //
                         "FROM pw_ouserdata WHERE uid= ?")); //

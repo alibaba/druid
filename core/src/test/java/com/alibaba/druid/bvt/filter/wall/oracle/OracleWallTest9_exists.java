@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
+import static org.junit.Assert.assertTrue;
+
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class OracleWallTest9_exists extends TestCase {
     public void test_true() throws Exception {
@@ -27,6 +28,6 @@ public class OracleWallTest9_exists extends TestCase {
                         " where  v.u_id in (select id from U where wx_b = 1)\n" +
                         "   and not exists (select 1 from M where code = v.code)\n" +
                         "   and rownum < 1000";
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

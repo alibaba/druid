@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -34,24 +34,24 @@ public class OracleOutputVisitorTest_selectJoin extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("employee"));
-        Assert.assertEquals(true, visitor.containsTable("department"));
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("employee"));
+        assertEquals(true, visitor.containsTable("department"));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "salary")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "depId")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("department", "id")));
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("employee", "salary")));
+        assertEquals(true, visitor.getColumns().contains(new Column("employee", "depId")));
+        assertEquals(true, visitor.getColumns().contains(new Column("department", "id")));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT e.salary\nFROM employee e\n\tJOIN department d\nWHERE e.depId = d.id",
+        assertEquals("SELECT e.salary\nFROM employee e\n\tJOIN department d\nWHERE e.depId = d.id",
                 buf.toString());
 
     }

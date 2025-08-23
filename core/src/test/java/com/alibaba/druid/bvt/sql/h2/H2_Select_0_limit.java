@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class H2_Select_0_limit extends OracleTest {
         List<SQLStatement> stmtList = SQLUtils.toStatementList(sql, JdbcConstants.H2);
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.H2);
         stmt.accept(visitor);
@@ -59,7 +59,7 @@ public class H2_Select_0_limit extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.containsTable("CUSTOMER"));
+        assertTrue(visitor.containsTable("CUSTOMER"));
 
     }
 }

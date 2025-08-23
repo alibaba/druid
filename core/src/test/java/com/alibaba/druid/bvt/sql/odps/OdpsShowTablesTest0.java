@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -16,7 +16,7 @@ public class OdpsShowTablesTest0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("SHOW TABLES", output);
+        assertEquals("SHOW TABLES", output);
     }
 
     public void test_from() throws Exception {
@@ -25,8 +25,8 @@ public class OdpsShowTablesTest0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("SHOW TABLES FROM xx", SQLUtils.toOdpsString(stmt));
-        Assert.assertEquals("show tables from xx", SQLUtils.toOdpsString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("SHOW TABLES FROM xx", SQLUtils.toOdpsString(stmt));
+        assertEquals("show tables from xx", SQLUtils.toOdpsString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_from_like() throws Exception {
@@ -35,7 +35,7 @@ public class OdpsShowTablesTest0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("SHOW TABLES FROM xx LIKE '*'", SQLUtils.toOdpsString(stmt));
-        Assert.assertEquals("show tables from xx like '*'", SQLUtils.toOdpsString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("SHOW TABLES FROM xx LIKE '*'", SQLUtils.toOdpsString(stmt));
+        assertEquals("show tables from xx like '*'", SQLUtils.toOdpsString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

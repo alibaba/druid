@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.oracle.tomysql;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import junit.framework.TestCase;
 
@@ -19,7 +19,7 @@ public class OracleToMySql_PageTest1 extends TestCase {
                 "\nWHERE RN > 10";
 
         String mysqlSql = SQLUtils.translateOracleToMySql(sql);
-        Assert.assertEquals("SELECT *"//
+        assertEquals("SELECT *"//
                 + "\nFROM t"//
                 + "\nORDER BY id"//
                 + "\nLIMIT 10, 10", mysqlSql);

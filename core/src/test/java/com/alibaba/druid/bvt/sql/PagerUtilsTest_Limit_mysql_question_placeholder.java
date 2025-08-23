@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -30,20 +30,20 @@ public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
         try {
             statements = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         } catch (ParserException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
             return;
         }
         if (statements == null || statements.isEmpty()) {
-            Assert.fail("no sql found!");
+            fail("no sql found!");
             return;
         }
         if (statements.size() != 1) {
-            Assert.fail("sql not support count : " + sql);
+            fail("sql not support count : " + sql);
             return;
         }
         SQLSelectStatement statement = (SQLSelectStatement) statements.get(0);
         if (!(statement instanceof SQLSelectStatement)) {
-            Assert.fail("sql not support count : " + sql);
+            fail("sql not support count : " + sql);
             return;
         }
         SQLSelect select = statement.getSelect();

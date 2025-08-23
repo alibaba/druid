@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import static org.junit.Assert.*;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -61,7 +62,7 @@ public class ConnectionTest3 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         JdbcStatManager.getInstance().setStatContext(null);
 
@@ -74,13 +75,13 @@ public class ConnectionTest3 extends PoolTestCase {
         conn.getTransactionInfo();
         conn.getMetaData();
         conn.setReadOnly(true);
-        Assert.assertEquals(true, conn.isReadOnly());
+        assertEquals(true, conn.isReadOnly());
 
         conn.setCatalog("xxx");
-        Assert.assertEquals("xxx", conn.getCatalog());
+        assertEquals("xxx", conn.getCatalog());
 
         conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-        Assert.assertEquals(Connection.TRANSACTION_READ_COMMITTED, conn.getTransactionIsolation());
+        assertEquals(Connection.TRANSACTION_READ_COMMITTED, conn.getTransactionIsolation());
 
         conn.getWarnings();
         conn.clearWarnings();
@@ -88,7 +89,7 @@ public class ConnectionTest3 extends PoolTestCase {
         conn.setTypeMap(null);
 
         conn.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
-        Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, conn.getHoldability());
+        assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, conn.getHoldability());
 
         conn.setSavepoint();
         conn.setSavepoint("savepoint");
@@ -100,7 +101,7 @@ public class ConnectionTest3 extends PoolTestCase {
             } catch (SQLException e) {
                 error = e;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         {
             Exception error = null;
@@ -109,7 +110,7 @@ public class ConnectionTest3 extends PoolTestCase {
             } catch (SQLException e) {
                 error = e;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         conn.createBlob();
         conn.createClob();

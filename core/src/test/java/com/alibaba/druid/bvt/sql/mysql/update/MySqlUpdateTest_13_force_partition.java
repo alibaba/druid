@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.wall.WallUtils;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class MySqlUpdateTest_13_force_partition extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -45,25 +45,25 @@ public class MySqlUpdateTest_13_force_partition extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        // Assert.assertEquals(2, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        // assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsTable("car_tt"));
+        assertTrue(visitor.containsTable("car_tt"));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("car_tt", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("car_tt", "gps_url")));
+        assertTrue(visitor.getColumns().contains(new Column("car_tt", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("car_tt", "gps_url")));
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("UPDATE FORCE ALL PARTITIONS car_tt\n" +
+            assertEquals("UPDATE FORCE ALL PARTITIONS car_tt\n" +
                             "SET gps_url = NULL\n" +
                             "WHERE id = ?", //
                     output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("update force all partitions car_tt\n" +
+            assertEquals("update force all partitions car_tt\n" +
                             "set gps_url = null\n" +
                             "where id = ?", //
                     output);

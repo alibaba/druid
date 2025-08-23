@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class MySqlParameterizedOutputVisitorTest_8 extends com.alibaba.druid.bvt
         String expected = "INSERT INTO test\n" +
                 "VALUES (?, ?)\n" +
                 "ON DUPLICATE KEY UPDATE ts = ts % ? + ?";
-        Assert.assertEquals(expected, psql);
+        assertEquals(expected, psql);
 
         paramaterizeAST(sql, expected);
 
@@ -37,11 +37,11 @@ public class MySqlParameterizedOutputVisitorTest_8 extends com.alibaba.druid.bvt
             stmt.accept(visitor);
         }
 
-        Assert.assertEquals(4, visitor.getParameters().size());
-        Assert.assertEquals(2, visitor.getParameters().get(0));
-        Assert.assertEquals(1, visitor.getParameters().get(1));
-        Assert.assertEquals(10000, visitor.getParameters().get(2));
-        Assert.assertEquals(1, visitor.getParameters().get(3));
+        assertEquals(4, visitor.getParameters().size());
+        assertEquals(2, visitor.getParameters().get(0));
+        assertEquals(1, visitor.getParameters().get(1));
+        assertEquals(10000, visitor.getParameters().get(2));
+        assertEquals(1, visitor.getParameters().get(3));
     }
 }
 

@@ -19,7 +19,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
@@ -42,7 +42,7 @@ public class SQLServerParameterizedOutputVisitorTest extends TestCase {
 
         String text = outputSqlServer(stmtList);
 
-        Assert.assertEquals(expect, text);
+        assertEquals(expect, text);
     }
 
     public static String outputSqlServer(List<SQLStatement> stmtList) {

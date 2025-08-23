@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class OraclePivotClauseTest extends TestCase {
     public void test_0() throws Exception {
@@ -57,7 +57,7 @@ public class OraclePivotClauseTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expected, text);
+        assertEquals(expected, text);
 
         System.out.println(text);
     }
@@ -77,7 +77,7 @@ public class OraclePivotClauseTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expected, text);
+        assertEquals(expected, text);
 
         System.out.println(text);
     }
@@ -96,7 +96,7 @@ public class OraclePivotClauseTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expected, text);
+        assertEquals(expected, text);
 
         System.out.println(text);
     }
@@ -116,7 +116,7 @@ public class OraclePivotClauseTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expected, text);
+        assertEquals(expected, text);
 
         System.out.println(text);
     }

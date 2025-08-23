@@ -15,10 +15,12 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
@@ -56,7 +58,7 @@ public class TestPoolPreparedStatement2 extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_stmtCache() throws Exception {
@@ -94,14 +96,14 @@ public class TestPoolPreparedStatement2 extends TestCase {
 
         Connection conn = dataSource.getConnection();
         DruidPooledConnection poolableConn = conn.unwrap(DruidPooledConnection.class);
-        Assert.assertNotNull(poolableConn);
+        assertNotNull(poolableConn);
 
-        Assert.assertEquals(dataSource.getMaxPoolPreparedStatementPerConnectionSize(),
+        assertEquals(dataSource.getMaxPoolPreparedStatementPerConnectionSize(),
                 poolableConn.getConnectionHolder().getStatementPool().getMap().size());
 
         conn.close();
 
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 }

@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 import java.util.List;
 
 import com.alibaba.druid.DbType;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class ExportParameterDotNumberTest extends TestCase {
 
             LOG.info("to_sql:{} ==> plist:{}", sql, plist);
 
-            Assert.assertTrue(plist.size() > 0);
+            assertTrue(plist.size() > 0);
         }
     }
 

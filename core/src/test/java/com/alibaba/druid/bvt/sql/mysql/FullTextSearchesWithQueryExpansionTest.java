@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -37,7 +37,7 @@ public class FullTextSearchesWithQueryExpansionTest extends TestCase {
         {
             String text = SQLUtils.toMySqlString(stmt);
 
-            Assert.assertEquals("SELECT *" //
+            assertEquals("SELECT *" //
                             + "\nFROM articles" //
                             + "\nWHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE)",
                     text);
@@ -45,7 +45,7 @@ public class FullTextSearchesWithQueryExpansionTest extends TestCase {
         {
             String text = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            Assert.assertEquals("select *" //
+            assertEquals("select *" //
                             + "\nfrom articles" //
                             + "\nwhere match (title, body) against ('database' in natural language mode)",
                     text);

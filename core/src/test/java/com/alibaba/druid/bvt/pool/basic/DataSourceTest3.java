@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
@@ -24,7 +27,6 @@ import javax.security.auth.callback.PasswordCallback;
 import com.alibaba.druid.PoolTestCase;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -65,7 +67,7 @@ public class DataSourceTest3 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         JdbcStatManager.getInstance().setStatContext(null);
 
@@ -84,7 +86,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -133,7 +135,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -209,7 +211,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -227,7 +229,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -239,7 +241,7 @@ public class DataSourceTest3 extends PoolTestCase {
     public void test_ValidConnectionChecker() throws Exception {
         dataSource.getValidConnectionCheckerClassName();
         dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
-        Assert.assertEquals(MySqlValidConnectionChecker.class.getName(),
+        assertEquals(MySqlValidConnectionChecker.class.getName(),
                 dataSource.getValidConnectionCheckerClassName());
     }
 
@@ -276,7 +278,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -302,7 +304,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -318,7 +320,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 

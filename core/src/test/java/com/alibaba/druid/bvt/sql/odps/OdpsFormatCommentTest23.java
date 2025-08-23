@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 
@@ -11,7 +11,7 @@ public class OdpsFormatCommentTest23 extends TestCase {
         String sql = "-- xxx"
                 + "\n -- yyy"
                 + "\ndrop table if exists mytables;";
-        Assert.assertEquals("-- xxx"
+        assertEquals("-- xxx"
                 + "\n-- yyy"
                 + "\nDROP TABLE IF EXISTS mytables;", SQLUtils.formatOdps(sql));
     }

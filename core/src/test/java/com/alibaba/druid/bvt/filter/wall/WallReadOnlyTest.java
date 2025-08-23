@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
@@ -40,16 +42,16 @@ public class WallReadOnlyTest extends TestCase {
     private String delete_sql = "DELETE members WHERE FID = ?";
 
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(insert_sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(update_sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(delete_sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(insert_sql, config));
+        assertFalse(WallUtils.isValidateMySql(update_sql, config));
+        assertFalse(WallUtils.isValidateMySql(delete_sql, config));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(insert_sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(update_sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(delete_sql, config));
+        assertTrue(WallUtils.isValidateOracle(sql, config));
+        assertFalse(WallUtils.isValidateOracle(insert_sql, config));
+        assertFalse(WallUtils.isValidateOracle(update_sql, config));
+        assertFalse(WallUtils.isValidateOracle(delete_sql, config));
     }
 }

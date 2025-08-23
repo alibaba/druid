@@ -1,8 +1,10 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.sql.Connection;
 

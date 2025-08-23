@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlAlterTableDrop_Test_1 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -29,11 +29,11 @@ public class MySqlAlterTableDrop_Test_1 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE test.student\n" +
+        assertEquals("ALTER TABLE test.student\n" +
                 "\tDROP COLUMN Column9,\n" +
                 "\tDROP COLUMN Column10;", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table test.student\n" +
+        assertEquals("alter table test.student\n" +
                 "\tdrop column Column9,\n" +
                 "\tdrop column Column10;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

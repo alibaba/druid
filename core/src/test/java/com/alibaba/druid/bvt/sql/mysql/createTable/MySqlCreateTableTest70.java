@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest70 extends MysqlTest {
@@ -54,12 +54,12 @@ public class MySqlCreateTableTest70 extends MysqlTest {
         stmt.accept(visitor);
 
         Column column = visitor.getColumn("app_customer_license", "version");
-        Assert.assertNotNull(column);
-        Assert.assertEquals("bigint", column.getDataType());
+        assertNotNull(column);
+        assertEquals("bigint", column.getDataType());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE `app_customer_license` ("
+            assertEquals("CREATE TABLE `app_customer_license` ("
                     + "\n\t`id` bigint(20) NOT NULL AUTO_INCREMENT,"
                     + "\n\t`created_by` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,"
                     + "\n\t`created_date` datetime NOT NULL,"
@@ -77,7 +77,7 @@ public class MySqlCreateTableTest70 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table `app_customer_license` ("
+            assertEquals("create table `app_customer_license` ("
                     + "\n\t`id` bigint(20) not null auto_increment,"
                     + "\n\t`created_by` varchar(50) character set utf8 collate utf8_general_ci not null,"
                     + "\n\t`created_date` datetime not null,"

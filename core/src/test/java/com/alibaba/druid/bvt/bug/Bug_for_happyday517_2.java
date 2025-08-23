@@ -15,13 +15,15 @@
  */
 package com.alibaba.druid.bvt.bug;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.DataTruncation;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockConnection;
@@ -66,7 +68,7 @@ public class Bug_for_happyday517_2 extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_bug() throws Exception {
@@ -81,7 +83,7 @@ public class Bug_for_happyday517_2 extends TestCase {
             error = ex;
         }
 
-        Assert.assertTrue(exception == error);
+        assertTrue(exception == error);
 
         stmt.close();
 

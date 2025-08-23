@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.sql.mysql.create;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class MySqlCreateTriggerTest extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
     }
 
     public void test_1() throws Exception {
@@ -42,7 +42,7 @@ public class MySqlCreateTriggerTest extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
     }
 
 }

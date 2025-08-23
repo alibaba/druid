@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -34,7 +37,7 @@ public class MySqlWallTest62 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "select temp.*, u.CanComment, u.CanBeShared, u.CanForward, COALESCE(b.UserID,0) as isBlocked" + //
                         "   , COALESCE(f.UserID,0) as Followed, COALESCE(ff.UserID,0) as IsFollowed" + //
                         "   , COALESCE(ul.UserID,0) as liked, COALESCE(fff.UserID,0) as RIsFollowed " + //
@@ -47,7 +50,7 @@ public class MySqlWallTest62 extends TestCase {
                         "left join Fans as fff ON fff.FansID = 294765 and fff.UserID = temp.RUserID   " + //
                         "left join UserLikes as ul on ul.PicID = temp.PicID and ul.UserID = 294765"));
 
-        Assert.assertEquals(4, provider.getTableStats().size());
+        assertEquals(4, provider.getTableStats().size());
     }
 
     public void test_false() throws Exception {
@@ -57,10 +60,10 @@ public class MySqlWallTest62 extends TestCase {
         String sql = "SELECT 1, 2, 3" + //
                 " UNION ALL SELECT  a  from tt where c=1" + //
                 " UNION ALL SELECT 2 FROM dual --";
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
 
         sql = "SELECT a from t where c=1 UNION ALL SELECT 2 FROM dual --";
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 
 

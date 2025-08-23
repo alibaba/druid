@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 /**
  * @version 1.0
@@ -24,10 +24,10 @@ public class MySqlAlterTableAddIndex_10 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE test001\n" +
+        assertEquals("ALTER TABLE test001\n" +
                 "\tADD INDEX `i` USING btree (`b`) KEY_BLOCK_SIZE = 32 COMMENT 'hehe';", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table test001\n" +
+        assertEquals("alter table test001\n" +
                 "\tadd index `i` using btree (`b`) key_block_size = 32 comment 'hehe';", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -44,10 +44,10 @@ public class MySqlAlterTableAddIndex_10 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE test001\n" +
+        assertEquals("ALTER TABLE test001\n" +
                 "\tADD INDEX `i2` USING hash (`b`) KEY_BLOCK_SIZE = 32 COMMENT 'hehe';", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table test001\n" +
+        assertEquals("alter table test001\n" +
                 "\tadd index `i2` using hash (`b`) key_block_size = 32 comment 'hehe';", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -64,10 +64,10 @@ public class MySqlAlterTableAddIndex_10 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE test001\n" +
+        assertEquals("ALTER TABLE test001\n" +
                 "\tADD FULLTEXT INDEX (b) KEY_BLOCK_SIZE = 32 WITH PARSER ngram COMMENT 'hehe';", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table test001\n" +
+        assertEquals("alter table test001\n" +
                 "\tadd fulltext index (b) key_block_size = 32 with parser ngram comment 'hehe';", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -84,10 +84,10 @@ public class MySqlAlterTableAddIndex_10 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE test001\n" +
+        assertEquals("ALTER TABLE test001\n" +
                 "\tADD PRIMARY KEY USING btree (b) KEY_BLOCK_SIZE = 32 COMMENT 'hehe';", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table test001\n" +
+        assertEquals("alter table test001\n" +
                 "\tadd primary key using btree (b) key_block_size = 32 comment 'hehe';", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -104,10 +104,10 @@ public class MySqlAlterTableAddIndex_10 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE test001\n" +
+        assertEquals("ALTER TABLE test001\n" +
                 "\tADD UNIQUE KEY `uk` USING btree (b) KEY_BLOCK_SIZE = 32 COMMENT 'hehe';", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table test001\n" +
+        assertEquals("alter table test001\n" +
                 "\tadd unique key `uk` using btree (b) key_block_size = 32 comment 'hehe';", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);

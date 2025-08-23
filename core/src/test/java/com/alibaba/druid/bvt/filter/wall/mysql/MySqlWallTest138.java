@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
@@ -36,7 +37,7 @@ public class MySqlWallTest138 extends TestCase {
                 + "    from T01_CHECKIN_CUSTOMER" //
                 + "    where WEB_USER_ID=2 and EMAIL='1223@123.com'" //
                 + ")";
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
     }
 
 }

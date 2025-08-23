@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class DB2SelectTest_27_interval extends DB2Test {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         System.out.println(stmt.getSelect().getQuery());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -46,23 +46,23 @@ public class DB2SelectTest_27_interval extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sysibm.sysdummy1")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sysibm.sysdummy1")));
 
-//         Assert.assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+//         assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT CURRENT DATE + 1 AS YEAR\n" +
+        assertEquals("SELECT CURRENT DATE + 1 AS YEAR\n" +
                         "\t, CURRENT DATE + 3 YEARS + 2 MONTHS + 15 DAYS\n" +
                         "\t, CURRENT TIME + 5 HOURS - 3 MINUTES + 10 SECONDS\n" +
                         "FROM sysibm.sysdummy1", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
 
-        Assert.assertEquals("select CURRENT DATE + 1 as YEAR\n" +
+        assertEquals("select CURRENT DATE + 1 as YEAR\n" +
                         "\t, CURRENT DATE + 3 years + 2 months + 15 days\n" +
                         "\t, CURRENT TIME + 5 hours - 3 minutes + 10 seconds\n" +
                         "from sysibm.sysdummy1", //

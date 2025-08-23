@@ -1,8 +1,10 @@
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -13,14 +15,14 @@ public class RegisterTest extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.init();
 
-        Assert.assertTrue(dataSource.isMbeanRegistered());
+        assertTrue(dataSource.isMbeanRegistered());
 
         dataSource.registerMbean();
-        Assert.assertTrue(dataSource.isMbeanRegistered());
+        assertTrue(dataSource.isMbeanRegistered());
 
         dataSource.unregisterMbean();
-        Assert.assertFalse(dataSource.isMbeanRegistered());
-        Assert.assertFalse(dataSource.isMbeanRegistered());
+        assertFalse(dataSource.isMbeanRegistered());
+        assertFalse(dataSource.isMbeanRegistered());
 
         dataSource.close();
     }

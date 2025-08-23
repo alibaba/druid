@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -32,12 +32,12 @@ public class OdpsSelectTest_over_rows_1 extends TestCase {
                 "          RANGE BETWEEN 365 PRECEDING AND 365 FOLLOWING) department_total\n" +
                 "  from employee\n" +
                 "  order by department_id, hire_date;";//
-        Assert.assertEquals("SELECT last_name, first_name, department_id, hire_date, salary\n" +
+        assertEquals("SELECT last_name, first_name, department_id, hire_date, salary\n" +
                 "\t, SUM(salary) OVER (PARTITION BY department_id ORDER BY hire_date RANGE BETWEEN 365 PRECEDING AND 365 FOLLOWING) AS department_total\n" +
                 "FROM employee\n" +
                 "ORDER BY department_id, \n" +
                 "\thire_date;", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select last_name, first_name, department_id, hire_date, salary\n" +
+        assertEquals("select last_name, first_name, department_id, hire_date, salary\n" +
                 "\t, sum(salary) over (partition by department_id order by hire_date range between 365 preceding and 365 following) as department_total\n" +
                 "from employee\n" +
                 "order by department_id, \n" +
@@ -46,7 +46,7 @@ public class OdpsSelectTest_over_rows_1 extends TestCase {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
@@ -56,11 +56,11 @@ public class OdpsSelectTest_over_rows_1 extends TestCase {
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
+//        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
 
 }

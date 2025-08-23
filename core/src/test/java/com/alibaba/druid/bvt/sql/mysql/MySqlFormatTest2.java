@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -26,7 +26,7 @@ public class MySqlFormatTest2 extends TestCase {
         String text = "SELECT cq.uuid FROM ce_queue cq "
                 + "WHERE cq.status = ? AND NOT EXISTS (SELECT ? FROM ce_queue cq2 WHERE cq.component_uuid = cq2.component_uuid AND cq2.status <> ?) "
                 + "ORDER BY cq.created_at ASC, cq.id ASC";
-        Assert.assertEquals("SELECT cq.uuid"
+        assertEquals("SELECT cq.uuid"
                 + "\nFROM ce_queue cq"
                 + "\nWHERE cq.status = ?"
                 + "\n\tAND NOT EXISTS ("

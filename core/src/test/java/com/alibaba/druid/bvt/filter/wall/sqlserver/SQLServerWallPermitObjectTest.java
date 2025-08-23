@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
@@ -53,18 +55,18 @@ public class SQLServerWallPermitObjectTest extends TestCase {
     }
 
     public void test_user() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateSqlServer("SELECT user;"));
+        assertTrue(WallUtils.isValidateSqlServer("SELECT user;"));
     }
 
     public void test_user2() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT id from T where 1=1 and 1!=1 union select user;"));
+        assertFalse(WallUtils.isValidateSqlServer("SELECT id from T where 1=1 and 1!=1 union select user;"));
     }
 
     public void test_system_user() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateSqlServer("SELECT system_user;"));
+        assertTrue(WallUtils.isValidateSqlServer("SELECT system_user;"));
     }
 
     public void test_system_user2() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT id from T where 1=1 and 1!=1 union select system_user;"));
+        assertFalse(WallUtils.isValidateSqlServer("SELECT id from T where 1=1 and 1!=1 union select system_user;"));
     }
 }

@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import static org.junit.Assert.*;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockPreparedStatement;
@@ -32,7 +34,7 @@ public class TestSharePreparedStatements extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_sharePreparedStatements() throws Exception {
@@ -62,7 +64,7 @@ public class TestSharePreparedStatements extends TestCase {
             Connection conn = dataSource.getConnection();
 
             PreparedStatement stmt = conn.prepareStatement(sql);
-            Assert.assertEquals(mockStmt, stmt.unwrap(MockPreparedStatement.class));
+            assertEquals(mockStmt, stmt.unwrap(MockPreparedStatement.class));
             ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();
@@ -76,7 +78,7 @@ public class TestSharePreparedStatements extends TestCase {
             conn.setAutoCommit(false);
 
             PreparedStatement stmt = conn.prepareStatement(sql);
-            Assert.assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
+            assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
             ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();
@@ -90,7 +92,7 @@ public class TestSharePreparedStatements extends TestCase {
             conn.setAutoCommit(false);
 
             PreparedStatement stmt = conn.prepareStatement(sql);
-            Assert.assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
+            assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
             ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();

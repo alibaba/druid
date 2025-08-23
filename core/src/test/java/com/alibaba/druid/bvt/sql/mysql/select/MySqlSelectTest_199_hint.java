@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT NAME\n" + "FROM CUSTOMER\n"
+            assertEquals("SELECT NAME\n" + "FROM CUSTOMER\n"
                             + "\tINNER JOIN ORDERS ON CUSTOMER.CUSTKEY = ORDERS.CUSTKEY/*+ dynamicFilter = true*/", //
                     output);
         }
@@ -53,14 +53,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT NAME\n" + "FROM CUSTOMER, ORDERS\n"
+            assertEquals("SELECT NAME\n" + "FROM CUSTOMER, ORDERS\n"
                             + "WHERE CUSTOMER.CUSTKEY = ORDERS.CUSTKEY/*+ dynamicFilter = true*/", //
                     output);
         }
@@ -77,14 +77,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT NAME\n" + "FROM CUSTOMER\n" + "WHERE CUSTOMER.CUSTKEY IN (\n"
+            assertEquals("SELECT NAME\n" + "FROM CUSTOMER\n" + "WHERE CUSTOMER.CUSTKEY IN (\n"
                             + "\tSELECT CUSTKEY\n" + "\tFROM ORDERS\n" + ")/*+ DYNAMICFILTER = TRUE*/", //
                     output);
         }
@@ -99,14 +99,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("EXPLAIN SELECT name\n" + "FROM customer\n" + "\tINNER JOIN orders\n"
+            assertEquals("EXPLAIN SELECT name\n" + "FROM customer\n" + "\tINNER JOIN orders\n"
                             + "\tON customer.custkey = orders.custkey/*+ dynamicFilter=true*/\n"
                             + "\t\tAND customer.nationkey = orders.orderkey/*+ dynamicFilter=true*/", //
                     output);
@@ -122,14 +122,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("EXPLAIN SELECT name\n" +
+            assertEquals("EXPLAIN SELECT name\n" +
                             "FROM customer\n" +
                             "\tINNER JOIN orders\n" +
                             "\tON customer.custkey = orders.custkey/*+ dynamicFilter=fdseoi*/\n" +
@@ -147,14 +147,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals(
+            assertEquals(
               "EXPLAIN SELECT name\n"
                   + "FROM customer\n"
                   + "\tINNER JOIN orders\n"
@@ -194,14 +194,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("EXPLAIN (FORMAT text) SELECT c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice\n"
+            assertEquals("EXPLAIN (FORMAT text) SELECT c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice\n"
                             + "\t, Sum(l_quantity)\n" + "FROM customer, orders, lineitem\n"
                             + "WHERE o_orderkey IN (\n" + "\t\tSELECT l_orderkey\n" + "\t\tFROM lineitem\n"
                             + "\t\tGROUP BY l_orderkey\n" + "\t\tHAVING Sum(l_quantity) > 314\n"
@@ -228,14 +228,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals(
+            assertEquals(
                     "SELECT ss_store_sk, sum(ss_ext_sales_price) AS ext_price\n"
                             + "FROM item, store_sales\n"
                             + "WHERE store_sales.ss_sold_date_sk IN (\n"
@@ -278,14 +278,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT w_state, i_item_id\n"
+            assertEquals("SELECT w_state, i_item_id\n"
                     + "\t, sum((CASE\n"
                     + "\t\tWHEN (CAST(d_date AS DATE) < CAST('2000-03-11' AS DATE)) THEN (cs_sales_price - COALESCE(cr_refunded_cash, 0))\n"
                     + "\t\tELSE 0\n"
@@ -327,14 +327,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT ss_store_sk, sum(ss_ext_sales_price) AS ext_price\n"
+            assertEquals("SELECT ss_store_sk, sum(ss_ext_sales_price) AS ext_price\n"
                             + "FROM item, store_sales\n"
                             + "WHERE store_sales.ss_item_sk = item.i_item_sk/*+ dynamicFilter = true*/\n"
                             + "\tAND store_sales.ss_sold_date_sk IN (\n"
@@ -361,14 +361,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*)\n" +
+            assertEquals("SELECT count(*)\n" +
                             "FROM orders\n" +
                             "\tJOIN lineitem ON o_orderkey = l_orderkey/*+joinMethod=hash,distributionType=partitioned*/\n" +
                             "LIMIT 1", //
@@ -386,14 +386,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*)\n" +
+            assertEquals("SELECT count(*)\n" +
                             "FROM orders\n" +
                             "\tJOIN lineitem ON o_orderkey = l_orderkey/*+joinMethod=hash*/\n" +
                             "LIMIT 1", //
@@ -411,14 +411,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*)\n" +
+            assertEquals("SELECT count(*)\n" +
                             "FROM orders\n" +
                             "\tJOIN lineitem ON o_orderkey = l_orderkey/*+distributionType=partitioned*/\n" +
                             "LIMIT 1", //
@@ -443,14 +443,14 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("EXPLAIN (FORMAT detail) SELECT customer.NAME, MAX(customer.CUSTKEY) AS MAXKEY\n" +
+            assertEquals("EXPLAIN (FORMAT detail) SELECT customer.NAME, MAX(customer.CUSTKEY) AS MAXKEY\n" +
                             "FROM CUSTOMER, ORDERS\n" +
                             "WHERE CUSTOMER.CUSTKEY NOT IN (\n" +
                             "\t\tSELECT CUSTKEY\n" +
@@ -487,7 +487,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*) AS `count(*)`\n" +
+            assertEquals("SELECT count(*) AS `count(*)`\n" +
                             "FROM orders o\n" +
                             "\tJOIN lineitem l ON o.orderkey = l.orderkey/*+distributionType=partition*/\n" +
                             "LIMIT 100", //
@@ -513,7 +513,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*) AS `count(*)`\n" +
+            assertEquals("SELECT count(*) AS `count(*)`\n" +
                             "FROM orders o\n" +
                             "\tJOIN lineitem l ON o.orderkey = l.orderkey/*+distributionType=repartition*/\n" +
                             "LIMIT 100", //
@@ -539,7 +539,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*) AS `count(*)`\n" +
+            assertEquals("SELECT count(*) AS `count(*)`\n" +
                             "FROM orders o\n" +
                             "\tJOIN lineitem l ON o.orderkey = l.orderkey/*+distributionType=broadcast*/\n" +
                             "LIMIT 100", //
@@ -565,7 +565,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*) AS `count(*)`\n" +
+            assertEquals("SELECT count(*) AS `count(*)`\n" +
                             "FROM orders o\n" +
                             "\tJOIN lineitem l ON o.orderkey = l.orderkey/*+distribution_type=broadcast*/\n" +
                             "LIMIT 100", //
@@ -590,7 +590,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*) AS `count(*)`\n" +
+            assertEquals("SELECT count(*) AS `count(*)`\n" +
                             "FROM orders o\n" +
                             "\tJOIN lineitem l ON o.orderkey = l.orderkey/*+distribution_type=repartition*/\n" +
                             "LIMIT 100", //
@@ -611,7 +611,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*) AS `count(*)`\n" +
+            assertEquals("SELECT count(*) AS `count(*)`\n" +
                             "FROM t1\n" +
                             "\tINNER JOIN t2\n" +
                             "\tON t1.col1 = t2.col1\n" +
@@ -633,7 +633,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT count(*) AS `count(*)`\n" +
+            assertEquals("SELECT count(*) AS `count(*)`\n" +
                             "FROM t1, t2\n" +
                             "WHERE t1.col1 = t2.col1\n" +
                             "\tAND t1.col2 = t2.col2/*+join_criteria=2*/;", //

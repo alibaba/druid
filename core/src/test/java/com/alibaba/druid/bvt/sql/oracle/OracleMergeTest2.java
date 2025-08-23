@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -62,7 +62,7 @@ public class OracleMergeTest2 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -72,19 +72,19 @@ public class OracleMergeTest2 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(3, visitor.getTables().size());
+        assertEquals(3, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.MLOG$_HT_TASK_TRADE_HISTOR")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY_NEW")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.MLOG$_HT_TASK_TRADE_HISTOR")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY_NEW")));
 
-        Assert.assertEquals(31, visitor.getColumns().size());
+        assertEquals(31, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
     }
 
 }

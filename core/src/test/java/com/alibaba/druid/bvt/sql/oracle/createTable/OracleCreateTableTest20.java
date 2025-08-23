@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -51,9 +51,9 @@ public class OracleCreateTableTest20 extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" (\n" +
+        assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" (\n" +
                         "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
                         "\t\"CREATED_AT\" TIMESTAMP(6),\n" +
                         "\t\"UPDATED_AT\" TIMESTAMP(6),\n" +
@@ -96,10 +96,10 @@ public class OracleCreateTableTest20 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("SONAR.ACTIVE_RULE_NOTES", "ID"));
+        assertTrue(visitor.containsColumn("SONAR.ACTIVE_RULE_NOTES", "ID"));
     }
 }

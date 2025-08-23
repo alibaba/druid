@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class MySqlCreateViewTest3 extends MysqlTest {
         SQLCreateViewStatement stmt = (SQLCreateViewStatement) statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -52,7 +52,7 @@ public class MySqlCreateViewTest3 extends MysqlTest {
                         "WITH CHECK OPTION;", //
                 SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("create algorithm = merge\n" +
+        assertEquals("create algorithm = merge\n" +
                         "\tview my_view2 (\n" +
                         "\tcol1, \n" +
                         "\tcol2\n" +
@@ -68,13 +68,13 @@ public class MySqlCreateViewTest3 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "*")));
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "l_suppkey")));
+        assertTrue(visitor.getColumns().contains(new Column("t2", "*")));
+//        assertTrue(visitor.getColumns().contains(new Column("t2", "l_suppkey")));
     }
 }

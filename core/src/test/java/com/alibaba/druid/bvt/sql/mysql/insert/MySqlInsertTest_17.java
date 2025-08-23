@@ -5,7 +5,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class MySqlInsertTest_17 extends MysqlTest {
                 "\tFROM h\n" +
                 "\tGROUP BY col_2\n" +
                 ") x";
-        Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
+        assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 
 }

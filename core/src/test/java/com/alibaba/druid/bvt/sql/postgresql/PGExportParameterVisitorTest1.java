@@ -4,7 +4,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
@@ -23,7 +23,7 @@ public class PGExportParameterVisitorTest1 extends TestCase {
 
         List<Object> parameters = visitor.getParameters();
 
-        Assert.assertEquals(1, parameters.size());
-        Assert.assertEquals(1, parameters.get(0));
+        assertEquals(1, parameters.size());
+        assertEquals(1, parameters.get(0));
     }
 }

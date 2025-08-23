@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 
 public class MySqlCreateTableTest47 extends MysqlTest {
     public void test_0() throws Exception {
@@ -44,14 +44,14 @@ public class MySqlCreateTableTest47 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("issuestatus")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("issuestatus")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE issuestatus ("//
+        assertEquals("CREATE TABLE issuestatus ("//
                 + "\n\tID VARCHAR(60) NOT NULL,"//
                 + "\n\tSEQUENCE DECIMAL(18, 0),"//
                 + "\n\tpname VARCHAR(60),"//
