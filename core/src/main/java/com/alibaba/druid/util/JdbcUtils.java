@@ -550,6 +550,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.GBASE8S_DRIVER;
         } else if (rawUrl.startsWith("jdbc:sundb:")) {
             return JdbcConstants.SUNDB_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:gaussdb:")) {
+            return "com.huawei.gaussdb.jdbc.Driver";
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
