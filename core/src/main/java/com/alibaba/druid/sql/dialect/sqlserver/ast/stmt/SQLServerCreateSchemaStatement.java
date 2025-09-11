@@ -13,34 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.db2.ast.stmt;
+package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
-import com.alibaba.druid.sql.dialect.db2.ast.DB2Statement;
-import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DB2CreateSchemaStatement extends SQLStatementImpl implements DB2Statement, SQLCreateStatement {
+public class SQLServerCreateSchemaStatement extends SQLStatementImpl implements SQLServerStatement, SQLCreateStatement {
     private SQLName schemaName;
+    private SQLIdentifierExpr userName;
+    private boolean authorization;
     private List<SQLCreateStatement> createStatements = new ArrayList<>();
-
-    public DB2CreateSchemaStatement() {
-        this.dbType = DbType.db2;
-    }
-
-    public DB2CreateSchemaStatement(DbType dbType) {
-        this.dbType = dbType;
-    }
-
-    public SQLName getName() {
-        return this.getSchemaName();
-    }
 
     public SQLName getSchemaName() {
         return schemaName;
@@ -48,6 +38,22 @@ public class DB2CreateSchemaStatement extends SQLStatementImpl implements DB2Sta
 
     public void setSchemaName(SQLName schemaName) {
         this.schemaName = schemaName;
+    }
+
+    public SQLIdentifierExpr getUserName() {
+        return userName;
+    }
+
+    public void setUserName(SQLIdentifierExpr userName) {
+        this.userName = userName;
+    }
+
+    public boolean isAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(boolean authorization) {
+        this.authorization = authorization;
     }
 
     public List<SQLCreateStatement> getCreateStatements() {
@@ -58,16 +64,18 @@ public class DB2CreateSchemaStatement extends SQLStatementImpl implements DB2Sta
         this.createStatements = createStatements;
     }
 
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof DB2ASTVisitor) {
-            accept0((DB2ASTVisitor) visitor);
+    @Override
+    public void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof SQLServerASTVisitor) {
+            accept0((SQLServerASTVisitor) visitor);
         }
     }
 
     @Override
-    public void accept0(DB2ASTVisitor visitor) {
+    public void accept0(SQLServerASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.schemaName);
+            acceptChild(visitor, this.userName);
         }
 
         if (this.createStatements != null && !this.createStatements.isEmpty()) {
@@ -78,4 +86,5 @@ public class DB2CreateSchemaStatement extends SQLStatementImpl implements DB2Sta
 
         visitor.endVisit(this);
     }
+
 }

@@ -1,0 +1,38 @@
+create schema abc
+--------------------
+CREATE SCHEMA abc
+------------------------------------------------------------------------------------------------------------------------
+create schema abc.abc
+--------------------
+CREATE SCHEMA abc.abc
+------------------------------------------------------------------------------------------------------------------------
+create schema abc create table test_user (id int primary key,name varchar(50));
+--------------------
+CREATE SCHEMA abc CREATE TABLE test_user (
+	id int PRIMARY KEY,
+	name varchar(50)
+);
+------------------------------------------------------------------------------------------------------------------------
+create schema authorization aac
+    create table test_user1 (id int primary key,name varchar(50))
+    create table test_user2 (id int primary key,name varchar(50));
+--------------------
+CREATE SCHEMA AUTHORIZATION aac CREATE TABLE test_user1 (
+	id int PRIMARY KEY,
+	name varchar(50)
+) CREATE TABLE test_user2 (
+	id int PRIMARY KEY,
+	name varchar(50)
+);
+------------------------------------------------------------------------------------------------------------------------
+drop schema if exists abc
+--------------------
+DROP SCHEMA IF EXISTS abc
+------------------------------------------------------------------------------------------------------------------------
+drop schema abc
+--------------------
+DROP SCHEMA abc
+------------------------------------------------------------------------------------------------------------------------
+drop schema abc.test
+--------------------
+DROP SCHEMA abc.test
