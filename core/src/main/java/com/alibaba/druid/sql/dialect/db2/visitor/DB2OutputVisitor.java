@@ -129,6 +129,14 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
             }
         }
 
+        if (x.isWithData()) {
+            println();
+            print0(ucase ? "WITH DATA" : "with data");
+        } else if (x.isWithNoData()) {
+            println();
+            print0(ucase ? "WITH NO DATA" : "with no data");
+        }
+
         return false;
     }
 
