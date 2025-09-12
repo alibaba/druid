@@ -21,16 +21,15 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest10 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "SELECT * FROM pivot_table" + //
-                "  UNPIVOT INCLUDE NULLS " + //
-                "    (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))" + //
-                "  ORDER BY year, order_mode;"; //
+        String sql = "SELECT * FROM pivot_table" +
+                "  UNPIVOT INCLUDE NULLS " +
+                "    (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))" +
+                "  ORDER BY year, order_mode;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

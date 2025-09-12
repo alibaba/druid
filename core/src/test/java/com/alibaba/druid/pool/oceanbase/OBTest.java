@@ -1,10 +1,9 @@
 package com.alibaba.druid.pool.oceanbase;
 
-import java.sql.Connection;
-
+import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import java.sql.Connection;
 
 public class OBTest extends TestCase {
     private DruidDataSource dataSource;
@@ -33,5 +32,4 @@ public class OBTest extends TestCase {
             conn.close();
         }
     }
-
 }

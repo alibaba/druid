@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class OracleGrantTest_5 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("GRANT RESOURCE, CONNECT, CREATE VIEW, CREATE PROCEDURE, CREATE SEQUENCE TO DZFP_CX;",//
+        assertEquals("GRANT RESOURCE, CONNECT, CREATE VIEW, CREATE PROCEDURE, CREATE SEQUENCE TO DZFP_CX;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

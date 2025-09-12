@@ -18,11 +18,9 @@ package com.alibaba.druid.bvt.sql.oracle.block;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class OracleBlockTest15 extends OracleTest {
                 "        salary + bonus\n" +
                 "          WHERE employee_id = emp_id;\n" +
                 "   END IF;\n" +
-                " END;"; //
+                " END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());

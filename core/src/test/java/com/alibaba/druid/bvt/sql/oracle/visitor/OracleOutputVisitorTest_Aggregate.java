@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OracleOutputVisitorTest_Aggregate extends TestCase {
     public void test_0() throws Exception {
@@ -50,6 +48,5 @@ public class OracleOutputVisitorTest_Aggregate extends TestCase {
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
         assertEquals("SELECT MAX(salary)\nFROM emp\nWHERE F1 = DATE '2011-10-01'", buf.toString());
-
     }
 }

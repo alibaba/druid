@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.Map;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -10,19 +8,18 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-
 import org.junit.Test;
+
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author lizongbo
  * @see <a href="https://github.com/alibaba/druid/issues/5381">Issue来源</a>
  */
 public class Issue5381 {
-
     @Test
     public void test_select_in_parameterized() throws Exception {
         for (DbType dbType : new DbType[]{DbType.mysql}) {

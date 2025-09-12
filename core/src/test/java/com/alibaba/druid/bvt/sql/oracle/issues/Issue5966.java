@@ -1,14 +1,13 @@
 package com.alibaba.druid.bvt.sql.oracle.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLParseAssertUtil;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,7 +17,6 @@ import static org.junit.Assert.assertEquals;
  *
  */
 public class Issue5966 {
-
     @Test
     public void test_parse_select() {
         for (DbType dbType : new DbType[]{DbType.oracle, DbType.mysql}) {

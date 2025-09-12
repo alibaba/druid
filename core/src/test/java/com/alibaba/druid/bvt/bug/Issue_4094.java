@@ -17,9 +17,6 @@ package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallUtils;
-
 import junit.framework.TestCase;
 
 /**

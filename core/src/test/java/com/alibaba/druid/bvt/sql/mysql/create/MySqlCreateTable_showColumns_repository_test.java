@@ -23,7 +23,6 @@ import com.alibaba.druid.util.JdbcConstants;
 public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
     private SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
 
-
     public void test_0() throws Exception {
         repository.console("use sc00;");
 
@@ -50,7 +49,6 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "  KEY `k_c` (`c_tinyint`,`c_int`),\n" +
                 "  KEY `k_d` (`c_char`,`c_bigint`)\n" +
                 ") ENGINE=InnoDB AUTO_INCREMENT=1769503 DEFAULT CHARSET=utf8mb4 COMMENT='10000000'";
-
 
         repository.console(sql);
 
@@ -185,7 +183,6 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 repository.console("show create table test1")
         );
 
-
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
@@ -256,7 +253,6 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
                 "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
-
 
         repository.console("ALTER TABLE test1 DROP INDEX uk_a;");
         assertEquals(18, createTableStmt.getTableElementList().size());
@@ -507,10 +503,9 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tc_mediumtext mediumtext COMMENT 'mediumtext',\n" +
                         "\tc_longblob longblob COMMENT 'longblob',\n" +
                         "\tKEY k_c (c_tinyint, c_int)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-                , repository.console("show create table test1")
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1")
         );
-
 
         repository.console(" alter table test1 change c_tinyint c_tinyint_x tinyint(4) DEFAULT '1' COMMENT 'tinyint x' first;");
 
@@ -533,8 +528,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tc_mediumtext mediumtext COMMENT 'mediumtext',\n" +
                         "\tc_longblob longblob COMMENT 'longblob',\n" +
                         "\tKEY k_c (c_tinyint_x, c_int)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-                , repository.console("show create table test1"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         repository.console(" alter table test1 drop c_tinyint_x");
 
@@ -556,8 +551,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tc_mediumtext mediumtext COMMENT 'mediumtext',\n" +
                         "\tc_longblob longblob COMMENT 'longblob',\n" +
                         "\tKEY k_c (c_int)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-                , repository.console("show create table test1"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         repository.console(" alter table test1 add index name_idx(c_char,c_date);");
 
@@ -580,9 +575,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tc_longblob longblob COMMENT 'longblob',\n" +
                         "\tKEY k_c (c_int),\n" +
                         "\tINDEX name_idx(c_char, c_date)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-                , repository.console("show create table test1"));
-
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                         "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
@@ -603,10 +597,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "| c_text       | text         | YES  |     | NULL                |                             |\n" +
                         "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
                         "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
-                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n"
-
-                , repository.console("show columns from test1"));
-
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n",
+                repository.console("show columns from test1"));
 
         repository.console(" drop index name_idx on test1");
 
@@ -628,8 +620,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tc_mediumtext mediumtext COMMENT 'mediumtext',\n" +
                         "\tc_longblob longblob COMMENT 'longblob',\n" +
                         "\tKEY k_c (c_int)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-                , repository.console("show create table test1"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         repository.console("alter table test1 modify c_char char(32) after id");
 
@@ -651,8 +643,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tc_mediumtext mediumtext COMMENT 'mediumtext',\n" +
                         "\tc_longblob longblob COMMENT 'longblob',\n" +
                         "\tKEY k_c (c_int)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-                , repository.console("show create table test1"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                         "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
@@ -673,10 +665,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "| c_text       | text         | YES  |     | NULL                |                             |\n" +
                         "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
                         "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
-                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n"
-
-                , repository.console("show columns from test1"));
-
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n",
+                repository.console("show columns from test1"));
 
         repository.console("alter table test1 add CONSTRAINT unique name4_idx(id); ");
 
@@ -699,9 +689,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "| c_text       | text         | YES  |     | NULL                |                             |\n" +
                         "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
                         "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
-                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n"
-
-                , repository.console("show columns from test1"));
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n",
+                repository.console("show columns from test1"));
 
         repository.console("alter table test1 add FULLTEXT name4_idx_c_longblob(c_longblob); ");
 
@@ -725,9 +714,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY k_c (c_int),\n" +
                         "\tUNIQUE name4_idx (id),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-                , repository.console("show create table test1"));
-
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         repository.console("alter table test1 add key name5_idx(c_bigint); ");
 
@@ -752,8 +740,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tUNIQUE name4_idx (id),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-                , repository.console("show create table test1"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         repository.console("alter table test1 drop index name4_idx");
         assertEquals("CREATE TABLE test1 (\n" +
@@ -776,9 +764,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY k_c (c_int),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-
-                , repository.console("show create table test1"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         repository.console("alter table test1 add primary key name5_pk(c_bigint); ");
         assertEquals("CREATE TABLE test1 (\n" +
@@ -802,9 +789,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint),\n" +
                         "\tPRIMARY KEY (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-
-                , repository.console("show create table test1"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         repository.console("alter table test1 drop primary key;");
         assertEquals("CREATE TABLE test1 (\n" +
@@ -827,9 +813,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY k_c (c_int),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-
-                , repository.console("show create table test1"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         repository.console("GRANT ALL PRIVILEGES ON *.* TO 'idbtmp_1208408_9'@'%' IDENTIFIED BY PASSWORD '*5E8A11FF574FCBC6440EB285D490AEE96B16E250' WITH GRANT OPTION");
 
@@ -855,10 +840,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint),\n" +
                         "\tUNIQUE KEY name_idx_23 (c_char(10))\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-
-                , repository.console("show create table test1"));
-
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                         "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
@@ -879,9 +862,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "| c_text       | text         | YES  |     | NULL                |                             |\n" +
                         "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
                         "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
-                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n"
-
-                , repository.console("show columns from test1"));
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n",
+                repository.console("show columns from test1"));
 
         repository.console("alter table test1 drop c_char;");
         assertEquals("CREATE TABLE test1 (\n" +
@@ -903,19 +885,16 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY k_c (c_int),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-
-                , repository.console("show create table test1"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1"));
 
         repository.console("rename table test1 to test1_xx");
 
-        assertEquals("ERROR 1146 (42S02): Table 'test1' doesn't exist\n"
+        assertEquals("ERROR 1146 (42S02): Table 'test1' doesn't exist\n",
+                repository.console("show create table test1"));
 
-                , repository.console("show create table test1"));
-
-        assertEquals("ERROR 1146 (42S02): Table 'test1' doesn't exist\n"
-
-                , repository.console("show columns from test1"));
+        assertEquals("ERROR 1146 (42S02): Table 'test1' doesn't exist\n",
+                repository.console("show columns from test1"));
 
         assertEquals("CREATE TABLE test1_xx (\n" +
                         "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
@@ -936,10 +915,8 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY k_c (c_int),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
-
-                , repository.console("show create table test1_xx"));
-
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'",
+                repository.console("show create table test1_xx"));
 
         assertEquals("CREATE TABLE test5 (\n" +
                         "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
@@ -959,17 +936,14 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tc_text text COMMENT 'text',\n" +
                         "\tc_mediumtext mediumtext COMMENT 'mediumtext',\n" +
                         "\tc_longblob longblob COMMENT 'longblob'\n" +
-                        ")"
-
-                , repository.console("show create table test5"));
+                        ")",
+                repository.console("show create table test5"));
 
         repository.console("create table test5(fid bigint)");
         assertEquals("CREATE TABLE test5 (\n" +
                         "\tfid bigint\n" +
-                        ")"
-
-                , repository.console("show create table test5"));
-
+                        ")",
+                repository.console("show create table test5"));
 
         repository.console("CREATE TABLE tddl5_00.ljh_test1(be_id VARCHAR(20) NOT NULL DEFAULT ''  COMMENT '企业标识')ENGINE = InnoDB, CHARACTER SET = utf8, COMMENT = '应用层-汇总销售及销售毛利表'");
 
@@ -977,7 +951,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "| Field | Type        | Null | Key | Default | Extra |\n" +
                         "+-------+-------------+------+-----+---------+-------+\n" +
                         "| be_id | VARCHAR(20) | NO   |     | ''      |       |\n" +
-                        "+-------+-------------+------+-----+---------+-------+\n"
-                , repository.console("show columns from tddl5_00.ljh_test1"));
+                        "+-------+-------------+------+-----+---------+-------+\n",
+                repository.console("show columns from tddl5_00.ljh_test1"));
     }
 }

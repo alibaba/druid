@@ -34,5 +34,4 @@ public class MySqlAlterTableAlterColumnTest extends TestCase {
         assertEquals("alter table `cube_template`\n" +
                 "\tadd column `stat_report_json` VARCHAR(256) character set utf8 collate utf8_general_ci not null default '' comment '模板的统计报表json数组';", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

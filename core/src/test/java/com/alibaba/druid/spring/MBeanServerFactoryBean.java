@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.spring;
 
-import java.lang.management.ManagementFactory;
+import org.springframework.beans.factory.FactoryBean;
 
 import javax.management.MBeanServer;
 
-import org.springframework.beans.factory.FactoryBean;
+import java.lang.management.ManagementFactory;
 
 public class MBeanServerFactoryBean implements FactoryBean {
     public MBeanServer getObject() throws Exception {
@@ -33,5 +33,4 @@ public class MBeanServerFactoryBean implements FactoryBean {
     public boolean isSingleton() {
         return true;
     }
-
 }

@@ -62,7 +62,7 @@ public class OracleCreateTableTest83 extends OracleTest {
                         "\tREPOSITORY_URL VARCHAR(512),\n" +
                         "\tSERVICE_URL VARCHAR(512),\n" +
                         "\tPRIMARY KEY (ID)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         stmt.renameColumn("ID", "FID");
@@ -81,7 +81,7 @@ public class OracleCreateTableTest83 extends OracleTest {
                         "\tREPOSITORY_URL VARCHAR(512),\n" +
                         "\tSERVICE_URL VARCHAR(512),\n" +
                         "\tPRIMARY KEY (ID)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

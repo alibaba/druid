@@ -1,17 +1,11 @@
 package com.alibaba.druid.bvt.support.hibernate;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.alibaba.druid.support.hibernate.DruidConnectionProvider;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.support.hibernate.DruidConnectionProvider;
-
 
 public class DruidConnectionProviderTest extends TestCase {
     private DruidConnectionProvider provider;

@@ -2,7 +2,6 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
@@ -24,11 +23,11 @@ public class MySqlSelectTest_157 extends MysqlTest {
 //
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
-        String sqlNew=stmt.toString();
+        String sqlNew = stmt.toString();
         System.out.println(sqlNew);
         statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, SQLParserFeature.TDDLHint);
         SQLSelectStatement stmtNew2 = (SQLSelectStatement) statementList.get(0);
-        String sqlNew2=stmtNew2.toString();
+        String sqlNew2 = stmtNew2.toString();
         System.out.println(sqlNew2);
         assertEquals(sqlNew, sqlNew2);
         assertEquals(1, statementList.size());
@@ -44,10 +43,7 @@ public class MySqlSelectTest_157 extends MysqlTest {
         assertEquals("SELECT ?\n" +
                         "FROM corona_select_one_db_one_tb layer_0_left_tb\n" +
                         "\tRIGHT JOIN corona_select_multi_db_multi_tb layer_0_right_tb ON layer_0_right_tb.mediumint_test = layer_0_right_tb.char_test\n" +
-                        "WHERE (layer_0_right_tb.timestamp_test BETWEEN ? AND ROW(?, ?) NOT IN (ROW(?, ?), ROW(?, ?)))"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
-
+                        "WHERE (layer_0_right_tb.timestamp_test BETWEEN ? AND ROW(?, ?) NOT IN (ROW(?, ?), ROW(?, ?)))",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
 }

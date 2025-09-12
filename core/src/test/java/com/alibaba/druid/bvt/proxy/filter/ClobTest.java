@@ -15,23 +15,11 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.NClob;
-import java.sql.ResultSet;
-import java.sql.SQLXML;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+
+import java.sql.*;
 
 public class ClobTest extends TestCase {
     protected int dataSourceListSize;

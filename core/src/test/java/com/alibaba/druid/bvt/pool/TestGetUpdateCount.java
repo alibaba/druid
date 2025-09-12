@@ -15,21 +15,17 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class TestGetUpdateCount extends TestCase {
     private DruidDataSource dataSource;
@@ -140,7 +136,7 @@ public class TestGetUpdateCount extends TestCase {
     }
 
     public static class MyPreparedStatement extends MockPreparedStatement {
-        Integer updateCount = null;
+        Integer updateCount;
 
         public MyPreparedStatement(MockConnection conn, String sql) {
             super(conn, sql);

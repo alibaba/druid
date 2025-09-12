@@ -62,7 +62,5 @@ public class OracleSelectTest112 extends OracleTest {
         assertEquals(4, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
     }
-
 }

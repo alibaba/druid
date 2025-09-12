@@ -113,9 +113,7 @@ public class MySqlSelectTest_142 extends MysqlTest {
                         "\t\tAND ds = ?\n" +
                         "\t\tAND bhv_obj_type = ?\n" +
                         "\t\tAND brand_id IN (?)\n" +
-                        ") d;"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        ") d;",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
-
 }

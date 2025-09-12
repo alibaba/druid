@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import static org.junit.Assert.*;
 
 import java.util.List;
 

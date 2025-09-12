@@ -1,13 +1,8 @@
 package com.alibaba.druid.bvt.utils;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.util.JdbcUtils;
-
+import junit.framework.TestCase;
 
 public class JdbcUtilsTest1 extends TestCase {
     public void test_jdbc() throws Exception {
@@ -17,7 +12,6 @@ public class JdbcUtilsTest1 extends TestCase {
     public void test_jdbc_1() throws Exception {
         class MyClassLoader extends ClassLoader {
         }
-        ;
 
         MyClassLoader classLoader = new MyClassLoader();
         assertTrue(JdbcUtils.createDriver(classLoader, MockDriver.class.getName()) instanceof MockDriver);
@@ -29,7 +23,6 @@ public class JdbcUtilsTest1 extends TestCase {
                 return null;
             }
         }
-        ;
 
         MyClassLoader classLoader = new MyClassLoader();
 
@@ -47,7 +40,6 @@ public class JdbcUtilsTest1 extends TestCase {
                 return null;
             }
         }
-        ;
 
         MyClassLoader classLoader = new MyClassLoader();
 

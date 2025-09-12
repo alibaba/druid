@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -52,7 +51,5 @@ public class MySqlSchemaStatVisitorTest_Alter extends TestCase {
         assertTrue(visitor.getColumns().contains(new Column("sql_perf", "item")));
         assertTrue(visitor.getColumns().contains(new Column("sql_perf", "time")));
         assertTrue(visitor.getColumns().contains(new Column("sql_perf", "value")));
-
     }
-
 }

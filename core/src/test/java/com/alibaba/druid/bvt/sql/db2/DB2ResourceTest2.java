@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.db2;
 
-import org.junit.Test;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
+import org.junit.Test;
 
 public class DB2ResourceTest2 extends SQLResourceTest {
-
-    public DB2ResourceTest2(){
+    public DB2ResourceTest2() {
         super(DbType.db2);
     }
 

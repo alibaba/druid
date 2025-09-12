@@ -35,7 +35,7 @@ public class OracleBlockTest22_comment extends OracleTest {
                 "  FROM USER_OBJECTS\n" +
                 "  WHERE OBJECT_TYPE = 'TABLE'; -- Check number of tables\n" +
                 "  num_tables := howmany;       -- Compute another value\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());

@@ -11,5 +11,4 @@ public class BitsTest extends PGTest {
         PGTypeCastExpr expr = (PGTypeCastExpr) parser.expr();
         System.out.println(expr.toString());
     }
-
 }

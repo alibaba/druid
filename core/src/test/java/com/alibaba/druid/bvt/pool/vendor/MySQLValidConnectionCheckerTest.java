@@ -1,16 +1,10 @@
 package com.alibaba.druid.bvt.pool.vendor;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
+
+import java.sql.Connection;
 
 public class MySQLValidConnectionCheckerTest extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -49,5 +43,4 @@ public class MySQLValidConnectionCheckerTest extends PoolTestCase {
         Connection conn = dataSource.getConnection();
         conn.close();
     }
-
 }

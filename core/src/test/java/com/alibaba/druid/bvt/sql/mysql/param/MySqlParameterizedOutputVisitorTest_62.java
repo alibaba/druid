@@ -1,9 +1,9 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson2.JSON;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -31,5 +31,4 @@ public class MySqlParameterizedOutputVisitorTest_62 extends TestCase {
                 "\tJOIN t_1 ON abc.name = t_1.id2\n" +
                 "WHERE t_1.fname LIKE 'hz.%'", rsql);
     }
-
 }

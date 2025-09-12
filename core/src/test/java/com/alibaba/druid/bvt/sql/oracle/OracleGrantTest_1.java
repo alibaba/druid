@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class OracleGrantTest_1 extends OracleTest {
     public void test_0() throws Exception {
@@ -37,7 +35,7 @@ public class OracleGrantTest_1 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("GRANT CREATE SESSION TO hr;",//
+        assertEquals("GRANT CREATE SESSION TO hr;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

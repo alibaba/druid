@@ -15,17 +15,12 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.security.PrivilegedAction;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
+
+import java.security.PrivilegedAction;
 
 public class DoPrivilegedTest extends TestCase {
     public void test_0() throws Exception {
@@ -47,6 +42,5 @@ public class DoPrivilegedTest extends TestCase {
                 return null;
             }
         });
-
     }
 }

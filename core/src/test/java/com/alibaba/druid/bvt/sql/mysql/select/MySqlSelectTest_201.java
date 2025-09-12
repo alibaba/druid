@@ -20,14 +20,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlSelectTest_201 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from test_type2 inner join (values (1, 'a'), (2, 'b'), (3, 'c')) as t (id, name) on v_int = t.id;";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -55,5 +53,4 @@ public class MySqlSelectTest_201 extends MysqlTest {
                     output);
         }
     }
-
 }

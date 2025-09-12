@@ -14,7 +14,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlNodeList;
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;

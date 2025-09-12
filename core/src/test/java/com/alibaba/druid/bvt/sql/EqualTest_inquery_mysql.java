@@ -1,11 +1,10 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import junit.framework.TestCase;
+
+import static org.junit.Assert.assertNotEquals;
 
 public class EqualTest_inquery_mysql extends TestCase {
     public void test_exits() throws Exception {

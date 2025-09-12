@@ -72,7 +72,5 @@ public class OracleSchemaStatVisitorTest8_merge_into extends TestCase {
         assertTrue(visitor.containsColumn("KPI_M_CW_INCOME_FACT_BAK", "THE_DATE"));
         assertTrue(visitor.containsColumn("KPI_M_CW_INCOME_FACT_BAK", "AREA_LEVEL"));
         assertTrue(visitor.containsColumn("KPI_M_CW_INCOME_FACT_BAK", "TYPE_ID"));
-
     }
-
 }

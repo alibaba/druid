@@ -5,7 +5,6 @@ import com.alibaba.druid.bvt.sql.SQLResourceTest;
 import org.junit.Test;
 
 public class DatabricksResourceTest extends SQLResourceTest {
-
     public DatabricksResourceTest() {
         super(DbType.databricks);
     }

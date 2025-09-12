@@ -38,7 +38,7 @@ public class OdpsCreateTableTest6_array extends TestCase {
                 "    --unionField1 PropValueUnion,\n" +
                 "    --unionField2 PropValueUnion,\n" +
                 "    -- unionField3 PropValueUnion\n" +
-                ");";//
+                ");";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
@@ -80,5 +80,4 @@ public class OdpsCreateTableTest6_array extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

@@ -19,7 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
 import org.junit.Test;
 
-
 public class HoloResourceTest extends SQLResourceTest {
     public HoloResourceTest() {
         super(DbType.hologres);

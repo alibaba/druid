@@ -15,12 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -32,11 +28,11 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest2 extends TestCase {
     public void test_stuff() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-                "select * from person_qingjia " + //
-                        "where isxiao=1  " + //
-                        "and ((starttime between 2013-01-15 and 2013-01-15)" + //
-                        "        or (endtime between 2013-01- 15 and 2013-01-15)" + //
-                        ") " + //
+                "select * from person_qingjia " +
+                        "where isxiao=1  " +
+                        "and ((starttime between 2013-01-15 and 2013-01-15)" +
+                        "        or (endtime between 2013-01- 15 and 2013-01-15)" +
+                        ") " +
                         "order by xiaojiatime desc"));
     }
 }

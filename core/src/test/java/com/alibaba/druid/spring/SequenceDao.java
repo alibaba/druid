@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.spring;
 
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 public class SequenceDao extends SqlMapClientDaoSupport implements ISequenceDao {
     public boolean compareAndSet(String name, int value, int expect) {

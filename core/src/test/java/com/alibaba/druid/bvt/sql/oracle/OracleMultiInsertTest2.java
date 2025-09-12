@@ -15,27 +15,25 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleMultiInsertTest2 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "INSERT ALL" + //
-                "   WHEN order_total < 100000 THEN" + //
-                "      INTO small_orders" + //
-                "   WHEN order_total > 100000 AND order_total < 200000 THEN" + //
-                "      INTO medium_orders" + //
-                "   ELSE" + //
-                "      INTO large_orders" + //
-                "   SELECT order_id, order_total, sales_rep_id, customer_id" + //
-                "      FROM orders;"; //
+        String sql = "INSERT ALL" +
+                "   WHEN order_total < 100000 THEN" +
+                "      INTO small_orders" +
+                "   WHEN order_total > 100000 AND order_total < 200000 THEN" +
+                "      INTO medium_orders" +
+                "   ELSE" +
+                "      INTO large_orders" +
+                "   SELECT order_id, order_total, sales_rep_id, customer_id" +
+                "      FROM orders;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -64,7 +62,5 @@ public class OracleMultiInsertTest2 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_total")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "sales_rep_id")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "customer_id")));
-
     }
-
 }

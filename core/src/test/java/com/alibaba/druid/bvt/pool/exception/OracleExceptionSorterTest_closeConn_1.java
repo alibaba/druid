@@ -1,15 +1,5 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -17,6 +7,11 @@ import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class OracleExceptionSorterTest_closeConn_1 extends TestCase {
     private DruidDataSource dataSource;
@@ -73,5 +68,4 @@ public class OracleExceptionSorterTest_closeConn_1 extends TestCase {
         assertEquals(1, dataSource.getPoolingCount());
         assertEquals(2, dataSource.getCreateCount());
     }
-
 }

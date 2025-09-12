@@ -3,12 +3,14 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import junit.framework.TestCase;
 
 public class CTERewriteTest extends TestCase {

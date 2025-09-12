@@ -15,10 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsDropViewTest extends TestCase {
@@ -26,5 +23,4 @@ public class OdpsDropViewTest extends TestCase {
         String sql = "drop view if exists view_name;";
         assertEquals("DROP VIEW IF EXISTS view_name;", SQLUtils.formatOdps(sql));
     }
-
 }

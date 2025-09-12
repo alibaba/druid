@@ -26,6 +26,4 @@ public class AdsDumpTest_0 extends TestCase {
                 "\tAND (amp.buyer_add_cart_info.show_price >= 13300))\n" +
                 "LIMIT 144800", stmt.toString());
     }
-
-
 }

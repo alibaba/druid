@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class Oracle_pl_if_3 extends OracleTest {
     public void test_0() throws Exception {
@@ -34,7 +33,7 @@ public class Oracle_pl_if_3 extends OracleTest {
                 "   give_bonus(l_employee_id, 500);\n" +
                 "ELSE\n" +
                 "   give_bonus(l_employee_id, 0);\n" +
-                "END IF;"; //
+                "END IF;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

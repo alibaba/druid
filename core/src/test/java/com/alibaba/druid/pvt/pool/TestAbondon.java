@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.pvt.pool;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class TestAbondon extends TestCase {
     private DruidDataSource dataSource;
@@ -35,7 +34,6 @@ public class TestAbondon extends TestCase {
         dataSource.setTimeBetweenEvictionRunsMillis(10);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000);
         dataSource.setUrl("jdbc:mock:xxx");
-
     }
 
     protected void tearDown() throws Exception {

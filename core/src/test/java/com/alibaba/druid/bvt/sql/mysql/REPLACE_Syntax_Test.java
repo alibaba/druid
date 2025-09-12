@@ -15,17 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class REPLACE_Syntax_Test extends TestCase {
     public void test_0() throws Exception {
@@ -61,5 +58,4 @@ public class REPLACE_Syntax_Test extends TestCase {
 
         assertEquals("REPLACE INTO t (col1, col2)\nVALUES (?, ?)", text);
     }
-
 }

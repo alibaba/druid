@@ -15,19 +15,15 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import com.alibaba.druid.PoolTestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+
+import java.sql.Connection;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class TestGraceShutdown extends PoolTestCase {
     private MockDriver driver;

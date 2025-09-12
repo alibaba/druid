@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 public class HiveStatementParserTest extends TestCase {
-
     /**
      * 验证add jar类型SQL可以正常解析
      * 例子： add jar hdfs:///hadoop/parser.h.file
@@ -19,5 +18,4 @@ public class HiveStatementParserTest extends TestCase {
         assertTrue(sqlStatement instanceof HiveAddJarStatement);
         assertEquals("ADD JAR hdfs:///hadoop/parser.h.file", sqlStatement.toString());
     }
-
 }

@@ -128,6 +128,5 @@ public class OracleCreateTableTest95 extends OracleTest {
                 "\tCELL_FLASH_CACHE DEFAULT\n" +
                 ")\n" +
                 "XMLTYPE \"XMLDOC\"", stmt.toString());
-
     }
 }

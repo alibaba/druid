@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.insert;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -27,9 +23,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.List;
+
 public class OracleInsertTest14 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "INSERT INTO raises" //
+        String sql = "INSERT INTO raises"
                 + "   SELECT employee_id, salary*1.1 FROM employees"//
                 + "   WHERE commission_pct > .2"//
                 + "   LOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;";
@@ -41,11 +39,11 @@ public class OracleInsertTest14 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("INSERT INTO raises" //
+        assertEquals("INSERT INTO raises"
                         + "\nSELECT employee_id, salary * 1.1"//
                         + "\nFROM employees"//
                         + "\nWHERE commission_pct > .2"//
-                        + "\nLOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;",//
+                        + "\nLOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -66,5 +64,4 @@ public class OracleInsertTest14 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
     }
-
 }

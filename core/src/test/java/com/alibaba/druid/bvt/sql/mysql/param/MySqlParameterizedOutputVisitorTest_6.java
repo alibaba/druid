@@ -17,7 +17,6 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 public class MySqlParameterizedOutputVisitorTest_6 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
     public void test_0() throws Exception {

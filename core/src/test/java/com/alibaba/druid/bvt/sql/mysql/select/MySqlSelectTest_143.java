@@ -3,7 +3,6 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
@@ -140,9 +139,7 @@ public class MySqlSelectTest_143 extends MysqlTest {
                         "\tON left_table.compare_column_source = right_table.compare_column_target\n" +
                         "WHERE left_table.compare_column_source = ?\n" +
                         "\tOR right_table.compare_column_target = ?\n" +
-                        "\tOR left_table.compare_cnt_source <> right_table.compare_cnt_target"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        "\tOR left_table.compare_cnt_source <> right_table.compare_cnt_target",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
-
 }

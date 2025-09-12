@@ -21,18 +21,17 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest4 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "create table t_temp_11593685fc3244cf81468209484078a0 (" + //
-                "id int not null auto_increment, " + //
-                "score float not null, " + //
-                "student bigint not null, " + //
-                "primary key(id)," + //
-                "key score(score), " + //
+        String sql = "create table t_temp_11593685fc3244cf81468209484078a0 (" +
+                "id int not null auto_increment, " +
+                "score float not null, " +
+                "student bigint not null, " +
+                "primary key(id)," +
+                "key score(score), " +
                 "key student(student))";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
-
 public class MySqlSelectTest_284 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select count(*) t_router_device_info;";
@@ -31,6 +30,4 @@ public class MySqlSelectTest_284 extends MysqlTest {
 
         assertEquals("SELECT count(*) AS t_router_device_info;", stmt.toString());
     }
-
-
 }

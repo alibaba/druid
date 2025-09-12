@@ -26,9 +26,7 @@ public class MySqlSelectTest_139 extends MysqlTest {
                 "FROM corona_one_db_one_tb", stmt.toString());
 
         assertEquals("SELECT (tinyint_test / tinyint_1bit_test) = mediumint_test = decimal_test / double_test\n" +
-                        "FROM corona_one_db_one_tb"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        "FROM corona_one_db_one_tb",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
-
 }

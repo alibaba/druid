@@ -19,7 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class DistinctTest extends TestCase {
     private String sql = "select count(distinct *) from t";

@@ -1,19 +1,13 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.SQLException;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+
+import java.sql.SQLException;
 
 public class OracleExceptionSorter_userDefined_1 extends PoolTestCase {
     private DruidDataSource dataSource;

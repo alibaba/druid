@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
-
+import junit.framework.TestCase;
 
 public class SlowSqlMillisTest2 extends TestCase {
     private DruidDataSource dataSource;

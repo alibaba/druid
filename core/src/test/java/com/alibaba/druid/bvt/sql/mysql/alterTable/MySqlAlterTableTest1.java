@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest1 extends TestCase {
     public void test_alter_0() throws Exception {
@@ -67,5 +66,4 @@ public class MySqlAlterTableTest1 extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("RENAME TABLE t1 TO t2;", output);
     }
-
 }

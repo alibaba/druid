@@ -1,16 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+import org.osjava.sj.SimpleContext;
 
 import java.sql.Connection;
 import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.osjava.sj.SimpleContext;
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceConverterTest extends TestCase {
     private DruidDataSource dataSource;

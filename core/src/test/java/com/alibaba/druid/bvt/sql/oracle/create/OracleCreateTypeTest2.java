@@ -37,7 +37,7 @@ public class OracleCreateTypeTest2 extends OracleTest {
                         "    , credit_limit       NUMBER(9,2)\n" +
                         "    , cust_email         VARCHAR2(30)\n" +
                         "    , cust_orders        ORDER_LIST_TYP\n" +
-                        "    ) ;"; //
+                        "    ) ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -1,13 +1,10 @@
 package com.alibaba.druid.bvt.sql;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.alibaba.druid.sql.parser.Lexer;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class FirstCommentTest extends TestCase {
     public void test_first_commnet() throws Exception {

@@ -28,7 +28,7 @@ import java.util.List;
 public class OracleCreateTableTest26 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE dept_20 " //
+                "CREATE TABLE dept_20 "
                         + "   (employee_id     NUMBER(4), "//
                         + "    last_name       VARCHAR2(10), "//
                         + "    job_id          VARCHAR2(9), "//
@@ -46,7 +46,7 @@ public class OracleCreateTableTest26 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE dept_20 (" //
+        assertEquals("CREATE TABLE dept_20 ("
                         + "\n\temployee_id NUMBER(4),"//
                         + "\n\tlast_name VARCHAR2(10),"//
                         + "\n\tjob_id VARCHAR2(9),"//
@@ -56,7 +56,7 @@ public class OracleCreateTableTest26 extends OracleTest {
                         + "\n\tcommission_pct NUMBER(7, 2),"//
                         + "\n\tdepartment_id"//
                         + "\n\t\tCONSTRAINT fk_deptno REFERENCES departments (department_id)"//
-                        + "\n);",//
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -14,4 +14,3 @@ public class RedshiftResourceTest extends SQLResourceTest {
             fileTest(0, 999, i -> "bvt/parser/redshift/" + i + ".txt");
         }
 }
-

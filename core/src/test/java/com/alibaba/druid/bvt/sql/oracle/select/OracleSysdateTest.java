@@ -17,13 +17,9 @@ package com.alibaba.druid.bvt.sql.oracle.select;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-
-import java.util.List;
 
 public class OracleSysdateTest extends OracleTest {
     private DbType dbType = JdbcConstants.ORACLE;

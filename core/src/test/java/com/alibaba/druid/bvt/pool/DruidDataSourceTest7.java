@@ -1,18 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.SQLException;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import junit.framework.TestCase;
+
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class DruidDataSourceTest7 extends TestCase {
     private DruidDataSource dataSource;
@@ -46,5 +41,4 @@ public class DruidDataSourceTest7 extends TestCase {
 
         dataSource.getCompositeData();
     }
-
 }

@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 /**
  * @version 1.0
@@ -97,5 +96,4 @@ public class MySqlAlterTableAddIndex_11 extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(1, tableStat.getCreateIndexCount());
     }
-
 }

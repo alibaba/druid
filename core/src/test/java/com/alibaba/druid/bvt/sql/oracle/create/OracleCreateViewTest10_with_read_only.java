@@ -48,7 +48,7 @@ public class OracleCreateViewTest10_with_read_only extends OracleTest {
                         "AS\n" +
                         "SELECT cust_last_name, nls_language, credit_limit\n" +
                         "FROM customers\n" +
-                        "WITH READ ONLY;",//
+                        "WITH READ ONLY;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

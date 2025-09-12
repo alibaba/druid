@@ -15,21 +15,19 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.util.Assert;
+
+import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
-
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.springframework.util.Assert;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class Oracle_Case3 extends TestCase {
     private String jdbcUrl;

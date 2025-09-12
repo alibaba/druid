@@ -1,15 +1,13 @@
 package com.alibaba.druid.pool.oracle;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 
 /**
  * 这个场景测试minIdle > maxActive
@@ -49,6 +47,7 @@ public class DruidDataSourceTest_oracle3 extends TestCase {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
             while (rs.next()) {
+                // Process result set rows
             }
             rs.close();
             stmt.close();
@@ -61,6 +60,7 @@ public class DruidDataSourceTest_oracle3 extends TestCase {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
             while (rs.next()) {
+                // Process result set rows
             }
             rs.close();
             stmt.close();
@@ -73,6 +73,7 @@ public class DruidDataSourceTest_oracle3 extends TestCase {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
             while (rs.next()) {
+                // Process result set rows
             }
             rs.close();
             stmt.close();

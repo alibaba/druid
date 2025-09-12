@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class OracleCreateTriggerTest4 extends OracleTest {
                         "\tVALUES (:NEW.com_code, :NEW.CODE, :NEW.NAME, :NEW.status, :NEW.sjcode\n" +
                         "\t\t, :NEW.isdept, :NEW.type, :NEW.selfcode, :NEW.POS, SYSDATE\n" +
                         "\t\t, 'N', NULL, :NEW.deptsale);\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

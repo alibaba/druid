@@ -1,13 +1,7 @@
 package com.alibaba.druid.bvt.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.util.jdbc.LocalResultSet;
+import junit.framework.TestCase;
 
 public class LocalResultSetTest extends TestCase {
     public void test_0() throws Exception {

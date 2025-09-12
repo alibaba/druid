@@ -1,19 +1,13 @@
 package com.alibaba.druid.bvt.utils;
 
-import static org.junit.Assert.assertNull;
-
+import com.alibaba.druid.util.DruidWebUtils;
 import junit.framework.TestCase;
-
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import com.alibaba.druid.util.DruidWebUtils;
 
 public class DruidWebUtilsTest extends TestCase {
     public void test_getContextPath_2_5() throws Exception {
-        new DruidWebUtils(); //
+        new DruidWebUtils();
 
         MockServletContext context = new MockServletContext() {
             public int getMajorVersion() {

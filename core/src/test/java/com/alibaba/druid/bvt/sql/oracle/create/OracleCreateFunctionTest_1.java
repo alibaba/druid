@@ -44,7 +44,7 @@ public class OracleCreateFunctionTest_1 extends OracleTest {
                         "RETURN varchar2\n" +
                         "PARALLEL_ENABLE\n" +
                         "AGGREGATE\n" +
-                        "USING strcat_type;",//
+                        "USING strcat_type;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

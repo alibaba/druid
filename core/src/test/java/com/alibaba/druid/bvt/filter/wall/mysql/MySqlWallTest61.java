@@ -15,15 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -48,11 +42,10 @@ public class MySqlWallTest61 extends TestCase {
         provider.getConfig().setSchemaCheck(true);
 
         assertFalse(provider.checkValid(//
-                "SELECT * FROM T " + //
-                        "UNION " + //
+                "SELECT * FROM T " +
+                        "UNION " +
                         "SELECT * FROM `information_schema`.`columns` WHERE TABLE_NAME='aaaa' AND TABLE_SCHEMA='xxxx'"));
 
         assertEquals(2, provider.getTableStats().size());
     }
-
 }

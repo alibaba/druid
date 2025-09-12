@@ -22,25 +22,24 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest30 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE order_detail " //
-                        + "  (CONSTRAINT pk_od PRIMARY KEY (order_id, part_no), " //
-                        + "   order_id    NUMBER " //
-                        + "      CONSTRAINT fk_oid " //
-                        + "         REFERENCES oe.orders(order_id), " //
-                        + "   part_no     NUMBER " //
-                        + "      CONSTRAINT fk_pno " //
-                        + "         REFERENCES oe.product_information(product_id), " //
-                        + "   quantity    NUMBER " //
-                        + "      CONSTRAINT nn_qty NOT NULL " //
-                        + "      CONSTRAINT check_qty CHECK (quantity > 0), " //
-                        + "   cost        NUMBER " //
+                "CREATE TABLE order_detail "
+                        + "  (CONSTRAINT pk_od PRIMARY KEY (order_id, part_no), "
+                        + "   order_id    NUMBER "
+                        + "      CONSTRAINT fk_oid "
+                        + "         REFERENCES oe.orders(order_id), "
+                        + "   part_no     NUMBER "
+                        + "      CONSTRAINT fk_pno "
+                        + "         REFERENCES oe.product_information(product_id), "
+                        + "   quantity    NUMBER "
+                        + "      CONSTRAINT nn_qty NOT NULL "
+                        + "      CONSTRAINT check_qty CHECK (quantity > 0), "
+                        + "   cost        NUMBER "
                         + "      CONSTRAINT check_cost CHECK (cost > 0) ); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -50,18 +49,18 @@ public class OracleCreateTableTest30 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE order_detail (" //
-                        + "\n\tCONSTRAINT pk_od PRIMARY KEY (order_id, part_no)," //
-                        + "\n\torder_id NUMBER" //
-                        + "\n\t\tCONSTRAINT fk_oid REFERENCES oe.orders (order_id)," //
-                        + "\n\tpart_no NUMBER" //
-                        + "\n\t\tCONSTRAINT fk_pno REFERENCES oe.product_information (product_id)," //
-                        + "\n\tquantity NUMBER" //
-                        + "\n\t\tCONSTRAINT nn_qty NOT NULL" //
-                        + "\n\t\tCONSTRAINT check_qty CHECK (quantity > 0)," //
-                        + "\n\tcost NUMBER" //
-                        + "\n\t\tCONSTRAINT check_cost CHECK (cost > 0)" //
-                        + "\n);",//
+        assertEquals("CREATE TABLE order_detail ("
+                        + "\n\tCONSTRAINT pk_od PRIMARY KEY (order_id, part_no),"
+                        + "\n\torder_id NUMBER"
+                        + "\n\t\tCONSTRAINT fk_oid REFERENCES oe.orders (order_id),"
+                        + "\n\tpart_no NUMBER"
+                        + "\n\t\tCONSTRAINT fk_pno REFERENCES oe.product_information (product_id),"
+                        + "\n\tquantity NUMBER"
+                        + "\n\t\tCONSTRAINT nn_qty NOT NULL"
+                        + "\n\t\tCONSTRAINT check_qty CHECK (quantity > 0),"
+                        + "\n\tcost NUMBER"
+                        + "\n\t\tCONSTRAINT check_cost CHECK (cost > 0)"
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

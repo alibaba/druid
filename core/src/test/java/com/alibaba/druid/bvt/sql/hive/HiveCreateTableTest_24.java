@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class HiveCreateTableTest_24 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
                 "create table aliyun_cdm.test_905_table \n" +
-                        "(col1 BIGINT,col2 STRING,col3 BOOLEAN,col4 DOUBLE,col5 DATETIME) row format delimited fields terminated by \"\\\\001\"\n"; //
+                        "(col1 BIGINT,col2 STRING,col3 BOOLEAN,col4 DOUBLE,col5 DATETIME) row format delimited fields terminated by \"\\\\001\"\n";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -67,13 +66,12 @@ public class HiveCreateTableTest_24 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("aliyun_cdm.test_905_table"));
-
     }
 
     public void test_1_error() throws Exception {
         String sql = //
                 "create table aliyun_cdm.test_905_table \n" +
-                        "(col1 BIGINT,col2 STRING,col3 BOOLEAN,col4 DOUBLE,col5 DATETIME) row format delimited field terminated by \"\\\\001\"\n"; //
+                        "(col1 BIGINT,col2 STRING,col3 BOOLEAN,col4 DOUBLE,col5 DATETIME) row format delimited field terminated by \"\\\\001\"\n";
 
         Exception error = null;
         try {

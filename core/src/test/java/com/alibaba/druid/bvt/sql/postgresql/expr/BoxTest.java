@@ -1,14 +1,10 @@
 package com.alibaba.druid.bvt.sql.postgresql.expr;
 
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
-
 
 public class BoxTest extends PGTest {
     public void test_timestamp() throws Exception {

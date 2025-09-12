@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * 这个场景，被攻击者用于测试当前SQL拥有多少字段
@@ -30,7 +25,6 @@ import com.alibaba.druid.wall.WallUtils;
  * @author wenshao
  */
 public class WallUnionTest2 extends TestCase {
-
     public static final String UNION_SQL1 = "select f1, f2 from t where f1 = 1 union select 1, 2 where 1 = 1";
     public static final String UNION_SQL2 = "select f1, f2 from t where f1 = 1 union select 1, 2 where 1 = 1 --";
 

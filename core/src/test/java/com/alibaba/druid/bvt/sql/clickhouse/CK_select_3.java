@@ -37,13 +37,13 @@ public class CK_select_3 extends TestCase {
         // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         String output = SQLUtils.toSQLString(stmt, DbType.clickhouse);
-        assertEquals("SELECT name, c\n"+
-        "FROM test\n"+
+        assertEquals("SELECT name, c\n" +
+        "FROM test\n" +
         "WHERE c NOT ILIKE 'a%'", output);
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, DbType.clickhouse);
-        assertEquals("SELECT name, c\n"+
-        "FROM test\n"+
+        assertEquals("SELECT name, c\n" +
+        "FROM test\n" +
         "WHERE c NOT ILIKE ?", psql);
     }
 
@@ -74,13 +74,13 @@ public class CK_select_3 extends TestCase {
         // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         String output = SQLUtils.toSQLString(stmt, DbType.clickhouse);
-        assertEquals("SELECT name, c\n"+
-        "FROM test\n"+
+        assertEquals("SELECT name, c\n" +
+        "FROM test\n" +
         "WHERE c ILIKE 'a%'", output);
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, DbType.clickhouse);
-        assertEquals("SELECT name, c\n"+
-        "FROM test\n"+
+        assertEquals("SELECT name, c\n" +
+        "FROM test\n" +
         "WHERE c ILIKE ?", psql);
     }
 }

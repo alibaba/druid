@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -36,9 +31,9 @@ public class MySqlWallTest42 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         assertTrue(provider.checkValid(//
-                "SELECT COUNT(1) AS count FROM `team` " + //
-                        "WHERE `team_type` = 'normal'  AND `city_id` IN (0,10) " + //
-                        "AND (begin_time <= '1364832000')AND (end_time > '1364873430')AND (( title like '%%' ))AND (( `team_price` > '151' AND `team_price` <= '200'))AND ((now_number >= min_number)OR (end_time > '1364832000'))AND (group_id = 9 OR sub_id = 9)")); //
+                "SELECT COUNT(1) AS count FROM `team` " +
+                        "WHERE `team_type` = 'normal'  AND `city_id` IN (0,10) " +
+                        "AND (begin_time <= '1364832000')AND (end_time > '1364873430')AND (( title like '%%' ))AND (( `team_price` > '151' AND `team_price` <= '200'))AND ((now_number >= min_number)OR (end_time > '1364832000'))AND (group_id = 9 OR sub_id = 9)"));
 
         assertEquals(1, provider.getTableStats().size());
     }

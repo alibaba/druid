@@ -1,13 +1,10 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import junit.framework.TestCase;
 
 public class OdpsListTest extends TestCase {
     public void test_0() throws Exception {
@@ -79,5 +76,4 @@ public class OdpsListTest extends TestCase {
         // System.out.println(output);
         assertEquals("LIST trustedprojects", output);
     }
-
 }

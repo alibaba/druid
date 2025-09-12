@@ -48,5 +48,4 @@ public class MySqlShowTest_32_hints extends MysqlTest {
         assertEquals("/*+TDDL:scan()*/\n" +
                 "show index from drds_shard;", stmt.toLowerCaseString());
     }
-
 }

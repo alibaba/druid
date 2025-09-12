@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.alibaba.druid.wall.WallConfig;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * 这个场景，检测可疑的Having条件
@@ -62,5 +57,4 @@ public class WallUpdateWhereTest extends TestCase {
         assertTrue(WallUtils.isValidateOracle(sql, config));
         assertFalse(WallUtils.isValidateOracle(sql2, config));
     }
-
 }

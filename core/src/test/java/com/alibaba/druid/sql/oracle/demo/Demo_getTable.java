@@ -3,7 +3,6 @@ package com.alibaba.druid.sql.oracle.demo;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;

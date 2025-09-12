@@ -52,7 +52,7 @@ public class OracleCreateMaterializedViewTest1 extends OracleTest {
                         "FROM times t, products p, sales s\n" +
                         "WHERE t.time_id = s.time_id\n" +
                         "\tAND p.prod_id = s.prod_id\n" +
-                        "GROUP BY t.calendar_year, p.prod_id;",//
+                        "GROUP BY t.calendar_year, p.prod_id;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

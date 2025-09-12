@@ -49,7 +49,7 @@ public class OracleBlockTest20 extends OracleTest {
                 "   EXECUTE IMMEDIATE 'DELETE FROM dept WHERE deptno = :num'\n" +
                 "      USING dept_id;\n" +
                 "   EXECUTE IMMEDIATE 'ALTER SESSION SET SQL_TRACE TRUE';\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());

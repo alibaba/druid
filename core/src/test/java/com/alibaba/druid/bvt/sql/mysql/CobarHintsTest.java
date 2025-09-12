@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
-
 import junit.framework.TestCase;
 
 public class CobarHintsTest extends TestCase {

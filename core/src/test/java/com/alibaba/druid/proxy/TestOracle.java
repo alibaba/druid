@@ -15,17 +15,16 @@
  */
 package com.alibaba.druid.proxy;
 
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.support.json.JSONUtils;
+import junit.framework.TestCase;
+
+import javax.management.openmbean.TabularData;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import javax.management.openmbean.TabularData;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestOracle extends TestCase {
     private String jdbcUrl;

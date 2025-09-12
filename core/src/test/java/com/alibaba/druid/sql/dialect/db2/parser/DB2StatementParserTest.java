@@ -9,7 +9,6 @@ import junit.framework.TestCase;
  * @author abomb4 2022-08-29
  */
 public class DB2StatementParserTest extends TestCase {
-
     /**
      * 测试修改了 parseDeleteStatement 后 delete 语句能否正常解析
      */

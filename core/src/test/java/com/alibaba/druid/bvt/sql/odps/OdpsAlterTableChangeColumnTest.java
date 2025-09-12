@@ -20,13 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OdpsAlterTableChangeColumnTest extends TestCase {
     public void test_select() throws Exception {
-        String sql = "ALTER TABLE adl_smeta_indi_rule_relation_sdt CHANGE COLUMN indi_level COMMENT 'xxxx';";//
+        String sql = "ALTER TABLE adl_smeta_indi_rule_relation_sdt CHANGE COLUMN indi_level COMMENT 'xxxx';";
         assertEquals("ALTER TABLE adl_smeta_indi_rule_relation_sdt\n" +
                 "\tCHANGE COLUMN indi_level COMMENT 'xxxx';", SQLUtils.formatOdps(sql));
         assertEquals("alter table adl_smeta_indi_rule_relation_sdt\n" +
@@ -51,5 +50,4 @@ public class OdpsAlterTableChangeColumnTest extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

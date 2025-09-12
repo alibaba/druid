@@ -120,6 +120,4 @@ public class MySqlSelectTest_168_int extends MysqlTest {
 
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(CAST(NULL AS DECIMAL(25, 5)))", stmt.toString());
     }
-
-
 }

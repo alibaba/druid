@@ -15,10 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.parser.Token;
+import junit.framework.TestCase;
 
 public class OracleLexerTest extends TestCase {
     public void test_hint() throws Exception {

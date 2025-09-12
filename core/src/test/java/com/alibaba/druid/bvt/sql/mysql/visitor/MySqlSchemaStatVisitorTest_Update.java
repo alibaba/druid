@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.visitor;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class MySqlSchemaStatVisitorTest_Update extends TestCase {
     public void test_0() throws Exception {
@@ -48,7 +46,5 @@ public class MySqlSchemaStatVisitorTest_Update extends TestCase {
         assertEquals(2, visitor.getColumns().size());
         assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
         assertEquals(true, visitor.getColumns().contains(new Column("users", "loginCount")));
-
     }
-
 }

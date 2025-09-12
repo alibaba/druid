@@ -15,16 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DataSourceClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
+
+import java.sql.Connection;
 
 public class ClosedTest extends PoolTestCase {
     public void test_close() throws Exception {

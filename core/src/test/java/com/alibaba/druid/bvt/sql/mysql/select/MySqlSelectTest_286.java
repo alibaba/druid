@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
-
 public class MySqlSelectTest_286 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT a " +
@@ -38,6 +37,4 @@ public class MySqlSelectTest_286 extends MysqlTest {
                 "GROUP BY DISTINCT a\n" +
                 "\tGROUPING SETS ((), (t.a))", stmt.toString());
     }
-
-
 }

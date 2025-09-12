@@ -15,32 +15,30 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+import org.apache.commons.dbcp.BasicDataSource;
+
+import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
 
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.pool.DruidDataSource;
-
 public class Case_Concurrent_50 extends TestCase {
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
-    private int initialSize = 0;
+    private int initialSize;
     private int minIdle = 3;
     private int maxIdle = 5;
     private int maxActive = 10;
     private String validationQuery = "SELECT 1";
-    private boolean testOnBorrow = false;
+    private boolean testOnBorrow;
 
     private long minEvictableIdleTimeMillis = 3000;
     public final int LOOP_COUNT = 5;

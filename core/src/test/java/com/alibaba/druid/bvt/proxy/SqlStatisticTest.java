@@ -15,13 +15,8 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.stat.JdbcSqlStat;
+import junit.framework.TestCase;
 
 public class SqlStatisticTest extends TestCase {
     public void test_sql_stat() throws Exception {

@@ -13,7 +13,6 @@ public class AlibTest extends TestCase {
         dataSource.setUrl("jdbc:mysql://127.0.0.1:8507");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
-
     }
 
     protected void tearDown() throws Exception {
@@ -24,6 +23,4 @@ public class AlibTest extends TestCase {
         Connection conn = dataSource.getConnection();
         conn.close();
     }
-
-
 }

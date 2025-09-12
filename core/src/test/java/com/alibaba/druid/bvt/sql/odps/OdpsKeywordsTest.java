@@ -10,7 +10,7 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class OdpsKeywordsTest {
     @Test

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest56 extends MysqlTest {
@@ -44,16 +43,16 @@ public class MySqlCreateTableTest56 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            assertEquals("CREATE TABLE tableA (" //
-                    + "\n\tdatasn varchar(100) NOT NULL," //
-                    + "\n\tPRIMARY KEY (datasn)" //
+            assertEquals("CREATE TABLE tableA ("
+                    + "\n\tdatasn varchar(100) NOT NULL,"
+                    + "\n\tPRIMARY KEY (datasn)"
                     + "\n) ENGINE = MRG_MyISAM CHARSET = utf8 UNION = (tableB, tableC)", output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("create table tableA (" //
-                    + "\n\tdatasn varchar(100) not null," //
-                    + "\n\tprimary key (datasn)" //
+            assertEquals("create table tableA ("
+                    + "\n\tdatasn varchar(100) not null,"
+                    + "\n\tprimary key (datasn)"
                     + "\n) engine = MRG_MyISAM charset = utf8 union = (tableB, tableC)", output);
         }
     }

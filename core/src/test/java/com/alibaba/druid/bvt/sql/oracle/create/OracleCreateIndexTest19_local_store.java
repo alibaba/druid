@@ -45,8 +45,8 @@ public class OracleCreateIndexTest19_local_store extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE INDEX prod_idx ON hash_products(product_id) LOCAL STORE IN (tbs_01, tbs_02);"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE INDEX prod_idx ON hash_products(product_id) LOCAL STORE IN (tbs_01, tbs_02);",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

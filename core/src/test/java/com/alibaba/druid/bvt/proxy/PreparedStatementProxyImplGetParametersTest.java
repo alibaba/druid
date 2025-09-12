@@ -1,19 +1,13 @@
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import com.alibaba.druid.proxy.jdbc.JdbcParameter;
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Map;
-
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.proxy.jdbc.JdbcParameter;
-import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class PreparedStatementProxyImplGetParametersTest extends TestCase {
     private String url = "jdbc:wrap-jdbc:filters=default:name=driverTest:jdbc:mock:xxx";

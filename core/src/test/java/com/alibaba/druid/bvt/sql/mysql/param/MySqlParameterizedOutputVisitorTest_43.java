@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -10,6 +8,8 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import junit.framework.TestCase;
 import org.apache.commons.lang.StringUtils;
 
@@ -31,7 +31,6 @@ public class MySqlParameterizedOutputVisitorTest_43 extends TestCase {
         assertEquals("UPDATE `feel_07`.`feed_item_receive_0502`\n" +
                 "SET `attributes` = 'enableTime:1498682416713,src:top,importFrom:0', `gmt_modified` = '2017-06-29 04:40:20', `lock_version` = 1\n" +
                 "WHERE `feed_id` = 313825887478", restoredSql);
-
     }
 
     public static String restore(String sql, String table, String params/*JSONArray paramsArray, JSONArray destArray*/) {

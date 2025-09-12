@@ -2868,7 +2868,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     if (timeBetweenEvictionRunsMillis > 0) {
                         Thread.sleep(timeBetweenEvictionRunsMillis);
                     } else {
-                        Thread.sleep(1000); //
+                        Thread.sleep(1000);
                     }
 
                     if (Thread.interrupted()) {

@@ -15,22 +15,20 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.visitor.VisitorFeature;
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class OdpsResourceTest extends SQLResourceTest {
     public OdpsResourceTest() {

@@ -39,5 +39,4 @@ public class MySqlCreateTableTest114 extends MysqlTest {
         assertFalse(column.isPrimaryKey());
         assertEquals(Types.TIMESTAMP, column.jdbcType());
     }
-
 }

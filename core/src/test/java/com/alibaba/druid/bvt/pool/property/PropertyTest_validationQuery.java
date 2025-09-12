@@ -1,15 +1,8 @@
 package com.alibaba.druid.bvt.pool.property;
 
-import static org.junit.Assert.*;
-
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-
 
 public class PropertyTest_validationQuery extends PoolTestCase {
     private DruidDataSource dataSource;

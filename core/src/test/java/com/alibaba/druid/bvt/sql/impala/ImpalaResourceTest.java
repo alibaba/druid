@@ -28,5 +28,4 @@ public class ImpalaResourceTest extends SQLResourceTest {
     public void impala_parse() throws Exception {
         fileTest(0, 999, i -> "bvt/parser/impala/" + i + ".txt");
     }
-
 }

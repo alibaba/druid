@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -61,7 +60,6 @@ public class OracleCreateDbLinkTest extends OracleTest {
 
         assertEquals(0, visitor.getTables().size());
     }
-
 
     public void test_2() throws Exception {
         String sql = //

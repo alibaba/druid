@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -99,5 +98,4 @@ public class H2ResourceTest extends TestCase {
 
         assertEquals(expect, out.toString());
     }
-
 }

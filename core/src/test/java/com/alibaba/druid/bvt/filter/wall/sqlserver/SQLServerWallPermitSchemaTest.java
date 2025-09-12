@@ -15,12 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import static org.junit.Assert.assertFalse;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallPermitSchemaTest
@@ -50,7 +46,6 @@ public class SQLServerWallPermitSchemaTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-
 
     public void test_master() throws Exception {
         assertFalse(WallUtils.isValidateSqlServer("SELECT *FROM T UNION SELECT name, password FROM master..sysxlogins"));

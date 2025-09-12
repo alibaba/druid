@@ -15,12 +15,8 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.support.http.stat.WebAppStat;
-
+import junit.framework.TestCase;
 
 public class UserAgentWin8ChromeTest extends TestCase {
     public void test_mac_firefox() throws Exception {

@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class MySqlSchemaStatVisitorTest6 extends TestCase {
     public void test_0() throws Exception {
         String sql = "select * from t order by trim(trim(INTERVAL 3 YEAR))";
 
-//		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
+        // sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -49,7 +48,5 @@ public class MySqlSchemaStatVisitorTest6 extends TestCase {
         // Column("users", "id")));
         // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "name")));
-
     }
-
 }

@@ -43,7 +43,6 @@ public class MySqlSelectTest_52_comment extends MysqlTest {
                 "                ORDER BY created_at DESC\n" +
                 "                LIMIT 10, 10";
 
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 

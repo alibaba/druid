@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -71,7 +70,7 @@ public class OracleCreateTableTest40 extends OracleTest {
                         "\tPARTITION p1 VALUES LESS THAN (1000),\n" +
                         "\tPARTITION p2 VALUES LESS THAN (2500),\n" +
                         "\tPARTITION p3 VALUES LESS THAN (MAXVALUE)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

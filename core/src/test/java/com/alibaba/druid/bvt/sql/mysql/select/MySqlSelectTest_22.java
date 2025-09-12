@@ -19,14 +19,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlSelectTest_22 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select CONSTRAINT constraint from t where id = 1 order by constraint desc";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -48,6 +46,4 @@ public class MySqlSelectTest_22 extends MysqlTest {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(1, visitor.getOrderByColumns().size());
     }
-
-
 }

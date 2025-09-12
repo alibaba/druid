@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid;
 
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
 
 public class TestLockCount extends TestCase {
     public void test_current() throws Exception {

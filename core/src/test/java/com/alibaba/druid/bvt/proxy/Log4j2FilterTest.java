@@ -15,10 +15,12 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import com.alibaba.druid.filter.logging.Log4j2Filter;
+import com.alibaba.druid.filter.logging.LogFilter;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+import org.apache.log4j.Priority;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -27,14 +29,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
-import org.apache.log4j.Priority;
-
-import com.alibaba.druid.filter.logging.Log4j2Filter;
-import com.alibaba.druid.filter.logging.LogFilter;
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-
-import junit.framework.TestCase;
 
 public class Log4j2FilterTest extends TestCase {
     protected void tearDown() throws Exception {

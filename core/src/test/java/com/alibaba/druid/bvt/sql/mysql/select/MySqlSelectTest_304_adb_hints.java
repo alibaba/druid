@@ -282,7 +282,6 @@ public class MySqlSelectTest_304_adb_hints
                 "LIMIT 100", stmt.toString());
     }
 
-
     public void test_13() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +

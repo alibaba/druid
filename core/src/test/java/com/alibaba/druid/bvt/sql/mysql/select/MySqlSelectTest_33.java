@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -33,7 +32,6 @@ public class MySqlSelectTest_33 extends MysqlTest {
                 "and reg_time >=\"2016-12-01 00:00:00\"\n" +
                 "and reg_time <='2016-12-01 23:59:59'\n" +
                 "group by DATE(reg_time),HOUR(reg_time) DIV 2";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -78,6 +76,4 @@ public class MySqlSelectTest_33 extends MysqlTest {
                     output);
         }
     }
-
-
 }

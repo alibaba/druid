@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class mysql_block_0 extends OracleTest {
     public void test_0() throws Exception {
@@ -32,7 +31,7 @@ public class mysql_block_0 extends OracleTest {
                 "    INSERT INTO ktv_ind_columns(index_owner,index_name,table_owner,TABLE_NAME,COLUMN_NAME,column_position,column_length,descend,dbId,collection_time)\n" +
                 "    SELECT DISTINCT index_owner,index_name,table_owner,TABLE_NAME,COLUMN_NAME,column_position,column_length,descend,dbId,now()\n" +
                 "    FROM ktv_tmp_ind_columns WHERE dbid=?;\n" +
-                "    COMMIT;"; //
+                "    COMMIT;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         assertEquals(4, statementList.size());

@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;

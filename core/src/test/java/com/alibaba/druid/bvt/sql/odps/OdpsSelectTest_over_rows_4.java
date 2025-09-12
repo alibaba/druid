@@ -20,13 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OdpsSelectTest_over_rows_4 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "SELECT sum(c) over(order by ds rows UNBOUNDED PRECEDING) s, ds FROM t1";//
+        String sql = "SELECT sum(c) over(order by ds rows UNBOUNDED PRECEDING) s, ds FROM t1";
         assertEquals("SELECT sum(c) OVER (ORDER BY ds ROWS UNBOUNDED PRECEDING) AS s, ds\n" +
                 "FROM t1", SQLUtils.formatOdps(sql));
         assertEquals("select sum(c) over (order by ds rows unbounded preceding) as s, ds\n" +
@@ -51,5 +50,4 @@ public class OdpsSelectTest_over_rows_4 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

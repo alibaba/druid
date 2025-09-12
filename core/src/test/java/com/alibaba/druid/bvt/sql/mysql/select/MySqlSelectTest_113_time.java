@@ -48,6 +48,4 @@ public class MySqlSelectTest_113_time extends TestCase {
 
         assertEquals("SELECT TIME '10:09:06', TIMESTAMP '2017-11-15 10:09:06', DATE '2017-11-15'", stmt.toString());
     }
-
-
 }

@@ -28,7 +28,6 @@ public class MySqlSelectTest_178 extends MysqlTest {
                 "from rt_dws_csn_sta_lgt_ord_ri\n" +
                 "\tcross join rt_dws_csn_sta_lgt_ord_mi;", stmt.toLowerCaseString());
 
-
         assertEquals("SELECT rt_dws_csn_sta_lgt_ord_ri.metrics_id AS yujiu\n" +
                 "FROM rt_dws_csn_sta_lgt_ord_ri\n" +
                 "\tCROSS JOIN rt_dws_csn_sta_lgt_ord_mi;", stmt.toParameterizedString());
@@ -37,6 +36,4 @@ public class MySqlSelectTest_178 extends MysqlTest {
         assertEquals(SQLJoinTableSource.JoinType.CROSS_JOIN, join.getJoinType());
         assertNull(join.getLeft().getAlias());
     }
-
-
 }

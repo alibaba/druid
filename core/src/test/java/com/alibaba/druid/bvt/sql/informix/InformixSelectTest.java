@@ -15,14 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.informix;
 
-import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 

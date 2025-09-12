@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OdpsSelectTest20 extends TestCase {
     public void test_select() throws Exception {
         // 1095288847322
-        String sql = "select * from a DISTRIBUTE BY b,c";//
+        String sql = "select * from a DISTRIBUTE BY b,c";
         assertEquals("SELECT *\n" +
                 "FROM a\n" +
                 "DISTRIBUTE BY b, c", SQLUtils.formatOdps(sql));
@@ -54,5 +53,4 @@ public class OdpsSelectTest20 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

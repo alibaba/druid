@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class OracleSelectTest_issue_5109 extends OracleTest {

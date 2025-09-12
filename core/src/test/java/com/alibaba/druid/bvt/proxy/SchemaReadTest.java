@@ -15,26 +15,13 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.PrintStream;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.io.PrintStream;
+import java.sql.*;
 
 public class SchemaReadTest extends TestCase {
     private static String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:classpath:petstore-db";

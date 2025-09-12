@@ -21,6 +21,4 @@ public class MySqlSelectTest_125_eq extends MysqlTest {
                 "FROM test3\n" +
                 "WHERE id / cnt = id = id;", stmt.toString());
     }
-
-
 }

@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.pool;
 
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
 
 public class Case3 extends TestCase {
     public void test_1() throws Exception {

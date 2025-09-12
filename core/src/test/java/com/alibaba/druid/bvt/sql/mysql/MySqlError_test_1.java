@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 

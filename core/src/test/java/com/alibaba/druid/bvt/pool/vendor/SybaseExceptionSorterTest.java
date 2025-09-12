@@ -1,15 +1,9 @@
 package com.alibaba.druid.bvt.pool.vendor;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
 
 import java.sql.SQLException;
-
-import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
 
 public class SybaseExceptionSorterTest extends PoolTestCase {
     public void test_false() throws Exception {

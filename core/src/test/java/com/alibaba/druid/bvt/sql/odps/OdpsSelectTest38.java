@@ -58,5 +58,4 @@ public class OdpsSelectTest38 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

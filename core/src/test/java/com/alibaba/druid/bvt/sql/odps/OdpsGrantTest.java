@@ -15,14 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import junit.framework.TestCase;
 
 public class OdpsGrantTest extends TestCase {
     public void test_0() throws Exception {

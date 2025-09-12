@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -34,19 +29,19 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest25 extends TestCase {
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-                "update test.dml_health_check set id=? limit ?")); //
+                "update test.dml_health_check set id=? limit ?"));
     }
 
     public void test_true_1() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-                "update test.dml_health_check set id=?")); //
+                "update test.dml_health_check set id=?"));
     }
 
     public void test_true_2() throws Exception {
         WallConfig config = new WallConfig();
         config.setUpdateWhereNoneCheck(true);
         assertTrue(WallUtils.isValidateMySql(//
-                "update test.dml_health_check set id=? limit ?", config)); //
+                "update test.dml_health_check set id=? limit ?", config));
     }
 
     public void test_false() throws Exception {
@@ -54,6 +49,6 @@ public class MySqlWallTest25 extends TestCase {
         config.setUpdateWhereNoneCheck(true);
 
         assertFalse(WallUtils.isValidateMySql(//
-                "update test.dml_health_check set id=?", config)); //
+                "update test.dml_health_check set id=?", config));
     }
 }

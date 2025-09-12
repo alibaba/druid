@@ -2,7 +2,6 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class OdpsAlterTableMergeSmallFilesTest extends TestCase {
     public void test_touch() throws Exception {

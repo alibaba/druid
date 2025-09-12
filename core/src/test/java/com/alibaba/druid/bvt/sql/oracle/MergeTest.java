@@ -15,11 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 public class MergeTest extends TestCase {
     public void test_mergeCall() throws Exception {

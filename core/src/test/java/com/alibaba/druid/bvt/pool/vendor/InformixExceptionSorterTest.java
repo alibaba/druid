@@ -1,15 +1,9 @@
 package com.alibaba.druid.bvt.pool.vendor;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 
 import java.sql.SQLException;
-
-import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 
 public class InformixExceptionSorterTest extends PoolTestCase {
     public void test_informix() throws Exception {

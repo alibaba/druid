@@ -1,18 +1,10 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProviderStatValue;
 import com.alibaba.druid.wall.WallSqlStat;
 import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class WallProviderTest extends TestCase {
     public void test_getSqlStat() throws Exception {

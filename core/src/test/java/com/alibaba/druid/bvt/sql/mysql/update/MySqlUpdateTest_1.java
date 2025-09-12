@@ -15,21 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.update;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class MySqlUpdateTest_1 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "UPDATE t_price, t_basic_store s " + //
-                "SET purchasePrice = :purchasePrice, operaterId = :operaterId, " + //
-                "    operaterRealName = :operaterRealName, operateDateline = :operateDateline " + //
+        String sql = "UPDATE t_price, t_basic_store s " +
+                "SET purchasePrice = :purchasePrice, operaterId = :operaterId, " +
+                "    operaterRealName = :operaterRealName, operateDateline = :operateDateline " +
                 "WHERE goodsId = :goodsId AND s.id = storeId AND s.areaId = :areaId";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -53,6 +51,5 @@ public class MySqlUpdateTest_1 extends MysqlTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_price")));
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
     }
 }

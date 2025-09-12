@@ -4,7 +4,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;

@@ -15,12 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -32,6 +28,6 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest18 extends TestCase {
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-                "SET character_set_connection=gbk,character_set_results=gbk,character_set_client=binary")); //
+                "SET character_set_connection=gbk,character_set_results=gbk,character_set_client=binary"));
     }
 }

@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class H2_CreateTableTest_0 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "CREATE TABLE IF NOT EXISTS `DTS_EXECUTION_COUNTER` (        `id` bigint(20) NOT NULL AUTO_INCREMENT,        `gmt_create` datetime DEFAULT NULL,        `gmt_modified` datetime DEFAULT NULL,        `job_id` bigint(20) DEFAULT NULL,        `job_instance_id` bigint(20) DEFAULT NULL,        `receive_node` varchar(255) DEFAULT NULL,        `task_name` varchar(255) DEFAULT NULL,        `total_counter` bigint(20),        `queued_counter` bigint(20),        `running_counter` bigint(20),        `success_counter` bigint(20),        `fail_counter` bigint(20),        PRIMARY KEY (`id`)        ) ; "; //
+                "CREATE TABLE IF NOT EXISTS `DTS_EXECUTION_COUNTER` (        `id` bigint(20) NOT NULL AUTO_INCREMENT,        `gmt_create` datetime DEFAULT NULL,        `gmt_modified` datetime DEFAULT NULL,        `job_id` bigint(20) DEFAULT NULL,        `job_instance_id` bigint(20) DEFAULT NULL,        `receive_node` varchar(255) DEFAULT NULL,        `task_name` varchar(255) DEFAULT NULL,        `total_counter` bigint(20),        `queued_counter` bigint(20),        `running_counter` bigint(20),        `success_counter` bigint(20),        `fail_counter` bigint(20),        PRIMARY KEY (`id`)        ) ; ";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.H2);
         SQLStatement stmt = statementList.get(0);
@@ -71,6 +70,5 @@ public class H2_CreateTableTest_0 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("DTS_EXECUTION_COUNTER"));
-
     }
 }

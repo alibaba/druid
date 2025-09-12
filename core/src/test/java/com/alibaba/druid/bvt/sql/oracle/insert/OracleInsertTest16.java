@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.insert;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -27,9 +23,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.List;
+
 public class OracleInsertTest16 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "INSERT INTO departments " //
+        String sql = "INSERT INTO departments "
                 + "   VALUES  (departments_seq.nextval, 'Entertainment', 162, 1400); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -39,8 +37,8 @@ public class OracleInsertTest16 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("INSERT INTO departments" //
-                        + "\nVALUES (departments_seq.NEXTVAL, 'Entertainment', 162, 1400);",//
+        assertEquals("INSERT INTO departments"
+                        + "\nVALUES (departments_seq.NEXTVAL, 'Entertainment', 162, 1400);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -58,5 +56,4 @@ public class OracleInsertTest16 extends OracleTest {
 
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
-
 }

@@ -20,17 +20,16 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest3 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "SELECT department_id, last_name, salary " + //
-                "   FROM employees x " + //
-                "   WHERE salary > (SELECT AVG(salary) " + //
-                "      FROM employees " + //
-                "      WHERE x.department_id = department_id) " + //
+        String sql = "SELECT department_id, last_name, salary " +
+                "   FROM employees x " +
+                "   WHERE salary > (SELECT AVG(salary) " +
+                "      FROM employees " +
+                "      WHERE x.department_id = department_id) " +
                 "   ORDER BY department_id; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -58,5 +57,4 @@ public class OracleSelectTest3 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
-
 }

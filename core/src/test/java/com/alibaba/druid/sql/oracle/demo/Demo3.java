@@ -15,13 +15,6 @@
  */
 package com.alibaba.druid.sql.oracle.demo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -36,6 +29,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Demo3 extends TestCase {
     public void test_0() throws Exception {
@@ -80,7 +79,7 @@ public class Demo3 extends TestCase {
 
     private String convert(String sql, List<Object> parameters) {
         SQLStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> stmtList = parser.parseStatementList(); //
+        List<SQLStatement> stmtList = parser.parseStatementList();
 
         SQLStatement first = (SQLStatement) stmtList.get(0);
 
@@ -130,7 +129,7 @@ public class Demo3 extends TestCase {
     }
 
     private static class MyVisitor extends MySqlASTVisitorAdapter {
-        private int varIndex = 0;
+        private int varIndex;
         private List<SQLExpr> variantList = new ArrayList<SQLExpr>();
         private List<SQLExprTableSource> tableSourceList = new ArrayList<SQLExprTableSource>();
 
@@ -235,5 +234,4 @@ public class Demo3 extends TestCase {
         }
 
     }
-
 }

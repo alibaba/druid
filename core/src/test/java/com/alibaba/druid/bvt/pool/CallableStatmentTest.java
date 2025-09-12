@@ -15,21 +15,17 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidDataSource;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class CallableStatmentTest extends PoolTestCase {
     private DruidDataSource dataSource;

@@ -19,11 +19,9 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class OracleBlockTest19 extends OracleTest {
     public void test_0() throws Exception {
@@ -34,7 +32,7 @@ public class OracleBlockTest19 extends OracleTest {
                 "    IF SQLCODE != -2289 THEN\n" +
                 "      RAISE;\n" +
                 "    END IF;\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());

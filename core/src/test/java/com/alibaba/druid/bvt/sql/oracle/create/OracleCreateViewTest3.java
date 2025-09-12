@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -102,7 +101,7 @@ public class OracleCreateViewTest3 extends OracleTest {
                         "\t\tAND outer.dbinc_key = bdf.dbinc_key\n" +
                         "\t\tAND outer.file# = file#\n" +
                         "\t\tAND outer.stamp < bs.stamp\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

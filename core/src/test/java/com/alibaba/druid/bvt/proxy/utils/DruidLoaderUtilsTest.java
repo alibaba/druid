@@ -15,22 +15,16 @@
  */
 package com.alibaba.druid.bvt.proxy.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import com.alibaba.druid.bvt.proxy.DruidDriverTest.PublicJdbcFilterAdapter;
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterManager;
+import com.alibaba.druid.util.Utils;
+import junit.framework.TestCase;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.bvt.proxy.DruidDriverTest.PublicJdbcFilterAdapter;
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.filter.FilterManager;
-import com.alibaba.druid.util.Utils;
 
 /**
  * druidLoader util 测试
@@ -103,5 +97,4 @@ public class DruidLoaderUtilsTest extends TestCase {
         assertNull(Utils.loadClass(null));
         assertNull(Utils.loadClass(""));
     }
-
 }

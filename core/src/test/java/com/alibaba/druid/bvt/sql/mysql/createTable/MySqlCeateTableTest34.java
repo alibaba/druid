@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class MySqlCeateTableTest34 extends TestCase {
                 "  \"attr_value\" varchar(500) NOT NULL COMMENT '扩展属性value',\n" +
                 "  PRIMARY KEY (\'id\'),\n" +
                 "  KEY \"idx_item_type_kv\" (\"item_id\",\"type\",\"attr_key\",\"attr_value\"(191))\n" +
-                ")"; //
+                ")";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

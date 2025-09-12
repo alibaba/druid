@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest54 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT orderseq.currval FROM emp t"; //
+                "SELECT orderseq.currval FROM emp t";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,14 +51,14 @@ public class OracleSelectTest54 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT orderseq.CURRVAL" //
+            assertEquals("SELECT orderseq.CURRVAL"
                     + "\nFROM emp t", text);
         }
 
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            assertEquals("select orderseq.currval" //
+            assertEquals("select orderseq.currval"
                     + "\nfrom emp t", text);
         }
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

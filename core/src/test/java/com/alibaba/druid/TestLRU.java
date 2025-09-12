@@ -15,9 +15,9 @@
  */
 package com.alibaba.druid;
 
-import java.util.LinkedHashMap;
-
 import junit.framework.TestCase;
+
+import java.util.LinkedHashMap;
 
 public class TestLRU extends TestCase {
     public void test_lru() throws Exception {
@@ -33,6 +33,5 @@ public class TestLRU extends TestCase {
         System.out.println(cache);
         cache.get(3);
         System.out.println(cache);
-
     }
 }

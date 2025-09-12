@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import org.junit.Test;
 
-
 public class MySqlCreateTableTest158_asselect extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create table tmp_eric (pk int key, ia int unique) replace as select * from t;";

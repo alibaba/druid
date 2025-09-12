@@ -15,23 +15,20 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OdpsSelectTest10 extends TestCase {
     public void test_select() throws Exception {
         String sql = "select /* + mapjoin(a) */ "
                 + " a.name, b.fals"
-                + " from abc a join abc1 b  on a.name = b.fals;";//
+                + " from abc a join abc1 b  on a.name = b.fals;";
         assertEquals("SELECT /*+ mapjoin(a) */ a.name, b.fals\n" +
                 "FROM abc a\n" +
                 "JOIN abc1 b\n" +
@@ -60,5 +57,4 @@ public class OdpsSelectTest10 extends TestCase {
 
         assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

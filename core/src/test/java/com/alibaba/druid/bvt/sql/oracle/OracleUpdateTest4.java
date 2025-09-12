@@ -15,24 +15,22 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleUpdateTest4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "update tabpart$ set "
-                + //
+                +
                 "dataobj# = :1, part# = :2, hiboundlen = :3, hiboundval = :4, ts# = :5, file# = :6, block# = :7, pctfree$ = :8, pctused$ = :9, initrans = :10, maxtrans = :11, flags = :12, analyzetime = :13, samplesize = :14, rowcnt = :15, blkcnt = :16, empcnt = :17, avgspc = :18, chncnt = :19, avgrln = :20, bhiboundval = EMPTY_BLOB() "
-                + //
-                "where obj# = :21 " + //
-                "returning bhiboundval into :22"; //
+                +
+                "where obj# = :21 " +
+                "returning bhiboundval into :22";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -57,5 +55,4 @@ public class OracleUpdateTest4 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("tabpart$", "dataobj#")));
 //        assertTrue(visitor.getColumns().contains(new TableStat.Column("sys.col_usage$", "intcol#")));
     }
-
 }

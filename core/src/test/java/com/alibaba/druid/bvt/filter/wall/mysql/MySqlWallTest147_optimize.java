@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertTrue;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import junit.framework.TestCase;

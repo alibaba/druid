@@ -15,15 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -44,5 +38,4 @@ public class SQLServerWallTest_5 extends TestCase {
         assertEquals(1, provider.getTableStats().size());
         assertTrue(provider.getTableStats().containsKey("t"));
     }
-
 }

@@ -15,19 +15,17 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.test.TestUtils;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+import junit.framework.TestCase;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
-
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.test.TestUtils;
-import com.alibaba.druid.util.Utils;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleSQLParserResourceTest extends TestCase {
     public void test_0() throws Exception {

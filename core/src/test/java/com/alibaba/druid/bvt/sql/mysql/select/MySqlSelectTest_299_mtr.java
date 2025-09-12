@@ -18,12 +18,7 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
 
 public class MySqlSelectTest_299_mtr
         extends MysqlTest {

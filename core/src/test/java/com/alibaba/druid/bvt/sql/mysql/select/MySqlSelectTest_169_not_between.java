@@ -34,5 +34,4 @@ public class MySqlSelectTest_169_not_between extends MysqlTest {
         assertEquals("SELECT (a\n" +
                 "\tAND b) NOT BETWEEN 1 AND 2;", stmt.toString());
     }
-
 }

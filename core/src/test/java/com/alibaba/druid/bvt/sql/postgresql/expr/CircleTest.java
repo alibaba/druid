@@ -1,12 +1,8 @@
 package com.alibaba.druid.bvt.sql.postgresql.expr;
 
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
-
 
 public class CircleTest extends PGTest {
     public void test_timestamp() throws Exception {
@@ -14,6 +10,5 @@ public class CircleTest extends PGTest {
         PGExprParser parser = new PGExprParser(sql);
         PGCircleExpr expr = (PGCircleExpr) parser.expr();
         assertEquals("circle '((0,0),2)'", expr.toString());
-
     }
 }

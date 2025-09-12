@@ -1,17 +1,13 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.wall.WallFilter;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.wall.WallFilter;
 
 public class WallFilterTest extends TestCase {
     private DruidDataSource dataSource;
@@ -57,6 +53,7 @@ public class WallFilterTest extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();

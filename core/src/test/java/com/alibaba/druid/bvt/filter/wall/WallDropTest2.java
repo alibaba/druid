@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-
+import junit.framework.TestCase;
 
 public class WallDropTest2 extends TestCase {
     private String sql = "DROP PROCEDURE IF EXISTS CP_PayCalc1";

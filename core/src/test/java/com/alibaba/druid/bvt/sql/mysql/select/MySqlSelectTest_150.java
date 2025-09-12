@@ -3,7 +3,6 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
@@ -57,10 +56,7 @@ public class MySqlSelectTest_150 extends MysqlTest {
                         "MINUS\n" +
                         "(SELECT __aid\n" +
                         "FROM unidesk_ads.dmj_ex_1_unidesk_tag_all\n" +
-                        "WHERE unidesk_ads.dmj_ex_1_unidesk_tag_all.pred_career_type IN (?))"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
-
+                        "WHERE unidesk_ads.dmj_ex_1_unidesk_tag_all.pred_career_type IN (?))",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
 }

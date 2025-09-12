@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class OracleCreatePackageTest4 extends OracleTest {
     public void test_types() throws Exception {
@@ -118,7 +117,7 @@ public class OracleCreatePackageTest4 extends OracleTest {
                         "\t\tIN_CALC_ID NUMBER\n" +
                         "\t)\n" +
                         "\t;\n" +
-                        "END XON_CALC_RIGHT_PRICE_PKG;",//
+                        "END XON_CALC_RIGHT_PRICE_PKG;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

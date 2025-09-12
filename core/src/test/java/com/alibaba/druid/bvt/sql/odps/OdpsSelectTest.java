@@ -17,34 +17,32 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class OdpsSelectTest extends TestCase {
     public void test_distribute_by() throws Exception {
-        String sql = "select region from sale_detail distribute by region;";//
-        assertEquals("SELECT region" //
-                + "\nFROM sale_detail" //
+        String sql = "select region from sale_detail distribute by region;";
+        assertEquals("SELECT region"
+                + "\nFROM sale_detail"
                 + "\nDISTRIBUTE BY region;", SQLUtils.formatOdps(sql));
     }
 
     public void test_distribute_by_1() throws Exception {
-        String sql = " select region from sale_detail distribute by region sort by f1;";//
-        assertEquals("SELECT region" //
-                + "\nFROM sale_detail" //
+        String sql = " select region from sale_detail distribute by region sort by f1;";
+        assertEquals("SELECT region"
+                + "\nFROM sale_detail"
                 + "\nDISTRIBUTE BY region\n" +
                 "SORT BY f1;", SQLUtils.formatOdps(sql));
     }
 
     public void test_distribute_by_2() throws Exception {
-        String sql = " select region from sale_detail distribute by region sort by f1 asc;";//
-        assertEquals("SELECT region" //
-                + "\nFROM sale_detail" //
+        String sql = " select region from sale_detail distribute by region sort by f1 asc;";
+        assertEquals("SELECT region"
+                + "\nFROM sale_detail"
                 + "\nDISTRIBUTE BY region\n" +
                 "SORT BY f1 ASC;", SQLUtils.formatOdps(sql));
-        assertEquals("select region" //
-                + "\nfrom sale_detail" //
+        assertEquals("select region"
+                + "\nfrom sale_detail"
                 + "\ndistribute by region\n" +
                 "sort by f1 asc;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

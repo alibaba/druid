@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.wall.WallUtils;
-import static org.junit.Assert.*;
 
 import java.util.List;
 

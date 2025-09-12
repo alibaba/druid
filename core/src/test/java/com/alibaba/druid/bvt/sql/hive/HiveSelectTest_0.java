@@ -3,10 +3,8 @@ package com.alibaba.druid.bvt.sql.hive;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ public class HiveSelectTest_0 extends TestCase {
     public void test_select() throws Exception {
         String sql = "SELECT page_views.*\n" +
                 "FROM page_views\n" +
-                "WHERE page_views.date >= '2008-03-01' AND page_views.date <= '2008-03-31'";//
+                "WHERE page_views.date >= '2008-03-01' AND page_views.date <= '2008-03-31'";
         assertEquals("SELECT page_views.*\n" +
                 "FROM page_views\n" +
                 "WHERE page_views.date >= '2008-03-01'\n" +

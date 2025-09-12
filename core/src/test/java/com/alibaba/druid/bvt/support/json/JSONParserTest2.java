@@ -1,14 +1,11 @@
 package com.alibaba.druid.bvt.support.json;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.util.Utils;
+import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.druid.util.Utils;
 
 public class JSONParserTest2 extends TestCase {
     public void test_parse() throws Exception {

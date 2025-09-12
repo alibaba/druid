@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class DB2ResourceTest extends OracleTest {
     public void test_0() throws Exception {
@@ -86,5 +85,4 @@ public class DB2ResourceTest extends OracleTest {
             }
         }
     }
-
 }

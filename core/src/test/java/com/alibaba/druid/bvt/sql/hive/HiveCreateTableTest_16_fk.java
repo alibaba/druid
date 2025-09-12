@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class HiveCreateTableTest_16_fk extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
                 "create table fk(id1 integer, id2 integer,\n" +
-                        "  constraint c1 foreign key(id1, id2) references pk(id2, id1) disable novalidate);"; //
+                        "  constraint c1 foreign key(id1, id2) references pk(id2, id1) disable novalidate);";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -63,6 +62,5 @@ public class HiveCreateTableTest_16_fk extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("fk"));
-
     }
 }

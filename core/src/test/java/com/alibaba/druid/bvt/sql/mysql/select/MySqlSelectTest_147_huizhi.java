@@ -43,12 +43,11 @@ public class MySqlSelectTest_147_huizhi extends MysqlTest {
                         "WHERE 1 = 1\n" +
                         "\tAND VARCHAR20 IS NOT NULL\n" +
                         "\tAND MISSIONID = ?\n" +
-                        "GROUP BY VARCHAR20"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        "GROUP BY VARCHAR20",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
 
         SQLSelectQueryBlock queryBlock = stmt.getQuery().getQueryBlock();
         assertEquals(3, queryBlock.getSelectList().size());
         assertEquals(SQLCharExpr.class, queryBlock.getSelectList().get(2).getExpr().getClass());
     }
-
 }

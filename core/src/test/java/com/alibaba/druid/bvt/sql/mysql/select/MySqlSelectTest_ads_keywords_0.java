@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -42,7 +41,6 @@ public class MySqlSelectTest_ads_keywords_0 extends MysqlTest {
         assertNotNull(select.getQuery());
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
         assertNull(queryBlock.getOrderBy());
-
 
         assertEquals(1, statementList.size());
 

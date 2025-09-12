@@ -30,6 +30,4 @@ public class MySqlSelectTest_127 extends MysqlTest {
                 ")\n" +
                 "LIMIT 500", stmt.toString());
     }
-
-
 }

@@ -7,7 +7,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class SQLExprStatementTest {
-
     @Test
     public void testDefaultConstructor() {
         SQLExpr sqlExpr = new SQLBinaryOpExpr();
@@ -15,7 +14,7 @@ public class SQLExprStatementTest {
         stmt.setExpr(sqlExpr);
 
         assertEquals(sqlExpr, stmt.getExpr());
-        
+
         // Test parent relationship
         assertEquals(stmt, sqlExpr.getParent());
     }
@@ -27,7 +26,7 @@ public class SQLExprStatementTest {
         stmt.setExpr(sqlExpr);
 
         assertEquals(sqlExpr, stmt.getExpr());
-        
+
         // Test parent relationship
         assertEquals(stmt, sqlExpr.getParent());
     }

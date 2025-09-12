@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -222,19 +221,15 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         System.out.println(sql + ": " + val);
         assertEquals("h", val);
 
-
         sql = "RPAD('hi',5,'ab')";
         val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
         System.out.println(sql + ": " + val);
         assertEquals("hiaba", val);
 
-
         sql = "RPAD('hi',7,'abc')";
         val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
         System.out.println(sql + ": " + val);
         assertEquals("hiabcab", val);
-
-
 
     }
 
@@ -251,7 +246,6 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
         System.out.println(sql + ": " + val);
         assertEquals("ar", val);
-
     }
     public void test_string_replace() throws Exception {
         String sql = "replace('abcb','b','B')";

@@ -1,9 +1,9 @@
 package com.alibaba.druid.stat;
 
+import junit.framework.TestCase;
+
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
-
-import junit.framework.TestCase;
 
 public class PerfTest extends TestCase {
     public void test_0() throws Exception {

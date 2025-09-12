@@ -15,6 +15,15 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.jolbox.bonecp.BoneCPDataSource;
+import junit.framework.TestCase;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.Assert;
+
+import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -22,17 +31,6 @@ import java.text.NumberFormat;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.sql.DataSource;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.jolbox.bonecp.BoneCPDataSource;
 
 public class Case3 extends TestCase {
     private String jdbcUrl;
@@ -48,7 +46,7 @@ public class Case3 extends TestCase {
     private int threadCount = 10;
     private int TEST_COUNT = 3;
     final int LOOP_COUNT = 1000 * 100;
-    private boolean testOnBorrow = false;
+    private boolean testOnBorrow;
     private String connectionProperties = "";        // "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
     private String sql = "SELECT 1";
     private long timeBetweenEvictionRunsMillis = 60000;

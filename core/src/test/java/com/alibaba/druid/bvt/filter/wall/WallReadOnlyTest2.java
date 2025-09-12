@@ -15,15 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
+import junit.framework.TestCase;
 
 /**
  * 这个场景，检测可疑的Having条件
@@ -49,7 +44,6 @@ public class WallReadOnlyTest2 extends TestCase {
         assertFalse(provider.checkValid(insert_sql));
         assertFalse(provider.checkValid(update_sql));
         assertFalse(provider.checkValid(delete_sql));
-
     }
 
     public void testORACLE() throws Exception {
@@ -59,6 +53,5 @@ public class WallReadOnlyTest2 extends TestCase {
         assertFalse(provider.checkValid(insert_sql));
         assertFalse(provider.checkValid(update_sql));
         assertFalse(provider.checkValid(delete_sql));
-
     }
 }

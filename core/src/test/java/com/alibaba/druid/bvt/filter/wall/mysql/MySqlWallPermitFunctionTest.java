@@ -15,13 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class MySqlWallPermitFunctionTest extends TestCase {
     public void test_permitTable() throws Exception {
@@ -37,5 +32,4 @@ public class MySqlWallPermitFunctionTest extends TestCase {
         assertTrue(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM \"mysql\".\"user\") a"));
         assertTrue(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM MYSQL.USER) a"));
     }
-
 }

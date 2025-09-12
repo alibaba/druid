@@ -20,24 +20,23 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest19 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT ddf.file_name file_name, vdf.status status, ddf.tablespace_name tablespace_name" + //
-                        ", '', ddf.autoextensible autoextensible" + //
-                        "   , ddf.increment_by increment_by, ddf.maxbytes max_file_size, vdf.create_bytes " + //
-                        "FROM sys.dba_data_files ddf, v$datafile vdf /*+ all_rows use_concat */ " + //
-                        "WHERE (ddf.file_name = vdf.name) " + //
-                        "UNION ALL " + //
-                        "SELECT dtf.file_name file_name, vtf.status status, dtf.tablespace_name tablespace_name" + //
-                        "   , '', dtf.autoextensible autoextensible, dtf.increment_by increment_by" + //
-                        "   , dtf.maxbytes max_file_size, vtf.create_bytes " + //
-                        "FROM sys.dba_temp_files dtf, v$tempfile vtf " + //
-                        "WHERE (dtf.file_id = vtf.file#) "; //
+                "SELECT ddf.file_name file_name, vdf.status status, ddf.tablespace_name tablespace_name" +
+                        ", '', ddf.autoextensible autoextensible" +
+                        "   , ddf.increment_by increment_by, ddf.maxbytes max_file_size, vdf.create_bytes " +
+                        "FROM sys.dba_data_files ddf, v$datafile vdf /*+ all_rows use_concat */ " +
+                        "WHERE (ddf.file_name = vdf.name) " +
+                        "UNION ALL " +
+                        "SELECT dtf.file_name file_name, vtf.status status, dtf.tablespace_name tablespace_name" +
+                        "   , '', dtf.autoextensible autoextensible, dtf.increment_by increment_by" +
+                        "   , dtf.maxbytes max_file_size, vtf.create_bytes " +
+                        "FROM sys.dba_temp_files dtf, v$tempfile vtf " +
+                        "WHERE (dtf.file_id = vtf.file#) ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

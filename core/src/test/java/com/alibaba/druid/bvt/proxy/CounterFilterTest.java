@@ -15,18 +15,6 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.stat.StatFilter;
@@ -38,6 +26,12 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
 
 public class CounterFilterTest extends TestCase {
     String sql = "SELECT 1";
@@ -107,5 +101,4 @@ public class CounterFilterTest extends TestCase {
         dataSource.getProperties();
         dataSource.getDataSourceMBeanDomain();
     }
-
 }

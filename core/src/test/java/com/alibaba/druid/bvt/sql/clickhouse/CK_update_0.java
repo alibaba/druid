@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.clickhouse;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -9,15 +7,15 @@ import com.alibaba.druid.sql.dialect.clickhouse.parser.CKStatementParser;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-
 import junit.framework.TestCase;
 
-public class CK_update_0 extends TestCase {
+import java.util.List;
 
+public class CK_update_0 extends TestCase {
     public void test_0() throws Exception {
         String sql = "alter table tb1 ON CLUSTER 'cluster' update A=1,B=1,C=2  where ID = 1;"
             + "alter table tb1 ON CLUSTER cluster update A=3,B=4,C=5  where ID = 2;";
-        CKStatementParser parser=new CKStatementParser(sql);
+        CKStatementParser parser = new CKStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         System.out.println(statementList);
@@ -51,11 +49,10 @@ public class CK_update_0 extends TestCase {
         assertEquals("ALTER TABLE tb1 ON CLUSTER ? UPDATE A = ?, B = ?, C = ? WHERE ID = ?;", psql);
     }
 
-
     public void test_1() throws Exception {
         String sql = "alter table tb1 update A=1,B=1,C=2  where ID = 1;"
             + "alter table tb1 update A=3,B=4,C=5  where ID = 2;";
-        CKStatementParser parser=new CKStatementParser(sql);
+        CKStatementParser parser = new CKStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         System.out.println(statementList);
@@ -89,11 +86,10 @@ public class CK_update_0 extends TestCase {
         assertEquals("ALTER TABLE tb1 UPDATE A = ?, B = ?, C = ? WHERE ID = ?;", psql);
     }
 
-
     public void test_3() throws Exception {
             String sql = "alter table tb1 ON CLUSTER cluster update A=1,B=1,C=2 IN PARTITION partition_id where ID = 1;"
             + "alter table tb1 ON CLUSTER cluster update A=3,B=4,C=5 IN PARTITION partition_id where ID = 2;";
-        CKStatementParser parser=new CKStatementParser(sql);
+        CKStatementParser parser = new CKStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         assertEquals(2, statementList.size());
@@ -127,8 +123,8 @@ public class CK_update_0 extends TestCase {
     }
 
     public void test_4() throws Exception {
-        String sql="update tb1 set A=1,B=1,C=2 IN aaa where ID = 1;";
-        MySqlStatementParser mp=new MySqlStatementParser(sql);
+        String sql = "update tb1 set A=1,B=1,C=2 IN aaa where ID = 1;";
+        MySqlStatementParser mp = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = mp.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         System.out.println(statementList);
@@ -145,6 +141,5 @@ public class CK_update_0 extends TestCase {
         assertEquals("UPDATE tb1\n"
             + "SET A = ?, B = ?, C = ? IN (aaa)\n"
             + "WHERE ID = ?;", psql);
-
     }
 }

@@ -17,8 +17,6 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
@@ -43,7 +41,6 @@ public class MySqlSelectTest_210_union extends MysqlTest {
                 "             (a.create_time IS NULL AND b.create_time > '2018-01-01 00:00:00')\n" +
                 "      )\n" +
                 ")";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -76,8 +73,5 @@ public class MySqlSelectTest_210_union extends MysqlTest {
         assertEquals(4, visitor.getColumns().size());
         assertEquals(5, visitor.getConditions().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
-
     }
-
 }

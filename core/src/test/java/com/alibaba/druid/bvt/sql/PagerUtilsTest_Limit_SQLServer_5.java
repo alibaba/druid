@@ -1,11 +1,8 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
 
 public class PagerUtilsTest_Limit_SQLServer_5 extends TestCase {
     public void test_db2_union() throws Exception {

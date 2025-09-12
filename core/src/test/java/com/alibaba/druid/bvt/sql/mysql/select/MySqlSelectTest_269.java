@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_269 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT `IDENTIFIED`, `PRIMARY`, `TABLEGROUP`, `MATCH`, `ROWS`, `OUT`, `ANY`, `CASE`, `DECIMAL`, `REFERENCES`, `RLIKE` FROM SQL_TEST_NEW_20181016_1.THEN__1 WHERE 1=1 LIMIT 65";
@@ -36,6 +35,4 @@ public class MySqlSelectTest_269 extends MysqlTest {
                 "WHERE 1 = 1\n" +
                 "LIMIT 65", stmt.toString());
     }
-
-
 }

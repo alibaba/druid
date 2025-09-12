@@ -20,24 +20,23 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OceanbaseCreateTableTest_rangePartition2 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE employees ( " //
-                + "id INT NOT NULL, " //
-                + "fname VARCHAR(30), " //
-                + "lname VARCHAR(30), " //
-                + "hired DATE NOT NULL DEFAULT '1970-01-01', " //
-                + "separated DATE NOT NULL DEFAULT '9999-12-31', " //
-                + "job_code INT NOT NULL,store_id INT NOT NULL " //
-                + ") PARTITION BY RANGE (store_id) " //
-                + "( PARTITION p0 VALUES LESS THAN (6), " //
-                + "PARTITION p1 VALUES LESS THAN (11), " //
-                + "PARTITION p2 VALUES LESS THAN (16), " //
-                + "PARTITION p3 VALUES LESS THAN MAXVALUE " //
+        String sql = "CREATE TABLE employees ( "
+                + "id INT NOT NULL, "
+                + "fname VARCHAR(30), "
+                + "lname VARCHAR(30), "
+                + "hired DATE NOT NULL DEFAULT '1970-01-01', "
+                + "separated DATE NOT NULL DEFAULT '9999-12-31', "
+                + "job_code INT NOT NULL,store_id INT NOT NULL "
+                + ") PARTITION BY RANGE (store_id) "
+                + "( PARTITION p0 VALUES LESS THAN (6), "
+                + "PARTITION p1 VALUES LESS THAN (11), "
+                + "PARTITION p2 VALUES LESS THAN (16), "
+                + "PARTITION p3 VALUES LESS THAN MAXVALUE "
                 + ")";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -98,6 +97,5 @@ public class OceanbaseCreateTableTest_rangePartition2 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
 
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
     }
 }

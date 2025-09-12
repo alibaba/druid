@@ -15,17 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.lang.reflect.Field;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
+
+import java.lang.reflect.Field;
 
 public class ConfigErrorTest3 extends PoolTestCase {
     private DruidDataSource dataSource;

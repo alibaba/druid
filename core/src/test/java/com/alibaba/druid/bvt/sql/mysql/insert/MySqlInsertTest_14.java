@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -54,5 +53,4 @@ public class MySqlInsertTest_14 extends MysqlTest {
                 "ON DUPLICATE KEY UPDATE ts = UNIX_TIMESTAMP()";
         assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
-
 }

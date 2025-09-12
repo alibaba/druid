@@ -36,7 +36,7 @@ public class OraclePipeRowStatementTest extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("PIPE ROW(substr(p_string, v_start));",//
+        assertEquals("PIPE ROW(substr(p_string, v_start));",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

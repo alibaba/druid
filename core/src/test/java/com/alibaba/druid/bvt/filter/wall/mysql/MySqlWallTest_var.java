@@ -15,13 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -33,26 +28,26 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest_var extends TestCase {
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-                "SELECT @@GLOBAL.sql_mode")); //
+                "SELECT @@GLOBAL.sql_mode"));
     }
 
     public void test_true_1() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-                "SELECT @@SESSION.sql_mode;")); //
+                "SELECT @@SESSION.sql_mode;"));
     }
 
     public void test_false() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
-                "SELECT * FROM T WHERE @@SESSION.sql_mode = 'ANSI'")); //
+                "SELECT * FROM T WHERE @@SESSION.sql_mode = 'ANSI'"));
     }
 
     public void test_true2() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-                "SELECT * FROM T WHERE @@sql_mode = 'ANSI'")); //
+                "SELECT * FROM T WHERE @@sql_mode = 'ANSI'"));
     }
 
     public void test_false_1() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
-                "SELECT * FROM T WHERE @@basedir = 'ANSI'")); //
+                "SELECT * FROM T WHERE @@basedir = 'ANSI'"));
     }
 }

@@ -20,9 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import com.alibaba.druid.util.Utils;
-
-import java.util.List;
 
 public class MySqlSelectTest_315_issue_3960
         extends MysqlTest {

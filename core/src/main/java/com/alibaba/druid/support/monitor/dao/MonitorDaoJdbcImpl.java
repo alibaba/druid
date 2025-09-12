@@ -813,7 +813,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     public List<MonitorApp> listApp(String domain) throws SQLException {
         List<MonitorApp> list = new ArrayList<MonitorApp>();
 
-        String sql = "select id, domain, app from druid_app " //
+        String sql = "select id, domain, app from druid_app "
                 + " where domain = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -838,7 +838,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     }
 
     public MonitorApp findApp(String domain, String app) throws SQLException {
-        String sql = "select id, domain, app from druid_app " //
+        String sql = "select id, domain, app from druid_app "
                 + " where domain = ? and app = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -876,7 +876,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     public List<MonitorCluster> listCluster(String domain, String app) throws SQLException {
         List<MonitorCluster> list = new ArrayList<MonitorCluster>();
 
-        String sql = "select id, domain, app, cluster from druid_cluster " //
+        String sql = "select id, domain, app, cluster from druid_cluster "
                 + " where domain = ?";
 
         if (app != null) {
@@ -919,7 +919,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     }
 
     public MonitorCluster findCluster(String domain, String app, String cluster) throws SQLException {
-        String sql = "select id, domain, app, cluster from druid_cluster " //
+        String sql = "select id, domain, app, cluster from druid_cluster "
                 + " where domain = ? and app = ? and cluster = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -960,19 +960,19 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                                        Date startTime, long pid) throws SQLException {
         MonitorInstance monitorInst = findInst(domain, app, cluster, host);
         if (monitorInst == null) {
-            String sql = "insert into druid_inst (domain, app, cluster, host, ip, lastActiveTime, lastPID) " //
+            String sql = "insert into druid_inst (domain, app, cluster, host, ip, lastActiveTime, lastPID) "
                     + " values (?, ?, ?, ?, ?, ?, ?)";
             JdbcUtils.execute(dataSource, sql, domain, app, cluster, host, ip, startTime, pid);
         } else {
-            String sql = "update druid_inst set ip = ?, lastActiveTime = ?, lastPID = ? " //
+            String sql = "update druid_inst set ip = ?, lastActiveTime = ?, lastPID = ? "
                     + " where domain = ? and app = ? and cluster = ? and host = ? ";
             JdbcUtils.execute(dataSource, sql, ip, startTime, pid, domain, app, cluster, host);
         }
     }
 
     public MonitorInstance findInst(String domain, String app, String cluster, String host) throws SQLException {
-        String sql = "select id, domain, app, cluster, host, ip, lastActiveTime, lastPID from druid_inst " //
-                + " where domain = ? and app = ? and cluster = ? and host = ? " //
+        String sql = "select id, domain, app, cluster, host, ip, lastActiveTime, lastPID from druid_inst "
+                + " where domain = ? and app = ? and cluster = ? and host = ? "
                 + " limit 1";
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1002,7 +1002,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     public List<MonitorInstance> listInst(String domain, String app, String cluster) throws SQLException {
         List<MonitorInstance> list = new ArrayList<MonitorInstance>();
 
-        String sql = "select id, domain, app, cluster, host, ip, lastActiveTime, lastPID from druid_inst " //
+        String sql = "select id, domain, app, cluster, host, ip, lastActiveTime, lastPID from druid_inst "
                 + "where domain = ?";
 
         if (app != null) {

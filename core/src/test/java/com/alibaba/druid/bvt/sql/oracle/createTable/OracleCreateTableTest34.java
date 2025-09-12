@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class OracleCreateTableTest34 extends OracleTest {
         assertEquals("CREATE TABLE long_tab ("//
                         + "\n\tpic_id NUMBER,"//
                         + "\n\tlong_pics LONG RAW"//
-                        + "\n);",//
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

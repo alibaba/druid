@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-
 public class OracleSelectTest135 extends TestCase {
     public void test_0() throws Exception {
         String sql = "select * from (\n" +
@@ -134,5 +133,4 @@ public class OracleSelectTest135 extends TestCase {
 
 //        assertTrue(visitor.containsColumn("srm1.CONSIGNEE_ADDRESS", "id"));
     }
-
 }

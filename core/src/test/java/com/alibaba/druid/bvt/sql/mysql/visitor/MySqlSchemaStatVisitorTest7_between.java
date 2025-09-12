@@ -26,7 +26,7 @@ public class MySqlSchemaStatVisitorTest7_between extends TestCase {
     public void test_0() throws Exception {
         String sql = "select name from student where id = 4 and flag between 1 and 3";
 
-//		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
+        // sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -50,7 +50,5 @@ public class MySqlSchemaStatVisitorTest7_between extends TestCase {
         assertEquals(true, visitor.containsColumn("student", "name"));
         // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "name")));
-
     }
-
 }

@@ -15,17 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockNClob;
 import com.alibaba.druid.mock.MockResultSet;
@@ -36,13 +25,19 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Properties;
 
 public class FilterChainTest_NClob extends TestCase {
     private DruidDataSource dataSource;
     private StatementProxy statement;
     private MockResultSet mockResultSet;
 
-    private int invokeCount = 0;
+    private int invokeCount;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();

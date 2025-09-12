@@ -15,25 +15,25 @@
  */
 package com.alibaba.druid.pool.ui;
 
-import java.awt.GridLayout;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import java.awt.GridLayout;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DruidDataStatusPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private final Map<String, JTextField> fields = new HashMap<String, JTextField>();
 
-    private final String[] fieldNames = new String[]{ //
+    private final String[] fieldNames = new String[]{
             "CreateCount", "CreateErrorCount", "CreateTimespanMillis",
-            "CreateTimespanNano", "DestroyCount", //
-            "ConnectCount", "ConnectErrorCount", "CloseCount", "RecycleCount", "ActiveCount", //
-            "PoolingCount", "IdleCheckCount", "UI_GettingCount", "UI_GetCount", "UI_ReleaseCount" //
-            , "UI_ExecutingCount" //
+            "CreateTimespanNano", "DestroyCount",
+            "ConnectCount", "ConnectErrorCount", "CloseCount", "RecycleCount", "ActiveCount",
+            "PoolingCount", "IdleCheckCount", "UI_GettingCount", "UI_GetCount", "UI_ReleaseCount",
+            "UI_ExecutingCount"
     };
 
     public DruidDataStatusPanel() {
@@ -58,5 +58,4 @@ public class DruidDataStatusPanel extends JPanel {
     public Map<String, JTextField> getFields() {
         return fields;
     }
-
 }

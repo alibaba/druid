@@ -15,22 +15,17 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-
-import javax.management.openmbean.TabularData;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import javax.management.openmbean.TabularData;
+
+import java.sql.Connection;
 
 public class TestIdle extends TestCase {
     private DruidDataSource dataSource;

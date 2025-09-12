@@ -15,13 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class OracleWallPermitSchemaTest extends TestCase {
     public void test_true() throws Exception {
@@ -33,5 +28,4 @@ public class OracleWallPermitSchemaTest extends TestCase {
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select banner from sys.v_$version where rownum=1"));
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select banner from sys.v where rownum=1"));
     }
-
 }

@@ -15,21 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OdpsSelectTest7 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "select name as close from abc";//
+        String sql = "select name as close from abc";
         assertEquals("SELECT name AS close"
                 + "\nFROM abc", SQLUtils.formatOdps(sql));
         assertEquals("select name as close"
@@ -54,5 +51,4 @@ public class OdpsSelectTest7 extends TestCase {
 
         assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

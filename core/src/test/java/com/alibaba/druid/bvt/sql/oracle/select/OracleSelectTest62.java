@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class OracleSelectTest62 extends OracleTest {
                         "  GROUP BY GROUPING SETS( \n" +
                         "      (channel_desc, calendar_month_desc, co.country_id), \n" +
                         "      (channel_desc, co.country_id), \n" +
-                        "      (calendar_month_desc, co.country_id) );"; //
+                        "      (calendar_month_desc, co.country_id) );";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

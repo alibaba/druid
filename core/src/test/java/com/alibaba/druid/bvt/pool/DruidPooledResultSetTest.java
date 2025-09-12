@@ -15,19 +15,15 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledResultSet;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLFeatureNotSupportedException;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledResultSet;
 
 public class DruidPooledResultSetTest extends TestCase {
     private DruidDataSource dataSource;

@@ -15,17 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.DruidPasswordCallback;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.util.Properties;
 
 public class PasswordCallbackTest extends TestCase {
     protected void setUp() throws Exception {

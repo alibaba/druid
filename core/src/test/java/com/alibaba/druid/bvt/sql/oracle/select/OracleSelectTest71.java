@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class OracleSelectTest71 extends OracleTest {
                         "    AND A.SIM_NO LIKE '%'||?||'%' \n" +
                         "  order by A.SIM_NO ASC ) a\n" +
                         "\n" +
-                        "  ) where rn > ?*(?-1) and rn <= ?*?"; //
+                        "  ) where rn > ?*(?-1) and rn <= ?*?";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -73,5 +72,4 @@ public class MySqlCreateTable_refactor_test extends MysqlTest {
                         "TBPARTITION BY hash(b) TBPARTITIONS 4",
                 SQLUtils.toMySqlString(statementList.get(0)));
     }
-
 }

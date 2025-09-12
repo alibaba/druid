@@ -2,10 +2,7 @@ package com.alibaba.druid.bvt.sql.oracle.issues;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLParseAssertUtil;
-
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * 验证 Oracle union sql的问题
@@ -14,7 +11,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://github.com/alibaba/druid/issues/5241">Issue来源</a>
  */
 public class Issue5241 {
-
     @Test
     public void test_parse_union() throws Exception {
         for (DbType dbType : new DbType[]{

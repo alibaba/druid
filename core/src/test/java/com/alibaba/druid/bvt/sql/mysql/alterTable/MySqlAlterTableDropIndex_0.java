@@ -31,10 +31,10 @@ public class MySqlAlterTableDropIndex_0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        assertEquals("ALTER TABLE `test`.`tb1`" + //
+        assertEquals("ALTER TABLE `test`.`tb1`" +
                 "\n\tDROP INDEX `ix`;", SQLUtils.toMySqlString(stmt));
 
-        assertEquals("alter table `test`.`tb1`" + //
+        assertEquals("alter table `test`.`tb1`" +
                 "\n\tdrop index `ix`;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -44,5 +44,4 @@ public class MySqlAlterTableDropIndex_0 extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(1, tableStat.getDropIndexCount());
     }
-
 }

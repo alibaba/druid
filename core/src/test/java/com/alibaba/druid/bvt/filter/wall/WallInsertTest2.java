@@ -15,13 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class WallInsertTest2 extends TestCase {
     private String sql = "INSERT INTO T (F1, F2) VALUES (1, 2)";

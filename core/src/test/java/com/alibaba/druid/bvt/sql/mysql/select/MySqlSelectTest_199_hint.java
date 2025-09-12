@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -31,11 +30,9 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         String sql = "  SELECT NAME \n" + "  FROM CUSTOMER \n" + "  INNER JOIN ORDERS ON\n"
                 + "  CUSTOMER.CUSTKEY = ORDERS.CUSTKEY /*+ dynamicFilter = true */\n";
 
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-
 
         {
             String output = SQLUtils.toMySqlString(stmt);
@@ -426,7 +423,6 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
-
     public void test_13() throws Exception {
         String sql = " explain (FORMAT detail) SELECT customer.NAME, MAX(customer.CUSTKEY) MAXKEY" +
                 "      FROM CUSTOMER," +
@@ -475,7 +471,6 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
                 "JOIN  lineitem l " +
                 "ON o.orderkey = l.orderkey /*+distributionType=partition*/" +
                 "LIMIT    100";
-        ;
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(
                 sql,
@@ -501,7 +496,6 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
                 "JOIN  lineitem l " +
                 "ON o.orderkey = l.orderkey /*+distributionType=repartition*/" +
                 "LIMIT    100";
-        ;
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(
                 sql,
@@ -527,7 +521,6 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
                 "JOIN  lineitem l " +
                 "ON o.orderkey = l.orderkey /*+distributionType=broadcast*/" +
                 "LIMIT    100";
-        ;
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(
                 sql,
@@ -553,7 +546,6 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
                 "JOIN  lineitem l " +
                 "ON o.orderkey = l.orderkey /*+distribution_type=broadcast*/" +
                 "LIMIT    100";
-        ;
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(
                 sql,

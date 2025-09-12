@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_279 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select l.*\n" +
@@ -78,6 +77,4 @@ public class MySqlSelectTest_279 extends MysqlTest {
                 ") l\n" +
                 "ORDER BY '区划'", stmt.toString());
     }
-
-
 }

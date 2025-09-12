@@ -15,22 +15,20 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleUpdateTest1 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "UPDATE table1 t_alias1 " + //
-                "    SET column = " + //
-                "        (SELECT expr " + //
-                "            FROM table2 t_alias2 " + //
+        String sql = "UPDATE table1 t_alias1 " +
+                "    SET column = " +
+                "        (SELECT expr " +
+                "            FROM table2 t_alias2 " +
                 "            WHERE t_alias1.column = t_alias2.column); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -58,5 +56,4 @@ public class OracleUpdateTest1 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("table2", "expr")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("table2", "column")));
     }
-
 }

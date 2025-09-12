@@ -1,13 +1,12 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,7 +17,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/alter-table.html">ALTER TABLE Statement</a>
  */
 public class Issue5803 {
-
     @Test
     public void test_parse_alter_table() {
         for (DbType dbType : new DbType[]{
@@ -26,7 +24,6 @@ public class Issue5803 {
             DbType.mariadb,
 
         }) {
-
             for (String sql : new String[]{
                 "ALTER TABLE t1 ALTER INDEX i_idx INVISIBLE;",
                 "ALTER TABLE t1 ALTER INDEX i_idx VISIBLE;",

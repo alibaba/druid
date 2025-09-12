@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class OracleSelectTest88_bindvar extends OracleTest {
                         "    select *\n" +
                         "    from \"rme\" \"rm\" \n" +
                         "    where \"rm\".a-interval:\"sys_b_07\" day(:\"sys_b_08\") to second(:\"sys_b_09\")\n" +
-                        ")"; //
+                        ")";
 
         System.out.println(sql);
 

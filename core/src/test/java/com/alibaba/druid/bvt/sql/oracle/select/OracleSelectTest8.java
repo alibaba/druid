@@ -20,15 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest8 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "SELECT d.department_id, e.last_name" + //
-                "   FROM departments d, employees e" + //
-                "   WHERE d.department_id = e.department_id(+)" + //
+        String sql = "SELECT d.department_id, e.last_name" +
+                "   FROM departments d, employees e" +
+                "   WHERE d.department_id = e.department_id(+)" +
                 "   ORDER BY d.department_id, e.last_name;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

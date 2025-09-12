@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 /**
  * @version 1.0
@@ -24,7 +23,5 @@ public class MySqlAlterTableTest52_primary_prefix_key extends TestCase {
 
         assertEquals("ALTER TABLE test001\n" +
                 "\tADD PRIMARY KEY (b(4) ASC, c(8) DESC);", SQLUtils.toMySqlString(stmt));
-
     }
-
 }

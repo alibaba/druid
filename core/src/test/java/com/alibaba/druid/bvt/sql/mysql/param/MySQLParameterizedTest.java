@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 

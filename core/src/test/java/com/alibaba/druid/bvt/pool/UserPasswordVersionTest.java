@@ -1,19 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import junit.framework.TestCase;
 
-import java.sql.Connection;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 这个场景测试initialSize > maxActive

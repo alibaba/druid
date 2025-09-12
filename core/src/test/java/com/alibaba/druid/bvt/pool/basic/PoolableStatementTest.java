@@ -15,17 +15,12 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.pool.DruidPooledStatement;
+import junit.framework.TestCase;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.mock.MockStatement;
-import com.alibaba.druid.pool.DruidPooledStatement;
 
 public class PoolableStatementTest extends TestCase {
     protected Statement raw;
@@ -54,5 +49,4 @@ public class PoolableStatementTest extends TestCase {
         assertEquals(false, stmt.isPoolable());
         stmt.toString();
     }
-
 }

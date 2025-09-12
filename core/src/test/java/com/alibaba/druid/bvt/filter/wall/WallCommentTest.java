@@ -15,15 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import junit.framework.TestCase;
 
 /**
  * @author wenshao

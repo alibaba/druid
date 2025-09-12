@@ -15,8 +15,10 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.pool.DruidPooledResultSet;
+import com.alibaba.druid.pool.DruidPooledStatement;
+import junit.framework.TestCase;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -27,13 +29,6 @@ import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.SQLException;
 import java.sql.SQLXML;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.pool.DruidPooledResultSet;
-import com.alibaba.druid.pool.DruidPooledStatement;
 
 public class ResultSetTest extends TestCase {
     private DruidPooledStatement stmt;
@@ -99,7 +94,6 @@ public class ResultSetTest extends TestCase {
         resultSet.getAsciiStream("1");
         resultSet.getUnicodeStream("1");
         resultSet.getBinaryStream("1");
-
     }
 
     public void test_set() throws Exception {

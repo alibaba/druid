@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class MySql_Create_Function_1 extends MysqlTest {
     public void test_0() throws Exception {

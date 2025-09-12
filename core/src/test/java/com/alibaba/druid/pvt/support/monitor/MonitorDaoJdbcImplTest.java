@@ -1,11 +1,5 @@
 package com.alibaba.druid.pvt.support.monitor;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.monitor.MonitorClient;
@@ -13,10 +7,11 @@ import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl.BeanInfo;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl.FieldInfo;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.wall.WallFunctionStatValue;
-import com.alibaba.druid.wall.WallProviderStatValue;
-import com.alibaba.druid.wall.WallSqlStatValue;
-import com.alibaba.druid.wall.WallTableStatValue;
+import junit.framework.TestCase;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class MonitorDaoJdbcImplTest extends TestCase {
     private DruidDataSource dataSource;

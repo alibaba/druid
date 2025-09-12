@@ -15,16 +15,11 @@
  */
 package com.alibaba.druid.bvt.proxy.fake;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.alibaba.druid.proxy.DruidDriver;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.util.Properties;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.proxy.DruidDriver;
 
 public class DruidDriverTest extends TestCase {
     public void test_0() throws Exception {

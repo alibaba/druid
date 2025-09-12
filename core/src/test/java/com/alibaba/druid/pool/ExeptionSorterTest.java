@@ -28,7 +28,6 @@ public class ExeptionSorterTest extends TestCase {
         assertEquals(dataSource.getExceptionSorter().getClass(), MySqlExceptionSorter.class);
     }
 
-
     public static class MyDriver extends Driver {
         /**
          * Construct a new driver and register it with DriverManager

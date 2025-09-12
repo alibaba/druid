@@ -6,14 +6,14 @@ import junit.framework.TestCase;
 
 public class PagerUtilsTest_hasUnorderedLimit_oracle extends TestCase {
     public void test_false() throws Exception {
-        String sql = "SELECT *" + //
-                "\nFROM (SELECT XX.*, ROWNUM AS RN" + //
-                "\n\tFROM (SELECT id, name, salary" + //
-                "\n\t\tFROM t" + //
-                "\n\t\tORDER BY id, name" + //
-                "\n\t\t) XX" + //
-                "\n\tWHERE ROWNUM <= 30" + //
-                "\n\t) XXX" + //
+        String sql = "SELECT *" +
+                "\nFROM (SELECT XX.*, ROWNUM AS RN" +
+                "\n\tFROM (SELECT id, name, salary" +
+                "\n\t\tFROM t" +
+                "\n\t\tORDER BY id, name" +
+                "\n\t\t) XX" +
+                "\n\tWHERE ROWNUM <= 30" +
+                "\n\t) XXX" +
                 "\nWHERE RN > 20";
         assertFalse(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.ORACLE));
     }
@@ -24,8 +24,8 @@ public class PagerUtilsTest_hasUnorderedLimit_oracle extends TestCase {
     }
 
     public void test_true() throws Exception {
-        String sql = "SELECT *" + //
-                "\nFROM t" + //
+        String sql = "SELECT *" +
+                "\nFROM t" +
                 "\nWHERE ROWNUM <= 10";
         assertTrue(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.ORACLE));
     }

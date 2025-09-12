@@ -33,7 +33,6 @@ public class MySqlSelectTest_equals extends MysqlTest {
         SQLSelectQuery queryBlock2 = getQueryBlock(sql2);
 
         assertNotSame(queryBlock, queryBlock2);
-
     }
 
     public void test_1() throws Exception {
@@ -45,7 +44,6 @@ public class MySqlSelectTest_equals extends MysqlTest {
         SQLSelectQuery queryBlock2 = getQueryBlock(sql2);
 
         assertEquals(queryBlock, queryBlock2);
-
     }
 
     private SQLSelectQuery getQueryBlock(String sql) {

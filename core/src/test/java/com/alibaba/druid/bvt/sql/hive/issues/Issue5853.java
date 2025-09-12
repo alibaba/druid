@@ -1,13 +1,12 @@
 package com.alibaba.druid.bvt.sql.hive.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,7 +16,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL">...</a>
  */
 public class Issue5853 {
-
     @Test
     public void test_parse_create_0() {
         for (String sql : new String[]{
@@ -87,5 +85,4 @@ public class Issue5853 {
         }
 
     }
-
 }

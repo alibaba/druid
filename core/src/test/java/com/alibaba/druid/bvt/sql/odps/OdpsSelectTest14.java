@@ -15,20 +15,17 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OdpsSelectTest14 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "SELECT split_part(content, '\\001')[1] FROM dual;";//
+        String sql = "SELECT split_part(content, '\\001')[1] FROM dual;";
         assertEquals("SELECT split_part(content, '\\001')[1]\n" +
                 "FROM dual;", SQLUtils.formatOdps(sql));
         assertEquals("select split_part(content, '\\001')[1]\n" +
@@ -53,5 +50,4 @@ public class OdpsSelectTest14 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
+import junit.framework.TestCase;
 
 public class MySqlUpdateStatementLimitTest extends TestCase {
     public void test_limit() {

@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class MySqlBeginTest extends MysqlTest {
     public void test_0() throws Exception {
@@ -33,7 +31,6 @@ public class MySqlBeginTest extends MysqlTest {
                 + "\nUPDATE table2 SET summary=@A WHERE type=1;"
                 + "\nCOMMIT;"
                 + "\n";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -87,6 +84,4 @@ public class MySqlBeginTest extends MysqlTest {
                     output);
         }
     }
-
-
 }

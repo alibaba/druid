@@ -38,6 +38,5 @@ public class MySqlParameterizedOutputVisitorTest_15 extends com.alibaba.druid.bv
                 "\t, ?, ?, ?, ?, ?\n" +
                 "\t, ?, ?, NULL, NULL, NULL\n" +
                 "\t, ?, ?)");
-
     }
 }

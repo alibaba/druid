@@ -15,18 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.mock.MockPreparedStatement;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockPreparedStatement;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestSharePreparedStatements extends TestCase {
     protected void setUp() throws Exception {

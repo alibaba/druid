@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import junit.framework.TestCase;
@@ -35,7 +31,7 @@ public class MySqlWallTest43 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setConditionAndAlwayTrueAllow(false);
         assertFalse(provider.checkValid(//
-                "SELECT COUNT(1) AS count FROM `team` " + //
+                "SELECT COUNT(1) AS count FROM `team` " +
                         "WHERE `team_type` = 'normal' AND 1 = 1 AND `city_id` IN (0,10)"));
 
         assertEquals(1, provider.getTableStats().size());
@@ -46,7 +42,7 @@ public class MySqlWallTest43 extends TestCase {
         provider.getConfig().setConditionAndAlwayTrueAllow(true);
 
         assertTrue(provider.checkValid(//
-                "SELECT COUNT(1) AS count FROM `team` " + //
+                "SELECT COUNT(1) AS count FROM `team` " +
                         "WHERE `team_type` = 'normal' AND 1 = 1 AND `city_id` IN (0,10)"));
 
         assertEquals(1, provider.getTableStats().size());
@@ -56,7 +52,7 @@ public class MySqlWallTest43 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         assertFalse(provider.checkValid(//
-                "SELECT COUNT(1) AS count FROM `team` " + //
+                "SELECT COUNT(1) AS count FROM `team` " +
                         "WHERE `team_type` = 'normal' AND 1 = 2 AND `city_id` IN (0,10)"));
 
         assertEquals(1, provider.getTableStats().size());
@@ -67,7 +63,7 @@ public class MySqlWallTest43 extends TestCase {
         provider.getConfig().setConditionAndAlwayFalseAllow(true);
 
         assertTrue(provider.checkValid(//
-                "SELECT COUNT(1) AS count FROM `team` " + //
+                "SELECT COUNT(1) AS count FROM `team` " +
                         "WHERE `team_type` = 'normal' AND 1 = 2 AND `city_id` IN (0,10)"));
 
         assertEquals(1, provider.getTableStats().size());

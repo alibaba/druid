@@ -20,28 +20,27 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateProcedureTest2 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "CREATE OR REPLACE PROCEDURE transfer (" + //
-                "  from_acct  NUMBER," + //
-                "  to_acct    NUMBER," + //
-                "  amount     NUMBER" + //
-                ") AS " + //
-                "BEGIN" + //
-                "  UPDATE accounts" + //
-                "  SET balance = balance - amount" + //
-                "  WHERE account_id = from_acct;" + //
-                " " + //
-                "  UPDATE accounts" + //
-                "  SET balance = balance + amount" + //
-                "  WHERE account_id = to_acct;" + //
-                " " + //
-                "  COMMIT WRITE IMMEDIATE NOWAIT;" + //
-                "END;"; //
+        String sql = "CREATE OR REPLACE PROCEDURE transfer (" +
+                "  from_acct  NUMBER," +
+                "  to_acct    NUMBER," +
+                "  amount     NUMBER" +
+                ") AS " +
+                "BEGIN" +
+                "  UPDATE accounts" +
+                "  SET balance = balance - amount" +
+                "  WHERE account_id = from_acct;" +
+                " " +
+                "  UPDATE accounts" +
+                "  SET balance = balance + amount" +
+                "  WHERE account_id = to_acct;" +
+                " " +
+                "  COMMIT WRITE IMMEDIATE NOWAIT;" +
+                "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

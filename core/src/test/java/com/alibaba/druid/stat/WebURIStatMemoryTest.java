@@ -1,11 +1,10 @@
 package com.alibaba.druid.stat;
 
-import java.lang.management.ManagementFactory;
-import java.text.NumberFormat;
-
+import com.alibaba.druid.support.http.stat.WebURIStat;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.support.http.stat.WebURIStat;
+import java.lang.management.ManagementFactory;
+import java.text.NumberFormat;
 
 public class WebURIStatMemoryTest extends TestCase {
     public void test_0() throws Exception {

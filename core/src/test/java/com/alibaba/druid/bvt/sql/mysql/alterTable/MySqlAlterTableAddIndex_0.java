@@ -31,10 +31,10 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        assertEquals("ALTER TABLE `test`.`tb1`" + //
+        assertEquals("ALTER TABLE `test`.`tb1`" +
                 "\n\tADD INDEX `ix` (`f2` ASC);", SQLUtils.toMySqlString(stmt));
 
-        assertEquals("alter table `test`.`tb1`" + //
+        assertEquals("alter table `test`.`tb1`" +
                 "\n\tadd index `ix` (`f2` asc);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -54,7 +54,6 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
 
         assertEquals("ALTER TABLE `test`.`tb1`\n"
                 + "\t ALTER INDEX `ix` FULLTEXT  ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
-
     }
 
     public void test_alter_fulltext2() throws Exception {
@@ -65,7 +64,6 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
 
         assertEquals("ALTER TABLE `test`.`tb1`\n"
                 + "\t ALTER INDEX `ix` FULLTEXT INDEX ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
-
     }
 
     public void test_alter_fulltext3() throws Exception {
@@ -76,7 +74,5 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
 
         assertEquals("ALTER TABLE `test`.`tb1`\n"
                 + "\t ALTER INDEX `ix` FULLTEXT QUERY ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
-
     }
-
 }

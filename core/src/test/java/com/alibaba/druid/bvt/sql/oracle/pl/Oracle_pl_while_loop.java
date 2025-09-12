@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class Oracle_pl_while_loop extends OracleTest {
     public void test_0() throws Exception {
@@ -33,7 +32,7 @@ public class Oracle_pl_while_loop extends OracleTest {
                      "    \tDBMS_OUTPUT.PUT_LINE('Sum: ' || v1);\n" +
                      " \t\tv1 := v1 - 1;\n" +
                      "  \tEND LOOP;\n" +
-                     "END;"; //
+                     "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, statementList.size());

@@ -21,15 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest22 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE t1 (" + //
-                "c1 INT STORAGE DISK," + //
-                "c2 INT STORAGE MEMORY " + //
+        String sql = "CREATE TABLE t1 (" +
+                "c1 INT STORAGE DISK," +
+                "c2 INT STORAGE MEMORY " +
                 ") TABLESPACE ts_1 ENGINE NDB;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -54,10 +53,9 @@ public class MySqlCreateTableTest22 extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("CREATE TABLE t1 (" + //
-                "\n\tc1 INT STORAGE DISK," + //
-                "\n\tc2 INT STORAGE MEMORY" + //
+        assertEquals("CREATE TABLE t1 (" +
+                "\n\tc1 INT STORAGE DISK," +
+                "\n\tc2 INT STORAGE MEMORY" +
                 "\n) TABLESPACE ts_1 ENGINE = NDB;", output);
-
     }
 }

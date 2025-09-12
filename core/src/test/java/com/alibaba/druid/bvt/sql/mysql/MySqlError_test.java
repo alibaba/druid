@@ -15,15 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 public class MySqlError_test extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "insert into userdetectitem26 (nick,volume) values(?,?) " + //
+        String sql = "insert into userdetectitem26 (nick,volume) values(?,?) " +
                 "ON DUPLICATE KEY UPDATE title = ?,picURL = ?,scoreExceed = ?,score=";
 
         Exception error = null;

@@ -15,17 +15,13 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class OracleWallTest3 extends TestCase {
     public void test_true() throws Exception {
         String sql = //
-                "CREATE TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\" " //
+                "CREATE TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\" "
                         + "BEFORE INSERT"//
                         + "    ON \"AO_4AEACD_WEBHOOK_DAO\"   FOR EACH ROW "//
                         + "BEGIN"//

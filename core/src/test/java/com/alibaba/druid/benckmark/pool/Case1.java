@@ -15,6 +15,16 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.jolbox.bonecp.BoneCPDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import junit.framework.TestCase;
+import org.apache.commons.dbcp.BasicDataSource;
+
+import javax.sql.DataSource;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.sql.Connection;
@@ -24,18 +34,6 @@ import java.text.NumberFormat;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
-
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.jolbox.bonecp.BoneCPDataSource;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  * TestOnBo 类Case1.java的实现描述：TODO 类实现描述
@@ -261,6 +259,5 @@ public class Case1 extends TestCase {
                 + NumberFormat.getInstance().format(blockedCount) //
                 + " waited " + NumberFormat.getInstance().format(waitedCount) + " physicalConn "
                 + physicalConnStat.get());
-
     }
 }

@@ -26,6 +26,4 @@ public class MySqlSelectTest_132_not_in extends MysqlTest {
                 "FROM abc\n" +
                 "WHERE id NOT IN (?)", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
-
-
 }

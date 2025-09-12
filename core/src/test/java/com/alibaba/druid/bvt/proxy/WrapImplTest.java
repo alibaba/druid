@@ -15,24 +15,17 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.Utils;
+import junit.framework.TestCase;
+
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.util.Properties;
 
 public class WrapImplTest extends TestCase {
     private static String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j,encoding,null:name=demo:jdbc:derby:classpath:petstore-db";

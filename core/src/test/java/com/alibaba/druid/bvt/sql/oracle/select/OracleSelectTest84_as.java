@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest84_as extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "select a as, b, c from t"; //
+                "select a as, b, c from t";
 
         System.out.println(sql);
 
@@ -35,7 +34,6 @@ public class OracleSelectTest84_as extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
-
 
         assertEquals(1, statementList.size());
 

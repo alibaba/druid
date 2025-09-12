@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.alterTable;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -26,6 +22,7 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
 
 public class MySqlAlterTableAddIndex_5 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -47,5 +44,4 @@ public class MySqlAlterTableAddIndex_5 extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(1, tableStat.getCreateIndexCount());
     }
-
 }

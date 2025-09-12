@@ -39,5 +39,4 @@ public class MySqlAlterViewTest_0 extends TestCase {
                 "select count(*)\n" +
                 "from t3;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

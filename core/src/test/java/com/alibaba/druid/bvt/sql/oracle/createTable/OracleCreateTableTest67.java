@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class OracleCreateTableTest67 extends OracleTest {
                         "AS\n" +
                         "SELECT CAST(duplications_index_seq.NEXTVAL AS NUMBER(38)) AS \"ID\", project_snapshot_id, snapshot_id, hash, index_in_file\n" +
                         "\t, start_line, end_line\n" +
-                        "FROM duplications_index",//
+                        "FROM duplications_index",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

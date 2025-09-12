@@ -15,23 +15,18 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.sql.Statement;
-
-import javax.sql.DataSource;
-
+import com.alibaba.druid.spring.User;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import junit.framework.TestCase;
-
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.alibaba.druid.spring.User;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import javax.sql.DataSource;
+
+import java.sql.Connection;
+import java.sql.Statement;
 
 public class SpringMybatisFilterTest extends TestCase {
     protected void setUp() throws Exception {

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -129,7 +128,7 @@ public class OracleCreateViewTest6 extends OracleTest {
                         "\t, utl_raw.cast_to_raw(CONTRACT_ID) AS CONTRACT_ID, utl_raw.cast_to_raw(IS_RENEW_UPGRADE) AS IS_RENEW_UPGRADE\n" +
                         "\t, CATEGORY_ID_1, CATEGORY_ID_2, FIRST_RECEIPT_DATE, utl_raw.cast_to_raw(RECEIPT_REMARK) AS RECEIPT_REMARK\n" +
                         "\t, utl_raw.cast_to_raw(CONTRACT_SERIAL) AS CONTRACT_SERIAL, IS_MERGED\n" +
-                        "FROM TB_002",//
+                        "FROM TB_002",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

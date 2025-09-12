@@ -18,7 +18,6 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE cache_table_1\n" +
                 "OPTIONS (cache = true)\n" +
                 "AS\n" +
@@ -26,9 +25,7 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 "SELECT *\n" +
                 "FROM test_realtime1\n" +
                 "LIMIT 200;", stmt.toString());
-
     }
-
 
     public void test_1() throws Exception {
         String sql = "CREATE TABLE employees (\n" +
@@ -49,7 +46,6 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE employees (\n" +
                 "\tid INT NOT NULL,\n" +
                 "\tfname VARCHAR(30),\n" +
@@ -61,7 +57,6 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 ")\n" +
                 "PARTITION BY HASH KEY(id)\n" +
                 "TABLEGROUP group0;", stmt.toString());
-
     }
 
     public void test_2() throws Exception {
@@ -91,7 +86,6 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE employees (\n" +
                 "\tid INT NOT NULL,\n" +
                 "\tfname VARCHAR(30),\n" +
@@ -110,9 +104,7 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 "\tPARTITION p3 VALUES LESS THAN MAXVALUE\n" +
                 ")\n" +
                 "TABLEGROUP group0;", stmt.toString());
-
     }
-
 
     public void test_3() throws Exception {
         String sql = "CREATE TABLE employees (\n" +
@@ -140,7 +132,6 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE employees (\n" +
                 "\tid INT NOT NULL,\n" +
                 "\tfname VARCHAR(30),\n" +
@@ -159,7 +150,6 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 "\tPARTITION pCentral VALUES IN (7, 8, 15, 16)\n" +
                 ")\n" +
                 "TABLEGROUP group0;", stmt.toString());
-
     }
 
     public void test_4() throws Exception {
@@ -189,7 +179,6 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE employees (\n" +
                 "\tid INT NOT NULL,\n" +
                 "\tfname VARCHAR(30),\n" +
@@ -209,7 +198,6 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 "\tPARTITION pCentral VALUES IN (7, 8, 15, 16)\n" +
                 ")\n" +
                 "TABLEGROUP group0;", stmt.toString());
-
     }
 
     public void test_create_table_as() {
@@ -228,7 +216,6 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 ");", stmt.toString());
     }
 
-
     public void test_create_table_new() {
         String sql = "select label from t";
 
@@ -236,6 +223,4 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
 
         System.out.println(statement.toString());
     }
-
-
 }

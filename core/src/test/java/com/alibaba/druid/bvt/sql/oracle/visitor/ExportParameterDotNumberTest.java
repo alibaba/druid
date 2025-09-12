@@ -1,20 +1,17 @@
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
-import static org.junit.Assert.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class ExportParameterDotNumberTest extends TestCase {
     /**
@@ -43,5 +40,4 @@ public class ExportParameterDotNumberTest extends TestCase {
             assertTrue(plist.size() > 0);
         }
     }
-
 }

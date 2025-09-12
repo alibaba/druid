@@ -1,20 +1,17 @@
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.pool.DruidAbstractDataSource;
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Properties;
 
-import com.alibaba.druid.pool.DruidAbstractDataSource;
-import com.alibaba.druid.pool.DruidDataSource;
-
-import junit.framework.TestCase;
-
 /**
  * @author lizongbo
- 
  */
 public class DruidDataSourceUtilsTest extends TestCase {
-
     public void testConfigFromProperties() {
         Properties properties = new Properties();
 //DruidAbstractDataSource fields
@@ -495,6 +492,5 @@ public class DruidDataSourceUtilsTest extends TestCase {
         properties.put("druid.name", druidName);
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.configFromPropeties(properties);
-
     }
 }

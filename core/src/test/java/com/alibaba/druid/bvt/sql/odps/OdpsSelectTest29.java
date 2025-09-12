@@ -30,7 +30,7 @@ public class OdpsSelectTest29 extends TestCase {
                 "SELECT *\n" +
                 "--hhhhh\n" +
                 "FROM emp e\n" +
-                "LEFT OUTER JOIN emp_datahub";//
+                "LEFT OUTER JOIN emp_datahub";
         assertEquals("-- aaaaa\n" +
                 "SELECT * -- hhhhh\n" +
                 "FROM emp e\n" +
@@ -62,5 +62,4 @@ public class OdpsSelectTest29 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

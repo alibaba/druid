@@ -15,24 +15,21 @@
  */
 package com.alibaba.druid.bvt.sql.sqlserver;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class SQLServerParameterizedOutputVisitorTest extends TestCase {
     public void test_simple() throws Exception {
-        String sql = "select GEN_VAL " + //
-                "from ID_GENERATOR with (updlock, rowlock) " + //
-                "where GEN_NAME = 'T_USERS' AND FID = 3 AND FSTATE IN (1, 2, 3)"; //
+        String sql = "select GEN_VAL " +
+                "from ID_GENERATOR with (updlock, rowlock) " +
+                "where GEN_NAME = 'T_USERS' AND FID = 3 AND FSTATE IN (1, 2, 3)";
 
-        String expect = "SELECT GEN_VAL" + //
-                "\nFROM ID_GENERATOR WITH (updlock, rowlock)" + //
+        String expect = "SELECT GEN_VAL" +
+                "\nFROM ID_GENERATOR WITH (updlock, rowlock)" +
                 "\nWHERE GEN_NAME = ?" +
                 "\n\tAND FID = ?" +
                 "\n\tAND FSTATE IN (?)";

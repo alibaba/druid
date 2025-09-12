@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_288 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "INSERT INTO hive.oa1878750739446285_stat_meiyan_parquet.meiyan_odz_daily_user\n" +
@@ -242,6 +241,4 @@ public class MySqlSelectTest_288 extends MysqlTest {
                 "\t) back\n" +
                 "\tON d.server_id = back.server_id)", stmt.toString());
     }
-
-
 }

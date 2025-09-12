@@ -15,8 +15,15 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.alibaba.druid.mock.MockConnection;
+import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.mock.MockResultSetMetaData;
+import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+import junit.framework.TestCase;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -28,18 +35,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.mock.MockConnection;
-import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.mock.MockResultSetMetaData;
-import com.alibaba.druid.mock.MockStatement;
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.Utils;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class JdbcUtilsTest extends TestCase {
     protected void tearDown() throws Exception {
@@ -277,5 +272,4 @@ public class JdbcUtilsTest extends TestCase {
             assertEquals("AA", text);
         }
     }
-
 }

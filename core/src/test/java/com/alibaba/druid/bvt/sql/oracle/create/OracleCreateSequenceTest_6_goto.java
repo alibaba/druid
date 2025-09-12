@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class OracleCreateSequenceTest_6_goto extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE SEQUENCE GOTO.SEQ_GT_BUSINESS_CATEGORY START WITH 1 INCREMENT BY 1 MINVALUE 1",//
+        assertEquals("CREATE SEQUENCE GOTO.SEQ_GT_BUSINESS_CATEGORY START WITH 1 INCREMENT BY 1 MINVALUE 1",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

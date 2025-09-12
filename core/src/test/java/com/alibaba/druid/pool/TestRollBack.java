@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.util.JdbcUtils;
 
 public class TestRollBack extends TestCase {
     private DruidDataSource dataSource;
@@ -113,5 +112,4 @@ public class TestRollBack extends TestCase {
 
         conn.close();
     }
-
 }

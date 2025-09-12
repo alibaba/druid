@@ -1,14 +1,10 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.filter.config.ConfigTools;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 public class ConfigFilterTest1 extends TestCase {
     private DruidDataSource dataSource;
@@ -36,5 +32,4 @@ public class ConfigFilterTest1 extends TestCase {
 
         assertEquals(plainPassword, dataSource.getPassword());
     }
-
 }

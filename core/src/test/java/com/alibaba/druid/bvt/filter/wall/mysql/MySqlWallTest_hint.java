@@ -1,8 +1,5 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
@@ -12,7 +9,7 @@ public class MySqlWallTest_hint extends TestCase {
         WallConfig config = new WallConfig();
         config.setHintAllow(false);
         String sql = "select * from person where id = '3'/**/union select 0,1,v from (select 1,2,user/*!() as v*/) a where '1'<>''";
-        assertFalse(WallUtils.isValidateMySql(sql, config)); //
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test_false_1() throws Exception {
@@ -20,22 +17,22 @@ public class MySqlWallTest_hint extends TestCase {
         config.setHintAllow(false);
         config.setMultiStatementAllow(true);
         String sql = "select * from person where id = '3'/**/union select 0,1,v from (select 1,2,user/*!() as v*/) a where '1'<>''";
-        assertFalse(WallUtils.isValidateMySql(sql, config)); //
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test_true() throws Exception {
         String sql = "SELECT /*! STRAIGHT_JOIN */ col1 FROM table1,table2";
-        assertTrue(WallUtils.isValidateMySql(sql)); //
+        assertTrue(WallUtils.isValidateMySql(sql));
     }
 
     public void test_true_1() throws Exception {
         String sql = "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */";
-        assertTrue(WallUtils.isValidateMySql(sql)); //
+        assertTrue(WallUtils.isValidateMySql(sql));
     }
 
     public void test_true_2() throws Exception {
         String sql = "/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */";
-        assertTrue(WallUtils.isValidateMySql(sql)); //
+        assertTrue(WallUtils.isValidateMySql(sql));
     }
 
     public void test_true_3() throws Exception {
@@ -60,7 +57,7 @@ public class MySqlWallTest_hint extends TestCase {
         config.setHintAllow(true);
         config.setMultiStatementAllow(true);
         String sql = "LOCK TABLES `m_rpt_adgroupeffect` READ /*!32311 LOCAL */";
-        assertTrue(WallUtils.isValidateMySql(sql, config)); //
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test_true_5() throws Exception {
@@ -69,29 +66,29 @@ public class MySqlWallTest_hint extends TestCase {
         config.setMultiStatementAllow(true);
         String sql = "DROP TABLE IF EXISTS `item_similarity`;"//
                 + "\n/*!40101 SET @saved_cs_client     = @@character_set_client */;"//
-                + "\n/*!40101 SET character_set_client = utf8 */;" //
+                + "\n/*!40101 SET character_set_client = utf8 */;"
                 + "\nCREATE TABLE `item_similarity` ("//
                 + " `id` bigint(20) unsigned NOT NULL, "//
                 + " `sellerId` bigint(20) DEFAULT NULL,"//
-                + " PRIMARY KEY (`id`)" //
+                + " PRIMARY KEY (`id`)"
                 + " ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"//
                 + " \n/*!40101 SET character_set_client = @saved_cs_client */;";
-        assertTrue(WallUtils.isValidateMySql(sql, config)); //
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test_true_6() throws Exception {
         String sql = "START TRANSACTION /*!40100 WITH CONSISTENT SNAPSHOT */";
-        assertTrue(WallUtils.isValidateMySql(sql)); //
+        assertTrue(WallUtils.isValidateMySql(sql));
     }
 
     public void test_true_7() throws Exception {
         String sql = "LOCK TABLES `m_rpt_adgroupeffect` READ /*!32311 LOCAL */";
-        assertTrue(WallUtils.isValidateMySql(sql)); //
+        assertTrue(WallUtils.isValidateMySql(sql));
     }
 
     public void test_true_8() throws Exception {
         String sql = "SET SQL_QUOTE_SHOW_CREATE=1/*!40102 ,SQL_MODE=concat(@@sql_mode, _utf8 ',NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS') */";
-        assertTrue(WallUtils.isValidateMySql(sql)); //
+        assertTrue(WallUtils.isValidateMySql(sql));
     }
 
     public void test_true_9() throws Exception {
@@ -107,7 +104,7 @@ public class MySqlWallTest_hint extends TestCase {
                 + " PRIMARY KEY(`sess_id`),"//
                 + " INDEX `changed_index` (`changed`)"//
                 + ") /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */ ";
-        assertTrue(WallUtils.isValidateMySql(sql, config)); //
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test_true_10() throws Exception {
@@ -116,7 +113,7 @@ public class MySqlWallTest_hint extends TestCase {
         config.setMultiStatementAllow(true);
         config.setNoneBaseStatementAllow(true);
         String sql = "CREATE DATABASE `newsfocus` /*!40100 COLLATE 'big5_chinese_ci' */ ";
-        assertTrue(WallUtils.isValidateMySql(sql, config)); //
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void test_true_11() throws Exception {
@@ -125,6 +122,6 @@ public class MySqlWallTest_hint extends TestCase {
         config.setMultiStatementAllow(true);
         config.setNoneBaseStatementAllow(true);
         String sql = "EXPLAIN /*!40100 EXTENDED */ SELECT * FROM trade_order_header WHERE id = ?";
-        assertTrue(WallUtils.isValidateMySql(sql, config)); //
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 }

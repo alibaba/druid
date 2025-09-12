@@ -25,15 +25,14 @@ import java.util.List;
 
 public class MySqlSelectTest_53_match extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "SELECT *, `MATCH`(question_content_fulltext) " + //
-                "`AGAINST`('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score " + //
-                "FROM aws_question " + //
-                "WHERE MATCH(question_content_fulltext) " + //
-                "   AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174') > 1 " + //
+        String sql = "SELECT *, `MATCH`(question_content_fulltext) " +
+                "`AGAINST`('2015431867 2636826089 3807520117 2796321160 2615920174' IN BOOLEAN MODE) AS score " +
+                "FROM aws_question " +
+                "WHERE MATCH(question_content_fulltext) " +
+                "   AGAINST('2015431867 2636826089 3807520117 2796321160 2615920174') > 1 " +
                 "ORDER BY score DESC, agree_count DESC LIMIT 10";
 
         System.out.println(sql);
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);

@@ -1,31 +1,28 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
 
 public class PagerUtilsTest_Count_PG_0 extends TestCase {
     public void test_pg_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
     public void test_pg_1() throws Exception {
         String sql = "select id, name from t";
         String result = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
     public void test_pg_2() throws Exception {
         String sql = "select id, name from t order by id";
         String result = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
@@ -66,5 +63,4 @@ public class PagerUtilsTest_Count_PG_0 extends TestCase {
                 "\tFROM t2\n" +
                 ") ALIAS_COUNT", result);
     }
-
 }

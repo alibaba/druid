@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class BigOrTest extends TestCase {
     public void testBigOr() throws Exception {

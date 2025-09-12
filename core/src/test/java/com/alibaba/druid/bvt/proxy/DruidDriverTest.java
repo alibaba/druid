@@ -15,21 +15,15 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.util.Properties;
 
 public class DruidDriverTest extends TestCase {
     protected void tearDown() throws Exception {
@@ -199,5 +193,4 @@ public class DruidDriverTest extends TestCase {
             assertNotNull(error);
         }
     }
-
 }

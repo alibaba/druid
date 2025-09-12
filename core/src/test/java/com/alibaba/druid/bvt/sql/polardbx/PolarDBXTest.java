@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class PolarDBXTest extends TestCase {
     public void test_polardb_x_1() throws Throwable {
@@ -106,7 +105,6 @@ public class PolarDBXTest extends TestCase {
         System.out.println(table.getStatement());
     }
 
-
     public void test_polardb_x_5_1() throws Throwable {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql5 = "CREATE TABLE `test` (\t`id` varchar(32) NOT NULL DEFAULT '' COMMENT 'id',\n"
@@ -125,7 +123,7 @@ public class PolarDBXTest extends TestCase {
         System.out.println(table.getStatement());
     }
 
-    public void test_polardb_x_6(){
+    public void test_polardb_x_6() {
         // test for global index with partition by
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql6 = "CREATE TABLE `test6` (\n"
@@ -165,6 +163,6 @@ public class PolarDBXTest extends TestCase {
             + "\tKEY i_id_ExitId USING BTREE (Id, ExitId),\n"
             + "\tKEY auto_shard_key_ExitId_id USING BTREE (ExitId, Id)\n"
             + ") ENGINE = InnoDB CHARSET = utf8\n"
-            + "PARTITION BY KEY (ExitId, Id) PARTITIONS 16",table.getStatement().toString());
+            + "PARTITION BY KEY (ExitId, Id) PARTITIONS 16", table.getStatement().toString());
     }
 }

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class MySqlSchemaStatVisitorTest_pk_0 extends TestCase {
                 "  KEY `idx_search_name` (`search_name`(255))\n" +
                 ") ENGINE=InnoDB AUTO_INCREMENT=408695 DEFAULT CHARSET=utf8 COMMENT='数据库表信息'";
 
-//		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
+        // sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) statementList.get(0);
@@ -100,7 +99,5 @@ public class MySqlSchemaStatVisitorTest_pk_0 extends TestCase {
         // Column("users", "id")));
         // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "name")));
-
     }
-
 }

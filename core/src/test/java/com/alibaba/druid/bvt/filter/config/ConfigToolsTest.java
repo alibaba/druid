@@ -1,12 +1,9 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Random;
-
+import com.alibaba.druid.filter.config.ConfigTools;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.filter.config.ConfigTools;
+import java.util.Random;
 
 public class ConfigToolsTest extends TestCase {
     public void test_0() throws Exception {

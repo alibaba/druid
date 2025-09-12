@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class OracleSelectTest91 extends OracleTest {
                         "inner join sh s\n" +
                         "inner join ca c\n" +
                         "on c.id = s.id\n" +
-                        "on a.va = s.va"; //
+                        "on a.va = s.va";
 
         System.out.println(sql);
 
@@ -68,6 +67,4 @@ public class OracleSelectTest91 extends OracleTest {
         assertEquals(2, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
     }
-
-
 }

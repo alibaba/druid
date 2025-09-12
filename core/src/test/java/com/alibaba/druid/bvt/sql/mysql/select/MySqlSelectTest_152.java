@@ -24,10 +24,8 @@ public class MySqlSelectTest_152 extends MysqlTest {
                 "FROM dual", stmt.toString());
 
         assertEquals("SELECT (?, ?) IN (?)\n" +
-                        "FROM dual"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
-
+                        "FROM dual",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
 
     public void test_1() throws Exception {
@@ -42,9 +40,7 @@ public class MySqlSelectTest_152 extends MysqlTest {
                 "FROM dual", stmt.toString());
 
         assertEquals("SELECT (?, ?) IN ((?, ?), (?, ?))\n" +
-                        "FROM dual"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedQuesUnMergeInList));
-
-
+                        "FROM dual",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedQuesUnMergeInList));
     }
 }

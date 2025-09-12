@@ -22,19 +22,18 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
 public class MySqlCreateTableTest7 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE Orders\n" + //
-                "(\n" + //
-                "O_Id int NOT NULL,\n" + //
-                "OrderNo int NOT NULL,\n" + //
-                "Id_P int,\n" + //
-                "PRIMARY KEY (O_Id),\n" + //
-                "FOREIGN KEY (Id_P) REFERENCES Persons(Id_P)\n" + //
+        String sql = "CREATE TABLE Orders\n" +
+                "(\n" +
+                "O_Id int NOT NULL,\n" +
+                "OrderNo int NOT NULL,\n" +
+                "Id_P int,\n" +
+                "PRIMARY KEY (O_Id),\n" +
+                "FOREIGN KEY (Id_P) REFERENCES Persons(Id_P)\n" +
                 ")";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

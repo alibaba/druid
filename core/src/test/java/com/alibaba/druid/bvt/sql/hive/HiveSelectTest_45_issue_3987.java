@@ -39,6 +39,5 @@ public class HiveSelectTest_45_issue_3987 extends TestCase {
                 "\tWHERE pdate = ''\n" +
                 ") m\n" +
                 "WHERE m.rownum = 1", stmt.toString());
-
     }
 }

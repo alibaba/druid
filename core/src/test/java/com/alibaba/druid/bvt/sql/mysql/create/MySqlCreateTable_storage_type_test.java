@@ -120,5 +120,4 @@ public class MySqlCreateTable_storage_type_test extends MysqlTest {
                 "\tKEY `k_d` (`c_char`, `c_bigint`)\n" +
                 ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 STORAGE_POLICY = 'hot' COMMENT '10000000'", stmt.toString());
     }
-
 }

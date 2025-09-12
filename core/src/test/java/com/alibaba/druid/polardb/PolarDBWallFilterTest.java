@@ -4,16 +4,14 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
 
 public class PolarDBWallFilterTest extends TestCase {
     private DruidDataSource dataSource;

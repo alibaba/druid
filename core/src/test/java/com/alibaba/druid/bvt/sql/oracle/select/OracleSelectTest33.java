@@ -20,16 +20,15 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest33 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT /*+ Q1647000 NO_EXPAND ROWID(A1) */ " + //
-                        "A1.\"PRODUCT_ID\",A1.\"SUMMARY\",A1.\"DESCRIPTION\",A1.\"DESCRIPTION2\" " + //
-                        "FROM \"ALIBABA1949\".\"WS_PRODUCT_DETAIL\" A1"; //
+                "SELECT /*+ Q1647000 NO_EXPAND ROWID(A1) */ " +
+                        "A1.\"PRODUCT_ID\",A1.\"SUMMARY\",A1.\"DESCRIPTION\",A1.\"DESCRIPTION2\" " +
+                        "FROM \"ALIBABA1949\".\"WS_PRODUCT_DETAIL\" A1";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

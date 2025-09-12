@@ -54,5 +54,4 @@ public class MySqlCreateTableTest150_eunm_set_with_charset extends TestCase {
                 "\t`col_ttuap` enum('value1', 'value2') character set utf8 collate utf8_unicode_ci generated always as (1 + 2) virtual unique comment 'comment' references tb_fn (`col_qzqnqrrfyv`) match partial\n" +
                 ") min_rows = 1 checksum = 1 compression = 'NONE'", stmt.toLowerCaseString());
     }
-
 }

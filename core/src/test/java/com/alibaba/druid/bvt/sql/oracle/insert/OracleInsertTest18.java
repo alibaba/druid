@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.insert;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,6 +22,8 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class OracleInsertTest18 extends OracleTest {
     public void test_0() throws Exception {
@@ -39,7 +37,7 @@ public class OracleInsertTest18 extends OracleTest {
         assertEquals(1, statementList.size());
 
         assertEquals("INSERT INTO sys_log (ID, \"EXCEPTION\")"
-                        + "\nVALUES (?, ?)",//
+                        + "\nVALUES (?, ?)",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -58,5 +56,4 @@ public class OracleInsertTest18 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "ID")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("sys_log", "EXCEPTION")));
     }
-
 }

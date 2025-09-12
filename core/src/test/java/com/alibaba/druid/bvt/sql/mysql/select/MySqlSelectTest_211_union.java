@@ -26,7 +26,6 @@ public class MySqlSelectTest_211_union extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select count(*) from ((select k from linxi3 except select id from linxi1 where id =1) union select k from linxi50);";
 
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -54,8 +53,5 @@ public class MySqlSelectTest_211_union extends MysqlTest {
         assertEquals(3, visitor.getColumns().size());
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
-
     }
-
 }

@@ -19,11 +19,9 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class OracleBlockTest16 extends OracleTest {
     public void test_0() throws Exception {
@@ -46,7 +44,7 @@ public class OracleBlockTest16 extends OracleTest {
                 "  END LOOP outer_loop;\n" +
                 "  DBMS_OUTPUT.PUT_LINE\n" +
                 "    ('The sum of products equals: ' || TO_CHAR(s));\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());

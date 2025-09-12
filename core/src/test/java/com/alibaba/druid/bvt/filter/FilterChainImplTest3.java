@@ -1,16 +1,5 @@
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertNull;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
@@ -18,6 +7,14 @@ import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 
 public class FilterChainImplTest3 extends TestCase {
     private DruidDataSource dataSource;

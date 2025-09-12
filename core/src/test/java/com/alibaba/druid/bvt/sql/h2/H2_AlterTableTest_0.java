@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class H2_AlterTableTest_0 extends TestCase {
     public void test_0() throws Exception {
         String sql = //
-                "alter table ACT_GE_BYTEARRAY add constraint ACT_FK_BYTEARR_DEPL foreign key (DEPLOYMENT_ID_) references ACT_RE_DEPLOYMENT (ID_);"; //
+                "alter table ACT_GE_BYTEARRAY add constraint ACT_FK_BYTEARR_DEPL foreign key (DEPLOYMENT_ID_) references ACT_RE_DEPLOYMENT (ID_);";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.H2);
         SQLStatement stmt = statementList.get(0);
@@ -59,6 +58,5 @@ public class H2_AlterTableTest_0 extends TestCase {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("ACT_GE_BYTEARRAY"));
-
     }
 }

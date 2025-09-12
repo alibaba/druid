@@ -15,13 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
+import junit.framework.TestCase;
 
 public class LikeTest extends TestCase {
     public void test_isTrue() throws Exception {
@@ -29,6 +25,5 @@ public class LikeTest extends TestCase {
         assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("f1 like '%%'")));
         assertEquals(null, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 AND f1 like '%%'")));
         assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 OR f1 like '%%'")));
-
     }
 }

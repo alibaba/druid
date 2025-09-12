@@ -15,15 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -55,5 +49,4 @@ public class MySqlWallTest63 extends TestCase {
 
         assertTrue(provider.checkValid(sql2));
     }
-
 }

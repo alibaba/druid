@@ -8,7 +8,8 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class HighAvailableDataSourceTest {
     @Test

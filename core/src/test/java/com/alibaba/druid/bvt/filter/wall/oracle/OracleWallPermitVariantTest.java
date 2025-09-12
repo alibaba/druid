@@ -15,13 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试访问Oracle系统对象
@@ -37,5 +33,4 @@ public class OracleWallPermitVariantTest extends TestCase {
         assertTrue(WallUtils.isValidateOracle("select USER from dual", config));
         assertTrue(WallUtils.isValidateOracle("select user from dual", config));
     }
-
 }

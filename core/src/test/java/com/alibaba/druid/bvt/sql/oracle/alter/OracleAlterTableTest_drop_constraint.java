@@ -15,17 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.alter;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
 
 public class OracleAlterTableTest_drop_constraint extends TestCase {
     public void test_alter_constraint() throws Exception {
@@ -43,11 +39,10 @@ public class OracleAlterTableTest_drop_constraint extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE);
-        assertEquals("ALTER TABLE TUSER" + //
+        assertEquals("ALTER TABLE TUSER" +
                 "\n\tDROP CONSTRAINT UK_084c17821a8f47e8b31fbb126b6", output);
 
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
     }
-
 }

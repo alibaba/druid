@@ -1,20 +1,17 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import static org.junit.Assert.*;
-
-
-import java.lang.Thread.State;
-import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
-import junit.framework.TestCase;
-
-import org.springframework.test.util.ReflectionTestUtils;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSource.CreateConnectionThread;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriverConnectFailed;
+import junit.framework.TestCase;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.lang.Thread.State;
+import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 public class OracleExceptionSorterTest_closeConnectFailedDatasource extends TestCase {
     private DruidDataSource dataSource;
@@ -32,7 +29,7 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
         dataSource.setMaxOpenPreparedStatements(100);
         dataSource.setMaxActive(1);
         dataSource.setMaxWait(1000);
-        
+
         OracleMockDriverConnectFailed.CONNECT_BARIER.reset();
     }
 
@@ -55,7 +52,7 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
 
         OracleMockDriverConnectFailed.CONNECT_BARIER.await(100, TimeUnit.MILLISECONDS);
         dataSource.close();
-        
+
         // waiting for createConnectionThread terminated.
         CreateConnectionThread thread = (CreateConnectionThread) ReflectionTestUtils.getField(dataSource, "createConnectionThread");
         for (int i = 0; i < 10 && State.TERMINATED != thread.getState(); i++) {
@@ -63,5 +60,4 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
         }
         assertEquals(State.TERMINATED, thread.getState());
     }
-
 }

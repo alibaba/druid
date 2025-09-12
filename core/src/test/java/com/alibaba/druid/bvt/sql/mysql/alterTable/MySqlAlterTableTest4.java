@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.stat.TableStat.Column;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest4 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -40,12 +39,11 @@ public class MySqlAlterTableTest4 extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("ALTER TABLE test" + //
+        assertEquals("ALTER TABLE test" +
                 "\n\tADD COLUMN dspcode char(200)", output);
 
         assertEquals(1, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
         assertTrue(visitor.getColumns().contains(new Column("test", "dspcode")));
     }
-
 }

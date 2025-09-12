@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.pool;
 
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-
-import junit.framework.TestCase;
 
 public class Test_kyline extends TestCase {
     private String url = "jdbc:mysql://a.b.c.d:8066/amoeba";

@@ -49,5 +49,4 @@ public class MySqlCreateExternalCatalogTest2 extends MysqlTest {
                 "'connection-password'='access_key')\n" +
                 "COMMENT 'This is a sample to create an oss connector catalog';", stmt.toString());
     }
-
 }

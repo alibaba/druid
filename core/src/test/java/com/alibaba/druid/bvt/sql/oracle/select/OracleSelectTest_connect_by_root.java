@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -44,7 +43,5 @@ public class OracleSelectTest_connect_by_root extends OracleTest {
 
         assertEquals(1, visitor.getTables().size());
         // assertEquals(1, visitor.getColumns().size());
-
     }
-
 }

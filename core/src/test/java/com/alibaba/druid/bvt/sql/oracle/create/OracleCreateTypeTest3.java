@@ -29,7 +29,7 @@ public class OracleCreateTypeTest3 extends OracleTest {
                 "CREATE TYPE data_typ1 AS OBJECT \n" +
                         "   ( year NUMBER, \n" +
                         "     MEMBER FUNCTION prod(invent NUMBER) RETURN NUMBER \n" +
-                        "   ); "; //
+                        "   ); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class CallTest extends TestCase {
     public void test_select() throws Exception {

@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -96,7 +95,7 @@ public class MySqlAlterTable_refactor_test extends MysqlTest {
                         "\tRENAME INDEX a TO b,\n" +
                         "\tRENAME TO tb2,\n" +
                         "\tWITHOUT VALIDATION,\n" +
-                        "\tORDER BY a, b, c" ,
+                        "\tORDER BY a, b, c",
                 SQLUtils.toMySqlString(statementList.get(0)));
     }
 
@@ -123,5 +122,4 @@ public class MySqlAlterTable_refactor_test extends MysqlTest {
                         "\tADD INDEX i1 (a, b) COVERING (c, d) DBPARTITION BY hash(a) TBPARTITION BY MM(actionDate) TBPARTITIONS 12;",
                 SQLUtils.toMySqlString(statementList.get(0)));
     }
-
 }

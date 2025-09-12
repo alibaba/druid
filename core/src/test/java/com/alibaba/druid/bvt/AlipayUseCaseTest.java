@@ -45,5 +45,4 @@ public class AlipayUseCaseTest {
     public void test() {
         // TODO
     }
-
 }

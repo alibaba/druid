@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest2 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -38,9 +37,8 @@ public class MySqlAlterTableTest2 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("ALTER TABLE `test`.`tb1`" + //
-                "\n\tADD COLUMN `f2` VARCHAR(45) NULL AFTER `fid`," + //
+        assertEquals("ALTER TABLE `test`.`tb1`" +
+                "\n\tADD COLUMN `f2` VARCHAR(45) NULL AFTER `fid`," +
                 "\n\tADD COLUMN `f3` VARCHAR(45) NULL FIRST `f2`", output);
     }
-
 }

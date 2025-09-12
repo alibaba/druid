@@ -21,11 +21,9 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-
 public class MySqlSelectTest_244 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT concat(\"if((order.logisticsCompanyID!=null && order.logisticsCompanyID==\\\"\",substring_index(name, '诚信通促销打折', 1)) as a FROM `alc_promotion` WHERE id = 1000000000129";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
@@ -33,10 +31,7 @@ public class MySqlSelectTest_244 extends MysqlTest {
                 "FROM `alc_promotion`\n" +
                 "WHERE id = 1000000000129", stmt.toString());
 
-
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
-
 }

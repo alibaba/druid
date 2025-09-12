@@ -1,9 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsAnalyzeTableTest extends TestCase {
@@ -16,5 +13,4 @@ public class OdpsAnalyzeTableTest extends TestCase {
         String sql = "analyze table t compute statistics";
         assertEquals("ANALYZE TABLE t COMPUTE STATISTICS", SQLUtils.formatOdps(sql));
     }
-
 }

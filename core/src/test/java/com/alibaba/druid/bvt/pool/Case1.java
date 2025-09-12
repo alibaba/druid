@@ -15,21 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-
-import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DataSourceDisableException;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Case1 extends PoolTestCase {
     public void test_f() throws Exception {

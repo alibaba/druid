@@ -15,17 +15,8 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
-
-
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 
 public class Bug_for_weizhi extends TestCase {
     public void test_for_issue() throws Exception {

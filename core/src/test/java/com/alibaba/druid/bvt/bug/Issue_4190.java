@@ -1,12 +1,10 @@
 package com.alibaba.druid.bvt.bug;
 
-import org.junit.Test;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-
 import junit.framework.TestCase;
+import org.junit.Test;
 
 public class Issue_4190 extends TestCase {
     @Test

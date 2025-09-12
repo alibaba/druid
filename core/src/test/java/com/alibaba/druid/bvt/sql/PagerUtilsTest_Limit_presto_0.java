@@ -3,7 +3,6 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 /**
  * 分页工具类的单元测试，presto SQL类型的
@@ -18,5 +17,4 @@ public class PagerUtilsTest_Limit_presto_0 extends TestCase {
         String sureResult = "SELECT *\n" + "FROM test\n" + " LIMIT 10";
         assertEquals(sureResult, result);
     }
-
 }

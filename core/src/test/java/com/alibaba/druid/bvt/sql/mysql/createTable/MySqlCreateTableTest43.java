@@ -21,22 +21,21 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest43 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE client_firms (" + //
-                "    id   INT," + //
-                "    name VARCHAR(35)" + //
-                ")" + //
-                "PARTITION BY LIST (id) (" + //
-                "    PARTITION r0 VALUES IN (1, 5, 9, 13, 17, 21)," + //
-                "    PARTITION r1 VALUES IN (2, 6, 10, 14, 18, 22)," + //
-                "    PARTITION r2 VALUES IN (3, 7, 11, 15, 19, 23)," + //
-                "    PARTITION r3 VALUES IN (4, 8, 12, 16, 20, 24)" + //
-                ");"; //
+        String sql = "CREATE TABLE client_firms (" +
+                "    id   INT," +
+                "    name VARCHAR(35)" +
+                ")" +
+                "PARTITION BY LIST (id) (" +
+                "    PARTITION r0 VALUES IN (1, 5, 9, 13, 17, 21)," +
+                "    PARTITION r1 VALUES IN (2, 6, 10, 14, 18, 22)," +
+                "    PARTITION r2 VALUES IN (3, 7, 11, 15, 19, 23)," +
+                "    PARTITION r3 VALUES IN (4, 8, 12, 16, 20, 24)" +
+                ");";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -70,6 +69,5 @@ public class MySqlCreateTableTest43 extends MysqlTest {
                 "\tPARTITION r2 VALUES IN (3, 7, 11, 15, 19, 23),\n" +
                 "\tPARTITION r3 VALUES IN (4, 8, 12, 16, 20, 24)\n" +
                 ");", output);
-
     }
 }

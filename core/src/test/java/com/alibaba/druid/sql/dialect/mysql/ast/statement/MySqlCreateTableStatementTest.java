@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -48,10 +47,10 @@ public class MySqlCreateTableStatementTest {
     private Object[] findColumnNames(SchemaObject schemaObject) {
         SQLStatement statement = schemaObject.getStatement();
         assert statement instanceof MySqlCreateTableStatement;
-        return ((MySqlCreateTableStatement)statement).getTableElementList()
+        return ((MySqlCreateTableStatement) statement).getTableElementList()
             .stream()
             .filter(element -> element instanceof SQLColumnDefinition)
-            .map(element -> ((SQLColumnDefinition)element).getName())
+            .map(element -> ((SQLColumnDefinition) element).getName())
             .map(SQLName::getSimpleName)
             .toArray();
     }

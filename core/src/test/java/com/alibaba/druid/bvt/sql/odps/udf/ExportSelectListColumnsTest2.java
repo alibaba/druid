@@ -1,9 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps.udf;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.support.opds.udf.ExportSelectListColumns;
-
 import junit.framework.TestCase;
 
 public class ExportSelectListColumnsTest2 extends TestCase {
@@ -17,6 +14,5 @@ public class ExportSelectListColumnsTest2 extends TestCase {
         String text = udf.evaluate(sql, "odps");
 
         assertEquals("fund_base_cv_ad_auction_ocr_pv_tfs.*", text);
-
     }
 }

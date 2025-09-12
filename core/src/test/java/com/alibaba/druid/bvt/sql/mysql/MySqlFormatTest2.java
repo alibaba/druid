@@ -15,11 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 public class MySqlFormatTest2 extends TestCase {
     public void test_0() throws Exception {

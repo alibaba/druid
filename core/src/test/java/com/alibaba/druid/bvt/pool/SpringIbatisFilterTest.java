@@ -15,23 +15,6 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
@@ -40,6 +23,18 @@ import com.alibaba.druid.spring.User;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.json.JSONUtils;
+import junit.framework.TestCase;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import javax.sql.DataSource;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SpringIbatisFilterTest extends TestCase {
     protected void setUp() throws Exception {

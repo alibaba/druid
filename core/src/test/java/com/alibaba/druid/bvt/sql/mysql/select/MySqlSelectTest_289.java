@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_289 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT supplier AS 'supplier', offline_num AS 'offlineCount', online_num AS 'onlineCount', current_all_num AS 'currentAllCount'\n" +
@@ -106,6 +105,4 @@ public class MySqlSelectTest_289 extends MysqlTest {
                 ") t1\n" +
                 "ORDER BY 1, 2, 3, 4, 5;", stmt.toString());
     }
-
-
 }

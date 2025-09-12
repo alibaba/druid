@@ -15,12 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -32,6 +28,6 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest20 extends TestCase {
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
-                "SET sql_mode=?,NAMES ?,CHARACTER SET utf8,CHARACTER_SET_RESULTS=utf8,COLLATION_CONNECTION=?")); //
+                "SET sql_mode=?,NAMES ?,CHARACTER SET utf8,CHARACTER_SET_RESULTS=utf8,COLLATION_CONNECTION=?"));
     }
 }

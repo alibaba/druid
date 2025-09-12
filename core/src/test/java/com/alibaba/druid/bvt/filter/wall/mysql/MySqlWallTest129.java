@@ -15,16 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.net.URLDecoder;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
+
+import java.net.URLDecoder;
 
 public class MySqlWallTest129 extends TestCase {
     public void test_false() throws Exception {
@@ -38,7 +33,5 @@ public class MySqlWallTest129 extends TestCase {
 
         System.out.println(sql);
         assertFalse(provider.checkValid(sql));
-
     }
-
 }

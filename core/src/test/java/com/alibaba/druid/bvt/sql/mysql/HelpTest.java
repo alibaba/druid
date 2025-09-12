@@ -15,14 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import junit.framework.TestCase;
 
 public class HelpTest extends TestCase {
     public void test_help_0() throws Exception {
@@ -33,5 +30,4 @@ public class HelpTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("HELP 'contents'", output);
     }
-
 }

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class MySqlAlterTableAddIndex_9 extends TestCase {
     public void test_0() throws Exception {
@@ -151,5 +150,4 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(1, tableStat.getCreateIndexCount());
     }
-
 }

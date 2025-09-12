@@ -1,14 +1,13 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLParseAssertUtil;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -18,8 +17,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://dev.mysql.com/doc/refman/8.4/en/create-table.html">mysql create table </a>
  */
 public class Issue6102 {
-
-
     @Test
     public void test_parse_create() {
         for (DbType dbType : new DbType[]{DbType.mysql}) {
@@ -40,12 +37,10 @@ public class Issue6102 {
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 List<SQLStatement> statementList = parser.parseStatementList();
                 System.out.println(statementList);
-                String sqlnew=statementList.toString();
+                String sqlnew = statementList.toString();
                 assertTrue(sqlnew.contains("DEFAULT (_utf8mb4 '{}')"));
                 SQLParseAssertUtil.assertParseSql(sql, dbType);
             }
         }
     }
-
-
 }

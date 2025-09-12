@@ -2,11 +2,9 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallFilter;
-
 import junit.framework.TestCase;
 
 public class WallFilterConfigSpiForNoMatchDbTypeTest extends TestCase {
-
     private DruidDataSource dataSource;
     private WallFilter wallFilter;
 

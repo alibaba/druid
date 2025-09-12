@@ -1,12 +1,7 @@
 package com.alibaba.druid.bvt.utils;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.util.DaemonThreadFactory;
-
+import junit.framework.TestCase;
 
 public class DaemonThreadFactoryTest extends TestCase {
     public void test_0() throws Exception {

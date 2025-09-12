@@ -1,23 +1,18 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledCallableStatement;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
+import junit.framework.TestCase;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 
 public class DruidPooledCallableStatementTest extends TestCase {
     private DruidDataSource dataSource;

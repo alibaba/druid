@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class OracleCreateTriggerTest5 extends OracleTest {
                         "\tSELECT XONN.GAPM_PROJECT_INFO_SYNC_IOA_S.NEXTVAL\n" +
                         "\tINTO :New.PROJECT_SYN_ID\n" +
                         "\tFROM dual;\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals("CREATE OR REPLACE TRIGGER XONN.GAPM_PROJECT_INFO_SYNC_IOA_t\n" +
@@ -64,7 +63,7 @@ public class OracleCreateTriggerTest5 extends OracleTest {
                         "\tSELECT XONN.GAPM_PROJECT_INFO_SYNC_IOA_S.NEXTVAL\n" +
                         "\tINTO :New.PROJECT_SYN_ID\n" +
                         "\tFROM dual;\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.POSTGRESQL));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

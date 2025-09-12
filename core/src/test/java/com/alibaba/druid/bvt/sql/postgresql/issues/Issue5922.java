@@ -1,14 +1,13 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLParseAssertUtil;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,7 +17,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://www.postgresql.org/docs/current/sql-dropfunction.html">DROP FUNCTION</a>
  */
 public class Issue5922 {
-
     @Test
     public void test_parse_drop_function() {
         for (DbType dbType : new DbType[]{DbType.postgresql, DbType.edb}) {

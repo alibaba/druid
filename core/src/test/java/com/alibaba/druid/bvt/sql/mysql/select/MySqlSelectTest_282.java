@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
-
 public class MySqlSelectTest_282 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT 1.0E10";
@@ -31,6 +30,4 @@ public class MySqlSelectTest_282 extends MysqlTest {
 
         assertEquals("SELECT 1.0E10", stmt.toString());
     }
-
-
 }

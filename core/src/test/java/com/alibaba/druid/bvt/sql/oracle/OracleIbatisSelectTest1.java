@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+
+import java.util.List;
 
 public class OracleIbatisSelectTest1 extends OracleTest {
     public void test_0() throws Exception {
@@ -51,5 +49,4 @@ public class OracleIbatisSelectTest1 extends OracleTest {
 
 //        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
     }
-
 }

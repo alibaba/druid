@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.sql;
 
-import java.util.List;
-
-import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
+import junit.framework.TestCase;
 import org.junit.Assert;
+
+import java.util.List;
 
 public class PGTest extends TestCase {
     protected String output(List<SQLStatement> stmtList) {

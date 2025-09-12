@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -25,13 +23,12 @@ import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-import static org.junit.Assert.*;
+import java.util.List;
 
 /**
  * @author lizongbo
  */
 public class TiDBBeginTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "BEGIN ;";
         testSql(sql);
@@ -101,9 +98,7 @@ public class TiDBBeginTest extends MysqlTest {
         assertEquals(1, visitor.getTables().size());
     }
 
-
     void testSql(String sql) throws Exception {
-
         // MySqlStatementParser parser = new MySqlStatementParser(sql, SQLParserFeature.KeepComments);
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.TIDB);
         SQLStatement statement = statementList.get(0);
@@ -119,6 +114,4 @@ public class TiDBBeginTest extends MysqlTest {
 
         assertEquals(0, visitor.getTables().size());
     }
-
-
 }

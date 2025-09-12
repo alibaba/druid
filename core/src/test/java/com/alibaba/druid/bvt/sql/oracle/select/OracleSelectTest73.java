@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class OracleSelectTest73 extends OracleTest {
                         "       SUM(sales_value) AS sales_value\n" +
                         "FROM   dimension_tab\n" +
                         "GROUP BY CUBE (fact_1_id, fact_2_id)\n" +
-                        "ORDER BY fact_1_id, fact_2_id;"; //
+                        "ORDER BY fact_1_id, fact_2_id;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

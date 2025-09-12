@@ -1,19 +1,5 @@
 package com.alibaba.druid.pvt.pool;
 
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -23,8 +9,20 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.Log4jImpl;
 import com.alibaba.druid.support.logging.NoLoggingImpl;
-
 import junit.framework.TestCase;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.Assert;
+
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AsyncCloseTest3 extends TestCase {
     protected DruidDataSource dataSource;
@@ -77,7 +75,6 @@ public class AsyncCloseTest3 extends TestCase {
 
         connExecutor = Executors.newFixedThreadPool(2);
         closeExecutor = Executors.newFixedThreadPool(2);
-
     }
 
     protected void tearDown() throws Exception {

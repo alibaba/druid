@@ -15,19 +15,14 @@
  */
 package com.alibaba.druid.bvt.mock;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.alibaba.druid.mock.MockResultSetMetaData;
+import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase;
+import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
+import junit.framework.TestCase;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSetMetaData;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.mock.MockResultSetMetaData;
-import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase;
-import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 
 public class MockResultSetMetaDataTest extends TestCase {
     public void test_resultSet_metadata() throws Exception {
@@ -63,6 +58,5 @@ public class MockResultSetMetaDataTest extends TestCase {
         meta.isWritable(1);
         meta.isDefinitelyWritable(1);
         meta.getColumnClassName(1);
-
     }
 }

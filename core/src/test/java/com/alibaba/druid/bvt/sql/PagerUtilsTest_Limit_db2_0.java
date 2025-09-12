@@ -1,18 +1,15 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
 
 public class PagerUtilsTest_Limit_db2_0 extends TestCase {
     public void test_mysql_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.DB2, 0, 10);
-        assertEquals("SELECT *" + //
-                "\nFROM t" + //
+        assertEquals("SELECT *" +
+                "\nFROM t" +
                 "\nFETCH FIRST 10 ROWS ONLY", result);
     }
 

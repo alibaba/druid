@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class Oracle_pl_for_4 extends OracleTest {
     public void test_0() throws Exception {
@@ -44,7 +43,7 @@ public class Oracle_pl_for_4 extends OracleTest {
                 "  END LOOP outer_loop;\n" +
                 " \n" +
                 "  CLOSE c1;\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, statementList.size());

@@ -15,8 +15,12 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import javax.management.openmbean.TabularData;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -27,21 +31,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.management.openmbean.TabularData;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.JdbcUtils;
-
 public class AllStatisticTest extends TestCase {
     String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=statTest:jdbc:derby:classpath:petstore-db";
 
     private AtomicLong fetchRowCout = new AtomicLong();
 
-    Connection globalConnection = null;
+    Connection globalConnection;
 
     protected void setUp() throws Exception {
         JdbcStatManager stat = JdbcStatManager.getInstance();
@@ -77,7 +72,6 @@ public class AllStatisticTest extends TestCase {
         f1();
         f2();
         f3();
-
     }
 
     public void f1() throws Exception {

@@ -18,11 +18,9 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
-
 
 public class MySqlSelectTest_105_hints extends MysqlTest {
     public void test_0() throws Exception {
@@ -40,5 +38,4 @@ public class MySqlSelectTest_105_hints extends MysqlTest {
                 "FROM t FORCE INDEX (name_1), abc FORCE INDEX (name_2)\n" +
                 "WHERE id = 1", stmt.toString());
     }
-
 }

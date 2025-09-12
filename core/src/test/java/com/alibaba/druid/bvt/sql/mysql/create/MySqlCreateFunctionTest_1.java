@@ -35,7 +35,7 @@ public class MySqlCreateFunctionTest_1 extends MysqlTest {
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = statementList.get(0);
-//    	print(statementList);
+        // print(statementList);
         assertEquals(1, statementList.size());
 
         System.out.println(SQLUtils.toMySqlString(stmt));
@@ -53,13 +53,11 @@ public class MySqlCreateFunctionTest_1 extends MysqlTest {
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        // System.out.println("coditions : " + visitor.getConditions());
+        // System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
-
 }

@@ -198,5 +198,4 @@ public class MySqlCreateSequenceTest3 extends TestCase {
         }
         return null;
     }
-
 }

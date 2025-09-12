@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.pool;
 
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
-
-import junit.framework.TestCase;
 
 public class TestMockPerf extends TestCase {
     private DruidDataSource dataSource;

@@ -1,9 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsFormatCommentTest26 extends TestCase {

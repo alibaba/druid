@@ -43,8 +43,8 @@ public class OracleDropSynonymTest_0 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("DROP PUBLIC SYNONYM customers;"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("DROP PUBLIC SYNONYM customers;",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(0, visitor.getTables().size());
 

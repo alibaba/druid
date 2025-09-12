@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -86,7 +85,5 @@ public class SHOW_TABLES_Syntax_Test extends TestCase {
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
         assertEquals("SHOW FULL TABLES FROM SUNTEST WHERE NAME = 'DDD'", text);
-
     }
-
 }

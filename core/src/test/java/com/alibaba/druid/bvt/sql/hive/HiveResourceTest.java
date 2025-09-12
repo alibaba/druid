@@ -28,5 +28,4 @@ public class HiveResourceTest extends SQLResourceTest {
     public void hive_parse() throws Exception {
         fileTest(0, 999, i -> "bvt/parser/hive/" + i + ".txt");
     }
-
 }

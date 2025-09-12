@@ -1,11 +1,11 @@
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+
+import java.util.List;
 
 public class MySqlCreateTableTest125_drds extends MysqlTest {
     public void test_0() throws Exception {
@@ -29,7 +29,6 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE t_order (\n" +
                 "\t`id` bigint(11) NOT NULL AUTO_INCREMENT,\n" +
                 "\t`order_id` varchar(20) DEFAULT NULL,\n" +
@@ -43,7 +42,6 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
                 "\tUNIQUE GLOBAL `g_i_buyer` (`buyer_id`) COVERING (order_snapshot) DBPARTITION BY hash(`buyer_id`)\n" +
                 ") ENGINE = InnoDB CHARSET = utf8\n" +
                 "DBPARTITION BY hash(`order_id`);", stmt.toString());
-
     }
 
     public void test_1() throws Exception {
@@ -65,7 +63,6 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE t_order (\n"
                 + "\t`id` bigint(11) NOT NULL AUTO_INCREMENT,\n"
                 + "\t`order_id` varchar(20) DEFAULT NULL,\n"
@@ -79,7 +76,6 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
                 + "(`seller_id`) TBPARTITIONS 3\n"
                 + ") ENGINE = InnoDB CHARSET = utf8\n"
                 + "DBPARTITION BY hash(`order_id`);", stmt.toString());
-
     }
 
     public void test_2() throws Exception {
@@ -101,7 +97,6 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE t_order (\n"
                 + "\t`id` bigint(11) NOT NULL AUTO_INCREMENT,\n"
                 + "\t`order_id` varchar(20) DEFAULT NULL,\n"
@@ -115,7 +110,6 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
                 + " TBPARTITION BY hash(`seller_id`) TBPARTITIONS 3\n"
                 + ") ENGINE = InnoDB CHARSET = utf8\n"
                 + "DBPARTITION BY hash(`order_id`);", stmt.toString());
-
     }
 
     public void test_3() throws Exception {
@@ -143,7 +137,6 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
                         + "DBPARTITION BY HASH(SELLER_ID) TBPARTITION BY UNI_HASH(SELLER_ID) TBPARTITIONS 12\n"
                         + ") ENGINE = InnoDB CHARSET = utf8\n" + "DBPARTITION BY hash(`order_id`);",
                 stmt.toString());
-
     }
 
     public void test_4() throws Exception {
@@ -178,7 +171,5 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
                         + " TBPARTITION BY hash(`seller_id`) TBPARTITIONS 3 COMMENT 'CREATE GSI TEST'\n"
                         + ") ENGINE = InnoDB CHARSET = utf8\n" + "DBPARTITION BY hash(`order_id`);",
                 stmt.toString());
-
     }
-
 }

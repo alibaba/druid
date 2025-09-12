@@ -1,11 +1,7 @@
 package com.alibaba.druid.bvt.utils;
 
-import static org.junit.Assert.assertEquals;
-
-
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
-
 import junit.framework.TestCase;
 
 public class JdbcUtilsTest_for_odps extends TestCase {

@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.mysql;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class MySqlBigTableTest extends TestCase {
     final int COUNT = 800;

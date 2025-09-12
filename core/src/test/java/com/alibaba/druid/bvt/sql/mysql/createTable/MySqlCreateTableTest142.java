@@ -36,7 +36,6 @@ public class MySqlCreateTableTest142 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE `think_member_discount` (\n" +
                 "\t`id` bigint,\n" +
                 "\t`uid` bigint,\n" +
@@ -82,8 +81,5 @@ public class MySqlCreateTableTest142 extends MysqlTest {
                 "options (updateType = 'realtime')\n" +
                 "partition by hash key(id) partition num 128\n" +
                 "tablegroup mkzhan", stmt.toLowerCaseString());
-
     }
-
-
 }

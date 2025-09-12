@@ -1,15 +1,5 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockStatement;
@@ -19,6 +9,11 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class UnwrapTest2 extends TestCase {
     private DruidDataSource dataSource;

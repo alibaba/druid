@@ -1,12 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试minIdle > maxActive

@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.sql;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.parser.SQLExprParser;
-
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class SQLExprParserTest extends TestCase {
     public void test_binary() throws Exception {

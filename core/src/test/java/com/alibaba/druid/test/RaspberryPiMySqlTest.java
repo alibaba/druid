@@ -2,13 +2,7 @@ package com.alibaba.druid.test;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 /**
  * Created by wenshao on 10/12/2016.

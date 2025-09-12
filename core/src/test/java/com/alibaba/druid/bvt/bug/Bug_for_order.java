@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import static org.junit.Assert.assertEquals;
-
 import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
 

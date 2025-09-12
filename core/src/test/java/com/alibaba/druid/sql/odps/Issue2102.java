@@ -1,6 +1,5 @@
 package com.alibaba.druid.sql.odps;
 
-import com.alibaba.druid.bvt.pool.TestClone;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;

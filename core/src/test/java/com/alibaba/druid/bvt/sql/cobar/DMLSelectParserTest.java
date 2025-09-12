@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.cobar;
 
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import junit.framework.TestCase;
 
 public class DMLSelectParserTest extends TestCase {
     public void test_union_0() throws Exception {
@@ -82,9 +80,9 @@ public class DMLSelectParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT t1.id, t2.*\n" + //
-                "FROM t1, test.t2\n" + //
-                "WHERE test.t1.id = 1\n" + //
+        assertEquals("SELECT t1.id, t2.*\n" +
+                "FROM t1, test.t2\n" +
+                "WHERE test.t1.id = 1\n" +
                 "\tAND t1.id = test.t2.id", output);
     }
 
@@ -94,11 +92,11 @@ public class DMLSelectParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT *" + //
-                "\nFROM offer a" + //
-                "\n\tSTRAIGHT_JOIN wp_image b USE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" + //
-                "\n\tINNER JOIN product_visit c" + //
-                "\nWHERE a.member_id = c.member_id\n" + //
+        assertEquals("SELECT *" +
+                "\nFROM offer a" +
+                "\n\tSTRAIGHT_JOIN wp_image b USE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" +
+                "\n\tINNER JOIN product_visit c" +
+                "\nWHERE a.member_id = c.member_id\n" +
                 "\tAND c.member_id = 'abc'", output);
     }
 
@@ -108,8 +106,8 @@ public class DMLSelectParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT ALL tb1.id, tb2.id\n" + //
-                "FROM tb1, tb2\n" + //
+        assertEquals("SELECT ALL tb1.id, tb2.id\n" +
+                "FROM tb1, tb2\n" +
                 "WHERE tb1.id2 = tb2.id2", output);
     }
 
@@ -273,11 +271,11 @@ public class DMLSelectParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT *" + //
-                "\nFROM offer a" + //
-                "\n\tSTRAIGHT_JOIN wp_image b FORCE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" + //
-                "\n\tINNER JOIN product_visit c" + //
-                "\nWHERE a.member_id = c.member_id" + //
+        assertEquals("SELECT *" +
+                "\nFROM offer a" +
+                "\n\tSTRAIGHT_JOIN wp_image b FORCE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" +
+                "\n\tINNER JOIN product_visit c" +
+                "\nWHERE a.member_id = c.member_id" +
                 "\n\tAND c.member_id = 'abc'", output);
     }
 
@@ -287,11 +285,11 @@ public class DMLSelectParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT *\n" + //
-                "FROM offer a" + //
-                "\n\tSTRAIGHT_JOIN wp_image b IGNORE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" + //
-                "\n\tINNER JOIN product_visit c" + //
-                "\nWHERE a.member_id = c.member_id" + //
+        assertEquals("SELECT *\n" +
+                "FROM offer a" +
+                "\n\tSTRAIGHT_JOIN wp_image b IGNORE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id" +
+                "\n\tINNER JOIN product_visit c" +
+                "\nWHERE a.member_id = c.member_id" +
                 "\n\tAND c.member_id = 'abc'", output);
     }
 }

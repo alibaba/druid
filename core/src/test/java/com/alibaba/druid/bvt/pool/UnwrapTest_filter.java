@@ -1,19 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
 import com.alibaba.druid.filter.stat.MergeStatFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
+
+import java.sql.Connection;
 
 public class UnwrapTest_filter extends PoolTestCase {
     private DruidDataSource dataSource;

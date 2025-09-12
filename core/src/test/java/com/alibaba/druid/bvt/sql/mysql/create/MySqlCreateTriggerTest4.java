@@ -40,5 +40,4 @@ public class MySqlCreateTriggerTest4 extends MysqlTest {
                 "INSERT INTO log_table\n" +
                 "VALUES (concat('inserted into table test.t2 values: (1c, _) = (', CAST(NEW.col1 AS char(100)), ', ', convertToSqlNode(new.`_`, char(100)), ')'));", stmt.toString());
     }
-
 }

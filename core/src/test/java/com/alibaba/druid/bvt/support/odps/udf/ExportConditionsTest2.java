@@ -1,10 +1,6 @@
 package com.alibaba.druid.bvt.support.odps.udf;
 
-import static org.junit.Assert.assertEquals;
-
-
 import com.alibaba.druid.support.opds.udf.ExportConditions;
-
 import junit.framework.TestCase;
 
 public class ExportConditionsTest2 extends TestCase {

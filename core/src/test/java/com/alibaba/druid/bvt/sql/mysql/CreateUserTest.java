@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+
+import java.util.List;
 
 public class CreateUserTest extends MysqlTest {
     public void test_0() throws Exception {
@@ -43,6 +41,4 @@ public class CreateUserTest extends MysqlTest {
 
         assertTrue(visitor.getTables().size() == 0);
     }
-
-
 }

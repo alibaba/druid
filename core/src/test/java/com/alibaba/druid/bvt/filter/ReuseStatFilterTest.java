@@ -1,10 +1,9 @@
 package com.alibaba.druid.bvt.filter;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 public class ReuseStatFilterTest extends TestCase {
     private DruidDataSource dataSourceA;

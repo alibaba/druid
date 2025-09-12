@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class OracleSelectTest89_condition extends OracleTest {
                         "\t\t(select distinct  rid  from v.p )\n" +
                         "\t)\n" +
                         "\tand  \"timestamp\"  <= 1298505600000\n" +
-                        "\n"; //
+                        "\n";
 
         System.out.println(sql);
 
@@ -80,6 +79,4 @@ public class OracleSelectTest89_condition extends OracleTest {
         assertEquals(1, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
     }
-
-
 }

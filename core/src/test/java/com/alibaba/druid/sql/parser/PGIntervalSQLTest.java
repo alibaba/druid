@@ -14,7 +14,6 @@ import java.util.List;
  * 类说明：
  */
 public class PGIntervalSQLTest extends TestCase {
-
     public void testIntervalSQL() {
         String sql1 = "select timestamp '2001-09-28 01:00' + interval '23 hours'";
         String sql1Result = "SELECT TIMESTAMP '2001-09-28 01:00' + INTERVAL '23 hours'";
@@ -29,12 +28,10 @@ public class PGIntervalSQLTest extends TestCase {
         equal(sql3, sql3Result);
     }
 
-
     private void equal(String targetSql, String resultSql) {
         PGSQLStatementParser parser = new PGSQLStatementParser(targetSql);
         PGSelectStatement statement = parser.parseSelect();
         assertEquals(statement.toString(), resultSql);
-
     }
 
     public void testIntervalSQL_OracleToPg() {

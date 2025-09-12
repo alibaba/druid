@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class MustParameterizedTest3 extends TestCase {
     private WallConfig config = new WallConfig();
@@ -44,5 +39,4 @@ public class MustParameterizedTest3 extends TestCase {
         assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t fid = fid", config));
         assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t fid > 5", config));
     }
-
 }

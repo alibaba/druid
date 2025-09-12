@@ -1,14 +1,10 @@
 package com.alibaba.druid.bvt.filter.log;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
+import junit.framework.TestCase;
+
+import java.util.Properties;
 
 public class LogFilterTest4 extends TestCase {
     public void test_properties() throws Exception {

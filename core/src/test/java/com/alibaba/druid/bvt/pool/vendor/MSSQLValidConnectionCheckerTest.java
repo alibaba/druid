@@ -1,16 +1,10 @@
 package com.alibaba.druid.bvt.pool.vendor;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.SQLException;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
+
+import java.sql.SQLException;
 
 public class MSSQLValidConnectionCheckerTest extends PoolTestCase {
     public void test_0() throws Exception {
@@ -19,7 +13,6 @@ public class MSSQLValidConnectionCheckerTest extends PoolTestCase {
         MockConnection conn = new MockConnection();
 
         assertTrue(checker.isValidConnection(conn, "select 1", 10));
-
     }
 
     public void test_closed() throws Exception {

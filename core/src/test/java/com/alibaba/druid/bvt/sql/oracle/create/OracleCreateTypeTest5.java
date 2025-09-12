@@ -54,7 +54,7 @@ public class OracleCreateTypeTest5 extends OracleTest {
                         "\tcust_name varchar2(256), \n" +
                         "\tcarriert_type varchar2(20), \n" +
                         "\tdept_id number(10)\n" +
-                        ") NOT FINAL INSTANTIABLE;",//
+                        ") NOT FINAL INSTANTIABLE;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

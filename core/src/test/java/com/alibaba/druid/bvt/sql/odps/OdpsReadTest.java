@@ -1,9 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsReadTest extends TestCase {
@@ -31,5 +28,4 @@ public class OdpsReadTest extends TestCase {
         String sql = "read sale_detail partition(ds='20150701') 10";
         assertEquals("READ sale_detail PARTITION (ds = '20150701') 10", SQLUtils.formatOdps(sql));
     }
-
 }

@@ -11,7 +11,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 public class PGTypeCastExprTest {
-
     @Test
     public void testDefaultConstructor() {
         PGTypeCastExpr pgTypeCastExpr = new PGTypeCastExpr();
@@ -30,12 +29,12 @@ public class PGTypeCastExprTest {
         assertNotNull(pgTypeCastExpr);
         assertEquals(sqlCharExpr, pgTypeCastExpr.getExpr());
         assertEquals(sqlDataType, pgTypeCastExpr.getDataType());
-        
+
         // Test parent relationship
         assertEquals(pgTypeCastExpr, sqlCharExpr.getParent());
         assertEquals(pgTypeCastExpr, sqlDataType.getParent());
     }
-    
+
     @Test
     public void testClone() {
         // '100'::INT

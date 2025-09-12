@@ -15,21 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OdpsSelectTest8 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "select * from (select * from abc limit 1) a;";//
+        String sql = "select * from (select * from abc limit 1) a;";
         assertEquals("SELECT *"
                 + "\nFROM ("
                 + "\n\tSELECT *"
@@ -62,5 +59,4 @@ public class OdpsSelectTest8 extends TestCase {
 
         assertTrue(visitor.getColumns().contains(new Column("abc", "*")));
     }
-
 }

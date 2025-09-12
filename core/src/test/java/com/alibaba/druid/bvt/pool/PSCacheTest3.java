@@ -15,11 +15,6 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -27,6 +22,7 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 import com.alibaba.druid.pool.PreparedStatementPool;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 public class PSCacheTest3 extends TestCase {
     private DruidDataSource dataSource;
@@ -151,7 +147,6 @@ public class PSCacheTest3 extends TestCase {
             assertTrue(stmt_3.getPreparedStatementHolder().isPooling());
             assertEquals(3, stmtPool.size());
         }
-
 
         assertFalse(stmtHoler_0.isPooling());
         assertTrue(stmtHoler_1.isPooling());

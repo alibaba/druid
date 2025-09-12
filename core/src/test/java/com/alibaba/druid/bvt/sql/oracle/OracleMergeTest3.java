@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+
+import java.util.List;
 
 public class OracleMergeTest3 extends OracleTest {
     public void test_0() throws Exception {
@@ -32,7 +30,6 @@ public class OracleMergeTest3 extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-
 
         System.out.println(stmt);
 
@@ -60,5 +57,4 @@ public class OracleMergeTest3 extends OracleTest {
 //        assertTrue(visitor.containsColumn("bonuses", "employee_id"));
 //        assertTrue(visitor.containsColumn("bonuses", "bonus"));
     }
-
 }

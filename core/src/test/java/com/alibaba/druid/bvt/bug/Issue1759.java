@@ -14,7 +14,7 @@ public class Issue1759 extends TestCase {
         String sql = "COMMENT ON COLUMN \"TB_CRM_MATERIAL\".\"INVALID_TIME\" IS '生效时间'";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
-        SQLStatement statement = parser.parseStatement();// 分号之后多语句忽略
+        SQLStatement statement = parser.parseStatement(); // 分号之后多语句忽略
         OracleWallProvider provider = new OracleWallProvider();
 
         WallCheckResult result1 = provider.check(sql);

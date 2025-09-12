@@ -7,11 +7,8 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 
 import java.io.File;
 import java.util.List;

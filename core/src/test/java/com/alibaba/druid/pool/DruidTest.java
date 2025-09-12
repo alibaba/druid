@@ -109,5 +109,4 @@ public class DruidTest {
         fileWriter.flush();
         fileWriter.close();
     }
-
 }

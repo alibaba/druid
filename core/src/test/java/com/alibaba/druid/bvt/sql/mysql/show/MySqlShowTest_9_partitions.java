@@ -36,6 +36,5 @@ public class MySqlShowTest_9_partitions extends MysqlTest {
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
 }

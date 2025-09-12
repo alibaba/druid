@@ -15,9 +15,9 @@
  */
 package com.alibaba.druid.benckmark.proxy;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import junit.framework.TestCase;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestAtomicPerformance extends TestCase {
     public void test_0() throws Exception {

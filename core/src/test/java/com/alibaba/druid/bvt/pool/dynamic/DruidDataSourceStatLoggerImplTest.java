@@ -1,18 +1,12 @@
 package com.alibaba.druid.bvt.pool.dynamic;
 
-import static org.junit.Assert.*;
-
-
-import java.lang.reflect.Field;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceStatLogger;
 import com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl;
 import com.alibaba.druid.support.logging.Log;
+
+import java.lang.reflect.Field;
 
 public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -34,7 +28,6 @@ public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
         dataSource.setConnectionProperties("a=3;b=4");
         dataSource.setFilters("stat");
         dataSource.init();
-
     }
 
     protected void tearDown() throws Exception {

@@ -1,19 +1,5 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.security.auth.callback.NameCallback;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.mock.MockResultSet;
@@ -23,6 +9,15 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.DruidPasswordCallback;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import javax.security.auth.callback.NameCallback;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DruidDataSourceTest6 extends TestCase {
     private DruidDataSource dataSource;
@@ -105,7 +100,7 @@ public class DruidDataSourceTest6 extends TestCase {
             conn.close();
         }
         assertNotNull(error);
-        
+
         {
             returnEmptyCount.set(1);
             Connection conn = dataSource.getConnection();
@@ -132,5 +127,4 @@ public class DruidDataSourceTest6 extends TestCase {
 
         conn.close();
     }
-
 }

@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class MySqlWallTest_union extends TestCase {
     public void testUnion() throws Exception {
@@ -58,7 +53,5 @@ public class MySqlWallTest_union extends TestCase {
         assertFalse(
                 WallUtils.isValidateMySql("SELECT name, surname FROM users WHERE name=' ' UNION SELECT /*! (select table_name FROM information_schema.tables limit 1,1),*/ 'string1'")
         );
-
-
     }
 }

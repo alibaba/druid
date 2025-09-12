@@ -1,6 +1,5 @@
 package com.alibaba.druid.bvt.sql.repository;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.repository.SchemaRepository;
@@ -156,7 +155,6 @@ public class OracleJoinResolveTest_1_fk extends TestCase {
                 ");";
 
         repository.console(sql_1);
-
 
         OracleCreateTableStatement stmt = (OracleCreateTableStatement) SQLParserUtils.createSQLStatementParser(sql_2, JdbcConstants.ORACLE).parseStatement();
 

@@ -21,20 +21,19 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest14 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = " CREATE TABLE `OptionList` ( " + //
-                "`ID` int(11) NOT NULL AUTO_INCREMENT, " + //
-                "`OptionID` int(11) DEFAULT NULL COMMENT '选项ID', " + //
-                "`QuizID` int(11) DEFAULT NULL COMMENT '竞猜题目ID', " + //
-                "`OptionName` varchar(500) DEFAULT NULL COMMENT '选项名称', " + //
-                "`OptionCount` int(11) DEFAULT NULL COMMENT '选择的人数', " + //
-                "PRIMARY KEY (`ID`), KEY `quizId` (`QuizID`) USING BTREE, " + //
-                "KEY `optionId` (`OptionID`) USING BTREE" + //
+        String sql = " CREATE TABLE `OptionList` ( " +
+                "`ID` int(11) NOT NULL AUTO_INCREMENT, " +
+                "`OptionID` int(11) DEFAULT NULL COMMENT '选项ID', " +
+                "`QuizID` int(11) DEFAULT NULL COMMENT '竞猜题目ID', " +
+                "`OptionName` varchar(500) DEFAULT NULL COMMENT '选项名称', " +
+                "`OptionCount` int(11) DEFAULT NULL COMMENT '选择的人数', " +
+                "PRIMARY KEY (`ID`), KEY `quizId` (`QuizID`) USING BTREE, " +
+                "KEY `optionId` (`OptionID`) USING BTREE" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=gbk COMMENT=''";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

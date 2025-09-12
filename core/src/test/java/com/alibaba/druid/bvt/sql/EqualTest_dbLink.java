@@ -1,11 +1,10 @@
 package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.expr.SQLDbLinkExpr;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import junit.framework.TestCase;
 
-import static org.junit.Assert.*;
-
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
+import static org.junit.Assert.assertNotEquals;
 
 public class EqualTest_dbLink extends TestCase {
     public void test_eq() throws Exception {

@@ -15,17 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.encoding.EncodingConvertFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
@@ -35,6 +24,12 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class EncodingConvertFilterTest extends TestCase {
     private DruidDataSource dataSource;
@@ -101,7 +96,6 @@ public class EncodingConvertFilterTest extends TestCase {
         stmt.close();
 
         conn.close();
-
     }
 
     public static class MyResultSet extends MockResultSet {

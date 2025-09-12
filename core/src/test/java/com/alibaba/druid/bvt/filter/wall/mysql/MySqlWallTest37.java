@@ -15,15 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -37,7 +32,7 @@ public class MySqlWallTest37 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         assertTrue(provider.checkValid(//
-                "call partnerAttribute(3061975048797781,105385028,5,@ret)")); //
+                "call partnerAttribute(3061975048797781,105385028,5,@ret)"));
 
         assertEquals(0, provider.getTableStats().size());
         System.out.println(JSONUtils.toJSONString(provider.getStatsMap()));

@@ -15,18 +15,17 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.mock.MockDriver;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
+import javax.management.ObjectName;
+
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.management.ObjectName;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
 
 public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
     private MockDriver driver;

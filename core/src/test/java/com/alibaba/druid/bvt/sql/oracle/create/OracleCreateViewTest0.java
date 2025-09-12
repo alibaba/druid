@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class OracleCreateViewTest0 extends OracleTest {
                         "AS\n" +
                         "SELECT id, GROUP_ID, IND_BY_ALL, IND_BY_GROUP, OWNER_MEMBER_ID\n" +
                         "\t, OWNER_MEMBER_SEQ, gmt_modified\n" +
-                        "FROM DUAL",//
+                        "FROM DUAL",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

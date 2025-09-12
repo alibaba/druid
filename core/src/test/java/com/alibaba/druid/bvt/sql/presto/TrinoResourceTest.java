@@ -4,8 +4,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
-import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
@@ -18,10 +16,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class TrinoResourceTest extends SQLResourceTest {
-
     public TrinoResourceTest() {
         super(DbType.trino);
     }

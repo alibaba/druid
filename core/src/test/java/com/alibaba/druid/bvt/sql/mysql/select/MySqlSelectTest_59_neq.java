@@ -29,7 +29,6 @@ public class MySqlSelectTest_59_neq extends MysqlTest {
 
         System.out.println(sql);
 
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 

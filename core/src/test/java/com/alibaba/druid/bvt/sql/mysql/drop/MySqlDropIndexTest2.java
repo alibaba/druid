@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -53,6 +52,5 @@ public class MySqlDropIndexTest2 extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
         TableStat tableStat = visitor.getTables().get(new TableStat.Name("t2"));
         assertEquals(1, tableStat.getDropIndexCount());
-
     }
 }

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -147,7 +146,7 @@ public class OracleCreateTableTest61 extends OracleTest {
                         "\tENABLE STORAGE IN ROW\n" +
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

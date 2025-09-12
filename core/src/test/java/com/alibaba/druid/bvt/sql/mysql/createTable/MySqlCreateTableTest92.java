@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -23,6 +22,5 @@ public class MySqlCreateTableTest92 extends MysqlTest {
         assertEquals(1, statementList.size());
         assertEquals(3, statemen.getTableElementList().size());
         assertEquals("`c_set` set('a', 'b', 'c') COMMENT 'set'", SQLUtils.toMySqlString(statemen.getTableElementList().get(1)));
-
     }
 }

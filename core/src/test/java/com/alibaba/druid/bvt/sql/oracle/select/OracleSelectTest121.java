@@ -23,7 +23,6 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-
 public class OracleSelectTest121 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT DATE_TYPE , NVL ( TIME_0 , ? ) TIME_0 , NVL ( TIME_1 , ? ) TIME_1 , NVL ( TIME_2 , ? ) TIME_2 , NVL ( TIME_3 , ? ) TIME_3 , NVL ( TIME_4 , ? ) TIME_4 , NVL ( TIME_5 , ? ) TIME_5 , NVL ( TIME_6 , ? ) TIME_6 , NVL ( TIME_7 , ? ) TIME_7 , NVL ( TIME_8 , ? ) TIME_8 , NVL ( TIME_9 , ? ) TIME_9 , NVL ( TIME_10 , ? ) TIME_10 , NVL ( TIME_11 , ? ) TIME_11 , NVL ( TIME_12 , ? ) TIME_12 , NVL ( TIME_13 , ? ) TIME_13 , NVL ( TIME_14 , ? ) TIME_14 , NVL ( TIME_15 , ? ) TIME_15 , NVL ( TIME_16 , ? ) TIME_16 , NVL ( TIME_17 , ? ) TIME_17 , NVL ( TIME_18 , ? ) TIME_18 , NVL ( TIME_19 , ? ) TIME_19 , NVL ( TIME_20 , ? ) TIME_20 , NVL ( TIME_21 , ? ) TIME_21 , NVL ( TIME_22 , ? ) TIME_22 , NVL ( TIME_23 , ? ) TIME_23 , NVL ( TIME_ALL , ? ) TIME_ALL \n" +
@@ -100,5 +99,4 @@ public class OracleSelectTest121 extends MysqlTest {
                 "PIVOT (MAX(CNT) FOR HOUR IN (? AS \"TIME_0\", ? AS \"TIME_1\", ? AS \"TIME_2\", ? AS \"TIME_3\", ? AS \"TIME_4\", ? AS \"TIME_5\", ? AS \"TIME_6\", ? AS \"TIME_7\", ? AS \"TIME_8\", ? AS \"TIME_9\", ? AS \"TIME_10\", ? AS \"TIME_11\", ? AS \"TIME_12\", ? AS \"TIME_13\", ? AS \"TIME_14\", ? AS \"TIME_15\", ? AS \"TIME_16\", ? AS \"TIME_17\", ? AS \"TIME_18\", ? AS \"TIME_19\", ? AS \"TIME_20\", ? AS \"TIME_21\", ? AS \"TIME_22\", ? AS \"TIME_23\", ? AS \"TIME_ALL\")) T2\n" +
                 "ORDER BY DATE_TYPE", stmt.toString());
     }
-
 }

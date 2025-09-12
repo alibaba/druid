@@ -20,11 +20,9 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
-
 public class MySqlSelectTest_252 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM (VALUES (1)) a (x) JOIN (VALUES (2)) b ON IF(a.x = 1, true, false)";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
@@ -36,6 +34,4 @@ public class MySqlSelectTest_252 extends MysqlTest {
                 "\t\tVALUES (2)\n" +
                 "\t) AS b ON IF(a.x = 1, true, false)", stmt.toString());
     }
-
-
 }

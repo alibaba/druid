@@ -1,15 +1,12 @@
 package com.alibaba.druid.bvt.sql.sqlserver;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
+import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MSSQLServerExportParameterVisitorTest extends TestCase {
     public void test_sqlserver() throws Exception {

@@ -15,17 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
 
 public class TestRemoveAbandoned2 extends TestCase {
     private MockDriver driver;
@@ -64,7 +60,6 @@ public class TestRemoveAbandoned2 extends TestCase {
             conn.close();
         }
         assertEquals(0, dataSource.getActiveCount());
-
 
         Thread abandonThread = new Thread("abandoned") {
             public void run() {

@@ -44,8 +44,8 @@ public class OracleCreateIndexTest16_local extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE INDEX dbobjs_idx ON dbobjs(created) LOCAL"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE INDEX dbobjs_idx ON dbobjs(created) LOCAL",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

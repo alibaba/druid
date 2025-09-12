@@ -8,7 +8,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson2.JSON;
 import junit.framework.TestCase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

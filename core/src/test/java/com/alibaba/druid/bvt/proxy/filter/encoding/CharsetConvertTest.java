@@ -15,14 +15,10 @@
  */
 package com.alibaba.druid.bvt.proxy.filter.encoding;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.UnsupportedEncodingException;
-
+import com.alibaba.druid.filter.encoding.CharsetConvert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.filter.encoding.CharsetConvert;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author gang.su

@@ -19,11 +19,9 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
-
 public class MySqlSelectTest_236 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT count(1) AS userCount,count(t.telephone) AS userWithPhoneCount,count(t.email) AS userWithEmailCount FROM (SELECT t.user_id , dw.telephone,dw.email FROM (SELECT dw.userid AS user_id FROM dw_user_property_wide_table_merged_v2 dw WHERE ((dw.is_sub = true))) t INNER JOIN dw_user_property_wide_table_merged_v2 dw ON t.user_id = dw.userid) t /*+META({\"s\": \"com.qunhe.logcomplex.userinformation.mapper.ads.UserPropertyMapper.countUser\"})*/";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
@@ -39,6 +37,4 @@ public class MySqlSelectTest_236 extends MysqlTest {
                 "\t\tINNER JOIN dw_user_property_wide_table_merged_v2 dw ON t.user_id = dw.userid\n" +
                 ") t /*+META({\"s\": \"com.qunhe.logcomplex.userinformation.mapper.ads.UserPropertyMapper.countUser\"})*/", stmt.toString());
     }
-
-
 }

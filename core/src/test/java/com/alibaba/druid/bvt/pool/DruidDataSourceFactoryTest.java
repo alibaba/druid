@@ -15,21 +15,16 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.util.Hashtable;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.sql.DataSource;
 
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.alibaba.druid.util.JdbcUtils;
+import java.util.Hashtable;
 
 public class DruidDataSourceFactoryTest extends TestCase {
     private DruidDataSource dataSource;

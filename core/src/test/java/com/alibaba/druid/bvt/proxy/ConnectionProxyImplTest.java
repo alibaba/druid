@@ -15,14 +15,6 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-
-import java.sql.SQLClientInfoException;
-import java.util.Properties;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterEventAdapter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
@@ -30,6 +22,10 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+
+import java.sql.SQLClientInfoException;
+import java.util.Properties;
 
 public class ConnectionProxyImplTest extends TestCase {
     protected void tearDown() throws Exception {
@@ -54,5 +50,4 @@ public class ConnectionProxyImplTest extends TestCase {
 
         connection.setClientInfo("name", null);
     }
-
 }

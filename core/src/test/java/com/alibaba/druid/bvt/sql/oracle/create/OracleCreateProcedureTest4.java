@@ -164,7 +164,7 @@ public class OracleCreateProcedureTest4 extends OracleTest {
                 "                          '???:' || in_loginname);\n" +
                 "    ROLLBACK;\n" +
                 "    RETURN;\n" +
-                "END;"; //
+                "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

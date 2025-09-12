@@ -1,8 +1,6 @@
 package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -12,8 +10,6 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-
-import java.util.List;
 
 public class Issue1865 extends TestCase {
     public void test_for_select() throws Exception {

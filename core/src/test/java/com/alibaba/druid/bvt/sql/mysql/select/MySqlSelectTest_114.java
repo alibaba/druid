@@ -73,6 +73,4 @@ public class MySqlSelectTest_114 extends TestCase {
                 + ") total",
             psql);
     }
-
-
 }

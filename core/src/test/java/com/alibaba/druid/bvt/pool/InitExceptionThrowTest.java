@@ -12,7 +12,7 @@ import java.util.Properties;
 public class InitExceptionThrowTest extends TestCase {
     private DruidDataSource dataSource = new DruidDataSource();
 
-    private int connectCount = 0;
+    private int connectCount;
 
     protected void setUp() throws Exception {
         dataSource.setInitExceptionThrow(false);

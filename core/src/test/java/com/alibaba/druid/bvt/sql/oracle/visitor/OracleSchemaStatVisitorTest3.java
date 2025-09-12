@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OracleSchemaStatVisitorTest3 extends TestCase {
     public void test_0() throws Exception {
@@ -52,7 +50,5 @@ public class OracleSchemaStatVisitorTest3 extends TestCase {
         assertEquals(true, visitor.getColumns().contains(new Column("users", "loginCount")));
         assertEquals(true, visitor.getColumns().contains(new Column("users2", "name2")));
         assertEquals(true, visitor.getColumns().contains(new Column("users2", "id2")));
-
     }
-
 }

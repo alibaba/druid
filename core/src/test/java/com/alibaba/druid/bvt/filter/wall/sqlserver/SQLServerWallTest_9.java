@@ -15,13 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -32,15 +28,13 @@ public class SQLServerWallTest_9 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 
-        String sql = "SELECT s.id FROM snapshots s " //
+        String sql = "SELECT s.id FROM snapshots s "
                 + "WHERE s.scope='PRJ'"//
                 + " and s.qualifier IN ('TRK', 'BRC')"//
-                + " AND status='P'" //
-                + " AND islast=0" //
+                + " AND status='P'"
+                + " AND islast=0"
                 + " AND NOT EXISTS (select m.id from project_measures m WHERE m.snapshot_id=s.id)";
 
         assertTrue(provider.checkValid(sql));
-
     }
-
 }

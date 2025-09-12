@@ -4,9 +4,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
@@ -47,7 +45,6 @@ public class MySqlSelectTest_176_hints extends MysqlTest {
                 "order by act_id desc\n" +
                 "limit 1", stmt.toLowerCaseString());
 
-
         assertEquals("SELECT a.*, b.start_time, b.end_time, b.user_limit, b.member_limit\n" +
                 "\t, b.attributes, b.merchant_code, b.terminal\n" +
                 "FROM wdk_buygift_item a, wdk_online_activity b\n" +
@@ -61,6 +58,4 @@ public class MySqlSelectTest_176_hints extends MysqlTest {
                 "ORDER BY act_id DESC\n" +
                 "LIMIT ?", stmt.toParameterizedString());
     }
-
-
 }

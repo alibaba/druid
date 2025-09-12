@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest53 extends MysqlTest {
@@ -56,7 +55,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("CREATE TABLE `ins_ebay_auth` ("//
-                + "\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id'," //
+                + "\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id',"
                 + "\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表',"//
                 + "\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效',"//
                 + "\n\t`ebay_token` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'eBay授权码',"//
@@ -98,7 +97,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("CREATE TABLE `ins_ebay_auth` ("//
-                + "\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id'," //
+                + "\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id',"
                 + "\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表',"//
                 + "\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效',"//
                 + "\n\t`ebay_token` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'eBay授权码',"//
@@ -141,7 +140,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("CREATE TABLE `ins_ebay_auth` ("//
-                + "\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id'," //
+                + "\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id',"
                 + "\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表',"//
                 + "\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效',"//
                 + "\n\t`ebay_token` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'eBay授权码',"//

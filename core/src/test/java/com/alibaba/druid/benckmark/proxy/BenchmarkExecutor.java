@@ -15,15 +15,15 @@
  */
 package com.alibaba.druid.benckmark.proxy;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 
 public class BenchmarkExecutor {
     private int loopCount = 1000;

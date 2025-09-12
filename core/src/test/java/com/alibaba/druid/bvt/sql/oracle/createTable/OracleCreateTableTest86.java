@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -57,7 +56,6 @@ public class OracleCreateTableTest86 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("subtotal_bill")));
 
         assertEquals(8, visitor.getColumns().size());
-
     }
 
     public void test_1() throws Exception {
@@ -91,6 +89,5 @@ public class OracleCreateTableTest86 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("subtotal_bill")));
 
         assertEquals(8, visitor.getColumns().size());
-
     }
 }

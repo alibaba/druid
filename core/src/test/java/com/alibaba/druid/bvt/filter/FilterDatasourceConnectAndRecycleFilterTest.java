@@ -15,21 +15,18 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterAdapter;
+import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.filter.FilterAdapter;
-import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
 
 public class FilterDatasourceConnectAndRecycleFilterTest extends TestCase {
     TestFilter filter = new TestFilter();

@@ -17,16 +17,11 @@ public class MySqlCreateTableTest132_drds_primaryKey extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE gxw_test_87 (\n" +
                 "\tid int,\n" +
                 "\tname varchar(20),\n" +
                 "\tPRIMARY KEY (id, name)\n" +
                 ")\n" +
                 "DBPARTITION BY hash(id);", stmt.toString());
-
-
     }
-
-
 }

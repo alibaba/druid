@@ -1,17 +1,15 @@
 package com.alibaba.druid.test;
 
-import javax.sql.DataSource;
-
-import org.junit.Assert;
+import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
-
+import org.junit.Assert;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Dao;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import javax.sql.DataSource;
 
 public class NutzTransactionTest extends TestCase {
     private DataSource dataSource;
@@ -68,5 +66,4 @@ public class NutzTransactionTest extends TestCase {
         }
         Assert.assertEquals(0, dao.count("[test]"));
     }
-
 }

@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -80,5 +79,4 @@ public class MySqlInsertTest_17 extends MysqlTest {
                 ") x";
         assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
-
 }

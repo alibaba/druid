@@ -1,13 +1,10 @@
 package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,7 +61,6 @@ public class CreateCompareTest extends TestCase {
 
         List stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
 
-
         SQLCreateTableStatement.sort(stmtList);
 
         assertEquals("t9", ((SQLCreateTableStatement) stmtList.get(9)).getName().getSimpleName());
@@ -77,7 +73,6 @@ public class CreateCompareTest extends TestCase {
         assertEquals("t5", ((SQLCreateTableStatement) stmtList.get(2)).getName().getSimpleName());
         assertEquals("t4", ((SQLCreateTableStatement) stmtList.get(1)).getName().getSimpleName());
         assertEquals("t2", ((SQLCreateTableStatement) stmtList.get(0)).getName().getSimpleName());
-
 
         String sortedSql = SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
         System.out.println(sortedSql);

@@ -17,11 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-
 
 public class MySqlSelectTest_234 extends MysqlTest {
     public void test_0() throws Exception {
@@ -32,7 +28,6 @@ public class MySqlSelectTest_234 extends MysqlTest {
                 + "         WHERE `account`= '1_30002_35104'  LIMIT 1  \n"
                 + "         union \n"
                 + "         SELECT ema_user_id, 1 as o FROM g170_user  WHERE `g_distinct_id`= ''  LIMIT 1       )  ORDER BY o";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
@@ -50,6 +45,4 @@ public class MySqlSelectTest_234 extends MysqlTest {
                 ")\n" +
                 "ORDER BY o", stmt.toString());
     }
-
-
 }

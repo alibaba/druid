@@ -1,10 +1,7 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
+import junit.framework.TestCase;
 
 public class EqualTest_groupSet extends TestCase {
     public void test_eq() throws Exception {

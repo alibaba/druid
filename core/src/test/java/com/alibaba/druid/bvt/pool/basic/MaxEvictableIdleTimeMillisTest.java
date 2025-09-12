@@ -1,16 +1,11 @@
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.GetConnectionTimeoutException;
 import com.alibaba.druid.util.JdbcUtils;
-
 import junit.framework.TestCase;
+
+import java.sql.Connection;
 
 public class MaxEvictableIdleTimeMillisTest extends TestCase {
     private DruidDataSource dataSource;

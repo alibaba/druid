@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class H2_Select_1_nulls_first extends OracleTest {
         String sql = //
                 "SELECT * FROM (SELECT ID, COUNT(*) FROM TEST\n" +
                         "    GROUP BY ID UNION SELECT NULL, COUNT(*) FROM TEST)\n" +
-                        "    ORDER BY 1 NULLS LAST;"; //
+                        "    ORDER BY 1 NULLS LAST;";
 
 //        System.out.println(sql);
 
@@ -69,6 +68,5 @@ public class H2_Select_1_nulls_first extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("TEST"));
-
     }
 }

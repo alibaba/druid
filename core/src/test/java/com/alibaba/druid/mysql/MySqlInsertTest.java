@@ -1,7 +1,6 @@
 package com.alibaba.druid.mysql;
 
 import com.alibaba.druid.DbTestCase;
-import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.Statement;

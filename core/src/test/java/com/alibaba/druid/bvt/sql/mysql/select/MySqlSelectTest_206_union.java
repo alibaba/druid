@@ -16,7 +16,6 @@
 package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
@@ -27,7 +26,6 @@ public class MySqlSelectTest_206_union extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT uid FROM (select uid, cid, category, empid from comb_opportunity_sales_relation_online where uid = 1723876714657374)  \n" +
                 "union SELECT uid FROM (select uid, cid, category, empid from comb_opportunity_sales_relation_offline where uid = 1723876714657374) ";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -57,8 +55,5 @@ public class MySqlSelectTest_206_union extends MysqlTest {
         assertEquals(8, visitor.getColumns().size());
         assertEquals(2, visitor.getConditions().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
-
     }
-
 }

@@ -3,7 +3,6 @@ package com.alibaba.druid.bvt.bug;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
@@ -45,6 +44,7 @@ public class Issue1935 extends TestCase {
             Collection<TableStat.Column> cc = visitor.getColumns();
             //column 存储了表名，列名，以及列是出现的位置，where，select，groupby ，order
             for (TableStat.Column column : cc) {
+                // Intentionally left empty
             }
             System.out.println("conditions : " + visitor.getConditions());
             List<TableStat.Condition> conditions = visitor.getConditions();

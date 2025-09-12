@@ -1,14 +1,9 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-
+import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
-
-import com.alibaba.druid.pool.DruidDataSource;
+import java.sql.Connection;
 
 public class DruidDataSourceTest_initSqls extends TestCase {
     private DruidDataSource dataSource;
@@ -35,5 +30,4 @@ public class DruidDataSourceTest_initSqls extends TestCase {
 
         conn.close();
     }
-
 }

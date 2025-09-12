@@ -1,18 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
+import junit.framework.TestCase;
 
 import javax.sql.PooledConnection;
 
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
+import java.sql.Connection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 这个场景测试defaultAutoCommit

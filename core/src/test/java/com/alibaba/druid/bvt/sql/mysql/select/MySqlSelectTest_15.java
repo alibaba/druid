@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -58,8 +57,8 @@ public class MySqlSelectTest_15 extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("t")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT 1 - -1" //
-                        + "\nFROM t" //
+        assertEquals("SELECT 1 - -1"
+                        + "\nFROM t"
                         + "\nWHERE id = 1", //
                 output);
     }

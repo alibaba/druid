@@ -22,15 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest31 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE students (name person_name, age INTEGER," //
-                        + "   CHECK (name.first_name IS NOT NULL AND " //
+                "CREATE TABLE students (name person_name, age INTEGER,"
+                        + "   CHECK (name.first_name IS NOT NULL AND "
                         + "          name.last_name IS NOT NULL));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -45,7 +44,7 @@ public class OracleCreateTableTest31 extends OracleTest {
                         + "\n\tage INTEGER,"
                         + "\n\tCHECK (name.first_name IS NOT NULL"
                         + "\n\t\tAND name.last_name IS NOT NULL)"
-                        + "\n);",//
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

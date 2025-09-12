@@ -43,5 +43,4 @@ public class MySqlCreateDatabaseTest8_drds extends MysqlTest {
                 "STORED BY (IP = '127.0.0.1', PORT = 3306, USER = 'root', PASSWORD = '123456'),\n" +
                 "\t(IP = '127.0.0.1', PORT = 3307, USER = 'root', PASSWORD = '123456');", output);
     }
-
 }

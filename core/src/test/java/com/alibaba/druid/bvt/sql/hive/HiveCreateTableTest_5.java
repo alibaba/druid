@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class HiveCreateTableTest_5 extends OracleTest {
                 "CREATE TABLE user_info_bucketed(user_id BIGINT, firstname STRING, lastname STRING)\n" +
                         "COMMENT 'A bucketed copy of user_info'\n" +
                         "PARTITIONED BY(ds STRING)\n" +
-                        "CLUSTERED BY(user_id) INTO 256 BUCKETS;"; //
+                        "CLUSTERED BY(user_id) INTO 256 BUCKETS;";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -70,6 +69,5 @@ public class HiveCreateTableTest_5 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("user_info_bucketed"));
-
     }
 }

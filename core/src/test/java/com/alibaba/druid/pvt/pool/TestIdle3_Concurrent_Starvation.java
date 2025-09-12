@@ -15,19 +15,18 @@
  */
 package com.alibaba.druid.pvt.pool;
 
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3_Concurrent_Starvation extends TestCase {
     private MockDriver driver;
@@ -51,7 +50,6 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-
     }
 
     protected void tearDown() throws Exception {
@@ -92,7 +90,6 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
             conn.close();
         }
         // Assert.assertEquals(2, dataSource.getPoolingCount());
-
     }
 
     private void concurrent(final int threadCount) throws Exception {

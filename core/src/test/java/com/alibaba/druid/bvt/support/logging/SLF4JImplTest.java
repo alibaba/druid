@@ -1,12 +1,8 @@
 package com.alibaba.druid.bvt.support.logging;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.SLF4JImpl;
+import junit.framework.TestCase;
 
 public class SLF4JImplTest extends TestCase {
     public void test_0() throws Exception {

@@ -1,8 +1,11 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallFilter;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,15 +13,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallFilter;
 
 public class WallFilterTest3 extends TestCase {
     private DruidDataSource dataSource;
@@ -42,7 +36,6 @@ public class WallFilterTest3 extends TestCase {
         dataSource.setProxyFilters(filters);
 
         dataSource.init();
-
     }
 
     protected void tearDown() throws Exception {
@@ -130,6 +123,7 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();
@@ -146,6 +140,7 @@ public class WallFilterTest3 extends TestCase {
                     ResultSet.HOLD_CURSORS_OVER_COMMIT);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();
@@ -160,6 +155,7 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql, new int[0]);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();
@@ -174,6 +170,7 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement(sql, new String[0]);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();
@@ -188,6 +185,7 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareCall(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();
@@ -202,6 +200,7 @@ public class WallFilterTest3 extends TestCase {
             PreparedStatement stmt = conn.prepareCall(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();
@@ -217,6 +216,7 @@ public class WallFilterTest3 extends TestCase {
                     ResultSet.HOLD_CURSORS_OVER_COMMIT);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();
@@ -232,6 +232,7 @@ public class WallFilterTest3 extends TestCase {
             stmt.execute(sql, Statement.NO_GENERATED_KEYS);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();
@@ -248,6 +249,7 @@ public class WallFilterTest3 extends TestCase {
             stmt.execute(sql, new int[0]);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();
@@ -264,6 +266,7 @@ public class WallFilterTest3 extends TestCase {
             stmt.execute(sql, new String[0]);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
+                // intentionally empty - just iterating through results
             }
             rs.close();
             stmt.close();

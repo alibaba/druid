@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class OracleSelectTest87_bindvar extends OracleTest {
                         "from a\n" +
                         "where a=:3\n" +
                         "and b= : 4\n" +
-                        "and c= :5and :a = :b"; //
+                        "and c= :5and :a = :b";
 
         System.out.println(sql);
 

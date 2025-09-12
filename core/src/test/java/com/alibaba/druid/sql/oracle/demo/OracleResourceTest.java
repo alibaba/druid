@@ -21,15 +21,10 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
 
 public class OracleResourceTest extends OracleTest {
@@ -76,5 +71,4 @@ public class OracleResourceTest extends OracleTest {
 
         Assert.assertEquals(expect, out.toString());
     }
-
 }

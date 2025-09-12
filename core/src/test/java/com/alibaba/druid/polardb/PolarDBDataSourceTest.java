@@ -1,18 +1,16 @@
 package com.alibaba.druid.polardb;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class PolarDBDataSourceTest extends TestCase {
     private String jdbcUrl;

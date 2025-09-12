@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -37,10 +32,9 @@ public class MySqlWallTest68 extends TestCase {
         provider.getConfig().setSchemaCheck(true);
 
         assertTrue(provider.checkValid(//
-                "SELECT * FROM `information_schema`.`ROUTINES` " + //
+                "SELECT * FROM `information_schema`.`ROUTINES` " +
                         "WHERE `information_schema`.`ROUTINES`.`ROUTINE_SCHEMA` = 'mzsg_g001'"));
 
         assertEquals(1, provider.getTableStats().size());
     }
-
 }

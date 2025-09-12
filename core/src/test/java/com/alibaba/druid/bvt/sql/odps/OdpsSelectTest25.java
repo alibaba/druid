@@ -56,7 +56,7 @@ public class OdpsSelectTest25 extends TestCase {
                 "WHERE NOT (tt.os = 'all'\n" +
                 "           AND tt.ver <> 'all')\n" +
                 "GROUP BY tt.os,\n" +
-                "         tt.ver;";//
+                "         tt.ver;";
         assertEquals("INSERT OVERWRITE TABLE ids_openapp_dau_d PARTITION (dt='${lastday}')\n" +
                 "SELECT tt.os, tt.ver, count(1) AS tt_user\n" +
                 "\t, sum(tt.tt_cnt) AS tt_cnt\n" +
@@ -143,5 +143,4 @@ public class OdpsSelectTest25 extends TestCase {
         assertTrue(visitor.containsColumn("openapp_log_d", "utype"));
         assertTrue(visitor.containsColumn("openapp_log_d", "dt"));
     }
-
 }

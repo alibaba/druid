@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.mysql;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class MySqlHexTest extends TestCase {
     final int COUNT = 800;
@@ -46,9 +45,7 @@ public class MySqlHexTest extends TestCase {
         dataSource.setPoolPreparedStatements(true);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-
     }
-
 
     public void test_0() throws Exception {
         Connection conn = dataSource.getConnection();
@@ -64,5 +61,4 @@ public class MySqlHexTest extends TestCase {
 
         conn.close();
     }
-
 }

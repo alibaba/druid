@@ -1,15 +1,12 @@
 package com.alibaba.druid.bvt.sql.eval;
 
+import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
-import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
-import com.alibaba.druid.util.JdbcConstants;
 
 public class EvalTest_gt_true extends TestCase {
     public void test_long() throws Exception {

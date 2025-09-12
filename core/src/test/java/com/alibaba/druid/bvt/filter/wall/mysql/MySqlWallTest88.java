@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -41,5 +36,4 @@ public class MySqlWallTest88 extends TestCase {
         assertEquals(1, provider.getTableStats().size());
         assertTrue(provider.getTableStats().containsKey("t"));
     }
-
 }

@@ -15,8 +15,18 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.alibaba.druid.mock.MockBlob;
+import com.alibaba.druid.mock.MockClob;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockNClob;
+import com.alibaba.druid.mock.MockRowId;
+import com.alibaba.druid.mock.MockStatementBase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.JdbcSqlStat;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.nutz.lang.util.ByteInputStream;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -28,21 +38,6 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.nutz.lang.util.ByteInputStream;
-
-import com.alibaba.druid.mock.MockBlob;
-import com.alibaba.druid.mock.MockClob;
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockNClob;
-import com.alibaba.druid.mock.MockRowId;
-import com.alibaba.druid.mock.MockStatementBase;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.JdbcSqlStat;
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterBuildSlowParameterTest extends TestCase {
     private DruidDataSource dataSource;

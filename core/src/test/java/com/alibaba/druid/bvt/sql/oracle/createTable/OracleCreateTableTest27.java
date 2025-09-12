@@ -22,24 +22,23 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest27 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE dept_20 " //
-                        + "   (employee_id     NUMBER(4), " //
-                        + "    last_name       VARCHAR2(10), " //
-                        + "    job_id          VARCHAR2(9), " //
-                        + "    manager_id      NUMBER(4), " //
-                        + "    hire_date       DATE, " //
-                        + "    salary          NUMBER(7,2), " //
-                        + "    commission_pct  NUMBER(7,2), " //
-                        + "    department_id, " //
-                        + "   CONSTRAINT fk_deptno " //
-                        + "      FOREIGN  KEY (department_id) " //
+                "CREATE TABLE dept_20 "
+                        + "   (employee_id     NUMBER(4), "
+                        + "    last_name       VARCHAR2(10), "
+                        + "    job_id          VARCHAR2(9), "
+                        + "    manager_id      NUMBER(4), "
+                        + "    hire_date       DATE, "
+                        + "    salary          NUMBER(7,2), "
+                        + "    commission_pct  NUMBER(7,2), "
+                        + "    department_id, "
+                        + "   CONSTRAINT fk_deptno "
+                        + "      FOREIGN  KEY (department_id) "
                         + "      REFERENCES  departments(department_id) ); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -60,7 +59,7 @@ public class OracleCreateTableTest27 extends OracleTest {
                         "\tdepartment_id,\n" +
                         "\tCONSTRAINT fk_deptno FOREIGN KEY (department_id)\n" +
                         "\t\tREFERENCES departments (department_id)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

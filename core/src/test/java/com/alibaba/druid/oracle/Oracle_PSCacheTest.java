@@ -1,15 +1,12 @@
 package com.alibaba.druid.oracle;
 
 import com.alibaba.druid.DbTestCase;
-import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by wenshao on 23/07/2017.

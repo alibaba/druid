@@ -25,13 +25,13 @@ public class MySqlSelectTest_149 extends MysqlTest {
                 "FROM corona_select_one_db_one_tb", stmt.toString());
 
         assertEquals("SELECT length(? COLLATE utf8_general_ci)\n" +
-                        "FROM corona_select_one_db_one_tb"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        "FROM corona_select_one_db_one_tb",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
 
         SQLSelectQueryBlock queryBlock = stmt.getSelect().getQueryBlock();
         assertEquals(1, queryBlock.getSelectList().size());
-        assertEquals("length('aaa' COLLATE utf8_general_ci)"
-                , queryBlock.getSelectList().get(0).getExpr().toString()
+        assertEquals("length('aaa' COLLATE utf8_general_ci)",
+                queryBlock.getSelectList().get(0).getExpr().toString()
         );
     }
 
@@ -45,13 +45,13 @@ public class MySqlSelectTest_149 extends MysqlTest {
 
         assertEquals("SELECT count(1), length('aaa' COLLATE utf8_general_ci)\n" + "FROM corona_select_one_db_one_tb", stmt.toString());
 
-        assertEquals("SELECT count(1), length(? COLLATE utf8_general_ci)\n" + "FROM corona_select_one_db_one_tb"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+        assertEquals("SELECT count(1), length(? COLLATE utf8_general_ci)\n" + "FROM corona_select_one_db_one_tb",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
 
         SQLSelectQueryBlock queryBlock = stmt.getSelect().getQueryBlock();
         assertEquals(2, queryBlock.getSelectList().size());
-        assertEquals("length('aaa' COLLATE utf8_general_ci)"
-                , queryBlock.getSelectList().get(1).getExpr().toString()
+        assertEquals("length('aaa' COLLATE utf8_general_ci)",
+                queryBlock.getSelectList().get(1).getExpr().toString()
         );
     }
 

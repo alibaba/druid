@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest79 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT * FROM `tasks` where projectId=?"; //
+                "SELECT * FROM `tasks` where projectId=?";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -58,7 +57,6 @@ public class OracleSelectTest79 extends OracleTest {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
 
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

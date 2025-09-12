@@ -11,6 +11,7 @@ import javax.sql.XAConnection;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +19,6 @@ import java.sql.SQLException;
 
 @Ignore("OceanBase Oracle Mode is not open source")
 public class OceanBaseOracleXATest extends PoolTestCase {
-
     private DruidXADataSource dataSource;
     private XAConnection xaConnection;
     private XAResource xaResource;
@@ -43,7 +43,6 @@ public class OceanBaseOracleXATest extends PoolTestCase {
                 "    c2 NUMBER(10) NOT NULL,\n" +
                 "    PRIMARY KEY (c1)\n" +
                 ");");
-
     }
 
     protected void tearDown() throws Exception {
@@ -125,7 +124,7 @@ public class OceanBaseOracleXATest extends PoolTestCase {
 
     public void testObOracleXAWithError() throws Exception {
         connection.setAutoCommit(false);
-        
+
         String gtridStr = "gtrid_test_wgs_ob_oracle_xa_with_error";
         String bqualStr = "bqual_test_wgs_ob_oracle_xa_with_error";
 
@@ -155,7 +154,6 @@ public class OceanBaseOracleXATest extends PoolTestCase {
     }
 
     public void testObOracleXACheckAcAndError() throws Exception {
-
         String gtridStr = "gtrid_test_wgs_ob_oracle_xa_check_ac_and_error";
         String bqualStr = "bqual_test_wgs_ob_oracle_xa_check_ac_and_error";
 
@@ -178,7 +176,6 @@ public class OceanBaseOracleXATest extends PoolTestCase {
     }
 
     public void testObOracleXACheckAcAndEndError() throws Exception {
-        
         String gtridStr = "gtrid_test_wgs_ob_oracle_xa_check_ac_and_end_error_3";
         String bqualStr = "bqual_test_wgs_ob_oracle_xa_check_ac_and_end_error_3";
 
@@ -187,7 +184,6 @@ public class OceanBaseOracleXATest extends PoolTestCase {
             Assert.assertTrue(connection.getAutoCommit());
             xaResource.start(xid, XAResource.TMNOFLAGS);
             Assert.assertFalse(connection.getAutoCommit());
-
             // ps test
             PreparedStatement pstmt = null;
             ResultSet rs = null;

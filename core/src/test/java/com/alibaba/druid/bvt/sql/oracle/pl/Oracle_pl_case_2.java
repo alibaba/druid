@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class Oracle_pl_case_2 extends OracleTest {
     public void test_0() throws Exception {
@@ -39,7 +38,7 @@ public class Oracle_pl_case_2 extends OracleTest {
                 "          l_employee_id);\n" +
                 "   ELSE\n" +
                 "       RAISE invalid_employee_type;\n" +
-                "END CASE;"; //
+                "END CASE;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

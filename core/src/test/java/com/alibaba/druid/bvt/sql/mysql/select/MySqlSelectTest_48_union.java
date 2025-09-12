@@ -44,7 +44,6 @@ public class MySqlSelectTest_48_union extends MysqlTest {
                 "cast(b.paid_date as varchar(10))<='2017-06-30' and b.state=1 and a.acct_day='03'\n" +
                 ")hd";
 
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 

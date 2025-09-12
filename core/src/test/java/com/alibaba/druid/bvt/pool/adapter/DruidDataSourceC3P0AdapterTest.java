@@ -15,17 +15,12 @@
  */
 package com.alibaba.druid.bvt.pool.adapter;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+
+import java.sql.Connection;
 
 public class DruidDataSourceC3P0AdapterTest extends PoolTestCase {
     private MockDriver driver;

@@ -24,16 +24,15 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlSelectTest_group_concat extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "SELECT GROUP_CONCAT(ext_customer_id Separator '.') " //
-                + "from ad_texts " //
-                + "where customer_id=13001 " //
-                + "and description1 like '%爱丽%' " //
+        String sql = "SELECT GROUP_CONCAT(ext_customer_id Separator '.') "
+                + "from ad_texts "
+                + "where customer_id=13001 "
+                + "and description1 like '%爱丽%' "
                 + "order by id asc;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -54,7 +53,6 @@ public class MySqlSelectTest_group_concat extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
@@ -68,10 +66,10 @@ public class MySqlSelectTest_group_concat extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("ad_texts")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT GROUP_CONCAT(ext_customer_id SEPARATOR '.')" //
-                        + "\nFROM ad_texts" //
-                        + "\nWHERE customer_id = 13001" //
-                        + "\n\tAND description1 LIKE '%爱丽%'" //
+        assertEquals("SELECT GROUP_CONCAT(ext_customer_id SEPARATOR '.')"
+                        + "\nFROM ad_texts"
+                        + "\nWHERE customer_id = 13001"
+                        + "\n\tAND description1 LIKE '%爱丽%'"
                         + "\nORDER BY id ASC;", //
                 output);
     }

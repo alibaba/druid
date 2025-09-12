@@ -15,31 +15,29 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleUpdateTest2 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "UPDATE wrh$_tempfile tfh " //
-                + "    SET (snap_id, filename, tsname) =" //
+        String sql = "UPDATE wrh$_tempfile tfh "
+                + "    SET (snap_id, filename, tsname) ="
                 + "    (SELECT :lah_snap_id, tf.name name, ts.name tsname"
-                + //
+                +
                 "      FROM v$tempfile tf, ts$ ts"
-                + //
+                +
                 "      WHERE tf.ts# = ts.ts# AND tfh.file# = tf.file# AND tfh.creation_change# = tf.creation_change#"
-                + //
-                "  )" + //
-                "WHERE (file#, creation_change#) IN        (" + //
-                "          SELECT tf.tfnum, to_number(tf.tfcrc_scn) creation_change#           " + //
-                "          FROM x$kcctf tf           " + //
-                "          WHERE tf.tfdup != 0)    AND dbid    = :dbid    AND snap_id < :snap_id"; //
+                +
+                "  )" +
+                "WHERE (file#, creation_change#) IN        (" +
+                "          SELECT tf.tfnum, to_number(tf.tfcrc_scn) creation_change#           " +
+                "          FROM x$kcctf tf           " +
+                "          WHERE tf.tfdup != 0)    AND dbid    = :dbid    AND snap_id < :snap_id";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -68,5 +66,4 @@ public class OracleUpdateTest2 extends OracleTest {
         assertTrue(visitor.containsColumn("ts$", "name"));
         assertTrue(visitor.containsColumn("v$tempfile", "ts#"));
     }
-
 }

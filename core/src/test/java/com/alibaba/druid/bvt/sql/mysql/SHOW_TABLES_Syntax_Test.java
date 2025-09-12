@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class SHOW_TABLES_Syntax_Test extends TestCase {
     public void test_0() throws Exception {
@@ -64,7 +62,6 @@ public class SHOW_TABLES_Syntax_Test extends TestCase {
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
         assertEquals("SHOW FULL TABLES FROM SUNTEST", text);
 
-
         sql = "SHOW FULL TABLES IN SUNTEST  LIKE '%DDD%' ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
@@ -83,13 +80,10 @@ public class SHOW_TABLES_Syntax_Test extends TestCase {
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
         assertEquals("SHOW FULL TABLES FROM SUNTEST WHERE NAME = 'DDD'", text);
 
-
         sql = "SHOW FULL TABLES FROM SUNTEST  WHERE NAME =  'DDD' ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
         assertEquals("SHOW FULL TABLES FROM SUNTEST WHERE NAME = 'DDD'", text);
-
     }
-
 }

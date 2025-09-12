@@ -444,7 +444,7 @@ public class TableStat {
         private boolean having;
         private boolean join;
         private boolean primaryKey; // for ddl
-        private boolean unique; //
+        private boolean unique;
         private boolean update;
         private Map<String, Object> attributes = new HashMap<String, Object>();
         private transient String fullName;
@@ -631,7 +631,7 @@ public class TableStat {
         DropIndex(256), //
         CreateIndex(512), //
         Replace(1024),
-        DESC(2048); //
+        DESC(2048);
 
         public final int mark;
 

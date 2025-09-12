@@ -2,11 +2,10 @@ package com.alibaba.druid.spring.boot3.demo.configurer;
 
 import com.alibaba.druid.spring.boot3.demo.dao.UserDao;
 import com.alibaba.druid.spring.boot3.demo.model.User;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import jakarta.annotation.PostConstruct;
 
 @Configuration
 @Profile("default")

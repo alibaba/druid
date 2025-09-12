@@ -1,17 +1,11 @@
 package com.alibaba.druid.bvt.pool.xa;
 
-import static org.junit.Assert.*;
-
-
-import java.lang.reflect.Constructor;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-import net.sourceforge.jtds.jdbc.JtdsConnection;
-
-
 import com.alibaba.druid.pool.xa.JtdsXAConnection;
 import com.alibaba.druid.pool.xa.JtdsXAResource;
+import net.sourceforge.jtds.jdbc.JtdsConnection;
+
+import java.lang.reflect.Constructor;
 
 public class JtdsXAConnectionTest extends PoolTestCase {
     public void test_jtds() throws Exception {

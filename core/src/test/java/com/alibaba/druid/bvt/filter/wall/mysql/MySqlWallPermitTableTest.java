@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class MySqlWallPermitTableTest extends TestCase {
     public void test_default_true() throws Exception {
@@ -33,12 +28,10 @@ public class MySqlWallPermitTableTest extends TestCase {
         assertFalse(WallUtils.isValidateMySql("select * from t where fid = 1 union select benchmark( 500000, sha1( 'test' ) ) FROM X"));
     }
 
-
     public void test_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setTableCheck(false);
 
         assertTrue(WallUtils.isValidateMySql("select benchmark( 500000, sha1( 'test' ) ) FROM X", config));
     }
-
 }

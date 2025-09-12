@@ -15,19 +15,13 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.logging.impl.Log4JLogger;
-import org.apache.log4j.Priority;
-
 import com.alibaba.druid.filter.logging.CommonsLogFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+import org.apache.commons.logging.impl.Log4JLogger;
+import org.apache.log4j.Priority;
 
 public class CommonsLogFilterTest extends TestCase {
     protected void tearDown() throws Exception {
@@ -224,7 +218,6 @@ public class CommonsLogFilterTest extends TestCase {
         assertFalse(filter.isResultSetCloseAfterLogEnabled());
         assertFalse(filter.isResultSetNextAfterLogEnabled());
         assertFalse(filter.isResultSetOpenAfterLogEnabled());
-
     }
 
     @SuppressWarnings("serial")

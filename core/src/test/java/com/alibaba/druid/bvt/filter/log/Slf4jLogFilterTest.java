@@ -1,13 +1,8 @@
 package com.alibaba.druid.bvt.filter.log;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
-
+import junit.framework.TestCase;
+import org.slf4j.LoggerFactory;
 
 public class Slf4jLogFilterTest extends TestCase {
     public void test_slf4j() throws Exception {

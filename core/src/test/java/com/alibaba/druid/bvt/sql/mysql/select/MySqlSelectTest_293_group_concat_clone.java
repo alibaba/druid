@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_293_group_concat_clone extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT student_name,\n" +
@@ -39,8 +38,5 @@ public class MySqlSelectTest_293_group_concat_clone extends MysqlTest {
         assertEquals("SELECT student_name, GROUP_CONCAT(DISTINCT test_score ORDER BY test_score DESC SEPARATOR ' ')\n" +
                 "FROM student\n" +
                 "GROUP BY student_name;", stmt.clone().toString());
-
     }
-
-
 }

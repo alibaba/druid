@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class OracleSelectTest81_join_brace extends OracleTest {
                         "   AND c1.enabled_flag = 'Y'\n" +
                         "   AND c1.contract_header_id = :headerid\n" +
                         "   AND sites.contract_header_id = :headerid\n" +
-                        "   AND c1.partition_date = :partiondate;"; //
+                        "   AND c1.partition_date = :partiondate;";
 
         System.out.println(sql);
 
@@ -49,7 +48,6 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
-
 
         assertEquals(1, statementList.size());
 
@@ -85,7 +83,6 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         assertEquals(15, visitor.getConditions().size());
         assertEquals(4, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
 
         assertTrue(visitor.containsColumn("tcp_cpr.con_config", "contract_config_id"));
         assertTrue(visitor.containsColumn("tcp_cpr.con_osg3a_headers", "parent_id"));

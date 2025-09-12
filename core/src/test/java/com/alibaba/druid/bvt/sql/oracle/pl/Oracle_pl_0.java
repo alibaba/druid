@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class Oracle_pl_0 extends OracleTest {
     public void test_0() throws Exception {
@@ -32,7 +31,7 @@ public class Oracle_pl_0 extends OracleTest {
                 "      DELETE FROM employees\n" +
                 "      WHERE employees.employee_id = remove_emp.employee_id;\n" +
                 "   tot_emps := tot_emps - 1;\n" +
-                "   END;"; //
+                "   END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

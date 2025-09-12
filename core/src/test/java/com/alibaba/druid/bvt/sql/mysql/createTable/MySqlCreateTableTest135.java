@@ -1,6 +1,5 @@
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -26,7 +25,6 @@ public class MySqlCreateTableTest135 extends TestCase {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE MQ_TOPIC_RECORD (\n" +
                 "\tTOPIC_ID bigint(11) NOT NULL,\n" +
                 "\tBROKENNAME national VARCHAR(50),\n" +
@@ -38,6 +36,5 @@ public class MySqlCreateTableTest135 extends TestCase {
                 "\tBROKENNAME national VARCHAR(50),\n" +
                 "\tBROKENNAME2 national CHAR(50)\n" +
                 ");", stmt.toLowerCaseString());
-
     }
 }

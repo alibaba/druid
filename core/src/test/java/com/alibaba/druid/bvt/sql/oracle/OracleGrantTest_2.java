@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,15 +22,17 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.List;
+
 public class OracleGrantTest_2 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "GRANT" //
-                + "     CREATE ANY MATERIALIZED VIEW" //
-                + "   , ALTER ANY MATERIALIZED VIEW" //
-                + "   , DROP ANY MATERIALIZED VIEW" //
-                + "   , QUERY REWRITE" //
-                + "   , GLOBAL QUERY REWRITE" //
-                + "   TO dw_manager" //
+        String sql = "GRANT"
+                + "     CREATE ANY MATERIALIZED VIEW"
+                + "   , ALTER ANY MATERIALIZED VIEW"
+                + "   , DROP ANY MATERIALIZED VIEW"
+                + "   , QUERY REWRITE"
+                + "   , GLOBAL QUERY REWRITE"
+                + "   TO dw_manager"
                 + "   WITH ADMIN OPTION;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -50,7 +48,7 @@ public class OracleGrantTest_2 extends OracleTest {
                         + " QUERY REWRITE,"//
                         + " GLOBAL QUERY REWRITE"//
                         + " TO dw_manager"//
-                        + " WITH ADMIN OPTION;",//
+                        + " WITH ADMIN OPTION;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

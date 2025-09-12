@@ -201,7 +201,7 @@
 //                    + ");",
 //            }) {
 //                SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
-//                System.out.println("当前原始sql========"+sql);
+//                System.out.println("当前原始sql========" +sql);
 //                List<SQLStatement> statementList = parser.parseStatementList();
 //                //assertEquals(1, statementList.size());
 //                SQLParseAssertUtil.assertParseSql(sql, dbType);

@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.db2;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.DB2Test;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -27,6 +23,8 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class DB2SelectTest_11 extends DB2Test {
     public void test_0() throws Exception {

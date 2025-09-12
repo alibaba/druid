@@ -22,15 +22,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlSelectTest_BinaryConcat extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "select campaignId from Campaign" + //
-                "   where   advertiserId =   ?" + //
-                "   and   deleteStatus = false" + //
+        String sql = "select campaignId from Campaign" +
+                "   where   advertiserId =   ?" +
+                "   and   deleteStatus = false" +
                 "   and   campaignName like binary CONCAT('%',?,'%')";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

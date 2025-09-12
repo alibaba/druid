@@ -1,20 +1,15 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcSqlStat;
+import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Iterator;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import com.alibaba.druid.stat.JdbcSqlStat;
-import com.alibaba.druid.stat.JdbcStatManager;
 
 public class TestOnBorrowFileAndNameTest extends TestCase {
     private DruidDataSource dataSource;
@@ -30,7 +25,6 @@ public class TestOnBorrowFileAndNameTest extends TestCase {
         dataSource.setTestOnBorrow(true);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-
     }
 
     protected void tearDown() throws Exception {

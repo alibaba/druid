@@ -880,7 +880,7 @@ public final class JdbcUtils implements JdbcConstants {
         StringBuilder sql = new StringBuilder() //
                 .append("insert into ") //
                 .append(tableName) //
-                .append("("); //
+                .append("(");
 
         int nameCount = 0;
         for (String name : names) {

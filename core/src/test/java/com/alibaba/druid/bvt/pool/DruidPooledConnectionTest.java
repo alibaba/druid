@@ -1,15 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.Savepoint;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
 
 public class DruidPooledConnectionTest extends TestCase {
     private DruidDataSource dataSource;

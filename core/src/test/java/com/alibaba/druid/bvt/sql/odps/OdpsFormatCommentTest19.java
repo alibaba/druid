@@ -1,9 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsFormatCommentTest19 extends TestCase {
@@ -13,5 +10,4 @@ public class OdpsFormatCommentTest19 extends TestCase {
         assertEquals("SET xxx = aaa;-- ssss"
                 + "\nSET yyy = 123;", SQLUtils.formatOdps(sql));
     }
-
 }

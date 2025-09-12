@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class OracleSelectTest93_model extends OracleTest {
                         "s[prod='mouse pad', year=2001] = s['mouse pad', 1999] + s['mouse pad', 2000],\n" +
                         "s['standard mouse', 2002] = s['standard mouse', 2001]\n" +
                         ")\n" +
-                        "order by country, prod, year"; //
+                        "order by country, prod, year";
 
         System.out.println(sql);
 
@@ -84,6 +83,4 @@ public class OracleSelectTest93_model extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(3, visitor.getOrderByColumns().size());
     }
-
-
 }

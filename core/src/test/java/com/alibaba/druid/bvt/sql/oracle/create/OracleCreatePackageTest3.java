@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class OracleCreatePackageTest3 extends OracleTest {
     public void test_types() throws Exception {
@@ -124,7 +123,7 @@ public class OracleCreatePackageTest3 extends OracleTest {
                         "\t)\n" +
                         "\tRETURN VARCHAR2\n" +
                         "\t\n" +
-                        "END Mail_fck_bpi;",//
+                        "END Mail_fck_bpi;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

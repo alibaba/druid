@@ -50,7 +50,7 @@ public class OracleCreateViewTest9_check_option extends OracleTest {
                         "WHERE job_id = 'PU_CLERK'\n" +
                         "\tOR job_id = 'SH_CLERK'\n" +
                         "\tOR job_id = 'ST_CLERK'\n" +
-                        "WITH CHECK OPTION;",//
+                        "WITH CHECK OPTION;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

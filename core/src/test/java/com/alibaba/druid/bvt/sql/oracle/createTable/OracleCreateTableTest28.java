@@ -22,23 +22,22 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest28 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE divisions  " //
-                        + "   (div_no    NUMBER  CONSTRAINT check_divno" //
-                        + "              CHECK (div_no BETWEEN 10 AND 99) " //
-                        + "              DISABLE, " //
-                        + "    div_name  VARCHAR2(9)  CONSTRAINT check_divname" //
-                        + "              CHECK (div_name = UPPER(div_name)) " //
-                        + "              DISABLE, " //
-                        + "    office    VARCHAR2(10)  CONSTRAINT check_office" //
-                        + "              CHECK (office IN ('DALLAS','BOSTON'," //
-                        + "              'PARIS','TOKYO')) " //
+                "CREATE TABLE divisions  "
+                        + "   (div_no    NUMBER  CONSTRAINT check_divno"
+                        + "              CHECK (div_no BETWEEN 10 AND 99) "
+                        + "              DISABLE, "
+                        + "    div_name  VARCHAR2(9)  CONSTRAINT check_divname"
+                        + "              CHECK (div_name = UPPER(div_name)) "
+                        + "              DISABLE, "
+                        + "    office    VARCHAR2(10)  CONSTRAINT check_office"
+                        + "              CHECK (office IN ('DALLAS','BOSTON',"
+                        + "              'PARIS','TOKYO')) "
                         + "              DISABLE); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -48,14 +47,14 @@ public class OracleCreateTableTest28 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE divisions (" //
-                        + "\n\tdiv_no NUMBER" //
-                        + "\n\t\tCONSTRAINT check_divno CHECK (div_no BETWEEN 10 AND 99) DISABLE," //
-                        + "\n\tdiv_name VARCHAR2(9)" //
-                        + "\n\t\tCONSTRAINT check_divname CHECK (div_name = UPPER(div_name)) DISABLE," //
-                        + "\n\toffice VARCHAR2(10)" //
-                        + "\n\t\tCONSTRAINT check_office CHECK (office IN ('DALLAS', 'BOSTON', 'PARIS', 'TOKYO')) DISABLE" //
-                        + "\n);",//
+        assertEquals("CREATE TABLE divisions ("
+                        + "\n\tdiv_no NUMBER"
+                        + "\n\t\tCONSTRAINT check_divno CHECK (div_no BETWEEN 10 AND 99) DISABLE,"
+                        + "\n\tdiv_name VARCHAR2(9)"
+                        + "\n\t\tCONSTRAINT check_divname CHECK (div_name = UPPER(div_name)) DISABLE,"
+                        + "\n\toffice VARCHAR2(10)"
+                        + "\n\t\tCONSTRAINT check_office CHECK (office IN ('DALLAS', 'BOSTON', 'PARIS', 'TOKYO')) DISABLE"
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

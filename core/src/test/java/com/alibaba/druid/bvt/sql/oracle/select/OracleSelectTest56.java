@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class OracleSelectTest56 extends OracleTest {
                         + "\nSELECT 1 FROM dual "
                         + "\n) and"
                         + "\nAA.WNO = W.WNO(+) and"
-                        + "\nAA.DEPTNO = DD.DEPTNO(+)"; //
+                        + "\nAA.DEPTNO = DD.DEPTNO(+)";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

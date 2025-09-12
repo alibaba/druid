@@ -19,17 +19,16 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateSequenceTest extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "CREATE SEQUENCE customers_seq" + //
-                        " START WITH     1000" + //
-                        " INCREMENT BY   1" + //
-                        " NOCACHE" + //
+                "CREATE SEQUENCE customers_seq" +
+                        " START WITH     1000" +
+                        " INCREMENT BY   1" +
+                        " NOCACHE" +
                         " NOCYCLE;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

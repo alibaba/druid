@@ -15,23 +15,21 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.alter;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleAlterTableTest3 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "alter table WRH$_ROWCACHE_SUMMARY split partition WRH$_ROWCAC_1870432296_13862 " //
-                        + "   at (1870432296,13910) " //
-                        + "   into (partition WRH$_ROWCAC_1870432296_13862 tablespace SYSAUX, partition WRH$_ROWCAC_1870432296_13910 tablespace SYSAUX" //
-                        + ") " + //
+                "alter table WRH$_ROWCACHE_SUMMARY split partition WRH$_ROWCAC_1870432296_13862 "
+                        + "   at (1870432296,13910) "
+                        + "   into (partition WRH$_ROWCAC_1870432296_13862 tablespace SYSAUX, partition WRH$_ROWCAC_1870432296_13910 tablespace SYSAUX"
+                        + ") " +
                         "   update indexes";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

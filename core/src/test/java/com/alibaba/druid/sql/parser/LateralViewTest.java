@@ -6,8 +6,7 @@ import junit.framework.TestCase;
 import java.util.List;
 
 public class LateralViewTest extends TestCase {
-
-    private final static SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
+    private static final SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
             SQLParserFeature.KeepComments,
             SQLParserFeature.EnableSQLBinaryOpExprGroup
     };

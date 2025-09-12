@@ -19,11 +19,9 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-
 
 public class OracleSelectTest118 extends MysqlTest {
     public void test_0() throws Exception {
@@ -52,5 +50,4 @@ public class OracleSelectTest118 extends MysqlTest {
                 "START WITH su1.type = 'sch'\n" +
                 "CONNECT BY PRIOR su1.id = su1.parentid", stmt.toString());
     }
-
 }

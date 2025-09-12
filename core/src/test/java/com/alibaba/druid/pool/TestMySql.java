@@ -1,8 +1,8 @@
 package com.alibaba.druid.pool;
 
-import java.sql.Connection;
-
 import junit.framework.TestCase;
+
+import java.sql.Connection;
 
 public class TestMySql extends TestCase {
     private DruidDataSource dataSource = new DruidDataSource();

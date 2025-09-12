@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class OracleCreateTriggerTest3 extends OracleTest {
                         "\tON employees\n" +
                         "\tFOR EACH ROW\n" +
                         "\tWHEN (new.job_id <> 'AD_VP')\n" +
-                        "CALL check_sal(:new.job_id, :new.salary, :new.last_name)",//
+                        "CALL check_sal(:new.job_id, :new.salary, :new.last_name)",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

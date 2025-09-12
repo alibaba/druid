@@ -26,7 +26,7 @@ import java.util.List;
 public class OdpsSelectTest30 extends TestCase {
     public void test_select() throws Exception {
         // 1095288847322
-        String sql = "select a/100.0 from dual where 1=1;";//
+        String sql = "select a/100.0 from dual where 1=1;";
         assertEquals("SELECT a / 100.0\n" +
                 "FROM dual\n" +
                 "WHERE 1 = 1;", SQLUtils.formatOdps(sql));
@@ -56,5 +56,4 @@ public class OdpsSelectTest30 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

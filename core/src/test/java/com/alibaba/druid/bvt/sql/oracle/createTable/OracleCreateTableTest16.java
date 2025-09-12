@@ -22,20 +22,19 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest16 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "create table T (" + //
-                        "F1 INTERVAL YEAR TO MONTH," + //
-                        "F2 INTERVAL YEAR (3) TO MONTH," + //
-                        "F3 INTERVAL DAY TO SECOND," + //
-                        "F4 INTERVAL DAY (3) TO SECOND," + //
-                        "F5 INTERVAL DAY TO SECOND (9)," + //
-                        "F6 INTERVAL DAY (3) TO SECOND (9)" + //
+                "create table T (" +
+                        "F1 INTERVAL YEAR TO MONTH," +
+                        "F2 INTERVAL YEAR (3) TO MONTH," +
+                        "F3 INTERVAL DAY TO SECOND," +
+                        "F4 INTERVAL DAY (3) TO SECOND," +
+                        "F5 INTERVAL DAY TO SECOND (9)," +
+                        "F6 INTERVAL DAY (3) TO SECOND (9)" +
                         ") ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -45,13 +44,13 @@ public class OracleCreateTableTest16 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE T (" + //
-                "\n\tF1 INTERVAL YEAR TO MONTH," + //
-                "\n\tF2 INTERVAL YEAR(3) TO MONTH," + //
-                "\n\tF3 INTERVAL DAY TO SECOND," + //
-                "\n\tF4 INTERVAL DAY(3) TO SECOND," + //
-                "\n\tF5 INTERVAL DAY TO SECOND(9)," + //
-                "\n\tF6 INTERVAL DAY(3) TO SECOND(9)" + //
+        assertEquals("CREATE TABLE T (" +
+                "\n\tF1 INTERVAL YEAR TO MONTH," +
+                "\n\tF2 INTERVAL YEAR(3) TO MONTH," +
+                "\n\tF3 INTERVAL DAY TO SECOND," +
+                "\n\tF4 INTERVAL DAY(3) TO SECOND," +
+                "\n\tF5 INTERVAL DAY TO SECOND(9)," +
+                "\n\tF6 INTERVAL DAY(3) TO SECOND(9)" +
                 "\n)", SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

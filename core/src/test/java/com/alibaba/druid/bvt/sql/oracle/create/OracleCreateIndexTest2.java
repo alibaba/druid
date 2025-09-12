@@ -20,15 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateIndexTest2 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "CREATE UNIQUE INDEX \"ESCROW\".\"SYS_IOT_TOP_196679\" " + //
-                        "on \"ESCROW\".\"SYS_JOURNAL_196678\"(\"C0\",\"C1\",\"C2\",\"C3\",\"RID\") " + //
+                "CREATE UNIQUE INDEX \"ESCROW\".\"SYS_IOT_TOP_196679\" " +
+                        "on \"ESCROW\".\"SYS_JOURNAL_196678\"(\"C0\",\"C1\",\"C2\",\"C3\",\"RID\") " +
                         "INDEX ONLY TOPLEVEL TABLESPACE \"ESCROW_INDX\" NOPARALLEL";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

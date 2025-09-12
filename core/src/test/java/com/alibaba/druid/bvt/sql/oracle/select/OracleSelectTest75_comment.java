@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class OracleSelectTest75_comment extends OracleTest {
                 "--CMS???'?o??\n" +
                         "SELECT *\n" +
                         "FROM CDM.CDM_CON_ISSUE_DATE_CONTROL@ERPCMS idc\n" +
-                        "WHERE idc.ecc_contract_header_id = ?"; //
+                        "WHERE idc.ecc_contract_header_id = ?";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

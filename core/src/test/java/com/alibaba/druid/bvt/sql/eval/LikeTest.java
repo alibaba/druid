@@ -1,10 +1,7 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+import junit.framework.TestCase;
 
 public class LikeTest extends TestCase {
     public void test_any_0() throws Exception {

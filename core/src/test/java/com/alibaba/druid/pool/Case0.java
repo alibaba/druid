@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.Connection;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.util.JMXUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
+import java.sql.Connection;
 
 public class Case0 extends TestCase {
     private String jdbcUrl;

@@ -22,14 +22,13 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest29 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE dept_20" //
+                "CREATE TABLE dept_20"
                         + "   (employee_id     NUMBER(4) PRIMARY KEY, "//
                         + "    last_name       VARCHAR2(10), "//
                         + "    job_id          VARCHAR2(9), "//
@@ -46,16 +45,16 @@ public class OracleCreateTableTest29 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE dept_20 (" //
-                        + "\n\temployee_id NUMBER(4) PRIMARY KEY," //
-                        + "\n\tlast_name VARCHAR2(10)," //
-                        + "\n\tjob_id VARCHAR2(9)," //
-                        + "\n\tmanager_id NUMBER(4)," //
-                        + "\n\tsalary NUMBER(7, 2)," //
-                        + "\n\tcommission_pct NUMBER(7, 2)," //
-                        + "\n\tdepartment_id NUMBER(2)," //
-                        + "\n\tCONSTRAINT check_sal CHECK (salary * commission_pct <= 5000)" //
-                        + "\n);",//
+        assertEquals("CREATE TABLE dept_20 ("
+                        + "\n\temployee_id NUMBER(4) PRIMARY KEY,"
+                        + "\n\tlast_name VARCHAR2(10),"
+                        + "\n\tjob_id VARCHAR2(9),"
+                        + "\n\tmanager_id NUMBER(4),"
+                        + "\n\tsalary NUMBER(7, 2),"
+                        + "\n\tcommission_pct NUMBER(7, 2),"
+                        + "\n\tdepartment_id NUMBER(2),"
+                        + "\n\tCONSTRAINT check_sal CHECK (salary * commission_pct <= 5000)"
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

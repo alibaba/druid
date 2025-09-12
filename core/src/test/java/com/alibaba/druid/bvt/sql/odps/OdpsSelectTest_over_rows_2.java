@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class OdpsSelectTest_over_rows_2 extends TestCase {
                 "         RANGE 90 PRECEDING) department_total\n" +
                 "  from employee\n" +
                 "  order by department_id, hire_date;\n" +
-                "";//
+                "";
         assertEquals("SELECT last_name, first_name, department_id, hire_date, salary\n" +
                 "\t, SUM(salary) OVER (PARTITION BY department_id ORDER BY last_name, \n" +
                 "\t\tfirst_name RANGE 90 PRECEDING) AS department_total\n" +
@@ -65,5 +64,4 @@ public class OdpsSelectTest_over_rows_2 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

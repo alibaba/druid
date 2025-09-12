@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.benckmark.proxy.sqlcase;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
 import com.alibaba.druid.benckmark.proxy.SQLExecutor;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.Assert;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class SelectEmptyTable extends BenchmarkCase {
     private String sql;
@@ -86,5 +85,4 @@ public class SelectEmptyTable extends BenchmarkCase {
         conn.close();
         conn = null;
     }
-
 }

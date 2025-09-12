@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -31,7 +30,6 @@ public class MySqlSelectTest_34 extends MysqlTest {
                 "where level between 10-5 and 10+5\n" +
                 "order by -ABS(10 - level) desc\n" +
                 "limit 0,100";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -72,6 +70,4 @@ public class MySqlSelectTest_34 extends MysqlTest {
                     output);
         }
     }
-
-
 }

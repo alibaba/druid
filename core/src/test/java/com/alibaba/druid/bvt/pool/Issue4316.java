@@ -1,9 +1,5 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
 import org.junit.Test;
 
 public class Issue4316 {

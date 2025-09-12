@@ -15,19 +15,15 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestConnectError extends TestCase {
     private DruidDataSource dataSource;
@@ -64,7 +60,6 @@ public class TestConnectError extends TestCase {
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000);
         dataSource.setMaxActive(20);
         dataSource.setUrl("jdbc:mock:TestConnectError");
-
     }
 
     protected void tearDown() throws Exception {

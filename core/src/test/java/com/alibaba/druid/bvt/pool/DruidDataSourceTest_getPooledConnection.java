@@ -1,24 +1,19 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockStatementBase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import junit.framework.TestCase;
 
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.PooledConnection;
 
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockStatementBase;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 这个场景测试defaultAutoCommit
@@ -38,7 +33,6 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
                 throw new SQLException();
             }
         });
-
     }
 
     protected void tearDown() throws Exception {

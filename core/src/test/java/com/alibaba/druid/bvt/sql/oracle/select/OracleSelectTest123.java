@@ -23,7 +23,6 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-
 public class OracleSelectTest123 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT ECC_CPR.cms_con_dev_sites_change_obj(b.hc_con_id, b.po_header_id, b.po_header_code, b.differ_header_id, b.Id, b.Customize_Sites_Id, b.Customize_Site_Des, b.site_attr, b.Device_Bom_Id, b.DEVICE_QTY, b.item_code, b.Device_Bom_Name, b.Device_Bom_EngName, b.Dev_Bom_Type_Attribute, b.Dev_Bom_Type_Desc, b.Dev_Bom_Type_EngDesc, b.change_type, b.cms_site_status, b.last_update_date, b.Memo, para.parameter_value, b.customer_po, b.batch_delivery, FIVE_Address_NAME, CON_CONTRACT_PO_ID, b.DIFF_DEVICE_QTY)\n" +
@@ -228,5 +227,4 @@ public class OracleSelectTest123 extends MysqlTest {
                 "\t) para ON para.site_address_id = b.site_address_id \n" +
                 "ORDER BY b.Device_Bom_Id, b.Dev_Bom_Type_Attribute, b.site_seq, b.addr_seq", stmt.toString());
     }
-
 }

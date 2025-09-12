@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+
+import java.util.List;
 
 public class OceanbaseHintTest_parallel extends MysqlTest {
     public void test_0() throws Exception {
@@ -54,6 +52,5 @@ public class OceanbaseHintTest_parallel extends MysqlTest {
 
         assertTrue(visitor.containsTable("t1"));
         assertTrue(visitor.containsColumn("t1", "*"));
-
     }
 }

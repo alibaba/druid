@@ -1,15 +1,13 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class MySqlDeleteTest_7 {
     @Test

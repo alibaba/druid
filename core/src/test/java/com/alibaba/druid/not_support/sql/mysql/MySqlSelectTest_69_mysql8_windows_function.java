@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 

@@ -15,5 +15,4 @@ public class PGUpsertTest extends TestCase {
         SQLStatement statement = parser.parseStatement();
         Assert.assertEquals(targetSql, statement.toString());
     }
-
 }

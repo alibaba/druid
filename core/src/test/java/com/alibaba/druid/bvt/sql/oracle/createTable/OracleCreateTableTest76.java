@@ -100,7 +100,7 @@ public class OracleCreateTableTest76 extends OracleTest {
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

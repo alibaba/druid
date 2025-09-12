@@ -22,14 +22,13 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest22 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE promotions_var2" //
+                "CREATE TABLE promotions_var2"
                         + "    ( promo_id         NUMBER(6)"//
                         + "    , promo_name       VARCHAR2(20)"//
                         + "    , promo_category   VARCHAR2(15)"//
@@ -62,7 +61,7 @@ public class OracleCreateTableTest22 extends OracleTest {
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 8M\n" +
                         "\t\t)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

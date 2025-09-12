@@ -20,7 +20,6 @@ public class MySqlCreateTableTest137 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE `c1` (\n" +
                 "\torder bigint\n" +
                 ");", stmt.toString());
@@ -31,9 +30,7 @@ public class MySqlCreateTableTest137 extends MysqlTest {
 
         SQLUtils.parseSingleMysqlStatement("insert into w (order) values (1)");
         SQLUtils.parseSingleMysqlStatement("select order from w1 where order = 1");
-
     }
-
 
     public void test_1() throws Exception {
         SQLUtils.parseSingleMysqlStatement("create table order (fid bigint)");
@@ -41,8 +38,5 @@ public class MySqlCreateTableTest137 extends MysqlTest {
         SQLStatement stmt = SQLUtils.parseSingleMysqlStatement("/*+engine=mpp*/select f1 from pt_dc.order where f1 = 1");
         List<SQLCommentHint> hints = stmt.getHeadHintsDirect();
         System.out.println(hints);
-
     }
-
-
 }

@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.sql;
 
+import com.alibaba.druid.sql.parser.Keywords;
+import junit.framework.TestCase;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.sql.parser.Keywords;
 
 public class KeywordsMySqlTest extends TestCase {
     public void test_sort() throws Exception {

@@ -1,24 +1,17 @@
 package com.alibaba.druid.bvt.proxy.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.JdbcDataSourceStat;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class GlobalStatTest0 extends TestCase {
     private DruidDataSource dataSourceA;
@@ -54,6 +47,7 @@ public class GlobalStatTest0 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // Empty loop
             }
             rs.close();
             stmt.close();
@@ -64,6 +58,7 @@ public class GlobalStatTest0 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // Empty loop
             }
             rs.close();
             stmt.close();
@@ -82,5 +77,4 @@ public class GlobalStatTest0 extends TestCase {
         assertEquals(2, sqlInfo.get("ExecuteCount"));
         assertEquals(2, sqlInfo.get("FetchRowCount"));
     }
-
 }

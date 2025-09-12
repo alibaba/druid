@@ -15,16 +15,12 @@
  */
 package com.alibaba.druid.bvt.jmx;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.lang.management.ManagementFactory;
+import junit.framework.TestCase;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.management.ObjectName;
 
-import junit.framework.TestCase;
-
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import java.lang.management.ManagementFactory;
 
 public class JMXExporterTest extends TestCase {
     public void test_export() throws Exception {

@@ -15,16 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.visitor;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class MySqlSchemaStatVisitorTest2 extends TestCase {
     public void test_0() throws Exception {
@@ -49,7 +46,6 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         assertEquals(2, visitor.getColumns().size());
         assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
         assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-
     }
 
     public void test_2() throws Exception {
@@ -74,7 +70,6 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         assertEquals(2, visitor.getColumns().size());
         assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
         assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-
     }
 
     public void test_3() throws Exception {
@@ -99,6 +94,5 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         assertEquals(2, visitor.getColumns().size());
         assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
         assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-
     }
 }

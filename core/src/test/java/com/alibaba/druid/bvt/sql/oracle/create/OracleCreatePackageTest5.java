@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class OracleCreatePackageTest5 extends OracleTest {
     public void test_types() throws Exception {
@@ -71,7 +70,7 @@ public class OracleCreatePackageTest5 extends OracleTest {
                         "\tBEGIN\n" +
                         "\t\tRETURN;\n" +
                         "\tEND;\n" +
-                        "END cms_con_attributes_pkg;",//
+                        "END cms_con_attributes_pkg;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -1,13 +1,9 @@
 package com.alibaba.druid.bvt.sql.postgresql.expr;
 
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
-
 
 public class PolygonTest extends PGTest {
     public void test_timestamp() throws Exception {
@@ -15,6 +11,5 @@ public class PolygonTest extends PGTest {
         PGExprParser parser = new PGExprParser(sql);
         SQLUnaryExpr unaryExpr = (SQLUnaryExpr) parser.expr();
         assertEquals(SQLUnaryOperator.Pound, unaryExpr.getOperator());
-
     }
 }

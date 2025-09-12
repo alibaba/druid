@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试访问Oracle系统对象
@@ -39,5 +34,4 @@ public class OracleWallPermitFunctionTest extends TestCase {
         config.setFunctionCheck(false);
         assertTrue(WallUtils.isValidateOracle("select SYS_CONTEXT ('USERENV', 'CURRENT_USER') from X", config));
     }
-
 }

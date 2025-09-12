@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class OracleSelectTest37 extends OracleTest {
                         + "from ( "
                         + "       select * from audit_url_log "
                         + "       where project_id = ? and to_char(begin_time,'yyyy-MM-dd') > = ? and to_char(begin_time,'yyyy-MM-dd') < = ? ) "
-                        + "       group by resource_value,http_method having count(resource_value) > = ?"; //
+                        + "       group by resource_value,http_method having count(resource_value) > = ?";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

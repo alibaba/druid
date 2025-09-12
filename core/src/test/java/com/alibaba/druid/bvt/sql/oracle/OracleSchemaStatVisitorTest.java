@@ -15,11 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -29,9 +24,12 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OracleSchemaStatVisitorTest extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "SELECT id, name name from department d" + //
+        String sql = "SELECT id, name name from department d" +
                 "   WHERE d.id = ? order by name desc";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

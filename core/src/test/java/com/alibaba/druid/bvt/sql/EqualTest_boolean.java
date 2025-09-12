@@ -1,12 +1,11 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import junit.framework.TestCase;
+
+import static org.junit.Assert.assertNotEquals;
 
 public class EqualTest_boolean extends TestCase {
     public void test_exits() throws Exception {

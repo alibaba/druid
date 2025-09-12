@@ -15,18 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidPooledResultSet;
 import com.alibaba.druid.pool.DruidPooledStatement;
+import junit.framework.TestCase;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ResultSetTest2 extends TestCase {
     private DruidPooledStatement stmt;
@@ -638,6 +633,5 @@ public class ResultSetTest2 extends TestCase {
             error = ex;
         }
         assertNotNull(error);
-
     }
 }

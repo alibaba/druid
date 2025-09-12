@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool.xa;
 
-import javax.sql.XAConnection;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.xa.DruidXADataSource;
 import com.alibaba.druid.util.JdbcUtils;
+
+import javax.sql.XAConnection;
 
 public class H2XATest extends PoolTestCase {
     private DruidXADataSource dataSource;
@@ -35,7 +33,6 @@ public class H2XATest extends PoolTestCase {
         dataSource.setTestOnBorrow(false);
 
         JdbcUtils.execute(dataSource, "CREATE TABLE user (id INT, name VARCHAR(40))");
-
     }
 
     protected void tearDown() throws Exception {

@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest23 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "select (select decode(count(*),1,'YES','NO') FROM sys.obj$ o, sys.user$ u WHERE u.name = 'PERFSTAT' AND o.owner# = u.user# AND o.name = 'STATSPACK' AND o.type# = 11 AND o.status = 1) is_installed , (select  nvl(INTERVAL,'') from dba_jobs where what like 'statspack.snap%' and SCHEMA_USER='PERFSTAT' and rownum =1) freq from dual"; //
+                "select (select decode(count(*),1,'YES','NO') FROM sys.obj$ o, sys.user$ u WHERE u.name = 'PERFSTAT' AND o.owner# = u.user# AND o.name = 'STATSPACK' AND o.type# = 11 AND o.status = 1) is_installed , (select  nvl(INTERVAL,'') from dba_jobs where what like 'statspack.snap%' and SCHEMA_USER='PERFSTAT' and rownum =1) freq from dual";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

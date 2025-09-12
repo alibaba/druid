@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class OracleSelectTest95_pivot extends OracleTest {
                         " (2,3) as two_three\n" +
                         " )\n" +
                         " )\n" +
-                        " where d_t = 'p'\n"; //
+                        " where d_t = 'p'\n";
 
         System.out.println(sql);
 
@@ -82,6 +81,4 @@ public class OracleSelectTest95_pivot extends OracleTest {
         assertEquals(1, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
     }
-
-
 }

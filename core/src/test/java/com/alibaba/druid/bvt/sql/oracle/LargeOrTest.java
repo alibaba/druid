@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import junit.framework.TestCase;
 
 public class LargeOrTest extends TestCase {
     public void test_largeOr() throws Exception {

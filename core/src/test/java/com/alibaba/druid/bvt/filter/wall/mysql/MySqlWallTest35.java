@@ -15,15 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -37,8 +32,8 @@ public class MySqlWallTest35 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         assertTrue(provider.checkValid(//
-                "REPLACE INTO `test2tb` VALUES " + //
-                        "('51', '6714105741', '亦美珊不掉正品隐形文胸安全硅胶文胸 小胸聚拢比基尼<span class=H>游泳</span>衣泳装', 'http://img03.taobaocdn.com/bao/uploaded/i3/16011019585534199/T1cnlaXA8bXXXXXXXX_!!0-item_pic.jpg', 'liqiang198163', 'c', '25.00', '20.00', '1000.00', '76', '529', '4.86', '4.91', '4.90', '0.00', '4.80', '2878', '77', '12', '15');")); //
+                "REPLACE INTO `test2tb` VALUES " +
+                        "('51', '6714105741', '亦美珊不掉正品隐形文胸安全硅胶文胸 小胸聚拢比基尼<span class=H>游泳</span>衣泳装', 'http://img03.taobaocdn.com/bao/uploaded/i3/16011019585534199/T1cnlaXA8bXXXXXXXX_!!0-item_pic.jpg', 'liqiang198163', 'c', '25.00', '20.00', '1000.00', '76', '529', '4.86', '4.91', '4.90', '0.00', '4.80', '2878', '77', '12', '15');"));
 
         assertEquals(1, provider.getTableStat("test2tb").getReplaceCount());
         System.out.println(JSONUtils.toJSONString(provider.getStatsMap()));

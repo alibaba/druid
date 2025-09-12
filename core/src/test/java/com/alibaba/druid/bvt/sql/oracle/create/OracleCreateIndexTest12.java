@@ -62,8 +62,8 @@ public class OracleCreateIndexTest12 extends OracleTest {
                         "\tPARTITION ix_p4,\n" +
                         "\tPARTITION ix_p5\n" +
                         "\t\tTABLESPACE tbs_04\n" +
-                        ");"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        ");",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

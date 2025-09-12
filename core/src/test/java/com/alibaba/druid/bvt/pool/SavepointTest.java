@@ -1,16 +1,12 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.mock.MockConnection;
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.Savepoint;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockConnection;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class SavepointTest extends TestCase {
     private DruidDataSource dataSource;
@@ -20,7 +16,6 @@ public class SavepointTest extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setInitialSize(1);
-
     }
 
     protected void tearDown() throws Exception {

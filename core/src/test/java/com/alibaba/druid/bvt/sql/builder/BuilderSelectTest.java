@@ -1,12 +1,9 @@
 package com.alibaba.druid.bvt.sql.builder;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.builder.SQLBuilderFactory;
 import com.alibaba.druid.sql.builder.SQLSelectBuilder;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
 
 public class BuilderSelectTest extends TestCase {
     public void test_0() throws Exception {

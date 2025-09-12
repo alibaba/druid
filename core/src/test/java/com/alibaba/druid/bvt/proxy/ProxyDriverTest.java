@@ -15,16 +15,12 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-
-
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-
-import junit.framework.TestCase;
 
 public class ProxyDriverTest extends TestCase {
     public void test_connect() throws Exception {

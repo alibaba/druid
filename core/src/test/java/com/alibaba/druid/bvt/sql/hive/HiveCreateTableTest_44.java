@@ -58,5 +58,4 @@ public class HiveCreateTableTest_44 extends OracleTest {
                 "\t'recursive.directories' = 'true'\n" +
                 ");", stmt.toString());
     }
-
 }

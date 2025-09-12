@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,11 +22,13 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
+import java.util.List;
+
 public class OracleMergeTest8 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "merge into (select * from T09_RULE_CAL_COUNT where data_dt = '20160328' and rule_type = '2') t " //
+        String sql = "merge into (select * from T09_RULE_CAL_COUNT where data_dt = '20160328' and rule_type = '2') t "
                 + "using ("
-                + "     select cust_no,organ_key " //
+                + "     select cust_no,organ_key "
                 + "     from (select t1.cust_no, t1.organ_key from t08_cust_result_c_mid t1 "
                 + "         union "
                 + "         (select t2.cust_no, t2.organ_key from t08_cust_result_i_mid t2)"
@@ -66,5 +64,4 @@ public class OracleMergeTest8 extends OracleTest {
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
     }
-
 }

@@ -18,7 +18,7 @@ public class SqlserverAlterTest extends TestCase {
     public void testAlter1() {
         String sql = "alter table alert_config_detail\n" + "    add age14 int";
         SQLStatementParser parser = new SQLServerStatementParser(sql, SQLParserFeature.IgnoreNameQuotes);
-        SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatement(); //
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatement();
         try {
             stmt.toString();
         } catch (ClassCastException e) {
@@ -37,7 +37,7 @@ public class SqlserverAlterTest extends TestCase {
     public void testAlter2() {
         String sql = "ALTER TABLE \"console\".\"dbo\".\"alert_config_detail\"\n" + "\tADD \"age14\" int";
         SQLStatementParser parser = new SQLServerStatementParser(sql, SQLParserFeature.IgnoreNameQuotes);
-        SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatement(); //
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatement();
         try {
             stmt.toString();
         } catch (ClassCastException e) {
@@ -56,7 +56,7 @@ public class SqlserverAlterTest extends TestCase {
     public void testAlter3() {
         String sql = "ALTER TABLE [console].[dbo].[alert_config_detail]\n" + "\tADD [age14] int";
         SQLStatementParser parser = new SQLServerStatementParser(sql, SQLParserFeature.IgnoreNameQuotes);
-        SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatement(); //
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatement();
         try {
             stmt.toString();
         } catch (ClassCastException e) {
@@ -75,7 +75,7 @@ public class SqlserverAlterTest extends TestCase {
     public void testAlter4() {
         String sql = "ALTER TABLE [dbo].[alert_config_detail] DROP COLUMN [a2], COLUMN [a3], COLUMN [a4]";
         SQLStatementParser parser = new SQLServerStatementParser(sql, SQLParserFeature.IgnoreNameQuotes);
-        SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatement(); //
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) parser.parseStatement();
         try {
             stmt.toString();
         } catch (ClassCastException e) {

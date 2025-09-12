@@ -26,7 +26,7 @@ import java.util.List;
 public class OdpsCreateTableTest4 extends TestCase {
     public void test_select() throws Exception {
         // 1095288847322
-        String sql = "CREATE TABLE T1 (a string, b string, c bigint) CLUSTERED BY (c) SORTED by (c) INTO 1024 BUCKETS;";//
+        String sql = "CREATE TABLE T1 (a string, b string, c bigint) CLUSTERED BY (c) SORTED by (c) INTO 1024 BUCKETS;";
         assertEquals("CREATE TABLE T1 (\n" +
                 "\ta STRING,\n" +
                 "\tb STRING,\n" +
@@ -66,5 +66,4 @@ public class OdpsCreateTableTest4 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallUtils;
@@ -69,7 +68,6 @@ public class MySqlSelectTest_141_bigunion extends MysqlTest {
                 ") ux_x", stmt.toString());
     }
 
-
     public void test_big_100000() throws Exception {
         StringBuilder buf = new StringBuilder();
         {
@@ -97,5 +95,4 @@ public class MySqlSelectTest_141_bigunion extends MysqlTest {
         SchemaStatVisitor statVisitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(statVisitor);
     }
-
 }

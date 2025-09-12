@@ -20,14 +20,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlSelectTest_200_presto extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT TINYINT '1', SMALLINT '1', FLOAT '1.0', DOUBLE '2.0'";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -49,5 +47,4 @@ public class MySqlSelectTest_200_presto extends MysqlTest {
                     output);
         }
     }
-
 }

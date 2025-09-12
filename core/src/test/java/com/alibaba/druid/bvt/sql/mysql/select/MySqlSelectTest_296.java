@@ -41,6 +41,4 @@ public class MySqlSelectTest_296
                 ") AS t (x, y)\n" +
                 "GROUP BY GROUPING SETS ((), (x))", stmt.toString());
     }
-
-
 }

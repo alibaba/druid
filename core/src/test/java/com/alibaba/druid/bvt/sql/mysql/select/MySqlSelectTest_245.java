@@ -21,11 +21,9 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-
 public class MySqlSelectTest_245 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM tt ORDER BY c1 NULLS LAST";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
@@ -33,10 +31,7 @@ public class MySqlSelectTest_245 extends MysqlTest {
                 "FROM tt\n" +
                 "ORDER BY c1 NULLS LAST", stmt.toString());
 
-
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
-
 }
