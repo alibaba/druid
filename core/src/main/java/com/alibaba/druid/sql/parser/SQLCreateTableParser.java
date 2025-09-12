@@ -70,7 +70,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
         createTableBody(createTable);
         parseCreateTableRest(createTable);
         createTableQuery(createTable);
-
+        createTableAfterQuery(createTable);
         return createTable;
     }
 
@@ -275,5 +275,8 @@ public class SQLCreateTableParser extends SQLDDLParser {
         }
 
         accept(Token.RPAREN);
+    }
+
+    protected void createTableAfterQuery(SQLCreateTableStatement stmt) {
     }
 }

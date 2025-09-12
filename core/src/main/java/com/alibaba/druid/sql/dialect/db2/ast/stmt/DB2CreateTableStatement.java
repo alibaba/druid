@@ -29,6 +29,9 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
     protected SQLName validproc;
     protected SQLName indexIn;
 
+    protected boolean withData;
+    protected boolean withNoData;
+
     public boolean isDataCaptureNone() {
         return dataCaptureNone;
     }
@@ -76,6 +79,22 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
             x.setParent(this);
         }
         this.indexIn = x;
+    }
+
+    public boolean isWithData() {
+        return withData;
+    }
+
+    public void setWithData(boolean withData) {
+        this.withData = withData;
+    }
+
+    public boolean isWithNoData() {
+        return withNoData;
+    }
+
+    public void setWithNoData(boolean withNoData) {
+        this.withNoData = withNoData;
     }
 
     @Override
