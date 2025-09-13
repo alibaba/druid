@@ -39,8 +39,8 @@ public class OracleGrantTest_4 extends OracleTest {
         assertEquals(1, statementList.size());
 
         assertEquals("GRANT REFERENCES(employee_id),"
-                        + "UPDATE(employee_id, salary, commission_pct)"
-                        + "ON hr.employees TO oe;",
+                        + " UPDATE(employee_id, salary, commission_pct)"
+                        + " ON hr.employees TO oe;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

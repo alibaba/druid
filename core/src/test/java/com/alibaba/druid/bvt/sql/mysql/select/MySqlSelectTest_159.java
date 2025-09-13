@@ -257,8 +257,8 @@ public class MySqlSelectTest_159 extends MysqlTest {
                         "\t) 成本汇总\n" +
                         "\t\tLEFT JOIN dim_channel_maochao dcm ON 成本汇总.渠道 = dcm.id\n" +
                         "\t\tLEFT JOIN dim_city_maochao dcm1 ON CAST(成本汇总.城市 AS bigint) = dcm1.id\n" +
-                        ") quark_t1",
-                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        ") quark_t1"
+                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
 
         List<Object> params = new ArrayList<Object>();
         assertEquals("SELECT COUNT(*) AS COUNT\n" +
@@ -376,6 +376,6 @@ public class MySqlSelectTest_159 extends MysqlTest {
                 ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
 
         assertEquals(112, params.size());
-        assertEquals("[100,6,100,6,100,6,100,6,\"%\", 100,6,6,\"%\", 100,6,6,\"%\", 100,6,100,6,\"%\", 100,6,100,6,\"%\",100,6,100,6,\"%\",100,6,100,6,\"%\",100,6,100,6,\"%\",100,6,100,6,\"%\",100,6,100,6,100,6,100,6,\"%\",100,6,100,6,100,6,100,6,\"0\",\"0\",-1,\"0\",\"0\",\"-\",\"0\",\"0\",\"-1\",\"0\",\"0\",\"-\",\"0\",\"0\",\"-\",\"0\",\"0\",-1,\"0\",\"0\",\"-\",\"-\",\"-\",\"-\",\"119079\",\"20170401\",\"20180228\",\"0\",\"0\",-1,\"0\",\"0\",\"-\",\"0\",\"0\",\"-1\",\"0\",\"0\",\"-\",\"0\",\"0\",\"-\",\"0\",\"0\",-1,\"0\",\"0\",\"-\"]", JSON.toJSONString(params));
+        assertEquals("[100,6,100,6,100,6,100,6,\"%\",100,6,6,\"%\",100,6,6,\"%\",100,6,100,6,\"%\",100,6,100,6,\"%\",100,6,100,6,\"%\",100,6,100,6,\"%\",100,6,100,6,\"%\",100,6,100,6,\"%\",100,6,100,6,100,6,100,6,\"%\",100,6,100,6,100,6,100,6,\"0\",\"0\",-1,\"0\",\"0\",\"-\",\"0\",\"0\",\"-1\",\"0\",\"0\",\"-\",\"0\",\"0\",\"-\",\"0\",\"0\",-1,\"0\",\"0\",\"-\",\"-\",\"-\",\"-\",\"119079\",\"20170401\",\"20180228\",\"0\",\"0\",-1,\"0\",\"0\",\"-\",\"0\",\"0\",\"-1\",\"0\",\"0\",\"-\",\"0\",\"0\",\"-\",\"0\",\"0\",-1,\"0\",\"0\",\"-\"]", JSON.toJSONString(params));
     }
 }
