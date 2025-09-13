@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile("default")
-public class InitConfigurer{
+public class InitConfigurer {
     @Autowired
     private UserDao userDao;
 
     @PostConstruct
-    public  void  init(){
+    public void init() {
         for (int i = 1; i <= 100; i++) {
             userDao.save(new User("TEST-NAME-" + i));
         }
