@@ -1,11 +1,11 @@
 package com.alibaba.druid.bvt.sql.canal;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class CanalSQLSchemaTest {
     @Test

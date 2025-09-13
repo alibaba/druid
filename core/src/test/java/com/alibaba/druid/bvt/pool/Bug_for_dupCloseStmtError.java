@@ -15,21 +15,16 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
 import com.alibaba.druid.PoolTestCase;
-import com.alibaba.druid.util.JdbcUtils;
-
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockConnectionClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.util.JdbcUtils;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class Bug_for_dupCloseStmtError extends PoolTestCase {
     protected DruidDataSource dataSource;

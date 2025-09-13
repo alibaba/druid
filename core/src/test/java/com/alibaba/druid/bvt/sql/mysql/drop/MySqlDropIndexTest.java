@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.drop;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+
+import java.util.List;
 
 public class MySqlDropIndexTest extends MysqlTest {
     public void test_0() throws Exception {
@@ -52,6 +50,5 @@ public class MySqlDropIndexTest extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("table_name")));
         TableStat tableStat = visitor.getTables().get(new TableStat.Name("table_name"));
         assertEquals(1, tableStat.getDropIndexCount());
-
     }
 }

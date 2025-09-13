@@ -1,13 +1,12 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,11 +18,9 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/alter-user.html">...</a>
  */
 public class Issue5702 {
-
     @Test
     public void test_alter_user_accout() throws Exception {
         for (DbType dbType : new DbType[]{DbType.mysql}) {
-
             for (String sql : new String[]{
                 "ALTER USER 'jeffrey'@'localhost' ACCOUNT LOCK",
                 "ALTER USER 'jeffrey'@'localhost' ACCOUNT UNLOCK",

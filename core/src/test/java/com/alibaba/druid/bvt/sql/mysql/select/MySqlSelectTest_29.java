@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -29,7 +28,6 @@ public class MySqlSelectTest_29 extends MysqlTest {
         String sql = "select * from Function "
                 + "where Id in (select FunctionId from RoleFunction "
                 + "where RoleId = '001' and LogicalDel = 0) and LogicalDel = 0";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -80,6 +78,4 @@ public class MySqlSelectTest_29 extends MysqlTest {
                     output);
         }
     }
-
-
 }

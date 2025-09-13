@@ -1,17 +1,14 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsAlterTableDropPartitionTest extends TestCase {
     public void test_if() throws Exception {
         String sql = "alter table sale_detail drop if exists partition (sale_date='201312', region='hangzhou');";
-        assertEquals("ALTER TABLE sale_detail" //
+        assertEquals("ALTER TABLE sale_detail"
                 + "\n\tDROP IF EXISTS PARTITION (sale_date = '201312', region = 'hangzhou');", SQLUtils.formatOdps(sql));
-        assertEquals("alter table sale_detail" //
+        assertEquals("alter table sale_detail"
                 + "\n\tdrop if exists partition (sale_date = '201312', region = 'hangzhou');", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 

@@ -1,11 +1,7 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import static org.junit.Assert.assertNotNull;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.config.ConfigFilter;
-
+import junit.framework.TestCase;
 
 public class ConfigFilterTest5 extends TestCase {
     public void test_loadClassPath() throws Exception {

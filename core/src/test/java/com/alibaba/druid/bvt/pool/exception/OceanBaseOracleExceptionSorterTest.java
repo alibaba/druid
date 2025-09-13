@@ -1,12 +1,8 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import static org.junit.Assert.*;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.vendor.OceanBaseOracleExceptionSorter;
-import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
@@ -75,5 +71,4 @@ public class OceanBaseOracleExceptionSorterTest extends TestCase {
 
         conn.close();
     }
-
 }

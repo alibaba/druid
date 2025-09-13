@@ -51,7 +51,7 @@ public class OracleInsertTest21_encoding_error extends OracleTest {
                         "\t, to_date((\n" +
                         "\t\tSELECT to_char(SYSDATE + INTERVAL '1' YEAR, 'yyyy-mm-dd HH24:mi:ss')\n" +
                         "\t\tFROM dual\n" +
-                        "\t), 'yyyy-mm-dd HH24:mi:ss'), '0', 'ZB20170831142805148890')",//
+                        "\t), 'yyyy-mm-dd HH24:mi:ss'), '0', 'ZB20170831142805148890')",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -69,5 +69,4 @@ public class OracleInsertTest21_encoding_error extends OracleTest {
 
         assertTrue(visitor.getColumns().contains(new TableStat.Column("x1_use_agent", "ID")));
     }
-
 }

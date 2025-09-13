@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class HiveCreateTableTest_30 extends OracleTest {
                         "  'numRows'='-1',\n" +
                         "  'rawDataSize'='-1',\n" +
                         "  'totalSize'='2224',\n" +
-                        "  'transient_lastDdlTime'='1528440011')\n"; //
+                        "  'transient_lastDdlTime'='1528440011')\n";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -104,7 +103,6 @@ public class HiveCreateTableTest_30 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("nation"));
-
     }
 
     public void test_1() throws Exception {
@@ -116,7 +114,7 @@ public class HiveCreateTableTest_30 extends OracleTest {
                         + "n_comment STRING NULL COMMENT 'hhh',  "
                         + "PRIMARY KEY (n_nationkey)) "
                         + "TBLPROPERTIES ( TABLE_MAPPING = 'nation', COLUMN_MAPPING = 'n_nationkey,N_NATIONKEY; n_name,N_NAME;n_regionkey,N_REGIONKEY; n_comment,N_COMMENT; ' ) "
-                        + "COMMENT '萌豆'"; //
+                        + "COMMENT '萌豆'";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -153,7 +151,7 @@ public class HiveCreateTableTest_30 extends OracleTest {
                         + "    ESCAPED BY '\\\\' \n"
                         + "    LINES TERMINATED BY ';' \n"
                         + "STORED AS `TEXTFILE`\n"
-                        + "LOCATION 'oss://oss-cn-beijing-for-openanalytics/datasets/tpch/0_1x/text/nation_line_terminated/'"; //
+                        + "LOCATION 'oss://oss-cn-beijing-for-openanalytics/datasets/tpch/0_1x/text/nation_line_terminated/'";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -176,7 +174,6 @@ public class HiveCreateTableTest_30 extends OracleTest {
         SQLStatement statement = SQLUtils.parseSingleStatement(sql, DbType.hive, SQLParserFeature.KeepComments);
         assertEquals("-- 234234\n" + "CREATE TABLE a (\n" + "\tid varchar\n" + ")",
                 SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
-
     }
 
     public void test_4() throws Exception {
@@ -186,7 +183,6 @@ public class HiveCreateTableTest_30 extends OracleTest {
         assertEquals("ALTER TABLE partition_text_nation\n"
                         + "\tADD PARTITION (p = 101, q) LOCATION 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';",
                 SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
-
     }
 
     public void test_5() throws Exception {
@@ -196,7 +192,5 @@ public class HiveCreateTableTest_30 extends OracleTest {
         assertEquals("ALTER TABLE partition_text_nation\n"
                         + "\tADD PARTITION (p, q = 101) LOCATION 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';",
                 SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
-
     }
-
 }

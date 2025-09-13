@@ -17,7 +17,7 @@ public class OracleJoinResolveTest extends TestCase {
         assertEquals("SELECT a.uid, a.gid, a.uname\n" +
                         "FROM t_user a\n" +
                         "\tINNER JOIN t_group b\n" +
-                        "WHERE a.uid = b.id"
-                , repository.resolve("select a.* from t_user a inner join t_group b where a.uid = id"));
+                        "WHERE a.uid = b.id",
+                repository.resolve("select a.* from t_user a inner join t_group b where a.uid = id"));
     }
 }

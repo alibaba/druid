@@ -1,15 +1,9 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 
 import java.sql.SQLException;
-
-import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 
 public class OracleExceptionSorter_userDefined extends PoolTestCase {
     protected void setUp() throws Exception {

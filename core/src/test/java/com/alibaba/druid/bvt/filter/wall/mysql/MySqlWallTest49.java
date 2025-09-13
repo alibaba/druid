@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -36,29 +31,29 @@ public class MySqlWallTest49 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         assertTrue(provider.checkValid(//
-                "select temp.*, u.CanComment, u.CanBeShared, " + //
-                        "   u.CanForward, COALESCE(b.UserID,0) as isBlocked, " + //
-                        "   COALESCE(f.UserID,0) as Followed, COALESCE(ff.UserID,0) as IsFollowed, " + //
-                        "   COALESCE(ul.UserID,0) as liked, " + //
-                        "   COALESCE(fff.UserID,0) as RIsFollowed " + //
-                        "from " + "(select 281319 as UserID, 0  as RUserID, 7797549 as PicID " + //
-                        "   union all " + //
-                        "   select 55608 as UserID, 0  as RUserID, 7797527 as PicID " + //
-                        "   union all " + //
-                        "   select 281319 as UserID, 0  as RUserID, 7797233 as PicID " + //
-                        "   union all " + //
-                        "   select 281319 as UserID, 0  as RUserID, 7797221 as PicID " + //
-                        "   union all select 281319 as UserID, 0  as RUserID, 7797217 as PicID " + //
-                        "   union all select 281319 as UserID, 0  as RUserID, 7797189 as PicID " + //
-                        "   union all select 12271 as UserID, 0  as RUserID, 7796057 as PicID " + //
-                        "   union all select 401697 as UserID, 494381  as RUserID, 7795057 as PicID " + //
-                        "   union all select 401697 as UserID, 470693  as RUserID, 7795041 as PicID " + //
-                        "   union all select 401697 as UserID, 470693  as RUserID, 7795039 as PicID) temp     " + //
-                        "left join Users as u on u.UserID = temp.UserID   " + //
-                        "left join BlockUser as b on b.UserID = temp.UserID and b.BlockUserID = 281319 " + //
-                        "left join Fans as f on f.FansID = temp.UserID and f.UserID = 281319   " + //
-                        "left join Fans as ff ON ff.FansID = 281319 and ff.UserID = temp.UserID   " + //
-                        "left join Fans as fff ON fff.FansID = 281319 and fff.UserID = temp.RUserID   " + //
+                "select temp.*, u.CanComment, u.CanBeShared, " +
+                        "   u.CanForward, COALESCE(b.UserID,0) as isBlocked, " +
+                        "   COALESCE(f.UserID,0) as Followed, COALESCE(ff.UserID,0) as IsFollowed, " +
+                        "   COALESCE(ul.UserID,0) as liked, " +
+                        "   COALESCE(fff.UserID,0) as RIsFollowed " +
+                        "from " + "(select 281319 as UserID, 0  as RUserID, 7797549 as PicID " +
+                        "   union all " +
+                        "   select 55608 as UserID, 0  as RUserID, 7797527 as PicID " +
+                        "   union all " +
+                        "   select 281319 as UserID, 0  as RUserID, 7797233 as PicID " +
+                        "   union all " +
+                        "   select 281319 as UserID, 0  as RUserID, 7797221 as PicID " +
+                        "   union all select 281319 as UserID, 0  as RUserID, 7797217 as PicID " +
+                        "   union all select 281319 as UserID, 0  as RUserID, 7797189 as PicID " +
+                        "   union all select 12271 as UserID, 0  as RUserID, 7796057 as PicID " +
+                        "   union all select 401697 as UserID, 494381  as RUserID, 7795057 as PicID " +
+                        "   union all select 401697 as UserID, 470693  as RUserID, 7795041 as PicID " +
+                        "   union all select 401697 as UserID, 470693  as RUserID, 7795039 as PicID) temp     " +
+                        "left join Users as u on u.UserID = temp.UserID   " +
+                        "left join BlockUser as b on b.UserID = temp.UserID and b.BlockUserID = 281319 " +
+                        "left join Fans as f on f.FansID = temp.UserID and f.UserID = 281319   " +
+                        "left join Fans as ff ON ff.FansID = 281319 and ff.UserID = temp.UserID   " +
+                        "left join Fans as fff ON fff.FansID = 281319 and fff.UserID = temp.RUserID   " +
                         "left join UserLikes as ul on ul.PicID = temp.PicID and ul.UserID = 281319"));
 
         assertEquals(4, provider.getTableStats().size());

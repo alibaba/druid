@@ -15,21 +15,17 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OdpsSelectTest11 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "select 'a\\'b' from abc;";//
+        String sql = "select 'a\\'b' from abc;";
         assertEquals("SELECT 'a\\'b'"
                 + "\nFROM abc;", SQLUtils.formatOdps(sql));
         assertEquals("select 'a\\'b'"
@@ -54,5 +50,4 @@ public class OdpsSelectTest11 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

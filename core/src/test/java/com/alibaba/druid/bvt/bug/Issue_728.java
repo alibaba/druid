@@ -15,13 +15,9 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import static org.junit.Assert.assertFalse;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class Issue_728 extends TestCase {
     public void test1() throws Exception {

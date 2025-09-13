@@ -23,7 +23,6 @@ public class MySqlCreateTableTest136 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE `c1` (\n" +
                 "\t`id` bigint NOT NULL AUTO_INCREMENT,\n" +
                 "\t`d` int DEFAULT 1,\n" +
@@ -39,8 +38,5 @@ public class MySqlCreateTableTest136 extends MysqlTest {
                 "\tprimary key (`id`),\n" +
                 "\tkey idxa2 (`d`, `b`) comment '2'\n" +
                 ");", stmt.toLowerCaseString());
-
     }
-
-
 }

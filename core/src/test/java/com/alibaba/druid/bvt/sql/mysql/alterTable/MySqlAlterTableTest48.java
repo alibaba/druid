@@ -40,5 +40,4 @@ public class MySqlAlterTableTest48 extends TestCase {
                 "\tADD KEY `idx_odps_project` (`odps_project`(20)),\n" +
                 "\tADD KEY `idx_odps_table` (`odps_table`(20));", output);
     }
-
 }

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -64,7 +63,7 @@ public class OracleSelectTest77 extends OracleTest {
                         "        )\n" +
                         "    )\n" +
                         "WHERE\n" +
-                        "    a.enabled_flag = 'Y'"; //
+                        "    a.enabled_flag = 'Y'";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -81,7 +80,7 @@ public class OracleCreateViewTest4 extends OracleTest {
                         "\t\tAND a.SID = b.SID\n" +
                         "\t\tAND b.TYPE IN ('TX', 'TM')\n" +
                         ") a\n" +
-                        "WHERE object_id = a.row_wait_obj#",//
+                        "WHERE object_id = a.row_wait_obj#",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -15,19 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
-
-import java.util.Hashtable;
-import java.util.Properties;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+import junit.framework.TestCase;
 
 import javax.naming.RefAddr;
 import javax.naming.Reference;
 
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSourceFactory;
+import java.util.Hashtable;
+import java.util.Properties;
 
 public class DruidDataSourceFactoryTest extends TestCase {
     @SuppressWarnings("serial")

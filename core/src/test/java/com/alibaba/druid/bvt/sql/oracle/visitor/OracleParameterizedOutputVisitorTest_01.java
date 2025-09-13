@@ -46,5 +46,4 @@ public class OracleParameterizedOutputVisitorTest_01 extends TestCase {
                 "\tAND aa.table_name = dd.table_name\n" +
                 "\tAND dd.owner = 'EAIREP'", tempResult);
     }
-
 }

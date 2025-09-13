@@ -39,7 +39,6 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "AS\n" +
                 "SELECT id\n" +
                 "FROM base;");
-
     }
 
     public void test2() throws Exception {
@@ -63,7 +62,6 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "AS\n" +
                 "SELECT id\n" +
                 "FROM base;");
-
     }
 
     public void test3() throws Exception {

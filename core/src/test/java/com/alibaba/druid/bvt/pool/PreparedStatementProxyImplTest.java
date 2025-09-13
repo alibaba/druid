@@ -1,18 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import junit.framework.TestCase;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Types;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 
 public class PreparedStatementProxyImplTest extends TestCase {
     private DruidDataSource dataSource;

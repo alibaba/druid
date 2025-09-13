@@ -66,5 +66,4 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
         System.out.println(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER));
         System.out.println("-----------------------");
     }
-
 }

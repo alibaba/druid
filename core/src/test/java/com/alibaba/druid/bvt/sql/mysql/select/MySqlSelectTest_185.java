@@ -89,5 +89,4 @@ public class MySqlSelectTest_185 extends MysqlTest {
                         "ORDER BY product.sort ASC", //
                 output);
     }
-
 }

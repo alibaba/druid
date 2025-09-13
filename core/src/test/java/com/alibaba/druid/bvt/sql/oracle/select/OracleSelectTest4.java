@@ -20,16 +20,15 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest4 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "SELECT LPAD(' ',2*(LEVEL-1)) || last_name org_chart, " + //
-                "employee_id, manager_id, job_id " + //
-                "    FROM employees" + //
-                "    START WITH job_id = 'AD_PRES' " + //
+        String sql = "SELECT LPAD(' ',2*(LEVEL-1)) || last_name org_chart, " +
+                "employee_id, manager_id, job_id " +
+                "    FROM employees" +
+                "    START WITH job_id = 'AD_PRES' " +
                 "    CONNECT BY PRIOR employee_id = manager_id AND LEVEL <= 2;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -58,5 +57,4 @@ public class OracleSelectTest4 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "manager_id")));
     }
-
 }

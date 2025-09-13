@@ -261,7 +261,6 @@ public class MySqlSelectTest_298
                 "WHERE cid BETWEEN 18 AND 19\n" +
                 "ORDER BY id", stmt.toString());
 
-
         SQLStatement stmt2 = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);
 

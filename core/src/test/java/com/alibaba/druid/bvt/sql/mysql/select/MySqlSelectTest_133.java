@@ -25,6 +25,4 @@ public class MySqlSelectTest_133 extends MysqlTest {
         assertEquals("SELECT (~?), ((tinyint_1bit_test % integer_test % bigint_test) NOT IN (?, ?, ?, (BINARY ? = ?)))\n" +
                 "FROM select_base_two_one_db_multi_tb", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
-
-
 }

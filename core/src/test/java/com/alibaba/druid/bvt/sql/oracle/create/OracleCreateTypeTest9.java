@@ -41,7 +41,6 @@ public class OracleCreateTypeTest9 extends OracleTest {
 
         System.out.println(sql);
 
-
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -59,7 +58,7 @@ public class OracleCreateTypeTest9 extends OracleTest {
                         "\tfinalUsage2 varchar2(256), \n" +
                         "\tsanctionedParty12 varchar2(256), \n" +
                         "\tsanctionedParty22 varchar2(256)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

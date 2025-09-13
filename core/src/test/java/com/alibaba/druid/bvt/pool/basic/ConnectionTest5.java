@@ -15,24 +15,19 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.SQLException;
-import java.util.Properties;
-
-import javax.sql.ConnectionEvent;
-import javax.sql.ConnectionEventListener;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
+
+import javax.sql.ConnectionEvent;
+import javax.sql.ConnectionEventListener;
+
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class ConnectionTest5 extends PoolTestCase {
     private MockDriver driver;
@@ -86,7 +81,6 @@ public class ConnectionTest5 extends PoolTestCase {
         dataSource.setResetStatEnable(true);
         dataSource.resetStat();
         assertEquals(0, dataSource.getConnectCount());
-
     }
 
     public void test_handleException() throws Exception {

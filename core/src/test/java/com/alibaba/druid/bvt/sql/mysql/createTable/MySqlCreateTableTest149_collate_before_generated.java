@@ -38,5 +38,4 @@ public class MySqlCreateTableTest149_collate_before_generated extends TestCase {
                 "\tcol_oxqagw int generated always as (1 + 2) collate utf8_unicode_ci\n" +
                 ")", stmt.toLowerCaseString());
     }
-
 }

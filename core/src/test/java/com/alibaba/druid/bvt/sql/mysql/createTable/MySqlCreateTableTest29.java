@@ -21,15 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest29 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE user" + //
-                "  (id INT, INDEX USING BTREE (id))" + //
-                "  MIN_ROWS 1024;"; //
+        String sql = "CREATE TABLE user" +
+                "  (id INT, INDEX USING BTREE (id))" +
+                "  MIN_ROWS 1024;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,10 +52,9 @@ public class MySqlCreateTableTest29 extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("user")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("CREATE TABLE user (" + //
-                "\n\tid INT," + //
-                "\n\tINDEX USING BTREE(id)" + //
+        assertEquals("CREATE TABLE user (" +
+                "\n\tid INT," +
+                "\n\tINDEX USING BTREE(id)" +
                 "\n) MIN_ROWS = 1024;", output);
-
     }
 }

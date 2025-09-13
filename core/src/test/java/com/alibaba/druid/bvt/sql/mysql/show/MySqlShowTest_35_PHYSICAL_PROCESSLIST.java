@@ -69,5 +69,4 @@ public class MySqlShowTest_35_PHYSICAL_PROCESSLIST extends MysqlTest {
         assertEquals("SHOW FULL PHYSICAL_PROCESSLIST", stmt.toString());
         assertEquals("show full physical_processlist", stmt.toLowerCaseString());
     }
-
 }

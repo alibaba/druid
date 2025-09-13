@@ -15,8 +15,15 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.mock.MockConnection;
+import com.alibaba.druid.mock.MockPreparedStatement;
+import com.alibaba.druid.pool.DruidConnectionHolder;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.PreparedStatementHolder;
+import junit.framework.TestCase;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -26,18 +33,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.mock.MockConnection;
-import com.alibaba.druid.mock.MockPreparedStatement;
-import com.alibaba.druid.pool.DruidConnectionHolder;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.pool.DruidPooledPreparedStatement;
-import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
-import com.alibaba.druid.pool.PreparedStatementHolder;
 
 public class PoolablePreparedStatementTest extends TestCase {
     protected MockPreparedStatement raw;

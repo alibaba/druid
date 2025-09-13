@@ -1,11 +1,5 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
@@ -13,6 +7,7 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import junit.framework.TestCase;
 
 public class WallStatTest_select_1 extends TestCase {
     private String sql = "SELECT b.* FROM lhwbbs_posts_reply a LEFT JOIN lhwbbs_posts b ON a.pid=b.pid WHERE a.rpid=? AND b.disabled=? ORDER BY a.pid DESC";
@@ -76,5 +71,4 @@ public class WallStatTest_select_1 extends TestCase {
             assertEquals(1, tableStat.getSelectCount());
         }
     }
-
 }

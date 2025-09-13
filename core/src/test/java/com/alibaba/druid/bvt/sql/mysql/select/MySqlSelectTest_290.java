@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_290 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT\n" +
@@ -705,12 +704,10 @@ public class MySqlSelectTest_290 extends MysqlTest {
 
         SQLStatement stmt = SQLUtils
             .parseSingleStatement(sql, DbType.mysql);
-        System.out.println("第一次生成的sql==="+stmt.toString());
+        System.out.println("第一次生成的sql===" + stmt.toString());
         SQLStatement stmt2 = SQLUtils
             .parseSingleStatement(stmt.toString(), DbType.mysql);
-        System.out.println("第二次生成的sql==="+stmt2.toString());
+        System.out.println("第二次生成的sql===" + stmt2.toString());
         assertEquals(stmt.toString().replace('\"', '\''), stmt2.toString().replace('\"', '\''));
-
     }
-
 }

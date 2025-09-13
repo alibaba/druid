@@ -15,15 +15,10 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import com.alibaba.druid.support.http.StatViewServlet;
 import junit.framework.TestCase;
-
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletConfig;
-
-import com.alibaba.druid.support.http.StatViewServlet;
 
 public class StatViewSerlvetTest_allow extends TestCase {
     public void test_allow() throws Exception {

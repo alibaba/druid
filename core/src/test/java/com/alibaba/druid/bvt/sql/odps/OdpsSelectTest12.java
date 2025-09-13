@@ -15,21 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OdpsSelectTest12 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "select name, sp from abc lateral view explode(split(concat(',','1','2','3'),',')) t as sp;";//
+        String sql = "select name, sp from abc lateral view explode(split(concat(',','1','2','3'),',')) t as sp;";
         assertEquals("SELECT name, sp\n" +
                 "FROM abc\n" +
                 "\tLATERAL VIEW EXPLODE(SPLIT(concat(',', '1', '2', '3'), ',')) t AS sp;", SQLUtils.formatOdps(sql));
@@ -58,5 +55,4 @@ public class OdpsSelectTest12 extends TestCase {
 
         assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

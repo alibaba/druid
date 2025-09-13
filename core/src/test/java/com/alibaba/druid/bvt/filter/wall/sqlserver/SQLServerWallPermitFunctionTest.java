@@ -15,13 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallPermitFunctionTest
@@ -101,5 +96,4 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
         assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘sysadmin’) FROM X; "));
         assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘sysadmin’, ‘sa’) FROM X; "));
     }
-
 }

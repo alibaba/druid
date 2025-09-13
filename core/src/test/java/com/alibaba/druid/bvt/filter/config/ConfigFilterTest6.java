@@ -1,8 +1,5 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -13,6 +10,7 @@ import java.sql.Driver;
 import java.util.List;
 import java.util.Properties;
 
+import static org.junit.Assert.assertThrows;
 
 public class ConfigFilterTest6 extends TestCase {
     public void testInitFastFail() {
@@ -22,9 +20,7 @@ public class ConfigFilterTest6 extends TestCase {
         assertEquals("ConfigLoader only support DruidDataSource", exception.getMessage());
     }
 
-
     static class DataSourceProxyImpl implements DataSourceProxy {
-
         @Override
         public JdbcDataSourceStat getDataSourceStat() {
             return null;

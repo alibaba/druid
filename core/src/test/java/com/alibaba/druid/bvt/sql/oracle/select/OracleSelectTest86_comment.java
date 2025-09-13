@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class OracleSelectTest86_comment extends OracleTest {
                     + " NOT (BITAND (KU$.PROPERTY,8192)=8192) AND "
                     + " NOT BITAND(KU$.SCHEMA_OBJ.FLAGS,128)!=0 "
                     + "AND  KU$.SCHEMA_OBJ.NAME=:NAME1 "
-                    + "AND  KU$.SCHEMA_OBJ.OWNER_NAME=:SCHEMA2"; //
+                    + "AND  KU$.SCHEMA_OBJ.OWNER_NAME=:SCHEMA2";
 
         System.out.println(sql);
 

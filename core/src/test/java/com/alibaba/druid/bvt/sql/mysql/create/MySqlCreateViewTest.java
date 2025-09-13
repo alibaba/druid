@@ -22,15 +22,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateViewTest extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE OR REPLACE VIEW view_name AS\n" + //
-                "SELECT fname\n" + //
-                "FROM table_name\n" + //
+        String sql = "CREATE OR REPLACE VIEW view_name AS\n" +
+                "SELECT fname\n" +
+                "FROM table_name\n" +
                 "WHERE fid = ?";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

@@ -133,8 +133,5 @@ public class MySqlSelectTest_173 extends MysqlTest {
             + "\tEND))\n"
             + "ORDER BY t_s_secyear.customer_id ASC, t_s_secyear.customer_first_name ASC, t_s_secyear.customer_last_name ASC, t_s_secyear.customer_preferred_cust_flag ASC\n"
             + "LIMIT 100", stmt.toString());
-
-
     }
-
 }

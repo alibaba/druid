@@ -45,5 +45,4 @@ public class MySqlShowTest_27_plancache extends MysqlTest {
         assertEquals("SHOW PLANCACHE STATUS", stmt.toString());
         assertEquals("show plancache status", stmt.toLowerCaseString());
     }
-
 }

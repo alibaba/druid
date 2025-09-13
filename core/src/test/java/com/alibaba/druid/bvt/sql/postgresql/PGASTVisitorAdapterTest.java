@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
-
 import junit.framework.TestCase;
 
 public class PGASTVisitorAdapterTest extends TestCase {

@@ -11,7 +11,7 @@ import java.util.List;
 public class HiveSelectTest_3_array
         extends TestCase {
     public void test_select() throws Exception {
-        String sql = "select languages[0] from json_nested_test;";//
+        String sql = "select languages[0] from json_nested_test;";
         assertEquals("SELECT languages[0]\n" +
                 "FROM json_nested_test;", SQLUtils.formatHive(sql));
         assertEquals("select languages[0]\n" +
@@ -37,6 +37,5 @@ public class HiveSelectTest_3_array
         assertTrue(visitor.containsColumn("json_nested_test", "languages"));
 //        assertTrue(visitor.containsColumn("customers", "isxx"));
 //        assertTrue(visitor.containsColumn("customers", "*"));
-
     }
 }

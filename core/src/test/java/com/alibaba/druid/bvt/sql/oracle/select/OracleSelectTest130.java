@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-
 public class OracleSelectTest130 extends TestCase {
     public void test_0() throws Exception {
         String sql = "select a.a.\"b\"() from dual;";
@@ -58,5 +57,4 @@ public class OracleSelectTest130 extends TestCase {
 
 //        assertTrue(visitor.containsColumn("srm1.CONSIGNEE_ADDRESS", "id"));
     }
-
 }

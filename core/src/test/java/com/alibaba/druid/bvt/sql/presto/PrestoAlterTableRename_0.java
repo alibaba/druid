@@ -9,7 +9,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class PrestoAlterTableRename_0 {
-
     @Test
     public void test_alter_schema() {
         String sql = "ALTER SCHEMA name RENAME TO new_name";

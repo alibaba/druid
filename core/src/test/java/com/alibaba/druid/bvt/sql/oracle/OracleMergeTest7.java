@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,19 +22,21 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
+import java.util.List;
+
 public class OracleMergeTest7 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "MERGE INTO copy_emp c " + //
-                "USING employees e " + //
-                "ON (c.employee_id=e.employee_id) " + //
-                "WHEN MATCHED THEN " + //
-                "UPDATE SET " + //
-                "c.first_name=e.first_name, " + //
-                "c.last_name=e.last_name, " + //
-                "c.department_id=e.department_id " + //
-                "WHEN NOT MATCHED THEN " + //
-                "INSERT VALUES(e.employee_id,e.first_name,e.last_name," + //
-                "e.email,e.phone_number,e.hire_date,e.job_id, " + //
+        String sql = "MERGE INTO copy_emp c " +
+                "USING employees e " +
+                "ON (c.employee_id=e.employee_id) " +
+                "WHEN MATCHED THEN " +
+                "UPDATE SET " +
+                "c.first_name=e.first_name, " +
+                "c.last_name=e.last_name, " +
+                "c.department_id=e.department_id " +
+                "WHEN NOT MATCHED THEN " +
+                "INSERT VALUES(e.employee_id,e.first_name,e.last_name," +
+                "e.email,e.phone_number,e.hire_date,e.job_id, " +
                 "e.salary,e.commission_pct,e.manager_id,e.department_id)";
 
         SQLStatementParser parser = new OracleStatementParser(sql);
@@ -64,5 +62,4 @@ public class OracleMergeTest7 extends OracleTest {
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
     }
-
 }

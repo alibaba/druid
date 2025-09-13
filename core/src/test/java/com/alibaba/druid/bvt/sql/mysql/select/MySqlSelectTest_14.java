@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -68,7 +67,7 @@ public class MySqlSelectTest_14 extends MysqlTest {
                 output);
 
         String output_lcase = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-        assertEquals("select *" //
+        assertEquals("select *"
                         + "\nfrom t1"//
                         + "\nwhere column1 = ("//
                         + "\n\tselect column1"//

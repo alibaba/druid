@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -83,7 +82,7 @@ public class OracleCreateTableTest59 extends OracleTest {
                         "\t\tFLASH_CACHE DEFAULT\n" +
                         "\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t)\n" +
-                        "\tPCTTHRESHOLD 50",//
+                        "\tPCTTHRESHOLD 50",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

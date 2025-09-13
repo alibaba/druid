@@ -15,23 +15,20 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.List;
-
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
+import junit.framework.TestCase;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.List;
 
 public class OdpsMultiInsertTest extends TestCase {
     public void test_0() throws Exception {
@@ -83,5 +80,4 @@ public class OdpsMultiInsertTest extends TestCase {
 
         assertEquals(expect, out.toString());
     }
-
 }

@@ -15,37 +15,33 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class MySqlWallTest139 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         String sql = "select count(1) as total "//
-                + " from (" //
-                + "    select '' buyer_nick from dual " //
+                + " from ("
+                + "    select '' buyer_nick from dual "
                 + "    where 1=0  "//
-                + "    union " //
+                + "    union "
                 + "    select distinct buyer_nick "//
                 + "    from sys_info.orders "//
-                + "    where 1=1  and receiver_district in ('平谷区')" //
-                + ") a " //
-                + "inner join (" //
+                + "    where 1=1  and receiver_district in ('平谷区')"
+                + ") a "
+                + "inner join ("
                 + "    select buyer_nick from ("//
                 + "        select distinct buyer_nick "//
-                + "        from sys_info.orders " //
+                + "        from sys_info.orders "
                 + "        where 1=1  and created > '2013-07-28' "//
-                + "    ) recent_days " //
-                + "inner join (" //
-                + "    select distinct buyer_nick " //
-                + "    from sys_info.orders " //
-                + "    where 1=1  and seller_nick in ('创维官方旗舰店') " //
+                + "    ) recent_days "
+                + "inner join ("
+                + "    select distinct buyer_nick "
+                + "    from sys_info.orders "
+                + "    where 1=1  and seller_nick in ('创维官方旗舰店') "
                 + "    ) seller_nick using(buyer_nick) "//
                 + ") b using(buyer_nick)";
         assertTrue(provider.checkValid(sql));

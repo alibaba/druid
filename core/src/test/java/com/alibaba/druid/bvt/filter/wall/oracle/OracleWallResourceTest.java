@@ -42,5 +42,4 @@ public class OracleWallResourceTest extends PGTest {
             fail(violations.get(0).getMessage());
         }
     }
-
 }

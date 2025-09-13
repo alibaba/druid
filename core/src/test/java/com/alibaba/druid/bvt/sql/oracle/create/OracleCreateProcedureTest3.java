@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class OracleCreateProcedureTest3 extends OracleTest {
                 "       AND TRUNC(T.SENDREALTIME) = TRUNC(SYSDATE);\n" +
                 "    COMMIT;\n" +
                 "  END IF;\n" +
-                "END PRC_DEALSMS;"; //
+                "END PRC_DEALSMS;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

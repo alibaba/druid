@@ -37,7 +37,6 @@ public class MySqlInsertBenchmark_2 extends TestCase {
     public void perf() {
         long startMillis = System.currentTimeMillis();
         for (int i = 0; i < 1000 * 1000; ++i) {
-
             List<SQLStatement> stmt = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
 //            stmt.toString();
         }

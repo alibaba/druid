@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-
 public class OracleSelectTest132 extends TestCase {
     public void test_0() throws Exception {
         String sql = "select * from sys.dual natural join sys.dual";
@@ -60,5 +59,4 @@ public class OracleSelectTest132 extends TestCase {
 
 //        assertTrue(visitor.containsColumn("srm1.CONSIGNEE_ADDRESS", "id"));
     }
-
 }

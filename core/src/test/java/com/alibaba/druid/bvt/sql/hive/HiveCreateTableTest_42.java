@@ -39,7 +39,5 @@ public class HiveCreateTableTest_42 extends OracleTest {
                 "WITH SERDEPROPERTIES (\n" +
                 "\t\"serialization.encoding\" = 'gbk'\n" +
                 ");", SQLUtils.toSQLString(statementList, JdbcConstants.HIVE));
-
     }
-
 }

@@ -1,18 +1,14 @@
 package com.alibaba.druid.bvt.spring;
 
-import static org.junit.Assert.assertNotNull;
+import com.alibaba.druid.support.ibatis.SqlMapClientWrapper;
+import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
+import junit.framework.TestCase;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.sql.Connection;
 
-import junit.framework.TestCase;
-
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.alibaba.druid.support.ibatis.SqlMapClientWrapper;
-import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
-
 public class SqlMapExecutorWrapperTest extends TestCase {
-    private ClassPathXmlApplicationContext context = null;
+    private ClassPathXmlApplicationContext context;
 
     protected void setUp() throws Exception {
         context = new ClassPathXmlApplicationContext("com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");

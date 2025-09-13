@@ -25,12 +25,12 @@ import java.util.List;
 
 public class OracleSelectTest12 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "select /*+ use_nl(b c) ordered */ count(*) " + //
-                "      from      (" + //
-                "          select distinct  parent_id parentId      from BUSINESS_ORDER a1      " + //
-                "          where SELLER_SEQ in                        ( ?)     " + //
-                "              and not (order_from = 'safepay' and status in ('buyer_create', 'closed'))     " + //
-                "              ) b, business_order c where ID = b.parentId"; //
+        String sql = "select /*+ use_nl(b c) ordered */ count(*) " +
+                "      from      (" +
+                "          select distinct  parent_id parentId      from BUSINESS_ORDER a1      " +
+                "          where SELLER_SEQ in                        ( ?)     " +
+                "              and not (order_from = 'safepay' and status in ('buyer_create', 'closed'))     " +
+                "              ) b, business_order c where ID = b.parentId";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

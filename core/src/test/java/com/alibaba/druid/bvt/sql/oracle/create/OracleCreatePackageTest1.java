@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class OracleCreatePackageTest1 extends OracleTest {
     public void test_types() throws Exception {
@@ -47,7 +46,7 @@ public class OracleCreatePackageTest1 extends OracleTest {
                         "\t\tMODULUS_ID_VALUE NUMBER\n" +
                         "\t)\n" +
                         "\t;\n" +
-                        "END ACHIEVE_CONTRACT_SPECIMEN;",//
+                        "END ACHIEVE_CONTRACT_SPECIMEN;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

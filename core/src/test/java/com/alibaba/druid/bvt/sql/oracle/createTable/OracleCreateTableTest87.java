@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -84,6 +83,5 @@ public class OracleCreateTableTest87 extends OracleTest {
 //        assertTrue(visitor.getTables().containsKey(new TableStat.Name("subtotal_bill")));
 //
 //        assertEquals(8, visitor.getColumns().size());
-
     }
 }

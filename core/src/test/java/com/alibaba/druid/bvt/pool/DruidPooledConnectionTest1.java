@@ -1,16 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
+import junit.framework.TestCase;
+
+import java.sql.SQLException;
 
 public class DruidPooledConnectionTest1 extends TestCase {
     private DruidDataSource dataSource;
@@ -21,7 +16,6 @@ public class DruidPooledConnectionTest1 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setFilters("stat");
         dataSource.setPoolPreparedStatements(true);
-
     }
 
     protected void tearDown() throws Exception {

@@ -21,22 +21,21 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest42 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE rc (" + //
-                "    a INT NOT NULL, " + //
-                "    b INT NOT NULL" + //
-                ")" + //
-                "PARTITION BY RANGE COLUMNS(a,b) (" + //
-                "    PARTITION p0 VALUES LESS THAN (10,5)," + //
-                "    PARTITION p1 VALUES LESS THAN (20,10)," + //
-                "    PARTITION p2 VALUES LESS THAN (MAXVALUE,15)," + //
-                "    PARTITION p3 VALUES LESS THAN (MAXVALUE,MAXVALUE)" + //
-                ");"; //
+        String sql = "CREATE TABLE rc (" +
+                "    a INT NOT NULL, " +
+                "    b INT NOT NULL" +
+                ")" +
+                "PARTITION BY RANGE COLUMNS(a,b) (" +
+                "    PARTITION p0 VALUES LESS THAN (10,5)," +
+                "    PARTITION p1 VALUES LESS THAN (20,10)," +
+                "    PARTITION p2 VALUES LESS THAN (MAXVALUE,15)," +
+                "    PARTITION p3 VALUES LESS THAN (MAXVALUE,MAXVALUE)" +
+                ");";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -70,6 +69,5 @@ public class MySqlCreateTableTest42 extends MysqlTest {
                 "\tPARTITION p2 VALUES LESS THAN (MAXVALUE, 15),\n" +
                 "\tPARTITION p3 VALUES LESS THAN (MAXVALUE, MAXVALUE)\n" +
                 ");", output);
-
     }
 }

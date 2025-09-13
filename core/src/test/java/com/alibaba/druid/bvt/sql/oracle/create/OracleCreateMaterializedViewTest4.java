@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
@@ -54,7 +53,7 @@ public class OracleCreateMaterializedViewTest4 extends OracleTest {
                         "FROM times t, products p, sales s\n" +
                         "WHERE t.time_id = s.time_id\n" +
                         "\tAND p.prod_id = s.prod_id\n" +
-                        "GROUP BY t.calendar_year, p.prod_id;",//
+                        "GROUP BY t.calendar_year, p.prod_id;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -1,10 +1,10 @@
 package com.alibaba.druid.stat;
 
+import junit.framework.TestCase;
+
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 import java.util.concurrent.atomic.AtomicLong;
-
-import junit.framework.TestCase;
 
 public class AtomicMemoryTest extends TestCase {
     public void test_0() throws Exception {

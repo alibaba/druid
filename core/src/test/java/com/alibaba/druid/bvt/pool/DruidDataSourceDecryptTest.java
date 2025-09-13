@@ -1,14 +1,12 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.Test;
 
 import java.sql.SQLException;
 
-import org.junit.Test;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Jonas Yang

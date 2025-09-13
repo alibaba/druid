@@ -66,6 +66,4 @@ public class MySqlSelectTest_129_ads extends MysqlTest {
                 "\tLEFT JOIN avg_table USING (minute_id)\n" +
                 "ORDER BY history_table.hour_id", stmt.toString());
     }
-
-
 }

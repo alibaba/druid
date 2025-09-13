@@ -43,5 +43,4 @@ public class WallStatTest_select_2
         WallProvider provider = new SQLServerWallProvider();
         assertTrue(provider.checkValid(sql));
     }
-
 }

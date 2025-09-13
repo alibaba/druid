@@ -50,6 +50,4 @@ public class MySqlSelectTest_111_sequence extends TestCase {
         assertEquals("SELECT *\n" +
                 "FROM users TABLESAMPLE BERNOULLI (50);", stmt.toString());
     }
-
-
 }

@@ -2,9 +2,7 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
-import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class PagerUtilsTest_Limit_hive_0 extends TestCase {
     public void test_hive_0() throws Exception {

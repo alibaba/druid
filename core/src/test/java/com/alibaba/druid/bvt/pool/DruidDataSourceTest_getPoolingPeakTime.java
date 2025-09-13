@@ -1,13 +1,9 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-
+import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import java.sql.Connection;
 
 /**
  * 这个场景测试initialSize > maxActive
@@ -21,7 +17,6 @@ public class DruidDataSourceTest_getPoolingPeakTime extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
-
     }
 
     protected void tearDown() throws Exception {

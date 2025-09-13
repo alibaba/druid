@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class Oracle_pl_forall_0 extends OracleTest {
     public void test_0() throws Exception {
@@ -36,7 +35,7 @@ public class Oracle_pl_forall_0 extends OracleTest {
                 "  FORALL i IN depts.FIRST..depts.LAST\n" +
                 "    DELETE FROM employees_temp\n" +
                 "    WHERE department_id = depts(i);\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(3, statementList.size());

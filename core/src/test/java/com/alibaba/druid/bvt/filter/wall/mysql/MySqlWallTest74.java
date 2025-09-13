@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -37,15 +32,15 @@ public class MySqlWallTest74 extends TestCase {
 
         provider.getConfig().setCommentAllow(true);
 
-        final String sql = "select _t0.`ownUser` as _c0, _t0.`showTime` as _c1, _t0.`showType` as _c2, " + //
-                "   _t0.`itemId` as _c3, _t0.`queueId` as _c4 " + //
-                "from `itemshow_queue` as _t0 " + //
-                "where ( _t0.`isShowed` = 'F' and _t0.`showTime` <= ? ) " + //
-                "   and _t0.`ownUser` in ( " + //
-                "       select _t0.`userId` as _c0 from `users_top` as _t0 " + //
-                "       where ( 1 = 1 ) " + //
-                "       ) " + //
-                "order by _t0.`showTime` asc " + //
+        final String sql = "select _t0.`ownUser` as _c0, _t0.`showTime` as _c1, _t0.`showType` as _c2, " +
+                "   _t0.`itemId` as _c3, _t0.`queueId` as _c4 " +
+                "from `itemshow_queue` as _t0 " +
+                "where ( _t0.`isShowed` = 'F' and _t0.`showTime` <= ? ) " +
+                "   and _t0.`ownUser` in ( " +
+                "       select _t0.`userId` as _c0 from `users_top` as _t0 " +
+                "       where ( 1 = 1 ) " +
+                "       ) " +
+                "order by _t0.`showTime` asc " +
                 "limit 1000 offset 8000";
         provider.getConfig().setSelectWhereAlwayTrueCheck(true);
         assertFalse(provider.checkValid(sql));
@@ -55,5 +50,4 @@ public class MySqlWallTest74 extends TestCase {
         provider.getConfig().setSelectWhereAlwayTrueCheck(false);
         assertFalse(provider.checkValid(sql));
     }
-
 }

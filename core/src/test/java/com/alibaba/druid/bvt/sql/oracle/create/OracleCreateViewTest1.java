@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -161,7 +160,7 @@ public class OracleCreateViewTest1 extends OracleTest {
                         "WHERE (v.service_type IN ('gs', 'cgs', 'hkgs', 'twgs')\n" +
                         "\t\tOR (v.service_type = 'cnfm'\n" +
                         "\t\t\tAND v.stage = 'new_order'))\n" +
-                        "\tAND v.id = c.id",//
+                        "\tAND v.id = c.id",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

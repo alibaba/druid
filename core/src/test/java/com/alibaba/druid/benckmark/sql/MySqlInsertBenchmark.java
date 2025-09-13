@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;
 
@@ -14,7 +13,6 @@ public class MySqlInsertBenchmark extends TestCase {
 
     protected void setUp() throws Exception {
         stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
-
     }
 
     public void test_perf() throws Exception {
@@ -42,6 +40,4 @@ public class MySqlInsertBenchmark extends TestCase {
         long millis = System.currentTimeMillis() - startMillis;
         System.out.println("millis : " + millis);
     }
-
-
 }

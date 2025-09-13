@@ -25,7 +25,6 @@ public class MySqlCreateTableTest127_ads_ann extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE adl_new_retail.adl_sec_verify_face (\n" +
                 "\tid varchar NOT NULL COMMENT '',\n" +
                 "\txid varchar NOT NULL COMMENT '',\n" +
@@ -42,8 +41,5 @@ public class MySqlCreateTableTest127_ads_ann extends MysqlTest {
                 "OPTIONS (UPDATETYPE = 'realtime') COMMENT 'verify photos'\n" +
                 "PARTITION BY HASH (ComSubStr(xid, face_oss)) PARTITION NUM 16\n" +
                 "TABLEGROUP deepvision;", stmt.toString());
-
     }
-
-
 }

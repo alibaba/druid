@@ -1,13 +1,12 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,7 +20,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://www.postgresql.org/docs/current/collation.html">Collation Support </a>
  */
 public class Issue5822 {
-
     @Test
     public void test_parse_postgresql_collate() {
         for (String sql : new String[]{

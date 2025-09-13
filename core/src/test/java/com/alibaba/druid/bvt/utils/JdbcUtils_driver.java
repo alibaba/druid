@@ -1,17 +1,11 @@
 package com.alibaba.druid.bvt.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import java.sql.Driver;
-
 import com.alibaba.druid.DbType;
-
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
-
 import junit.framework.TestCase;
+
+import java.sql.Driver;
 
 public class JdbcUtils_driver extends TestCase {
     public void test_null() throws Exception {
@@ -56,17 +50,17 @@ public class JdbcUtils_driver extends TestCase {
     }
 
     public void test_log4jdbc_es() throws Exception {
-        assertEquals(JdbcConstants.ELASTIC_SEARCH
-                , JdbcUtils.getDbType("jdbc:elastic://100.69.202.4:9300/tcbuyer?cluster.name=refund_cluster", null));
+        assertEquals(JdbcConstants.ELASTIC_SEARCH,
+                JdbcUtils.getDbType("jdbc:elastic://100.69.202.4:9300/tcbuyer?cluster.name=refund_cluster", null));
     }
 
     public void test_log4jdbc_es_1() throws Exception {
-        assertEquals(JdbcConstants.ELASTIC_SEARCH
-                , JdbcUtils.getDbType("jdbc:elastic://100.69.202.4:9300/tcbuyer?cluster.name=refund_cluster", "com.alibaba.xdriver.elastic.jdbc.ElasticDriver"));
+        assertEquals(JdbcConstants.ELASTIC_SEARCH,
+                JdbcUtils.getDbType("jdbc:elastic://100.69.202.4:9300/tcbuyer?cluster.name=refund_cluster", "com.alibaba.xdriver.elastic.jdbc.ElasticDriver"));
     }
 
     public void test_log4jdbc_es_driver() throws Exception {
-        assertEquals(JdbcConstants.ELASTIC_SEARCH_DRIVER
-                , JdbcUtils.getDriverClassName("jdbc:elastic://100.69.202.4:9300/tcbuyer?cluster.name=refund_cluster"));
+        assertEquals(JdbcConstants.ELASTIC_SEARCH_DRIVER,
+                JdbcUtils.getDriverClassName("jdbc:elastic://100.69.202.4:9300/tcbuyer?cluster.name=refund_cluster"));
     }
 }

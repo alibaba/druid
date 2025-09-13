@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
-
 public class MySqlSelectTest_232 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from tb where id = '1'-1;";
@@ -40,7 +39,6 @@ public class MySqlSelectTest_232 extends MysqlTest {
                 "WHERE id = '1' - 1;", stmt.toString());
     }
 
-
     public void test_1() throws Exception {
         String sql = "select '1' - 1 from tb";
 
@@ -56,6 +54,4 @@ public class MySqlSelectTest_232 extends MysqlTest {
         assertEquals("SELECT '1' - 1\n" +
                 "FROM tb", stmt.toString());
     }
-
-
 }

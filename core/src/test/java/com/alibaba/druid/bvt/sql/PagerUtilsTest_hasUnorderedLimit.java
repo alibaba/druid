@@ -4,8 +4,6 @@ import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
-import static org.junit.Assert.*;
-
 public class PagerUtilsTest_hasUnorderedLimit extends TestCase {
     public void test_false() throws Exception {
         String sql = " select * from test t order by id limit 3";

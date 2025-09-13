@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest50 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT * from ( SELECT ID,MATTER,CODE,NAME,ADDRESS,AREA,PROPOSER,PROPOSER_CONTACTOR,PROPOSER_PHONE,REG_TIME,ASSIGN_TIME,DEPART,HANDLER,HANDLER_PHONE,STATUS,FINISH_DATE,FINISH_TYPE,DEPART_CODE,SYSTEM_CODE,rownum num FROM gxpt_items WHERE rownum<=20  order by REG_TIME desc )  WHERE num>0"; //
+                "SELECT * from ( SELECT ID,MATTER,CODE,NAME,ADDRESS,AREA,PROPOSER,PROPOSER_CONTACTOR,PROPOSER_PHONE,REG_TIME,ASSIGN_TIME,DEPART,HANDLER,HANDLER_PHONE,STATUS,FINISH_DATE,FINISH_TYPE,DEPART_CODE,SYSTEM_CODE,rownum num FROM gxpt_items WHERE rownum<=20  order by REG_TIME desc )  WHERE num>0";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,7 +51,7 @@ public class OracleSelectTest50 extends OracleTest {
         String text = TestUtils.outputOracle(stmt);
 
         assertEquals("SELECT *"//
-                + "\nFROM (" //
+                + "\nFROM ("
                 + "\n\tSELECT ID, MATTER, CODE, NAME, ADDRESS"//
                 + "\n\t\t, AREA, PROPOSER, PROPOSER_CONTACTOR, PROPOSER_PHONE, REG_TIME"//
                 + "\n\t\t, ASSIGN_TIME, DEPART, HANDLER, HANDLER_PHONE, STATUS"//

@@ -1,5 +1,13 @@
 package com.alibaba.druid.pvt.pool;
 
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockStatementBase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,21 +15,12 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockStatementBase;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
-import com.alibaba.druid.util.JdbcUtils;
-
 public class DiscardTest extends TestCase {
     private DruidDataSource dataSource;
 
     private MockDriver driver;
 
-    private volatile boolean failed = false;
+    private volatile boolean failed;
 
     protected void setUp() throws Exception {
         driver = new MockDriver() {

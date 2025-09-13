@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class HoloKeywordsTest extends TestCase {
     public void test_keywords() {

@@ -47,8 +47,8 @@ public class OracleCreateIndexTest19_global extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals("CREATE INDEX cust_last_name_ix ON customers(cust_last_name)\n" +
-                        "GLOBAL PARTITION BY HASH (cust_last_name) PARTITIONS 4;"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        "GLOBAL PARTITION BY HASH (cust_last_name) PARTITIONS 4;",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

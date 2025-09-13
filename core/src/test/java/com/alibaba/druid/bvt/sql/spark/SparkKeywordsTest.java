@@ -1,7 +1,6 @@
 package com.alibaba.druid.bvt.sql.spark;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.bvt.sql.SQLResourceTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -10,8 +9,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
-import org.junit.Test;
 
 public class SparkKeywordsTest extends TestCase {
     public void test_keywords() {

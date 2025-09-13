@@ -23,7 +23,6 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-
 public class OracleSelectTest120 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT id, TRANSLATE (LTRIM (text, '/'), '/', ',') ledid,TRANSLATE (LTRIM (text1, '/'), '/', ',') position,picturepath,rtfpath,enter,leave,speed,stay_time,begintime,endtime FROM (SELECT ROW_NUMBER () OVER (PARTITION BY id ORDER BY id, lvl DESC) rn, id, text,text1,picturepath,rtfpath,enter,leave,speed,stay_time,begintime,endtime FROM (SELECT id, LEVEL lvl, SYS_CONNECT_BY_PATH (ledid,'/') text,SYS_CONNECT_BY_PATH (position,'/') text1,picturepath,rtfpath,enter,leave,speed,stay_time,begintime,endtime FROM (SELECT id, t.ledid as ledid,t1.position,t.picturepath,t.rtfpath,t.enter,t.leave,t.speed,t.stay_time,t.begintime,t.endtime, ROW_NUMBER () OVER (PARTITION BY id ORDER BY id,t.ledid) x FROM enjoyorvms_proginfov3 t,enjoyorvms_ledinfov3 t1 where t.ledid = t1.ledid ORDER BY id, ledid) a CONNECT BY id = PRIOR id AND x - 1 = PRIOR x)) WHERE rn = 1 ORDER BY id;";
@@ -63,5 +62,4 @@ public class OracleSelectTest120 extends MysqlTest {
                 "WHERE rn = 1\n" +
                 "ORDER BY id;", stmt.toString());
     }
-
 }

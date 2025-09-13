@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OdpsSelectTest21 extends TestCase {
     public void test_select() throws Exception {
         // 1095288847322
-        String sql = "select wm_concat(',', a) from values('abc', 1), (null, 2) t (a, i);";//
+        String sql = "select wm_concat(',', a) from values('abc', 1), (null, 2) t (a, i);";
         assertEquals("SELECT wm_concat(',', a)\n" +
                 "FROM (VALUES ('abc', 1), (NULL, 2)) AS t (a, i);", SQLUtils.formatOdps(sql));
         assertEquals("select wm_concat(',', a)\n" +
@@ -52,5 +51,4 @@ public class OdpsSelectTest21 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

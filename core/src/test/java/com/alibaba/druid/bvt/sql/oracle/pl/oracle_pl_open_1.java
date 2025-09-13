@@ -22,11 +22,10 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class oracle_pl_open_1 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "OPEN cur_user(lv_batchid);"; //
+        String sql = "OPEN cur_user(lv_batchid);";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

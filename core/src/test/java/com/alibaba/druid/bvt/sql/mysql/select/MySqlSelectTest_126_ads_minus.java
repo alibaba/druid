@@ -68,6 +68,4 @@ public class MySqlSelectTest_126_ads_minus extends MysqlTest {
                 "\tWHERE action_code = 999997)\n" +
                 ")", stmt.toString());
     }
-
-
 }

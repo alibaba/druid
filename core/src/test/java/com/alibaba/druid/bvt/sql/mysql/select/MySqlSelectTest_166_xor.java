@@ -55,7 +55,5 @@ public class MySqlSelectTest_166_xor extends MysqlTest {
                 "FROM corona_select_one_db_multi_tb layer_1_left_tb\n" +
                 "\tRIGHT JOIN corona_select_multi_db_one_tb layer_1_right_tb ON layer_1_right_tb.datetime_test = layer_1_left_tb.datetime_test\n" +
                 "\tRIGHT JOIN corona_select_one_db_multi_tb layer_0_right_tb ON layer_0_right_tb.tinyint_1bit_test = layer_1_left_tb.tinyint_1bit_test;", stmt.toString());
-
     }
-
 }

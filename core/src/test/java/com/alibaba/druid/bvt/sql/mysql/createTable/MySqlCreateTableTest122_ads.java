@@ -17,7 +17,6 @@ public class MySqlCreateTableTest122_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE cache_table_1\n" +
                 "OPTIONS (cache = true)\n" +
                 "AS\n" +
@@ -25,8 +24,5 @@ public class MySqlCreateTableTest122_ads extends MysqlTest {
                 "SELECT *\n" +
                 "FROM test_realtime1\n" +
                 "LIMIT 200;", stmt.toString());
-
     }
-
-
 }

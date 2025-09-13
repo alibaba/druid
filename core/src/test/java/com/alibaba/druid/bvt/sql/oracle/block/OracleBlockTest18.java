@@ -23,7 +23,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class OracleBlockTest18 extends OracleTest {
     public void test_0() throws Exception {
@@ -46,7 +45,7 @@ public class OracleBlockTest18 extends OracleTest {
                 "    UPDATE employees\n" +
                 "    SET salary = salary + bonus \n" +
                 "    WHERE employee_id = emp_id;\n" +
-                "  END p;"; //
+                "  END p;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());

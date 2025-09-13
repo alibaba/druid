@@ -27,7 +27,6 @@ public class MySqlCreateUserTest_6 extends MysqlTest {
 
         assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';", //
                 SQLUtils.toMySqlString(stmt));
-
     }
 
     public void test_1() throws Exception {
@@ -37,7 +36,6 @@ public class MySqlCreateUserTest_6 extends MysqlTest {
 
         assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';", //
                 SQLUtils.toMySqlString(stmt));
-
     }
 
     public void test_2() throws Exception {
@@ -47,7 +45,5 @@ public class MySqlCreateUserTest_6 extends MysqlTest {
 
         assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';", //
                 SQLUtils.toMySqlString(stmt));
-
     }
-
 }

@@ -21,18 +21,17 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 public class MySqlCreateTableTest48 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE AO_E8B6CC_REPO_TO_CHANGESET (" //
+        String sql = "CREATE TABLE AO_E8B6CC_REPO_TO_CHANGESET ("
                 + "    CHANGESET_ID INTEGER,"//
                 + "    ID INTEGER AUTO_INCREMENT NOT NULL,"//
                 + "    REPOSITORY_ID INTEGER,"//
                 + "    CONSTRAINT fk_ao_e8b6cc_repo_to_changeset_repository_id FOREIGN KEY (REPOSITORY_ID) REFERENCES AO_E8B6CC_REPOSITORY_MAPPING(ID),"//
                 + "    CONSTRAINT fk_ao_e8b6cc_repo_to_changeset_changeset_id FOREIGN KEY (CHANGESET_ID) REFERENCES AO_E8B6CC_CHANGESET_MAPPING(ID),"//
                 + "    PRIMARY KEY(ID)"//
-                + ") ENGINE=InnoDB"; //
+                + ") ENGINE=InnoDB";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -61,8 +60,7 @@ public class MySqlCreateTableTest48 extends MysqlTest {
                         + "\n\tCONSTRAINT fk_ao_e8b6cc_repo_to_changeset_repository_id FOREIGN KEY (REPOSITORY_ID) REFERENCES AO_E8B6CC_REPOSITORY_MAPPING (ID),"//
                         + "\n\tCONSTRAINT fk_ao_e8b6cc_repo_to_changeset_changeset_id FOREIGN KEY (CHANGESET_ID) REFERENCES AO_E8B6CC_CHANGESET_MAPPING (ID),"//
                         + "\n\tPRIMARY KEY (ID)"//
-                        + "\n) ENGINE = InnoDB",//
+                        + "\n) ENGINE = InnoDB",
                 output);
-
     }
 }

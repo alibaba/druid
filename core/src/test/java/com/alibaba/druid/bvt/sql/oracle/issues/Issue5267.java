@@ -5,7 +5,6 @@ import com.alibaba.druid.bvt.sql.mysql.issues.Issue5421;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -18,7 +17,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/CREATE-TYPE-statement.html">Oracle  create type语法</a>
  */
 public class Issue5267 {
-
     @Test
     public void test_create_type() throws Exception {
         for (DbType dbType : new DbType[]{DbType.oracle}) {

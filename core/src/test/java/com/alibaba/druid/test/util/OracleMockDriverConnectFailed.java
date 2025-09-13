@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class OracleMockDriverConnectFailed extends OracleMockDriver {
-
     public static CyclicBarrier CONNECT_BARIER = new CyclicBarrier(2);
 
     @Override

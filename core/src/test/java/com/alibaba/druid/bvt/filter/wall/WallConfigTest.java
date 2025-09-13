@@ -1,14 +1,9 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.alibaba.druid.wall.WallConfig;
+import junit.framework.TestCase;
 
 import java.util.Properties;
-
-
-import com.alibaba.druid.wall.WallConfig;
-
-import junit.framework.TestCase;
 
 public class WallConfigTest extends TestCase {
     public void test_selectAllow() throws Exception {
@@ -64,7 +59,6 @@ public class WallConfigTest extends TestCase {
 
         assertFalse(config.isUpdateAllow());
     }
-
 
     public void test_insertAllow() throws Exception {
         Properties properties = new Properties();

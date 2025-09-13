@@ -33,10 +33,7 @@ public class MySqlSelectTest_154 extends MysqlTest {
         assertEquals("SELECT ? IS NULL, (~(NULLIF(?, ?)))\n" +
                         "FROM corona_select_one_db_one_tb layer_0_left_tb\n" +
                         "\tRIGHT JOIN corona_select_multi_db_one_tb layer_0_right_tb ON layer_0_right_tb.tinyint_1bit_test = layer_0_right_tb.decimal_test\n" +
-                        "WHERE ? + ? IS NULL != ? - layer_0_right_tb.time_test NOT IN (layer_0_left_tb.decimal_test, layer_0_right_tb.tinyint_test, layer_0_left_tb.integer_test, RPAD(NULL, ?, layer_0_left_tb.year_test))"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
-
+                        "WHERE ? + ? IS NULL != ? - layer_0_right_tb.time_test NOT IN (layer_0_left_tb.decimal_test, layer_0_right_tb.tinyint_test, layer_0_left_tb.integer_test, RPAD(NULL, ?, layer_0_left_tb.year_test))",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
 }

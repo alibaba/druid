@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.alter;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -27,10 +23,12 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.List;
+
 public class OracleAlterTableTest20 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "ALTER TABLE sales " //
+                "ALTER TABLE sales "
                         + "    ADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DISABLE; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -49,7 +47,7 @@ public class OracleAlterTableTest20 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("ALTER TABLE sales" //
+        assertEquals("ALTER TABLE sales"
                         + "\n\tADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DISABLE;", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 

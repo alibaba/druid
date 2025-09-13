@@ -15,19 +15,17 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
+import java.util.List;
+
 public class OceanbaseAlterTableDropPartitionTest extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "ALTER TABLE tnrange DROP PARTITION p1;"; //
+        String sql = "ALTER TABLE tnrange DROP PARTITION p1;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -35,12 +33,12 @@ public class OceanbaseAlterTableDropPartitionTest extends MysqlTest {
 
         {
             String result = SQLUtils.toMySqlString(stmt);
-            assertEquals("ALTER TABLE tnrange" + //
+            assertEquals("ALTER TABLE tnrange" +
                     "\n\tDROP PARTITION p1;", result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("alter table tnrange" + //
+            assertEquals("alter table tnrange" +
                     "\n\tdrop partition p1;", result);
         }
 
@@ -59,6 +57,5 @@ public class OceanbaseAlterTableDropPartitionTest extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
 
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
     }
 }

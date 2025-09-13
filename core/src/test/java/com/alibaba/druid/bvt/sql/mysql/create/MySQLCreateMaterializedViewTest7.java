@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.create;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -47,7 +46,6 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM base;");
-
     }
 
     public void test2() throws Exception {
@@ -69,7 +67,6 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM base;");
-
     }
 
     public void test3() throws Exception {

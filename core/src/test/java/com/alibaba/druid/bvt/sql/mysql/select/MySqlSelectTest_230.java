@@ -15,15 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 import java.util.List;
-
 
 public class MySqlSelectTest_230 extends MysqlTest {
     public void test_0() throws Exception {
@@ -40,6 +36,4 @@ public class MySqlSelectTest_230 extends MysqlTest {
 
         assertEquals("SELECT CAST('test collated returns' AS CHAR CHARACTER SET utf8) COLLATE utf8_bin AS anon_1", stmt.toString());
     }
-
-
 }

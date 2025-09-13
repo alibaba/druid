@@ -21,15 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest71 extends MysqlTest {
     @Test
     public void test_one() throws Exception {
-        String sql = "create table xx (id bigint unsigned not null comment 'aa' auto_increment," //
-                + "gmt_create datetime not null comment '创建时间'," //
-                + "gmt_modified datetime not null comment '修改时间', " //
+        String sql = "create table xx (id bigint unsigned not null comment 'aa' auto_increment,"
+                + "gmt_create datetime not null comment '创建时间',"
+                + "gmt_modified datetime not null comment '修改时间', "
                 + "primary key (id)) comment='re'";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

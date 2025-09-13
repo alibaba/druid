@@ -42,5 +42,4 @@ public class MySqlAlterTableTest44 extends TestCase {
         assertEquals("ALTER TABLE logical_db.logical_tb\n" +
                 "\tSET TBLPROPERTIES ('read_only' = 1) ON physical_db.physical_tb", output);
     }
-
 }

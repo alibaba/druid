@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.alterTable;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -24,13 +22,11 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
+import java.util.List;
 
 public class MySqlAlterTableTest extends TestCase {
-
     public void test_alter_0() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` CHANGE COLUMN `fname` `fname1` VARCHAR(45) NULL DEFAULT NULL  ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

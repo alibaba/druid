@@ -59,5 +59,4 @@ public class HiveCreateTableTest_43_dla extends OracleTest {
                 "\t'textinputformat.record.delimiter' = '\\u25bc'\n" +
                 ");", statementList.get(0).toString());
     }
-
 }

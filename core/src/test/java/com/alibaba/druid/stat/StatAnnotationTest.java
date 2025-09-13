@@ -1,10 +1,8 @@
 package com.alibaba.druid.stat;
 
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.druid.stat.spring.UserService;
+import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import junit.framework.TestCase;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.alibaba.druid.stat.spring.UserService;
-import com.alibaba.druid.support.spring.stat.SpringStatManager;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/com/alibaba/druid/stat/spring-config-stat-annotation.xml"})
+@ContextConfiguration(locations = "classpath:/com/alibaba/druid/stat/spring-config-stat-annotation.xml")
 public class StatAnnotationTest extends TestCase {
     @Autowired
     private UserService userService;
@@ -35,5 +33,4 @@ public class StatAnnotationTest extends TestCase {
         Assert.assertEquals("save()", statItem.get("Method"));
         Assert.assertEquals(1L, statItem.get("ExecuteCount"));
     }
-
 }

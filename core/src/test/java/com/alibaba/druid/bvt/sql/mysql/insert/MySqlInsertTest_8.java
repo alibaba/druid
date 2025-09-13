@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.insert;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+
+import java.util.List;
 
 public class MySqlInsertTest_8 extends MysqlTest {
     public void test_0() throws Exception {
@@ -49,13 +47,13 @@ public class MySqlInsertTest_8 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("INSERT INTO dd.table1 (d, e)" //
-                        + "\nSELECT *" //
+        assertEquals("INSERT INTO dd.table1 (d, e)"
+                        + "\nSELECT *"
                         + "\nFROM bb.table3", //
                 SQLUtils.toMySqlString(insertStmt));
 
-        assertEquals("insert into dd.table1 (d, e)" //
-                        + "\nselect *" //
+        assertEquals("insert into dd.table1 (d, e)"
+                        + "\nselect *"
                         + "\nfrom bb.table3", //
                 SQLUtils.toMySqlString(insertStmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

@@ -1,11 +1,10 @@
 package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.expr.SQLExtractExpr;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import junit.framework.TestCase;
 
-import static org.junit.Assert.*;
-
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
+import static org.junit.Assert.assertNotEquals;
 
 public class EqualTest_extract_mysql extends TestCase {
     public void test_exits() throws Exception {

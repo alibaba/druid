@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.Map;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -9,8 +7,9 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-
 import org.junit.Test;
+
+import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -21,7 +20,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://github.com/alibaba/druid/issues/5219">Issue来源</a>
  */
 public class Issue5219 {
-
     @Test
     public void test_split_table() throws Exception {
      //   for (DbType dbType : new DbType[]{DbType.mysql, DbType.tidb}) {
@@ -53,7 +51,7 @@ public class Issue5219 {
                 SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 SQLStatement statement = parser.parseStatement();
                 System.out.println("原始的sql===" + sql);
-                String newSql=statement.toString().replace("\n","").replace('\'','"');
+                String newSql = statement.toString().replace("\n", "").replace('\'', '"');
                 System.out.println("生成的sql===" + newSql);
                 assertTrue(newSql.equalsIgnoreCase(sql));
                 SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);

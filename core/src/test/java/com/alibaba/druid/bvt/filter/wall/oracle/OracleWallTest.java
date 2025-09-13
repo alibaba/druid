@@ -15,11 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class OracleWallTest extends TestCase {
     public void testWall() throws Exception {
@@ -33,7 +31,6 @@ public class OracleWallTest extends TestCase {
         config.setCommentAllow(true);
         assertTrue(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2", config));
         assertTrue(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2 --", config));
-
 
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from TAB"));
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from ALL_TABLES where (1=1 or (1+1)=2) and (4=8 or 1=1)"));

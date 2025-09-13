@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest17 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -39,11 +38,10 @@ public class MySqlAlterTableTest17 extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("ALTER TABLE rms.rms_Person_Event\n" + //
+        assertEquals("ALTER TABLE rms.rms_Person_Event\n" +
                 "\tDROP FOREIGN KEY FKA382487726D72F65", output);
 
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
     }
-
 }

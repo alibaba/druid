@@ -36,7 +36,6 @@ public class MySQLCharSetTest extends TestCase {
         equal(targetSql, resultSql);
     }
 
-
     public void testAlterCharset() {
         String targetSql = "ALTER TABLE acct_certificate MODIFY COLUMN `nodeid` varchar(5) CHARSET `gbk` COLLATE `gbk_chinese_ci` NULL COMMENT ''";
 
@@ -45,12 +44,10 @@ public class MySQLCharSetTest extends TestCase {
         equal(targetSql, resultSql);
     }
 
-
     private void equal(String targetSql, String resultSql) {
         MySqlStatementParser parser = new MySqlStatementParser(targetSql);
         List<SQLStatement> sqlStatements = parser.parseStatementList();
         System.out.println(sqlStatements.get(0).toString());
         Assert.assertTrue(sqlStatements.get(0).toString().equals(resultSql));
-
     }
 }

@@ -1,9 +1,9 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson2.JSON;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ public class MySqlParameterizedOutputVisitorTest_72 extends TestCase {
         String sql = "create table t1(pk bigint(20) primary key, integer_test int, varchar_test varchar(20));\n";
 
         List<Object> params = new ArrayList<Object>();
-        String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params
-                , VisitorFeature.OutputParameterizedUnMergeShardingTable
-                , VisitorFeature.OutputParameterizedQuesUnMergeInList
+        String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params,
+                VisitorFeature.OutputParameterizedUnMergeShardingTable,
+                VisitorFeature.OutputParameterizedQuesUnMergeInList
         );
         assertEquals("CREATE TABLE t1 (\n" +
                 "\tpk bigint(20) PRIMARY KEY,\n" +
@@ -32,5 +32,4 @@ public class MySqlParameterizedOutputVisitorTest_72 extends TestCase {
                 "\tvarchar_test varchar(20)\n" +
                 ");", rsql);
     }
-
 }

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -280,7 +279,7 @@ public class OracleCreateTableTest50 extends OracleTest {
                         "\t\tTABLESPACE \"APPDATA1M\",\n" +
                         "\tPARTITION \"PRODUCT_HASH_P16\"\n" +
                         "\t\tTABLESPACE \"APPDATA1M\"\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

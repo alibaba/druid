@@ -45,5 +45,4 @@ public class Templates {
         String sqlTemplate = out.toString();
         return sqlTemplate;
     }
-
 }

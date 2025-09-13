@@ -1,16 +1,9 @@
 package com.alibaba.druid.bvt.pool.vendor;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.SQLException;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 
+import java.sql.SQLException;
 
 public class MySqlExceptionSorterTest_oceanbase extends PoolTestCase {
     public void test_true() throws Exception {

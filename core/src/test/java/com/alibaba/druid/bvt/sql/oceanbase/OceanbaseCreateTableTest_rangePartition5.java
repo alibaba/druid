@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
                 + " PARTITION BY RANGE(id) ( "
                 + "     PARTITION p1 VALUES LESS THAN (1), "
                 + "     PARTITION p2 VALUES LESS THAN MAXVALUE"
-                + ");"; //
+                + ");";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -76,6 +75,5 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
 
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
     }
 }

@@ -1,40 +1,37 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
 
 public class PagerUtilsTest_Count_Oracle_0 extends TestCase {
     public void test_oracle_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.count(sql, JdbcConstants.ORACLE);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
         result = PagerUtils.count(sql, JdbcConstants.OCEANBASE_ORACLE);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
     public void test_oracle_1() throws Exception {
         String sql = "select id, name from t";
         String result = PagerUtils.count(sql, JdbcConstants.ORACLE);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
         result = PagerUtils.count(sql, JdbcConstants.OCEANBASE_ORACLE);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
     public void test_oracle_2() throws Exception {
         String sql = "select id, name from t order by id";
         String result = PagerUtils.count(sql, JdbcConstants.ORACLE);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
         result = PagerUtils.count(sql, JdbcConstants.OCEANBASE_ORACLE);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 

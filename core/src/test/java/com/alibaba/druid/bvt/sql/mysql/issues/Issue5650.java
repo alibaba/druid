@@ -4,7 +4,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -16,7 +15,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://github.com/alibaba/druid/issues/5650">Issue来源</a>
  */
 public class Issue5650 {
-
     @Test
     public void test_alter_index() throws Exception {
         for (DbType dbType : new DbType[]{DbType.mysql}) {

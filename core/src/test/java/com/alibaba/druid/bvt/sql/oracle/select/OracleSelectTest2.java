@@ -21,24 +21,23 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest2 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "WITH " + //
-                "   dept_costs AS (" + //
-                "      SELECT d.department_name, SUM(d.salary) dept_total" + //
-                "         FROM employees e, departments d" + //
-                "         WHERE e.department_id = d.department_id" + //
-                "      GROUP BY d.department_name)," + //
-                "   avg_cost AS (" + //
-                "      SELECT SUM(dept_total)/COUNT(*) avg" + //
-                "      FROM dept_costs)" + //
-                "SELECT * FROM dept_costs" + //
-                "   WHERE dept_total >" + //
-                "      (SELECT avg FROM avg_cost)" + //
+        String sql = "WITH " +
+                "   dept_costs AS (" +
+                "      SELECT d.department_name, SUM(d.salary) dept_total" +
+                "         FROM employees e, departments d" +
+                "         WHERE e.department_id = d.department_id" +
+                "      GROUP BY d.department_name)," +
+                "   avg_cost AS (" +
+                "      SELECT SUM(dept_total)/COUNT(*) avg" +
+                "      FROM dept_costs)" +
+                "SELECT * FROM dept_costs" +
+                "   WHERE dept_total >" +
+                "      (SELECT avg FROM avg_cost)" +
                 "      ORDER BY department_name;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -70,5 +69,4 @@ public class OracleSelectTest2 extends OracleTest {
 
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "producer_id")));
     }
-
 }

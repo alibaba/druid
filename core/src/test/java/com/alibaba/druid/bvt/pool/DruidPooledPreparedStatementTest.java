@@ -1,16 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 
 public class DruidPooledPreparedStatementTest extends TestCase {
     private DruidDataSource dataSource;

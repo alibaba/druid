@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class OdpsSelectTest17 extends TestCase {
                 "    ORDER BY cnt DESC LIMIT 5\n" +
                 ") top )\n" +
                 "ORDER BY cnt DESC\n" +
-                "LIMIT 800";//
+                "LIMIT 800";
         assertEquals("SELECT prov, name, cnt\n" +
                 "FROM mock_app.adl_mock_v_fct\n" +
                 "WHERE ds = 20160920\n" +
@@ -95,5 +94,4 @@ public class OdpsSelectTest17 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

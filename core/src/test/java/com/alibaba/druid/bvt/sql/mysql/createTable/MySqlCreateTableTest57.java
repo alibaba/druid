@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest57 extends MysqlTest {
@@ -54,7 +53,6 @@ public class MySqlCreateTableTest57 extends MysqlTest {
                 + "\n\t`configvalue` varchar(200) BINARY ," + "\n\t`inputdate` datetime NOT NULL,"
                 + "\n\t`validstatus` char(1) NOT NULL," + "\n\t`remark` varchar(3000)," + "\n\t`flag` varchar(10),"
                 + "\n\tPRIMARY KEY (`Sequence`)" + "\n) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARSET = utf8", output);
-
     }
 
     @Test
@@ -87,6 +85,5 @@ public class MySqlCreateTableTest57 extends MysqlTest {
                 + "\n\t`configvalue` varchar(200) BINARY ," + "\n\t`inputdate` datetime NOT NULL,"
                 + "\n\t`validstatus` char(1) NOT NULL," + "\n\t`remark` varchar(3000)," + "\n\t`flag` varchar(10),"
                 + "\n\tPRIMARY KEY (`Sequence`)" + "\n) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARSET = utf8", output);
-
     }
 }

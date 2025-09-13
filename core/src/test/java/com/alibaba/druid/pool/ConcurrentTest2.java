@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.pool;
 
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
-
-import junit.framework.TestCase;
 
 public class ConcurrentTest2 extends TestCase {
     private String jdbcUrl;

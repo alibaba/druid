@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.db2;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.DB2Test;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,6 +22,8 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class DB2SelectTest_6 extends DB2Test {
     public void test_0() throws Exception {
@@ -56,10 +54,10 @@ public class DB2SelectTest_6 extends DB2Test {
         // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
         // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        assertEquals("SELECT ALL id" //
+        assertEquals("SELECT ALL id"
                         + "\nFROM DSN81010.EMP;", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
-        assertEquals("select all id" //
+        assertEquals("select all id"
                         + "\nfrom DSN81010.EMP;", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

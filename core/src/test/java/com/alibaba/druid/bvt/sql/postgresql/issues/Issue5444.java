@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
-import java.util.Map;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -9,10 +7,10 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
+import java.util.Map;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -22,7 +20,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://github.com/alibaba/druid/issues/5444">增强 #5444</a>
  */
 public class Issue5444 {
-
     @Test
     public void test_alterdatabase() throws Exception {
         for (DbType dbType : new DbType[]{DbType.postgresql}) {

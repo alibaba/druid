@@ -20,15 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateIndexTest4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                " CREATE UNIQUE INDEX \"SONAR\".\"UNIQ_AUTHOR_LOGINS\" ON \"SONAR\".\"AUTHORS\" (\"LOGIN\") " //
-                        + "  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
+                " CREATE UNIQUE INDEX \"SONAR\".\"UNIQ_AUTHOR_LOGINS\" ON \"SONAR\".\"AUTHORS\" (\"LOGIN\") "
+                        + "  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS "
                         + "  TABLESPACE \"USERS\" ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

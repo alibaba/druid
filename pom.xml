@@ -164,7 +164,7 @@
 						<configuration>
 							<skip>false</skip>
 							<failOnViolation>true</failOnViolation>
-							<includeTestSourceDirectory>false</includeTestSourceDirectory>
+							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<configLocation>src/checkstyle/druid-checks.xml</configLocation>
 							<excludes>
 							</excludes>

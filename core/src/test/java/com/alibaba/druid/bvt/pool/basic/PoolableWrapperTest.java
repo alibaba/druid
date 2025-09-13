@@ -15,13 +15,9 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.PoolableWrapper;
+import junit.framework.TestCase;
 
 public class PoolableWrapperTest extends TestCase {
     public void test_isWrapper() throws Exception {

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class OracleCreatePackageTest2 extends OracleTest {
     public void test_types() throws Exception {
@@ -56,7 +55,7 @@ public class OracleCreatePackageTest2 extends OracleTest {
                         "\t\tprofitDate IN VARCHAR2\n" +
                         "\t)\n" +
                         "\t;\n" +
-                        "END PKG_ECC_CAL_TASK_ACCOMPLISH;",//
+                        "END PKG_ECC_CAL_TASK_ACCOMPLISH;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

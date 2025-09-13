@@ -1,13 +1,10 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import java.math.BigDecimal;
-
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
+import java.math.BigDecimal;
 
 public class EvalMethodAbsTest extends TestCase {
     public void test_abs_int() throws Exception {

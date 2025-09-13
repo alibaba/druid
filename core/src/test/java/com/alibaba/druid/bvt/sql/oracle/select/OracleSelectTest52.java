@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest52 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "select 1 interval from dual"; //
+                "select 1 interval from dual";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,14 +51,14 @@ public class OracleSelectTest52 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT 1 AS INTERVAL" //
+            assertEquals("SELECT 1 AS INTERVAL"
                     + "\nFROM dual", text);
         }
 
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            assertEquals("select 1 as INTERVAL" //
+            assertEquals("select 1 as INTERVAL"
                     + "\nfrom dual", text);
         }
 

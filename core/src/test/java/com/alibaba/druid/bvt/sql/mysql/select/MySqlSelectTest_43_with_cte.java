@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -31,7 +30,6 @@ public class MySqlSelectTest_43_with_cte extends MysqlTest {
                 "  cte2 AS (SELECT c, d FROM table2)\n" +
                 "SELECT b, d FROM cte1 JOIN cte2\n" +
                 "WHERE cte1.a = cte2.c;";
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);

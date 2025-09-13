@@ -15,21 +15,15 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
+import com.alibaba.druid.support.http.WebStatFilter;
+import com.alibaba.druid.support.http.stat.WebAppStat;
 import junit.framework.TestCase;
-
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
-
-import com.alibaba.druid.support.http.WebStatFilter;
-import com.alibaba.druid.support.http.stat.WebAppStat;
 
 public class WebStatFilterTest2 extends TestCase {
     public void test_lru() throws Exception {
@@ -64,8 +58,7 @@ public class WebStatFilterTest2 extends TestCase {
                     ((MockHttpServletRequest) request).setSession(session_0);
                 }
 
-                ;
-            };
+                };
 
             filter.doFilter(request, response, chain);
 
@@ -82,15 +75,13 @@ public class WebStatFilterTest2 extends TestCase {
                     ((MockHttpServletRequest) request).setSession(session_0);
                 }
 
-                ;
-            };
+                };
 
             filter.doFilter(request, response, chain);
 
             assertEquals(1, appStat.getSessionStatDataList().size());
             assertEquals(2, appStat.getSessionStat(session_0.getId()).getRequestCount());
         }
-
 
         // 第2个sesion请求1次
         {
@@ -101,8 +92,7 @@ public class WebStatFilterTest2 extends TestCase {
                     ((MockHttpServletRequest) request).setSession(session_1);
                 }
 
-                ;
-            };
+                };
 
             filter.doFilter(request, response, chain);
 
@@ -120,8 +110,7 @@ public class WebStatFilterTest2 extends TestCase {
                     ((MockHttpServletRequest) request).setSession(session_2);
                 }
 
-                ;
-            };
+                };
 
             filter.doFilter(request, response, chain);
 
@@ -140,8 +129,7 @@ public class WebStatFilterTest2 extends TestCase {
                     ((MockHttpServletRequest) request).setSession(session_3);
                 }
 
-                ;
-            };
+                };
 
             filter.doFilter(request, response, chain);
 
@@ -161,8 +149,7 @@ public class WebStatFilterTest2 extends TestCase {
                     ((MockHttpServletRequest) request).setSession(session_4);
                 }
 
-                ;
-            };
+                };
 
             filter.doFilter(request, response, chain);
 

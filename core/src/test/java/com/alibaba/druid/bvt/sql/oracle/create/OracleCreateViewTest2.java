@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -94,7 +93,7 @@ public class OracleCreateViewTest2 extends OracleTest {
                         "\t, keep_until\n" +
                         "\t, decode(keep_options, 256, 'LOGS', 512, 'NOLOGS', 1024, 'CONSISTENT', NULL) AS keep_options\n" +
                         "FROM db, bs\n" +
-                        "WHERE db.db_key = bs.db_key",//
+                        "WHERE db.db_key = bs.db_key",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -31,7 +30,6 @@ public class MySqlSelectTest_205_drds_group_concat extends MysqlTest {
                 "                      ORDER BY test_score DESC SEPARATOR ' ')\n" +
                 "       FROM student\n" +
                 "       GROUP BY student_name;";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -55,5 +53,4 @@ public class MySqlSelectTest_205_drds_group_concat extends MysqlTest {
                     output);
         }
     }
-
 }

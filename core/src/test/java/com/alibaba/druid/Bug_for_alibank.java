@@ -15,10 +15,8 @@
  */
 package com.alibaba.druid;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.support.json.JSONUtils;
-
+import junit.framework.TestCase;
 
 public class Bug_for_alibank extends TestCase {
     public void test_bug() throws Exception {

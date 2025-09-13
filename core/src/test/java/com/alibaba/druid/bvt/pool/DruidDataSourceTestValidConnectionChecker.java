@@ -1,14 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 给对象 {@link DruidDataSource} 已经设置了自定义的 validConnectionChecker的情况下,

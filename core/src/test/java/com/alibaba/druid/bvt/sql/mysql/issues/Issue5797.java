@@ -1,23 +1,20 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author lizongbo
  * @see <a href="https://github.com/alibaba/druid/issues/5797">Issue来源</a>
  */
 public class Issue5797 {
-
     @Test
     public void test_parse_create_table() {
         for (DbType dbType : new DbType[]{
@@ -34,7 +31,6 @@ public class Issue5797 {
 //            DbType.dm, DbType.kingbase,
 
         }) {
-
             for (String sql : new String[]{
                 "-- 给课程表增加类型字段\n"
                     + "alter table info_course drop column if exists course_type_id",

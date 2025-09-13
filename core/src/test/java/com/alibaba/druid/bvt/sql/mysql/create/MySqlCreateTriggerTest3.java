@@ -46,5 +46,4 @@ public class MySqlCreateTriggerTest3 extends MysqlTest {
                 "\tVALUES (old.col1, old.col1 + 5, old.col1 + 7);\n" +
                 "END;", stmt.toString());
     }
-
 }

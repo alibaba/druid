@@ -15,19 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.pool.DruidDataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockStatement;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestClose_1 extends PoolTestCase {
     public void test_close() throws Exception {

@@ -39,5 +39,4 @@ public class MySqlAlterTableGroupTest_0 extends TestCase {
 
         assertEquals("ALTER TABLEGROUP new_ddl.ddl_test_1 k1 = 123", SQLUtils.toMySqlString(stmt));
     }
-
 }

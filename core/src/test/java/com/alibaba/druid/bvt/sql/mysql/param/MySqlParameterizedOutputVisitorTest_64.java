@@ -1,9 +1,9 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson2.JSON;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -29,5 +29,4 @@ public class MySqlParameterizedOutputVisitorTest_64 extends TestCase {
                 "FROM abc\n" +
                 "WHERE id = 'abc'", rsql);
     }
-
 }

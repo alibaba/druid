@@ -4,7 +4,11 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
+import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlAlterTableAlterCheck;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -13,23 +17,21 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.fastjson2.JSON;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class MysqlCheckTest extends MysqlTest {
     public void testEndTokenChecking() throws Exception {
         Object[][] samples = {
-                    { "update test_tab1 set b= 1 swhere a=1", false, true },
-                    { "select * from test_tab1 swhere  a=1", false, true },
-                    { "delete from test_tab1 \n swhere  a=1", false, true },
-                    { "delete from test_tab1 where a=1", true, true },
-                    { "delete from test_tab1 \n where a=1     \n", true, true },
-                    { "IF age>20 THEN SET @count1=@count1+1/* a */;\n"
+                    {"update test_tab1 set b= 1 swhere a=1", false, true},
+                    {"select * from test_tab1 swhere  a=1", false, true},
+                    {"delete from test_tab1 \n swhere  a=1", false, true},
+                    {"delete from test_tab1 where a=1", true, true},
+                    {"delete from test_tab1 \n where a=1     \n", true, true},
+                    {"IF age>20 THEN SET @count1=@count1+1/* a */;\n"
                             + "    ELSEIF age=20 THEN SET @count2=@count2+1;/* b */\n"
                             + "    ELSE SET @count3=@count3+1;\n"
-                            + "/* c */ END IF/*d*/;", true, false }
+                            + "/* c */ END IF/*d*/;", true, false}
                 };
 
         for (final Object[] arr : samples) {
@@ -64,7 +66,7 @@ public class MysqlCheckTest extends MysqlTest {
             }
         }
     }
-    
+
     public void test_create1() {
         String sql = "CREATE TABLE `t12` (\n" +
                 "  `c1` int DEFAULT NULL,\n" +

@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class HiveCreateTableTest_26_struct extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "CREATE TABLE IF NOT EXISTS test_910_table (col19 STRUCT < col20:STRING COMMENT 'column19' >)"; //
+                "CREATE TABLE IF NOT EXISTS test_910_table (col19 STRUCT < col20:STRING COMMENT 'column19' >)";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -60,7 +59,5 @@ public class HiveCreateTableTest_26_struct extends OracleTest {
 
         assertTrue(visitor.containsTable("test_910_table"));
         assertTrue(visitor.containsColumn("test_910_table", "col19"));
-
     }
-
 }

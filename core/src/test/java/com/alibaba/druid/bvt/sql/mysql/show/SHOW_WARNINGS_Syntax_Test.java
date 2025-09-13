@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -69,5 +68,4 @@ public class SHOW_WARNINGS_Syntax_Test extends TestCase {
 
         assertEquals("SHOW WARNINGS LIMIT 10, 10;", text);
     }
-
 }

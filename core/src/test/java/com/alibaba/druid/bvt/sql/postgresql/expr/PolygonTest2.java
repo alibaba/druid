@@ -1,12 +1,8 @@
 package com.alibaba.druid.bvt.sql.postgresql.expr;
 
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
-
 
 public class PolygonTest2 extends PGTest {
     public void test_timestamp() throws Exception {
@@ -14,6 +10,5 @@ public class PolygonTest2 extends PGTest {
         PGExprParser parser = new PGExprParser(sql);
         PGPolygonExpr expr = (PGPolygonExpr) parser.expr();
         assertEquals("polygon '((0,0),(1,1))'", expr.toString());
-
     }
 }

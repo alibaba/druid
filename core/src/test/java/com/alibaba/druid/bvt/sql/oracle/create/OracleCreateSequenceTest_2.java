@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class OracleCreateSequenceTest_2 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE SEQUENCE \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\" START WITH 1 INCREMENT BY 1 NOMAXVALUE MINVALUE 1",//
+        assertEquals("CREATE SEQUENCE \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\" START WITH 1 INCREMENT BY 1 NOMAXVALUE MINVALUE 1",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

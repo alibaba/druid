@@ -123,5 +123,4 @@ public class MySqlCreateTableTest152_table_options extends TestCase {
                 "\ta int\n" +
                 ") auto_increment = 2 avg_row_length = 2 character set = utf8 checksum = 1 collate = utf8_unicode_ci compression = 'NONE' connection = 'conn' data directory = 'path' delay_key_write = 0 encryption = 'Y' engine = innodb insert_method = first key_block_size = 64 max_rows = 999 min_rows = 1 pack_keys = 0 password = 'psw' row_format = fixed stats_auto_recalc = 1 stats_persistent = 0 stats_sample_pages = 2 tablespace `tbs_name` union = (tb1, tb2, tb3) comment 'hehe';", stmt.toLowerCaseString());
     }
-
 }

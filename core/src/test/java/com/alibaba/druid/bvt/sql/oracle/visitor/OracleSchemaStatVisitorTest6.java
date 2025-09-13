@@ -15,15 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat.Column;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OracleSchemaStatVisitorTest6 extends TestCase {
     public void test_0() throws Exception {
@@ -32,7 +29,7 @@ public class OracleSchemaStatVisitorTest6 extends TestCase {
                 + "     SELECT OID,SSJG,OID "
                 + "     FROM ("
                 + "         SELECT A.OID,A.SSJG,A.OID "
-                + "         FROM T_TX_ZLSB_ZLDYHGQ A " //
+                + "         FROM T_TX_ZLSB_ZLDYHGQ A "
                 + "         WHERE (A.VERSIONID IS NULL OR A.VERSIONID='$SYS_B_2')"
                 + "     ) T1 JOIN ("
                 + "         SELECT B.OID,B.SSJG,B.OID "
@@ -62,7 +59,5 @@ public class OracleSchemaStatVisitorTest6 extends TestCase {
 //        assertEquals(2, visitor.getColumns().size());
 //        assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
 //        assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-
     }
-
 }

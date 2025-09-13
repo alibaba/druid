@@ -20,13 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest17 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "select /* EXEC_FROM_DBMS_XPLAN */ 1, prev_sql_id, prev_child_number from v$session where sid=userenv('sid') and username is not null and prev_hash_value <> 0 "; //
+        String sql = "select /* EXEC_FROM_DBMS_XPLAN */ 1, prev_sql_id, prev_child_number from v$session where sid=userenv('sid') and username is not null and prev_hash_value <> 0 ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

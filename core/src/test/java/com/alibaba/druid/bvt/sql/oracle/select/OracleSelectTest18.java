@@ -20,26 +20,25 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest18 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "begin " + //
-                        "   select min(snap_id), max(snap_id), " + //
-                        "       to_char(max(begin_interval_time + 16/24), 'yyyy-mm-dd hh24:mi:ss')," + //
-                        "       to_char(max(end_interval_time + 16/24), 'yyyy-mm-dd hh24:mi:ss') " + //
-                        "   into :bid, :eid, :bst, :est " + //
-                        "   from (select snap_id, begin_interval_time, end_interval_time" + //
-                        "           from v$instance a,dba_hist_snapshot b" + //
-                        "           where a.INSTANCE_NUMBER=b.INSTANCE_NUMBER and begin_interval_time >= sysdate - 150/1440" + //
-                        "           order by snap_id desc" + //
-                        "           )" + //
-                        "   where rownum < 3; " + //
-                        "   select 'awr_'||:bid||'_'||:eid||'.html' into :awr from dual; " + //
-                        "end;"; //
+                "begin " +
+                        "   select min(snap_id), max(snap_id), " +
+                        "       to_char(max(begin_interval_time + 16/24), 'yyyy-mm-dd hh24:mi:ss')," +
+                        "       to_char(max(end_interval_time + 16/24), 'yyyy-mm-dd hh24:mi:ss') " +
+                        "   into :bid, :eid, :bst, :est " +
+                        "   from (select snap_id, begin_interval_time, end_interval_time" +
+                        "           from v$instance a,dba_hist_snapshot b" +
+                        "           where a.INSTANCE_NUMBER=b.INSTANCE_NUMBER and begin_interval_time >= sysdate - 150/1440" +
+                        "           order by snap_id desc" +
+                        "           )" +
+                        "   where rownum < 3; " +
+                        "   select 'awr_'||:bid||'_'||:eid||'.html' into :awr from dual; " +
+                        "end;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 import java.util.List;
 
-
 public class MySqlSelectTest_212_alias extends MysqlTest {
     public void test_2() throws Exception {
         String sql = "SELECT count(1) from information_schema.tables;";
@@ -40,7 +39,6 @@ public class MySqlSelectTest_212_alias extends MysqlTest {
                 "FROM information_schema.tables;", stmt.toString());
     }
 
-
     public void test_3() throws Exception {
         String sql = "select count(Distinct id) from t";
 
@@ -53,6 +51,4 @@ public class MySqlSelectTest_212_alias extends MysqlTest {
         assertEquals("SELECT count(DISTINCT id) AS `count(Distinct id)`\n" +
                 "FROM t", text);
     }
-
-
 }

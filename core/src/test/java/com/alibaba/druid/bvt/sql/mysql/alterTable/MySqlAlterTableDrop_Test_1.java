@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class MySqlAlterTableDrop_Test_1 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -37,5 +36,4 @@ public class MySqlAlterTableDrop_Test_1 extends TestCase {
                 "\tdrop column Column9,\n" +
                 "\tdrop column Column10;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

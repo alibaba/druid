@@ -12,7 +12,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 /**
  * Created by wenshao on 16/8/23.

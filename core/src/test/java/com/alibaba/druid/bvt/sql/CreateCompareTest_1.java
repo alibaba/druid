@@ -90,7 +90,6 @@ public class CreateCompareTest_1 extends TestCase {
 
         List stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
 
-
         SQLCreateTableStatement.sort(stmtList);
 
         assertEquals("XT_DJ_XT", ((SQLCreateTableStatement) stmtList.get(0)).getName().getSimpleName());

@@ -11,7 +11,9 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class PrestoSelect_0 {
     protected final DbType dbType = DbType.presto;
@@ -186,5 +188,4 @@ public class PrestoSelect_0 {
                 "\tFROM region\n" +
                 ");", stmt.toString());
     }
-
 }

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest11 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -45,5 +44,4 @@ public class MySqlAlterTableTest11 extends TestCase {
         assertEquals(1, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
     }
-
 }

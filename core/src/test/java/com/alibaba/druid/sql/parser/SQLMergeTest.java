@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -26,6 +22,9 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class SQLMergeTest extends TestCase {
     protected String sql;
@@ -39,7 +38,6 @@ public class SQLMergeTest extends TestCase {
     public void test_merge_1() throws Exception {
         String result = merge();
         System.out.println(result);
-
     }
 
     public void test_merge_2() throws Exception {

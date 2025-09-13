@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class HiveCreateTableTest_13_skew extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE list_bucket_single (key STRING, value STRING)\n" +
-                        "  SKEWED BY (key) ON (1,5,6) STORED AS DIRECTORIES;"; //
+                        "  SKEWED BY (key) ON (1,5,6) STORED AS DIRECTORIES;";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -63,6 +62,5 @@ public class HiveCreateTableTest_13_skew extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("list_bucket_single"));
-
     }
 }

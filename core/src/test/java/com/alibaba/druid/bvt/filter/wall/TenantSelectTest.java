@@ -15,22 +15,18 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class TenantSelectTest extends TestCase {
     private String sql = "SELECT ID, NAME FROM orders WHERE FID = ?";
-    private String expect_sql = "SELECT ID, NAME, tenant" + //
-            "\nFROM orders" + //
+    private String expect_sql = "SELECT ID, NAME, tenant" +
+            "\nFROM orders" +
             "\nWHERE FID = ?";
 
     private WallConfig config = new WallConfig();

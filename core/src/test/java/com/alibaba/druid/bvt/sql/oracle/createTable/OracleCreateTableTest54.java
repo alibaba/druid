@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -71,7 +70,7 @@ public class OracleCreateTableTest54 extends OracleTest {
                         "\t\t)\n" +
                         "\t\tLOCATION ('retl-table.cfg')\n" +
                         "\t)\n" +
-                        "\tREJECT LIMIT UNLIMITED",//
+                        "\tREJECT LIMIT UNLIMITED",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

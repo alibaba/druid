@@ -15,14 +15,10 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcConnectionStat;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
 
 public class StatisticTest extends TestCase {
     public void test_stat() throws Exception {

@@ -15,18 +15,13 @@
  */
 package com.alibaba.druid.bvt.mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.alibaba.druid.PoolTestCase;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
-
-import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
 
 public class MockExecuteTest extends PoolTestCase {
     public void test_0() throws Exception {

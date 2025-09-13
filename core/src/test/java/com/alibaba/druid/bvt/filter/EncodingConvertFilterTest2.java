@@ -15,23 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.Reader;
-import java.io.StringReader;
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.Collections;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.encoding.EncodingConvertFilter;
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.mock.MockDriver;
@@ -42,9 +25,20 @@ import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
+import junit.framework.TestCase;
+
+import java.io.Reader;
+import java.io.StringReader;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.Collections;
 
 public class EncodingConvertFilterTest2 extends TestCase {
     private DruidDataSource dataSource;
@@ -143,7 +137,6 @@ public class EncodingConvertFilterTest2 extends TestCase {
         raw.getOutParameters().add(param1);
         raw.getOutParameters().add(param1);
 
-
         assertEquals(C_TEXT, stmt.getString(4));
         assertEquals(C_TEXT, stmt.getString("4"));
         assertEquals(C_TEXT, stmt.getObject(4));
@@ -239,7 +232,6 @@ public class EncodingConvertFilterTest2 extends TestCase {
         stmt.close();
 
         conn.close();
-
     }
 
     public static class MyResultSet extends MockResultSet {

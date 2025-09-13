@@ -22,14 +22,13 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest25 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE locations_demo" //
+                "CREATE TABLE locations_demo"
                         + "    ( location_id    NUMBER(4) "//
                         + "    , street_address VARCHAR2(40)"//
                         + "    , postal_code    VARCHAR2(12)"//
@@ -45,15 +44,15 @@ public class OracleCreateTableTest25 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE locations_demo (" //
-                        + "\n\tlocation_id NUMBER(4)," //
-                        + "\n\tstreet_address VARCHAR2(40)," //
-                        + "\n\tpostal_code VARCHAR2(12)," //
-                        + "\n\tcity VARCHAR2(30)," //
-                        + "\n\tstate_province VARCHAR2(25)," //
+        assertEquals("CREATE TABLE locations_demo ("
+                        + "\n\tlocation_id NUMBER(4),"
+                        + "\n\tstreet_address VARCHAR2(40),"
+                        + "\n\tpostal_code VARCHAR2(12),"
+                        + "\n\tcity VARCHAR2(30),"
+                        + "\n\tstate_province VARCHAR2(25),"
                         + "\n\tcountry_id CHAR(2),"
-                        + "\n\tCONSTRAINT loc_id_pk PRIMARY KEY (location_id)" //
-                        + "\n);",//
+                        + "\n\tCONSTRAINT loc_id_pk PRIMARY KEY (location_id)"
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

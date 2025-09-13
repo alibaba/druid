@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest53 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT MIN(t.deptno) KEEP(DENSE_RANK FIRST ORDER BY t.sal) a FROM emp t"; //
+                "SELECT MIN(t.deptno) KEEP(DENSE_RANK FIRST ORDER BY t.sal) a FROM emp t";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,14 +51,14 @@ public class OracleSelectTest53 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT MIN(t.deptno) KEEP (DENSE_RANK FIRST ORDER BY t.sal) AS a" //
+            assertEquals("SELECT MIN(t.deptno) KEEP (DENSE_RANK FIRST ORDER BY t.sal) AS a"
                     + "\nFROM emp t", text);
         }
 
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            assertEquals("select min(t.deptno) keep (dense_rank first order by t.sal) as a" //
+            assertEquals("select min(t.deptno) keep (dense_rank first order by t.sal) as a"
                     + "\nfrom emp t", text);
         }
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

@@ -343,6 +343,5 @@ public class OracleCreateTableTest92 extends OracleTest {
                 "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
                 "\t\t)\n" +
                 ")", stmt.toString());
-
     }
 }

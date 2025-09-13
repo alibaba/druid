@@ -15,11 +15,6 @@
  */
 package com.alibaba.druid.sql.oracle.demo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -32,6 +27,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Demo1 extends TestCase {
     public void test_0() throws Exception {
@@ -41,7 +40,7 @@ public class Demo1 extends TestCase {
         parameters.add("wenshao");
 
         SQLStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> stmtList = parser.parseStatementList(); //
+        List<SQLStatement> stmtList = parser.parseStatementList();
 
         SQLStatement first = (SQLStatement) stmtList.get(0);
 
@@ -68,7 +67,7 @@ public class Demo1 extends TestCase {
     }
 
     private static class GetVariantVisitor extends OracleASTVisitorAdapter {
-        private int varIndex = 0;
+        private int varIndex;
         private List<SQLVariantRefExpr> variantList = new ArrayList<SQLVariantRefExpr>();
 
         public boolean visit(SQLVariantRefExpr x) {
@@ -155,5 +154,4 @@ public class Demo1 extends TestCase {
             return true;
         }
     }
-
 }

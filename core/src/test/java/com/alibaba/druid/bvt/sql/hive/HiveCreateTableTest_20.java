@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class HiveCreateTableTest_20 extends OracleTest {
                         "\tmyfield string, ts string\n" +
                         ") ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'\n" +
                         "WITH SERDEPROPERTIES ( \"mapping.ts\" = \"timestamp\" )\n" +
-                        "STORED AS TEXTFILE;"; //
+                        "STORED AS TEXTFILE;";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -70,6 +69,5 @@ public class HiveCreateTableTest_20 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("mytable"));
-
     }
 }

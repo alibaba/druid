@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class OracleAlterTableTest25_drop_pk extends TestCase {
     public void test_alter_constraint() throws Exception {
@@ -46,5 +45,4 @@ public class OracleAlterTableTest25_drop_pk extends TestCase {
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
     }
-
 }

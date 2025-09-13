@@ -1,16 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.SQLFeatureNotSupportedException;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 
 public class DruidDataSourceC3P0AdapterTest extends TestCase {
     private DruidDataSourceC3P0Adapter dataSource;

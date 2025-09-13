@@ -40,10 +40,7 @@ public class MySqlSelectTest_153 extends MysqlTest {
                         "\tWHERE ?\n" +
                         "\t\tAND ?\n" +
                         ") layer_0_table\n" +
-                        "WHERE !~? IS NULL;"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
-
+                        "WHERE !~? IS NULL;",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
 }

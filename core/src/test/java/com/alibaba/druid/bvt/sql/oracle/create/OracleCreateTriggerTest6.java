@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -107,7 +106,7 @@ public class OracleCreateTriggerTest6 extends OracleTest {
                         "\t\t\tWHERE XON_EPM.EPM_TB_CONTRACT_EX.NCONTRACTID = var_nContractID;\n" +
                         "\t\tEND IF;\n" +
                         "\tEND IF;\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals("CREATE OR REPLACE TRIGGER XON_EPM.EPM_TG_FIRSTCHECK\n" +
@@ -145,7 +144,7 @@ public class OracleCreateTriggerTest6 extends OracleTest {
                         "\t\t\tWHERE XON_EPM.EPM_TB_CONTRACT_EX.NCONTRACTID = var_nContractID;\n" +
                         "\t\tEND IF;\n" +
                         "\tEND IF;\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.POSTGRESQL));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

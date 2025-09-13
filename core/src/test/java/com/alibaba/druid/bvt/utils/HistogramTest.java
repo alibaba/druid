@@ -1,10 +1,7 @@
 package com.alibaba.druid.bvt.utils;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.util.Histogram;
+import junit.framework.TestCase;
 
 public class HistogramTest extends TestCase {
     public void test_histo() throws Exception {

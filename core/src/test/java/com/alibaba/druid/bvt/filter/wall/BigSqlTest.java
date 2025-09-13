@@ -1,12 +1,8 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class BigSqlTest extends TestCase {
     public void test_true() throws Exception {

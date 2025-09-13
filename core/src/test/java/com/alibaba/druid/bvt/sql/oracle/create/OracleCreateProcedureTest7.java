@@ -16,7 +16,6 @@
 package com.alibaba.druid.bvt.sql.oracle.create;
 
 import com.alibaba.druid.sql.OracleTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
@@ -67,7 +66,6 @@ public class OracleCreateProcedureTest7 extends OracleTest {
                 + "\t\t\tSET STATUS = 9\n" + "\t\t\tWHERE SEQ_ID = V_SEQ_ID;\n" + "\t\tEND;\n" + "\tEND LOOP;\n"
                 + "\tCOMMIT;\n" + "END;", stmt.toString());
 
-
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
@@ -76,10 +74,8 @@ public class OracleCreateProcedureTest7 extends OracleTest {
 
         assertEquals(2, visitor.getTables().size());
 
-
         assertEquals(17, visitor.getColumns().size());
         assertEquals(6, visitor.getConditions().size());
         assertEquals(1, visitor.getRelationships().size());
-
     }
 }

@@ -3,7 +3,6 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -25,7 +24,5 @@ public class MySqlSelectTest_plus_ques extends MysqlTest {
         assertEquals(1, statementList.size());
 
         assertEquals("SELECT +?;", stmt.toString());
-
     }
-
 }

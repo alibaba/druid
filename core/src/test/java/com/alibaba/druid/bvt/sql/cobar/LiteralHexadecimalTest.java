@@ -18,11 +18,9 @@
  */
 package com.alibaba.druid.bvt.sql.cobar;
 
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
+import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:shuo.qius@alibaba-inc.com">QIU Shuo</a>

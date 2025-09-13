@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.postgresql.datatypes;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
@@ -15,5 +13,4 @@ public class BitStringTest extends PGTest {
         SQLBinaryExpr expr = (SQLBinaryExpr) parser.expr();
         assertEquals("B'101'", SQLUtils.toSQLString(expr, JdbcConstants.POSTGRESQL));
     }
-
 }

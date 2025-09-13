@@ -22,15 +22,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest9 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE VIEW v AS\n" + //
-                "SELECT ProductID,ProductName\n" + //
-                "FROM Products\n" + //
+        String sql = "CREATE VIEW v AS\n" +
+                "SELECT ProductID,ProductName\n" +
+                "FROM Products\n" +
                 "WHERE Discontinued=No";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

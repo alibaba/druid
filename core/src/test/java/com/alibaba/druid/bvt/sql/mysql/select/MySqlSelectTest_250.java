@@ -20,16 +20,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
-
 public class MySqlSelectTest_250 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select concat(@@version, ' ', @@version_comment)";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
         assertEquals("SELECT concat(@@version, ' ', @@version_comment)", stmt.toString());
     }
-
-
 }

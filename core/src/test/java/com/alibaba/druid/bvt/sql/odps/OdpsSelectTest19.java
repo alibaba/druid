@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class OdpsSelectTest19 extends TestCase {
         byte[] bytes = new byte[8];
         putLong(bytes, 0, 1095288847322L);
         // 1095288847322
-        String sql = "select wm_concat(distinct ',', name) from mytable";//
+        String sql = "select wm_concat(distinct ',', name) from mytable";
         assertEquals("SELECT wm_concat(DISTINCT ',', name)\n" +
                 "FROM mytable", SQLUtils.formatOdps(sql));
         assertEquals("select wm_concat(DISTINCT ',', name)\n" +

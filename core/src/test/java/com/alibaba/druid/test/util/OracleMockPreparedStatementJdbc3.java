@@ -2,7 +2,6 @@ package com.alibaba.druid.test.util;
 
 import java.sql.SQLException;
 
-
 public class OracleMockPreparedStatementJdbc3 extends OracleMockPreparedStatement {
     public OracleMockPreparedStatementJdbc3(OracleMockConnection conn, String sql) {
         super(conn, sql);

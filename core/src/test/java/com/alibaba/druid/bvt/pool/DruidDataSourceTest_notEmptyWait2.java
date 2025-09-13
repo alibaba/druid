@@ -1,18 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
     private DruidDataSource dataSource;
@@ -48,10 +43,10 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
                 public void run() {
                     startLatch.countDown();
                     try {
-                        System.out.println(Thread.currentThread() +" "+ LocalDateTime.now() + " begin " );
+                        System.out.println(Thread.currentThread() + " " + LocalDateTime.now() + " begin ");
                         Connection conn = dataSource.getConnection();
                         Thread.sleep(2);
-                        System.out.println(Thread.currentThread() +" "+ LocalDateTime.now() + " getConnection== " + conn);
+                        System.out.println(Thread.currentThread() + " " + LocalDateTime.now() + " getConnection== " + conn);
                         conn.close();
                     } catch (Exception e) {
                          e.printStackTrace();
@@ -85,14 +80,13 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
 
         errorThreadEndLatch.await(100, TimeUnit.MILLISECONDS);
 
-        assertEquals(0, maxWaitErrorCount.get());//因为最大超时没有设置，所以线程一直循环进不到maxWaitErrorCount加1的逻辑了
+        assertEquals(0, maxWaitErrorCount.get()); //因为最大超时没有设置，所以线程一直循环进不到maxWaitErrorCount加1的逻辑了
         assertTrue(dataSource.getNotEmptySignalCount() > 0);
 
         conn.close();
 
-        System.out.println(Thread.currentThread() +" "+ LocalDateTime.now() +"释放了连接");
+        System.out.println(Thread.currentThread() + " " + LocalDateTime.now() + "释放了连接");
         endLatch.await(100, TimeUnit.MILLISECONDS);
         assertEquals(0, errorCount.get());
-
     }
 }

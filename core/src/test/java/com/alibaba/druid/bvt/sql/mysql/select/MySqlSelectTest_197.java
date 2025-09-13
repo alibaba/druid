@@ -68,7 +68,6 @@ public class MySqlSelectTest_197 extends MysqlTest {
         assertEquals(1, statementList.size());
 
         assertEquals("SELECT '''1''''' AS a;", stmt.toString());
-
     }
 
     public void test_4() throws Exception {
@@ -83,6 +82,5 @@ public class MySqlSelectTest_197 extends MysqlTest {
         assertEquals(1, statementList.size());
 
         assertEquals("SELECT '''1''''' AS a;", stmt.toString());
-
     }
 }

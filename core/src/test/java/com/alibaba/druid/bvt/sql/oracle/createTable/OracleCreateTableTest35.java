@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -38,11 +37,11 @@ public class OracleCreateTableTest35 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE sto_scandata_bak_2013_05_08_023000" //
+        assertEquals("CREATE TABLE sto_scandata_bak_2013_05_08_023000"
                         + "\nAS"//
                         + "\n(SELECT *"//
                         + "\nFROM sto_scandata t"//
-                        + "\nWHERE t.delflag = 1)",//
+                        + "\nWHERE t.delflag = 1)",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

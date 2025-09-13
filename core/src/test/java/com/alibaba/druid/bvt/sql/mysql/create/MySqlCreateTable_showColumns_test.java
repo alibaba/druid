@@ -49,13 +49,11 @@ public class MySqlCreateTable_showColumns_test extends MysqlTest {
                 "  KEY `k_d` (`c_char`,`c_bigint`)\n" +
                 ") ENGINE=InnoDB AUTO_INCREMENT=1769503 DEFAULT CHARSET=utf8mb4 COMMENT='10000000'";
 
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
 
         assertEquals(1, statementList.size());
 
         MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
-
 
         StringBuilder buf = new StringBuilder();
         stmt.showColumns(buf);

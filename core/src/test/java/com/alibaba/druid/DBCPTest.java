@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid;
 
-import java.sql.Connection;
-import java.util.concurrent.CountDownLatch;
-
+import com.alibaba.druid.mock.MockDriver;
 import junit.framework.TestCase;
-
 import org.apache.commons.dbcp.BasicDataSource;
 
-import com.alibaba.druid.mock.MockDriver;
+import java.sql.Connection;
+import java.util.concurrent.CountDownLatch;
 
 public class DBCPTest extends TestCase {
     public void test_max() throws Exception {

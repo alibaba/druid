@@ -1,18 +1,12 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.lang.reflect.Field;
-import java.sql.PreparedStatement;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+
+import java.lang.reflect.Field;
+import java.sql.PreparedStatement;
 
 public class DruidConnectionHolderTest4 extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -24,7 +18,6 @@ public class DruidConnectionHolderTest4 extends PoolTestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setPoolPreparedStatements(true);
-
     }
 
     protected void tearDown() throws Exception {

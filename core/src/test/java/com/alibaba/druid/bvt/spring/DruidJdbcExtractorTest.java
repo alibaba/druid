@@ -15,20 +15,17 @@
  */
 package com.alibaba.druid.bvt.spring;
 
-import static org.junit.Assert.assertEquals;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.spring.DruidNativeJdbcExtractor;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 public class DruidJdbcExtractorTest extends TestCase {
     public void test_spring() throws Exception {

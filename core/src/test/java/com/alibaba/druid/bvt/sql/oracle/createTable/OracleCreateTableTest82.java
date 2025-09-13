@@ -53,7 +53,7 @@ public class OracleCreateTableTest82 extends OracleTest {
                         "\tWHAT VARCHAR(4000),\n" +
                         "\tDBID DECIMAL(38),\n" +
                         "\tCOLLECTION_TIME VARCHAR(19)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

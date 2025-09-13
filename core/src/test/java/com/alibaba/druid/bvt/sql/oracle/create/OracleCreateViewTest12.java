@@ -246,7 +246,7 @@ public class OracleCreateViewTest12 extends OracleTest {
                         "\t\tWHERE ITEM.OSG_ITEM_ID = SYS_ITEM.OSG_ITEM_ID\n" +
                         "\t\t\tAND ITEM.ENABLED_FLAG = 'Y')\n" +
                         "\t) I ON M.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID \n" +
-                        "WHERE item_quantity >= 0",//
+                        "WHERE item_quantity >= 0",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

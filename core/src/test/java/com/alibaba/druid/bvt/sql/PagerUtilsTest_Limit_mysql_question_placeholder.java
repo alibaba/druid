@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -53,5 +52,4 @@ public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
         options.setUppCase(false);
         assertEquals(expected, SQLUtils.toSQLString(select, JdbcConstants.MYSQL, options));
     }
-
 }

@@ -15,26 +15,24 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleUpdateTest3 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "update sys.col_usage$ " //
-                + "set equality_preds = equality_preds + decode(bitand(:flag,1),0,0,1)" //
-                + "    , equijoin_preds = equijoin_preds + decode(bitand(:flag,2),0,0,1)" //
-                + "    , nonequijoin_preds = nonequijoin_preds + decode(bitand(:flag,4),0,0,1)" //
-                + "    , range_preds = range_preds + decode(bitand(:flag,8),0,0,1)" //
-                + "    , like_preds = like_preds + decode(bitand(:flag,16),0,0,1)" //
-                + "    , null_preds = null_preds + decode(bitand(:flag,32),0,0,1), timestamp = :time " + //
-                "where obj# = :objn and intcol# = :coln"; //
+        String sql = "update sys.col_usage$ "
+                + "set equality_preds = equality_preds + decode(bitand(:flag,1),0,0,1)"
+                + "    , equijoin_preds = equijoin_preds + decode(bitand(:flag,2),0,0,1)"
+                + "    , nonequijoin_preds = nonequijoin_preds + decode(bitand(:flag,4),0,0,1)"
+                + "    , range_preds = range_preds + decode(bitand(:flag,8),0,0,1)"
+                + "    , like_preds = like_preds + decode(bitand(:flag,16),0,0,1)"
+                + "    , null_preds = null_preds + decode(bitand(:flag,32),0,0,1), timestamp = :time " +
+                "where obj# = :objn and intcol# = :coln";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -59,5 +57,4 @@ public class OracleUpdateTest3 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("sys.col_usage$", "obj#")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("sys.col_usage$", "intcol#")));
     }
-
 }

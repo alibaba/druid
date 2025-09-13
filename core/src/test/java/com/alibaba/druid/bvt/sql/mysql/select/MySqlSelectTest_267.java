@@ -19,8 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-
 
 public class MySqlSelectTest_267 extends MysqlTest {
     public void test_0() throws Exception {
@@ -38,6 +36,4 @@ public class MySqlSelectTest_267 extends MysqlTest {
                 "WHERE TABLE_SCHEMA = 'test_schema'\n" +
                 "\tAND TABLE_NAME = 'test_table'", stmt.toString());
     }
-
-
 }

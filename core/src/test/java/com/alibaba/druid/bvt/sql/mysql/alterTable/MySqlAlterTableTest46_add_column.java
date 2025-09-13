@@ -36,5 +36,4 @@ public class MySqlAlterTableTest46_add_column extends TestCase {
                 "\tALGORITHM = copy,\n" +
                 "\tLOCK = SHARED", stmt.toString());
     }
-
 }

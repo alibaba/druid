@@ -22,15 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest33 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE games" //
-                        + "  (scores NUMBER, CONSTRAINT unq_num UNIQUE (scores)" //
+                "CREATE TABLE games"
+                        + "  (scores NUMBER, CONSTRAINT unq_num UNIQUE (scores)"
                         + "   INITIALLY DEFERRED DEFERRABLE);";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -40,10 +39,10 @@ public class OracleCreateTableTest33 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE games (" //
-                        + "\n\tscores NUMBER," //
-                        + "\n\tCONSTRAINT unq_num UNIQUE (scores) INITIALLY DEFERRED DEFERRABLE" //
-                        + "\n);",//
+        assertEquals("CREATE TABLE games ("
+                        + "\n\tscores NUMBER,"
+                        + "\n\tCONSTRAINT unq_num UNIQUE (scores) INITIALLY DEFERRED DEFERRABLE"
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -2,13 +2,9 @@ package com.alibaba.druid.mysql;
 
 import com.alibaba.druid.DbTestCase;
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.MySqlUtils;
-import com.alibaba.druid.util.OracleUtils;
 
 import java.sql.Connection;
-import java.util.List;
 
 /**
  * Created by wenshao on 23/07/2017.
@@ -23,7 +19,6 @@ public class MySql_getCreateTableScriptTest extends DbTestCase {
 
         String createTableScript = JdbcUtils.getCreateTableScript(conn, DbType.mysql);
         System.out.println(createTableScript);
-
 
         conn.close();
     }

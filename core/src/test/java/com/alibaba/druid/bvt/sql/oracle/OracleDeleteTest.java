@@ -15,20 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleDeleteTest extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "delete from BILLING_LOG_MONITOR log where log.guid in (" + //
-                "'wb_xinmin.zhao_test121','wb_xinmin.zhao_test122'" + //
+        String sql = "delete from BILLING_LOG_MONITOR log where log.guid in (" +
+                "'wb_xinmin.zhao_test121','wb_xinmin.zhao_test122'" +
                 ",'wb_xinmin.zhao_test123','wb_xinmin.zhao_test124'" + ")";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -57,5 +55,4 @@ public class OracleDeleteTest extends OracleTest {
         // assertTrue(visitor.containsColumn("employees", "salary"));
         // assertTrue(visitor.containsColumn("employees", "commission_pct"));
     }
-
 }

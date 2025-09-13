@@ -1,7 +1,8 @@
 package com.alibaba.druid.bvt.pool.profile;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.DataSourceNotAvailableException;
+import com.alibaba.druid.pool.DruidDataSource;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -9,11 +10,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
-import com.alibaba.druid.PoolTestCase;
-import com.alibaba.druid.pool.DataSourceDisableException;
-import com.alibaba.druid.pool.DataSourceNotAvailableException;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class FailFastTest extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -93,5 +89,4 @@ public class FailFastTest extends PoolTestCase {
             Thread.sleep(100 * 1);
         }
     }
-
 }

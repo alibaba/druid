@@ -49,7 +49,5 @@ public class HiveCreateTableTest_39_dla extends OracleTest {
                 "\t'skip.header.line.count' = '0',\n" +
                 "\t'recursive.directories' = 'false'\n" +
                 ");", SQLUtils.toSQLString(statementList, JdbcConstants.HIVE));
-
     }
-
 }

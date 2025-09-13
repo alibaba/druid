@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidPooledStatement;
+import junit.framework.TestCase;
+
+import java.sql.SQLException;
 
 public class PoolableStatementTest3 extends TestCase {
     public void test_clearResultSetError() throws Exception {
@@ -37,6 +36,5 @@ public class PoolableStatementTest3 extends TestCase {
             }
         };
         stmt.close();
-
     }
 }

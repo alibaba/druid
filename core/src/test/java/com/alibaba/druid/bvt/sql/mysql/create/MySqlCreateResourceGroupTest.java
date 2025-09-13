@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -174,5 +173,4 @@ public class MySqlCreateResourceGroupTest
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("LIST RESOURCE GROUP", output);
     }
-
 }

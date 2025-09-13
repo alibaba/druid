@@ -15,18 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
+import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class SELECT_Syntax_Test extends TestCase {
     public void test_0() throws Exception {
@@ -133,10 +129,10 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        assertEquals("SELECT column1" //
-                + "\nFROM t1" //
-                + "\nWHERE EXISTS (" //
-                + "\n\tSELECT *" //
+        assertEquals("SELECT column1"
+                + "\nFROM t1"
+                + "\nWHERE EXISTS ("
+                + "\n\tSELECT *"
                 + "\n\tFROM t2"
                 + "\n);", text);
     }
@@ -149,9 +145,9 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        assertEquals("SELECT DISTINCT store_type" //
-                        + "\nFROM stores" //
-                        + "\nWHERE NOT EXISTS (" //
+        assertEquals("SELECT DISTINCT store_type"
+                        + "\nFROM stores"
+                        + "\nWHERE NOT EXISTS ("
                         + "\n\tSELECT *"
                         + "\n\tFROM cities_stores"
                         + "\n\tWHERE cities_stores.store_type = stores.store_type"
@@ -320,7 +316,7 @@ public class SELECT_Syntax_Test extends TestCase {
                 "SELECT a AS until\nFROM t",
                 "SELECT a AS open\nFROM t"
         };
-       
+
         for (int i = 0; i < sqls.length; i++) {
             MySqlStatementParser parser = new MySqlStatementParser(sqls[i]);
             List<SQLStatement> parseStatementList = parser.parseStatementList();

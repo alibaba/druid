@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -51,7 +50,6 @@ public class MySqlCreateTableTest extends MysqlTest {
 
 //        assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
     }
-
 
     public void test_1() throws Exception {
         String sql = "CREATE TABLE `ins_ebay_auth` ("
@@ -84,7 +82,6 @@ public class MySqlCreateTableTest extends MysqlTest {
         assertEquals(7, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
     }
-
 
     public void test_2() throws Exception {
         String sql = "create table t2 as select * from t1";
@@ -123,7 +120,6 @@ public class MySqlCreateTableTest extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
-
     }
     public void test_create_table_without_as_2() throws Exception {
         //https://dev.mysql.com/doc/refman/8.0/en/create-table-select.html
@@ -143,6 +139,5 @@ public class MySqlCreateTableTest extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
-
     }
 }

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class MySqlAlterTableTest13 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -39,11 +38,10 @@ public class MySqlAlterTableTest13 extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("ALTER TABLE tbl_name" + //
+        assertEquals("ALTER TABLE tbl_name" +
                 "\n\tDISCARD TABLESPACE;", output);
 
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
     }
-
 }

@@ -1,20 +1,14 @@
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import com.alibaba.druid.filter.FilterAdapter;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Types;
 import java.util.Collections;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.filter.FilterAdapter;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterChainImplTest2 extends TestCase {
     private DruidDataSource dataSource;
@@ -100,7 +94,6 @@ public class FilterChainImplTest2 extends TestCase {
         stmt.close();
         conn.close();
     }
-
 
     public void test_getByte() throws Exception {
         Connection conn = dataSource.getConnection();
@@ -234,7 +227,6 @@ public class FilterChainImplTest2 extends TestCase {
         conn.close();
     }
 
-
     public void test_getBytes() throws Exception {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("select ?");
@@ -256,7 +248,6 @@ public class FilterChainImplTest2 extends TestCase {
         stmt.close();
         conn.close();
     }
-
 
     public void test_getDate() throws Exception {
         Connection conn = dataSource.getConnection();

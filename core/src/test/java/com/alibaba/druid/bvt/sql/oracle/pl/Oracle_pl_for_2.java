@@ -9,6 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
+
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -22,7 +23,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class Oracle_pl_for_2 extends OracleTest {
     public void test_0() throws Exception {
@@ -37,13 +37,12 @@ public class Oracle_pl_for_2 extends OracleTest {
                 "    DELETE FROM employees_temp\n" +
                 "    WHERE department_id = depts(i);\n" +
                 "  END LOOP;\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(3, statementList.size());
 
         SQLStatement stmt = statementList.get(0);
-
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -103,7 +102,7 @@ public class Oracle_pl_for_2 extends OracleTest {
                             "\t\tdelete from employees_temp\n" +
                             "\t\twhere department_id = depts(i);\n" +
                             "\tend loop;\n" +
-                            "end;", //
+                            "end;",
                     output);
         }
     }

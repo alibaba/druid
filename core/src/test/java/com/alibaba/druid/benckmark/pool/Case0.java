@@ -15,21 +15,19 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.NumberFormat;
-
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.jolbox.bonecp.BoneCPDataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import junit.framework.TestCase;
+import org.apache.commons.dbcp.BasicDataSource;
+
+import javax.sql.DataSource;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.NumberFormat;
 
 public class Case0 extends TestCase {
     private String jdbcUrl;
@@ -41,7 +39,7 @@ public class Case0 extends TestCase {
     private int maxIdle = 8;
     private int maxActive = 8;
     private String validationQuery = "SELECT 1";
-    private boolean testOnBorrow = false;
+    private boolean testOnBorrow;
 
     private long minEvictableIdleTimeMillis = 3000;
     public final int LOOP_COUNT = 5;

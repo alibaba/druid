@@ -1,15 +1,10 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class WallStatTest_blackList_1 extends TestCase {
     protected void setUp() throws Exception {
@@ -36,7 +31,6 @@ public class WallStatTest_blackList_1 extends TestCase {
         assertEquals(1, provider.getBlackList().size());
         assertEquals(1001, provider.getCheckCount());
     }
-
 
     public void testMysql2() {
         WallProvider provider = new MySqlWallProvider();

@@ -23,7 +23,6 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class OracleLockTableTest4 extends OracleTest {
     public void test_0() throws Exception {
@@ -52,5 +51,4 @@ public class OracleLockTableTest4 extends OracleTest {
 
 //        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
     }
-
 }

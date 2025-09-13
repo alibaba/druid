@@ -22,17 +22,16 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest21 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE divisions " //
-                        + "    (div_no     NUMBER(2), " //
+                "CREATE TABLE divisions "
+                        + "    (div_no     NUMBER(2), "
                         + "     div_name   VARCHAR2(14), "//
-                        + "     location   VARCHAR2(13) ) " //
+                        + "     location   VARCHAR2(13) ) "
                         + "     STORAGE  ( INITIAL 8M MAXSIZE 1G );";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -50,7 +49,7 @@ public class OracleCreateTableTest21 extends OracleTest {
                         "STORAGE (\n" +
                         "\tINITIAL 8M\n" +
                         "\tMAXSIZE 1G\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -38,5 +38,4 @@ public class MySqlCreateTableTest147_fulltext2 extends TestCase {
                 ")\n" +
                 "distribute by hash(`id`);", stmt.toLowerCaseString());
     }
-
 }

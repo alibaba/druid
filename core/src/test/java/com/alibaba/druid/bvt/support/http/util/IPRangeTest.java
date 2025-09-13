@@ -15,10 +15,9 @@
  */
 package com.alibaba.druid.bvt.support.http.util;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.support.http.util.IPAddress;
 import com.alibaba.druid.support.http.util.IPRange;
+import junit.framework.TestCase;
 
 public class IPRangeTest extends TestCase {
     public void test_ipRange_0() throws Exception {
@@ -46,7 +45,6 @@ public class IPRangeTest extends TestCase {
         assertTrue(rang.isIPAddressInRange(new IPAddress("128.242.127.3")));
 
         assertFalse(rang.isIPAddressInRange(new IPAddress("128.242.127.4")));
-
     }
 
     public void test_ipRange_2() throws Exception {
@@ -54,13 +52,11 @@ public class IPRangeTest extends TestCase {
 
         assertTrue(rang.isIPAddressInRange(new IPAddress("10.16.200.0")));
         assertTrue(rang.isIPAddressInRange(new IPAddress("10.16.200.255")));
-
     }
 
     public void test_ipRange_3() throws Exception {
         IPRange rang = new IPRange("0.0.0.0/0");
         assertTrue(rang.isIPAddressInRange(new IPAddress("2.16.200.0")));
-
     }
 
     public void test_ipRange_4() throws Exception {

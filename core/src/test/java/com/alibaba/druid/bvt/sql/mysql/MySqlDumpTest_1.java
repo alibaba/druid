@@ -53,6 +53,5 @@ public class MySqlDumpTest_1 extends MysqlTest {
         assertTrue(visitor.containsColumn("wenyu_meta_person", "dept"));
         assertTrue(visitor.containsColumn("wenyu_meta_person", "gender"));
         assertTrue(visitor.containsColumn("wenyu_meta_person", "pid"));
-
     }
 }

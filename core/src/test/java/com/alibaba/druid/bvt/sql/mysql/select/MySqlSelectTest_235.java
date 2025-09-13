@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
-
 public class MySqlSelectTest_235 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT ema_user_id\n"
@@ -30,7 +29,6 @@ public class MySqlSelectTest_235 extends MysqlTest {
                 + "         union \n"
                 + "         SELECT ema_user_id, 1 as o FROM g170_user  WHERE `g_distinct_id`= ''  LIMIT 1       )  ORDER BY o\n"
                 + "/*+ xxx */";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
@@ -48,6 +46,4 @@ public class MySqlSelectTest_235 extends MysqlTest {
                 ")\n" +
                 "ORDER BY o/*+ xxx */", stmt.toString());
     }
-
-
 }

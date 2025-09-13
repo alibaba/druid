@@ -1,11 +1,11 @@
 package com.alibaba.druid.stat;
 
+import junit.framework.TestCase;
+
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 public class HashMapMemoryTest extends TestCase {
     public void test_0() throws Exception {

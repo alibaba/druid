@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -177,7 +176,6 @@ public class OracleAlterTableTest26 extends OracleTest {
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("customers")));
     }
-
 
     public void test_7() throws Exception {
         String sql = "create table \"JUNYU_ORCL\".\"KBS_QUESTION\"(\n" +

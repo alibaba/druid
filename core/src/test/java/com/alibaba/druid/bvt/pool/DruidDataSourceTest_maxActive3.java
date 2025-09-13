@@ -1,11 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试initialSize > maxActive
@@ -22,7 +18,6 @@ public class DruidDataSourceTest_maxActive3 extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setMinIdle(100);
         dataSource.setMaxActive(10);
-
     }
 
     protected void tearDown() throws Exception {

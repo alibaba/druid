@@ -20,14 +20,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlSelectTest_37 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM mytable where md5=x'AD9133D47CEB2222A68662BD7600D890'";
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = statementList.get(0);
@@ -78,6 +76,4 @@ public class MySqlSelectTest_37 extends MysqlTest {
                     output);
         }
     }
-
-
 }

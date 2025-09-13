@@ -1,12 +1,9 @@
 package com.alibaba.druid.bvt.support.profile;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.support.profile.ProfileEntryKey;
 import com.alibaba.druid.support.profile.ProfileEntryReqStat;
 import com.alibaba.druid.support.profile.Profiler;
+import junit.framework.TestCase;
 
 public class ProfilerTest extends TestCase {
     public void test_profile() throws Exception {

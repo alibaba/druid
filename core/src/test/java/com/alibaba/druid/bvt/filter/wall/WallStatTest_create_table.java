@@ -1,18 +1,12 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-
+import junit.framework.TestCase;
 
 public class WallStatTest_create_table extends TestCase {
     private String sql = "create table t (fid int, fname varchar(50))";
@@ -52,5 +46,4 @@ public class WallStatTest_create_table extends TestCase {
         WallTableStat tableStat = provider.getTableStat("t");
         assertEquals(1, tableStat.getCreateCount());
     }
-
 }

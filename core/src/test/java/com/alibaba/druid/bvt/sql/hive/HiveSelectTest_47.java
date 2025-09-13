@@ -134,6 +134,5 @@ public class HiveSelectTest_47 extends TestCase {
 //        assertEquals(1, visitor.getTables().size());
 //        assertEquals(2, visitor.getColumns().size());
 //        assertEquals(2, visitor.getConditions().size());
-
     }
 }

@@ -2,21 +2,16 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -39,7 +34,7 @@ public class MySqlSelectTest_177_hints extends MysqlTest {
             String sql5 = "explain " + hintHead[i] + "insert" + hintHead[i] + " into table_1 values('id < 10');";
             String sql6 = "explain " + hintHead[i] + "update" + hintHead[i] + " table_1 set id = 1 where id < 10;";
             String sql7 = hintHead[i] + "replace" + hintHead[i] + " into table_1 values('id < 10');";
-            String sql[] = {sql1, sql2, sql7, sql3, sql4, sql5, sql6};
+            String[] sql = {sql1, sql2, sql7, sql3, sql4, sql5, sql6};
             for (int j = 0; j < sql.length; j++) {
                 System.out.println(sql[j]);
                 String parameterizedSql = ParameterizedOutputVisitorUtils.parameterizeForTDDL(sql[j], DbType.mysql, new ArrayList<Object>(), VisitorFeature.OutputParameterizedQuesUnMergeInList,
@@ -99,6 +94,4 @@ public class MySqlSelectTest_177_hints extends MysqlTest {
         }
 
     }
-
-
 }

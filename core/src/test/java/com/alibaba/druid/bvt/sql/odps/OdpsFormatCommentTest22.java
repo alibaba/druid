@@ -1,9 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsFormatCommentTest22 extends TestCase {
@@ -24,5 +21,4 @@ public class OdpsFormatCommentTest22 extends TestCase {
         assertEquals("SELECT count(*)"
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
     }
-
 }

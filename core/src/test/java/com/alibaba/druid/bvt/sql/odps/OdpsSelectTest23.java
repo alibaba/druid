@@ -26,7 +26,7 @@ import java.util.List;
 public class OdpsSelectTest23 extends TestCase {
     public void test_select() throws Exception {
         // 1095288847322
-        String sql = "select * FROM dual where 1 = 1 and (2 = 2 or ( 3 = 3 and 4 = 4));";//
+        String sql = "select * FROM dual where 1 = 1 and (2 = 2 or ( 3 = 3 and 4 = 4));";
         assertEquals("SELECT *\n" +
                 "FROM dual\n" +
                 "WHERE 1 = 1\n" +
@@ -62,5 +62,4 @@ public class OdpsSelectTest23 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

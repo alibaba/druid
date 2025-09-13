@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class OracleSelectTest38 extends OracleTest {
                         + "  left join" + " acduser.vw_sc_kreis_code_lv2 f on e.xzqh = f.short_kreis_code) "
                         + "   where kreis_code in" + "(select * from "
                         + "  (select tbek_code from acduser.vw_kreis_code start with tbek_code = ? connect by prior tbek_pk=tbek_parent ) "
-                        + "where  tbek_code != ?)"; //
+                        + "where  tbek_code != ?)";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

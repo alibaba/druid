@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class OracleSelectTest94 extends OracleTest {
                         " count(state_code)\n" +
                         " for state_code in (select state_code from preferred_states)\n" +
                         " )\n" +
-                        " order by 1"; //
+                        " order by 1";
 
         System.out.println(sql);
 
@@ -77,6 +76,4 @@ public class OracleSelectTest94 extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
     }
-
-
 }

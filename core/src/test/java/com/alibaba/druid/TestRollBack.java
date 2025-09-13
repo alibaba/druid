@@ -39,10 +39,10 @@ public class TestRollBack {
     static Dao dao_c3p0;
     static Dao dao_druid;
 
-//	static String url = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
-//	static String user = "alibaba";
-//	static String password = "ccbuauto";
-//	static String driver = "oracle.jdbc.driver.OracleDriver";
+//    static String url = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
+//    static String user = "alibaba";
+//    static String password = "ccbuauto";
+//    static String driver = "oracle.jdbc.driver.OracleDriver";
 
     static String url = "jdbc:jtds:sqlserver://a.b.c.d:1433/druid_db";
     static String user = "sa";
@@ -121,5 +121,4 @@ public class TestRollBack {
         // abc插了进去,没有回滚
         Assert.assertNotNull(dao_druid.fetch("msg", Cnd.where("message", "=", "abc")));
     }
-
 }

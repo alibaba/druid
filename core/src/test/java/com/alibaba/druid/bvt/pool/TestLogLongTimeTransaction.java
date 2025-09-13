@@ -15,20 +15,16 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockStatement;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestLogLongTimeTransaction extends TestCase {
     private DruidDataSource dataSource;
@@ -52,7 +48,6 @@ public class TestLogLongTimeTransaction extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setFilters("stat,trace,log4j,encoding");
         dataSource.setTransactionThresholdMillis(1);
-
     }
 
     protected void tearDown() throws Exception {

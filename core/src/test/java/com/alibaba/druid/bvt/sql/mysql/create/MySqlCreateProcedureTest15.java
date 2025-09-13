@@ -16,18 +16,10 @@
 package com.alibaba.druid.bvt.sql.mysql.create;
 
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLParameter;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateFunctionStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-
-import java.util.List;
 
 public class MySqlCreateProcedureTest15 extends MysqlTest {
     public void test_0() throws Exception {
@@ -50,5 +42,4 @@ public class MySqlCreateProcedureTest15 extends MysqlTest {
                 "\tRETURN 0;\n" +
                 "END", stmt.toString());
     }
-
 }

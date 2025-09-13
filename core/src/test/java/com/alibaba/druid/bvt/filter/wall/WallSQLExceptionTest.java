@@ -1,13 +1,7 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallSQLException;
-
+import junit.framework.TestCase;
 
 public class WallSQLExceptionTest extends TestCase {
     public void test_wall() throws Exception {

@@ -44,7 +44,6 @@ public class MysqlTest extends TestCase {
         System.out.println(text);
     }
 
-
     protected void parseTrue(String sql, String except) {
         SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
         Assert.assertEquals(except, SQLUtils.toMySqlString(statement));
@@ -58,5 +57,4 @@ public class MysqlTest extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         return parser.parseStatementList();
     }
-
 }

@@ -21,17 +21,16 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest5 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE `test` (" + //
-                "  `id` bigint(20) NOT NULL AUTO_INCREMENT," + //
-                "  `dspcode` char(200) DEFAULT NULL," + //
-                "  PRIMARY KEY (`id`)," + //
-                "  KEY `index_name` (`dspcode`)" + //
+        String sql = "CREATE TABLE `test` (" +
+                "  `id` bigint(20) NOT NULL AUTO_INCREMENT," +
+                "  `dspcode` char(200) DEFAULT NULL," +
+                "  PRIMARY KEY (`id`)," +
+                "  KEY `index_name` (`dspcode`)" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

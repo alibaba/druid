@@ -31,7 +31,6 @@ public class MySqlSelectTest_50_union extends MysqlTest {
                 "select seller_name from a where id < 100\n" +
                 ") as temp limit 10";
 
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 

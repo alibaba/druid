@@ -19,7 +19,5 @@ public class MySqlParameterizedOutputVisitorTest_65 extends TestCase {
         assertEquals("select * from abc", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
         assertEquals("SELECT *\n" +
                 "FROM abc", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParams, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
     }
-
 }

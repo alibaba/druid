@@ -15,25 +15,23 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
+import java.util.List;
+
 public class OceanbaseCreateTableTest_subPartition extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE ts (id INT, purchased DATE) " //
-                + "PARTITION BY RANGE(YEAR(purchased)) " //
-                + "SUBPARTITION BY HASH(TO_DAYS(purchased)) " //
-                + "SUBPARTITIONS 2 ( " //
-                + "PARTITION p0 VALUES LESS THAN (1990), " //
-                + "PARTITION p1 VALUES LESS THAN (2000), " //
-                + "PARTITION p2 VALUES LESS THAN MAXVALUE )"; //
+        String sql = "CREATE TABLE ts (id INT, purchased DATE) "
+                + "PARTITION BY RANGE(YEAR(purchased)) "
+                + "SUBPARTITION BY HASH(TO_DAYS(purchased)) "
+                + "SUBPARTITIONS 2 ( "
+                + "PARTITION p0 VALUES LESS THAN (1990), "
+                + "PARTITION p1 VALUES LESS THAN (2000), "
+                + "PARTITION p2 VALUES LESS THAN MAXVALUE )";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -83,6 +81,5 @@ public class OceanbaseCreateTableTest_subPartition extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
 
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
     }
 }

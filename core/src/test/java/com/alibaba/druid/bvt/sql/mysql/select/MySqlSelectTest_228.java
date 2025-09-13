@@ -19,14 +19,10 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.List;
-
 
 public class MySqlSelectTest_228 extends MysqlTest {
     public void test_0() throws Exception {
@@ -77,5 +73,4 @@ public class MySqlSelectTest_228 extends MysqlTest {
 
         assertEquals("SELECT cardinality(regexp_extract_all('test', '\"meid\":\"')) AS `cardinality(regexp_extract_all('test', '\"meid\":\"'))`;", stmt.toString());
     }
-
 }

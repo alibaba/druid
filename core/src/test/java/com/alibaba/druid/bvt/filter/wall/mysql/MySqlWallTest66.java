@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -37,19 +32,18 @@ public class MySqlWallTest66 extends TestCase {
         provider.getConfig().setSchemaCheck(true);
 
         assertTrue(provider.checkValid(//
-                "SELECT LOGFILE_GROUP_NAME, FILE_NAME, TOTAL_EXTENTS, INITIAL_SIZE, ENGINE, EXTRA " + //
-                        "FROM INFORMATION_SCHEMA.FILES WHERE FILE_TYPE = 'UNDO LOG' AND FILE_NAME IS NOT NULL " + //
-                        "AND LOGFILE_GROUP_NAME IN (" + //
-                        "   SELECT DISTINCT LOGFILE_GROUP_NAME FROM INFORMATION_SCHEMA.FILES " + //
-                        "       WHERE FILE_TYPE = 'DATAFILE' " + //
-                        "           AND TABLESPACE_NAME IN (" + //
-                        "               SELECT DISTINCT TABLESPACE_NAME FROM INFORMATION_SCHEMA.PARTITIONS " + //
-                        "               WHERE TABLE_SCHEMA IN ('stat'))" + //
-                        ") " + //
-                        "GROUP BY LOGFILE_GROUP_NAME, FILE_NAME, ENGINE " + //
+                "SELECT LOGFILE_GROUP_NAME, FILE_NAME, TOTAL_EXTENTS, INITIAL_SIZE, ENGINE, EXTRA " +
+                        "FROM INFORMATION_SCHEMA.FILES WHERE FILE_TYPE = 'UNDO LOG' AND FILE_NAME IS NOT NULL " +
+                        "AND LOGFILE_GROUP_NAME IN (" +
+                        "   SELECT DISTINCT LOGFILE_GROUP_NAME FROM INFORMATION_SCHEMA.FILES " +
+                        "       WHERE FILE_TYPE = 'DATAFILE' " +
+                        "           AND TABLESPACE_NAME IN (" +
+                        "               SELECT DISTINCT TABLESPACE_NAME FROM INFORMATION_SCHEMA.PARTITIONS " +
+                        "               WHERE TABLE_SCHEMA IN ('stat'))" +
+                        ") " +
+                        "GROUP BY LOGFILE_GROUP_NAME, FILE_NAME, ENGINE " +
                         "ORDER BY LOGFILE_GROUP_NAME"));
 
         assertEquals(2, provider.getTableStats().size());
     }
-
 }

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -38,10 +37,10 @@ public class OracleCreateTableTest32 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE games (" //
-                        + "\n\tscores NUMBER" //
-                        + "\n\t\tCHECK (scores >= 0)" //
-                        + "\n);",//
+        assertEquals("CREATE TABLE games ("
+                        + "\n\tscores NUMBER"
+                        + "\n\t\tCHECK (scores >= 0)"
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

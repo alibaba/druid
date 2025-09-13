@@ -22,21 +22,20 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest23 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE promotions_var1" //
-                        + "    ( promo_id         NUMBER(6)" //
-                        + "                       CONSTRAINT promo_id_u  UNIQUE" //
-                        + "    , promo_name       VARCHAR2(20)" //
-                        + "    , promo_category   VARCHAR2(15)" //
-                        + "    , promo_cost       NUMBER(10,2)" //
-                        + "    , promo_begin_date DATE" //
-                        + "    , promo_end_date   DATE" //
+                "CREATE TABLE promotions_var1"
+                        + "    ( promo_id         NUMBER(6)"
+                        + "                       CONSTRAINT promo_id_u  UNIQUE"
+                        + "    , promo_name       VARCHAR2(20)"
+                        + "    , promo_category   VARCHAR2(15)"
+                        + "    , promo_cost       NUMBER(10,2)"
+                        + "    , promo_begin_date DATE"
+                        + "    , promo_end_date   DATE"
                         + "    ) ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -46,15 +45,15 @@ public class OracleCreateTableTest23 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE TABLE promotions_var1 (" //
-                        + "\n\tpromo_id NUMBER(6)" //
-                        + "\n\t\tCONSTRAINT promo_id_u UNIQUE," //
-                        + "\n\tpromo_name VARCHAR2(20)," //
-                        + "\n\tpromo_category VARCHAR2(15)," //
-                        + "\n\tpromo_cost NUMBER(10, 2)," //
-                        + "\n\tpromo_begin_date DATE," //
-                        + "\n\tpromo_end_date DATE" //
-                        + "\n);",//
+        assertEquals("CREATE TABLE promotions_var1 ("
+                        + "\n\tpromo_id NUMBER(6)"
+                        + "\n\t\tCONSTRAINT promo_id_u UNIQUE,"
+                        + "\n\tpromo_name VARCHAR2(20),"
+                        + "\n\tpromo_category VARCHAR2(15),"
+                        + "\n\tpromo_cost NUMBER(10, 2),"
+                        + "\n\tpromo_begin_date DATE,"
+                        + "\n\tpromo_end_date DATE"
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

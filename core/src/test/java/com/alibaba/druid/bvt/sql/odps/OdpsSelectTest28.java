@@ -27,7 +27,7 @@ public class OdpsSelectTest28 extends TestCase {
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "-- 注释\n" +
-                "read bigdata_xy.dual 10;";//
+                "read bigdata_xy.dual 10;";
         assertEquals("-- 注释\n" +
                 "READ bigdata_xy.dual 10;", SQLUtils.formatOdps(sql));
 
@@ -55,5 +55,4 @@ public class OdpsSelectTest28 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

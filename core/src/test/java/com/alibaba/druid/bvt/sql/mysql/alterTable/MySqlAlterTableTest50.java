@@ -25,5 +25,4 @@ public class MySqlAlterTableTest50 extends TestCase {
 //                "\tADD INDEX idx_name (name)\n" +
 //                "\tLOCK = NONE;", output);
     }
-
 }

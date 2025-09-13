@@ -1,19 +1,14 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import java.util.Collection;
-import java.util.Map;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.stat.DruidStatManagerFacade;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
+
+import java.util.Collection;
+import java.util.Map;
 
 public class WallStatTest_statMap extends TestCase {
     protected void setUp() throws Exception {
@@ -68,5 +63,4 @@ public class WallStatTest_statMap extends TestCase {
         assertEquals(2, ((Collection<Map<String, Object>>) statMapMerged.get("blackList")).size());
         assertEquals(33L, statMapMerged.get("violationEffectRowCount"));
     }
-
 }

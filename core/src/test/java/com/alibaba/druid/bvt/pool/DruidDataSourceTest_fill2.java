@@ -1,17 +1,12 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceTest_fill2 extends TestCase {
     private DruidDataSource dataSource;
@@ -85,6 +80,5 @@ public class DruidDataSourceTest_fill2 extends TestCase {
         }
         assertTrue("not full", dataSource.isFull());
 //        assertTrue("fillCount zero", fillCount.get() > 0);
-
     }
 }

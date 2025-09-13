@@ -36,5 +36,4 @@ public class MySqlCreateTableTest147_fulltext extends TestCase {
                 "\tfulltext index(b)\n" +
                 ");", stmt.toLowerCaseString());
     }
-
 }

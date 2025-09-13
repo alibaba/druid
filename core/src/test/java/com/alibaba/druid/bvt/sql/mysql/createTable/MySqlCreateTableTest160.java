@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLTableLike;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 
-
 public class MySqlCreateTableTest160 extends MysqlTest {
     public void test_0() throws Exception {
         //for ADB

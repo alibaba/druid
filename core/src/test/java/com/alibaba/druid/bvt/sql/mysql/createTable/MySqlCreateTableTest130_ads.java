@@ -1,7 +1,6 @@
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -30,7 +29,6 @@ public class MySqlCreateTableTest130_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE IF NOT EXISTS hm_crm.crm_wdk_hm_store_poi_di (\n" +
                 "\tshop_id BIGINT COMMENT '店铺id',\n" +
                 "\tpoi_type BIGINT COMMENT '0：家 1： 工作',\n" +
@@ -42,8 +40,5 @@ public class MySqlCreateTableTest130_ads extends MysqlTest {
                 "SUBPARTITION BY LIST KEY (biz_date) \n" +
                 "SUBPARTITION OPTIONS (available_partition_num = 1)\n" +
                 "TABLEGROUP crm_platform_filter", stmt.toString());
-
     }
-
-
 }

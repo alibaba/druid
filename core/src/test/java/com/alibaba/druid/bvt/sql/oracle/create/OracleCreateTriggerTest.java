@@ -21,14 +21,13 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTriggerTest extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "CREATE TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\" " //
+                "CREATE TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\" "
                         + "BEFORE INSERT"//
                         + "    ON \"AO_4AEACD_WEBHOOK_DAO\"   FOR EACH ROW "//
                         + "BEGIN"//
@@ -50,7 +49,7 @@ public class OracleCreateTriggerTest extends OracleTest {
                         "\tSELECT \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\".NEXTVAL\n" +
                         "\tINTO :NEW.\"ID\"\n" +
                         "\tFROM DUAL;\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

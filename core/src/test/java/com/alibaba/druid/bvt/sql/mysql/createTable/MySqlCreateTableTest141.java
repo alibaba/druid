@@ -23,7 +23,6 @@ public class MySqlCreateTableTest141 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE sbtest1 (\n" +
                 "\tid INTEGER UNSIGNED NOT NULL,\n" +
                 "\tk INTEGER UNSIGNED NOT NULL DEFAULT '0',\n" +
@@ -43,8 +42,5 @@ public class MySqlCreateTableTest141 extends MysqlTest {
                 ")\n" +
                 "dbpartition by hash(id)\n" +
                 "tbpartition by hash(id) tbpartitions 2", stmt.toLowerCaseString());
-
     }
-
-
 }

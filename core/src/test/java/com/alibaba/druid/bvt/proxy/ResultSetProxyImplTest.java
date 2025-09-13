@@ -15,16 +15,6 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.Reader;
-import java.sql.Connection;
-import java.sql.NClob;
-import java.sql.Statement;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.mock.MockDriver;
@@ -33,6 +23,12 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+
+import java.io.Reader;
+import java.sql.Connection;
+import java.sql.NClob;
+import java.sql.Statement;
 
 public class ResultSetProxyImplTest extends TestCase {
     String sql = "SELECT 1";
@@ -96,5 +92,4 @@ public class ResultSetProxyImplTest extends TestCase {
         rs.updateNCharacterStream("1", null);
         rs.updateNCharacterStream("1", null, 0);
     }
-
 }

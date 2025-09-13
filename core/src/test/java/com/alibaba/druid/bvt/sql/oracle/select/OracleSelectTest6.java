@@ -20,17 +20,16 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest6 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "SELECT * FROM departments " + //
-                "   WHERE EXISTS " + //
-                "   (SELECT * FROM employees " + //
-                "       WHERE departments.department_id = employees.department_id " + //
-                "       AND employees.salary > 2500)" + //
+        String sql = "SELECT * FROM departments " +
+                "   WHERE EXISTS " +
+                "   (SELECT * FROM employees " +
+                "       WHERE departments.department_id = employees.department_id " +
+                "       AND employees.salary > 2500)" +
                 "   ORDER BY department_name; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

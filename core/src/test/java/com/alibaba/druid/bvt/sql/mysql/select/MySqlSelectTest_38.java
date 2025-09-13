@@ -20,14 +20,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlSelectTest_38 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select full full from t1";
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = statementList.get(0);
@@ -61,6 +59,4 @@ public class MySqlSelectTest_38 extends MysqlTest {
         }
 
     }
-
-
 }

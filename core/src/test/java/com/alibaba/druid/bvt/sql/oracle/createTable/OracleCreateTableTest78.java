@@ -145,7 +145,7 @@ public class OracleCreateTableTest78 extends OracleTest {
                         "LEFT JOIN TCP_FND.TCP_FND_LOOKUP_CODE ON TCP_FND_LOOKUP_CODE.LOOKUP_TYPE = 'CONTRACT_TYPE'\n" +
                         "\tAND TCP_FND_LOOKUP_CODE.LOOKUP_CODE = EPM_TBL_CONTRACT.CONTRACTTYPE \n" +
                         "\tLEFT JOIN TCP_FND.TCP_FND_LOOKUP_CODE TCP_FND_LOOKUP_CODE1 ON TCP_FND_LOOKUP_CODE1.LOOKUP_TYPE = 'CONTRACT_CATE'\n" +
-                        "\tAND TCP_FND_LOOKUP_CODE1.LOOKUP_CODE = EPM_TBL_CONTRACT.Contrctkind ",//
+                        "\tAND TCP_FND_LOOKUP_CODE1.LOOKUP_CODE = EPM_TBL_CONTRACT.Contrctkind ",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

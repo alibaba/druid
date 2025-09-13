@@ -74,6 +74,5 @@ public class OracleCreateTableTest96 extends OracleTest {
                 "NOCOMPRESS\n" +
                 "LOGGING\n" +
                 "TABLESPACE \"CAOBOHAHA_IAU\"", stmt.toString());
-
     }
 }

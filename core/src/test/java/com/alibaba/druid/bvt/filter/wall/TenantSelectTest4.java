@@ -15,26 +15,22 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class TenantSelectTest4 extends TestCase {
-    private String sql = "SELECT a.*,b.name " + //
-            "FROM vote_info a left join vote_item b on a.item_id=b.id " + //
+    private String sql = "SELECT a.*,b.name " +
+            "FROM vote_info a left join vote_item b on a.item_id=b.id " +
             "where 1=1 limit 1,10";
-    private String expect_sql = "SELECT a.*, b.name, b.tenant, a.tenant" + //
-            "\nFROM vote_info a" + //
-            "\n\tLEFT JOIN vote_item b ON a.item_id = b.id" + //
-            "\nWHERE 1 = 1" + //
+    private String expect_sql = "SELECT a.*, b.name, b.tenant, a.tenant" +
+            "\nFROM vote_info a" +
+            "\n\tLEFT JOIN vote_item b ON a.item_id = b.id" +
+            "\nWHERE 1 = 1" +
             "\nLIMIT 1, 10";
 
     private WallConfig config = new WallConfig();

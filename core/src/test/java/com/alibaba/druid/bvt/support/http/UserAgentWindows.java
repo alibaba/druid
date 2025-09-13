@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.support.http.stat.WebAppStat;
+import junit.framework.TestCase;
 
 public class UserAgentWindows extends TestCase {
     public void test_windows98() throws Exception {

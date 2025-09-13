@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -39,5 +38,4 @@ public class MySqlSelectTest_func_in_order_by extends MysqlTest {
 
         assertTrue(expr.getArguments().get(1) instanceof SQLDataTypeRefExpr);
     }
-
 }

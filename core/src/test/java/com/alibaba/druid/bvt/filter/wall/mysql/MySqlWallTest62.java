@@ -15,15 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -38,16 +32,16 @@ public class MySqlWallTest62 extends TestCase {
         provider.getConfig().setSchemaCheck(true);
 
         assertTrue(provider.checkValid(//
-                "select temp.*, u.CanComment, u.CanBeShared, u.CanForward, COALESCE(b.UserID,0) as isBlocked" + //
-                        "   , COALESCE(f.UserID,0) as Followed, COALESCE(ff.UserID,0) as IsFollowed" + //
-                        "   , COALESCE(ul.UserID,0) as liked, COALESCE(fff.UserID,0) as RIsFollowed " + //
-                        "from (select 294765 as UserID, 0  as RUserID, 7785977 as PicID " + //
-                        "       union all select 294765 as UserID, 0  as RUserID, 7780341 as PicID) temp     " + //
-                        "left join Users as u on u.UserID = temp.UserID   " + //
-                        "left join BlockUser as b on b.UserID = temp.UserID and b.BlockUserID = 294765     " + //
-                        "left join Fans as f on f.FansID = temp.UserID and f.UserID = 294765   " + //
-                        "left join Fans as ff ON ff.FansID = 294765 and ff.UserID = temp.UserID   " + //
-                        "left join Fans as fff ON fff.FansID = 294765 and fff.UserID = temp.RUserID   " + //
+                "select temp.*, u.CanComment, u.CanBeShared, u.CanForward, COALESCE(b.UserID,0) as isBlocked" +
+                        "   , COALESCE(f.UserID,0) as Followed, COALESCE(ff.UserID,0) as IsFollowed" +
+                        "   , COALESCE(ul.UserID,0) as liked, COALESCE(fff.UserID,0) as RIsFollowed " +
+                        "from (select 294765 as UserID, 0  as RUserID, 7785977 as PicID " +
+                        "       union all select 294765 as UserID, 0  as RUserID, 7780341 as PicID) temp     " +
+                        "left join Users as u on u.UserID = temp.UserID   " +
+                        "left join BlockUser as b on b.UserID = temp.UserID and b.BlockUserID = 294765     " +
+                        "left join Fans as f on f.FansID = temp.UserID and f.UserID = 294765   " +
+                        "left join Fans as ff ON ff.FansID = 294765 and ff.UserID = temp.UserID   " +
+                        "left join Fans as fff ON fff.FansID = 294765 and fff.UserID = temp.RUserID   " +
                         "left join UserLikes as ul on ul.PicID = temp.PicID and ul.UserID = 294765"));
 
         assertEquals(4, provider.getTableStats().size());
@@ -57,14 +51,12 @@ public class MySqlWallTest62 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
         provider.getConfig().setSelectUnionCheck(true);
-        String sql = "SELECT 1, 2, 3" + //
-                " UNION ALL SELECT  a  from tt where c=1" + //
+        String sql = "SELECT 1, 2, 3" +
+                " UNION ALL SELECT  a  from tt where c=1" +
                 " UNION ALL SELECT 2 FROM dual --";
         assertFalse(provider.checkValid(sql));
 
         sql = "SELECT a from t where c=1 UNION ALL SELECT 2 FROM dual --";
         assertFalse(provider.checkValid(sql));
     }
-
-
 }

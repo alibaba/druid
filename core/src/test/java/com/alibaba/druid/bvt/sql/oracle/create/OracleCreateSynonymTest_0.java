@@ -44,8 +44,8 @@ public class OracleCreateSynonymTest_0 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE PUBLIC SYNONYM emp_table FOR hr.employees@remote.us.oracle.com;"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE PUBLIC SYNONYM emp_table FOR hr.employees@remote.us.oracle.com;",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(0, visitor.getTables().size());
 

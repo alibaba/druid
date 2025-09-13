@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class HiveCreateTableTest_7 extends OracleTest {
                         "     ip STRING COMMENT 'IP Address of the User')\n" +
                         " COMMENT 'This is the page view table'\n" +
                         " PARTITIONED BY(dt STRING, country STRING)\n" +
-                        " STORED AS SEQUENCEFILE;"; //
+                        " STORED AS SEQUENCEFILE;";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -74,6 +73,5 @@ public class HiveCreateTableTest_7 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("page_view"));
-
     }
 }

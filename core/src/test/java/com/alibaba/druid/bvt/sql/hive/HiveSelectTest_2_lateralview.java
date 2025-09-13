@@ -11,7 +11,7 @@ import java.util.List;
 public class HiveSelectTest_2_lateralview extends TestCase {
     public void test_select() throws Exception {
         String sql = "SELECT pageid, adid\n" +
-                "FROM pageAds LATERAL VIEW explode(adid_list) adTable AS adid;";//
+                "FROM pageAds LATERAL VIEW explode(adid_list) adTable AS adid;";
         assertEquals("SELECT pageid, adid\n" +
                 "FROM pageAds\n" +
                 "\tLATERAL VIEW explode(adid_list) adTable AS adid;", SQLUtils.formatHive(sql));

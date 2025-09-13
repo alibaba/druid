@@ -1,17 +1,14 @@
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.util.JdbcUtils;
-
-import static org.junit.Assert.*;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OracleHintTest extends TestCase {
     public void test_hint1() throws Exception {
@@ -26,7 +23,6 @@ public class OracleHintTest extends TestCase {
 
         String newSQL = out.toString();
         assertEquals("SELECT /*+leading(e) index(e ORD_ORDER_ITEM_GS_BS_DI_IND)*/ DISTINCT e.id\nFROM ord_order_item e\nWHERE e.F1 = DATE '2011-10-01'", newSQL);
-
     }
 
     public void test_hint2() throws Exception {
@@ -67,6 +63,4 @@ public class OracleHintTest extends TestCase {
         String formattedSql = SQLUtils.formatOracle(sql);
         assertEquals("DELETE /*+PARALLEL(semp, 5) */ FROM semp", formattedSql);
     }
-
-
 }

@@ -32,10 +32,7 @@ public class MySqlSelectTest_156 extends MysqlTest {
         assertEquals("SELECT SQL_SMALL_RESULT (NULL IS NOT ?)\n" +
                         "FROM corona_select_multi_db_one_tb layer_0_left_tb\n" +
                         "\tRIGHT JOIN corona_select_one_db_multi_tb layer_0_right_tb ON layer_0_right_tb.smallint_test = layer_0_right_tb.date_test\n" +
-                        "WHERE layer_0_right_tb.time_test = ? NOT BETWEEN ? AND layer_0_right_tb.bigint_test;"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
-
+                        "WHERE layer_0_right_tb.time_test = ? NOT BETWEEN ? AND layer_0_right_tb.bigint_test;",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
 }

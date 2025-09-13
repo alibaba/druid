@@ -16,7 +16,6 @@
 package com.alibaba.druid.bvt.sql.mysql.update;
 
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
@@ -62,7 +61,6 @@ public class MySqlUpdateTest_17 extends MysqlTest {
                         "set ip_count = GREATEST(ip_count - ?, 0), gmt_modified = now()\n" +
                         "where group_id = ?", //
                 stmt.toLowerCaseString());
-
 
         assertTrue(WallUtils.isValidateMySql(sql));
 

@@ -3,7 +3,6 @@ package com.alibaba.druid.pool;
 import junit.framework.TestCase;
 
 public class DruidDataSourceTest extends TestCase {
-
     /**
      * 验证将mysql jdbc url中可能出现的密码信息全都掩码的效果，目前会出现的密码key名有password,password1,password2,password3,trustCertificateKeyStorePassword,clientCertificateKeyStorePassword
      * @see  <a href="https://dev.mysql.com/doc/connector-j/en/connector-j-connp-props-authentication.html">...</a>
@@ -81,7 +80,5 @@ public class DruidDataSourceTest extends TestCase {
         System.out.println("原始url=" + url);
         System.out.println("掩码后url=" + urlNew);
         assertEquals(expectedUrl, urlNew);
-
-
     }
 }

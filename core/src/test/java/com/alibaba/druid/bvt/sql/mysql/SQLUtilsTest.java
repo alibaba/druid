@@ -1,25 +1,21 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Test;
 
 public class SQLUtilsTest extends TestCase {
     public void test_format() throws Exception {
         String formattedSql = SQLUtils.format("select * from t where id = ?", JdbcConstants.MYSQL,
                 Arrays.<Object>asList("abc"));
-        assertEquals("SELECT *" + //
-                "\nFROM t" + //
+        assertEquals("SELECT *" +
+                "\nFROM t" +
                 "\nWHERE id = 'abc'", formattedSql);
     }
 

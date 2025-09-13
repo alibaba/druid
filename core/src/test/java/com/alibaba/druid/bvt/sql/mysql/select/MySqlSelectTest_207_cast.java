@@ -36,7 +36,6 @@ public class MySqlSelectTest_207_cast extends MysqlTest {
                 "     AND  b.com_id = a.com_id\n" +
                 "     AND  a.key_stats_cd = 'Y'";
 
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -58,8 +57,5 @@ public class MySqlSelectTest_207_cast extends MysqlTest {
         assertEquals(9, visitor.getColumns().size());
         assertEquals(4, visitor.getConditions().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
-
     }
-
 }

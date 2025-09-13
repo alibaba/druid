@@ -20,19 +20,18 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest31 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT e1.last_name FROM employees e1" + //
-                        "   WHERE f(" + //
-                        "   CURSOR(SELECT e2.hire_date FROM employees e2" + //
-                        "   WHERE e1.employee_id = e2.manager_id)," + //
-                        "   e1.hire_date) = 1" + //
-                        "   ORDER BY last_name;"; //
+                "SELECT e1.last_name FROM employees e1" +
+                        "   WHERE f(" +
+                        "   CURSOR(SELECT e2.hire_date FROM employees e2" +
+                        "   WHERE e1.employee_id = e2.manager_id)," +
+                        "   e1.hire_date) = 1" +
+                        "   ORDER BY last_name;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

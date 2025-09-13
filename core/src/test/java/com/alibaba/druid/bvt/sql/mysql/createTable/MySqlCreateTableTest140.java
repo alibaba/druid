@@ -17,7 +17,6 @@ public class MySqlCreateTableTest140 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE foo\n" +
                 "AS\n" +
                 "SELECT *\n" +
@@ -29,8 +28,5 @@ public class MySqlCreateTableTest140 extends MysqlTest {
                 "select *\n" +
                 "from t\n" +
                 "with no data", stmt.toLowerCaseString());
-
     }
-
-
 }

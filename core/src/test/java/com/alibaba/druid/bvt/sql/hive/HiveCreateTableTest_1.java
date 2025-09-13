@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class HiveCreateTableTest_1 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
                 "create table if not EXISTS sc001.test stored as parquet as\n" +
-                        "select *  from sc002.test;"; //
+                        "select *  from sc002.test;";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -62,6 +61,5 @@ public class HiveCreateTableTest_1 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("sc001.test"));
-
     }
 }

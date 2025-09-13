@@ -1,16 +1,9 @@
 package com.alibaba.druid.bvt.proxy.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-
-
-import com.alibaba.druid.filter.stat.StatFilter;
 
 public class StatFilterTest3 extends TestCase {
     @SuppressWarnings("deprecation")
@@ -47,7 +40,6 @@ public class StatFilterTest3 extends TestCase {
 
         assertEquals("select 'x' limit 1", filter.mergeSql("select 'x' limit 1"));
     }
-
 
     public void test_merge_pg() throws Exception {
         StatFilter filter = new StatFilter();
@@ -87,7 +79,7 @@ public class StatFilterTest3 extends TestCase {
         assertEquals("SELECT *\n" +
                         "FROM temp.test\n" +
                         "ORDER BY id DESC\n" +
-                        "LIMIT ?"
-                , filter.mergeSql("select * from temp.test order by id desc limit 1"));
+                        "LIMIT ?",
+                filter.mergeSql("select * from temp.test order by id desc limit 1"));
     }
 }

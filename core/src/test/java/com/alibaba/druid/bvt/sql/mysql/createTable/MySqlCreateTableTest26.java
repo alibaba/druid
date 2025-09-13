@@ -21,15 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest26 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE lookup" + //
-                "  (id INT, INDEX USING BTREE (id))" + //
-                "  MAX_ROWS 1024;"; //
+        String sql = "CREATE TABLE lookup" +
+                "  (id INT, INDEX USING BTREE (id))" +
+                "  MAX_ROWS 1024;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,10 +52,9 @@ public class MySqlCreateTableTest26 extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("lookup")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("CREATE TABLE lookup (" + //
-                "\n\tid INT," + //
-                "\n\tINDEX USING BTREE(id)" + //
+        assertEquals("CREATE TABLE lookup (" +
+                "\n\tid INT," +
+                "\n\tINDEX USING BTREE(id)" +
                 "\n) MAX_ROWS = 1024;", output);
-
     }
 }

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -180,7 +179,6 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT 1 XOR 1 XOR 1;", text);
     }
 
-
     public void test14() {
         String sql = "SELECT ~1;";
 
@@ -190,7 +188,6 @@ public class LogicalOperatorsTest extends TestCase {
         String text = output(stmtList);
 
         assertEquals("SELECT ~1;", text);
-
 
         sql = "SELECT ~(1+1);";
 
@@ -212,7 +209,6 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT *\n" +
                 "FROM SUNTEST\n" +
                 "WHERE ~ID = 1;", text);
-
 
         sql = "SELECT * FROM SUNTEST WHERE ~(ID = 1);";
 

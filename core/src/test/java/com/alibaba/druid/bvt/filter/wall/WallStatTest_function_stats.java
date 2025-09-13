@@ -1,16 +1,11 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallFunctionStat;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class WallStatTest_function_stats extends TestCase {
     private String sql = "select len(fname), len(fdesc) from t";
@@ -44,6 +39,4 @@ public class WallStatTest_function_stats extends TestCase {
             assertEquals(4, functionStat.getInvokeCount());
         }
     }
-
-
 }

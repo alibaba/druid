@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -36,7 +31,7 @@ public class MySqlWallTest41 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
 
         assertFalse(provider.checkValid(//
-                "SELECT * FROM pw_pushdata WHERE invokepieceid= '49'  AND ifverify=0 AND starttime<= '1364976942'  ORDER BY vieworder DESC,starttime DESC  LIMIT 0")); //
+                "SELECT * FROM pw_pushdata WHERE invokepieceid= '49'  AND ifverify=0 AND starttime<= '1364976942'  ORDER BY vieworder DESC,starttime DESC  LIMIT 0"));
 
         assertEquals(1, provider.getTableStats().size());
     }

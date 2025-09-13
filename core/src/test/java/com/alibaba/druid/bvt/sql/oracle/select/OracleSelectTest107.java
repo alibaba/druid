@@ -15,15 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.select;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.repository.SchemaRepository;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 
 public class OracleSelectTest107 extends OracleTest {
     //xml 解析 暂不支持，明宣 反馈的
@@ -122,6 +114,4 @@ public class OracleSelectTest107 extends OracleTest {
 //
 //
     }
-
-
 }

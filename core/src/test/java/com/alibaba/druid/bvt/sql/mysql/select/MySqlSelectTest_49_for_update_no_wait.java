@@ -30,7 +30,6 @@ public class MySqlSelectTest_49_for_update_no_wait extends MysqlTest {
                 "where        tnt_inst_id = ?" +
                 "       and      ar_no    in         (             ?         )       for update no_wait";
 
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 

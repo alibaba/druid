@@ -1,8 +1,5 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
@@ -20,7 +17,6 @@ public class DruidDataSourceTest_getConnection_2 extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
-
     }
 
     protected void tearDown() throws Exception {

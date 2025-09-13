@@ -15,19 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool.dynamic;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.logging.Log;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.logging.Log;
 
 public class PoolPreparedStatementsChangeTest extends PoolTestCase {
     private DruidDataSource dataSource;

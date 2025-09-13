@@ -1,14 +1,13 @@
 package com.alibaba.druid.bvt.sql.hive.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLParseAssertUtil;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,13 +17,10 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL">Hive DDL</a>
  */
 public class Issue5968 {
-
-
     @Test
     public void test_parse_stored_by() {
         for (DbType dbType : new DbType[]{DbType.hive}) {
             for (String sql : new String[]{
-
                 "CREATE TABLE IF NOT EXISTS test.tests(\n"
                     + "  id bigint COMMENT 'from deserializer',\n "
                     + "  job_group bigint COMMENT 'from deserializer',\n"

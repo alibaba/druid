@@ -1,15 +1,11 @@
 package com.alibaba.druid.bvt.jmx;
 
-import static org.junit.Assert.assertTrue;
-
-import java.lang.management.ManagementFactory;
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 import javax.management.MBeanServer;
 
-
-import com.alibaba.druid.pool.DruidDataSource;
-
-import junit.framework.TestCase;
+import java.lang.management.ManagementFactory;
 
 public class DupRegisterTest extends TestCase {
     private DruidDataSource dataSource;

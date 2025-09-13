@@ -28,10 +28,7 @@ public class MySqlSelectTest_comment
         SQLStatement stmt = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);
 
-
         assertEquals("SELECT xxx AS comment, xxx AS comment\n" +
                 "FROM t", stmt.toString());
-
     }
-
 }

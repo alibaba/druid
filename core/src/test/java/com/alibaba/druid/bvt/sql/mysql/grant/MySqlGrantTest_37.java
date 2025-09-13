@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,5 +36,4 @@ public class MySqlGrantTest_37 extends MysqlTest {
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
     }
-
 }

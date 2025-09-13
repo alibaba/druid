@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.benckmark.sql;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
-import com.alibaba.druid.util.Utils;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class MySqlPerfTest extends TestCase {
     private String sql;

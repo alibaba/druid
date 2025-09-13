@@ -20,16 +20,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
-
 public class MySqlSelectTest_251 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select tinyint '--127', smallint '--127', INTEGER '--128', bigint '--127'";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
         assertEquals("SELECT TINYINT '127', SMALLINT '127', 128, BIGINT '127'", stmt.toString());
     }
-
-
 }

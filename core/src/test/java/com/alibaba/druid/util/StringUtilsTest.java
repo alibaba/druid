@@ -20,7 +20,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class StringUtilsTest {
-
     @Test
     public void testSubStringToInteger() {
         Assert.assertNull(StringUtils.subStringToInteger("foobar", "1", "3"));

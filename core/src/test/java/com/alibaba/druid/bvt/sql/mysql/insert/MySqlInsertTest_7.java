@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.insert;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+
+import java.util.List;
 
 public class MySqlInsertTest_7 extends MysqlTest {
     public void test_0() throws Exception {
@@ -45,9 +43,9 @@ public class MySqlInsertTest_7 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        assertEquals("INSERT INTO Apply (applicant_id, applytime, applytype, approver_id, end" + //
-                        "\n\t, process, start)" + //
-                        "\nVALUES (?, ?, ?, ?, ?" + //
+        assertEquals("INSERT INTO Apply (applicant_id, applytime, applytype, approver_id, end" +
+                        "\n\t, process, start)" +
+                        "\nVALUES (?, ?, ?, ?, ?" +
                         "\n\t, ?, ?)", //
                 SQLUtils.toMySqlString(insertStmt));
     }

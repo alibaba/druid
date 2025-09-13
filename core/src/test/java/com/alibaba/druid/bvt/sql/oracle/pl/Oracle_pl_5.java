@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class Oracle_pl_5 extends OracleTest {
                 "insert into USER(id, name, username, passwd, age, sex, level, area, created_date, version)\n" +
                 "values (SEQ_USER.NEXTVAL, data.name, data.username, data.passwd, data.age, data.sex, data.level, data.area, data.created_date, 1);\n" +
                 "end loop;\n" +
-                "end;"; //
+                "end;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, statementList.size());

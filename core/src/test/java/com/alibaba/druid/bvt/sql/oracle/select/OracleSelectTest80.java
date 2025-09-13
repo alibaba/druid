@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest80 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "select (o.STORE - o.LAST_STORE) STORE from t_order o;"; //
+                "select (o.STORE - o.LAST_STORE) STORE from t_order o;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -57,7 +56,6 @@ public class OracleSelectTest80 extends OracleTest {
         assertEquals(0, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
 
         assertTrue(visitor.containsColumn("t_order", "STORE"));
         assertTrue(visitor.containsColumn("t_order", "LAST_STORE"));

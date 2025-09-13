@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertFalse;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-
+import junit.framework.TestCase;
 
 public class WallUpdateTest1 extends TestCase {
     private String sql = "UPDATE T_USER SET FNAME = ? WHERE FID = ?";

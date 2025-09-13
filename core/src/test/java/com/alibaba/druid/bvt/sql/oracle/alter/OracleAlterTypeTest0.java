@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -52,10 +51,10 @@ public class OracleAlterTypeTest0 extends OracleTest {
 
         assertEquals(0, visitor.getColumns().size());
 
-        assertEquals("ALTER TYPE \"ZEUS\".\"STRCAT_TYPE\" COMPILE BODY REUSE SETTINGS;",//
+        assertEquals("ALTER TYPE \"ZEUS\".\"STRCAT_TYPE\" COMPILE BODY REUSE SETTINGS;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
-        assertEquals("alter type \"ZEUS\".\"STRCAT_TYPE\" compile body reuse settings;",//
+        assertEquals("alter type \"ZEUS\".\"STRCAT_TYPE\" compile body reuse settings;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));

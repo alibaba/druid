@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
@@ -10,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
 
 public class DruidDataSourceTest10 {
     DruidDataSource ds;

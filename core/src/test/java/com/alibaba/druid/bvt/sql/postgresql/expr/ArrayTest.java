@@ -1,14 +1,9 @@
 package com.alibaba.druid.bvt.sql.postgresql.expr;
 
-
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
-import static org.junit.Assert.*;
-
 
 public class ArrayTest extends PGTest {
     public void test_timestamp() throws Exception {

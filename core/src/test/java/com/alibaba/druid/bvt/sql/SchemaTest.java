@@ -6,8 +6,9 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
 
 public class SchemaTest {
     @Test

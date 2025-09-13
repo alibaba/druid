@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class MySqlAlterTableDrop_Test_2 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -42,5 +41,4 @@ public class MySqlAlterTableDrop_Test_2 extends TestCase {
                 "\tmodify column id bigint(20) unsigned not null,\n" +
                 "\tchange column content content VARCHAR(3000) character set utf8mb4 collate utf8mb4_unicode_ci not null default '未填写' comment '默认'", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

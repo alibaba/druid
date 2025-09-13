@@ -44,7 +44,7 @@ public class OracleUpdateTest5_encoding_error extends OracleTest {
                         "\tSELECT to_char(SYSDATE + INTERVAL '1' YEAR, 'yyyy-mm-dd HH24:mi:ss')\n" +
                         "\tFROM dual\n" +
                         "), 'yyyy-mm-dd HH24:mi:ss')\n" +
-                        "WHERE t2.attr2 = 'ZB201708311440560'",//
+                        "WHERE t2.attr2 = 'ZB201708311440560'",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -62,5 +62,4 @@ public class OracleUpdateTest5_encoding_error extends OracleTest {
 
         assertTrue(visitor.getColumns().contains(new TableStat.Column("x1_use_agent", "start_time")));
     }
-
 }

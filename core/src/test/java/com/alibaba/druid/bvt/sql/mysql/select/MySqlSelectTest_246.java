@@ -21,20 +21,15 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-
 public class MySqlSelectTest_246 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT -CAST(10 AS decimal(10, 2)), +CAST(10 AS decimal(10, 2))";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
         assertEquals("SELECT -CAST(10 AS decimal(10, 2)), +CAST(10 AS decimal(10, 2))", stmt.toString());
 
-
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
-
 }

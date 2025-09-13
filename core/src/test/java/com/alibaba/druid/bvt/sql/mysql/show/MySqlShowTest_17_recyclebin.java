@@ -42,6 +42,5 @@ public class MySqlShowTest_17_recyclebin extends MysqlTest {
 
         assertEquals("SHOW RECYCLEBIN", stmt.toString());
         assertEquals("show recyclebin", stmt.toLowerCaseString());
-
     }
 }

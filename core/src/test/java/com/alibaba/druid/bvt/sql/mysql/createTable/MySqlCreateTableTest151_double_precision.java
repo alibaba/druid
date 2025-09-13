@@ -34,5 +34,4 @@ public class MySqlCreateTableTest151_double_precision extends TestCase {
                 "\t`col_mcdw` double precision(10, 2)\n" +
                 ")", stmt.toLowerCaseString());
     }
-
 }

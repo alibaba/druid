@@ -15,23 +15,16 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Properties;
-
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
-import com.alibaba.druid.stat.JdbcStatManager;
 
 public class DriverTest extends TestCase {
     protected void tearDown() throws Exception {
@@ -100,5 +93,4 @@ public class DriverTest extends TestCase {
             assertEquals(1, dataSource_4.getProxyFilters().size());
         }
     }
-
 }

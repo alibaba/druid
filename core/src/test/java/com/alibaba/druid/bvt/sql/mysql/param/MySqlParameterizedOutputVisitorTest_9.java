@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -42,4 +41,3 @@ public class MySqlParameterizedOutputVisitorTest_9 extends com.alibaba.druid.bvt
         assertEquals(4, visitor.getParameters().get(1));
     }
 }
-

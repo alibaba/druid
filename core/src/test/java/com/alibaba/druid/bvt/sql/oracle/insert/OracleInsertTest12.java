@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.insert;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -27,9 +23,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.List;
+
 public class OracleInsertTest12 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "INSERT INTO employees (employee_id, last_name, email, " //
+        String sql = "INSERT INTO employees (employee_id, last_name, email, "
                 + "      hire_date, job_id, salary, commission_pct) "//
                 + "   VALUES (207, 'Gregory', 'pgregory@example.com', "//
                 + "      sysdate, 'PU_CLERK', 1.2E3, NULL);";
@@ -41,11 +39,11 @@ public class OracleInsertTest12 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("INSERT INTO employees" //
-                        + "\n\t(employee_id, last_name, email, hire_date, job_id" //
-                        + "\n\t, salary, commission_pct)" //
-                        + "\nVALUES (207, 'Gregory', 'pgregory@example.com', SYSDATE, 'PU_CLERK'" //
-                        + "\n\t, 1.2E3, NULL);",//
+        assertEquals("INSERT INTO employees"
+                        + "\n\t(employee_id, last_name, email, hire_date, job_id"
+                        + "\n\t, salary, commission_pct)"
+                        + "\nVALUES (207, 'Gregory', 'pgregory@example.com', SYSDATE, 'PU_CLERK'"
+                        + "\n\t, 1.2E3, NULL);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -63,5 +61,4 @@ public class OracleInsertTest12 extends OracleTest {
 
         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
     }
-
 }

@@ -21,7 +21,7 @@ public class Issue4933 extends TestCase {
         SQLUtils.acceptTableSource(
                 sql,
                 DbType.odps,
-                e -> tables.add(((SQLExprTableSource)e).getTableName()),
+                e -> tables.add(((SQLExprTableSource) e).getTableName()),
                 e -> e instanceof SQLExprTableSource
         );
         assertTrue(tables.contains("src"));

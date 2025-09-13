@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockClob;
 import com.alibaba.druid.mock.MockResultSet;
@@ -40,7 +37,7 @@ public class FilterChainTest_Clob extends TestCase {
     private StatementProxy statement;
     private MockResultSet mockResultSet;
 
-    private int invokeCount = 0;
+    private int invokeCount;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();

@@ -2,28 +2,27 @@ package com.alibaba.druid.benckmark.sql;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlSelectParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLSelectListCache;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONWriter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by kaiwang.ckw on 15/05/2017.
@@ -122,9 +121,9 @@ public class SqlHolder {
         if (isParam) {
             features = new SQLParserFeature[]{SQLParserFeature.EnableSQLBinaryOpExprGroup, SQLParserFeature.OptimizedForParameterized};
         } else {
-            features = new SQLParserFeature[]{SQLParserFeature.EnableSQLBinaryOpExprGroup
-                    , SQLParserFeature.OptimizedForParameterized
-                    , SQLParserFeature.UseInsertColumnsCache
+            features = new SQLParserFeature[]{SQLParserFeature.EnableSQLBinaryOpExprGroup,
+                    SQLParserFeature.OptimizedForParameterized,
+                    SQLParserFeature.UseInsertColumnsCache
             };
         }
 
@@ -179,7 +178,6 @@ public class SqlHolder {
         return Templates.parameterize(ast, physicalNames, params);
     }
 
-
     public String getParams() {
         ensureParsed();
         StringBuilder out = new StringBuilder();
@@ -214,8 +212,9 @@ public class SqlHolder {
             }
         } catch (Exception ex) {
         }
-        if (itemMap.isEmpty())
+        if (itemMap.isEmpty()) {
             return null;
+        }
         StringBuilder resSb = new StringBuilder();
         for (Map.Entry<String, LinkedHashSet<String>> entry : itemMap.entrySet()) {
             resSb.append(StringUtils.join(entry.getValue(), ",")).append(",");

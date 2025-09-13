@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class OracleSelectTest66_not_eq extends OracleTest {
         String sql = //
                 "SELECT *\n" +
                         "FROM customers\n" +
-                        "WHERE last_name ^= 'Anderson';"; //
+                        "WHERE last_name ^= 'Anderson';";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

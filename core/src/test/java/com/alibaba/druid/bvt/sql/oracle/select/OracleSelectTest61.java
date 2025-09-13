@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest61 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "Select column_expression from sys.ALL_IND_EXPRESSIONS where column_position =: cp"; //
+                "Select column_expression from sys.ALL_IND_EXPRESSIONS where column_position =: cp";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

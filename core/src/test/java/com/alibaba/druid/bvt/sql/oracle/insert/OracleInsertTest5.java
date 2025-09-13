@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.insert;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+
+import java.util.List;
 
 public class OracleInsertTest5 extends OracleTest {
     public void test_0() throws Exception {
@@ -53,5 +51,4 @@ public class OracleInsertTest5 extends OracleTest {
 //        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 //        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
     }
-
 }

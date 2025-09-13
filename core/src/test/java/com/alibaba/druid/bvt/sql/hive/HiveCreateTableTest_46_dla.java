@@ -35,5 +35,4 @@ public class HiveCreateTableTest_46_dla extends OracleTest {
 
         assertEquals(stmt.toString(), SQLUtils.parseSingleStatement(stmt.toString(), DbType.hive, SQLParserFeature.KeepComments).toString());
     }
-
 }

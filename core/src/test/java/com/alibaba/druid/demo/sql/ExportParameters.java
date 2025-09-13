@@ -1,15 +1,13 @@
 package com.alibaba.druid.demo.sql;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
-import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class ExportParameters extends TestCase {
     public void test_export_parameters() throws Exception {

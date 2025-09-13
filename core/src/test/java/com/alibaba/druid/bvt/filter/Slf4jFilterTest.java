@@ -1,15 +1,11 @@
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.sql.Connection;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
 
 public class Slf4jFilterTest extends TestCase {
     private DruidDataSource dataSource;

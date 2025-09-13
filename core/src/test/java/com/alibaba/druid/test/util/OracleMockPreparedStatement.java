@@ -15,51 +15,17 @@
  */
 package com.alibaba.druid.test.util;
 
+import com.alibaba.druid.mock.MockPreparedStatement;
+import oracle.jdbc.OracleParameterMetaData;
+import oracle.jdbc.dcn.DatabaseChangeRegistration;
+import oracle.sql.*;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLXML;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Calendar;
-
-import oracle.jdbc.OracleParameterMetaData;
-import oracle.jdbc.dcn.DatabaseChangeRegistration;
-import oracle.sql.ARRAY;
-import oracle.sql.BFILE;
-import oracle.sql.BINARY_DOUBLE;
-import oracle.sql.BINARY_FLOAT;
-import oracle.sql.BLOB;
-import oracle.sql.CHAR;
-import oracle.sql.CLOB;
-import oracle.sql.CustomDatum;
-import oracle.sql.DATE;
-import oracle.sql.Datum;
-import oracle.sql.INTERVALDS;
-import oracle.sql.INTERVALYM;
-import oracle.sql.NUMBER;
-import oracle.sql.OPAQUE;
-import oracle.sql.ORAData;
-import oracle.sql.RAW;
-import oracle.sql.REF;
-import oracle.sql.ROWID;
-import oracle.sql.STRUCT;
-import oracle.sql.StructDescriptor;
-import oracle.sql.TIMESTAMP;
-import oracle.sql.TIMESTAMPLTZ;
-import oracle.sql.TIMESTAMPTZ;
-
-import com.alibaba.druid.mock.MockPreparedStatement;
 
 public class OracleMockPreparedStatement
         extends MockPreparedStatement implements oracle.jdbc.internal.OraclePreparedStatement {

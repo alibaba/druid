@@ -15,21 +15,17 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import junit.framework.TestCase;
-import oracle.jdbc.OracleConnection;
-import oracle.jdbc.internal.OraclePreparedStatement;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import oracle.jdbc.OracleConnection;
+import oracle.jdbc.internal.OraclePreparedStatement;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class TestOraclePrefetch extends TestCase {
     private DruidDataSource dataSource;
@@ -111,6 +107,5 @@ public class TestOraclePrefetch extends TestCase {
         }
 
         assertEquals(1, dataSource.getCachedPreparedStatementCount());
-
     }
 }

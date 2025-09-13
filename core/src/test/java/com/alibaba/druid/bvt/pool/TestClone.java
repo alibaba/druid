@@ -15,20 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class TestClone extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -107,7 +101,6 @@ public class TestClone extends PoolTestCase {
         conn_6.close();
         conn_7.close();
         conn_8.close();
-
     }
 
     protected void tearDown() throws Exception {

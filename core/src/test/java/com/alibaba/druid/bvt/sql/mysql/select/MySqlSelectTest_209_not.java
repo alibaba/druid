@@ -18,7 +18,6 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
@@ -28,7 +27,6 @@ import java.util.List;
 public class MySqlSelectTest_209_not extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from a where not id > 50";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,8 +50,5 @@ public class MySqlSelectTest_209_not extends MysqlTest {
         SQLNotExpr notExpr = (SQLNotExpr) ((SQLSelectStatement) stmt).getSelect().getQueryBlock().getWhere();
         assertNotNull(notExpr.getParent());
         assertNotNull(notExpr.getExpr().getParent());
-
-
     }
-
 }

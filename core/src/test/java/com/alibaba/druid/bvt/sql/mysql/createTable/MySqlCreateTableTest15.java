@@ -20,24 +20,23 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest15 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE `xxx` (" + //
-                "                `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID'," + //
-                "                `create_date` datetime DEFAULT NULL," + //
-                "                `update_date` datetime DEFAULT NULL," + //
-                "                `product_id` int(11) NOT NULL COMMENT '产品ID'," + //
-                "                `memeber_id` int(11) NOT NULL COMMENT '用户ID'," + //
-                "                `name` varchar(50) DEFAULT NULL COMMENT '姓名'," + //
-                "                `address` varchar(500) DEFAULT NULL COMMENT '地址'," + //
-                "                `mobile` varchar(50) DEFAULT NULL COMMENT '手机'," + //
-                "                `amount` int(11) DEFAULT NULL COMMENT '兑换数量'," + //
-                "                PRIMARY KEY (`id`)" + //
-                "              ) ENGINE=InnoDB DEFAULT CHARSET=gbk;" + //
+        String sql = "CREATE TABLE `xxx` (" +
+                "                `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID'," +
+                "                `create_date` datetime DEFAULT NULL," +
+                "                `update_date` datetime DEFAULT NULL," +
+                "                `product_id` int(11) NOT NULL COMMENT '产品ID'," +
+                "                `memeber_id` int(11) NOT NULL COMMENT '用户ID'," +
+                "                `name` varchar(50) DEFAULT NULL COMMENT '姓名'," +
+                "                `address` varchar(500) DEFAULT NULL COMMENT '地址'," +
+                "                `mobile` varchar(50) DEFAULT NULL COMMENT '手机'," +
+                "                `amount` int(11) DEFAULT NULL COMMENT '兑换数量'," +
+                "                PRIMARY KEY (`id`)" +
+                "              ) ENGINE=InnoDB DEFAULT CHARSET=gbk;" +
                 "";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

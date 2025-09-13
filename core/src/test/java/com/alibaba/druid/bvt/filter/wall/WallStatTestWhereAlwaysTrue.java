@@ -1,13 +1,14 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
-import com.alibaba.druid.wall.spi.*;
+import com.alibaba.druid.wall.spi.DB2WallProvider;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
+import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 import junit.framework.TestCase;
 
 public class WallStatTestWhereAlwaysTrue extends TestCase {
@@ -35,7 +36,6 @@ public class WallStatTestWhereAlwaysTrue extends TestCase {
             "select * from T where a=1 ",
     };
 
-
     protected void setUp() throws Exception {
         WallContext.clearContext();
     }
@@ -43,7 +43,6 @@ public class WallStatTestWhereAlwaysTrue extends TestCase {
     protected void tearDown() throws Exception {
         WallContext.clearContext();
     }
-
 
     protected void doTest(final WallProvider provider) {
         final WallConfig config = provider.getConfig();

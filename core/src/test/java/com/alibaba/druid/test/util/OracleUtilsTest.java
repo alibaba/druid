@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.test.util;
 
+import com.alibaba.druid.util.OracleUtils;
+import junit.framework.TestCase;
+import oracle.jdbc.OracleConnection;
+import org.junit.Assert;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
-import junit.framework.TestCase;
-import oracle.jdbc.OracleConnection;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.util.OracleUtils;
 
 public class OracleUtilsTest extends TestCase {
     public void test_oracle() throws Exception {

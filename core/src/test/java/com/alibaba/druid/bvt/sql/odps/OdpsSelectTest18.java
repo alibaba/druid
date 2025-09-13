@@ -20,13 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OdpsSelectTest18 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "select a, b, c from tableA where a in ( select a from tableB limit 10 )";//
+        String sql = "select a, b, c from tableA where a in ( select a from tableB limit 10 )";
         assertEquals("SELECT a, b, c\n" +
                 "FROM tableA\n" +
                 "WHERE a IN (\n" +
@@ -61,5 +60,4 @@ public class OdpsSelectTest18 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

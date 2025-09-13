@@ -26,7 +26,7 @@ import java.util.List;
 public class H2_Select_1_for_update extends TestCase {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT * FROM QRTZ_LOCKS WHERE SCHED_NAME = 'adminQuartzScheduler' AND LOCK_NAME = ? FOR UPDATE"; //
+                "SELECT * FROM QRTZ_LOCKS WHERE SCHED_NAME = 'adminQuartzScheduler' AND LOCK_NAME = ? FOR UPDATE";
 
 //        System.out.println(sql);
 
@@ -63,6 +63,5 @@ public class H2_Select_1_for_update extends TestCase {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("QRTZ_LOCKS"));
-
     }
 }

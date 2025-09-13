@@ -1,10 +1,7 @@
 package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.DbType;
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class GroupingSetsTest extends TestCase {

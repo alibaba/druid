@@ -4,9 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-
 
 public class MySqlCreateTableTest162_distributed_by_with_duplicate extends MysqlTest {
     public void test_0() throws Exception {
@@ -25,5 +23,4 @@ public class MySqlCreateTableTest162_distributed_by_with_duplicate extends Mysql
         assertEquals(sql, SQLUtils.toSQLString(stmt, DbType.mysql, new SQLUtils.FormatOption(
                 VisitorFeature.OutputDistributedLiteralInCreateTableStmt, VisitorFeature.OutputUCase)));
     }
-
 }

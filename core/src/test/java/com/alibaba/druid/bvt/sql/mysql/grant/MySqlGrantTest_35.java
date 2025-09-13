@@ -174,5 +174,4 @@ public class MySqlGrantTest_35 extends MysqlTest {
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
     }
-
 }

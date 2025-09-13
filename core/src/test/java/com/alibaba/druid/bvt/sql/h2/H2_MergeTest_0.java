@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class H2_MergeTest_0 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "merge into person key(id) select * from person_test"; //
+                "merge into person key(id) select * from person_test";
 
         System.out.println(sql);
 
@@ -62,6 +61,5 @@ public class H2_MergeTest_0 extends OracleTest {
 
         assertTrue(visitor.containsTable("person"));
         assertTrue(visitor.containsTable("person_test"));
-
     }
 }

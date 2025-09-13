@@ -1,13 +1,13 @@
 package com.alibaba.druid.bvt.bug;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class Issue4067 extends TestCase {
     public void test_for_issue() throws Exception {

@@ -15,14 +15,11 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class MergeStatFilterTest extends TestCase {
     private DruidDataSource dataSource;
@@ -51,5 +48,4 @@ public class MergeStatFilterTest extends TestCase {
 
         assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap().size());
     }
-
 }

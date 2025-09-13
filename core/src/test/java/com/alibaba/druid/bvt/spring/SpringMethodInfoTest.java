@@ -15,16 +15,10 @@
  */
 package com.alibaba.druid.bvt.spring;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.support.spring.stat.SpringMethodInfo;
 import com.alibaba.druid.support.spring.stat.SpringMethodStat;
 import com.alibaba.druid.support.spring.stat.SpringStat;
+import junit.framework.TestCase;
 
 public class SpringMethodInfoTest extends TestCase {
     public void test_equals() throws Exception {

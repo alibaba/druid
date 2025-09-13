@@ -16,16 +16,12 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class ExportAndParameterizedVisitorTestCase extends TestCase {
     public void testParameterizedVisitor() {

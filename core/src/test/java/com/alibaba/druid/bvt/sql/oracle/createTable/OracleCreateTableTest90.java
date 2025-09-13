@@ -89,6 +89,5 @@ public class OracleCreateTableTest90 extends OracleTest {
                 "\tFLASH_CACHE DEFAULT\n" +
                 "\tCELL_FLASH_CACHE DEFAULT\n" +
                 ")", stmt.toString());
-
     }
 }

@@ -15,16 +15,15 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.util.JdbcUtils;
 
 public class TestPoolStatement extends TestCase {
     private DruidDataSource dataSource;
@@ -81,6 +80,7 @@ public class TestPoolStatement extends TestCase {
         stmt.setLong(1, new Random().nextInt(1000 * 100));
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
+            // Process result set rows
         }
         rs.close();
         stmt.close();

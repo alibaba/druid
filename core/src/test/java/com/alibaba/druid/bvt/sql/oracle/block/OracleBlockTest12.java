@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.block;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+
+import java.util.List;
 
 public class OracleBlockTest12 extends OracleTest {
     public void test_0() throws Exception {
@@ -50,7 +48,7 @@ public class OracleBlockTest12 extends OracleTest {
                 "  WHEN DUP_VAL_ON_INDEX THEN" +
                 "    ROLLBACK;" +
                 "    DBMS_OUTPUT.PUT_LINE('Inserts were rolled back');" +
-                "END;"; //
+                "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

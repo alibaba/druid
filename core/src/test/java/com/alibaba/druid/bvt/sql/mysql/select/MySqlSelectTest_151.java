@@ -22,10 +22,7 @@ public class MySqlSelectTest_151 extends MysqlTest {
 
         assertEquals("SELECT !1, !1", stmt.toString());
 
-        assertEquals("SELECT !?, !?"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
-
+        assertEquals("SELECT !?, !?",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
 }

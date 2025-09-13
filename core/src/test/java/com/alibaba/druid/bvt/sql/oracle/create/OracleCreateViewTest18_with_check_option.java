@@ -64,6 +64,5 @@ public class OracleCreateViewTest18_with_check_option extends OracleTest {
         assertEquals(1, visitor.getTables().size());
 
         assertEquals(4, visitor.getColumns().size());
-
     }
 }

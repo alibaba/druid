@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class SchemaStatTest2 extends TestCase {
     public void test_schemaStat() throws Exception {
@@ -16,7 +15,6 @@ public class SchemaStatTest2 extends TestCase {
                 + " create_time_dd          as  来电日期"
                 + " from alisec_app.adl_tb_wing_rubbish_laidian_new_reason_realname_fdt  "
                 + " order by   来电日期  desc  limit  30;";
-
 
         DbType dbType = JdbcConstants.MYSQL;
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);

@@ -1,17 +1,16 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.sql.SQLException;
-
-import org.junit.Test;
-
 import com.alibaba.druid.filter.config.ConfigFileGenerator;
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.Test;
+
+import java.sql.SQLException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Jonas Yang

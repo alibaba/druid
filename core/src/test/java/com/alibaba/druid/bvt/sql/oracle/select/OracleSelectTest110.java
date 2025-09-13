@@ -88,7 +88,6 @@ public class OracleSelectTest110 extends OracleTest {
         assertEquals(2, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
     }
 
     public void test_1() throws Exception {
@@ -99,7 +98,6 @@ public class OracleSelectTest110 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
 
         assertEquals(1, statementList.size());
-
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(DbType.oracle);
         SQLStatement stmt = statementList.get(0);
@@ -125,7 +123,6 @@ public class OracleSelectTest110 extends OracleTest {
         assertEquals(4, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
     }
 
     public void test_2() throws Exception {
@@ -146,7 +143,6 @@ public class OracleSelectTest110 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
 
         assertEquals(1, statementList.size());
-
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(DbType.oracle);
         SQLStatement stmt = statementList.get(0);
@@ -181,6 +177,5 @@ public class OracleSelectTest110 extends OracleTest {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
     }
 }

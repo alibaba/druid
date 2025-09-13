@@ -15,12 +15,6 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidConnectionHolder;
@@ -29,6 +23,7 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 import com.alibaba.druid.pool.PreparedStatementPool;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import junit.framework.TestCase;
 
 public class PreparedStatementKeyTest extends TestCase {
     public void test_equals_0() throws Exception {

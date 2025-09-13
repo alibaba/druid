@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
-
 public class MySqlSelectTest_253 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT a FROM t1 GROUP BY ()";
@@ -31,6 +30,4 @@ public class MySqlSelectTest_253 extends MysqlTest {
                 "FROM t1\n" +
                 "GROUP BY ()", stmt.toString());
     }
-
-
 }

@@ -30,7 +30,6 @@ public class MySqlSelectTest_58_alias_dot extends MysqlTest {
 
         System.out.println(sql);
 
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 

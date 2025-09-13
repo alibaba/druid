@@ -1,6 +1,5 @@
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -9,6 +8,7 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson2.JSON;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,20 +34,17 @@ public class MySqlSelectTest_161 extends MysqlTest {
         assertEquals("SELECT DATE_FORMAT(FROM_UNIXTIME(`time` / ?), '%Y-%m-%d %H:%i:%s')\n" +
                         "\t, `time`\n" +
                         "FROM pvtz_day\n" +
-                        "ORDER BY `time` DESC"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        "ORDER BY `time` DESC",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
 
         List<Object> params = new ArrayList<Object>();
         assertEquals("SELECT DATE_FORMAT(FROM_UNIXTIME(`time` / ?), '%Y-%m-%d %H:%i:%s')\n" +
                         "\t, `time`\n" +
                         "FROM pvtz_day\n" +
-                        "ORDER BY `time` DESC"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        "ORDER BY `time` DESC",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, params, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
 
         assertEquals(1, params.size());
         assertEquals("1000", JSON.toJSONString(params.get(0)));
-
-
     }
-
 }

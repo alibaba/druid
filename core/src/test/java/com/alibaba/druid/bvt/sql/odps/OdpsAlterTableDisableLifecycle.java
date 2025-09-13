@@ -1,18 +1,15 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsAlterTableDisableLifecycle extends TestCase {
     public void test_no_partition() throws Exception {
         String sql = "ALTER TABLE trans  DISABLE LIFECYCLE;";
-        assertEquals("ALTER TABLE trans" //
+        assertEquals("ALTER TABLE trans"
                 + "\n\tDISABLE LIFECYCLE;", SQLUtils.formatOdps(sql));
 
-        assertEquals("alter table trans" //
+        assertEquals("alter table trans"
                 + "\n\tdisable lifecycle;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 

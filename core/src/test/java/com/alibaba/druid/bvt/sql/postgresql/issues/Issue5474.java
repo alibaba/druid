@@ -4,11 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 /**
  * @author lizongbo
@@ -16,7 +12,6 @@ import static org.junit.Assert.assertFalse;
  * @see <a href="https://www.postgresql.org/docs/current/sql-createtrigger.html">PostgreSQL CREATE TRIGGER — define a new trigger</a>
  */
 public class Issue5474 {
-
     @Test
     public void test_create_triger_execute() throws Exception {
         for (DbType dbType : new DbType[]{DbType.postgresql}) {

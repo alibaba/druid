@@ -21,14 +21,13 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlCreateTableTest1 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE lookup" + //
-                "  (id INT, INDEX USING BTREE (id))" + //
+        String sql = "CREATE TABLE lookup" +
+                "  (id INT, INDEX USING BTREE (id))" +
                 "  ENGINE = MEMORY;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);

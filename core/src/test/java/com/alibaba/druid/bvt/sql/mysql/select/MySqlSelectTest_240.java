@@ -19,18 +19,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
-
 public class MySqlSelectTest_240 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select sum(file_size / 1024. / 1024.) / 1024.\n" +
                 "from mssql_oss_download_list";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
         assertEquals("SELECT sum(file_size / 1024. / 1024.) / 1024.\n" +
                 "FROM mssql_oss_download_list", stmt.toString());
     }
-
-
 }

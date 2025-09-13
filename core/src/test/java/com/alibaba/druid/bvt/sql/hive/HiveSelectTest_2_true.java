@@ -1,7 +1,6 @@
 package com.alibaba.druid.bvt.sql.hive;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class HiveSelectTest_2_true extends TestCase {
     public void test_select() throws Exception {
-        String sql = "SELECT * FROM customers where isvalid = true or isxx = false";//
+        String sql = "SELECT * FROM customers where isvalid = true or isxx = false";
         assertEquals("SELECT *\n" +
                 "FROM customers\n" +
                 "WHERE isvalid = true\n" +

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
                         "FROM ECC_CPR.CCG_GTS_OSG3A_V O\n" +
                         "WHERE O.ENABLED_FLAG = ?\n" +
                         "\tAND NVL(O.PRICE, ?) = ?\n" +
-                        "\tAND O.CONTRACT_HEADER_ID = :B1"; //
+                        "\tAND O.CONTRACT_HEADER_ID = :B1";
 
         System.out.println(sql);
 
@@ -83,7 +82,7 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
                         "FROM ECC_CPR.CCG_GTS_OSG3A_V O\n" +
                         "WHERE O.ENABLED_FLAG = ?\n" +
                         "\tAND NVL(O.PRICE, ?) = ?\n" +
-                        "\tAND O.CONTRACT_HEADER_ID = :B1"; //
+                        "\tAND O.CONTRACT_HEADER_ID = :B1";
 
         System.out.println(sql);
 

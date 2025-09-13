@@ -15,17 +15,16 @@
  */
 package com.alibaba.druid.pvt.pool;
 
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3_Concurrent extends TestCase {
     protected void setUp() throws Exception {
@@ -135,6 +134,5 @@ public class TestIdle3_Concurrent extends TestCase {
 
         int max = count > dataSource.getMaxActive() ? dataSource.getMaxActive() : count;
         Assert.assertEquals(max, driver.getConnections().size());
-
     }
 }

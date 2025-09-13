@@ -20,14 +20,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlSelectTest_36 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM mytable t1 natural LEFT JOIN t2;";
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = statementList.get(0);
@@ -62,6 +60,4 @@ public class MySqlSelectTest_36 extends MysqlTest {
                     output);
         }
     }
-
-
 }

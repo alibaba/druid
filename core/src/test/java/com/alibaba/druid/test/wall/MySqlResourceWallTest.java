@@ -15,22 +15,16 @@
  */
 package com.alibaba.druid.test.wall;
 
-import java.io.File;
-import java.io.FileInputStream;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlResourceWallTest extends TestCase {
     private String[] items;
-
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
@@ -69,7 +63,6 @@ public class MySqlResourceWallTest extends TestCase {
 //        Assert.assertFalse(provider.checkValid(sql));
     }
 
-
     @Test
     public void test_lock_table() throws Exception {
         WallProvider provider = new MySqlWallProvider();
@@ -83,7 +76,6 @@ public class MySqlResourceWallTest extends TestCase {
         }
         Assert.assertTrue(provider.checkValid(sql));
 
-
         sql = "lock tables etstsun LOW_PRIORITY write";
         result = provider.check(sql);
         if (result.getViolations().size() > 0) {
@@ -91,7 +83,6 @@ public class MySqlResourceWallTest extends TestCase {
             System.out.println("error () : " + violation.getMessage());
         }
         Assert.assertTrue(provider.checkValid(sql));
-
 
         sql = "UNLOCK TABLES";
         result = provider.check(sql);
@@ -101,7 +92,6 @@ public class MySqlResourceWallTest extends TestCase {
         }
         Assert.assertTrue(provider.checkValid(sql));
 
-
         sql = "lock table dsdfsdf read";
         result = provider.check(sql);
         if (result.getViolations().size() > 0) {
@@ -110,7 +100,6 @@ public class MySqlResourceWallTest extends TestCase {
         }
         Assert.assertTrue(provider.checkValid(sql));
 
-
         sql = "lock table dsdfsdf read local";
         result = provider.check(sql);
         if (result.getViolations().size() > 0) {
@@ -118,8 +107,5 @@ public class MySqlResourceWallTest extends TestCase {
             System.out.println("error () : " + violation.getMessage());
         }
         Assert.assertTrue(provider.checkValid(sql));
-
-
     }
-
 }

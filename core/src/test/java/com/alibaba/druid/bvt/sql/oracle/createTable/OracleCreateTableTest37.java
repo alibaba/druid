@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -73,7 +72,7 @@ public class OracleCreateTableTest37 extends OracleTest {
                         + "\n\tCONSTRAINT product_status_lov_demo CHECK (product_status IN ('orderable', 'planned', 'under development', 'obsolete'))"
                         + "\n)"
                         + "\nPARTITION BY HASH (product_id) PARTITIONS 4"
-                        + "\nSTORE IN (tbs_01, tbs_02, tbs_03, tbs_04);",//
+                        + "\nSTORE IN (tbs_01, tbs_02, tbs_03, tbs_04);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

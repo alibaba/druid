@@ -28,7 +28,6 @@ public class MySqlCreateTableTest126 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE tablename1 (\n" + "\tid INT,\n" + "\ttitle clob,\n" + "\tbody clob,\n"
                 + "\tcomment clob,\n" + "\tauthor clob,\n"
                 + "\tFULLTEXT INDEX f_idx1(title) WITH INDEX ANALYZER 'analyzer_name1' WITH QUERY ANALYZER 'analyzer_name2',\n"
@@ -36,8 +35,5 @@ public class MySqlCreateTableTest126 extends MysqlTest {
                 + "\tFULLTEXT INDEX f_idx3(comment) WITH INDEX ANALYZER 'analyzer_name4',\n"
                 + "\tFULLTEXT INDEX f_idx4(author) WITH QUERY ANALYZER 'analyzer_name5',\n"
                 + "\tFULLTEXT INDEX f_idx5(author)\n" + ");", stmt.toString());
-
     }
-
-
 }

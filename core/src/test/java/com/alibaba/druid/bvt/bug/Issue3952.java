@@ -2,13 +2,7 @@ package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-
-import java.util.List;
 
 public class Issue3952 extends TestCase {
     public void test_0() throws Exception {

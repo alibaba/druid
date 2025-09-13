@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class OracleSelectTest82_wmsysconcat extends OracleTest {
                         "inner join sys_org so on st.orgid=so.orgid\n" +
                         "group by st.regid ) t on t.regid = supReg.regid\n" +
                         "WHERE supReg.status in (2,3,4) and supType='0'\n" +
-                        "\n"; //
+                        "\n";
 
         System.out.println(sql);
 
@@ -45,7 +44,6 @@ public class OracleSelectTest82_wmsysconcat extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
-
 
         assertEquals(1, statementList.size());
 

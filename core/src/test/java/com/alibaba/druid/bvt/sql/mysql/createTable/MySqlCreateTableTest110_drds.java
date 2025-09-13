@@ -24,5 +24,4 @@ public class MySqlCreateTableTest110_drds extends MysqlTest {
                 "DBPARTITION BY hash(id) DBPARTITIONS 2\n" +
                 "TBPARTITION BY hash(id) TBPARTITIONS 2", stmt.toString());
     }
-
 }

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class mysql_block_1 extends OracleTest {
     public void test_0() throws Exception {
@@ -45,7 +44,7 @@ public class mysql_block_1 extends OracleTest {
                 "ts`,`elapsed_time`,`user_io_wait_time`,`collection_time`\n" +
                 "    FROM ktv_tmp_sqlarea WHERE dbid=? and sql_fulltext is not null;\n" +
                 "    COMMIT;\n" +
-                "    DELETE FROM ktv_tmp_sqlarea WHERE dbid=?;"; //
+                "    DELETE FROM ktv_tmp_sqlarea WHERE dbid=?;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         assertEquals(7, statementList.size());

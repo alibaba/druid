@@ -15,16 +15,6 @@
  */
 package com.alibaba.druid.pool.bonecp;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -33,6 +23,14 @@ import com.jolbox.bonecp.ConnectionHandle;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.impl.NewProxyConnection;
 import com.mchange.v2.c3p0.impl.NewProxyPreparedStatement;
+import junit.framework.TestCase;
+import org.apache.commons.dbcp.BasicDataSource;
+
+import javax.sql.DataSource;
+
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class TestPSCache extends TestCase {
     public void test_boneCP() throws Exception {
@@ -123,5 +121,4 @@ public class TestPSCache extends TestCase {
 
         return conn.unwrap(MockConnection.class);
     }
-
 }

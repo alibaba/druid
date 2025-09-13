@@ -15,15 +15,6 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import static org.junit.Assert.*;
-
-
-import java.io.InputStream;
-import java.io.Reader;
-import java.sql.*;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidConnectionHolder;
@@ -32,6 +23,11 @@ import com.alibaba.druid.pool.DruidPooledCallableStatement;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementHolder;
+import junit.framework.TestCase;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.sql.*;
 
 public class PoolableCallableStatementTest extends TestCase {
     private DruidDataSource dataSource = new DruidDataSource();

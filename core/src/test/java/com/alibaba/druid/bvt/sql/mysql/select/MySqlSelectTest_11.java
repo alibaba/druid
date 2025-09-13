@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -58,8 +57,8 @@ public class MySqlSelectTest_11 extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("users")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT *" + //
-                        "\nFROM users" + //
+        assertEquals("SELECT *" +
+                        "\nFROM users" +
                         "\nWHERE uid = :uid", //
                 output);
     }

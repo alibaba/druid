@@ -21,7 +21,6 @@ public class MySqlCreateTableTest134 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE xuhan3 (\n" +
                 "\tid int NOT NULL PRIMARY KEY AUTO_INCREMENT,\n" +
                 "\tname char(40),\n" +
@@ -37,8 +36,5 @@ public class MySqlCreateTableTest134 extends MysqlTest {
                 "\tSimpleDate_dayofweek tinyint(4) generated always as (dayofweek(SimpleDate)) virtual,\n" +
                 "\tkey SimpleDate_dayofweek (SimpleDate_dayofweek)\n" +
                 ");", stmt.toLowerCaseString());
-
     }
-
-
 }

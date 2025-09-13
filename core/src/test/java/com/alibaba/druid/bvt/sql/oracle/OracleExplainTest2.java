@@ -15,25 +15,23 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
+import java.util.List;
+
 public class OracleExplainTest2 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "EXPLAIN PLAN " + //
-                        "    SET STATEMENT_ID = 'Raise in Tokyo' " + //
-                        "    INTO plan_table " + //
-                        "    FOR UPDATE employees " + //
-                        "        SET salary = salary * 1.10 " + //
-                        "        WHERE department_id =  " + //
-                        "           (SELECT department_id FROM departments" + //
+                "EXPLAIN PLAN " +
+                        "    SET STATEMENT_ID = 'Raise in Tokyo' " +
+                        "    INTO plan_table " +
+                        "    FOR UPDATE employees " +
+                        "        SET salary = salary * 1.10 " +
+                        "        WHERE department_id =  " +
+                        "           (SELECT department_id FROM departments" +
                         "               WHERE location_id = 1700); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-
 public class OracleSelectTest133 extends TestCase {
     public void test_0() throws Exception {
         String sql = "SELECT to_char(sysdate-interval '1' hour,'hh24:mi:ss') as num FROM DUAL;";
@@ -58,5 +57,4 @@ public class OracleSelectTest133 extends TestCase {
 
 //        assertTrue(visitor.containsColumn("srm1.CONSIGNEE_ADDRESS", "id"));
     }
-
 }

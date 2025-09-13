@@ -1,16 +1,12 @@
 package com.alibaba.druid.bvt.sql.postgresql;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGExportParameterVisitor;
+import junit.framework.TestCase;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class PGExportParameterVisitorTest extends TestCase {
     public void test_pg() throws Exception {

@@ -15,12 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import static org.junit.Assert.assertFalse;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试访问SQLServer系统表
@@ -39,5 +35,4 @@ public class SQLServerWallPermitTableTest extends TestCase {
         assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION SELECT sysobjects.name as tablename, syscolumns.name as columnname FROM sysobjects JOIN syscolumns ON sysobjects.id = syscolumns.id WHERE sysobjects.xtype = ‘U’ AND syscolumns.name LIKE ‘%PASSWORD%’ "));
         assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION SELECT name FROM syscolumns WHERE id = (SELECT id FROM sysobjects WHERE name = ‘mytable’);"));
     }
-
 }

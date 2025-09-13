@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallUtils;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class OracleListAggTest1 extends OracleTest {
                         "\t\t\tAND T2.IS_DELETED = 0\n" +
                         "\t\tGROUP BY T.ID\n" +
                         "\t) T1 ON T.ID = T1.ID \n" +
-                        "WHERE t.IS_DELETED = 0",//
+                        "WHERE t.IS_DELETED = 0",
                 SQLUtils.toSQLString(stmt, dbType));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
@@ -71,5 +70,4 @@ public class OracleListAggTest1 extends OracleTest {
 
         WallUtils.isValidateOracle(sql);
     }
-
 }

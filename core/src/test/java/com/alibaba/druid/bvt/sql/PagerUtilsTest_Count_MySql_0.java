@@ -6,34 +6,33 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class PagerUtilsTest_Count_MySql_0 extends TestCase {
     public void test_mysql_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
     public void test_mysql_1() throws Exception {
         String sql = "select id, name from t";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
     public void test_mysql_2() throws Exception {
         String sql = "select id, name from t order by id";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
-        assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
     public void test_mysql_3() throws Exception {
         String sql = "select distinct id from t order by id";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
-        assertEquals("SELECT COUNT(DISTINCT id)\n" + //
+        assertEquals("SELECT COUNT(DISTINCT id)\n" +
                 "FROM t", result);
     }
 
@@ -85,5 +84,4 @@ public class PagerUtilsTest_Count_MySql_0 extends TestCase {
                 "\tGROUP BY product_id\n" +
                 ") ALIAS_COUNT", countSql);
     }
-
 }

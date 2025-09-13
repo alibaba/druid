@@ -15,15 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDateTime;
-
 import com.alibaba.druid.filter.mysql8datetime.MySQL8DateTimeSqlTypeFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
@@ -32,15 +23,19 @@ import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.util.JdbcUtils;
-
 import junit.framework.TestCase;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * lizongbo
  */
 public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -92,11 +87,9 @@ public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
         stmt.close();
 
         conn.close();
-
     }
 
     public static class MyResultSet extends MockResultSet {
-
         public MyResultSet(Statement statement) {
             super(statement);
         }
@@ -110,7 +103,5 @@ public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
         public Object getObject(String columnLabel) throws SQLException {
             return LocalDateTime.now();
         }
-
-
     }
 }

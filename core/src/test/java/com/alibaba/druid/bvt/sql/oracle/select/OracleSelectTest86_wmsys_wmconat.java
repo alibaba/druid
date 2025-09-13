@@ -24,14 +24,13 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest86_wmsys_wmconat extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "select WMSYS.WM_CONCAT(name) from emp"; //
+                "select WMSYS.WM_CONCAT(name) from emp";
 
         System.out.println(sql);
 
@@ -70,7 +69,7 @@ public class OracleSelectTest86_wmsys_wmconat extends OracleTest {
 
     public void test_1() throws Exception {
         String sql = //
-                "select WMSYS.WM_CONCAT(name) + 1 from emp"; //
+                "select WMSYS.WM_CONCAT(name) + 1 from emp";
 
         System.out.println(sql);
 

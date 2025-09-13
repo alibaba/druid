@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-
 public class OracleSelectTest125 extends TestCase {
     public void test_0() throws Exception {
         String sql = "SELECT\n" +
@@ -66,5 +65,4 @@ public class OracleSelectTest125 extends TestCase {
                 "where 1 = 1\n" +
                 "offset ? rows fetch first ? rows only", stmt.toLowerCaseString());
     }
-
 }

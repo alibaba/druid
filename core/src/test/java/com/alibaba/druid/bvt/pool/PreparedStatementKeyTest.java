@@ -1,12 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import junit.framework.TestCase;
 
 public class PreparedStatementKeyTest extends TestCase {
     public void test_0() throws Exception {
@@ -19,48 +15,41 @@ public class PreparedStatementKeyTest extends TestCase {
     public void test_eq() throws Exception {
         assertEquals(new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103),
                 new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103));
-
     }
 
     public void test_not_eq() throws Exception {
-        assertFalse( //
-                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals( //
+        assertFalse(
+                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals(
                         new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 201, 102, 103)));
-
     }
 
     public void test_not_eq_1() throws Exception {
-        assertFalse( //
-                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals( //
+        assertFalse(
+                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals(
                         new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 202, 103)));
-
     }
 
     public void test_not_eq_2() throws Exception {
-        assertFalse( //
-                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals( //
+        assertFalse(
+                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals(
                         new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 203)));
-
     }
 
     public void test_not_eq_3() throws Exception {
-        assertFalse( //
-                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals( //
+        assertFalse(
+                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals(
                         new PreparedStatementKey("select 'a'", "c1", MethodType.M2, 101, 102, 103)));
-
     }
 
     public void test_not_eq_4() throws Exception {
-        assertFalse( //
-                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals( //
+        assertFalse(
+                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals(
                         new PreparedStatementKey("select 'a'", "c2", MethodType.M1, 101, 102, 103)));
-
     }
 
     public void test_not_eq_5() throws Exception {
-        assertFalse( //
-                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals( //
+        assertFalse(
+                new PreparedStatementKey("select 'a'", "c1", MethodType.M1, 101, 102, 103).equals(
                         new PreparedStatementKey("select 'b'", "c1", MethodType.M1, 101, 102, 103)));
-
     }
 }

@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool.adapter;
 
-import static org.junit.Assert.*;
-
-
-import java.io.Closeable;
-import javax.sql.DataSource;
-
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+
+import javax.sql.DataSource;
+
+import java.io.Closeable;
 
 public class DruidDataSourceC3P0AdapterTest2 extends PoolTestCase {
     public void test_0() throws Exception {

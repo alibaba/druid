@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -309,7 +308,7 @@ public class OracleSelectTest78 extends OracleTest {
                         "WHERE\n" +
                         "        resultnums >:3\n" +
                         "    AND\n" +
-                        "        resultnums <=:4"; //
+                        "        resultnums <=:4";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

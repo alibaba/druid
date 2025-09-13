@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.drop;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+
+import java.util.List;
 
 public class MySqlDropViewTest extends MysqlTest {
     public void test_0() throws Exception {
@@ -50,6 +48,5 @@ public class MySqlDropViewTest extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
 
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("view_name")));
-
     }
 }

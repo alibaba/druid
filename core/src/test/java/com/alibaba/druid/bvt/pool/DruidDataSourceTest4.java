@@ -1,17 +1,12 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import java.sql.SQLException;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ExceptionSorter;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
+import junit.framework.TestCase;
+
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class DruidDataSourceTest4 extends TestCase {
     private DruidDataSource dataSource;

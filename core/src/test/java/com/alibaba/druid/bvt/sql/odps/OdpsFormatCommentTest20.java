@@ -1,9 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsFormatCommentTest20 extends TestCase {
@@ -14,5 +11,4 @@ public class OdpsFormatCommentTest20 extends TestCase {
                 + "\nFULL OUTER JOIN b"
                 + "\nON a.id = b.id", SQLUtils.formatOdps(sql));
     }
-
 }

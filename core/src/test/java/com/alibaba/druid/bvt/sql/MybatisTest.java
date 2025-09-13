@@ -16,12 +16,9 @@
 package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 public class MybatisTest extends TestCase {
     private String sql = "select * from t where id = #{id}";

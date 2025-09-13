@@ -36,7 +36,7 @@ public class OracleCreateTypeTest6 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE OR REPLACE TYPE \"VARRAY_DEPT_TYPE\" VARRAY (7000) OF NUMBER(10)",//
+        assertEquals("CREATE OR REPLACE TYPE \"VARRAY_DEPT_TYPE\" VARRAY (7000) OF NUMBER(10)",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -1,20 +1,10 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.Map;
-
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * 验证 select into 语句的解析
@@ -24,7 +14,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/select-into.html">MySQL select into语法</a>
  */
 public class Issue5498 {
-
     @Test
     public void test_select_into() throws Exception {
         for (DbType dbType : new DbType[]{DbType.mysql, DbType.oracle}) {

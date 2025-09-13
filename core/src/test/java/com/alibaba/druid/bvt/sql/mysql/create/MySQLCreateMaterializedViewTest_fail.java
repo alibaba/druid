@@ -29,7 +29,6 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
                 "AS SELECT \n";
 
         failed(sql);
-
     }
 
     public void test2() throws Exception {
@@ -44,7 +43,6 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
                 "AS SELECT id FROM base;";
 
         failed(sql);
-
     }
 
     public void test3() throws Exception {

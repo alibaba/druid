@@ -102,5 +102,4 @@ public class MySqlCreateTableTest147_fulltext3 extends TestCase {
                 ")\n" +
                 "DISTRIBUTE BY HASH(`id`);", stmt.toString());
     }
-
 }

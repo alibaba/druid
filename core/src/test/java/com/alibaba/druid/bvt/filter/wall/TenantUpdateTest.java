@@ -15,22 +15,18 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class TenantUpdateTest extends TestCase {
     private String sql = "UPDATE T_USER SET FNAME = ? WHERE FID = ?";
-    private String expect_sql = "UPDATE T_USER" + //
-            "\nSET FNAME = ?, tenant = 123" + //
+    private String expect_sql = "UPDATE T_USER" +
+            "\nSET FNAME = ?, tenant = 123" +
             "\nWHERE FID = ?";
 
     private WallConfig config = new WallConfig();

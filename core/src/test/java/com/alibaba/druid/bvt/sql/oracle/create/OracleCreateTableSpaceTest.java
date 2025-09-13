@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableSpaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -12,7 +11,6 @@ import java.util.List;
  * <a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/CREATE-TABLESPACE.html">CREATE TABLESPACE</a>
  */
 public class OracleCreateTableSpaceTest extends OracleTest {
-
     // basic tablespace
     public void test_0() throws Exception {
         String sql = "CREATE TABLESPACE omf_ts1";
@@ -34,6 +32,4 @@ public class OracleCreateTableSpaceTest extends OracleTest {
         sql = "CREATE TABLESPACE tbs_01 DATAFILE 'tbs_f2.dbf' SIZE 40M ONLINE";
         // parser need to update
     }
-
 }
-

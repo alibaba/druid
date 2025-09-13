@@ -1,14 +1,13 @@
 package com.alibaba.druid.bvt.support.spring;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockBlob;
 import com.alibaba.druid.mock.MockClob;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.support.spring.DruidLobHandler;
+import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DruidLobHandlerTest extends TestCase {
     public void test_0() throws Exception {

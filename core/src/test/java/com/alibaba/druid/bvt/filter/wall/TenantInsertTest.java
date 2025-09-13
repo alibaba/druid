@@ -18,17 +18,13 @@
 
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * @author kiki
@@ -98,9 +94,9 @@ public class TenantInsertTest extends TestCase {
 
     public void testMySql5() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) SELECT ID, NAME FROM temp WHERE age = 18";
-        String expect_sql = "INSERT INTO orders (ID, NAME, tenant)" + //
-                "\nSELECT ID, NAME, 123" + //
-                "\nFROM temp" + //
+        String expect_sql = "INSERT INTO orders (ID, NAME, tenant)" +
+                "\nSELECT ID, NAME, 123" +
+                "\nFROM temp" +
                 "\nWHERE age = 18";
 
         {
@@ -155,5 +151,4 @@ public class TenantInsertTest extends TestCase {
             assertEquals(expect_sql, resultSql);
         }
     }
-
 }

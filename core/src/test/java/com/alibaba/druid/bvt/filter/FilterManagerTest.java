@@ -1,16 +1,12 @@
 package com.alibaba.druid.bvt.filter;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterManager;
+import junit.framework.TestCase;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class FilterManagerTest extends TestCase {
     static {
@@ -49,7 +45,6 @@ public class FilterManagerTest extends TestCase {
         }
         assertNotNull(error);
     }
-
 
     public static class ErrorFilter extends FilterAdapter {
         public ErrorFilter() {

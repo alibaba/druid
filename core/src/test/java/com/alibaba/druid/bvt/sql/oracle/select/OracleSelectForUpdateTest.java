@@ -15,21 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.select;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectForUpdateTest extends OracleTest {
-
     public void test_0() throws Exception {
         String sql = "SELECT salary\n" +
                      "FROM employees\n" +
@@ -54,7 +48,6 @@ public class OracleSelectForUpdateTest extends OracleTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("conditions : " + visitor.getConditions());
 //        System.out.println("relationships : " + visitor.getRelationships());
-
 
         assertEquals(1, visitor.getTables().size());
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));

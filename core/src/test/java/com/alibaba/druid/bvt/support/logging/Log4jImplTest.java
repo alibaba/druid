@@ -1,12 +1,8 @@
 package com.alibaba.druid.bvt.support.logging;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log4jImpl;
+import junit.framework.TestCase;
 
 public class Log4jImplTest extends TestCase {
     public void test_0() throws Exception {

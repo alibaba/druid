@@ -15,18 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import com.alibaba.druid.stat.JdbcStatManager;
 
 public class TestStat extends TestCase {
     private DruidDataSource dataSource;
@@ -39,7 +35,6 @@ public class TestStat extends TestCase {
         dataSource.setName("com.alibaba.dragoon.monitor");
         dataSource.setMinIdle(0);
         dataSource.setPoolPreparedStatements(false);
-
     }
 
     protected void tearDown() throws Exception {
@@ -67,6 +62,5 @@ public class TestStat extends TestCase {
 
         JdbcStatManager.getInstance().getDataSourceList();
         assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
     }
 }

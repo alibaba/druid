@@ -20,18 +20,17 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleCreateTableTest9 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "CREATE GLOBAL TEMPORARY TABLE \"ESCROW\".\"RUPD$_HT_TASK_TRADE_HISTOR\" (" + //
-                        "\"ID\" NUMBER, " + //
-                        "dmltype$$ varchar2(1), " + //
-                        "snapid integer, " + //
-                        "change_vector$$ raw(255)" + //
+                "CREATE GLOBAL TEMPORARY TABLE \"ESCROW\".\"RUPD$_HT_TASK_TRADE_HISTOR\" (" +
+                        "\"ID\" NUMBER, " +
+                        "dmltype$$ varchar2(1), " +
+                        "snapid integer, " +
+                        "change_vector$$ raw(255)" +
                         ") ON COMMIT PRESERVE ROWS";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

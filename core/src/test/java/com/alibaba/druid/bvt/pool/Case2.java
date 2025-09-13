@@ -15,19 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.alibaba.druid.util.JMXUtils;
 
 import java.sql.Connection;
 import java.util.Properties;
-
-import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import com.alibaba.druid.util.JMXUtils;
 
 /**
  * 类Case2.java的实现描述：TODO 类实现描述

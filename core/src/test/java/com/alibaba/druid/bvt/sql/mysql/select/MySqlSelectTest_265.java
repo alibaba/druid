@@ -21,20 +21,17 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
-
 public class MySqlSelectTest_265 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select timediff(\"12:00:00\", a) from test_booleancheck\n";
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils
-                .parseSingleStatement(sql, DbType.mysql
-                        , SQLParserFeature.KeepSourceLocation
-                        , SQLParserFeature.EnableSQLBinaryOpExprGroup
+                .parseSingleStatement(sql, DbType.mysql,
+                        SQLParserFeature.KeepSourceLocation,
+                        SQLParserFeature.EnableSQLBinaryOpExprGroup
                 );
 
         assertEquals("SELECT timediff('12:00:00', a)\n" +
                 "FROM test_booleancheck", stmt.toString());
     }
-
-
 }

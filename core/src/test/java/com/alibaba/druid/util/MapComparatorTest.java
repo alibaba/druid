@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.util;
 
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
 
 public class MapComparatorTest extends TestCase {
     private String orderByKey = "orderby";
@@ -73,7 +73,6 @@ public class MapComparatorTest extends TestCase {
         map1.put(orderByKey, null);
         map2.put(orderByKey, null);
         Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
-
     }
 
     private void test_comparator_date_0(boolean desc) throws Exception {
@@ -103,7 +102,6 @@ public class MapComparatorTest extends TestCase {
         map1.put(orderByKey, null);
         map2.put(orderByKey, null);
         Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
-
     }
 
     private void test_comparator_string_0(boolean desc) throws Exception {

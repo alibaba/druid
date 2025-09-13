@@ -46,7 +46,7 @@ public class MySQLCreateMaterializedViewTest8_distributed_by_with_duplicate exte
                         "ENABLE QUERY REWRITE\n" +
                         "AS\n" +
                         "SELECT id\n" +
-                        "FROM base;",//
+                        "FROM base;",
                 SQLUtils.toSQLString(stmt, DbType.mysql, null, VisitorFeature.OutputDistributedLiteralInCreateTableStmt));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

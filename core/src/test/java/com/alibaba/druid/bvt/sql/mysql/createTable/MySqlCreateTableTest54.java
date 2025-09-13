@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MySqlCreateTableTest54 extends MysqlTest {
@@ -45,7 +44,6 @@ public class MySqlCreateTableTest54 extends MysqlTest {
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("CREATE TABLE t1 (" + "\n\tyear YEAR(4)," + "\n\tmonth INT(2) UNSIGNED ZEROFILL,"
                 + "\n\tday INT(2) UNSIGNED ZEROFILL" + "\n)", output);
-
     }
 
     @Test
@@ -159,5 +157,4 @@ public class MySqlCreateTableTest54 extends MysqlTest {
                     + "\n) engine = InnoDB charset = utf8", output);
         }
     }
-
 }

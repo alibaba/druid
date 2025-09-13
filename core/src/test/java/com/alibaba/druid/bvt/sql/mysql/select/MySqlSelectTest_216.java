@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
-
 
 public class MySqlSelectTest_216 extends MysqlTest {
     public void test_0() throws Exception {
@@ -77,6 +75,5 @@ public class MySqlSelectTest_216 extends MysqlTest {
                 ") t1, t_jifen_account t2\n" +
                 "where t1.id = t2.id\n" +
                 "\tand t2.sellerId = 15142801667171005", stmt.clone().toLowerCaseString());
-
     }
 }

@@ -40,7 +40,5 @@ public class HiveCreateTableTest_43 extends OracleTest {
                 "LIKE\n" +
                 "SELECT *\n" +
                 "FROM tbl1;", SQLUtils.toSQLString(statementList, JdbcConstants.HIVE));
-
     }
-
 }

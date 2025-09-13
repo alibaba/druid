@@ -26,8 +26,5 @@ public class MySqlSelectTest_164_window extends MysqlTest {
         assertEquals("SELECT val, ROW_NUMBER() OVER w AS \"row_number\", RANK() OVER w AS \"rank\", DENSE_RANK() OVER w AS \"dense_rank\"\n" +
                 "FROM numbers\n" +
                 "WINDOW w AS (ORDER BY val);", stmt.toString());
-
-
     }
-
 }

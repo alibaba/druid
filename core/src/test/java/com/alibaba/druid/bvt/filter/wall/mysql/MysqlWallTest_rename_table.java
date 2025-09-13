@@ -1,12 +1,7 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-
 import junit.framework.TestCase;
 
 public class MysqlWallTest_rename_table extends TestCase {

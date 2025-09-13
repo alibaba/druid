@@ -8,12 +8,10 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class SchemaStatTest6 extends TestCase {
     public void test_schemaStat() throws Exception {
         String sql = "select count(1), name from tg_rpc_user where id < 5 group by name order by id desc";
-
 
         DbType dbType = JdbcConstants.MYSQL;
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);

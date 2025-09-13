@@ -15,12 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import static org.junit.Assert.*;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import junit.framework.TestCase;
 
 public class OracleFlashbackQueryTest extends TestCase {
     public void test_isEmpty() throws Exception {

@@ -104,5 +104,4 @@ public class MySqlCreateTableTest146_col_def extends TestCase {
                 "\ta varchar(10) collate utf8_general_ci not null primary key comment 'hh' as ('val') stored references tb_ref (a)\n" +
                 ");", stmt.toLowerCaseString());
     }
-
 }

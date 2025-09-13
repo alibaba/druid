@@ -2,10 +2,11 @@ package com.alibaba.druid.bvt.sql.h2;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.h2.parser.H2StatementParser;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author machunxiao
@@ -19,5 +20,4 @@ public class H2_InsertTest_0 {
         List<SQLStatement> stmtList = parser.parseStatementList();
         assertEquals(1, stmtList.size());
     }
-
 }

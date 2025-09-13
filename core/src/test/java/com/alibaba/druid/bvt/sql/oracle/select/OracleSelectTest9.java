@@ -20,18 +20,17 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest9 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "SELECT e.employee_id, e.salary, e.commission_pct" + //
-                "   FROM employees e JOIN departments d" + //
-                "   USING (department_id)" + //
-                "   WHERE job_id = 'SA_REP'" + //
-                "   AND location_id = 2500" + //
-                "   ORDER BY e.employee_id" + //
+        String sql = "SELECT e.employee_id, e.salary, e.commission_pct" +
+                "   FROM employees e JOIN departments d" +
+                "   USING (department_id)" +
+                "   WHERE job_id = 'SA_REP'" +
+                "   AND location_id = 2500" +
+                "   ORDER BY e.employee_id" +
                 "   FOR UPDATE OF e.salary;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

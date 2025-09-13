@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class OracleSelectTest67 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
                 "SELECT NVL(B.KYSLRQ, A.HZDJRQ) HZDJRQ FROM DJ_NSRXX A" +
-                        ", （SELECT B.NSRDZDAH, MIN(B.KYSLRQ) KYSLRQ FROM DJ_PZJGXX B WHERE B.NSRDZDAH = :B1 GROUP BY B.NSRDZDAH) B WHERE A.NSRDZDAH = :B1 AND A.NSRDZDAH = B.NSRDZDAH(+)"; //
+                        ", （SELECT B.NSRDZDAH, MIN(B.KYSLRQ) KYSLRQ FROM DJ_PZJGXX B WHERE B.NSRDZDAH = :B1 GROUP BY B.NSRDZDAH) B WHERE A.NSRDZDAH = :B1 AND A.NSRDZDAH = B.NSRDZDAH(+)";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

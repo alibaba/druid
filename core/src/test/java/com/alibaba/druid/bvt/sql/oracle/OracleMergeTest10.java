@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -58,5 +57,4 @@ public class OracleMergeTest10 extends OracleTest {
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
     }
-
 }

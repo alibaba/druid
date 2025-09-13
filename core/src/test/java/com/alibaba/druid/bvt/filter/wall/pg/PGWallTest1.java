@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter.wall.pg;
 
-import static org.junit.Assert.assertTrue;
-
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
 

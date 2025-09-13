@@ -23,5 +23,4 @@ public class MySqlAlterTableTest49 extends TestCase {
         assertEquals("ALTER TABLE a\n" +
                 "\tADD COLUMN auto_id int NOT NULL PRIMARY KEY AUTO_INCREMENT BY GROUP;", output);
     }
-
 }

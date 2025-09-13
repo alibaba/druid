@@ -15,20 +15,18 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+import org.apache.commons.dbcp.BasicDataSource;
+
+import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
-
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class CaseKylin_mysql extends TestCase {
     private String jdbcUrl;
@@ -40,13 +38,13 @@ public class CaseKylin_mysql extends TestCase {
     private int maxIdle = 20;
     private int maxActive = 20;
     private int maxWait = 60000;
-    private String validationQuery = null;      // "SELECT 1";
+    private String validationQuery;      // "SELECT 1";
     private int threadCount = 15;
     private int TEST_COUNT = 3;
     final int LOOP_COUNT = 1000 * 100;
     private boolean testWhileIdle = true;
-    private boolean testOnBorrow = false;
-    private boolean testOnReturn = false;
+    private boolean testOnBorrow;
+    private boolean testOnReturn;
 
     private boolean removeAbandoned = true;
     private int removeAbandonedTimeout = 180;

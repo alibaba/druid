@@ -15,28 +15,19 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
+import com.alibaba.druid.filter.stat.StatFilterContext;
+import com.alibaba.druid.support.http.WebStatFilter;
+import com.alibaba.druid.support.http.stat.WebAppStat;
+import com.alibaba.druid.support.http.stat.WebAppStatManager;
+import com.alibaba.druid.support.http.stat.WebURIStat;
 import junit.framework.TestCase;
-
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
 
-import com.alibaba.druid.filter.stat.StatFilterContext;
-import com.alibaba.druid.support.http.WebStatFilter;
-import com.alibaba.druid.support.http.stat.WebAppStat;
-import com.alibaba.druid.support.http.stat.WebAppStatManager;
-import com.alibaba.druid.support.http.stat.WebURIStat;
+import java.util.Map;
 
 public class WebStatFilterTest3_WebURIStatNull extends TestCase {
     public void test_sessionStatDisable() throws Exception {

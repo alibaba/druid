@@ -1,20 +1,17 @@
 package com.alibaba.druid.bvt.sql.hive;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 /**
  * @author lizongbo
  */
 public class HiveSetTest_1 extends TestCase {
-
     static String sql1 = "set hivevar:exp_id = 8001\n" +
         ";";
 
@@ -59,7 +56,6 @@ public class HiveSetTest_1 extends TestCase {
 
     }
 
-
     public void test_setHiveVar3() throws Exception {
         {
             DbType dbType = JdbcConstants.ODPS;
@@ -80,7 +76,6 @@ public class HiveSetTest_1 extends TestCase {
         }
 
     }
-
 
     public void test_setHiveVar4() throws Exception {
         for (DbType dbType : new DbType[]{JdbcConstants.ODPS, JdbcConstants.HIVE}) {

@@ -1,15 +1,12 @@
 package com.alibaba.druid.bvt.sql.postgresql.datatypes;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
 
 public class BooleanTest extends PGTest {
     public void test_0() throws Exception {

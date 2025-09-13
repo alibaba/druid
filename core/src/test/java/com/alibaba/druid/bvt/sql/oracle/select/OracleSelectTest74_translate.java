@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class OracleSelectTest74_translate extends OracleTest {
                         "                        TRIM(T.MC)||\n" +
                         "                        TRIM(T.MLPH)||\n" +
                         "                        TRIM(T.MLXZ),1,35)\n" +
-                        "                 USING CHAR_CS) FROM T"; //
+                        "                 USING CHAR_CS) FROM T";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

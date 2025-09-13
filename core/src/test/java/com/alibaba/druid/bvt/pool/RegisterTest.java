@@ -1,13 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
-import static org.junit.Assert.*;
-
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.pool.DruidDataSource;
-
+import junit.framework.TestCase;
 
 public class RegisterTest extends TestCase {
     public void test() throws Exception {

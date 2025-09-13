@@ -99,7 +99,7 @@ public class OracleCreateFunctionTest_4 extends OracleTest {
                         "\t\tEND IF;\n" +
                         "\tEND IF;\n" +
                         "\tRETURN T_STR;\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

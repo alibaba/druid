@@ -20,16 +20,15 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class OracleSelectTest44 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT UNIQUE  * FROM ONLY (t_department)  " + //
-                        "WHERE name IN ('0000','4444') " + //
-                        "ORDER BY name ASC"; //
+                "SELECT UNIQUE  * FROM ONLY (t_department)  " +
+                        "WHERE name IN ('0000','4444') " +
+                        "ORDER BY name ASC";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,9 +52,9 @@ public class OracleSelectTest44 extends OracleTest {
 
         String text = TestUtils.outputOracle(stmt);
 
-        assertEquals("SELECT UNIQUE *" + //
-                "\nFROM ONLY (t_department)" + //
-                "\nWHERE name IN ('0000', '4444')" + //
+        assertEquals("SELECT UNIQUE *" +
+                "\nFROM ONLY (t_department)" +
+                "\nWHERE name IN ('0000', '4444')" +
                 "\nORDER BY name ASC", text);
 
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

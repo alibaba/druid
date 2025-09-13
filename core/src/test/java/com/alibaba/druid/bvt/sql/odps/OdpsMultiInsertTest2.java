@@ -2,7 +2,6 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 public class OdpsMultiInsertTest2 extends TestCase {
     public void test_for_multi_insert() throws Exception {

@@ -47,7 +47,7 @@ public class OracleCreateTableTest79 extends OracleTest {
                         "\tlanguage varchar(20),\n" +
                         "\tcreated_at TIMESTAMP,\n" +
                         "\tupdated_at TIMESTAMP\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

@@ -24,16 +24,15 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class MySqlSelectTest_group_concat_2 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "SELECT student_name, " //
-                + "GROUP_CONCAT(DISTINCT test_score " //
-                + "    ORDER BY test_score DESC SEPARATOR ' ') " //
-                + "FROM student " //
+        String sql = "SELECT student_name, "
+                + "GROUP_CONCAT(DISTINCT test_score "
+                + "    ORDER BY test_score DESC SEPARATOR ' ') "
+                + "FROM student "
                 + "GROUP BY student_name";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -62,8 +61,8 @@ public class MySqlSelectTest_group_concat_2 extends MysqlTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("student")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        assertEquals("SELECT student_name, GROUP_CONCAT(DISTINCT test_score ORDER BY test_score DESC SEPARATOR ' ')" //
-                        + "\nFROM student" //
+        assertEquals("SELECT student_name, GROUP_CONCAT(DISTINCT test_score ORDER BY test_score DESC SEPARATOR ' ')"
+                        + "\nFROM student"
                         + "\nGROUP BY student_name", //
                 output);
     }

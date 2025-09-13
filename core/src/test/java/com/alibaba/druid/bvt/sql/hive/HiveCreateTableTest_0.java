@@ -3,19 +3,17 @@ package com.alibaba.druid.bvt.sql.hive;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
 public class HiveCreateTableTest_0 extends TestCase {
     public void test_select() throws Exception {
         String sql = "CREATE EXTERNAL TABLE students (name VARCHAR(64), age INT, gpa DECIMAL(3, 2))\n" +
-                "  CLUSTERED BY (age) INTO 2 BUCKETS STORED AS ORC;";//
+                "  CLUSTERED BY (age) INTO 2 BUCKETS STORED AS ORC;";
         assertEquals("CREATE EXTERNAL TABLE students (\n" +
                 "\tname VARCHAR(64),\n" +
                 "\tage INT,\n" +

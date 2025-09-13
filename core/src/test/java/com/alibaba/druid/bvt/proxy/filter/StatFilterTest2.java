@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.Statement;
 
 public class StatFilterTest2 extends TestCase {
     private DruidDataSource dataSource;

@@ -19,11 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class MySqlSelectTest_clearLimit extends MysqlTest {
     public void test_0() throws Exception {
@@ -94,8 +89,6 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
         Object[] objects = SQLUtils.clearLimit(sql, DbType.mysql);
 
         assertEquals("LIMIT 10, 10", objects[1].toString());
-
-
     }
 
     public void test_getLimit() {
@@ -109,7 +102,6 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
                 + "   SELECT item_id,item_title FROM tyx.r_hjc_yun_item_info limit 1", DbType.mysql);
 
         assertEquals("LIMIT 1", limit.toString());
-
 
         limit = SQLUtils.getLimit("select * from 1", DbType.mysql);
 

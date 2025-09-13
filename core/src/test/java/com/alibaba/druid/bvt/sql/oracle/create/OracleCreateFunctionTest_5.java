@@ -81,7 +81,7 @@ public class OracleCreateFunctionTest_5 extends OracleTest {
                         "e1Yq3QQJoEoNKIeJlbgLoLdSgogwgxDcf8vWfHSKbuowFOXFKoj9MqYGqWyRxeeCUVqNVIO1\n" +
                         "ICqJa3yPr6e7z8GZpMH3J0Cx0uQ0B1JuysymdNDlzfTvb7QWsrLU4jGs3h8Mm49/L9nyO4Xh\n" +
                         "Ae06nawFpOJIAYpBf9wBVC+ZrjU/nuEtokBqCce6HWIoF6rYgz0V0W/47x5KpOnQ2i7X3kFe\n" +
-                        "FR8K7jT7X58k8xK9uYlZv5LhV71a7A==",//
+                        "FR8K7jT7X58k8xK9uYlZv5LhV71a7A==",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

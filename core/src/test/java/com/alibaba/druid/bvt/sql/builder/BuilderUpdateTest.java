@@ -1,12 +1,9 @@
 package com.alibaba.druid.bvt.sql.builder;
 
-import junit.framework.TestCase;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.builder.SQLBuilderFactory;
 import com.alibaba.druid.sql.builder.SQLUpdateBuilder;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
 
 public class BuilderUpdateTest extends TestCase {
     public void test_0() throws Exception {
@@ -19,8 +16,8 @@ public class BuilderUpdateTest extends TestCase {
 
         String sql = builder.toString();
         System.out.println(sql);
-        assertEquals("UPDATE mytable" //
-                + "\nSET f1 = f1 + 1, f2 = ?" //
+        assertEquals("UPDATE mytable"
+                + "\nSET f1 = f1 + 1, f2 = ?"
                 + "\nWHERE f1 > 0", sql);
     }
 }

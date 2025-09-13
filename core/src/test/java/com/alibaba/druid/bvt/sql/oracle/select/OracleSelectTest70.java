@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class OracleSelectTest70 extends OracleTest {
                         "\t\tOR a.nsrsbh_new = ?)\n" +
                         "\tAND b.nsrzt_dm <= ?\n" +
                         "\tAND c.JBDM LIKE ?\n" +
-                        "\tAND rownum = 1"; //
+                        "\tAND rownum = 1";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -19,5 +19,4 @@ public class MySqlSelectTest_167 extends MysqlTest {
 
         assertEquals("SELECT 1 AS 30days", stmt.toString());
     }
-
 }

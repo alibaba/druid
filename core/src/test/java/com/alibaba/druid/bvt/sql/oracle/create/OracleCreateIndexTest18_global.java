@@ -53,8 +53,8 @@ public class OracleCreateIndexTest18_global extends OracleTest {
                         "\tPARTITION p1 VALUES LESS THAN (1000),\n" +
                         "\tPARTITION p2 VALUES LESS THAN (2500),\n" +
                         "\tPARTITION p3 VALUES LESS THAN (MAXVALUE)\n" +
-                        ");"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        ");",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

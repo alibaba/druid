@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
@@ -28,7 +25,6 @@ import junit.framework.TestCase;
  * @author wenshao
  */
 public class WallUnionTest4 extends TestCase {
-
     public static final String UNION_SQL1 = "SELECT id, product FROM T1 t where id=1 UNION (SELECT * FROM (SELECT 1,'x') X)";
     public static final String UNION_SQL2 = "SELECT id, product FROM T1 t where id=1 UNION (SELECT * FROM (SELECT 1,'x') X) -- ";
 
@@ -43,7 +39,6 @@ public class WallUnionTest4 extends TestCase {
         config.setCommentAllow(true);
         assertTrue(WallUtils.isValidateMySql(UNION_SQL1, config));
         assertTrue(WallUtils.isValidateMySql(UNION_SQL2, config));
-
     }
 
     public void testORACLE() throws Exception {

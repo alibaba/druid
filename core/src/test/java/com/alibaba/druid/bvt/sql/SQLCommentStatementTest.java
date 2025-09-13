@@ -1,12 +1,9 @@
 package com.alibaba.druid.bvt.sql;
 
-import static org.junit.Assert.*;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import junit.framework.TestCase;
 
 public class SQLCommentStatementTest extends TestCase {
     public void test_0() throws Exception {

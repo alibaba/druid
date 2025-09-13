@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class HiveCreateTableTest_19 extends OracleTest {
         String sql = //
                 "CREATE TABLE complex_array (\n" +
                         "\tname string, address struct<street:string,city:string>\n" +
-                        ")"; //
+                        ")";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -62,6 +61,5 @@ public class HiveCreateTableTest_19 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("complex_array"));
-
     }
 }

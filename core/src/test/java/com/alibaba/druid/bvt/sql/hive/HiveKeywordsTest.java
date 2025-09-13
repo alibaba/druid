@@ -9,12 +9,8 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import junit.framework.TestCase;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class HiveKeywordsTest extends TestCase {
-
     public void test_keywords() {
         DbType dbType = DbType.hive;
         String sql = "select 1 as TIMESTAMPLOCALTZ";

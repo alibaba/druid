@@ -27,7 +27,6 @@ import java.util.TimeZone;
  * @date: 2024-01-22
  */
 public class MySqlUtilsTest extends TestCase {
-
     public void testParseMillis() {
         Assert.assertThrows(IllegalArgumentException.class,
                 () -> MySqlUtils.parseMillis(null, TimeZone.getTimeZone("GMT+8")));

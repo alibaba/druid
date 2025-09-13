@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import junit.framework.TestCase;
-
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -34,13 +29,13 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest33 extends TestCase {
     public void test_false() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
-                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?")); //
+                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?"));
     }
 
     public void test_true() throws Exception {
         WallConfig config = new WallConfig();
         config.setStrictSyntaxCheck(false);
         assertTrue(WallUtils.isValidateMySql(//
-                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?", config)); //
+                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?", config));
     }
 }

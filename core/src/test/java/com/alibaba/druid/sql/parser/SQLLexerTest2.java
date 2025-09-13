@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import junit.framework.TestCase;
 import org.junit.Assert;
-
-import java.util.List;
 
 public class SQLLexerTest2 extends TestCase {
     public void test_lexer() throws Exception {
@@ -97,5 +94,4 @@ public class SQLLexerTest2 extends TestCase {
         Assert.assertEquals(posLine, 2);
         Assert.assertEquals(column, 7);
     }
-
 }

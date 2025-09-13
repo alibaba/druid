@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.sql.performance;
 
-import java.text.NumberFormat;
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import junit.framework.TestCase;
+
+import java.text.NumberFormat;
+import java.util.List;
 
 public class TestSelectPerformance extends TestCase {
     private final int COUNT = 1000 * 1000;

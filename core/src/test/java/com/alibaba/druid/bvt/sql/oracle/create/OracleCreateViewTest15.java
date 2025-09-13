@@ -65,7 +65,7 @@ public class OracleCreateViewTest15 extends OracleTest {
                         "\t\t, dbms_lob.substr(wmsys.wm_concat(explx || ': ' || expname) OVER (PARTITION BY prj_no ), 4000, 1) AS explst\n" +
                         "\tFROM temp_exp\n" +
                         ") b\n" +
-                        "GROUP BY b.prj_no, explst",//
+                        "GROUP BY b.prj_no, explst",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

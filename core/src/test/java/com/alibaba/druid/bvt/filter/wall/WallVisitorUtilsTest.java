@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
+import junit.framework.TestCase;
 
 public class WallVisitorUtilsTest extends TestCase {
     public void test_isTrue() throws Exception {

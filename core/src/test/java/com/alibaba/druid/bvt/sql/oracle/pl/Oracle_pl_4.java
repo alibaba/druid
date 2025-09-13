@@ -22,14 +22,13 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class Oracle_pl_4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "begin buf_b := HEXTORAW('636865642f4c'); \n" +
                 "  dbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +
                 "END;\n" +
-                "\n	"; //
+                "\n\t";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, statementList.size());
@@ -62,7 +61,7 @@ public class Oracle_pl_4 extends OracleTest {
             assertEquals("BEGIN\n" +
                             "\tbuf_b := HEXTORAW('636865642f4c');\n" +
                             "\tdbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +
-                            "END;", //
+                            "END;",
                     output);
         }
         {
@@ -70,7 +69,7 @@ public class Oracle_pl_4 extends OracleTest {
             assertEquals("begin\n" +
                             "\tbuf_b := HEXTORAW('636865642f4c');\n" +
                             "\tdbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +
-                            "end;", //
+                            "end;",
                     output);
         }
     }

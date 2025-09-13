@@ -89,6 +89,5 @@ public class HiveSelectTest_42_cte extends TestCase {
                 "FROM dycg_perform_startgametaketimelog\n" +
                 "GROUP BY app_id, ver, machine_dc, game_id\n" +
                 "\tGROUPING SETS ((app_id), (app_id, ver), (app_id, ver, machine_dc), (app_id, ver, game_id), (app_id, machine_dc), (app_id, machine_dc, game_id), (app_id, game_id), (app_id, ver, machine_dc, game_id))", stmt.toString());
-
     }
 }

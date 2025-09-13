@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-import static org.junit.Assert.*;
 
 public class Oracle_pl_case_1 extends OracleTest {
     public void test_0() throws Exception {
@@ -41,7 +40,7 @@ public class Oracle_pl_case_1 extends OracleTest {
                 "EXCEPTION\n" +
                 "  WHEN CASE_NOT_FOUND THEN\n" +
                 "    DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);

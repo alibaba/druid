@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-
 public class MySqlSelectTest_243 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "Select DISTINCT buyer_id,\n" +
@@ -37,7 +36,6 @@ public class MySqlSelectTest_243 extends MysqlTest {
                 "       --  buyer_full_name \n" +
                 "LIMIT 0,\n" +
                 "         10";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.elastic_search);
 
@@ -56,6 +54,4 @@ public class MySqlSelectTest_243 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
-
 }

@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.alter;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -27,11 +23,13 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.List;
+
 public class OracleAlterTableTest22 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "ALTER TABLE employees ADD CONSTRAINT check_comp " //
-                        + "   CHECK (salary + (commission_pct*salary) <= 5000)" //
+                "ALTER TABLE employees ADD CONSTRAINT check_comp "
+                        + "   CHECK (salary + (commission_pct*salary) <= 5000)"
                         + "   DISABLE;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -50,7 +48,7 @@ public class OracleAlterTableTest22 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("ALTER TABLE employees" //
+        assertEquals("ALTER TABLE employees"
                         + "\n\tADD CONSTRAINT check_comp CHECK (salary + (commission_pct * salary) <= 5000) DISABLE;", //
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 

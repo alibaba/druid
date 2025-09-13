@@ -81,5 +81,4 @@ public class MySqlGrantTest_36 extends MysqlTest {
         }
         assertNotNull(error);
     }
-
 }

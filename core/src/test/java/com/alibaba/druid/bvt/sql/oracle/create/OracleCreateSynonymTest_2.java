@@ -43,8 +43,8 @@ public class OracleCreateSynonymTest_2 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE OR REPLACE SYNONYM CSCLIENT.ECC_CUST_AREA_INFO FOR ECC_CUST.ECC_CUST_AREA_INFO"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE OR REPLACE SYNONYM CSCLIENT.ECC_CUST_AREA_INFO FOR ECC_CUST.ECC_CUST_AREA_INFO",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(0, visitor.getTables().size());
 

@@ -36,7 +36,6 @@ public class MySqlSelectTest_297
                 "\tAND (properties -> '$.idkp' = '1647796581073291')", stmt.toString());
     }
 
-
     public void test_1() throws Exception {
         String sql = "select `current_date`, 1 + `current_date`";
 

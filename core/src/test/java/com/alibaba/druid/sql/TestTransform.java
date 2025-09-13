@@ -15,6 +15,14 @@
  */
 package com.alibaba.druid.sql;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.support.json.JSONUtils;
+import oracle.jdbc.OracleStatement;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -24,15 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.junit.Assert;
-import oracle.jdbc.OracleStatement;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestTransform extends OracleTest {
     private String jdbcUrl;
@@ -68,7 +67,7 @@ public class TestTransform extends OracleTest {
         conn.close();
     }
 
-    private int updateCount = 0;
+    private int updateCount;
 
     public void updateRecord(String sqlId, String result) throws Exception {
         Connection conn = dataSource.getConnection();
@@ -106,10 +105,10 @@ public class TestTransform extends OracleTest {
         }
         System.out.println("COUNT : " + count);
 
-        String sql = "SELECT SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
-                "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
-                "  FROM db_day_sql_fulltext " + //
-                " WHERE SQL_PARSE_RESULT IS NULL" + //
+        String sql = "SELECT SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" +
+                "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " +
+                "  FROM db_day_sql_fulltext " +
+                " WHERE SQL_PARSE_RESULT IS NULL" +
                 "  ORDER BY sql_id, piece";
 
         Statement stmt = conn.createStatement();
@@ -228,10 +227,10 @@ public class TestTransform extends OracleTest {
 
         clearResult();
 
-        String sql = "SELECT SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
-                "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
-                "  FROM db_day_sqltext " + //
-                // "  WHERE db_pk = 40 and snap_date = trunc(sysdate) " + //
+        String sql = "SELECT SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" +
+                "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " +
+                "  FROM db_day_sqltext " +
+                // "  WHERE db_pk = 40 and snap_date = trunc(sysdate) " +
                 "  ORDER BY db_pk, sql_id, piece";
 
         Statement stmt = conn.createStatement();
@@ -323,7 +322,6 @@ public class TestTransform extends OracleTest {
         buf.append("\nrelationships " + visitor.getRelationships().toString());
 
         r.setResult(buf.toString());
-
     }
 
     public void insert(List<Record> list) throws Exception {
@@ -331,9 +329,9 @@ public class TestTransform extends OracleTest {
             return;
         }
 
-        String sql = "INSERT INTO db_day_sql_fulltext " + //
-                "(SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
-                ", COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT)" + //
+        String sql = "INSERT INTO db_day_sql_fulltext " +
+                "(SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" +
+                ", COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT)" +
                 " VALUES (?, ?, ?, ?, ?,   ?, ?, ?, ?)";
         Connection conn = dataSource.getConnection();
 

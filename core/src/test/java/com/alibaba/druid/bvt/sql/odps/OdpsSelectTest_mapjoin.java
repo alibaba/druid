@@ -15,10 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsSelectTest_mapjoin extends TestCase {
@@ -35,5 +32,4 @@ public class OdpsSelectTest_mapjoin extends TestCase {
                 "ON a.shop_name = b.shop_name\n" +
                 "\tAND b.ds = '20150101';", SQLUtils.formatOdps(sql));
     }
-
 }

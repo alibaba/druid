@@ -4,7 +4,9 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLDialect;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class SQLDialectTest {
     @Test

@@ -15,19 +15,17 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
+import java.util.List;
+
 public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE tnhash ( id INT, name VARCHAR(5) ) PARTITION BY HASH(id) PARTITIONS 2;"; //
+        String sql = "CREATE TABLE tnhash ( id INT, name VARCHAR(5) ) PARTITION BY HASH(id) PARTITIONS 2;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -67,6 +65,5 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
 
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
     }
 }

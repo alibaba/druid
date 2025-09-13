@@ -220,7 +220,6 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ")"
     };
 
-
     public void testCreateTable() {
         for (int i = 0; i < caseList.length; i++) {
             final String sql = caseList[i];

@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -31,7 +30,6 @@ public class MySqlSelectTest_20 extends MysqlTest {
                 + " from   exchange_market_info "
                 + " where bsdate>date_sub(now(),interval 1 day)"
                 + " group by bsvariety desc;";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

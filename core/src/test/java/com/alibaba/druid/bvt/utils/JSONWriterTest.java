@@ -1,25 +1,24 @@
 package com.alibaba.druid.bvt.utils;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.druid.support.json.JSONWriter;
+import junit.framework.TestCase;
 
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import junit.framework.TestCase;
-
-
-import com.alibaba.druid.support.json.JSONWriter;
-
-public class JSONWriterTest extends TestCase {
-    public void test_intArray() throws Exception {
+public class JSONWriterTest
+        extends TestCase {
+    public void test_intArray()
+            throws Exception {
         JSONWriter writer = new JSONWriter();
-        writer.writeObject(new int[]{1, 2, 3});
+        writer.writeObject(new int[] {1, 2, 3});
         assertEquals("[1,2,3]", writer.toString());
     }
 
-    public void test_throwable() throws Exception {
+    public void test_throwable()
+            throws Exception {
         JSONWriter writer = new JSONWriter();
         writer.writeObject(new Throwable() {
             public void printStackTrace(PrintWriter s) {
@@ -38,7 +37,7 @@ public class JSONWriterTest extends TestCase {
 
     public void test_localTime() {
         JSONWriter writer = new JSONWriter();
-        LocalTime localTime = LocalTime.of(12, 0,1);
+        LocalTime localTime = LocalTime.of(12, 0, 1);
         writer.writeObject(localTime);
         assertEquals("\"12:00:01\"", writer.toString());
     }
@@ -46,10 +45,9 @@ public class JSONWriterTest extends TestCase {
     public void test_localDateTime() {
         JSONWriter writer = new JSONWriter();
         LocalDate localDate = LocalDate.of(2023, 12, 21);
-        LocalTime localTime = LocalTime.of(12, 0,1);
+        LocalTime localTime = LocalTime.of(12, 0, 1);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         writer.writeObject(localDateTime);
         assertEquals("\"2023-12-21 12:00:01\"", writer.toString());
     }
-
 }

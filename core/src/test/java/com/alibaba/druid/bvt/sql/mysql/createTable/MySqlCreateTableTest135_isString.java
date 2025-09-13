@@ -29,8 +29,5 @@ public class MySqlCreateTableTest135_isString extends MysqlTest {
             assertTrue(item.getDataType().isString());
         }
 
-
     }
-
-
 }

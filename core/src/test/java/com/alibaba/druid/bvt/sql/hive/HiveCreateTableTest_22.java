@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class HiveCreateTableTest_22 extends OracleTest {
         String sql = //
                 "create table if not exists aliyun_cdm.test_904_table  (\n" +
                         "col1 BIGINT,col2 STRING,col3 BOOLEAN,col4 DOUBLE,col5 DATETIME" +
-                        "\n) skewed by (PAR1,PAR2) ON ((\"v1\",100),(\"v2\",200))\n"; //
+                        "\n) skewed by (PAR1,PAR2) ON ((\"v1\",100),(\"v2\",200))\n";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -66,6 +65,5 @@ public class HiveCreateTableTest_22 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("aliyun_cdm.test_904_table"));
-
     }
 }

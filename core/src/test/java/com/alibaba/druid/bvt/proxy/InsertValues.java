@@ -2,7 +2,11 @@ package com.alibaba.druid.bvt.proxy;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
-import com.alibaba.druid.proxy.jdbc.*;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+import com.alibaba.druid.proxy.jdbc.JdbcParameter;
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Field;
