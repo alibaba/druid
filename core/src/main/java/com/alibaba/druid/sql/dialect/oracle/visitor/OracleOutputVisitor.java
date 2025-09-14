@@ -2812,17 +2812,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         String alias = x.getAlias();
         List<SQLName> columns = x.getColumnsDirect();
         if (alias != null) {
-            SQLObject parent = x.getParent();
-            if (parent instanceof SQLCreateIndexStatement
-                    || parent instanceof SQLMergeStatement
-                    || parent instanceof SQLDeleteStatement) {
-                print(' ');
-                print0(alias);
-            } else {
-                print(' ');
-                print0(ucase ? " AS " : " as ");
-                print0(alias);
-            }
+            // In Oracle, table aliases should not use AS keyword
+            // AS keyword is only used for column aliases
+            print(' ');
+            print0(alias);
         }
 
         if (columns != null && columns.size() > 0) {
