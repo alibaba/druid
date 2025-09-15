@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,14 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class PGLexer extends Lexer {
     public static final Keywords PG_KEYWORDS;
-    public static final DialectFeature PG_FEATURE = new DialectFeature();
+    public static final DialectFeature PG_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    ScanVariableGreaterThan,
+                    SQLDateExpr,
+                    ParseStatementListWhen
+            ),
+            null
+    );
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -76,11 +84,6 @@ public class PGLexer extends Lexer {
         map.put("LANGUAGE", Token.LANGUAGE);
 
         PG_KEYWORDS = new Keywords(map);
-        PG_FEATURE.configFeature(
-                ScanVariableGreaterThan,
-                SQLDateExpr,
-                ParseStatementListWhen
-        );
     }
 
     @Override

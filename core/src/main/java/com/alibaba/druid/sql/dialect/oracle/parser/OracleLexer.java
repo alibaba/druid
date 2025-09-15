@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.dialect.oracle.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +30,18 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OracleLexer extends Lexer {
     static final Keywords ORACLE_KEYWORDS;
-    static final DialectFeature ORACLE_FEATURE = new DialectFeature();
+    static final DialectFeature ORACLE_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    ScanSQLTypeWithBegin,
+                    SQLDateExpr,
+                    PrimaryVariantColon,
+                    CreateTableBodySupplemental,
+                    AsCommaFrom
+            ),
+            Collections.singletonList(
+                    SQLTimestampExpr
+            )
+    );
     static {
         Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -119,14 +132,6 @@ public class OracleLexer extends Lexer {
         map.put("）", Token.RPAREN);
 
         ORACLE_KEYWORDS = new Keywords(map);
-        ORACLE_FEATURE.configFeature(
-                ScanSQLTypeWithBegin,
-                SQLDateExpr,
-                PrimaryVariantColon,
-                CreateTableBodySupplemental,
-                AsCommaFrom
-        );
-        ORACLE_FEATURE.unconfigFeature(SQLTimestampExpr);
     }
 
     @Override
