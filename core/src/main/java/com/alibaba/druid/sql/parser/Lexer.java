@@ -39,6 +39,7 @@ import static com.alibaba.druid.sql.parser.Token.*;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class Lexer {
+    protected static final DialectFeature FEATURE = new DialectFeature();
     protected static SymbolTable symbols_l2 = new SymbolTable(512);
 
     protected int features; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
@@ -265,7 +266,7 @@ public class Lexer {
     }
 
     protected void initDialectFeature() {
-        this.dialectFeature = new DialectFeature();
+        this.dialectFeature = FEATURE;
     }
 
     public Lexer(char[] input, int inputLength, boolean skipComment) {

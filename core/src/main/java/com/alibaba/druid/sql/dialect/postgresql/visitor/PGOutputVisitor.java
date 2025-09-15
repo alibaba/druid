@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -27,6 +28,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.PG;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
@@ -43,16 +45,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public PGOutputVisitor(StringBuilder appender) {
         super(appender, DbType.postgresql);
     }
-    public PGOutputVisitor(StringBuilder appender, DbType dbType) {
-        super(appender, dbType);
+    public PGOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
     }
 
     public PGOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.postgresql, parameterized);
+    super(appender, DbType.postgresql, PG.DIALECT, parameterized);
     }
 
-    public PGOutputVisitor(StringBuilder appender, DbType dbType, boolean parameterized) {
-        super(appender, DbType.postgresql, parameterized);
+    public PGOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
+        super(appender, dbType, dialect, parameterized);
     }
 
     @Override

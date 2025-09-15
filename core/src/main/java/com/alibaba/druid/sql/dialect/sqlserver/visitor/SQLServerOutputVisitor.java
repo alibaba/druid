@@ -16,10 +16,12 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.sqlserver.SqlServer;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
@@ -33,13 +35,20 @@ import java.util.List;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
     public SQLServerOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.sqlserver);
+        super(appender, DbType.sqlserver, SqlServer.DIALECT);
+    }
+
+    public SQLServerOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
     }
 
     public SQLServerOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.sqlserver, parameterized);
+        super(appender, DbType.sqlserver, SqlServer.DIALECT, parameterized);
     }
 
+    public SQLServerOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
+        super(appender, dbType, dialect, parameterized);
+    }
     public boolean visit(SQLServerSelectQueryBlock x) {
         print0(ucase ? "SELECT " : "select ");
 

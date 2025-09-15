@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.starrocks.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.DistributedByType;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -15,6 +16,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLNotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
+import com.alibaba.druid.sql.dialect.starrocks.StarRocks;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
@@ -33,15 +35,19 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public StarRocksOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.starrocks);
+        super(appender, DbType.starrocks, StarRocks.DIALECT);
     }
 
-    public StarRocksOutputVisitor(StringBuilder appender, DbType dbType) {
-        super(appender, dbType);
+    public StarRocksOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
     }
 
     public StarRocksOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.starrocks, parameterized);
+        super(appender, DbType.starrocks, StarRocks.DIALECT, parameterized);
+    }
+
+    public StarRocksOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
+        super(appender, dbType, dialect, parameterized);
     }
 
     @Override

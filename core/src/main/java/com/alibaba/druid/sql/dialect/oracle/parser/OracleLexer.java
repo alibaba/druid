@@ -28,6 +28,7 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OracleLexer extends Lexer {
     static final Keywords ORACLE_KEYWORDS;
+    static final DialectFeature ORACLE_FEATURE = new DialectFeature();
     static {
         Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -118,6 +119,14 @@ public class OracleLexer extends Lexer {
         map.put("）", Token.RPAREN);
 
         ORACLE_KEYWORDS = new Keywords(map);
+        ORACLE_FEATURE.configFeature(
+                ScanSQLTypeWithBegin,
+                SQLDateExpr,
+                PrimaryVariantColon,
+                CreateTableBodySupplemental,
+                AsCommaFrom
+        );
+        ORACLE_FEATURE.unconfigFeature(SQLTimestampExpr);
     }
 
     @Override
@@ -403,14 +412,6 @@ public class OracleLexer extends Lexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                ScanSQLTypeWithBegin,
-                SQLDateExpr,
-                PrimaryVariantColon,
-                CreateTableBodySupplemental,
-                AsCommaFrom
-        );
-        this.dialectFeature.unconfigFeature(SQLTimestampExpr);
+        this.dialectFeature = ORACLE_FEATURE;
     }
 }

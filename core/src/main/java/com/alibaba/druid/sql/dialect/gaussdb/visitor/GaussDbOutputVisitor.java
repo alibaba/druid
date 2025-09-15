@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.dialect.gaussdb.GaussDb;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbCreateTableStatement;
@@ -21,13 +22,11 @@ import java.util.stream.Collectors;
 
 public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTVisitor {
     public GaussDbOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.gaussdb;
+        super(appender, DbType.gaussdb, GaussDb.DIALECT, parameterized);
     }
 
     public GaussDbOutputVisitor(StringBuilder appender) {
-        super(appender);
-        dbType = DbType.gaussdb;
+        super(appender, DbType.gaussdb, GaussDb.DIALECT);
     }
 
     @Override

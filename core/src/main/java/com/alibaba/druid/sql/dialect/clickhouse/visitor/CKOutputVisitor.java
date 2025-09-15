@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.clickhouse.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.clickhouse.CK;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKAlterTableUpdateStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateTableStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor {
     public CKOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.clickhouse);
+        super(appender, DbType.clickhouse, CK.DIALECT);
     }
 
     public CKOutputVisitor(StringBuilder appender, DbType dbType) {
@@ -25,7 +26,7 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
     }
 
     public CKOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.clickhouse, parameterized);
+        super(appender, DbType.clickhouse, CK.DIALECT, parameterized);
     }
 
     @Override

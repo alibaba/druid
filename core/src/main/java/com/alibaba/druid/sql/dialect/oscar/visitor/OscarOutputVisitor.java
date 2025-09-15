@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.oscar.Oscar;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.oscar.ast.stmt.OscarSelectQueryBlock.ForClause;
@@ -38,11 +39,11 @@ import java.util.Set;
 
 public class OscarOutputVisitor extends SQLASTOutputVisitor implements OscarASTVisitor, OracleASTVisitor {
     public OscarOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.oscar);
+    super(appender, DbType.oscar, Oscar.DIALECT);
     }
 
     public OscarOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.oscar, parameterized);
+        super(appender, DbType.oscar, Oscar.DIALECT, parameterized);
     }
 
     @Override

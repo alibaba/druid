@@ -28,6 +28,7 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class PGLexer extends Lexer {
     public static final Keywords PG_KEYWORDS;
+    public static final DialectFeature PG_FEATURE = new DialectFeature();
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -75,6 +76,11 @@ public class PGLexer extends Lexer {
         map.put("LANGUAGE", Token.LANGUAGE);
 
         PG_KEYWORDS = new Keywords(map);
+        PG_FEATURE.configFeature(
+                ScanVariableGreaterThan,
+                SQLDateExpr,
+                ParseStatementListWhen
+        );
     }
 
     @Override
@@ -263,11 +269,6 @@ public class PGLexer extends Lexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                ScanVariableGreaterThan,
-                SQLDateExpr,
-                ParseStatementListWhen
-        );
+        this.dialectFeature = PG_FEATURE;
     }
 }

@@ -6,6 +6,7 @@ package com.alibaba.druid.sql.dialect.spark.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
@@ -13,6 +14,9 @@ import com.alibaba.druid.sql.parser.Token;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.NextTokenColon;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.ScanAliasU;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.ScanSQLTypeWithFrom;
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 /**
  * @author peiheng.qph
@@ -20,6 +24,7 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
  */
 public class SparkLexer extends HiveLexer {
     static final Keywords SPARK_KEYWORDS;
+    static final DialectFeature SPARK_FEATURE = new DialectFeature();
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -48,6 +53,27 @@ public class SparkLexer extends HiveLexer {
         map.put("OR", Token.OR);
 
         SPARK_KEYWORDS = new Keywords(map);
+        SPARK_FEATURE.configFeature(
+                QueryTable,
+                ParseSelectItemPrefixX,
+                JoinRightTableFrom,
+                ScanSQLTypeWithFrom,
+                NextTokenColon,
+                ScanAliasU,
+                JoinRightTableFrom,
+                GroupByAll,
+                SQLDateExpr,
+                ParseAssignItemRparenCommaSetReturn,
+                TableAliasLock,
+                TableAliasPartition,
+                AsSkip,
+                AsSequence,
+                AsDatabase,
+                AsDefault
+        );
+        SPARK_FEATURE.unconfigFeature(
+                PrimaryBangBangSupport
+        );
     }
 
     @Override
@@ -71,11 +97,6 @@ public class SparkLexer extends HiveLexer {
     }
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                QueryTable,
-                ParseSelectItemPrefixX,
-                JoinRightTableFrom
-        );
+        this.dialectFeature = SPARK_FEATURE;
     }
 }

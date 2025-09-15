@@ -38,7 +38,7 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.hologres.visitor.HologresOutputVisitor;
 import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaOutputVisitor;
-import com.alibaba.druid.sql.dialect.infomix.visitor.InformixOutputVisitor;
+import com.alibaba.druid.sql.dialect.informix.visitor.InformixOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;

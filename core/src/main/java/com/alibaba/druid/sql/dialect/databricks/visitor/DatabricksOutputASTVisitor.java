@@ -2,12 +2,13 @@ package com.alibaba.druid.sql.dialect.databricks.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.databricks.DataBricks;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.spark.visitor.SparkOutputASTVisitor;
 
 public class DatabricksOutputASTVisitor extends SparkOutputASTVisitor implements DatabricksASTASTVisitor {
     public DatabricksOutputASTVisitor(StringBuilder appender) {
-        super(appender, DbType.databricks);
+        super(appender, DbType.databricks, DataBricks.DIALECT);
     }
 
     @Override

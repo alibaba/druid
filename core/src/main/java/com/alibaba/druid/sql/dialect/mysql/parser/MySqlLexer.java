@@ -29,7 +29,7 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class MySqlLexer extends Lexer {
     public static SymbolTable quoteTable = new SymbolTable(8192);
-
+    public static DialectFeature MYSQL_FEATURE = new DialectFeature();
     static final Keywords MYSQL_KEYWORDS;
     static {
         Map<String, Token> map = new HashMap<>();
@@ -68,6 +68,26 @@ public class MySqlLexer extends Lexer {
         map.put("FULLTEXT", Token.FULLTEXT);
 
         MYSQL_KEYWORDS = new Keywords(map);
+        MYSQL_FEATURE.configFeature(
+                NextTokenPrefixN,
+                ScanString2PutDoubleBackslash,
+                JoinRightTableWith,
+                PostNaturalJoin,
+                MultipleJoinOn,
+                GroupByPostDesc,
+                GroupByItemOrder,
+                SQLDateExpr,
+                PrimaryLbraceOdbcEscape,
+                ParseSelectItemPrefixX,
+                ParseStatementListUpdatePlanCache,
+                ParseStatementListRollbackReturn,
+                ParseStatementListCommitReturn,
+                ParseDropTableTables,
+                AsSequence
+        );
+        MYSQL_FEATURE.unconfigFeature(
+                AdditiveRestPipesAsConcat
+        );
     }
 
     @Override
@@ -959,26 +979,6 @@ public class MySqlLexer extends Lexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                NextTokenPrefixN,
-                ScanString2PutDoubleBackslash,
-                JoinRightTableWith,
-                PostNaturalJoin,
-                MultipleJoinOn,
-                GroupByPostDesc,
-                GroupByItemOrder,
-                SQLDateExpr,
-                PrimaryLbraceOdbcEscape,
-                ParseSelectItemPrefixX,
-                ParseStatementListUpdatePlanCache,
-                ParseStatementListRollbackReturn,
-                ParseStatementListCommitReturn,
-                ParseDropTableTables,
-                AsSequence
-        );
-        this.dialectFeature.unconfigFeature(
-                AdditiveRestPipesAsConcat
-        );
+        this.dialectFeature = MYSQL_FEATURE;
     }
 }

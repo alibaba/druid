@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -27,6 +28,7 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.ParseAss
 
 public class DB2Lexer extends Lexer {
     static final Keywords DB2_KEYWORDS;
+    static final DialectFeature DB2_FEATURE = new DialectFeature();
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -49,6 +51,7 @@ public class DB2Lexer extends Lexer {
         map.put("CASCADE", Token.CASCADE);
 
         DB2_KEYWORDS = new Keywords(map);
+        DB2_FEATURE.configFeature(ParseAssignItemSkip);
     }
 
     @Override
@@ -69,7 +72,6 @@ public class DB2Lexer extends Lexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(ParseAssignItemSkip);
+        this.dialectFeature = DB2_FEATURE;
     }
 }

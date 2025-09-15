@@ -57,7 +57,7 @@ import com.alibaba.druid.sql.dialect.hologres.parser.HologresStatementParser;
 import com.alibaba.druid.sql.dialect.impala.parser.ImpalaExprParser;
 import com.alibaba.druid.sql.dialect.impala.parser.ImpalaLexer;
 import com.alibaba.druid.sql.dialect.impala.parser.ImpalaStatementParser;
-import com.alibaba.druid.sql.dialect.infomix.parser.InformixStatementParser;
+import com.alibaba.druid.sql.dialect.informix.parser.InformixStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
@@ -730,7 +730,7 @@ public class SQLParserUtils {
                 set = true;
             }
 
-            if (lexer.identifierEquals("ADD") && (dbType == DbType.hive || dbType == DbType.odps)) {
+            if (lexer.identifierEquals("ADD") && (dbType == DbType.hive || dbType == DbType.odps || dbType == DbType.spark)) {
                 lexer.nextToken();
                 if (lexer.identifierEquals("JAR")) {
                     lexer.nextPath();
@@ -902,7 +902,7 @@ public class SQLParserUtils {
             }
 
             prePos = lexer.pos;
-            if (lexer.identifierEquals("ADD") && (dbType == DbType.hive || dbType == DbType.odps)) {
+            if (lexer.identifierEquals("ADD") && (dbType == DbType.hive || dbType == DbType.odps || dbType == DbType.spark)) {
                 lexer.nextToken();
                 if (lexer.identifierEquals("JAR")) {
                     lexer.nextPath();
