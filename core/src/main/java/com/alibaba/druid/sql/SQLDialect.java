@@ -5,11 +5,14 @@ import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.Utils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @since 1.2.25
  */
 public class SQLDialect {
+    private static final Map<DbType, SQLDialect> DIALECTS = new ConcurrentHashMap<>();
+
     private int quoteChars;
     private final DbType dbType;
     private final Keyword keywords;
@@ -73,6 +76,13 @@ public class SQLDialect {
     }
 
     public static SQLDialect of(DbType dbType) {
+        if (dbType == null) {
+            return null;
+        }
+        return DIALECTS.computeIfAbsent(dbType, SQLDialect::create);
+    }
+
+    private static SQLDialect create(DbType dbType) {
         String dir = "META-INF/druid/parser/".concat(dbType.name().toLowerCase());
         Properties props = Utils.loadProperties(dir.concat("/dialect.properties"));
 

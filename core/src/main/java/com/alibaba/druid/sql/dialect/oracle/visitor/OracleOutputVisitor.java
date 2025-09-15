@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.druid.sql.dialect.oracle.Oracle;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OraclePartitionSingle;
@@ -54,7 +55,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public OracleOutputVisitor(StringBuilder appender, boolean printPostSemi) {
-        super(appender, DbType.oracle);
+        super(appender, DbType.oracle, Oracle.DIALECT);
         this.printPostSemi = printPostSemi;
     }
 

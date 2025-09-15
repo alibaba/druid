@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.MySQL;
 import com.alibaba.druid.sql.dialect.mysql.ast.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue.ConditionType;
@@ -44,11 +45,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public MySqlOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.mysql);
+        super(appender, DbType.mysql, MySQL.DIALECT);
     }
 
     public MySqlOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.mysql, parameterized);
+        super(appender, DbType.mysql, MySQL.DIALECT, parameterized);
 
         try {
             configFromProperty();
