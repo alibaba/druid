@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.presto.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
@@ -14,6 +15,7 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.SQLDateE
 
 public class PrestoLexer extends Lexer {
     static final Keywords PRESTO_KEYWORDS;
+    static final DialectFeature PRESTO_FEATURE = new DialectFeature();
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -35,6 +37,10 @@ public class PrestoLexer extends Lexer {
         map.put("IF", Token.IF);
 
         PRESTO_KEYWORDS = new Keywords(map);
+        PRESTO_FEATURE.configFeature(
+                SQLDateExpr,
+                AsDatabase
+        );
     }
 
     @Override
@@ -54,10 +60,6 @@ public class PrestoLexer extends Lexer {
     }
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                SQLDateExpr,
-                AsDatabase
-        );
+        this.dialectFeature = PRESTO_FEATURE;
     }
 }

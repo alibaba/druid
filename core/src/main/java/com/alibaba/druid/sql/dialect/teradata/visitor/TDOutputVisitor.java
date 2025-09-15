@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.ast.SQLTop;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.teradata.TeraData;
 import com.alibaba.druid.sql.dialect.teradata.ast.TDCreateTableStatement;
 import com.alibaba.druid.sql.dialect.teradata.ast.TDDateDataType;
 import com.alibaba.druid.sql.dialect.teradata.ast.TDNormalize;
@@ -15,7 +16,7 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class TDOutputVisitor extends SQLASTOutputVisitor implements TDASTVisitor {
     public TDOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.teradata);
+        super(appender, DbType.teradata, TeraData.dialect);
     }
 
     protected void printSelectListBefore(SQLSelectQueryBlock x) {

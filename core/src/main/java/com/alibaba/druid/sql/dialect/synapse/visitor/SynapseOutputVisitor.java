@@ -2,17 +2,16 @@ package com.alibaba.druid.sql.dialect.synapse.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
+import com.alibaba.druid.sql.dialect.synapse.Synapse;
 import com.alibaba.druid.sql.dialect.synapse.ast.stmt.SynapseCreateTableStatement;
 
 public class SynapseOutputVisitor extends SQLServerOutputVisitor implements SynapseASTVisitor {
     public SynapseOutputVisitor(StringBuilder appender) {
-        super(appender);
-        dbType = DbType.synapse;
+        super(appender, DbType.synapse, Synapse.dialect);
     }
 
     public SynapseOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.synapse;
+        super(appender, DbType.synapse, Synapse.dialect, parameterized);
     }
 
     @Override

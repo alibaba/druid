@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
+import com.alibaba.druid.sql.dialect.impala.Impala;
 import com.alibaba.druid.sql.dialect.impala.ast.ImpalaSQLPartitionValue;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaCreateTableStatement;
 import com.alibaba.druid.sql.dialect.impala.stmt.ImpalaInsertStatement;
@@ -12,13 +13,11 @@ import java.util.List;
 
 public class ImpalaOutputVisitor extends HiveOutputVisitor implements ImpalaASTVisitor {
     public ImpalaOutputVisitor(StringBuilder appender) {
-        super(appender);
-        dbType = DbType.impala;
+        super(appender, DbType.impala, Impala.DIALECT);
     }
 
     public ImpalaOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.impala;
+        super(appender, DbType.impala, Impala.DIALECT, parameterized);
     }
 
     @Override

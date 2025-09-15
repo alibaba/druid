@@ -5,12 +5,14 @@
 package com.alibaba.druid.sql.dialect.spark.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
+import com.alibaba.druid.sql.dialect.spark.Spark;
 import com.alibaba.druid.sql.dialect.spark.ast.SparkCreateTableStatement;
 import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCacheTableStatement;
 import com.alibaba.druid.sql.dialect.spark.ast.stmt.SparkCreateScanStatement;
@@ -24,12 +26,12 @@ import java.util.Map.Entry;
  * @version $Id: SparkOutputVisitor.java, v 0.1 2018年09月17日 10:40 peiheng.qph Exp $
  */
 public class SparkOutputASTVisitor extends HiveOutputVisitor implements SparkASTVisitor {
-    public SparkOutputASTVisitor(StringBuilder appender, DbType dbType) {
-        super(appender, dbType);
+    public SparkOutputASTVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
     }
 
     public SparkOutputASTVisitor(StringBuilder appender) {
-        super(appender);
+        super(appender, DbType.spark, Spark.DIALECT);
     }
 
     //add using statment

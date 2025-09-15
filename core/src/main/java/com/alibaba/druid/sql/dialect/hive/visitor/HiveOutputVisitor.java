@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.hive.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.SQLAdhocTableSource;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -25,6 +26,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.hive.Hive;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveAddJarStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsert;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
@@ -40,15 +42,19 @@ import java.util.Map;
 
 public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVisitor {
     public HiveOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.hive);
+        super(appender, DbType.hive, Hive.DIALECT);
     }
 
-    public HiveOutputVisitor(StringBuilder appender, DbType dbType) {
-        super(appender, dbType);
+    public HiveOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
     }
 
     public HiveOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.hive, parameterized);
+        super(appender, DbType.hive, Hive.DIALECT, parameterized);
+    }
+
+    public HiveOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
+        super(appender, DbType.hive, Hive.DIALECT, parameterized);
     }
 
     @Override

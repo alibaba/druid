@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.h2.H2;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -35,7 +36,7 @@ public class H2OutputVisitor extends SQLASTOutputVisitor implements H2ASTVisitor
     private static final Log LOG = LogFactory.getLog(H2OutputVisitor.class);
 
     public H2OutputVisitor(StringBuilder appender) {
-        super(appender, DbType.h2);
+    super(appender, DbType.h2, H2.DIALECT);
     }
 
     public H2OutputVisitor(StringBuilder appender, DbType dbType) {

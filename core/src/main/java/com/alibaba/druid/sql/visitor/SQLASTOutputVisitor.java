@@ -1053,7 +1053,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             boolean printOpSpace = true;
             if (relational) {
-                if (dbType == DbType.hive && x.getParent() instanceof SQLMethodInvokeExpr) {
+                if ((DbType.hive == dbType || DbType.spark == dbType) && x.getParent() instanceof SQLMethodInvokeExpr) {
                     print(' ');
                 } else {
                     println();
@@ -5291,7 +5291,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAlterTableAddColumn x) {
         print0(ucase ? "ADD" : "add");
 
-        if (DbType.odps == dbType || DbType.hive == dbType) {
+        if (DbType.odps == dbType || DbType.hive == dbType || DbType.spark == dbType) {
             print0(ucase ? " COLUMNS" : " columns");
         }
 
@@ -5522,7 +5522,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     || dbType == DbType.mariadb) {
                 println();
                 print0(ucase ? "WITH (" : "with (");
-            } else if (dbType == DbType.hive || dbType == DbType.presto || dbType == DbType.trino || dbType == DbType.supersql) {
+            } else if (dbType == DbType.hive || dbType == DbType.presto || dbType == DbType.trino || dbType == DbType.supersql || dbType == DbType.spark) {
                 println();
                 print0(ucase ? "WITH DBPROPERTIES (" : "with dbproperties (");
             } else {
@@ -6113,7 +6113,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLAlterTableAlterColumn x) {
         if (DbType.odps == dbType) {
             print0(ucase ? "CHANGE COLUMN" : "change column");
-        } else if (DbType.hive == dbType) {
+        } else if (DbType.hive == dbType || DbType.spark == dbType) {
             print0(ucase ? "CHANGE" : "change");
         } else {
             print0(ucase ? "ALTER COLUMN" : "alter column");
@@ -6334,7 +6334,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             SQLAlterTableItem item = x.getItems().get(i);
             if (i != 0) {
                 SQLAlterTableItem former = x.getItems().get(i - 1);
-                if ((this.dbType == DbType.hive || this.dbType == DbType.odps)
+                if ((this.dbType == DbType.hive || this.dbType == DbType.odps || this.dbType == DbType.spark)
                         && former instanceof SQLAlterTableAddPartition
                         && item instanceof SQLAlterTableAddPartition) {
                     // ignore comma

@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
+import com.alibaba.druid.sql.dialect.odps.Odps;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.FnvHash;
@@ -62,7 +63,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     }
 
     public OdpsOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.odps);
+        super(appender, DbType.odps, Odps.DIALECT);
     }
 
     @Override

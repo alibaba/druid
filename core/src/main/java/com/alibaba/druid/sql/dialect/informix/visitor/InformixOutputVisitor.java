@@ -1,9 +1,10 @@
-package com.alibaba.druid.sql.dialect.infomix.visitor;
+package com.alibaba.druid.sql.dialect.informix.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.informix.Informix;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class InformixOutputVisitor extends SQLASTOutputVisitor {
@@ -12,7 +13,7 @@ public class InformixOutputVisitor extends SQLASTOutputVisitor {
     }
 
     public InformixOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.informix, parameterized);
+        super(appender, DbType.informix, Informix.DIALECT, parameterized);
     }
 
     protected void printSelectListBefore(SQLSelectQueryBlock x) {

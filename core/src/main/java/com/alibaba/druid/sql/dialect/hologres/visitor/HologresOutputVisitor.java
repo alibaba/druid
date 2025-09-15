@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.hologres.Hologres;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.parser.CharTypes;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
@@ -14,11 +15,11 @@ import java.util.List;
 
 public class HologresOutputVisitor extends PGOutputVisitor {
     public HologresOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.hologres, parameterized);
+        super(appender, DbType.hologres, Hologres.DIALECT, parameterized);
     }
 
     public HologresOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.hologres);
+        super(appender, DbType.hologres, Hologres.DIALECT);
     }
 
     @Override

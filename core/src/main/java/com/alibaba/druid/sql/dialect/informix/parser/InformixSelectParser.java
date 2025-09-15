@@ -1,4 +1,4 @@
-package com.alibaba.druid.sql.dialect.infomix.parser;
+package com.alibaba.druid.sql.dialect.informix.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;

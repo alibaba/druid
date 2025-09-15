@@ -2,16 +2,17 @@ package com.alibaba.druid.sql.dialect.athena.visitor;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.athena.Athena;
 import com.alibaba.druid.sql.dialect.athena.ast.stmt.AthenaCreateTableStatement;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 
 public class AthenaOutputVisitor extends PrestoOutputVisitor implements AthenaASTVisitor {
     public AthenaOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.athena);
+        super(appender, DbType.athena, Athena.DIALECT);
     }
 
     public AthenaOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.athena, parameterized);
+    super(appender, DbType.athena, Athena.DIALECT, parameterized);
     }
 
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {

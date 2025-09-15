@@ -1,4 +1,4 @@
-package com.alibaba.druid.sql.dialect.infomix.parser;
+package com.alibaba.druid.sql.dialect.informix.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
