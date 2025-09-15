@@ -1,5 +1,7 @@
 package com.alibaba.druid.sql.parser;
 
+import java.util.List;
+
 public class DialectFeature {
     private long lexerFeature;
 
@@ -17,6 +19,20 @@ public class DialectFeature {
                 ParserFeature.AdditiveRestPipesAsConcat,
                 ParserFeature.ParseStatementListSelectUnsupportedSyntax
         );
+    }
+
+    public DialectFeature(List<Feature> configFeatures, List<Feature> unConfigFeatures) {
+        this();
+        if (configFeatures != null) {
+          for (Feature configFeature : configFeatures) {
+            configFeature(configFeature);
+          }
+        }
+        if (unConfigFeatures != null) {
+          for (Feature unConfigFeature : unConfigFeatures) {
+            unconfigFeature(unConfigFeature);
+          }
+        }
     }
 
     public void configFeature(Feature feature, boolean state) {
