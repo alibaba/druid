@@ -12,9 +12,9 @@ import java.util.Map;
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 
 public class CKLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords CK_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -41,7 +41,12 @@ public class CKLexer extends Lexer {
         map.put("CODEC", Token.CODEC);
         map.remove("ANY");
 
-        return new Keywords(map);
+        CK_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return CK_KEYWORDS;
     }
 
     public CKLexer(String input, SQLParserFeature... features) {

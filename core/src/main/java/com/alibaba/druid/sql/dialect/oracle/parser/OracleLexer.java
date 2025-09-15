@@ -27,8 +27,8 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OracleLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
+    static final Keywords ORACLE_KEYWORDS;
+    static {
         Map<String, Token> map = new HashMap<>(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("BEGIN", Token.BEGIN);
@@ -117,7 +117,12 @@ public class OracleLexer extends Lexer {
         map.put("（", Token.LPAREN);
         map.put("）", Token.RPAREN);
 
-        return new Keywords(map);
+        ORACLE_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return ORACLE_KEYWORDS;
     }
 
     public OracleLexer(char[] input, int inputLength, boolean skipComment) {

@@ -33,9 +33,9 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class HiveLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    public static final Keywords HIVE_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -60,7 +60,12 @@ public class HiveLexer extends Lexer {
         map.put("DIV", Token.DIV);
         map.put("QUALIFY", Token.QUALIFY);
 
-        return new Keywords(map);
+        HIVE_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return HIVE_KEYWORDS;
     }
 
     public HiveLexer(String input, DbType dbType) {

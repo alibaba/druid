@@ -28,23 +28,9 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OdpsLexer extends HiveLexer {
-    public OdpsLexer(String input, SQLParserFeature... features) {
-        super(input);
-
-        init();
-
-        dbType = DbType.odps;
-        this.skipComment = true;
-        this.keepComments = false;
-
-        for (SQLParserFeature feature : features) {
-            config(feature, true);
-        }
-    }
-
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords ODPS_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -65,7 +51,25 @@ public class OdpsLexer extends HiveLexer {
         map.put("MATCHED", Token.MATCHED);
         map.put("；", Token.SEMI);
 
-        return new Keywords(map);
+        ODPS_KEYWORDS = new Keywords(map);
+    }
+    public OdpsLexer(String input, SQLParserFeature... features) {
+        super(input);
+
+        init();
+
+        dbType = DbType.odps;
+        this.skipComment = true;
+        this.keepComments = false;
+
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return ODPS_KEYWORDS;
     }
 
     private void init() {

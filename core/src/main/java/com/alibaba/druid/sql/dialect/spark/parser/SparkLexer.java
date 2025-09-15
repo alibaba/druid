@@ -19,9 +19,9 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
  * @version $Id: AntsparkLexer.java, v 0.1 2018年09月14日 15:04 peiheng.qph Exp $
  */
 public class SparkLexer extends HiveLexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords SPARK_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -47,7 +47,12 @@ public class SparkLexer extends HiveLexer {
         map.put("QUALIFY", Token.QUALIFY);
         map.put("OR", Token.OR);
 
-        return new Keywords(map);
+        SPARK_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return SPARK_KEYWORDS;
     }
 
     public SparkLexer(String input) {
