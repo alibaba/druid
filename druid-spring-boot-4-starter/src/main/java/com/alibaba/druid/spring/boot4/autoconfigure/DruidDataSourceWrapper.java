@@ -19,8 +19,8 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 
 import java.util.List;
 
