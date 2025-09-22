@@ -70,7 +70,6 @@
   "hints": [
     {
       "name": "spring.datasource.druid.filter.stat.db-type",
-      "type": "java.lang.String",
       "values": [
         {
           "value": "db2"
@@ -142,7 +141,6 @@
     },
     {
       "name": "spring.datasource.druid.filter.wall.db-type",
-      "type": "java.lang.String",
       "values": [
         {
           "value": "db2"
