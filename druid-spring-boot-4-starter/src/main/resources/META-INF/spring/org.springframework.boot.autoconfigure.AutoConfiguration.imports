@@ -1,1 +1,1 @@
-com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceAutoConfigure
+com.alibaba.druid.spring.boot4.autoconfigure.DruidDataSourceAutoConfigure

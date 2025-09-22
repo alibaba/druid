@@ -1,7 +1,7 @@
-open module druid.spring.boot3.starter {
-    exports com.alibaba.druid.spring.boot3.autoconfigure;
-    exports com.alibaba.druid.spring.boot3.autoconfigure.stat;
-    exports com.alibaba.druid.spring.boot3.autoconfigure.properties;
+open module druid.spring.boot4.starter {
+    exports com.alibaba.druid.spring.boot4.autoconfigure;
+    exports com.alibaba.druid.spring.boot4.autoconfigure.stat;
+    exports com.alibaba.druid.spring.boot4.autoconfigure.properties;
     requires spring.boot;
     requires spring.boot.autoconfigure;
     requires spring.context;

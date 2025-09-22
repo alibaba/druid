@@ -8,9 +8,9 @@
         <version>1.2.28-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>druid-spring-boot-3-starter</artifactId>
+    <artifactId>druid-spring-boot-4-starter</artifactId>
     <packaging>jar</packaging>
-    <name>druid-spring-boot-3-starter</name>
+    <name>druid-spring-boot-4-starter</name>
     <description>Spring Boot with Druid support,help you simplify Druid config in Spring Boot.</description>
     <url>https://github.com/alibaba/druid</url>
 
@@ -29,7 +29,7 @@
                     management as the parent import style -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${springboot3.version}</version>
+                <version>${springboot4.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${springboot3.version}</version>
+            <version>${springboot4.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -70,28 +70,28 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
-            <version>${springboot3.version}</version>
+            <version>${springboot4.version}</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${springboot3.version}</version>
+            <version>${springboot4.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${springboot3.version}</version>
+            <version>${springboot4.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>${springboot3.version}</version>
+            <version>${springboot4.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -133,7 +133,7 @@
                         <path>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-configuration-processor</artifactId>
-                            <version>${springboot3.version}</version>
+                            <version>${springboot4.version}</version>
                         </path>
                         <path>
                             <groupId>org.openjdk.jmh</groupId>
