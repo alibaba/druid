@@ -214,12 +214,16 @@ public class HiveLexer extends Lexer {
                         break;
                     case 'u':
                         if ((features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
-                            char c1 = charAt(++pos);
-                            char c2 = charAt(++pos);
-                            char c3 = charAt(++pos);
-                            char c4 = charAt(++pos);
+                            int codePointSize = 0;
+                            for (int i = 0; i < 4; i++, codePointSize++) {
+                                char c = charAt(pos + 1 + i);
+                                if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) {
+                                    break;
+                                }
+                            }
 
-                            int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
+                            int intVal = Integer.parseInt(text.substring(pos + 1, pos + 1 + codePointSize), 16);
+                            pos += codePointSize;
 
                             putChar((char) intVal);
                         } else {

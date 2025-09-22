@@ -643,6 +643,7 @@ public class OdpsExprParser extends HiveExprParser {
         if (expr instanceof SQLIdentifierExpr
                 && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.NEW) {
             SQLIdentifierExpr ident = (SQLIdentifierExpr) expr;
+            Lexer.SavePoint savePoint = lexer.markOut();
 
             OdpsNewExpr newExpr = new OdpsNewExpr();
             if (lexer.token() == Token.IDENTIFIER) { //.GSON
@@ -730,6 +731,9 @@ public class OdpsExprParser extends HiveExprParser {
                     } else {
                         expr = newExpr;
                     }
+                } else if (lexer.token() != Token.LPAREN) {
+                    lexer.reset(savePoint);
+                    return ident;
                 } else {
                     accept(Token.LPAREN);
                     this.exprList(newExpr.getArguments(), newExpr);
@@ -834,5 +838,9 @@ public class OdpsExprParser extends HiveExprParser {
         }
 
         return name;
+    }
+
+    protected SQLExpr relationalRestVariant(SQLExpr expr) {
+        return expr;
     }
 }

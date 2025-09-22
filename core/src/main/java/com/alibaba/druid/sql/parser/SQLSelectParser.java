@@ -1340,6 +1340,7 @@ public class SQLSelectParser extends SQLParser {
 
         return tableSrc;
     }
+
     protected SQLExprTableSource getTableSource() {
         return new SQLExprTableSource();
     }
@@ -1537,6 +1538,13 @@ public class SQLSelectParser extends SQLParser {
                 && lexer.isKeepComments()
                 && !(tableSource instanceof SQLSubqueryTableSource)) {
             tableSource.addAfterComment(lexer.readAndResetComments());
+        }
+
+        if (lexer.token == Token.HINT && dbType == DbType.odps) {
+            List<SQLCommentHint> hints = this.exprParser.parseHints();
+            for (SQLCommentHint hint : hints) {
+                tableSource.addAfterComment(hint.getText());
+            }
         }
 
         if (tableSource.getAlias() == null || tableSource.getAlias().length() == 0) {

@@ -3532,13 +3532,11 @@ public class SQLExprParser extends SQLParser {
 
                 expr = new SQLBinaryOpExpr(expr, operator, rightExp, dbType);
             } else if (token == Token.VARIANT) {
-                String value = lexer.stringVal();
-                lexer.nextToken();
-                SQLExpr variantExpr = new SQLVariantRefExpr(value);
-                if (lexer.token == Token.IN) {
-                    variantExpr = inRest(variantExpr);
+                SQLExpr expr1 = relationalRestVariant(expr);
+                if (expr1 == expr) {
+                    break;
                 }
-                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Blank, variantExpr, dbType);
+                expr = expr1;
             } else {
                 break;
             }
@@ -3627,13 +3625,11 @@ public class SQLExprParser extends SQLParser {
 
                 expr = new SQLBinaryOpExpr(expr, op, rightExp, dbType);
             } else if (lexer.token == Token.VARIANT) {
-                String value = lexer.stringVal();
-                lexer.nextToken();
-                SQLExpr variantExpr = new SQLVariantRefExpr(value);
-                if (lexer.token == Token.IN) {
-                    variantExpr = inRest(variantExpr);
+                SQLExpr expr1 = relationalRestVariant(expr);
+                if (expr == expr1) {
+                    break;
                 }
-                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Blank, variantExpr, dbType);
+                expr = expr1;
             } else {
                 break;
             }
@@ -3994,10 +3990,7 @@ public class SQLExprParser extends SQLParser {
                 }
                 break;
             case VARIANT:
-                rightExp = new SQLVariantRefExpr(lexer.stringVal);
-                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Blank, rightExp, dbType);
-                lexer.nextToken();
-                return expr;
+                return relationalRestVariant(expr);
             default:
                 return expr;
         }
@@ -4031,6 +4024,16 @@ public class SQLExprParser extends SQLParser {
         }
 
         return expr;
+    }
+
+    protected SQLExpr relationalRestVariant(SQLExpr expr) {
+        String value = lexer.stringVal();
+        lexer.nextToken();
+        SQLExpr variantExpr = new SQLVariantRefExpr(value);
+        if (lexer.token == Token.IN) {
+            variantExpr = inRest(variantExpr);
+        }
+        return new SQLBinaryOpExpr(expr, SQLBinaryOperator.Blank, variantExpr, dbType);
     }
 
     public SQLExpr notRationalRest(SQLExpr expr, boolean global) {

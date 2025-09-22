@@ -4923,6 +4923,9 @@ public class SQLStatementParser extends SQLParser {
             }
 
             lexer.nextToken();
+            if (lexer.token == WHERE) {
+                break;
+            }
         }
     }
 
