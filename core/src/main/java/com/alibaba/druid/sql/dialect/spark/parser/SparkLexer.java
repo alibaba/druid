@@ -11,6 +11,8 @@ import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +26,29 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
  */
 public class SparkLexer extends HiveLexer {
     static final Keywords SPARK_KEYWORDS;
-    static final DialectFeature SPARK_FEATURE = new DialectFeature();
+    static final DialectFeature SPARK_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    QueryTable,
+                    ParseSelectItemPrefixX,
+                    JoinRightTableFrom,
+                    ScanSQLTypeWithFrom,
+                    NextTokenColon,
+                    ScanAliasU,
+                    JoinRightTableFrom,
+                    GroupByAll,
+                    SQLDateExpr,
+                    ParseAssignItemRparenCommaSetReturn,
+                    TableAliasLock,
+                    TableAliasPartition,
+                    AsSkip,
+                    AsSequence,
+                    AsDatabase,
+                    AsDefault
+            ),
+            Collections.singletonList(
+                    PrimaryBangBangSupport
+            )
+    );
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -53,27 +77,6 @@ public class SparkLexer extends HiveLexer {
         map.put("OR", Token.OR);
 
         SPARK_KEYWORDS = new Keywords(map);
-        SPARK_FEATURE.configFeature(
-                QueryTable,
-                ParseSelectItemPrefixX,
-                JoinRightTableFrom,
-                ScanSQLTypeWithFrom,
-                NextTokenColon,
-                ScanAliasU,
-                JoinRightTableFrom,
-                GroupByAll,
-                SQLDateExpr,
-                ParseAssignItemRparenCommaSetReturn,
-                TableAliasLock,
-                TableAliasPartition,
-                AsSkip,
-                AsSequence,
-                AsDatabase,
-                AsDefault
-        );
-        SPARK_FEATURE.unconfigFeature(
-                PrimaryBangBangSupport
-        );
     }
 
     @Override

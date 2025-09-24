@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.bigquery.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,14 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class BigQueryLexer extends Lexer {
     static final Keywords BIGQUERY_KEYWORDS;
-    static final DialectFeature BIGQUERY_FEATURE = new DialectFeature();
+    static final DialectFeature BIGQUERY_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    SQLDateExpr,
+                    GroupByAll,
+                    InRestSpecificOperation
+            ),
+            null
+    );
     static {
         Map<String, Token> map = new HashMap<String, Token>();
 
@@ -115,7 +123,6 @@ public class BigQueryLexer extends Lexer {
         map.put("ELSEIF", Token.ELSEIF);
 
         BIGQUERY_KEYWORDS = new Keywords(map);
-        BIGQUERY_FEATURE.configFeature(SQLDateExpr, GroupByAll, InRestSpecificOperation);
     }
 
     @Override
