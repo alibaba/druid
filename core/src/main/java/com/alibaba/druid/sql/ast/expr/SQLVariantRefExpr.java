@@ -35,23 +35,20 @@ public class SQLVariantRefExpr extends SQLExprImpl {
     private int index = -1;
 
     public SQLVariantRefExpr(String name) {
+        this(name, -1);
+    }
+
+    public SQLVariantRefExpr(String name, int index) {
         this.name = name;
-        if (name.startsWith("${") && name.endsWith("}")) {
-            this.templateParameter = true;
-        } else {
-            this.templateParameter = false;
-        }
+        this.index = index;
+        this.templateParameter = name.startsWith("${") && name.endsWith("}");
         this.hasPrefixComma = true;
     }
 
     public SQLVariantRefExpr(String name, SQLObject parent) {
         this.name = name;
         this.parent = parent;
-        if (name.startsWith("${") && name.endsWith("}")) {
-            this.templateParameter = true;
-        } else {
-            this.templateParameter = false;
-        }
+        this.templateParameter = name.startsWith("${") && name.endsWith("}");
         this.hasPrefixComma = true;
     }
 
@@ -116,6 +113,11 @@ public class SQLVariantRefExpr extends SQLExprImpl {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + (global ? 1231 : 1237);
+        result = prime * result + (session ? 1231 : 1237);
+        result = prime * result + (templateParameter ? 1231 : 1237);
+        result = prime * result + (hasPrefixComma ? 1231 : 1237);
+        result = prime * result + index;
         return result;
     }
 
@@ -131,6 +133,8 @@ public class SQLVariantRefExpr extends SQLExprImpl {
             return false;
         }
         SQLVariantRefExpr other = (SQLVariantRefExpr) obj;
+
+        // Compare name
         if (name == null) {
             if (other.name != null) {
                 return false;
@@ -138,7 +142,23 @@ public class SQLVariantRefExpr extends SQLExprImpl {
         } else if (!name.equals(other.name)) {
             return false;
         }
-        return true;
+
+        // Compare boolean fields
+        if (global != other.global) {
+            return false;
+        }
+        if (session != other.session) {
+            return false;
+        }
+        if (templateParameter != other.templateParameter) {
+            return false;
+        }
+        if (hasPrefixComma != other.hasPrefixComma) {
+            return false;
+        }
+
+        // Compare index
+        return index == other.index;
     }
 
     public boolean isGlobal() {
