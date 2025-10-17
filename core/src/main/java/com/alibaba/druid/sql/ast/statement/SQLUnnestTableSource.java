@@ -13,7 +13,8 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
     private final List<SQLExpr> items = new ArrayList<SQLExpr>();
     protected List<SQLName> columns = new ArrayList<SQLName>();
     private boolean ordinality;
-    private SQLExpr offset;
+    private boolean withOffset;
+    private SQLExpr offsetAs;
 
     public SQLUnnestTableSource() {
     }
@@ -23,7 +24,7 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
         if (v.visit(this)) {
             acceptChild(v, items);
             acceptChild(v, columns);
-            acceptChild(v, offset);
+            acceptChild(v, offsetAs);
             super.accept0(v);
         }
         v.endVisit(this);
@@ -59,15 +60,23 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
         this.items.set(i, item);
     }
 
-    public SQLExpr getOffset() {
-        return offset;
+    public boolean isWithOffset() {
+        return withOffset;
     }
 
-    public void setOffset(SQLExpr x) {
+    public void setWithOffset(boolean withOffset) {
+        this.withOffset = withOffset;
+    }
+
+    public SQLExpr getOffsetAs() {
+        return offsetAs;
+    }
+
+    public void setOffsetAs(SQLExpr x) {
         if (x != null) {
             x.setParent(this);
         }
-        this.offset = x;
+        this.offsetAs = x;
     }
 
     public SQLUnnestTableSource clone() {
@@ -86,9 +95,10 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
         }
 
         x.alias = alias;
+        x.offsetAs = offsetAs;
 
-        if (offset != null) {
-            x.setOffset(offset);
+        if (offsetAs != null) {
+            x.setOffsetAs(offsetAs);
         }
 
         return x;
