@@ -170,8 +170,8 @@ public class OdpsLexer extends HiveLexer {
 
             this.ch = charAt(pos);
 
-            stringVal = subString(mark, bufPos);
-            token = Token.IDENTIFIER;
+            setStringVal(subString(mark, bufPos));
+            setToken(Token.IDENTIFIER);
 
             return;
         }
@@ -249,18 +249,18 @@ public class OdpsLexer extends HiveLexer {
             }
         }
 
-        stringVal = addSymbol();
+        setStringVal(addSymbol());
         Token tok = keywords.getKeyword(stringVal);
         if (tok != null) {
-            token = tok;
+            setToken(tok);
         } else {
-            token = Token.IDENTIFIER;
+            setToken(Token.IDENTIFIER);
         }
     }
 
     public void scanVariable() {
         if (ch == ':') {
-            token = Token.COLON;
+            setToken(Token.COLON);
             ch = charAt(++pos);
             return;
         }
@@ -281,8 +281,8 @@ public class OdpsLexer extends HiveLexer {
 
             if (p1 != -1) {
                 int end = p1 + "#END CODE".length();
-                stringVal = text.substring(pos, end);
-                token = Token.CODE;
+                setStringVal(text.substring(pos, end));
+                setToken(Token.CODE);
                 pos = end;
                 ch = charAt(pos);
                 return;

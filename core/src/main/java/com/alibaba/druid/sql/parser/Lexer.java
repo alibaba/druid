@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import static com.alibaba.druid.sql.parser.CharTypes.*;
@@ -56,6 +58,8 @@ public class Lexer {
     protected int bufPos;
 
     protected Token token;
+    protected List<Pair<Integer, Token>> tokens;
+    protected Map<Integer, String> stringValMap;
 
     protected Keywords keywords;
 
@@ -87,6 +91,18 @@ public class Lexer {
     protected int posLine;
     protected int posColumn;
     protected DialectFeature dialectFeature;
+
+    public List<Pair<Integer, Token>> getTokens() {
+        return tokens;
+    }
+
+    public Map<Integer, String> getStringValMap() {
+        return stringValMap;
+    }
+
+    public DialectFeature getDialectFeature() {
+        return dialectFeature;
+    }
 
     public Lexer(String input) {
         this(input, (CommentHandler) null);
@@ -236,6 +252,9 @@ public class Lexer {
         this.hash = savePoint.hash;
         this.hashLCase = savePoint.hashLCase;
         this.startPos = savePoint.startPos;
+        if (dialectFeatureEnabled(SaveAllHistoricalTokens)) {
+            removeTokensAfterPos(pos);
+        }
     }
 
     //出现多次调用mark()后调用reset()会有问题
@@ -247,11 +266,28 @@ public class Lexer {
     public void reset(int pos) {
         this.pos = pos;
         this.ch = charAt(pos);
+        if (dialectFeatureEnabled(SaveAllHistoricalTokens)) {
+            removeTokensAfterPos(pos);
+        }
     }
 
+    protected void removeTokensAfterPos(int pos) {
+        int label = -1;
+        for (int i = tokens.size() - 1; i >= 0; i--) {
+            if (tokens.get(i).getKey() < pos) {
+                label = i;
+                break;
+            }
+        }
+        if (label >= 0) {
+            tokens.subList(label + 1, tokens.size()).clear();
+        }
+        stringValMap.entrySet().removeIf(entry -> entry.getKey() >= pos);
+    }
     public Lexer(String input, boolean skipComment) {
         this.skipComment = skipComment;
-
+        this.tokens = new ArrayList<>();
+        this.stringValMap = new java.util.HashMap<>();
         this.text = input;
         this.pos = 0;
         ch = charAt(pos);
@@ -289,7 +325,7 @@ public class Lexer {
      * Report an error at the given position using the provided arguments.
      */
     protected void lexError(String key, Object... args) {
-        token = ERROR;
+        setToken(ERROR);
     }
 
     /**
@@ -331,8 +367,39 @@ public class Lexer {
         return false;
     }
 
+    private int tokenPos; // position where the current token was stored
+    private int lastStringValPos = -1; // position where last stringVal was stored
+
     public void setToken(Token token) {
+        if (dialectFeatureEnabled(SaveAllHistoricalTokens)) {
+            this.tokenPos = pos;
+            this.tokens.add(Pair.of(pos, token));
+            // If a stringVal was set before this token, move it to the token's position
+            if (lastStringValPos >= 0 && lastStringValPos != pos) {
+                String val = this.stringValMap.remove(lastStringValPos);
+                if (val != null) {
+                    this.stringValMap.put(pos, val);
+                }
+                lastStringValPos = -1;
+            } else if (lastStringValPos == -1 &&
+                    (token == Token.IDENTIFIER || token == Token.LITERAL_INT ||
+                     token == Token.LITERAL_FLOAT || token == Token.LITERAL_CHARS ||
+                     token == Token.LITERAL_NCHARS || token == Token.LITERAL_HEX)) {
+                // Eagerly compute and save stringVal for tokens that need it
+                String val = subString(mark, bufPos);
+                this.stringValMap.put(pos, val);
+                this.stringVal = val;
+            }
+        }
         this.token = token;
+    }
+
+    public void setStringVal(String val) {
+        if (dialectFeatureEnabled(SaveAllHistoricalTokens) && val != null) {
+            this.stringValMap.put(pos, val);
+            this.lastStringValPos = pos;
+        }
+        this.stringVal = val;
     }
 
     public final DbType getDbType() {
@@ -380,19 +447,19 @@ public class Lexer {
 
         if (ch == ',' || ch == '，') {
             scanChar();
-            token = COMMA;
+            setToken(COMMA);
             return;
         }
 
         if (ch == ')' || ch == '）') {
             scanChar();
-            token = RPAREN;
+            setToken(RPAREN);
             return;
         }
 
         if (ch == '.') {
             scanChar();
-            token = DOT;
+            setToken(DOT);
             return;
         }
 
@@ -403,8 +470,8 @@ public class Lexer {
                 if (ch_next_2 == ' ') {
                     pos += 2;
                     ch = ' ';
-                    token = Token.AS;
-                    stringVal = "AS";
+                    setToken(Token.AS);
+                    setStringVal("AS");
                     return;
                 }
             }
@@ -420,19 +487,19 @@ public class Lexer {
 
         if (ch == ',' || ch == '，') {
             scanChar();
-            token = COMMA;
+            setToken(COMMA);
             return;
         }
 
         if (ch == ')' || ch == '）') {
             scanChar();
-            token = RPAREN;
+            setToken(RPAREN);
             return;
         }
 
         if (ch == '.') {
             scanChar();
-            token = DOT;
+            setToken(DOT);
             return;
         }
 
@@ -443,8 +510,8 @@ public class Lexer {
                 if (ch_next_2 == ' ') {
                     pos += 2;
                     ch = ' ';
-                    token = Token.AS;
-                    stringVal = "AS";
+                    setToken(Token.AS);
+                    setStringVal("AS");
                     return;
                 }
             }
@@ -462,18 +529,18 @@ public class Lexer {
             scanChar();
             if (ch == '=') {
                 scanChar();
-                token = EQEQ;
+                setToken(EQEQ);
             } else if (ch == '>') {
                 scanChar();
-                token = EQGT;
+                setToken(EQGT);
             }
-            token = EQ;
+            setToken(EQ);
             return;
         }
 
         if (ch == '.') {
             scanChar();
-            token = DOT;
+            setToken(DOT);
             return;
         }
 
@@ -484,8 +551,8 @@ public class Lexer {
                 if (ch_next_2 == ' ') {
                     pos += 2;
                     ch = ' ';
-                    token = Token.AS;
-                    stringVal = "AS";
+                    setToken(Token.AS);
+                    setStringVal("AS");
                     return;
                 }
             }
@@ -501,7 +568,7 @@ public class Lexer {
 
         if (ch == '(' || ch == '（') {
             scanChar();
-            token = LPAREN;
+            setToken(LPAREN);
             return;
         }
         nextToken();
@@ -554,7 +621,7 @@ public class Lexer {
 
         if (ch == '?') {
             scanChar();
-            token = Token.QUES;
+            setToken(Token.QUES);
             return;
         }
 
@@ -567,8 +634,8 @@ public class Lexer {
                     && (isWhitespace(c4 = text.charAt(pos + 4)) || c4 == ',' || c4 == ')' || c4 == '）')) {
                 pos += 4;
                 ch = c4;
-                token = Token.NULL;
-                stringVal = "NULL";
+                setToken(Token.NULL);
+                setStringVal("NULL");
                 return;
             }
 
@@ -577,20 +644,20 @@ public class Lexer {
                 ++pos;
                 ch = '\'';
                 scanString();
-                token = Token.LITERAL_NCHARS;
+                setToken(Token.LITERAL_NCHARS);
                 return;
             }
         }
 
         if (ch == ')' || ch == '）') {
             scanChar();
-            token = Token.RPAREN;
+            setToken(Token.RPAREN);
             return;
         }
 
         if (ch == '（') {
             scanChar();
-            token = Token.LPAREN;
+            setToken(Token.LPAREN);
             return;
         }
 
@@ -623,8 +690,8 @@ public class Lexer {
                 if (ch_next_2 == ' ') {
                     pos += 2;
                     ch = ' ';
-                    token = Token.BY;
-                    stringVal = "BY";
+                    setToken(Token.BY);
+                    setStringVal("BY");
                     return;
                 }
             }
@@ -648,8 +715,8 @@ public class Lexer {
                     && isWhitespace(c3)) {
                 pos += 3;
                 ch = c3;
-                token = Token.NOT;
-                stringVal = "NOT";
+                setToken(Token.NOT);
+                setStringVal("NOT");
                 return;
             }
 
@@ -661,8 +728,8 @@ public class Lexer {
                     && isWhitespace(c4 = text.charAt(pos + 4))) {
                 pos += 4;
                 ch = c4;
-                token = Token.NULL;
-                stringVal = "NULL";
+                setToken(Token.NULL);
+                setStringVal("NULL");
                 return;
             }
         }
@@ -687,7 +754,7 @@ public class Lexer {
 
         if (ch == ')') {
             scanChar();
-            token = RPAREN;
+            setToken(RPAREN);
             return;
         }
 
@@ -1149,9 +1216,9 @@ public class Lexer {
                 char[] chars = stringVal.toCharArray();
                 chars[0] = '"';
                 chars[chars.length - 1] = '"';
-                stringVal = new String(chars);
+                setStringVal(new String(chars));
             }
-            token = LITERAL_ALIAS;
+            setToken(LITERAL_ALIAS);
         } else {
             nextToken();
         }
@@ -1161,7 +1228,7 @@ public class Lexer {
         while (isWhitespace(ch)) {
             ch = charAt(++pos);
         }
-        stringVal = null;
+        setStringVal(null);
         mark = pos;
         while (!isWhitespace(ch) && ch != ';' && pos < text.length()) {
             ch = charAt(++pos);
@@ -1172,7 +1239,7 @@ public class Lexer {
             ch = charAt(++pos);
         }
 
-        token = LITERAL_PATH;
+        setToken(LITERAL_PATH);
     }
 
     public final void nextTokenForSet() {
@@ -1187,7 +1254,7 @@ public class Lexer {
         }
 
         if (isFirstIdentifierChar(first) || (first >= '0' && first <= '9') || first == '{') {
-            stringVal = null;
+            setStringVal(null);
             mark = pos;
             while (ch != ';' && ch != EOI) {
                 ch = charAt(++pos);
@@ -1195,8 +1262,8 @@ public class Lexer {
 
             bufPos = pos - mark;
 
-            stringVal = this.subString(mark, bufPos);
-            token = IDENTIFIER;
+            setStringVal(this.subString(mark, bufPos));
+            setToken(IDENTIFIER);
             return;
         }
 
@@ -1247,7 +1314,7 @@ public class Lexer {
     }
 
     protected void nextTokenQues() {
-        token = Token.QUES;
+        setToken(Token.QUES);
     }
 
     public final void nextToken() {
@@ -1286,11 +1353,11 @@ public class Lexer {
             if (isFirstIdentifierChar(ch)) {
                 if (ch == '（') {
                     scanChar();
-                    token = LPAREN;
+                    setToken(LPAREN);
                     return;
                 } else if (ch == '）') {
                     scanChar();
-                    token = RPAREN;
+                    setToken(RPAREN);
                     return;
                 }
 
@@ -1299,7 +1366,7 @@ public class Lexer {
                         ++pos;
                         ch = '\'';
                         scanString();
-                        token = Token.LITERAL_NCHARS;
+                        setToken(Token.LITERAL_NCHARS);
                         return;
                     }
                 }
@@ -1338,44 +1405,44 @@ public class Lexer {
                 case ',':
                 case '，':
                     scanChar();
-                    token = COMMA;
+                    setToken(COMMA);
                     return;
                 case '(':
                 case '（':
                     scanChar();
-                    token = LPAREN;
+                    setToken(LPAREN);
                     return;
                 case ')':
                 case '）':
                     scanChar();
-                    token = RPAREN;
+                    setToken(RPAREN);
                     return;
                 case '[':
                     scanLBracket();
                     return;
                 case ']':
                     scanChar();
-                    token = RBRACKET;
+                    setToken(RBRACKET);
                     return;
                 case '{':
                     scanChar();
-                    token = LBRACE;
+                    setToken(LBRACE);
                     return;
                 case '}':
                     scanChar();
-                    token = RBRACE;
+                    setToken(RBRACE);
                     return;
                 case ':':
                     scanChar();
                     if (ch == '=') {
                         scanChar();
-                        token = COLONEQ;
+                        setToken(COLONEQ);
                     } else if (ch == ':') {
                         scanChar();
-                        token = COLONCOLON;
+                        setToken(COLONCOLON);
                     } else {
                         if (isEnabled(SQLParserFeature.TDDLHint) || dialectFeatureEnabled(NextTokenColon)) {
-                            token = COLON;
+                            setToken(COLON);
                             return;
                         }
                         unscan();
@@ -1401,12 +1468,12 @@ public class Lexer {
                         scanChar();
                         if (ch == '.') {
                             scanChar();
-                            token = Token.DOTDOTDOT;
+                            setToken(Token.DOTDOTDOT);
                         } else {
-                            token = Token.DOTDOT;
+                            setToken(Token.DOTDOT);
                         }
                     } else {
-                        token = Token.DOT;
+                        setToken(Token.DOT);
                     }
                     return;
                 case '\'':
@@ -1417,7 +1484,7 @@ public class Lexer {
                     return;
                 case '*':
                     scanChar();
-                    token = Token.STAR;
+                    setToken(Token.STAR);
                     return;
                 case '?':
                     scanChar();
@@ -1425,7 +1492,7 @@ public class Lexer {
                     return;
                 case ';':
                     scanChar();
-                    token = Token.SEMI;
+                    setToken(Token.SEMI);
                     return;
                 case '`':
                     throw new ParserException("TODO. " + info()); // TODO
@@ -1483,7 +1550,7 @@ public class Lexer {
                             continue;
                         }
                     } else {
-                        token = Token.SLASH;
+                        setToken(Token.SLASH);
                         scanChar();
                     }
                     return;
@@ -1502,13 +1569,13 @@ public class Lexer {
                             && dialectFeatureEnabled(NextTokenPrefixN)) {
                         scanChar();
                         scanChar();
-                        token = Token.NULL;
+                        setToken(Token.NULL);
                         return;
                     }
 
                     // QS_TODO ?
                     if (isEOF()) { // JLS
-                        token = EOF;
+                        setToken(EOF);
                     } else {
                         lexError("illegal.char", String.valueOf((int) ch));
                         scanChar();
@@ -1522,14 +1589,14 @@ public class Lexer {
 
     protected void scanLBracket() {
         scanChar();
-        token = LBRACKET;
+        setToken(LBRACKET);
     }
 
     private void scanOperator() {
         switch (ch) {
             case '+':
                 scanChar();
-                token = Token.PLUS;
+                setToken(Token.PLUS);
                 break;
             case '-':
                 scanChar();
@@ -1537,29 +1604,29 @@ public class Lexer {
                     scanChar();
                     if (ch == '>') {
                         scanChar();
-                        token = Token.SUBGTGT;
+                        setToken(Token.SUBGTGT);
                     } else {
-                        token = Token.SUBGT;
+                        setToken(Token.SUBGT);
                     }
                 } else {
-                    token = Token.SUB;
+                    setToken(Token.SUB);
                 }
                 break;
             case '*':
                 scanChar();
-                token = Token.STAR;
+                setToken(Token.STAR);
                 break;
             case '/':
                 scanChar();
-                token = Token.SLASH;
+                setToken(Token.SLASH);
                 break;
             case '&':
                 scanChar();
                 if (ch == '&') {
                     scanChar();
-                    token = Token.AMPAMP;
+                    setToken(Token.AMPAMP);
                 } else {
-                    token = Token.AMP;
+                    setToken(Token.AMP);
                 }
                 break;
             case '|':
@@ -1568,33 +1635,33 @@ public class Lexer {
                     scanChar();
                     if (ch == '/') {
                         if (charAt(pos + 1) == '*') {
-                            token = Token.BARBAR;
+                            setToken(Token.BARBAR);
                             break;
                         }
                         scanChar();
-                        token = Token.BARBARSLASH;
+                        setToken(Token.BARBARSLASH);
                     } else {
-                        token = Token.BARBAR;
+                        setToken(Token.BARBAR);
                     }
                 } else if (ch == '/') {
                     scanChar();
-                    token = Token.BARSLASH;
+                    setToken(Token.BARSLASH);
                 } else {
-                    token = Token.BAR;
+                    setToken(Token.BAR);
                 }
                 break;
             case '^':
                 scanChar();
                 if (ch == '=') {
                     scanChar();
-                    token = Token.CARETEQ;
+                    setToken(Token.CARETEQ);
                 } else {
-                    token = Token.CARET;
+                    setToken(Token.CARET);
                 }
                 break;
             case '%':
                 scanChar();
-                token = Token.PERCENT;
+                setToken(Token.PERCENT);
                 break;
             case '=':
                 scanChar();
@@ -1604,29 +1671,29 @@ public class Lexer {
 
                 if (ch == '=') {
                     scanChar();
-                    token = Token.EQEQ;
+                    setToken(Token.EQEQ);
                 } else if (ch == '>') {
                     scanChar();
-                    token = Token.EQGT;
+                    setToken(Token.EQGT);
                 } else {
-                    token = Token.EQ;
+                    setToken(Token.EQ);
                 }
                 break;
             case '>':
                 scanChar();
                 if (ch == '=') {
                     scanChar();
-                    token = Token.GTEQ;
+                    setToken(Token.GTEQ);
                 } else if (ch == '>') {
                     scanChar();
                     if (ch == '>') {
                         scanChar();
-                        token = Token.GTGTGT;
+                        setToken(Token.GTGTGT);
                     } else {
-                        token = Token.GTGT;
+                        setToken(Token.GTGT);
                     }
                 } else {
-                    token = Token.GT;
+                    setToken(Token.GT);
                 }
                 break;
             case '<':
@@ -1634,30 +1701,30 @@ public class Lexer {
                 if (ch == '=') {
                     scanChar();
                     if (ch == '>') {
-                        token = Token.LTEQGT;
+                        setToken(Token.LTEQGT);
                         scanChar();
                     } else {
-                        token = Token.LTEQ;
+                        setToken(Token.LTEQ);
                     }
                 } else if (ch == '>') {
                     scanChar();
-                    token = Token.LTGT;
+                    setToken(Token.LTGT);
                 } else if (ch == '<') {
                     scanChar();
 
                     if (ch == '<') {
                         scanChar();
-                        token = Token.LTLTLT;
+                        setToken(Token.LTLTLT);
                     } else {
-                        token = Token.LTLT;
+                        setToken(Token.LTLT);
                     }
                 } else if (ch == '@') {
                     scanChar();
-                    token = Token.LT_MONKEYS_AT;
+                    setToken(Token.LT_MONKEYS_AT);
                 } else if (ch == '-' && charAt(pos + 1) == '>') {
                     scanChar();
                     scanChar();
-                    token = Token.LT_SUB_GT;
+                    setToken(Token.LT_SUB_GT);
                 } else {
                     if (ch == ' ') {
                         char c1 = charAt(pos + 1);
@@ -1665,33 +1732,33 @@ public class Lexer {
                             scanChar();
                             scanChar();
                             if (ch == '>') {
-                                token = Token.LTEQGT;
+                                setToken(Token.LTEQGT);
                                 scanChar();
                             } else {
-                                token = Token.LTEQ;
+                                setToken(Token.LTEQ);
                             }
                         } else if (c1 == '>') {
                             scanChar();
                             scanChar();
-                            token = Token.LTGT;
+                            setToken(Token.LTGT);
                         } else if (c1 == '<') {
                             scanChar();
                             scanChar();
-                            token = Token.LTLT;
+                            setToken(Token.LTLT);
                         } else if (c1 == '@') {
                             scanChar();
                             scanChar();
-                            token = Token.LT_MONKEYS_AT;
+                            setToken(Token.LT_MONKEYS_AT);
                         } else if (c1 == '-' && charAt(pos + 2) == '>') {
                             scanChar();
                             scanChar();
                             scanChar();
-                            token = Token.LT_SUB_GT;
+                            setToken(Token.LT_SUB_GT);
                         } else {
-                            token = Token.LT;
+                            setToken(Token.LT);
                         }
                     } else {
-                        token = Token.LT;
+                        setToken(Token.LT);
                     }
                 }
                 break;
@@ -1702,42 +1769,42 @@ public class Lexer {
                 }
                 if (ch == '=') {
                     scanChar();
-                    token = Token.BANGEQ;
+                    setToken(Token.BANGEQ);
                 } else if (ch == '>') {
                     scanChar();
-                    token = Token.BANGGT;
+                    setToken(Token.BANGGT);
                 } else if (ch == '<') {
                     scanChar();
-                    token = Token.BANGLT;
+                    setToken(Token.BANGLT);
                 } else if (ch == '!') {
                     scanChar();
-                    token = Token.BANGBANG; // postsql
+                    setToken(Token.BANGBANG); // postsql
                 } else if (ch == '~') {
                     scanChar();
                     if (ch == '*') {
                         scanChar();
-                        token = Token.BANG_TILDE_STAR; // postsql
+                        setToken(Token.BANG_TILDE_STAR); // postsql
                     } else {
-                        token = Token.BANG_TILDE; // postsql
+                        setToken(Token.BANG_TILDE); // postsql
                     }
                 } else {
-                    token = Token.BANG;
+                    setToken(Token.BANG);
                 }
                 break;
             case '?':
                 scanChar();
-                token = Token.QUES;
+                setToken(Token.QUES);
                 break;
             case '~':
                 scanChar();
                 if (ch == '*') {
                     scanChar();
-                    token = Token.TILDE_STAR;
+                    setToken(Token.TILDE_STAR);
                 } else if (ch == '=') {
                     scanChar();
-                    token = Token.TILDE_EQ; // postsql
+                    setToken(Token.TILDE_EQ); // postsql
                 } else {
-                    token = Token.TILDE;
+                    setToken(Token.TILDE);
                 }
                 break;
             default:
@@ -1761,7 +1828,7 @@ public class Lexer {
             if (ch == '\'') {
                 scanChar();
                 if (ch != '\'') {
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     break;
                 } else {
                     if (!hasSpecial) {
@@ -1788,12 +1855,12 @@ public class Lexer {
 
         if (!hasSpecial) {
             if (preToken == Token.AS) {
-                stringVal = subString(mark, bufPos + 2);
+                setStringVal(subString(mark, bufPos + 2));
             } else {
-                stringVal = subString(mark + 1, bufPos);
+                setStringVal(subString(mark + 1, bufPos));
             }
         } else {
-            stringVal = new String(buf, 0, bufPos);
+            setStringVal(new String(buf, 0, bufPos));
         }
     }
 
@@ -1831,13 +1898,13 @@ public class Lexer {
             // hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
-                this.stringVal = stringVal;
+                setStringVal(stringVal);
                 int pos = endIndex + 1;
                 char ch = charAt(pos);
                 if (ch != '\'') {
                     this.pos = pos;
                     this.ch = ch;
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     return;
                 }
             }
@@ -1925,7 +1992,7 @@ public class Lexer {
             if (ch == '\'') {
                 scanChar();
                 if (ch != '\'') {
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     break;
                 } else {
                     if (!hasSpecial) {
@@ -1951,9 +2018,9 @@ public class Lexer {
         }
 
         if (!hasSpecial) {
-            stringVal = subString(mark + 1, bufPos);
+            setStringVal(subString(mark + 1, bufPos));
         } else {
-            stringVal = new String(buf, 0, bufPos);
+            setStringVal(new String(buf, 0, bufPos));
         }
     }
 
@@ -2002,20 +2069,20 @@ public class Lexer {
             // hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
-                this.stringVal = stringVal;
+                setStringVal(stringVal);
                 int pos = endIndex + 1;
                 char ch = charAt(pos);
                 if (ch == '.') {
                     this.pos = pos;
                     this.ch = ch;
-                    token = Token.IDENTIFIER;
+                    setToken(Token.IDENTIFIER);
                     return;
                 }
 
                 if (ch != '\'') {
                     this.pos = pos;
                     this.ch = ch;
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     return;
                 }
             }
@@ -2090,9 +2157,9 @@ public class Lexer {
                 scanChar();
                 if (ch != '"') {
                     if (buf != null && bufPos > 0) {
-                        stringVal = new String(buf, 0, bufPos);
+                        setStringVal(new String(buf, 0, bufPos));
                     }
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     break;
                 } else {
                     if (!hasSpecial) {
@@ -2118,9 +2185,9 @@ public class Lexer {
         }
 
         if (!hasSpecial) {
-            stringVal = subString(mark + 1, bufPos);
+            setStringVal(subString(mark + 1, bufPos));
         } else {
-            stringVal = new String(buf, 0, bufPos);
+            setStringVal(new String(buf, 0, bufPos));
         }
     }
 
@@ -2160,13 +2227,13 @@ public class Lexer {
             // hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
-                this.stringVal = stringVal;
+                setStringVal(stringVal);
                 int pos = endIndex + 1;
                 char ch = charAt(pos);
                 if (ch != '\'') {
                     this.pos = pos;
                     this.ch = ch;
-                    token = LITERAL_ALIAS;
+                    setToken(LITERAL_ALIAS);
                     return;
                 }
             }
@@ -2257,7 +2324,7 @@ public class Lexer {
 
                 putChar(ch);
                 scanChar();
-                token = LITERAL_ALIAS;
+                setToken(LITERAL_ALIAS);
                 break;
             }
 
@@ -2268,7 +2335,7 @@ public class Lexer {
             }
         }
 
-        stringVal = new String(buf, 0, bufPos);
+        setStringVal(new String(buf, 0, bufPos));
     }
 
     public void scanSharp() {
@@ -2286,7 +2353,7 @@ public class Lexer {
         final char c1 = charAt(pos + 1);
         if (c1 == '>' && dialectFeatureEnabled(ScanVariableGreaterThan)) {
             pos += 2;
-            token = Token.MONKEYS_AT_GT;
+            setToken(Token.MONKEYS_AT_GT);
             this.ch = charAt(++pos);
             return;
         } else if (c1 == '{') {
@@ -2349,8 +2416,8 @@ public class Lexer {
                 }
             }
 
-            stringVal = addSymbol();
-            token = ident ? IDENTIFIER : Token.VARIANT;
+            setStringVal(addSymbol());
+            setToken(ident ? IDENTIFIER : Token.VARIANT);
             return;
         } else if (c1 == '$' && charAt(pos + 2) == '{') {
             pos += 2;
@@ -2383,8 +2450,8 @@ public class Lexer {
                 }
             }
 
-            stringVal = addSymbol();
-            token = Token.VARIANT;
+            setStringVal(addSymbol());
+            setToken(Token.VARIANT);
             return;
         }
 
@@ -2401,9 +2468,9 @@ public class Lexer {
 
         this.ch = charAt(pos);
 
-        stringVal = addSymbol();
+        setStringVal(addSymbol());
 
-        token = Token.VARIANT;
+        setToken(Token.VARIANT);
     }
 
     protected void scanVariable_at() {
@@ -2434,8 +2501,8 @@ public class Lexer {
 
         this.ch = charAt(pos);
 
-        stringVal = addSymbol();
-        token = Token.VARIANT;
+        setStringVal(addSymbol());
+        setToken(Token.VARIANT);
     }
 
     public void scanComment() {
@@ -2496,9 +2563,9 @@ public class Lexer {
             scanChar();
         }
         if (ch == EOI) {
-            token = EOF;
+            setToken(EOF);
         } else if (ch == ';') {
-            token = COMMA;
+            setToken(COMMA);
         } else {
             nextToken();
         }
@@ -2548,8 +2615,8 @@ public class Lexer {
             bufPos++;
         }
 
-        stringVal = subString(mark - 2, bufPos + 4);
-        token = Token.MULTI_LINE_COMMENT;
+        setStringVal(subString(mark - 2, bufPos + 4));
+        setToken(Token.MULTI_LINE_COMMENT);
         commentCount++;
         if (keepComments) {
             addComment(stringVal);
@@ -2598,8 +2665,8 @@ public class Lexer {
             bufPos++;
         }
 
-        stringVal = subString(mark, bufPos);
-        token = Token.LINE_COMMENT;
+        setStringVal(subString(mark, bufPos));
+        setToken(Token.LINE_COMMENT);
         commentCount++;
         if (keepComments) {
             addComment(stringVal);
@@ -2644,11 +2711,11 @@ public class Lexer {
                 hash *= 0x100000001b3L;
             }
 
-            stringVal = MySqlLexer.quoteTable.addSymbol(text, pos, quoteIndex + 1 - pos, hash);
+            setStringVal(MySqlLexer.quoteTable.addSymbol(text, pos, quoteIndex + 1 - pos, hash));
             //stringVal = text.substring(mark, pos);
             pos = quoteIndex + 1;
             this.ch = charAt(pos);
-            token = Token.IDENTIFIER;
+            setToken(Token.IDENTIFIER);
             return;
         }
 
@@ -2716,33 +2783,33 @@ public class Lexer {
         if (bufPos == 1) {
             switch (first) {
                 case '（':
-                    token = Token.LPAREN;
+                    setToken(Token.LPAREN);
                     return;
                 case '）':
-                    token = Token.RPAREN;
+                    setToken(Token.RPAREN);
                     return;
                 default:
                     break;
             }
-            token = Token.IDENTIFIER;
-            stringVal = CharTypes.valueOf(first);
+            setToken(Token.IDENTIFIER);
+            setStringVal(CharTypes.valueOf(first));
             if (stringVal == null) {
-                stringVal = Character.toString(first);
+                setStringVal(Character.toString(first));
             }
             return;
         }
 
         Token tok = keywords.getKeyword(hashLCase);
         if (tok != null) {
-            token = tok;
+            setToken(tok);
             if (token == Token.IDENTIFIER) {
-                stringVal = SymbolTable.global.addSymbol(text, mark, bufPos, hash);
+                setStringVal(SymbolTable.global.addSymbol(text, mark, bufPos, hash));
             } else {
-                stringVal = null;
+                setStringVal(null);
             }
         } else {
-            token = Token.IDENTIFIER;
-            stringVal = SymbolTable.global.addSymbol(text, mark, bufPos, hash);
+            setToken(Token.IDENTIFIER);
+            setStringVal(SymbolTable.global.addSymbol(text, mark, bufPos, hash));
         }
     }
 
@@ -2780,11 +2847,11 @@ public class Lexer {
                 hash *= 0x100000001b3L;
             }
 
-            stringVal = MySqlLexer.quoteTable.addSymbol(text, pos, quoteIndex + 1 - pos, hash);
+            setStringVal(MySqlLexer.quoteTable.addSymbol(text, pos, quoteIndex + 1 - pos, hash));
             //stringVal = text.substring(mark, pos);
             pos = quoteIndex + 1;
             this.ch = charAt(pos);
-            token = Token.IDENTIFIER;
+            setToken(Token.IDENTIFIER);
             return;
         }
 
@@ -2851,33 +2918,33 @@ public class Lexer {
         if (bufPos == 1) {
             switch (first) {
                 case '（':
-                    token = Token.LPAREN;
+                    setToken(Token.LPAREN);
                     return;
                 case '）':
-                    token = Token.RPAREN;
+                    setToken(Token.RPAREN);
                     return;
                 default:
                     break;
             }
-            token = Token.IDENTIFIER;
-            stringVal = CharTypes.valueOf(first);
+            setToken(Token.IDENTIFIER);
+            setStringVal(CharTypes.valueOf(first));
             if (stringVal == null) {
-                stringVal = Character.toString(first);
+                setStringVal(Character.toString(first));
             }
             return;
         }
 
         Token tok = keywords.getKeyword(hashLCase);
         if (tok != null) {
-            token = tok;
+            setToken(tok);
             if (token == Token.IDENTIFIER) {
-                stringVal = SymbolTable.global.addSymbol(text, mark, bufPos, hash);
+                setStringVal(SymbolTable.global.addSymbol(text, mark, bufPos, hash));
             } else {
-                stringVal = null;
+                setStringVal(null);
             }
         } else {
-            token = Token.IDENTIFIER;
-            stringVal = SymbolTable.global.addSymbol(text, mark, bufPos, hash);
+            setToken(Token.IDENTIFIER);
+            setStringVal(SymbolTable.global.addSymbol(text, mark, bufPos, hash));
         }
     }
 
@@ -2899,9 +2966,9 @@ public class Lexer {
                 } else {
                     bufPos += i;
                     pos += i;
-                    stringVal = subString(mark, i - 2);
+                    setStringVal(subString(mark, i - 2));
                     this.ch = charAt(pos);
-                    token = Token.BITS;
+                    setToken(Token.BITS);
                     return;
                 }
             }
@@ -2923,7 +2990,8 @@ public class Lexer {
 
         if (ch == '.') {
             if (charAt(pos + 1) == '.') {
-                token = Token.LITERAL_INT;
+                setStringVal(subString(mark, bufPos));
+                setToken(Token.LITERAL_INT);
                 return;
             }
             bufPos++;
@@ -2968,7 +3036,8 @@ public class Lexer {
         } else if (ch == 'd' || ch == 'D') {
             if (!isIdentifierChar(charAt(pos + 1))) {
                 ch = charAt(++pos);
-                token = Token.LITERAL_FLOAT;
+                setStringVal(subString(mark, bufPos));
+                setToken(Token.LITERAL_FLOAT);
                 return;
             }
         }
@@ -2977,10 +3046,11 @@ public class Lexer {
             if (text.charAt(mark) == '.' && isIdentifierChar(ch)) {
                 pos = mark + 1;
                 ch = charAt(pos);
-                token = Token.DOT;
+                setToken(Token.DOT);
                 return;
             }
-            token = Token.LITERAL_FLOAT;
+            setStringVal(subString(mark, bufPos));
+            setToken(Token.LITERAL_FLOAT);
             return;
         }
 
@@ -3025,14 +3095,15 @@ public class Lexer {
                     continue;
                 }
 
-                stringVal = addSymbol();
+                setStringVal(addSymbol());
                 hashLCase = FnvHash.hashCode64(stringVal);
-                token = Token.IDENTIFIER;
+                setToken(Token.IDENTIFIER);
                 return;
             }
         }
 
-        token = Token.LITERAL_INT;
+        setStringVal(subString(mark, bufPos));
+        setToken(Token.LITERAL_INT);
     }
 
     public void scanHexaDecimal() {
@@ -3063,13 +3134,14 @@ public class Lexer {
             }
             mark -= 2;
             bufPos += 2;
-            stringVal = addSymbol();
+            setStringVal(addSymbol());
             hashLCase = FnvHash.hashCode64(stringVal);
-            token = Token.IDENTIFIER;
+            setToken(Token.IDENTIFIER);
             return;
         }
 
-        token = Token.LITERAL_HEX;
+        setStringVal(subString(mark, bufPos));
+        setToken(Token.LITERAL_HEX);
     }
 
     public String hexString() {
@@ -3109,7 +3181,7 @@ public class Lexer {
      */
     public final String stringVal() {
         if (stringVal == null) {
-            stringVal = subString(mark, bufPos);
+            setStringVal(subString(mark, bufPos));
         }
         return stringVal;
     }
@@ -3129,7 +3201,7 @@ public class Lexer {
         }
 
         if (stringVal == null) {
-            stringVal = subString(mark, bufPos);
+            setStringVal(subString(mark, bufPos));
         }
         return text.equalsIgnoreCase(stringVal);
     }
@@ -3141,7 +3213,7 @@ public class Lexer {
 
         if (this.hashLCase == 0) {
             if (stringVal == null) {
-                stringVal = subString(mark, bufPos);
+                setStringVal(subString(mark, bufPos));
             }
             this.hashLCase = FnvHash.fnv1a_64_lower(stringVal);
         }
@@ -3151,7 +3223,7 @@ public class Lexer {
     public final long hashLCase() {
         if (this.hashLCase == 0) {
             if (stringVal == null) {
-                stringVal = subString(mark, bufPos);
+                setStringVal(subString(mark, bufPos));
             }
             this.hashLCase = FnvHash.fnv1a_64_lower(stringVal);
         }
@@ -3351,7 +3423,7 @@ public class Lexer {
 
     public void skipToEOF() {
         pos = text.length();
-        this.token = Token.EOF;
+        setToken(Token.EOF);
     }
 
     public boolean isEndOfComment() {

@@ -140,7 +140,7 @@ public class BigQueryLexer extends Lexer {
 
     @Override
     public boolean nextIf(Token token) {
-        if (this.token == token) {
+        if (this.token() == token) {
             boolean setFeature = token == Token.DELETE
                     || token == Token.FROM
                     || token == Token.INTO
@@ -173,8 +173,8 @@ public class BigQueryLexer extends Lexer {
                         && text.charAt(i + 1) == '"'
                         && text.charAt(i + 2) == '"'
                 ) {
-                    stringVal = text.substring(pos + 3, i);
-                    token = Token.LITERAL_TEXT_BLOCK;
+                    setStringVal(text.substring(pos + 3, i));
+                    setToken(Token.LITERAL_TEXT_BLOCK);
                     pos = i + 2;
                     scanChar();
                     return;
@@ -203,7 +203,7 @@ public class BigQueryLexer extends Lexer {
             }
 
             String stringVal;
-            if (token == Token.AS) {
+            if (token() == Token.AS) {
                 stringVal = text.substring(pos, endIndex + 1);
             } else {
                 if (startIndex == endIndex) {
@@ -214,13 +214,13 @@ public class BigQueryLexer extends Lexer {
             }
 
             if (!hasSpecial) {
-                this.stringVal = stringVal;
+                setStringVal(stringVal);
                 int pos = endIndex + 1;
                 char ch = charAt(pos);
                 if (ch != '"') {
                     this.pos = pos;
                     this.ch = ch;
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     return;
                 }
             }
@@ -228,7 +228,7 @@ public class BigQueryLexer extends Lexer {
 
         mark = pos;
         boolean hasSpecial = false;
-        Token preToken = this.token;
+        Token preToken = this.token();
 
         for (; ; ) {
             if (isEOF()) {
@@ -268,7 +268,7 @@ public class BigQueryLexer extends Lexer {
             if (ch == '"') {
                 scanChar();
                 if (ch != '"') {
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     break;
                 } else {
                     if (!hasSpecial) {
@@ -295,12 +295,12 @@ public class BigQueryLexer extends Lexer {
 
         if (!hasSpecial) {
             if (preToken == Token.AS) {
-                stringVal = subString(mark, bufPos + 2);
+                setStringVal(subString(mark, bufPos + 2));
             } else {
-                stringVal = subString(mark + 1, bufPos);
+                setStringVal(subString(mark + 1, bufPos));
             }
         } else {
-            stringVal = new String(buf, 0, bufPos);
+            setStringVal(new String(buf, 0, bufPos));
         }
     }
 
@@ -340,8 +340,8 @@ public class BigQueryLexer extends Lexer {
                         && text.charAt(i + 1) == '\''
                         && text.charAt(i + 2) == '\''
                 ) {
-                    stringVal = text.substring(pos + 3, i);
-                    token = Token.LITERAL_TEXT_BLOCK;
+                    setStringVal(text.substring(pos + 3, i));
+                    setToken(Token.LITERAL_TEXT_BLOCK);
                     pos = i + 2;
                     scanChar();
                     return;
@@ -370,7 +370,7 @@ public class BigQueryLexer extends Lexer {
             }
 
             String stringVal;
-            if (token == Token.AS) {
+            if (token() == Token.AS) {
                 stringVal = text.substring(pos, endIndex + 1);
             } else {
                 if (startIndex == endIndex) {
@@ -382,13 +382,13 @@ public class BigQueryLexer extends Lexer {
             // hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
-                this.stringVal = stringVal;
+                setStringVal(stringVal);
                 int pos = endIndex + 1;
                 char ch = charAt(pos);
                 if (ch != '\'') {
                     this.pos = pos;
                     this.ch = ch;
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     return;
                 }
             }
@@ -433,7 +433,7 @@ public class BigQueryLexer extends Lexer {
             if (ch == '\'') {
                 scanChar();
                 if (ch != '\'') {
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     break;
                 } else {
                     if (!hasSpecial) {
@@ -459,9 +459,9 @@ public class BigQueryLexer extends Lexer {
         }
 
         if (!hasSpecial) {
-            stringVal = subString(mark + 1, bufPos);
+            setStringVal(subString(mark + 1, bufPos));
         } else {
-            stringVal = new String(buf, 0, bufPos);
+            setStringVal(new String(buf, 0, bufPos));
         }
     }
 }

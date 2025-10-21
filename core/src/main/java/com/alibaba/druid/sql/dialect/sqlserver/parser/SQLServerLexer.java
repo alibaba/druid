@@ -114,18 +114,18 @@ public class SQLServerLexer extends Lexer {
             }
 
             if (isHint) {
-                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 1);
-                token = Token.HINT;
+                setStringVal(subString(mark + startHintSp, (bufPos - startHintSp) - 1));
+                setToken(Token.HINT);
             } else {
-                stringVal = subString(mark, bufPos);
-                token = Token.MULTI_LINE_COMMENT;
+                setStringVal(subString(mark, bufPos));
+                setToken(Token.MULTI_LINE_COMMENT);
                 commentCount++;
                 if (keepComments) {
                     addComment(stringVal);
                 }
             }
 
-            if (token != Token.HINT && !isAllowComment() && !isSafeComment(stringVal)) {
+            if (token() != Token.HINT && !isAllowComment() && !isSafeComment(stringVal)) {
                 throw new NotAllowCommentException();
             }
 
@@ -159,8 +159,8 @@ public class SQLServerLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark, bufPos);
-            token = Token.LINE_COMMENT;
+            setStringVal(subString(mark, bufPos));
+            setToken(Token.LINE_COMMENT);
             commentCount++;
             if (keepComments) {
                 addComment(stringVal);
@@ -191,7 +191,7 @@ public class SQLServerLexer extends Lexer {
 
             if (ch == ']') {
                 scanChar();
-                token = IDENTIFIER;
+                setToken(IDENTIFIER);
                 break;
             }
 
@@ -202,6 +202,6 @@ public class SQLServerLexer extends Lexer {
             }
         }
 
-        stringVal = subString(mark, bufPos + 2);
+        setStringVal(subString(mark, bufPos + 2));
     }
 }

@@ -75,7 +75,8 @@ public class DialectFeature {
         ScanVariableSkipIdentifiers(1L << 14),
         ScanVariableMoveToSemi(1L << 15),
         ScanHiveCommentDoubleSpace(1L << 16),
-        ScanSubAsIdentifier(1L << 17);
+        ScanSubAsIdentifier(1L << 17),
+        SaveAllHistoricalTokens(1L << 18);
 
         private final long mask;
 

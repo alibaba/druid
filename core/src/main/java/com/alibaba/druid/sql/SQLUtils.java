@@ -78,6 +78,7 @@ import com.alibaba.druid.sql.visitor.*;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.*;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -2307,6 +2308,155 @@ public class SQLUtils {
 
     public static String removeQuote(String str) {
         return str.replace("`", "").replace("'", "").replace("\"", "");
+    }
+
+    /**
+     * Calculate Levenshtein distance between two SQL statements based on their token sequences.
+     * For IDENTIFIER, PROPERTY, and LITERAL_INT tokens, the stringVal must also match for tokens to be considered equal.
+     *
+     * @param sql1 First SQL statement
+     * @param dbType1 Database type for first SQL
+     * @param sql2 Second SQL statement
+     * @param dbType2 Database type for second SQL
+     * @return Levenshtein distance between the two token sequences
+     */
+    public static int calculateTokenLevenshteinDistance(String sql1, DbType dbType1, String sql2, DbType dbType2) {
+        // Step 1: Parse both SQLs and get their token lists
+        TokenSequence tokens1 = extractTokenSequence(sql1, dbType1);
+        TokenSequence tokens2 = extractTokenSequence(sql2, dbType2);
+
+        // Step 2: Calculate Levenshtein distance based on tokens
+        return calculateLevenshteinDistance(tokens1, tokens2);
+    }
+
+    /**
+     * Extract token sequence from SQL statement
+     */
+    private static TokenSequence extractTokenSequence(String sql, DbType dbType) {
+        Lexer lexer = SQLParserUtils.createLexer(sql, dbType);
+
+        // Enable SaveAllHistoricalTokens to capture all tokens
+        lexer.getDialectFeature().configFeature(
+                DialectFeature.LexerFeature.SaveAllHistoricalTokens,
+                true
+        );
+
+        // Parse all tokens
+        while (true) {
+            lexer.nextToken();
+            if (lexer.token() == Token.EOF) {
+                break;
+            }
+        }
+
+        return new TokenSequence(lexer.getTokens(), lexer.getStringValMap());
+    }
+
+    /**
+     * Calculate Levenshtein distance between two token sequences
+     */
+    private static int calculateLevenshteinDistance(TokenSequence seq1, TokenSequence seq2) {
+        List<Pair<Integer, Token>> tokens1 = seq1.tokens;
+        List<Pair<Integer, Token>> tokens2 = seq2.tokens;
+        Map<Integer, String> stringValMap1 = seq1.stringValMap;
+        Map<Integer, String> stringValMap2 = seq2.stringValMap;
+
+        int len1 = tokens1.size();
+        int len2 = tokens2.size();
+
+        // Create DP matrix
+        int[][] dp = new int[len1 + 1][len2 + 1];
+
+        // Initialize base cases
+        for (int i = 0; i <= len1; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= len2; j++) {
+            dp[0][j] = j;
+        }
+
+        // Fill DP matrix
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                Pair<Integer, Token> token1Pair = tokens1.get(i - 1);
+                Pair<Integer, Token> token2Pair = tokens2.get(j - 1);
+
+                Token token1 = token1Pair.getValue();
+                Token token2 = token2Pair.getValue();
+
+                int cost;
+                if (areTokensEqual(token1, token2, token1Pair.getKey(), token2Pair.getKey(), stringValMap1, stringValMap2)) {
+                    cost = 0; // Tokens are equal
+                } else {
+                    cost = 1; // Tokens are different
+                }
+
+                dp[i][j] = Math.min(
+                        Math.min(
+                                dp[i - 1][j] + 1,      // Deletion
+                                dp[i][j - 1] + 1       // Insertion
+                        ),
+                        dp[i - 1][j - 1] + cost        // Substitution
+                );
+            }
+        }
+
+        return dp[len1][len2];
+    }
+
+    /**
+     * Check if two tokens are equal.
+     * For IDENTIFIER, PROPERTY, and LITERAL_INT tokens, stringVal must also match.
+     */
+    private static boolean areTokensEqual(
+            Token token1,
+            Token token2,
+            int pos1,
+            int pos2,
+            Map<Integer, String> stringValMap1,
+            Map<Integer, String> stringValMap2
+    ) {
+        // First check if token types are the same
+        if (token1 != token2) {
+            return false;
+        }
+
+        // For IDENTIFIER, PROPERTY, and LITERAL_INT tokens, check stringVal
+        if (token1 == Token.IDENTIFIER
+                || token1 == Token.LITERAL_INT
+                || token1 == Token.LITERAL_FLOAT
+                || token1 == Token.LITERAL_CHARS
+                || token1 == Token.LITERAL_NCHARS
+                || token1 == Token.LITERAL_HEX) {
+            String stringVal1 = stringValMap1.get(pos1);
+            String stringVal2 = stringValMap2.get(pos2);
+
+            // Both should have string values
+            if (stringVal1 == null && stringVal2 == null) {
+                return true;
+            }
+            if (stringVal1 == null || stringVal2 == null) {
+                return false;
+            }
+
+            return stringVal1.equals(stringVal2);
+        }
+
+        // For other token types, just matching the token type is enough
+        return true;
+    }
+
+    /**
+     * Helper class to hold token sequence and string value map
+     */
+    private static class TokenSequence {
+        final List<Pair<Integer, Token>> tokens;
+        final Map<Integer, String> stringValMap;
+
+        TokenSequence(List<Pair<Integer, Token>> tokens, Map<Integer, String> stringValMap) {
+            this.tokens = tokens;
+            this.stringValMap = stringValMap;
+        }
     }
 
     static class TimeZoneVisitor extends SQLASTVisitorAdapter {

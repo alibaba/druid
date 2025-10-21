@@ -136,7 +136,7 @@ public class HiveLexer extends Lexer {
             }
 
             String stringVal;
-            if (token == Token.AS) {
+            if (token() == Token.AS) {
                 stringVal = text.substring(pos, endIndex + 1);
             } else {
                 if (startIndex == endIndex) {
@@ -148,13 +148,13 @@ public class HiveLexer extends Lexer {
             // hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
-                this.stringVal = stringVal;
+                setStringVal(stringVal);
                 int pos = endIndex + 1;
                 char ch = charAt(pos);
                 if (ch != '\'') {
                     this.pos = pos;
                     this.ch = ch;
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     return;
                 }
             }
@@ -240,7 +240,7 @@ public class HiveLexer extends Lexer {
             if (ch == '\'') {
                 scanChar();
                 if (ch != '\'') {
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     break;
                 } else {
                     if (!hasSpecial) {
@@ -266,9 +266,9 @@ public class HiveLexer extends Lexer {
         }
 
         if (!hasSpecial) {
-            stringVal = subString(mark + 1, bufPos);
+            setStringVal(subString(mark + 1, bufPos));
         } else {
-            stringVal = new String(buf, 0, bufPos);
+            setStringVal(new String(buf, 0, bufPos));
         }
     }
 
@@ -277,7 +277,7 @@ public class HiveLexer extends Lexer {
             throw new IllegalStateException();
         }
 
-        Token lastToken = this.token;
+        Token lastToken = this.token();
 
         mark = pos;
         bufPos = 0;
@@ -344,11 +344,11 @@ public class HiveLexer extends Lexer {
             }
 
             if (isHint) {
-                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 1);
-                token = Token.HINT;
+                setStringVal(subString(mark + startHintSp, (bufPos - startHintSp) - 1));
+                setToken(Token.HINT);
             } else {
-                stringVal = subString(mark, bufPos + 1);
-                token = Token.MULTI_LINE_COMMENT;
+                setStringVal(subString(mark, bufPos + 1));
+                setToken(Token.MULTI_LINE_COMMENT);
                 commentCount++;
                 if (keepComments) {
                     addComment(stringVal);
@@ -359,7 +359,7 @@ public class HiveLexer extends Lexer {
                 return;
             }
 
-            if (token != Token.HINT && !isAllowComment()) {
+            if (token() != Token.HINT && !isAllowComment()) {
                 throw new NotAllowCommentException();
             }
 
@@ -401,8 +401,8 @@ public class HiveLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark, ch != EOI ? bufPos : bufPos + 1);
-            token = Token.LINE_COMMENT;
+            setStringVal(subString(mark, ch != EOI ? bufPos : bufPos + 1));
+            setToken(Token.LINE_COMMENT);
             commentCount++;
             if (keepComments) {
                 addComment(stringVal);

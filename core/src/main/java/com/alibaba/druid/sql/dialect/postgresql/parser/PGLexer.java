@@ -156,7 +156,7 @@ public class PGLexer extends Lexer {
             if (ch == '\'') {
                 scanChar();
                 if (ch != '\'') {
-                    token = LITERAL_CHARS;
+                    setToken(LITERAL_CHARS);
                     break;
                 } else {
                     if (!hasSpecial) {
@@ -182,9 +182,9 @@ public class PGLexer extends Lexer {
         }
 
         if (!hasSpecial) {
-            stringVal = subString(mark + 1, bufPos);
+            setStringVal(subString(mark + 1, bufPos));
         } else {
-            stringVal = new String(buf, 0, bufPos);
+            setStringVal(new String(buf, 0, bufPos));
         }
     }
 
@@ -194,12 +194,12 @@ public class PGLexer extends Lexer {
             scanChar();
             if (ch == '>') {
                 scanChar();
-                token = Token.POUNDGTGT;
+                setToken(Token.POUNDGTGT);
             } else {
-                token = Token.POUNDGT;
+                setToken(Token.POUNDGT);
             }
         } else {
-            token = Token.POUND;
+            setToken(Token.POUND);
         }
     }
 
@@ -215,12 +215,12 @@ public class PGLexer extends Lexer {
         final char c1 = charAt(pos + 1);
         if (c1 == '@') {
             pos += 2;
-            token = Token.MONKEYS_AT_AT;
+            setToken(Token.MONKEYS_AT_AT);
             this.ch = charAt(++pos);
             return;
         } else if (c1 == '>') {
             pos += 2;
-            token = Token.MONKEYS_AT_GT;
+            setToken(Token.MONKEYS_AT_GT);
             this.ch = charAt(++pos);
             return;
         }
@@ -238,8 +238,8 @@ public class PGLexer extends Lexer {
 
         this.ch = charAt(pos);
 
-        stringVal = addSymbol();
-        token = Token.VARIANT;
+        setStringVal(addSymbol());
+        setToken(Token.VARIANT);
     }
 
     protected void nextTokenQues() {
@@ -247,23 +247,23 @@ public class PGLexer extends Lexer {
             scanChar();
             if (ch == '|') {
                 scanChar();
-                token = Token.QUESQUESBAR;
+                setToken(Token.QUESQUESBAR);
             } else {
-                token = Token.QUESQUES;
+                setToken(Token.QUESQUES);
             }
         } else if (ch == '|') {
             scanChar();
             if (ch == '|') {
                 unscan();
-                token = Token.QUES;
+                setToken(Token.QUES);
             } else {
-                token = Token.QUESBAR;
+                setToken(Token.QUESBAR);
             }
         } else if (ch == '&') {
             scanChar();
-            token = Token.QUESAMP;
+            setToken(Token.QUESAMP);
         } else {
-            token = Token.QUES;
+            setToken(Token.QUES);
         }
     }
 

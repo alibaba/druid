@@ -225,12 +225,12 @@ public class OracleLexer extends Lexer {
 
         this.ch = charAt(pos);
 
-        stringVal = addSymbol();
+        setStringVal(addSymbol());
         Token tok = keywords.getKeyword(stringVal);
         if (tok != null) {
-            token = tok;
+            setToken(tok);
         } else {
-            token = Token.VARIANT;
+            setToken(Token.VARIANT);
         }
     }
 
@@ -239,9 +239,9 @@ public class OracleLexer extends Lexer {
 
         if (ch == '@') {
             scanChar();
-            token = Token.MONKEYS_AT_AT;
+            setToken(Token.MONKEYS_AT_AT);
         } else {
-            token = Token.MONKEYS_AT;
+            setToken(Token.MONKEYS_AT);
         }
     }
 
@@ -285,18 +285,18 @@ public class OracleLexer extends Lexer {
             }
 
             if (isHint) {
-                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 1);
-                token = Token.HINT;
+                setStringVal(subString(mark + startHintSp, (bufPos - startHintSp) - 1));
+                setToken(Token.HINT);
             } else {
-                stringVal = subString(mark, bufPos + 1);
-                token = Token.MULTI_LINE_COMMENT;
+                setStringVal(subString(mark, bufPos + 1));
+                setToken(Token.MULTI_LINE_COMMENT);
                 commentCount++;
                 if (keepComments) {
                     addComment(stringVal);
                 }
             }
 
-            if (token != Token.HINT && !isAllowComment()) {
+            if (token() != Token.HINT && !isAllowComment()) {
                 throw new NotAllowCommentException();
             }
 
@@ -334,8 +334,8 @@ public class OracleLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark, ch != EOI ? bufPos : bufPos + 1);
-            token = Token.LINE_COMMENT;
+            setStringVal(subString(mark, ch != EOI ? bufPos : bufPos + 1));
+            setToken(Token.LINE_COMMENT);
             commentCount++;
             if (keepComments) {
                 addComment(stringVal);
@@ -361,7 +361,8 @@ public class OracleLexer extends Lexer {
 
         if (ch == '.') {
             if (charAt(pos + 1) == '.') {
-                token = Token.LITERAL_INT;
+                setStringVal(subString(mark, bufPos));
+                setToken(Token.LITERAL_INT);
                 return;
             }
             bufPos++;
@@ -392,21 +393,25 @@ public class OracleLexer extends Lexer {
         }
 
         if (ch == 'f' || ch == 'F') {
-            token = Token.BINARY_FLOAT;
+            setStringVal(subString(mark, bufPos));
+            setToken(Token.BINARY_FLOAT);
             scanChar();
             return;
         }
 
         if (ch == 'd' || ch == 'D') {
-            token = Token.BINARY_DOUBLE;
+            setStringVal(subString(mark, bufPos));
+            setToken(Token.BINARY_DOUBLE);
             scanChar();
             return;
         }
 
         if (isDouble) {
-            token = Token.LITERAL_FLOAT;
+            setStringVal(subString(mark, bufPos));
+            setToken(Token.LITERAL_FLOAT);
         } else {
-            token = Token.LITERAL_INT;
+            setStringVal(subString(mark, bufPos));
+            setToken(Token.LITERAL_INT);
         }
     }
 
