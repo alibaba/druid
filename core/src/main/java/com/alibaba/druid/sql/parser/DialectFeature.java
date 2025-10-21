@@ -35,6 +35,25 @@ public class DialectFeature {
         }
     }
 
+    public DialectFeature(Feature... features) {
+        lexerFeature = 0L;
+        parserFeature = 0L;
+        if (features != null && features.length > 0) {
+            configFeature(features);
+        }
+    }
+
+    public DialectFeature(boolean enable, Feature... features) {
+        this();
+        if (features != null && features.length > 0) {
+            if (enable) {
+                configFeature(features);
+            } else {
+                unconfigFeature(features);
+            }
+        }
+    }
+
     public void configFeature(Feature feature, boolean state) {
         if (feature instanceof LexerFeature) {
             this.lexerFeature = feature.config(this.lexerFeature, state);
