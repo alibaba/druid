@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +37,26 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class HiveLexer extends Lexer {
     public static final Keywords HIVE_KEYWORDS;
-    public static final DialectFeature HIVE_FEATURE = new DialectFeature();
+    public static final DialectFeature HIVE_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    ScanSQLTypeWithFrom,
+                    NextTokenColon,
+                    ScanAliasU,
+                    JoinRightTableFrom,
+                    GroupByAll,
+                    SQLDateExpr,
+                    ParseAssignItemRparenCommaSetReturn,
+                    TableAliasLock,
+                    TableAliasPartition,
+                    AsSkip,
+                    AsSequence,
+                    AsDatabase,
+                    AsDefault
+            ),
+            Collections.singletonList(
+                    PrimaryBangBangSupport
+            )
+    );
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -63,24 +84,6 @@ public class HiveLexer extends Lexer {
         map.put("QUALIFY", Token.QUALIFY);
 
         HIVE_KEYWORDS = new Keywords(map);
-        HIVE_FEATURE.configFeature(
-                ScanSQLTypeWithFrom,
-                NextTokenColon,
-                ScanAliasU,
-                JoinRightTableFrom,
-                GroupByAll,
-                SQLDateExpr,
-                ParseAssignItemRparenCommaSetReturn,
-                TableAliasLock,
-                TableAliasPartition,
-                AsSkip,
-                AsSequence,
-                AsDatabase,
-                AsDefault
-        );
-        HIVE_FEATURE.unconfigFeature(
-                PrimaryBangBangSupport
-        );
     }
 
     @Override

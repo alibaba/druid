@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,16 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 
 public class CKLexer extends Lexer {
     static final Keywords CK_KEYWORDS;
-    static final DialectFeature CK_FEATURE = new DialectFeature();
+    static final DialectFeature CK_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    AsofJoin,
+                    GlobalJoin,
+                    JoinRightTableAlias,
+                    ParseLimitBy,
+                    TableAliasAsof
+            ),
+            null
+    );
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -44,13 +54,6 @@ public class CKLexer extends Lexer {
         map.remove("ANY");
 
         CK_KEYWORDS = new Keywords(map);
-        CK_FEATURE.configFeature(
-                AsofJoin,
-                GlobalJoin,
-                JoinRightTableAlias,
-                ParseLimitBy,
-                TableAliasAsof
-        );
     }
 
     @Override
