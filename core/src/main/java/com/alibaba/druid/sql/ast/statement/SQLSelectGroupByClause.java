@@ -34,6 +34,7 @@ public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplacea
 
     private boolean distinct;
     private boolean paren;
+    private boolean groupingSetsHaveComma;
 
     public SQLSelectGroupByClause() {
     }
@@ -78,6 +79,14 @@ public class SQLSelectGroupByClause extends SQLObjectImpl implements SQLReplacea
 
     public void setWithCube(boolean withCube) {
         this.withCube = withCube;
+    }
+
+    public boolean isGroupingSetsHaveComma() {
+        return groupingSetsHaveComma;
+    }
+
+    public void setGroupingSetsHaveComma(boolean groupingSetsHaveComma) {
+        this.groupingSetsHaveComma = groupingSetsHaveComma;
     }
 
     public SQLExpr getHaving() {
