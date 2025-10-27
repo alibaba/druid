@@ -4204,6 +4204,32 @@ public class SQLExprParser extends SQLParser {
                     expr = relationalRest(expr);
                 }
                 break;
+            case MATCH_ALL:
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NOT_MATCH_ALL, rightExp, dbType);
+                break;
+            case MATCH_ANY:
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NOT_MATCH_ANY, rightExp, dbType);
+                break;
+            case MATCH_PHRASE:
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NOT_MATCH_PHRASE, rightExp, dbType);
+                break;
+            case MATCH_PHRASE_PREFIX:
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NOT_MATCH_PHRASE_PREFIX, rightExp, dbType);
+                break;
+            case MATCH_REGEXP: {
+                lexer.nextToken();
+                rightExp = bitOr();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NOT_MATCH_REGEXP, rightExp, dbType);
+                break;
+            }
             default:
                 throw new ParserException("TODO " + lexer.info());
         }
