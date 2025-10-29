@@ -57,8 +57,9 @@ public class OracleCreateTableTest31 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(1, visitor.getTables().size());
-
-        assertEquals(6, visitor.getColumns().size());
+        // before:[students.name, students.age, name.first_name, UNKNOWN.first_name, name.last_name, UNKNOWN.last_name]
+        // after:[students.name, students.age, name.first_name, name.last_name]
+        assertEquals(4, visitor.getColumns().size());
 
         assertTrue(visitor.getColumns().contains(new TableStat.Column("students", "name")));
     }
