@@ -37,6 +37,7 @@
 		<springframework6.version>6.0.8</springframework6.version>
 		<springboot2.version>2.7.9</springboot2.version>
 		<springboot3.version>3.0.6</springboot3.version>
+		<springboot4.version>4.0.0-M3</springboot4.version>
 
 		<junit.version>4.13.1</junit.version>
 		<jmh.version>1.37</jmh.version>
@@ -499,6 +500,7 @@
 			</activation>
 			<modules>
 				<module>druid-spring-boot-3-starter</module>
+				<module>druid-spring-boot-4-starter</module>
 			</modules>
 		</profile>
 	</profiles>
