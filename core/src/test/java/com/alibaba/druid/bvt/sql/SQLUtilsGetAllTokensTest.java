@@ -273,4 +273,287 @@ public class SQLUtilsGetAllTokensTest extends TestCase {
 
         System.out.println("Tokens with positions: " + tokens);
     }
+
+    public void test_getAllTokens_filter_line_comment() throws Exception {
+        String sql = "SELECT id FROM users -- this is a comment\nWHERE age > 18";
+        List<SQLUtils.TokenInfo> tokens = SQLUtils.getAllTokens(sql, DbType.mysql);
+
+        assertNotNull(tokens);
+        assertTrue(tokens.size() > 0);
+
+        // Verify no LINE_COMMENT tokens in the result
+        for (SQLUtils.TokenInfo info : tokens) {
+            assertFalse("Should not contain LINE_COMMENT tokens", info.getToken() == Token.LINE_COMMENT);
+        }
+
+        // Verify essential tokens are still present
+        boolean hasSelect = false;
+        boolean hasFrom = false;
+        boolean hasWhere = false;
+        for (SQLUtils.TokenInfo info : tokens) {
+            if (info.getToken() == Token.SELECT) {
+                hasSelect = true;
+            }
+            if (info.getToken() == Token.FROM) {
+                hasFrom = true;
+            }
+            if (info.getToken() == Token.WHERE) {
+                hasWhere = true;
+            }
+        }
+        assertTrue("Should contain SELECT token", hasSelect);
+        assertTrue("Should contain FROM token", hasFrom);
+        assertTrue("Should contain WHERE token", hasWhere);
+
+        System.out.println("Tokens after filtering line comment: " + tokens);
+    }
+
+    public void test_getAllTokens_filter_multi_line_comment() throws Exception {
+        String sql = "SELECT id /* this is a\nmulti-line comment */ FROM users WHERE age > 18";
+        List<SQLUtils.TokenInfo> tokens = SQLUtils.getAllTokens(sql, DbType.mysql);
+
+        assertNotNull(tokens);
+        assertTrue(tokens.size() > 0);
+
+        // Verify no MULTI_LINE_COMMENT tokens in the result
+        for (SQLUtils.TokenInfo info : tokens) {
+            assertFalse("Should not contain MULTI_LINE_COMMENT tokens", info.getToken() == Token.MULTI_LINE_COMMENT);
+        }
+
+        // Verify essential tokens are still present
+        boolean hasSelect = false;
+        boolean hasFrom = false;
+        boolean hasWhere = false;
+        for (SQLUtils.TokenInfo info : tokens) {
+            if (info.getToken() == Token.SELECT) {
+                hasSelect = true;
+            }
+            if (info.getToken() == Token.FROM) {
+                hasFrom = true;
+            }
+            if (info.getToken() == Token.WHERE) {
+                hasWhere = true;
+            }
+        }
+        assertTrue("Should contain SELECT token", hasSelect);
+        assertTrue("Should contain FROM token", hasFrom);
+        assertTrue("Should contain WHERE token", hasWhere);
+
+        System.out.println("Tokens after filtering multi-line comment: " + tokens);
+    }
+
+    public void test_getAllTokens_filter_hint() throws Exception {
+        String sql = "SELECT /*+ INDEX(users idx_age) */ id FROM users WHERE age > 18";
+        List<SQLUtils.TokenInfo> tokens = SQLUtils.getAllTokens(sql, DbType.mysql);
+
+        assertNotNull(tokens);
+        assertTrue(tokens.size() > 0);
+
+        // Verify no HINT tokens in the result
+        for (SQLUtils.TokenInfo info : tokens) {
+            assertFalse("Should not contain HINT tokens", info.getToken() == Token.HINT);
+        }
+
+        // Verify essential tokens are still present
+        boolean hasSelect = false;
+        boolean hasFrom = false;
+        boolean hasWhere = false;
+        for (SQLUtils.TokenInfo info : tokens) {
+            if (info.getToken() == Token.SELECT) {
+                hasSelect = true;
+            }
+            if (info.getToken() == Token.FROM) {
+                hasFrom = true;
+            }
+            if (info.getToken() == Token.WHERE) {
+                hasWhere = true;
+            }
+        }
+        assertTrue("Should contain SELECT token", hasSelect);
+        assertTrue("Should contain FROM token", hasFrom);
+        assertTrue("Should contain WHERE token", hasWhere);
+
+        System.out.println("Tokens after filtering hint: " + tokens);
+    }
+
+    public void test_getAllTokens_filter_mixed_comments() throws Exception {
+        String sql = "SELECT id, -- select id column\n" +
+                "       name /* and name column */ FROM users -- from users table\n" +
+                "WHERE age > 18 /* age filter */";
+        List<SQLUtils.TokenInfo> tokens = SQLUtils.getAllTokens(sql, DbType.mysql);
+
+        assertNotNull(tokens);
+        assertTrue(tokens.size() > 0);
+
+        // Verify no comment tokens in the result
+        for (SQLUtils.TokenInfo info : tokens) {
+            assertFalse("Should not contain LINE_COMMENT tokens", info.getToken() == Token.LINE_COMMENT);
+            assertFalse("Should not contain MULTI_LINE_COMMENT tokens", info.getToken() == Token.MULTI_LINE_COMMENT);
+            assertFalse("Should not contain HINT tokens", info.getToken() == Token.HINT);
+        }
+
+        // Verify essential tokens are still present
+        boolean hasSelect = false;
+        boolean hasFrom = false;
+        boolean hasWhere = false;
+        for (SQLUtils.TokenInfo info : tokens) {
+            if (info.getToken() == Token.SELECT) {
+                hasSelect = true;
+            }
+            if (info.getToken() == Token.FROM) {
+                hasFrom = true;
+            }
+            if (info.getToken() == Token.WHERE) {
+                hasWhere = true;
+            }
+        }
+        assertTrue("Should contain SELECT token", hasSelect);
+        assertTrue("Should contain FROM token", hasFrom);
+        assertTrue("Should contain WHERE token", hasWhere);
+
+        System.out.println("Tokens after filtering mixed comments: " + tokens);
+    }
+
+    public void test_getAllTokens_oracle_with_comments() throws Exception {
+        String sql = "SELECT * FROM employees -- get all employees\n" +
+                "WHERE salary > 5000 /* high salary */ ORDER BY name";
+        List<SQLUtils.TokenInfo> tokens = SQLUtils.getAllTokens(sql, DbType.oracle);
+
+        assertNotNull(tokens);
+        assertTrue(tokens.size() > 0);
+
+        // Verify no comment tokens in the result
+        for (SQLUtils.TokenInfo info : tokens) {
+            assertFalse("Should not contain LINE_COMMENT tokens", info.getToken() == Token.LINE_COMMENT);
+            assertFalse("Should not contain MULTI_LINE_COMMENT tokens", info.getToken() == Token.MULTI_LINE_COMMENT);
+        }
+
+        assertEquals(Token.SELECT, tokens.get(0).getToken());
+        assertEquals(Token.EOF, tokens.get(tokens.size() - 1).getToken());
+
+        System.out.println("Oracle tokens after filtering comments: " + tokens);
+    }
+
+    public void test_getAllTokens_keepComments_true() throws Exception {
+        String sql = "SELECT id FROM users -- this is a comment\nWHERE age > 18";
+        List<SQLUtils.TokenInfo> tokens = SQLUtils.getAllTokens(sql, DbType.mysql, true);
+
+        assertNotNull(tokens);
+        assertTrue(tokens.size() > 0);
+
+        // Verify LINE_COMMENT token is present when keepComments=true
+        boolean hasLineComment = false;
+        for (SQLUtils.TokenInfo info : tokens) {
+            if (info.getToken() == Token.LINE_COMMENT) {
+                hasLineComment = true;
+                break;
+            }
+        }
+        assertTrue("Should contain LINE_COMMENT token when keepComments=true", hasLineComment);
+
+        System.out.println("Tokens with keepComments=true: " + tokens);
+    }
+
+    public void test_getAllTokens_keepComments_false() throws Exception {
+        String sql = "SELECT id FROM users -- this is a comment\nWHERE age > 18";
+        List<SQLUtils.TokenInfo> tokens = SQLUtils.getAllTokens(sql, DbType.mysql, false);
+
+        assertNotNull(tokens);
+        assertTrue(tokens.size() > 0);
+
+        // Verify no LINE_COMMENT tokens when keepComments=false
+        for (SQLUtils.TokenInfo info : tokens) {
+            assertFalse("Should not contain LINE_COMMENT tokens when keepComments=false",
+                    info.getToken() == Token.LINE_COMMENT);
+        }
+
+        System.out.println("Tokens with keepComments=false: " + tokens);
+    }
+
+    public void test_getAllTokens_keepComments_multiLine() throws Exception {
+        String sql = "SELECT id /* comment */ FROM users WHERE age > 18";
+        List<SQLUtils.TokenInfo> tokensWithComments = SQLUtils.getAllTokens(sql, DbType.mysql, true);
+        List<SQLUtils.TokenInfo> tokensWithoutComments = SQLUtils.getAllTokens(sql, DbType.mysql, false);
+
+        assertNotNull(tokensWithComments);
+        assertNotNull(tokensWithoutComments);
+
+        // Verify tokensWithComments contains MULTI_LINE_COMMENT
+        boolean hasMultiLineComment = false;
+        for (SQLUtils.TokenInfo info : tokensWithComments) {
+            if (info.getToken() == Token.MULTI_LINE_COMMENT) {
+                hasMultiLineComment = true;
+                break;
+            }
+        }
+        assertTrue("Should contain MULTI_LINE_COMMENT when keepComments=true", hasMultiLineComment);
+
+        // Verify tokensWithoutComments does not contain MULTI_LINE_COMMENT
+        for (SQLUtils.TokenInfo info : tokensWithoutComments) {
+            assertFalse("Should not contain MULTI_LINE_COMMENT when keepComments=false",
+                    info.getToken() == Token.MULTI_LINE_COMMENT);
+        }
+
+        // Verify tokensWithComments has more tokens than tokensWithoutComments
+        assertTrue("Token list with comments should be larger",
+                tokensWithComments.size() > tokensWithoutComments.size());
+
+        System.out.println("Tokens with comments count: " + tokensWithComments.size());
+        System.out.println("Tokens without comments count: " + tokensWithoutComments.size());
+    }
+
+    public void test_getAllTokens_keepComments_hint() throws Exception {
+        String sql = "SELECT /*+ INDEX(users idx_age) */ id FROM users WHERE age > 18";
+        List<SQLUtils.TokenInfo> tokensWithHints = SQLUtils.getAllTokens(sql, DbType.mysql, true);
+        List<SQLUtils.TokenInfo> tokensWithoutHints = SQLUtils.getAllTokens(sql, DbType.mysql, false);
+
+        assertNotNull(tokensWithHints);
+        assertNotNull(tokensWithoutHints);
+
+        // Verify tokensWithHints contains HINT
+        boolean hasHint = false;
+        for (SQLUtils.TokenInfo info : tokensWithHints) {
+            if (info.getToken() == Token.HINT) {
+                hasHint = true;
+                break;
+            }
+        }
+        assertTrue("Should contain HINT when keepComments=true", hasHint);
+
+        // Verify tokensWithoutHints does not contain HINT
+        for (SQLUtils.TokenInfo info : tokensWithoutHints) {
+            assertFalse("Should not contain HINT when keepComments=false",
+                    info.getToken() == Token.HINT);
+        }
+
+        System.out.println("Tokens with hint: " + tokensWithHints);
+        System.out.println("Tokens without hint: " + tokensWithoutHints);
+    }
+
+    public void test_getAllTokens_keepComments_stringDbType() throws Exception {
+        String sql = "SELECT id FROM users -- comment\nWHERE age > 18";
+        List<SQLUtils.TokenInfo> tokensWithComments = SQLUtils.getAllTokens(sql, "mysql", true);
+        List<SQLUtils.TokenInfo> tokensWithoutComments = SQLUtils.getAllTokens(sql, "mysql", false);
+
+        assertNotNull(tokensWithComments);
+        assertNotNull(tokensWithoutComments);
+
+        // Verify keepComments parameter works with String dbType
+        boolean hasLineComment = false;
+        for (SQLUtils.TokenInfo info : tokensWithComments) {
+            if (info.getToken() == Token.LINE_COMMENT) {
+                hasLineComment = true;
+                break;
+            }
+        }
+        assertTrue("Should contain LINE_COMMENT when keepComments=true with String dbType", hasLineComment);
+
+        for (SQLUtils.TokenInfo info : tokensWithoutComments) {
+            assertFalse("Should not contain LINE_COMMENT when keepComments=false with String dbType",
+                    info.getToken() == Token.LINE_COMMENT);
+        }
+
+        System.out.println("String dbType - Tokens with comments: " + tokensWithComments.size());
+        System.out.println("String dbType - Tokens without comments: " + tokensWithoutComments.size());
+    }
 }
