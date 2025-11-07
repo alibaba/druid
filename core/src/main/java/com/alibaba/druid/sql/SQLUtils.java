@@ -2375,9 +2375,21 @@ public class SQLUtils {
      *
      * @param sql    SQL statement to parse
      * @param dbType Database type (dialect)
-     * @return List of TokenInfo objects containing token and corresponding stringVal pairs
+     * @return List of TokenInfo objects containing token and corresponding stringVal pairs (excluding comments)
      */
     public static List<TokenInfo> getAllTokens(String sql, DbType dbType) {
+        return getAllTokens(sql, dbType, false);
+    }
+
+    /**
+     * Get all tokens from SQL parsing based on dialect type, including their string values
+     *
+     * @param sql    SQL statement to parse
+     * @param dbType Database type (dialect)
+     * @param keepComments Whether to keep comment tokens (LINE_COMMENT, MULTI_LINE_COMMENT, HINT)
+     * @return List of TokenInfo objects containing token and corresponding stringVal pairs
+     */
+    public static List<TokenInfo> getAllTokens(String sql, DbType dbType, boolean keepComments) {
         if (sql == null || sql.isEmpty()) {
             return new ArrayList<TokenInfo>();
         }
@@ -2385,35 +2397,51 @@ public class SQLUtils {
         List<TokenInfo> tokens = new ArrayList<TokenInfo>();
         Lexer lexer = SQLParserUtils.createLexer(sql, dbType);
 
+        // Configure lexer to keep or skip comments
+        lexer.config(SQLParserFeature.SkipComments, !keepComments);
+        lexer.config(SQLParserFeature.KeepComments, keepComments);
+
         for (; ; ) {
             lexer.nextToken();
             Token token = lexer.token();
-            // Get token position
-            int pos = lexer.pos();
-            // Get stringVal - use numberString() for numeric literals, stringVal() for others
-            String stringVal = null;
-            if (token == Token.LITERAL_INT || token == Token.LITERAL_FLOAT || token == Token.LITERAL_HEX) {
-                // For numeric literals, use numberString() as stringVal may not be properly set
-                stringVal = lexer.numberString();
-            } else {
-                // For other tokens, use stringVal()
-                stringVal = lexer.stringVal();
+
+            // Filter out comment tokens if keepComments is false
+            if (!keepComments && (token == Token.LINE_COMMENT || token == Token.MULTI_LINE_COMMENT || token == Token.HINT)) {
+                continue;
             }
 
-            // Create a defensive copy to prevent mutation
-            if (stringVal != null) {
-                stringVal = new String(stringVal.toCharArray());
-            }
+            // Create and add token info
+            tokens.add(createTokenInfo(token, lexer));
 
-            TokenInfo tokenInfo = new TokenInfo(token, stringVal, pos);
-            tokens.add(tokenInfo);
-
+            // Exit on EOF or ERROR
             if (token == Token.EOF || token == Token.ERROR) {
                 break;
             }
         }
 
         return tokens;
+    }
+
+    /**
+     * Create a TokenInfo object from the current lexer state
+     */
+    private static TokenInfo createTokenInfo(Token token, Lexer lexer) {
+        int pos = lexer.pos();
+        String stringVal;
+
+        // Get stringVal - use numberString() for numeric literals, stringVal() for others
+        if (token == Token.LITERAL_INT || token == Token.LITERAL_FLOAT || token == Token.LITERAL_HEX) {
+            stringVal = lexer.numberString();
+        } else {
+            stringVal = lexer.stringVal();
+        }
+
+        // Create a defensive copy to prevent mutation
+        if (stringVal != null) {
+            stringVal = new String(stringVal.toCharArray());
+        }
+
+        return new TokenInfo(token, stringVal, pos);
     }
 
     /**
@@ -2424,7 +2452,19 @@ public class SQLUtils {
      * @return List of TokenInfo objects containing token and corresponding stringVal pairs
      */
     public static List<TokenInfo> getAllTokens(String sql, String dbType) {
-        return getAllTokens(sql, DbType.of(dbType));
+        return getAllTokens(sql, DbType.of(dbType), false);
+    }
+
+    /**
+     * Get all tokens from SQL parsing based on dialect type (overloaded method with String dbType)
+     *
+     * @param sql    SQL statement to parse
+     * @param dbType Database type string (will be converted to DbType)
+     * @param keepComments Whether to keep comment tokens (LINE_COMMENT, MULTI_LINE_COMMENT, HINT)
+     * @return List of TokenInfo objects containing token and corresponding stringVal pairs
+     */
+    public static List<TokenInfo> getAllTokens(String sql, String dbType, boolean keepComments) {
+        return getAllTokens(sql, DbType.of(dbType), keepComments);
     }
 
     /**
