@@ -1498,7 +1498,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 }
             }
             if (!skip) {
-                column = handleUnknownColumn(ident);
+                column = getColumn(x);
+                if (column == null) {
+                    column = handleUnknownColumn(ident);
+                }
             }
         }
 
