@@ -205,19 +205,21 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             if (hasLparen) {
                 accept(Token.RPAREN);
             }
-            accept(Token.LPAREN);
-            for (; ; ) {
-                if (lexer.token() == Token.RPAREN) {
+            if (lexer.token() == Token.LPAREN) {
+                accept(Token.LPAREN);
+                for (; ; ) {
+                    if (lexer.token() == Token.RPAREN) {
+                        break;
+                    }
+                    partitionClause.addPartition(this.getExprParser().parsePartition());
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
                     break;
                 }
-                partitionClause.addPartition(this.getExprParser().parsePartition());
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-                break;
+                accept(Token.RPAREN);
             }
-            accept(Token.RPAREN);
             return partitionClause;
         }
         return null;
