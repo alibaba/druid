@@ -3345,6 +3345,8 @@ public class SQLStatementParser extends SQLParser {
             break;
         }
 
+        parseDropTableAfterName(stmt);
+
         for (; ; ) {
             if (lexer.identifierEquals("RESTRICT")) {
                 lexer.nextToken();
@@ -3382,6 +3384,10 @@ public class SQLStatementParser extends SQLParser {
         }
 
         return stmt;
+    }
+
+    protected void parseDropTableAfterName(SQLDropTableStatement stmt) {
+        // for subclass to override
     }
 
     protected SQLDropSequenceStatement parseDropSequence(boolean acceptDrop) {
