@@ -726,6 +726,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                 accept(Token.LPAREN);
                 SQLListExpr list = new SQLListExpr();
+                list.setParenthesized(true);
                 this.exprParser.exprList(list.getItems(), list);
                 stmt.addOption("UNION", list);
                 accept(Token.RPAREN);
