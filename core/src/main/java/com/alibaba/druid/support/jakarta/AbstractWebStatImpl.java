@@ -21,7 +21,7 @@ import com.alibaba.druid.support.http.stat.WebRequestStat;
 import com.alibaba.druid.support.http.stat.WebSessionStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.DruidWebUtils;
+import com.alibaba.druid.util.DruidWebUtilsJakarta;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -128,7 +128,7 @@ public class AbstractWebStatImpl {
             ip = request.getHeader(realIpHeader);
         }
         if (ip == null || ip.length() == 0) {
-            ip = DruidWebUtils.getRemoteAddr(request);
+            ip = DruidWebUtilsJakarta.getRemoteAddr(request);
         }
         return ip;
     }
