@@ -39,6 +39,9 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2Lexer;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
+import com.alibaba.druid.sql.dialect.dm.parser.DMExprParser;
+import com.alibaba.druid.sql.dialect.dm.parser.DMLexer;
+import com.alibaba.druid.sql.dialect.dm.parser.DMStatementParser;
 import com.alibaba.druid.sql.dialect.doris.parser.DorisExprParser;
 import com.alibaba.druid.sql.dialect.doris.parser.DorisLexer;
 import com.alibaba.druid.sql.dialect.doris.parser.DorisStatementParser;
@@ -155,6 +158,8 @@ public class SQLParserUtils {
             case oceanbase_oracle:
             case polardb2:
                 return new OracleStatementParser(sql, features);
+            case dm:
+                return new DMStatementParser(sql, features);
             case mysql:
             case tidb:
             case mariadb:
@@ -240,6 +245,8 @@ public class SQLParserUtils {
         switch (dbType) {
             case oracle:
                 return new OracleExprParser(sql, features);
+            case dm:
+                return new DMExprParser(sql, features);
             case mysql:
             case mariadb:
                 return new MySqlExprParser(sql, features);
@@ -318,6 +325,8 @@ public class SQLParserUtils {
         switch (dbType) {
             case oracle:
                 return new OracleLexer(sql, features);
+            case dm:
+                return new DMLexer(sql, features);
             case mysql:
             case mariadb:
                 return new MySqlLexer(sql, features);

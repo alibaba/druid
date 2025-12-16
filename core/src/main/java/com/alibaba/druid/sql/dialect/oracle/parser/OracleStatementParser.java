@@ -1582,7 +1582,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    private SQLStatement parseAlterTable() {
+    protected SQLStatement parseAlterTable() {
         lexer.nextToken();
         SQLAlterTableStatement stmt = new SQLAlterTableStatement(getDbType());
         stmt.setName(this.exprParser.name());
