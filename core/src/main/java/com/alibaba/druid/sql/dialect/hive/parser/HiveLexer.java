@@ -57,6 +57,7 @@ public class HiveLexer extends Lexer {
                     PrimaryBangBangSupport
             )
     );
+
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -216,7 +217,10 @@ public class HiveLexer extends Lexer {
                         putChar('_');
                         break;
                     case 'u':
-                        if ((features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
+                        if ((features & SQLParserFeature.KeepUnicodeEscape.mask) != 0) {
+                            putChar('\\');
+                            putChar('u');
+                        } else if ((features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
                             int codePointSize = 0;
                             for (int i = 0; i < 4; i++, codePointSize++) {
                                 char c = charAt(pos + 1 + i);
