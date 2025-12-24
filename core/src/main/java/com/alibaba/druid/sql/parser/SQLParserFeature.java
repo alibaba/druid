@@ -54,7 +54,8 @@ public enum SQLParserFeature {
     Presto,
     MySQLSupportStandardComment,
 
-    Template;
+    Template,
+    KeepUnicodeEscape;
 
     SQLParserFeature() {
         mask = (1 << ordinal());
