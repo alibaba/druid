@@ -210,13 +210,13 @@ public class SQLParserUtils {
             case snowflake:
                 return new SnowflakeStatementParser(sql, features);
             case spark:
-                return new SparkStatementParser(sql);
+                return new SparkStatementParser(sql, features);
             case databricks:
                 return new DatabricksStatementParser(sql, features);
             case clickhouse:
-                return new CKStatementParser(sql);
+                return new CKStatementParser(sql, features);
             case starrocks:
-                return new StarRocksStatementParser(sql);
+                return new StarRocksStatementParser(sql, features);
             case informix:
                 return new InformixStatementParser(sql, features);
             case impala:
