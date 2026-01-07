@@ -2665,6 +2665,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     print(' ' + orderingExpr.getType().name);
                 } else {
                     item.accept(this);
+                    if (i != itemSize - 1 && item.hasAfterComment()) {
+                        // 如果下一项是 SQLGroupingSetExpr，则不打印换行，因为后续会自动打印
+                        if (i + 1 < itemSize && items.get(i + 1) instanceof SQLGroupingSetExpr) {
+                            // 不打印换行，避免出现空行
+                        } else {
+                            println();
+                        }
+                    }
                 }
 
                 SQLCommentHint hint = null;
