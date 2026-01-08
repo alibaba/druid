@@ -1818,18 +1818,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             initPhysicalConnection(conn, variables, globalVariables);
             initedNanos = System.nanoTime();
 
-            boolean skipSocketTimeout = "odps".equals(dbTypeName);
-            if (socketTimeout > 0 && !netTimeoutError && !skipSocketTimeout) {
-                try {
-                    // As SQLServer-jdbc-driver 6.1.7 can use this, see https://github.com/microsoft/mssql-jdbc/wiki/SocketTimeout
-                    conn.setNetworkTimeout(netTimeoutExecutor, socketTimeout); // here is milliseconds defined by JDBC
-                } catch (SQLFeatureNotSupportedException | AbstractMethodError e) {
-                    netTimeoutError = true;
-                } catch (Exception ignored) {
-                    // ignored
-                }
-            }
-
             // call initSqls after completing socketTimeout setting.
             if (!initSqls(conn, variables, globalVariables)) {
                 // if no SQL has been executed yet.
