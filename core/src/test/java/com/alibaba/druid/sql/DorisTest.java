@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.sql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.doris.visitor.DorisOutputVisitor;
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class DorisTest extends TestCase {
     protected String output(List<SQLStatement> stmtList) {

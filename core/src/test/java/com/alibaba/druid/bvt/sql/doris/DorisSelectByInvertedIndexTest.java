@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.doris;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.DorisTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.doris.parser.DorisStatementParser;
@@ -11,8 +9,9 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import org.junit.Assert;
 
-public class DorisSelectByInvertedIndexTest extends DorisTest {
+import java.util.List;
 
+public class DorisSelectByInvertedIndexTest extends DorisTest {
     public void test_0() throws Exception {
         String sql = "SELECT t.name, t.age FROM employee t WHERE t.name MATCH_ANY '张三 李四' and t.age > 10;";
 
@@ -43,6 +42,4 @@ public class DorisSelectByInvertedIndexTest extends DorisTest {
 
         System.out.println(out.toString());
     }
-
-
 }
