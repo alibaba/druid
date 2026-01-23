@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,10 +31,31 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class MySqlLexer extends Lexer {
     public static SymbolTable quoteTable = new SymbolTable(8192);
-
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    public static DialectFeature MYSQL_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    NextTokenPrefixN,
+                    ScanString2PutDoubleBackslash,
+                    JoinRightTableWith,
+                    PostNaturalJoin,
+                    MultipleJoinOn,
+                    GroupByPostDesc,
+                    GroupByItemOrder,
+                    SQLDateExpr,
+                    PrimaryLbraceOdbcEscape,
+                    ParseSelectItemPrefixX,
+                    ParseStatementListUpdatePlanCache,
+                    ParseStatementListRollbackReturn,
+                    ParseStatementListCommitReturn,
+                    ParseDropTableTables,
+                    AsSequence
+            ),
+            Collections.singletonList(
+                    AdditiveRestPipesAsConcat
+            )
+    );
+    static final Keywords MYSQL_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -67,7 +90,12 @@ public class MySqlLexer extends Lexer {
         map.put("RLIKE", Token.RLIKE);
         map.put("FULLTEXT", Token.FULLTEXT);
 
-        return new Keywords(map);
+        MYSQL_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return MYSQL_KEYWORDS;
     }
 
     public MySqlLexer(char[] input, int inputLength, boolean skipComment) {
@@ -954,26 +982,6 @@ public class MySqlLexer extends Lexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                NextTokenPrefixN,
-                ScanString2PutDoubleBackslash,
-                JoinRightTableWith,
-                PostNaturalJoin,
-                MultipleJoinOn,
-                GroupByPostDesc,
-                GroupByItemOrder,
-                SQLDateExpr,
-                PrimaryLbraceOdbcEscape,
-                ParseSelectItemPrefixX,
-                ParseStatementListUpdatePlanCache,
-                ParseStatementListRollbackReturn,
-                ParseStatementListCommitReturn,
-                ParseDropTableTables,
-                AsSequence
-        );
-        this.dialectFeature.unconfigFeature(
-                AdditiveRestPipesAsConcat
-        );
+        this.dialectFeature = MYSQL_FEATURE;
     }
 }

@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.proxy.fake;
 
+import com.alibaba.druid.mock.MockDriver;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
 
 public class FakeDriverTest extends TestCase {
     public void test_0() throws Exception {
@@ -38,8 +36,8 @@ public class FakeDriverTest extends TestCase {
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery(sql);
-        Assert.assertEquals(true, rs.next());
-        Assert.assertEquals(1, rs.getInt(1));
+        assertEquals(true, rs.next());
+        assertEquals(1, rs.getInt(1));
 
         conn.close();
     }

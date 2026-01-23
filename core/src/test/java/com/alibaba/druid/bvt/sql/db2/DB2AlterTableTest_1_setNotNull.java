@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class DB2AlterTableTest_1_setNotNull extends TestCase {
     public void test_alter_constraint() throws Exception {
@@ -42,5 +41,4 @@ public class DB2AlterTableTest_1_setNotNull extends TestCase {
         assertEquals(1, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
     }
-
 }

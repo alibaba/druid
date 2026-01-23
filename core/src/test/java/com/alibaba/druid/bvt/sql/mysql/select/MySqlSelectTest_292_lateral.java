@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_292_lateral extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t CROSS JOIN LATERAL (VALUES 1) ";
@@ -87,6 +86,4 @@ public class MySqlSelectTest_292_lateral extends MysqlTest {
 
         System.out.println(stmt.toString());
     }
-
-
 }

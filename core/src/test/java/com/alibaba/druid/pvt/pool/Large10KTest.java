@@ -1,14 +1,13 @@
 package com.alibaba.druid.pvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class Large10KTest extends TestCase {
     private DruidDataSource[] dataSources;

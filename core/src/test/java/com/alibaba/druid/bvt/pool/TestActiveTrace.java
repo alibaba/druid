@@ -15,14 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
 
 public class TestActiveTrace extends TestCase {
     private DruidDataSource dataSource;
@@ -37,12 +34,11 @@ public class TestActiveTrace extends TestCase {
         dataSource.setTimeBetweenEvictionRunsMillis(10);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000);
         dataSource.setUrl("jdbc:mock:xxx");
-
     }
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_activeTrace() throws Exception {
@@ -53,10 +49,10 @@ public class TestActiveTrace extends TestCase {
             conn.close();
             // sleep 10ms for checking stability, see https://github.com/alibaba/druid/issues/5620
             Thread.sleep(10);
-            // Assert.assertEquals(1, dataSource.getPoolingCount());
+            // assertEquals(1, dataSource.getPoolingCount());
             dataSource.shrink();
-            Assert.assertEquals("createCount : " + dataSource.getCreateCount(), 0, dataSource.getPoolingCount());
-            Assert.assertEquals(0, dataSource.getActiveConnections().size());
+            assertEquals("createCount : " + dataSource.getCreateCount(), 0, dataSource.getPoolingCount());
+            assertEquals(0, dataSource.getActiveConnections().size());
         }
     }
 }

@@ -15,20 +15,17 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class MySqlWallTest140 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        String sql = "SELECT name, '******' password, createTime from user " //
+        String sql = "SELECT name, '******' password, createTime from user "
                 + "where name like 'admin%' "//
                 + "    AND 8600=CONVERT(INT,(SELECT CHAR(113)+CHAR(118)+CHAR(100)+CHAR(114)+CHAR(113)+(SELECT (CASE WHEN (8600=8600) THEN CHAR(49) ELSE CHAR(48) END))+CHAR(113)+CHAR(118)+CHAR(98)+CHAR(97)+CHAR(113))) AND '%'=''";
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 }

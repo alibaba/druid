@@ -15,18 +15,17 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.OracleUtils;
+import junit.framework.TestCase;
+import oracle.jdbc.OracleConnection;
+import oracle.jdbc.OraclePreparedStatement;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-import oracle.jdbc.OracleConnection;
-import oracle.jdbc.OraclePreparedStatement;
-
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.OracleUtils;
 
 public class TestOraclePreparedStatement extends TestCase {
     private String jdbcUrl;
@@ -53,9 +52,7 @@ public class TestOraclePreparedStatement extends TestCase {
 
         Statement stmt = conn.createStatement();
         stmt.execute("DROP TABLE T");
-        ;
         stmt.execute("CREATE TABLE T (FID INT, FNAME VARCHAR2(4000), FDESC CLOB)");
-        ;
         stmt.close();
 
         conn.close();
@@ -78,7 +75,7 @@ public class TestOraclePreparedStatement extends TestCase {
 //
 //            PreparedStatement stmt = conn.prepareStatement(SQL);
 //            stmt.close();
-//            
+//
 //            PreparedStatement stmt2 = conn.prepareStatement(SQL);
 //            stmt2.close();
 //        }
@@ -92,6 +89,7 @@ public class TestOraclePreparedStatement extends TestCase {
             stmt.setInt(1, 327);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // Process result set rows
             }
 
             rs.close();
@@ -104,6 +102,7 @@ public class TestOraclePreparedStatement extends TestCase {
             stmt.setInt(1, 327);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // Process result set rows
             }
 
             rs.close();

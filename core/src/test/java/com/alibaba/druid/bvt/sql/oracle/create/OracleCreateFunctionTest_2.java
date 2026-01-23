@@ -41,7 +41,7 @@ public class OracleCreateFunctionTest_2 extends OracleTest {
                         "\tp refcur_pkg.refcur_t\n" +
                         ")\n" +
                         "RETURN TickerTypeSetPIPELINED \n" +
-                        "USING StockPivotImpl;",//
+                        "USING StockPivotImpl;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

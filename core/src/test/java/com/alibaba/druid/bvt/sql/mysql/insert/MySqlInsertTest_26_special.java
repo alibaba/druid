@@ -52,8 +52,6 @@ public class MySqlInsertTest_26_special extends MysqlTest {
 
         assertEquals("INSERT INTO SUNTEST (ID, NAME)\n" +
                 "VALUES (1, '\\_ASDFASDF')", SQLUtils.toMySqlString(insertStmt));
-
-
     }
 
     public void test_insert_special_1() throws Exception {
@@ -80,8 +78,5 @@ public class MySqlInsertTest_26_special extends MysqlTest {
 
         assertEquals("INSERT INTO SUNTEST (ID, NAME)\n" +
                 "VALUES (1, 'Y\"''')", SQLUtils.toMySqlString(insertStmt));
-
-
     }
-
 }

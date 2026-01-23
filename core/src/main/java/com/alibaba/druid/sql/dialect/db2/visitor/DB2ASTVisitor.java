@@ -17,9 +17,7 @@ package com.alibaba.druid.sql.dialect.db2.visitor;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface DB2ASTVisitor extends SQLASTVisitor {
@@ -44,5 +42,19 @@ public interface DB2ASTVisitor extends SQLASTVisitor {
 
     default void endVisit(DB2CreateTableStatement x) {
         endVisit((SQLCreateTableStatement) x);
+    }
+
+    default boolean visit(DB2CreateSchemaStatement x) {
+        return true;
+    }
+
+    default void endVisit(DB2CreateSchemaStatement x) {
+    }
+
+    default boolean visit(DB2DropSchemaStatement x) {
+        return true;
+    }
+
+    default void endVisit(DB2DropSchemaStatement x) {
     }
 }

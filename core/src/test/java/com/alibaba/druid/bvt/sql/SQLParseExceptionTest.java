@@ -1,8 +1,7 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.parser.SQLParseException;
+import junit.framework.TestCase;
 
 @SuppressWarnings("deprecation")
 public class SQLParseExceptionTest extends TestCase {

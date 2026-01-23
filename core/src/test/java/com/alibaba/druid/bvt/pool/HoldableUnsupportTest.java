@@ -1,16 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import junit.framework.TestCase;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class HoldableUnsupportTest extends TestCase {
     private DruidDataSource dataSource;
@@ -25,7 +23,6 @@ public class HoldableUnsupportTest extends TestCase {
             }
         };
         dataSource.getProxyFilters().add(filter);
-
     }
 
     protected void tearDown() throws Exception {

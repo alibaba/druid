@@ -105,6 +105,4 @@ public class MySqlSelectTest_130_ads extends MysqlTest {
                 "FROM base_table\n" +
                 "ORDER BY comm_date", stmt.toString());
     }
-
-
 }

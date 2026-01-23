@@ -1,14 +1,11 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Connection;
-
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
 
 public class Slf4jFilterTest extends TestCase {
     private DruidDataSource dataSource;
@@ -29,7 +26,7 @@ public class Slf4jFilterTest extends TestCase {
         dataSource.init();
 
         Slf4jLogFilter filter = dataSource.unwrap(Slf4jLogFilter.class);
-        Assert.assertNotNull(filter);
+        assertNotNull(filter);
 
         Connection conn = dataSource.getConnection();
         conn.close();

@@ -19,9 +19,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -57,8 +55,8 @@ public class MySqlCreateProcedureTest12 extends MysqlTest {
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = statementList.get(0);
-//    	print(statementList);
-//        assertEquals(1, statementList.size());
+        // print(statementList);
+        // assertEquals(1, statementList.size());
 
         System.out.println(SQLUtils.toMySqlString(stmt));
 
@@ -67,18 +65,17 @@ public class MySqlCreateProcedureTest12 extends MysqlTest {
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        // System.out.println("coditions : " + visitor.getConditions());
+        // System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(3, visitor.getTables().size());
         assertEquals(5, visitor.getColumns().size());
         assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsColumn("_result", "*"));
-        Assert.assertTrue(visitor.containsColumn("_result", "node"));
-        Assert.assertTrue(visitor.containsColumn("nodes", "parent"));
-        Assert.assertTrue(visitor.containsColumn("nodes", "child"));
-        Assert.assertTrue(visitor.containsColumn("_tmp", "node"));
+        assertTrue(visitor.containsColumn("_result", "*"));
+        assertTrue(visitor.containsColumn("_result", "node"));
+        assertTrue(visitor.containsColumn("nodes", "parent"));
+        assertTrue(visitor.containsColumn("nodes", "child"));
+        assertTrue(visitor.containsColumn("_tmp", "node"));
     }
-
 }

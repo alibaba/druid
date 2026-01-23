@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -33,13 +32,13 @@ public class HiveCreateTableTest_10 extends OracleTest {
                         "   AS\n" +
                         "SELECT (key % 1024) new_key, concat(key, value) key_value_pair\n" +
                         "FROM key_value_store\n" +
-                        "SORT BY new_key, key_value_pair;\n"; //
+                        "SORT BY new_key, key_value_pair;\n";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -70,6 +69,5 @@ public class HiveCreateTableTest_10 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("new_key_value_store"));
-
     }
 }

@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.update;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+
+import java.util.List;
 
 public class MySqlUpdateTest_4 extends MysqlTest {
     public void test_0() throws Exception {
@@ -37,7 +35,7 @@ public class MySqlUpdateTest_4 extends MysqlTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -47,18 +45,18 @@ public class MySqlUpdateTest_4 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(6, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(6, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("darenai_stat_url")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("darenai_stat_url")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("darenai_stat_url", "user")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("darenai_stat_url", "ip")));
+        assertTrue(visitor.getColumns().contains(new Column("darenai_stat_url", "user")));
+        assertTrue(visitor.getColumns().contains(new Column("darenai_stat_url", "ip")));
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("INSERT INTO darenai_stat_url (user, ip, reffer, url, shopnick"
+            assertEquals("INSERT INTO darenai_stat_url (user, ip, reffer, url, shopnick"
                             + "\n\t, time)"
                             + "\nVALUES ('nologin', '58.101.223.183', 'http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689', '/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538', '零利润3232'"
                             + "\n\t, NOW())", //
@@ -66,7 +64,7 @@ public class MySqlUpdateTest_4 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("insert into darenai_stat_url (user, ip, reffer, url, shopnick"
+            assertEquals("insert into darenai_stat_url (user, ip, reffer, url, shopnick"
                             + "\n\t, time)"
                             + "\nvalues ('nologin', '58.101.223.183', 'http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689', '/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538', '零利润3232'"
                             + "\n\t, NOW())", //

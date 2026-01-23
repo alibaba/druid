@@ -288,9 +288,13 @@ public class PGExprParser extends SQLExprParser {
                 listExpr.setParent(values);
 
                 values.getValues().add(listExpr);
-
+                Lexer.SavePoint savePoint = lexer.mark();
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
+                    if (lexer.token() != Token.LPAREN) {
+                        lexer.reset(savePoint);
+                        break;
+                    }
                     continue;
                 }
                 break;
@@ -349,6 +353,9 @@ public class PGExprParser extends SQLExprParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.SECOND)) {
             lexer.nextToken();
             intervalExpr.setUnit(SQLIntervalUnit.SECOND);
+        } else if (lexer.identifierEquals(FnvHash.Constants.WEEK)) {
+            lexer.nextToken();
+            intervalExpr.setUnit(SQLIntervalUnit.WEEK);
         }
 
         return intervalExpr;
@@ -402,7 +409,7 @@ public class PGExprParser extends SQLExprParser {
                 }
 
                 String literal = lexer.stringVal();
-                timestamp.setLiteral(literal);
+                timestamp.setValue(literal);
                 accept(Token.LITERAL_CHARS);
 
                 if (lexer.identifierEquals("AT")) {
@@ -428,7 +435,7 @@ public class PGExprParser extends SQLExprParser {
                 timestamp.setWithTimeZone(true);
 
                 String literal = lexer.stringVal();
-                timestamp.setLiteral(literal);
+                timestamp.setValue(literal);
                 accept(Token.LITERAL_CHARS);
 
                 if (lexer.identifierEquals("AT")) {

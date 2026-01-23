@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-
 public class MySqlSelectTest_241 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select job_names.job_name from cover_rage_job_org as org RIGHT JOIN (\n" +
@@ -28,7 +27,6 @@ public class MySqlSelectTest_241 extends MysqlTest {
                 "    from (\n" +
                 "    SELECT '1' as job_name\n" +
                 ") job_name_all) as job_names on job_names.job_name = org.job_name";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
@@ -42,10 +40,7 @@ public class MySqlSelectTest_241 extends MysqlTest {
                 "\t) job_names\n" +
                 "\tON job_names.job_name = org.job_name", stmt.toString());
 
-
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
-
 }

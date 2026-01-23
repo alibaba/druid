@@ -143,7 +143,5 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
                 stmt.toString());
         assertEquals("show grants for 'user'@'localhost'", //
                 stmt.toLowerCaseString());
-
     }
-
 }

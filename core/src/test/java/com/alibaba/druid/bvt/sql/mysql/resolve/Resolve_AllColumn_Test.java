@@ -40,7 +40,9 @@ public class Resolve_AllColumn_Test extends TestCase {
                     final SQLSelectItem selectItem = selectList.get(i);
                     final SQLExpr expr = selectItem.getExpr();
                     if (expr instanceof SQLAllColumnExpr) {
+                        // Handle SQLAllColumnExpr
                     } else if (expr instanceof SQLPropertyExpr && ((SQLPropertyExpr) expr).getName().equals("*")) {
+                        // Handle SQLPropertyExpr with "*" name
                     }
 
                 }
@@ -53,7 +55,6 @@ public class Resolve_AllColumn_Test extends TestCase {
         SchemaRepository repository = new SchemaRepository(DbType.mysql);
 
         repository.acceptDDL("create table t_emp(emp_id bigint, name varchar(20));");
-
 
         SQLStatement stmt = SQLUtils.parseSingleMysqlStatement("select * from (select * from t_emp) x");
         repository.resolve(stmt, SchemaResolveVisitor.Option.ResolveAllColumn);
@@ -69,7 +70,6 @@ public class Resolve_AllColumn_Test extends TestCase {
         SchemaRepository repository = new SchemaRepository(DbType.mysql);
 
         repository.acceptDDL("create table t_emp(emp_id bigint, name varchar(20));");
-
 
         SQLStatement stmt = SQLUtils.parseSingleMysqlStatement("select * from (select * from t_emp union all select * from t_emp) x");
         repository.resolve(stmt, SchemaResolveVisitor.Option.ResolveAllColumn);

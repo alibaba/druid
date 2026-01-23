@@ -1,15 +1,14 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,14 +18,12 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://github.com/alibaba/druid/issues/5813>Issue来源</a>
  */
 public class Issue5813 {
-
     @Test
     public void test_parse_create_table() {
         for (DbType dbType : new DbType[]{
             DbType.mysql,
             DbType.mariadb,
         }) {
-
             for (String sql : new String[]{
                 "CREATE TABLE t1 (\n"
                     + "    c1 INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\n"

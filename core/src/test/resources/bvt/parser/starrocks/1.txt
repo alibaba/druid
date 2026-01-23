@@ -20,7 +20,8 @@ CREATE TABLE `ads_ad_tt_ad_product_shopping_ads_type_global_report_d` (
   `collect_timestamp` datetime NULL COMMENT '采集时间戳',
   INDEX product_name_idx (`product_name`) USING BITMAP COMMENT 'Bitmap index on column product_name',
   INDEX adv_name_idx (`adv_name`) USING BITMAP COMMENT 'Bitmap index on column adv_name',
-  INDEX account_name_idx (`account_name`) USING BITMAP COMMENT 'Bitmap index on column account_name'
+  INDEX account_name_idx (`account_name`) USING BITMAP COMMENT 'Bitmap index on column account_name',
+  INDEX spu_id_idx(`spu_id`) USING NGRAMBF("bloom_filter_fpp" = "0.05", "case_sensitive" = "true", "gram_num" = "2") COMMENT 'NGRAMBF spu_id on column product_name'
 ) ENGINE=OLAP
 UNIQUE KEY(`stat_date`, `ad_id`)
 COMMENT '广告域-素材近1天广告效果数据'
@@ -104,7 +105,8 @@ CREATE TABLE `ads_ad_tt_ad_product_shopping_ads_type_global_report_d` (
 	`collect_timestamp` datetime NULL COMMENT '采集时间戳',
 	INDEX product_name_idx(`product_name`) USING BITMAP COMMENT 'Bitmap index on column product_name',
 	INDEX adv_name_idx(`adv_name`) USING BITMAP COMMENT 'Bitmap index on column adv_name',
-	INDEX account_name_idx(`account_name`) USING BITMAP COMMENT 'Bitmap index on column account_name'
+	INDEX account_name_idx(`account_name`) USING BITMAP COMMENT 'Bitmap index on column account_name',
+	INDEX spu_id_idx(`spu_id`) USING NGRAMBF("bloom_filter_fpp" = "0.05", "case_sensitive" = "true", "gram_num" = "2") COMMENT 'NGRAMBF spu_id on column product_name'
 ) ENGINE = OLAP
 UNIQUE KEY (`stat_date`, `ad_id`)
 COMMENT '广告域-素材近1天广告效果数据'

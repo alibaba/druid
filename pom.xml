@@ -6,7 +6,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid-parent</artifactId>
-	<version>1.2.25-SNAPSHOT</version>
+	<version>1.2.28-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
 	<description>A JDBC datasource implementation.</description>
 	<packaging>pom</packaging>
@@ -37,6 +37,7 @@
 		<springframework6.version>6.0.8</springframework6.version>
 		<springboot2.version>2.7.9</springboot2.version>
 		<springboot3.version>3.0.6</springboot3.version>
+		<springboot4.version>4.0.0-M3</springboot4.version>
 
 		<junit.version>4.13.1</junit.version>
 		<jmh.version>1.37</jmh.version>
@@ -80,13 +81,9 @@
 	</developers>
 
 	<distributionManagement>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
 		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>central</id>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -168,13 +165,22 @@
 						<configuration>
 							<skip>false</skip>
 							<failOnViolation>true</failOnViolation>
-							<includeTestSourceDirectory>false</includeTestSourceDirectory>
+							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<configLocation>src/checkstyle/druid-checks.xml</configLocation>
 							<excludes>
 							</excludes>
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.8.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<publishingServerId>central</publishingServerId>
+				</configuration>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -201,7 +207,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.4.1</version>
+					<version>3.8.0</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
@@ -470,8 +476,8 @@
 							</execution>
 						</executions>
 						<configuration>
-							<serverId>ossrh</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<serverId>central</serverId>
+							<nexusUrl>https://central.sonatype.org/</nexusUrl>
 							<autoReleaseAfterClose>true</autoReleaseAfterClose>
 							<!--
                             If you are deploying to Maven Central,
@@ -494,6 +500,7 @@
 			</activation>
 			<modules>
 				<module>druid-spring-boot-3-starter</module>
+				<module>druid-spring-boot-4-starter</module>
 			</modules>
 		</profile>
 	</profiles>

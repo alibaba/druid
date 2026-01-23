@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.spi.OracleWallProvider;
+import junit.framework.TestCase;
 
 /**
  * @author wenshao
@@ -29,7 +26,6 @@ public class WallDenySchemaTest extends TestCase {
         String sql = "SELECT * FROM T UNION SELECT F1, F2 FROM ALL_ALL_TABLES";
 
         OracleWallProvider provider = new OracleWallProvider();
-        Assert.assertFalse(provider.checkValid(sql));
-
+        assertFalse(provider.checkValid(sql));
     }
 }

@@ -25,9 +25,9 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.IDENTIFIER;
 
 public class SQLServerLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords SQLSERVER_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -48,7 +48,12 @@ public class SQLServerLexer extends Lexer {
         map.put("MATCHED", Token.MATCHED);
         map.put("OPTION", Token.OPTION);
 
-        return new Keywords(map);
+        SQLSERVER_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return SQLSERVER_KEYWORDS;
     }
 
     public SQLServerLexer(char[] input, int inputLength, boolean skipComment) {
@@ -129,7 +134,7 @@ public class SQLServerLexer extends Lexer {
 
         if (ch == '/' || ch == '-') {
             scanChar();
-            bufPos++;
+            bufPos = 2;
 
             for (; ; ) {
                 if (ch == '\r') {
@@ -154,7 +159,7 @@ public class SQLServerLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark + 1, bufPos);
+            stringVal = subString(mark, bufPos);
             token = Token.LINE_COMMENT;
             commentCount++;
             if (keepComments) {

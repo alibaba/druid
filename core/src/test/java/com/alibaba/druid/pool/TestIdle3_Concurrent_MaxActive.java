@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.mock.MockDriver;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
 
 public class TestIdle3_Concurrent_MaxActive extends TestCase {
     private MockDriver driver;

@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -30,12 +27,12 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest22 extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-                "SELECT count(*) AS num FROM hkapp_goods WHERE  1=1  AND status=1 AND level=1")); //
+        assertTrue(WallUtils.isValidateMySql(//
+                "SELECT count(*) AS num FROM hkapp_goods WHERE  1=1  AND status=1 AND level=1"));
     }
 
     public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-                "SELECT count(*) AS num FROM hkapp_goods WHERE  status=1 AND level=1 OR 1=1")); //
+        assertFalse(WallUtils.isValidateMySql(//
+                "SELECT count(*) AS num FROM hkapp_goods WHERE  status=1 AND level=1 OR 1=1"));
     }
 }

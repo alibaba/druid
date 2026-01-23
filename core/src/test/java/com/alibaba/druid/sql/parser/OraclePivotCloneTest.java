@@ -13,9 +13,7 @@ import org.junit.Assert;
  * @date 2022/8/11 下午4:46
  */
 public class OraclePivotCloneTest extends TestCase {
-
     public void testCreateCharset() {
-
         String sql = "SELECT DEPT_ID, M01, M02, M03, M04\n" +
                 "\t, M05, M06, M07, M08, M09\n" +
                 "\t, M10, M11, M12\n" +
@@ -32,9 +30,6 @@ public class OraclePivotCloneTest extends TestCase {
 
         System.out.println(sqlStatement1.toString());
 
-
         Assert.assertTrue(sqlStatement1.toString().equals(sql));
-
     }
-
 }

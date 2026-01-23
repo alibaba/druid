@@ -15,48 +15,46 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.insert;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleInsertTest4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "insert into \"OPS$ADMIN\".\"ORASTAT\""
-                + //
+                +
                 " select /*+ rule */ :5 statid, 'C' type, :6 version, bitand(h.spare2,7) flags, "
-                + //
+                +
                 "ot.name c1, null c2, null c3, c.name c4, u.name c5,      "
-                + //
+                +
                 " h.distcnt n1, h.density n2, h.spare1 n3, h.sample_size n4, h.null_cnt n5,      "
-                + //
+                +
                 " h.minimum n6, h.maximum n7, h.avgcln n8,      "
-                + //
+                +
                 " decode(h.cache_cnt,0,null,1) n9, hg.bucket n10, hg.endpoint n11,      "
-                + //
+                +
                 " null n12,       h.timestamp# d1,       h.lowval r1, h.hival r2, hg.epvalue ch1    "
-                + //
+                +
                 " from sys.user$ u,  sys.obj$ ot, sys.col$ c,   sys.hist_head$ h, histgrm$ hg    "
-                + //
+                +
                 " where       :3 is null and       u.name = :1 and ot.owner# = u.user# and      "
-                + //
+                +
                 " ot.name = :2 and ot.type# = 2 and        c.obj# = ot.obj# and      "
-                + //
+                +
                 " (:4 is null or c.name = :4) and       h.obj# = ot.obj# and h.intcol# = c.intcol# and      "
-                + //
+                +
                 " hg.obj#(+) = h.obj# and hg.intcol#(+) = h.intcol#     union all select        :5 statid, "
-                + //
+                +
                 "'C' type, :6 version, bitand(h.spare2,7) flags,       ot.name c1, op.subname c2, null c3, c.name c4, u.name c5,      "
-                + //
+                +
                 " h.distcnt n1, h.density n2, h.spare1 n3, h.sample_size n4, h.null_cnt n5,      "
-                + //
+                +
                 " h.minimum n6, h.maximum n7, h.avgcln n8,      "
-                + //
+                +
                 " decode(h.cache_cnt,0,null,1) n9, hg.bucket n10, hg.endpoint n11,       null n12,       h.timestamp# d1,      "
                 + " h.lowval r1, h.hival r2, hg.epvalue ch1     from sys.user$ u,  sys.obj$ ot, sys.col$ c,   sys.tabpart$ tp, sys.obj$ op,  "
                 + " sys.hist_head$ h, histgrm$ hg     where       u.name = :1 and ot.owner# = u.user# and      "
@@ -74,7 +72,7 @@ public class OracleInsertTest4 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -84,15 +82,14 @@ public class OracleInsertTest4 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("OPS$ADMIN.ORASTAT")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.user$")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("OPS$ADMIN.ORASTAT")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.user$")));
 
-        Assert.assertEquals(9, visitor.getTables().size());
-        Assert.assertEquals(36, visitor.getColumns().size());
+        assertEquals(9, visitor.getTables().size());
+        assertEquals(36, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
     }
-
 }

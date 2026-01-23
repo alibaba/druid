@@ -68,6 +68,7 @@ public class SQLValuesTableSource extends SQLTableSourceImpl implements SQLSelec
         if (visitor.visit(this)) {
             acceptChild(visitor, values);
             acceptChild(visitor, columns);
+            super.accept0(visitor);
         }
         visitor.endVisit(this);
     }

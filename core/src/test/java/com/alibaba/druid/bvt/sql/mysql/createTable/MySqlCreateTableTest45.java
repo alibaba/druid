@@ -21,35 +21,34 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class MySqlCreateTableTest45 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE th (id INT, name VARCHAR(30), adate DATE)" + //
-                "PARTITION BY LIST(YEAR(adate))" + //
-                "(" + //
-                "  PARTITION p1999 VALUES IN (1995, 1999, 2003)" + //
-                "    DATA DIRECTORY = '/var/appdata/95/data'" + //
-                "    INDEX DIRECTORY = '/var/appdata/95/idx'," + //
-                "  PARTITION p2000 VALUES IN (1996, 2000, 2004)" + //
-                "    DATA DIRECTORY = '/var/appdata/96/data'" + //
-                "    INDEX DIRECTORY = '/var/appdata/96/idx'," + //
-                "  PARTITION p2001 VALUES IN (1997, 2001, 2005)" + //
-                "    DATA DIRECTORY = '/var/appdata/97/data'" + //
-                "    INDEX DIRECTORY = '/var/appdata/97/idx'," + //
-                "  PARTITION p2002 VALUES IN (1998, 2002, 2006)" + //
-                "    DATA DIRECTORY = '/var/appdata/98/data'" + //
-                "    INDEX DIRECTORY = '/var/appdata/98/idx'" + //
-                ");"; //
+        String sql = "CREATE TABLE th (id INT, name VARCHAR(30), adate DATE)" +
+                "PARTITION BY LIST(YEAR(adate))" +
+                "(" +
+                "  PARTITION p1999 VALUES IN (1995, 1999, 2003)" +
+                "    DATA DIRECTORY = '/var/appdata/95/data'" +
+                "    INDEX DIRECTORY = '/var/appdata/95/idx'," +
+                "  PARTITION p2000 VALUES IN (1996, 2000, 2004)" +
+                "    DATA DIRECTORY = '/var/appdata/96/data'" +
+                "    INDEX DIRECTORY = '/var/appdata/96/idx'," +
+                "  PARTITION p2001 VALUES IN (1997, 2001, 2005)" +
+                "    DATA DIRECTORY = '/var/appdata/97/data'" +
+                "    INDEX DIRECTORY = '/var/appdata/97/idx'," +
+                "  PARTITION p2002 VALUES IN (1998, 2002, 2006)" +
+                "    DATA DIRECTORY = '/var/appdata/98/data'" +
+                "    INDEX DIRECTORY = '/var/appdata/98/idx'" +
+                ");";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -59,14 +58,14 @@ public class MySqlCreateTableTest45 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("th")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("th")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE th (\n" +
+        assertEquals("CREATE TABLE th (\n" +
                 "\tid INT,\n" +
                 "\tname VARCHAR(30),\n" +
                 "\tadate DATE\n" +
@@ -85,6 +84,5 @@ public class MySqlCreateTableTest45 extends MysqlTest {
                 "\t\tDATA DIRECTORY '/var/appdata/98/data'\n" +
                 "\t\tINDEX DIRECTORY '/var/appdata/98/idx'\n" +
                 ");", output);
-
     }
 }

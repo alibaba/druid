@@ -20,5 +20,4 @@ public class MySqlParameterizedOutputVisitorTest_68 extends TestCase {
                 "ORDER BY 1;", psql);
         assertEquals(0, params.size());
     }
-
 }

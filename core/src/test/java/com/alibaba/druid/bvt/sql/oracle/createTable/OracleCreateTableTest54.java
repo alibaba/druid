@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -52,9 +51,9 @@ public class OracleCreateTableTest54 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+        assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
                         "\t\"PUSH\" NUMBER,\n" +
                         "\t\"LOAD\" NUMBER,\n" +
                         "\t\"TABLE_ID\" NUMBER,\n" +
@@ -71,7 +70,7 @@ public class OracleCreateTableTest54 extends OracleTest {
                         "\t\t)\n" +
                         "\t\tLOCATION ('retl-table.cfg')\n" +
                         "\t)\n" +
-                        "\tREJECT LIMIT UNLIMITED",//
+                        "\tREJECT LIMIT UNLIMITED",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -83,10 +82,10 @@ public class OracleCreateTableTest54 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "LOAD"));
+        assertTrue(visitor.containsColumn("SC_001.TB_001", "LOAD"));
     }
 }

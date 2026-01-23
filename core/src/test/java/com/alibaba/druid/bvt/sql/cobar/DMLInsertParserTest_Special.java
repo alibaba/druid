@@ -15,14 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.cobar;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import junit.framework.TestCase;
 
 public class DMLInsertParserTest_Special extends TestCase {
     public void testInsert_7() throws Exception {
@@ -31,7 +28,7 @@ public class DMLInsertParserTest_Special extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("INSERT LOW_PRIORITY INTO t1 (col1, t1.col2)\nVALUES (123, '123''4')" + //
+        assertEquals("INSERT LOW_PRIORITY INTO t1 (col1, t1.col2)\nVALUES (123, '123''4')" +
                         "\nON DUPLICATE KEY UPDATE ex.col1 = ?",
                 output);
     }

@@ -38,5 +38,4 @@ public class MySqlCreateTableTest148_national_char extends TestCase {
                 "\tcol_wqq national varchar(128)\n" +
                 ") comment 'comment'", stmt.toLowerCaseString());
     }
-
 }

@@ -1,7 +1,6 @@
 package com.alibaba.druid.bvt.bug;
 
 import junit.framework.TestCase;
-import org.junit.Test;
 
 /**
  * Created by wenshao on 14/08/2017.

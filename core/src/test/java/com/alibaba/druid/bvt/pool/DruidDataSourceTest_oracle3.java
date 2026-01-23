@@ -1,10 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试minIdle > maxActive
@@ -27,7 +25,7 @@ public class DruidDataSourceTest_oracle3 extends TestCase {
 
     public void test_error() throws Exception {
         dataSource.init();
-        Assert.assertTrue(dataSource.isOracle());
-        Assert.assertTrue(dataSource.getValidConnectionChecker() instanceof OracleValidConnectionChecker);
+        assertTrue(dataSource.isOracle());
+        assertTrue(dataSource.getValidConnectionChecker() instanceof OracleValidConnectionChecker);
     }
 }

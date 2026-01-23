@@ -15,23 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.OracleTest;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
-
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import org.junit.Assert;
-
-import com.alibaba.druid.sql.OracleTest;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.util.Utils;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleResourceTest extends OracleTest {
     public void test_0_9() throws Exception {
@@ -120,7 +116,7 @@ public class OracleResourceTest extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        // Assert.assertEquals(1, statementList.size());
+        // assertEquals(1, statementList.size());
 
         System.out.println(sql);
 
@@ -143,7 +139,7 @@ public class OracleResourceTest extends OracleTest {
             SQLStatement stmt = statementList.get(0);
             if (expect != null && !expect.isEmpty()) {
                 String actual = stmt.toString();
-                System.out.println("resource=========="+resource);
+                System.out.println("resource==========" + resource);
                 assertEquals(expect, actual.trim());
             }
         } else {
@@ -152,5 +148,4 @@ public class OracleResourceTest extends OracleTest {
             }
         }
     }
-
 }

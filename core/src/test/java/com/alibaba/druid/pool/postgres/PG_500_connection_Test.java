@@ -1,5 +1,11 @@
 package com.alibaba.druid.pool.postgres;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.vendor.PGValidConnectionChecker;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,14 +13,6 @@ import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.vendor.PGValidConnectionChecker;
-import com.alibaba.druid.util.JdbcUtils;
-
-import junit.framework.TestCase;
 
 /**
  * 这个场景测试minIdle > maxActive
@@ -62,6 +60,7 @@ public class PG_500_connection_Test extends TestCase {
                     stmt = conn.createStatement();
                     rs = stmt.executeQuery("SELECT 1");
                     while (rs.next()) {
+                        // Process result set rows
                     }
                 } catch (SQLException ex) {
                     // skip
@@ -79,6 +78,5 @@ public class PG_500_connection_Test extends TestCase {
             executor.submit(task);
         }
         endLatch.await();
-
     }
 }

@@ -15,10 +15,8 @@
  */
 package com.alibaba.druid.bvt.proxy.filter.encoding;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.encoding.CharsetParameter;
+import junit.framework.TestCase;
 
 /**
  * @author gang.su
@@ -29,8 +27,7 @@ public class CharsetParameterTest extends TestCase {
         CharsetParameter c = new CharsetParameter();
         c.setClientEncoding("1");
         c.setServerEncoding("2");
-        Assert.assertEquals("1", c.getClientEncoding());
-        Assert.assertEquals("2", c.getServerEncoding());
-
+        assertEquals("1", c.getClientEncoding());
+        assertEquals("2", c.getServerEncoding());
     }
 }

@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -33,14 +30,14 @@ public class MySqlWallTest47 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
-                "update Fans," + //
-                        " (select 361659 as ToID, 5 as Score " + //
-                        "   union all select 382885 as ToID, 2 as Score" + //
-                        "   union all select 407537 as ToID, 6 as Score) temp  " + //
-                        "set Fans.score = Fans.score+temp.Score " + //
+        assertTrue(provider.checkValid(//
+                "update Fans," +
+                        " (select 361659 as ToID, 5 as Score " +
+                        "   union all select 382885 as ToID, 2 as Score" +
+                        "   union all select 407537 as ToID, 6 as Score) temp  " +
+                        "set Fans.score = Fans.score+temp.Score " +
                         "where Fans.FansID = 382885 and Fans.UserID = temp.ToID"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 }

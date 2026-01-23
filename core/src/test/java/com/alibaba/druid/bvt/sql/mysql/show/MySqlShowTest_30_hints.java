@@ -48,5 +48,4 @@ public class MySqlShowTest_30_hints extends MysqlTest {
         assertEquals("/*+TDDL:scan()*/\n" +
                 "show tables;", stmt.toLowerCaseString());
     }
-
 }

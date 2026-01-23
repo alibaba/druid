@@ -1,19 +1,16 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockStatementBase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ExceptionSorter;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockStatementBase;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ExceptionSorter;
 
 /**
  * 这个场景测试defaultAutoCommit
@@ -43,7 +40,6 @@ public class DruidDataSourceTest_exceptionSorter extends TestCase {
             public void configFromProperties(Properties properties) {
             }
         });
-
     }
 
     protected void tearDown() throws Exception {

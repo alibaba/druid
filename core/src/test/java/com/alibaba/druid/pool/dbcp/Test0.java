@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.pool.dbcp;
 
-import java.sql.Connection;
-
+import com.alibaba.druid.mock.MockDriver;
 import junit.framework.TestCase;
-
 import org.apache.commons.dbcp.BasicDataSource;
 
-import com.alibaba.druid.mock.MockDriver;
+import java.sql.Connection;
 
 public class Test0 extends TestCase {
     public void test_idle() throws Exception {

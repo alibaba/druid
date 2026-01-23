@@ -33,7 +33,6 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
                 ")\n" +
                 "SELECT * FROM cte;";
 
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);
 

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -62,9 +61,9 @@ public class OracleCreateViewTest3 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE VIEW \"RMAN\".\"V_001\" (\n" +
+        assertEquals("CREATE OR REPLACE VIEW \"RMAN\".\"V_001\" (\n" +
                         "\t\"DB_KEY\", \n" +
                         "\t\"DBINC_KEY\", \n" +
                         "\t\"FILE#\", \n" +
@@ -102,7 +101,7 @@ public class OracleCreateViewTest3 extends OracleTest {
                         "\t\tAND outer.dbinc_key = bdf.dbinc_key\n" +
                         "\t\tAND outer.file# = file#\n" +
                         "\t\tAND outer.stamp < bs.stamp\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -114,10 +113,10 @@ public class OracleCreateViewTest3 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(6, visitor.getTables().size());
+        assertEquals(6, visitor.getTables().size());
 
-        Assert.assertEquals(28, visitor.getColumns().size());
+        assertEquals(28, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("tb_002", "db_key")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("tb_002", "db_key")));
     }
 }

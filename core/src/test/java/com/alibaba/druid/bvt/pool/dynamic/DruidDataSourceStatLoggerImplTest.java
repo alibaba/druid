@@ -1,16 +1,12 @@
 package com.alibaba.druid.bvt.pool.dynamic;
 
-import java.lang.reflect.Field;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceStatLogger;
 import com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl;
 import com.alibaba.druid.support.logging.Log;
+
+import java.lang.reflect.Field;
 
 public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -32,7 +28,6 @@ public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
         dataSource.setConnectionProperties("a=3;b=4");
         dataSource.setFilters("stat");
         dataSource.init();
-
     }
 
     protected void tearDown() throws Exception {
@@ -42,12 +37,12 @@ public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
     }
 
     public void test_connectPropertiesChange() throws Exception {
-        Assert.assertTrue(dataSource.isWrapperFor(DruidDataSourceStatLogger.class));
-        Assert.assertTrue(dataSource.isWrapperFor(DruidDataSourceStatLoggerImpl.class));
+        assertTrue(dataSource.isWrapperFor(DruidDataSourceStatLogger.class));
+        assertTrue(dataSource.isWrapperFor(DruidDataSourceStatLoggerImpl.class));
         DruidDataSourceStatLoggerImpl loggerImpl = dataSource.unwrap(DruidDataSourceStatLoggerImpl.class);
-        Assert.assertSame(statLog, loggerImpl.getLogger());
+        assertSame(statLog, loggerImpl.getLogger());
 
         dataSource.setConnectionProperties("druid.stat.loggerName=xxx");
-        Assert.assertNotSame(statLog, loggerImpl.getLogger());
+        assertNotSame(statLog, loggerImpl.getLogger());
     }
 }

@@ -2,7 +2,6 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
 
 public class AsyncInitTest extends PoolTestCase {
     private DruidDataSource dataSource;

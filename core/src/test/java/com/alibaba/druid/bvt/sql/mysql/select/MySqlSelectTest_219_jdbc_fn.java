@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
-
 public class MySqlSelectTest_219_jdbc_fn extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select {fn POWER(2,2)}";

@@ -162,6 +162,5 @@ public class OracleCreateTableTest93 extends OracleTest {
                 "\tCELL_FLASH_CACHE DEFAULT\n" +
                 ")\n" +
                 "XMLTYPE \"DOC_XML\" ALLOW NONSCHEMA DISALLOW ANYSCHEMA;", stmt.toString());
-
     }
 }

@@ -54,7 +54,7 @@ public class OracleCreateTableTest69 extends OracleTest {
                         "\t\tTABLESPACE HASH_TS02,\n" +
                         "\tPARTITION PART03\n" +
                         "\t\tTABLESPACE HASH_TS03\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

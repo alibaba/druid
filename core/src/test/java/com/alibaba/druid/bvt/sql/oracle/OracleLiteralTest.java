@@ -15,13 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import junit.framework.TestCase;
 
 public class OracleLiteralTest extends TestCase {
     public void test_oracle() throws Exception {
@@ -34,7 +31,7 @@ public class OracleLiteralTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals(expect, text);
 
         System.out.println(text);
     }
@@ -49,9 +46,8 @@ public class OracleLiteralTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals(expect, text);
 
         System.out.println(text);
     }
-
 }

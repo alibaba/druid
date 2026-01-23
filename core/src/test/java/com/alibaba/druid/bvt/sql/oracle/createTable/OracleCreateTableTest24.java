@@ -22,20 +22,19 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleCreateTableTest24 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE locations_demo" //
-                        + "    ( location_id    NUMBER(4) CONSTRAINT loc_id_pk PRIMARY KEY" //
-                        + "    , street_address VARCHAR2(40)" //
-                        + "    , postal_code    VARCHAR2(12)" //
-                        + "    , city           VARCHAR2(30)" //
-                        + "    , state_province VARCHAR2(25)" //
-                        + "    , country_id     CHAR(2)" //
+                "CREATE TABLE locations_demo"
+                        + "    ( location_id    NUMBER(4) CONSTRAINT loc_id_pk PRIMARY KEY"
+                        + "    , street_address VARCHAR2(40)"
+                        + "    , postal_code    VARCHAR2(12)"
+                        + "    , city           VARCHAR2(30)"
+                        + "    , state_province VARCHAR2(25)"
+                        + "    , country_id     CHAR(2)"
                         + "    ) ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -43,17 +42,17 @@ public class OracleCreateTableTest24 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE locations_demo (" //
+        assertEquals("CREATE TABLE locations_demo ("
                         + "\n\tlocation_id NUMBER(4)"//
-                        + "\n\t\tCONSTRAINT loc_id_pk PRIMARY KEY," //
-                        + "\n\tstreet_address VARCHAR2(40)," //
-                        + "\n\tpostal_code VARCHAR2(12)," //
-                        + "\n\tcity VARCHAR2(30)," //
-                        + "\n\tstate_province VARCHAR2(25)," //
-                        + "\n\tcountry_id CHAR(2)" //
-                        + "\n);",//
+                        + "\n\t\tCONSTRAINT loc_id_pk PRIMARY KEY,"
+                        + "\n\tstreet_address VARCHAR2(40),"
+                        + "\n\tpostal_code VARCHAR2(12),"
+                        + "\n\tcity VARCHAR2(30),"
+                        + "\n\tstate_province VARCHAR2(25),"
+                        + "\n\tcountry_id CHAR(2)"
+                        + "\n);",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -65,10 +64,10 @@ public class OracleCreateTableTest24 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("locations_demo", "location_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("locations_demo", "location_id")));
     }
 }

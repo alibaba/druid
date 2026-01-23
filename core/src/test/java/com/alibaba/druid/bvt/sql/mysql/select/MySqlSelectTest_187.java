@@ -114,5 +114,4 @@ public class MySqlSelectTest_187 extends MysqlTest {
                         "ORDER BY season_id DESC", //
                 output);
     }
-
 }

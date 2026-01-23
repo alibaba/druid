@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -27,6 +28,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.PG;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
@@ -43,9 +45,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public PGOutputVisitor(StringBuilder appender) {
         super(appender, DbType.postgresql);
     }
+    public PGOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
+    }
 
     public PGOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.postgresql, parameterized);
+    super(appender, DbType.postgresql, PG.DIALECT, parameterized);
+    }
+
+    public PGOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
+        super(appender, dbType, dialect, parameterized);
     }
 
     @Override
@@ -2773,7 +2782,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(SQLArrayDataType x) {
-        x.getComponentType().accept(this);
+        SQLDataType componentType = x.getComponentType();
+        if (componentType != null) {
+            componentType.accept(this);
+        }
         print('[');
         printAndAccept(x.getArguments(), ", ");
         print(']');
@@ -2781,6 +2793,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(SQLCharExpr x, boolean parameterized) {
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
         if (parameterized) {
             print('?');
             incrementReplaceCunt();
@@ -2813,7 +2828,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         } else {
             printChars(x.getText());
         }
-
+        if (x.hasAfterComment()) {
+            printAfterComments(x.getAfterCommentsDirect());
+        }
         return false;
     }
 
@@ -2951,7 +2968,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         Integer seed = x.getSeed();
         if (seed != null) {
             print0(ucase ? " (INCREMENT BY " : " (increment by ");
-            print(x.getIncrement());
+            if (x.getIncrement() != null) {
+                print(x.getIncrement());
+            } else {
+                print('1');
+            }
             print0(ucase ? " START WITH  " : " start with  ");
             print(seed);
             print(')');

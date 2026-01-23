@@ -15,17 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class HexadecimalValuesTest extends TestCase {
     public void test_0() throws Exception {
@@ -36,7 +33,7 @@ public class HexadecimalValuesTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 0x5061756c;", text);
+        assertEquals("SELECT 0x5061756c;", text);
     }
 
     public void test_1() throws Exception {
@@ -47,7 +44,7 @@ public class HexadecimalValuesTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 0x4D7953514C;", text);
+        assertEquals("SELECT 0x4D7953514C;", text);
     }
 
     public void test_2() throws Exception {
@@ -58,7 +55,7 @@ public class HexadecimalValuesTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 0x4D7953514C;", text);
+        assertEquals("SELECT 0x4D7953514C;", text);
     }
 
     public void test_3() throws Exception {
@@ -69,7 +66,7 @@ public class HexadecimalValuesTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 0x65 USING utf8;", text);
+        assertEquals("SELECT 0x65 USING utf8;", text);
     }
 
     public void test_4() throws Exception {
@@ -80,7 +77,7 @@ public class HexadecimalValuesTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 0x41, CAST(0x41 AS UNSIGNED)", text);
+        assertEquals("SELECT 0x41, CAST(0x41 AS UNSIGNED)", text);
     }
 
     public void test_5() throws Exception {
@@ -91,7 +88,7 @@ public class HexadecimalValuesTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT HEX('cat')", text);
+        assertEquals("SELECT HEX('cat')", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

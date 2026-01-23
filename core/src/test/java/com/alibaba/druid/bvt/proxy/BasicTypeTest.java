@@ -15,26 +15,15 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.math.BigDecimal;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.Savepoint;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.Calendar;
-import java.util.HashMap;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.math.BigDecimal;
+import java.sql.*;
+import java.util.Calendar;
+import java.util.HashMap;
 
 public class BasicTypeTest extends TestCase {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=basicType:jdbc:derby:memory:basicTypeTestDB;create=true";
@@ -74,7 +63,7 @@ public class BasicTypeTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     @SuppressWarnings("deprecation")
@@ -89,7 +78,7 @@ public class BasicTypeTest extends TestCase {
             conn = DriverManager.getConnection(create_url);
             conn.rollback();
 
-            pstmt = conn.prepareStatement("INSERT INTO T_BASIC_TYPE (F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, F17) VALUES (?, ?, ?, ?, ?,	?, ?, ?, ?, ?,	?, ?, ?,?, ?, 	?, ?)");
+            pstmt = conn.prepareStatement("INSERT INTO T_BASIC_TYPE (F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, F17) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             pstmt.getParameterMetaData();
 
             pstmt.setFloat(1, 1F);
@@ -249,7 +238,7 @@ public class BasicTypeTest extends TestCase {
             rs.cancelRowUpdates();
             rs.deleteRow();
 
-            Assert.assertEquals(12, rs.findColumn("F12"));
+            assertEquals(12, rs.findColumn("F12"));
             JdbcUtils.close(rs);
 
             pstmt = conn.prepareStatement("SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16 FROM T_BASIC_TYPE");
@@ -277,7 +266,7 @@ public class BasicTypeTest extends TestCase {
                     ResultSet.CLOSE_CURSORS_AT_COMMIT);
             JdbcUtils.close(pstmt);
 
-            cstmt = conn.prepareCall("CALL BASIC_CALL_0(?, ?, ?, ?, ?,	?, ?, ?, ?, ?,	?, ?, ?,?, ?, 	?, ?)");
+            cstmt = conn.prepareCall("CALL BASIC_CALL_0(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             cstmt.registerOutParameter(1, Types.FLOAT);
             cstmt.registerOutParameter(2, Types.DOUBLE);
             cstmt.registerOutParameter(3, Types.FLOAT);
@@ -665,5 +654,4 @@ public class BasicTypeTest extends TestCase {
         // F11 TIMESTAMP, F12 BLOB, F13 VARCHAR(256), F14 VARCHAR(256), F15
         // VARCHAR(256), F16 VARCHAR(256), F17 SMALLINT)");
     }
-
 }

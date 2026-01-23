@@ -15,19 +15,17 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
+import java.util.List;
+
 public class OceanbaseAlterTableAddPartitionTest extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "ALTER TABLE members ADD PARTITION (PARTITION p3 VALUES LESS THAN (2000));"; //
+        String sql = "ALTER TABLE members ADD PARTITION (PARTITION p3 VALUES LESS THAN (2000));";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -35,19 +33,19 @@ public class OceanbaseAlterTableAddPartitionTest extends MysqlTest {
 
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("ALTER TABLE members"
+            assertEquals("ALTER TABLE members"
                             + "\n\tADD PARTITION (PARTITION p3 VALUES LESS THAN (2000));",
                     result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("alter table members"
+            assertEquals("alter table members"
                             + "\n\tadd partition (partition p3 values less than (2000));",
                     result);
         }
         print(stmtList);
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -57,11 +55,10 @@ public class OceanbaseAlterTableAddPartitionTest extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
     }
 }

@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -66,7 +65,7 @@ public class H2ResourceTest extends TestCase {
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         H2SchemaStatVisitor visitor = new H2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -89,7 +88,7 @@ public class H2ResourceTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         H2OutputVisitor visitor = new H2OutputVisitor(out);
@@ -97,7 +96,6 @@ public class H2ResourceTest extends TestCase {
 
         System.out.println(out.toString());
 
-        Assert.assertEquals(expect, out.toString());
+        assertEquals(expect, out.toString());
     }
-
 }

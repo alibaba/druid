@@ -1,11 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import junit.framework.TestCase;
 
 public class DruidDataSourceTest_tryGet extends TestCase {
     private DruidDataSource dataSource;
@@ -25,12 +22,11 @@ public class DruidDataSourceTest_tryGet extends TestCase {
 
     public void test_0() throws Exception {
         DruidPooledConnection conn1 = this.dataSource.tryGetConnection();
-        Assert.assertNotNull(conn1);
+        assertNotNull(conn1);
 
         DruidPooledConnection conn2 = this.dataSource.tryGetConnection();
-        Assert.assertNull(conn2);
+        assertNull(conn2);
 
         conn1.close();
     }
-
 }

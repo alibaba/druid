@@ -15,20 +15,17 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class StatementTest extends TestCase {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=statementTest:jdbc:derby:memory:statementTest;create=true";
@@ -62,7 +59,7 @@ public class StatementTest extends TestCase {
     protected void tearDown() throws Exception {
         dropTable();
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_stmt() throws Exception {
@@ -93,7 +90,7 @@ public class StatementTest extends TestCase {
             }
 
             stmt.execute("SELECT * FROM T_PRE_STMT_TEST");
-            Assert.assertFalse(stmt.getMoreResults(Statement.CLOSE_CURRENT_RESULT));
+            assertFalse(stmt.getMoreResults(Statement.CLOSE_CURRENT_RESULT));
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);

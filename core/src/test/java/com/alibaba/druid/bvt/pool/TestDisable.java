@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.util.concurrent.CountDownLatch;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.util.concurrent.CountDownLatch;
 
 public class TestDisable extends TestCase {
     private MockDriver driver;
@@ -42,7 +40,7 @@ public class TestDisable extends TestCase {
         dataSource.setMaxActive(2);
         dataSource.setMaxIdle(2);
         dataSource.setMinIdle(1);
-        dataSource.setMaxWait(500);// 加上最大等待时间，防止出现无限等待导致单测卡死的情况
+        dataSource.setMaxWait(500); // 加上最大等待时间，防止出现无限等待导致单测卡死的情况
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
         dataSource.setTestWhileIdle(true);
@@ -53,7 +51,7 @@ public class TestDisable extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_close() throws Exception {

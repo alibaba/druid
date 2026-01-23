@@ -1,13 +1,5 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -15,12 +7,17 @@ import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class OracleExceptionSorterTest_closeConn_2 extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
 
@@ -47,14 +44,14 @@ public class OracleExceptionSorterTest_closeConn_2 extends TestCase {
             pstmt.close();
             conn.close();
 
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(1, dataSource.getPoolingCount());
-            Assert.assertEquals(1, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
+            assertEquals(1, dataSource.getPoolingCount());
+            assertEquals(1, dataSource.getCreateCount());
         }
 
         DruidPooledConnection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);
-        Assert.assertNotNull(mockConn);
+        assertNotNull(mockConn);
 
         conn.setAutoCommit(false);
 
@@ -67,9 +64,8 @@ public class OracleExceptionSorterTest_closeConn_2 extends TestCase {
             Connection conn2 = dataSource.getConnection();
             conn2.close();
         }
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(2, dataSource.getCreateCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(2, dataSource.getCreateCount());
     }
-
 }

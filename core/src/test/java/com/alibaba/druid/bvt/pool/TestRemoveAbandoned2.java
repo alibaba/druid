@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
 
 public class TestRemoveAbandoned2 extends TestCase {
     private MockDriver driver;
@@ -48,12 +46,12 @@ public class TestRemoveAbandoned2 extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
 
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_removeAbandoned() throws Exception {
@@ -61,8 +59,7 @@ public class TestRemoveAbandoned2 extends TestCase {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
-        Assert.assertEquals(0, dataSource.getActiveCount());
-
+        assertEquals(0, dataSource.getActiveCount());
 
         Thread abandonThread = new Thread("abandoned") {
             public void run() {
@@ -81,7 +78,7 @@ public class TestRemoveAbandoned2 extends TestCase {
             DruidPooledConnection conn = dataSource.getConnection();
             conn.close();
         }
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getActiveCount());
         abandonThread.interrupt();
 
         System.out.println("removeAbandondedCount : " + dataSource.getRemoveAbandonedCount());

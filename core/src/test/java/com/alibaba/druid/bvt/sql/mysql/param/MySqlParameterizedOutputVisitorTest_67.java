@@ -1,9 +1,9 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson2.JSON;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -31,5 +31,4 @@ public class MySqlParameterizedOutputVisitorTest_67 extends TestCase {
                 "GROUP BY dep_id\n" +
                 "HAVING count(1) > 10", rsql);
     }
-
 }

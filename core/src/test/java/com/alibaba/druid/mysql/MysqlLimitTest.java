@@ -12,7 +12,6 @@ import java.util.List;
  * 类说明：
  */
 public class MysqlLimitTest extends TestCase {
-
     public void testLimit() {
         String sql = "select * from aaa limit 20exx";
         SQLStatementParser statementParser = SQLParserUtils.createSQLStatementParser(sql, "mysql");
@@ -21,7 +20,6 @@ public class MysqlLimitTest extends TestCase {
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("is not a number!"));
         }
-
 
     }
 }

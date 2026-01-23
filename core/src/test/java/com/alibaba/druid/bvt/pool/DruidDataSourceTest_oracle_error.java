@@ -1,10 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试minIdle > maxActive
@@ -39,6 +37,6 @@ public class DruidDataSourceTest_oracle_error extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

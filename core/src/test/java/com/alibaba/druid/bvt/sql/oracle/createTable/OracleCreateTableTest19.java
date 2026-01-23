@@ -21,30 +21,29 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleCreateTableTest19 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "   CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" " //
-                        + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                        + "    \"DASHBOARD_ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                        + "    \"USER_ID\" NUMBER(38,0), " //
-                        + "    \"ORDER_INDEX\" NUMBER(38,0), " //
-                        + "     PRIMARY KEY (\"ID\")" //
-                        + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
-                        + "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645" //
-                        + "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1" //
-                        + "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)" //
-                        + "  TABLESPACE \"USERS\"  ENABLE" //
-                        + "   ) SEGMENT CREATION IMMEDIATE " //
-                        + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 " //
-                        + " NOCOMPRESS LOGGING" //
-                        + "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645" //
-                        + "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1" //
-                        + "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)" //
+                "   CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" "
+                        + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, "
+                        + "    \"DASHBOARD_ID\" NUMBER(38,0) NOT NULL ENABLE, "
+                        + "    \"USER_ID\" NUMBER(38,0), "
+                        + "    \"ORDER_INDEX\" NUMBER(38,0), "
+                        + "     PRIMARY KEY (\"ID\")"
+                        + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS "
+                        + "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645"
+                        + "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1"
+                        + "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)"
+                        + "  TABLESPACE \"USERS\"  ENABLE"
+                        + "   ) SEGMENT CREATION IMMEDIATE "
+                        + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 "
+                        + " NOCOMPRESS LOGGING"
+                        + "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645"
+                        + "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1"
+                        + "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)"
                         + "  TABLESPACE \"USERS\" ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -110,10 +109,10 @@ public class OracleCreateTableTest19 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("SONAR.ACTIVE_DASHBOARDS", "ID"));
+        assertTrue(visitor.containsColumn("SONAR.ACTIVE_DASHBOARDS", "ID"));
     }
 }

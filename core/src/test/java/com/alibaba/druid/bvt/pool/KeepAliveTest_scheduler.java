@@ -61,7 +61,6 @@ public class KeepAliveTest_scheduler extends TestCase {
         }
         // assertEquals(dataSource.getMaxActive(), dataSource.getPoolingCount());
 
-
         // Thread.sleep(1000 * 1000);
     }
 }

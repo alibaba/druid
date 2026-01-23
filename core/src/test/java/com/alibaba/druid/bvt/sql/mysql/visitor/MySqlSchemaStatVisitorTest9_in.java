@@ -26,7 +26,7 @@ public class MySqlSchemaStatVisitorTest9_in extends TestCase {
     public void test_0() throws Exception {
         String sql = "SELECT name FROM employee WHERE no in ('1', '2');";
 
-//		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
+        // sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -38,7 +38,7 @@ public class MySqlSchemaStatVisitorTest9_in extends TestCase {
 
         System.out.println(stmt.toString());
 
-//		System.out.println(sql);
+        // System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println(visitor.getConditions());
@@ -46,7 +46,5 @@ public class MySqlSchemaStatVisitorTest9_in extends TestCase {
         assertEquals(1, visitor.getTables().size());
         assertEquals("[employee.no IN (\"1\", \"2\")]", visitor.getConditions().toString());
         // Column("users", "name")));
-
     }
-
 }

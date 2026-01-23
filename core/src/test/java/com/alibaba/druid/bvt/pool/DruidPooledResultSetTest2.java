@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidPooledResultSetTest2 extends TestCase {
     private DruidDataSource dataSource;
@@ -48,11 +46,10 @@ public class DruidPooledResultSetTest2 extends TestCase {
 
         ResultSet raw = rs.unwrap(ResultSet.class);
 
-        Assert.assertTrue(raw instanceof MockResultSet);
+        assertTrue(raw instanceof MockResultSet);
 
         rs.close();
 
         conn.close();
     }
-
 }

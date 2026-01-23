@@ -2,7 +2,6 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class MaxEvictableIdleTimeMillisTest2 extends TestCase {
     private DruidDataSource dataSource;
@@ -13,8 +12,6 @@ public class MaxEvictableIdleTimeMillisTest2 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setMaxActive(50);
         dataSource.setMinIdle(5);
-
-
     }
 
     protected void tearDown() throws Exception {
@@ -33,10 +30,8 @@ public class MaxEvictableIdleTimeMillisTest2 extends TestCase {
             error = ex;
             ex.printStackTrace();
         }
-        Assert.assertNotNull(error);
-        Assert.assertTrue(dataSource.isInited());
-        Assert.assertEquals(30, dataSource.getMaxEvictableIdleTimeMillis());
+        assertNotNull(error);
+        assertTrue(dataSource.isInited());
+        assertEquals(30, dataSource.getMaxEvictableIdleTimeMillis());
     }
-
-
 }

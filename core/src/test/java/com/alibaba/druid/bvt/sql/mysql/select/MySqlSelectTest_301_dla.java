@@ -221,6 +221,4 @@ public class MySqlSelectTest_301_dla
                 "WHERE `operation_wrong_longest` IS NOT NULL\n" +
                 "\tAND `operation_wrong_longest` > 0", stmt.toString());
     }
-
-
 }

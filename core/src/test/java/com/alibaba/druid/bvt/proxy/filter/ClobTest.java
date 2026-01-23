@@ -15,20 +15,11 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.NClob;
-import java.sql.ResultSet;
-import java.sql.SQLXML;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+
+import java.sql.*;
 
 public class ClobTest extends TestCase {
     protected int dataSourceListSize;
@@ -38,7 +29,7 @@ public class ClobTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(dataSourceListSize, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(dataSourceListSize, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_clob() throws Exception {
@@ -50,36 +41,36 @@ public class ClobTest extends TestCase {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT NULL");
 
-        Assert.assertTrue(rs.next());
+        assertTrue(rs.next());
 
         {
             Clob x = rs.getClob(1);
-            Assert.assertNull(x);
+            assertNull(x);
         }
 
         {
             NClob x = rs.getNClob(1);
-            Assert.assertNull(x);
+            assertNull(x);
         }
 
         {
             Blob x = rs.getBlob(1);
-            Assert.assertNull(x);
+            assertNull(x);
         }
 
         {
             SQLXML x = rs.getSQLXML(1);
-            Assert.assertNull(x);
+            assertNull(x);
         }
 
         {
             String x = rs.getString(1);
-            Assert.assertNull(x);
+            assertNull(x);
         }
 
-        Assert.assertNull(rs.getRowId(1));
-        Assert.assertNull(rs.getBigDecimal(1));
-        Assert.assertNull(rs.getObject(1));
+        assertNull(rs.getRowId(1));
+        assertNull(rs.getBigDecimal(1));
+        assertNull(rs.getObject(1));
 
         rs.close();
         stmt.close();

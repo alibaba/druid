@@ -19,5 +19,4 @@ public class MySqlSelectTest_168_decimal extends MysqlTest {
 
         assertEquals("SELECT ceiling(DECIMAL '123456789012345678');", stmt.toString());
     }
-
 }

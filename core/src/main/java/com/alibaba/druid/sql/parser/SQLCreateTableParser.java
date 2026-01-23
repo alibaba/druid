@@ -145,12 +145,18 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.INCLUDING)) {
                 lexer.nextToken();
-                acceptIdentifier("PROPERTIES");
-                tableLike.setIncludeProperties(true);
+                if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+                    tableLike.setIncludeProperties(true);
+                } else if (lexer.nextIfIdentifier("DISTRIBUTION")) {
+                    tableLike.setIncludeDistribution(true);
+                }
             } else if (lexer.identifierEquals(FnvHash.Constants.EXCLUDING)) {
                 lexer.nextToken();
-                acceptIdentifier("PROPERTIES");
-                tableLike.setExcludeProperties(true);
+                if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+                    tableLike.setExcludeProperties(true);
+                } else if (lexer.nextIfIdentifier("DISTRIBUTION")) {
+                    tableLike.setExcludeDistribution(true);
+                }
             }
         } else if (lexer.token() == Token.INDEX) {
             parseIndex(createTable);
@@ -212,24 +218,12 @@ public class SQLCreateTableParser extends SQLDDLParser {
         if (lexer.token() == Token.PARTITION) {
             Lexer.SavePoint mark = lexer.mark();
             lexer.nextToken();
+            // For partition of for PG
             if (Token.OF.equals(lexer.token())) {
                 lexer.reset(mark);
                 SQLPartitionOf partitionOf = parsePartitionOf();
                 stmt.setPartitionOf(partitionOf);
-            } else if (Token.BY.equals(lexer.token())) {
-                lexer.reset(mark);
-                SQLPartitionBy partitionClause = parsePartitionBy();
-                stmt.setPartitionBy(partitionClause);
-            }
-        }
-        // For partition by
-        if (lexer.token() == Token.PARTITION) {
-            Lexer.SavePoint mark = lexer.mark();
-            lexer.nextToken();
-            if (Token.OF.equals(lexer.token())) {
-                lexer.reset(mark);
-                SQLPartitionOf partitionOf = parsePartitionOf();
-                stmt.setPartitionOf(partitionOf);
+                // For partition by
             } else if (Token.BY.equals(lexer.token())) {
                 lexer.reset(mark);
                 SQLPartitionBy partitionClause = parsePartitionBy();

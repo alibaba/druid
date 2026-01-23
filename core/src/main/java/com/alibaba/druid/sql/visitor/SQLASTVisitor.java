@@ -120,6 +120,11 @@ public interface SQLASTVisitor {
         return true;
     }
 
+    default boolean visit(SQLTableSourceImpl x) {
+        return true;
+    }
+
+    default void endVisit(SQLTableSourceImpl x) {}
     default boolean visit(SQLBetweenExpr x) {
         return true;
     }
@@ -2717,7 +2722,33 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLExecuteImmediateStatement x) {}
+    default boolean visit(SQLRefreshTableStatement x) {
+        return true;
+    }
 
+    default void endVisit(SQLRefreshTableStatement x) {
+    }
+
+    default boolean visit(SQLTypeExpr x) {
+        return true;
+    }
+
+    default void endVisit(SQLTypeExpr x) {
+    }
+
+    default boolean visit(SQLComputeIncrementalStatsStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLComputeIncrementalStatsStatement x) {
+    }
+
+    default boolean visit(SQLResetStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLResetStatement x) {
+    }
     static SQLASTVisitor ofMethodInvoke(Consumer<SQLMethodInvokeExpr> p) {
         return ofMethodInvoke(null, p);
     }

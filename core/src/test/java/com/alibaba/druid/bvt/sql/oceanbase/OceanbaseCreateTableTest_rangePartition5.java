@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
                 + " PARTITION BY RANGE(id) ( "
                 + "     PARTITION p1 VALUES LESS THAN (1), "
                 + "     PARTITION p2 VALUES LESS THAN MAXVALUE"
-                + ");"; //
+                + ");";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -38,7 +37,7 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
 
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE tnrange ("
+            assertEquals("CREATE TABLE tnrange ("
                             + "\n\tid INT,"
                             + "\n\tname VARCHAR(5)"
                             + "\n)"
@@ -50,7 +49,7 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table tnrange ("
+            assertEquals("create table tnrange ("
                             + "\n\tid INT,"
                             + "\n\tname VARCHAR(5)"
                             + "\n)"
@@ -61,7 +60,7 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
                     result);
         }
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -71,11 +70,10 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
     }
 }

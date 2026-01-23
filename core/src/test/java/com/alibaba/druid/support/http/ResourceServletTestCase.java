@@ -10,7 +10,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public class ResourceServletTestCase extends TestCase {
-
     public void testNotLogin() throws Exception {
         final Field securitySpiFld = getToNotFinal();
         securitySpiFld.set(null, null);

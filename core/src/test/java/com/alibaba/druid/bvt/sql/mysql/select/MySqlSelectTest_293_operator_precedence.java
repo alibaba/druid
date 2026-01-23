@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT ALL + + ( + col1 ) \n" +
@@ -36,7 +35,6 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
 
         System.out.println(stmt.toString());
     }
-
 
     public void test_1() throws Exception {
         String sql = "SELECT - CAST( 73 AS SIGNED ) + 60 AS col0";
@@ -154,5 +152,4 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
 
         System.out.println(stmt.toString());
     }
-
 }

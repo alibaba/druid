@@ -1,13 +1,5 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -16,6 +8,11 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class StatFilterExecErrorTest extends TestCase {
     private DruidDataSource dataSource;
@@ -55,7 +52,7 @@ public class StatFilterExecErrorTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
+        assertEquals(0, sqlStat.getReadStringLength());
 
         try {
             stmt.executeQuery();
@@ -65,10 +62,9 @@ public class StatFilterExecErrorTest extends TestCase {
             JdbcUtils.close(conn);
         }
 
-        Assert.assertEquals(1, sqlStat.getErrorCount());
-        Assert.assertEquals(0, sqlStat.getRunningCount());
+        assertEquals(1, sqlStat.getErrorCount());
+        assertEquals(0, sqlStat.getRunningCount());
 
         sqlStat.reset();
     }
-
 }

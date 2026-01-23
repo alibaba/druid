@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.update;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+
+import java.util.List;
 
 public class MySqlUpdateTest_8 extends MysqlTest {
     public void test_0() throws Exception {
@@ -36,7 +34,7 @@ public class MySqlUpdateTest_8 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -46,25 +44,25 @@ public class MySqlUpdateTest_8 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("haskell_function")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("haskell_function")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("haskell_function", "arity")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("haskell_function", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("haskell_function", "arity")));
+        assertTrue(visitor.getColumns().contains(new Column("haskell_function", "id")));
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("UPDATE haskell_function"
+            assertEquals("UPDATE haskell_function"
                             + "\nSET `arity` = arity - '1'"
                             + "\nWHERE id = 1;", //
                     output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("update haskell_function"
+            assertEquals("update haskell_function"
                             + "\nset `arity` = arity - '1'"
                             + "\nwhere id = 1;", //
                     output);

@@ -20,21 +20,20 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleSelectTest50 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT * from ( SELECT ID,MATTER,CODE,NAME,ADDRESS,AREA,PROPOSER,PROPOSER_CONTACTOR,PROPOSER_PHONE,REG_TIME,ASSIGN_TIME,DEPART,HANDLER,HANDLER_PHONE,STATUS,FINISH_DATE,FINISH_TYPE,DEPART_CODE,SYSTEM_CODE,rownum num FROM gxpt_items WHERE rownum<=20  order by REG_TIME desc )  WHERE num>0"; //
+                "SELECT * from ( SELECT ID,MATTER,CODE,NAME,ADDRESS,AREA,PROPOSER,PROPOSER_CONTACTOR,PROPOSER_PHONE,REG_TIME,ASSIGN_TIME,DEPART,HANDLER,HANDLER_PHONE,STATUS,FINISH_DATE,FINISH_TYPE,DEPART_CODE,SYSTEM_CODE,rownum num FROM gxpt_items WHERE rownum<=20  order by REG_TIME desc )  WHERE num>0";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -45,14 +44,14 @@ public class OracleSelectTest50 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(19, visitor.getColumns().size());
+        assertEquals(19, visitor.getColumns().size());
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT *"//
-                + "\nFROM (" //
+        assertEquals("SELECT *"//
+                + "\nFROM ("
                 + "\n\tSELECT ID, MATTER, CODE, NAME, ADDRESS"//
                 + "\n\t\t, AREA, PROPOSER, PROPOSER_CONTACTOR, PROPOSER_PHONE, REG_TIME"//
                 + "\n\t\t, ASSIGN_TIME, DEPART, HANDLER, HANDLER_PHONE, STATUS"//
@@ -63,8 +62,8 @@ public class OracleSelectTest50 extends OracleTest {
                 + "\n)"//
                 + "\nWHERE num > 0", text);
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
-        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+        // assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

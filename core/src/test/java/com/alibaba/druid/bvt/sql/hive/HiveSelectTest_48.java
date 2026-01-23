@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
@@ -18,6 +17,5 @@ public class HiveSelectTest_48 extends TestCase {
         SQLStatement sqlStatement = stmtList.get(0);
         SQLSelectStatement stmt = (SQLSelectStatement) sqlStatement;
         List<SQLSelectItem> list = ((SQLSelectQueryBlock) stmt.getSelect().getQuery()).getSelectList();
-
     }
 }

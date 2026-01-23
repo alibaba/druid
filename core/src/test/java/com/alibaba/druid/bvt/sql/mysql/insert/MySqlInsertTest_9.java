@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.insert;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+
+import java.util.List;
 
 public class MySqlInsertTest_9 extends MysqlTest {
     public void test_0() throws Exception {
@@ -36,14 +34,14 @@ public class MySqlInsertTest_9 extends MysqlTest {
 
         SQLInsertStatement insertStmt = (SQLInsertStatement) stmt;
 
-        Assert.assertEquals(3, insertStmt.getValues().getValues().size());
-        Assert.assertEquals(0, insertStmt.getColumns().size());
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(3, insertStmt.getValues().getValues().size());
+        assertEquals(0, insertStmt.getColumns().size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals("INSERT INTO sequence"
+        assertEquals("INSERT INTO sequence"
                 + "\nVALUES ('seq_wlb_order_log', 268234128 + 10000000, now());", SQLUtils.toMySqlString(insertStmt));
     }
 }

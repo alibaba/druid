@@ -15,17 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool.dynamic;
 
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.logging.Log;
+
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.logging.Log;
 
 public class PoolPreparedStatementsChangeTest extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -46,7 +43,7 @@ public class PoolPreparedStatementsChangeTest extends PoolTestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.init();
 
-        Assert.assertEquals(1, dataSourceLog.getInfoCount());
+        assertEquals(1, dataSourceLog.getInfoCount());
     }
 
     protected void tearDown() throws Exception {
@@ -61,15 +58,15 @@ public class PoolPreparedStatementsChangeTest extends PoolTestCase {
             conn.close();
         }
 
-        Assert.assertEquals(false, dataSource.isPoolPreparedStatements());
+        assertEquals(false, dataSource.isPoolPreparedStatements());
 
         dataSource.setPoolPreparedStatements(true);
 
-        Assert.assertEquals(true, dataSource.isPoolPreparedStatements());
+        assertEquals(true, dataSource.isPoolPreparedStatements());
 
         String sql = "select ?";
 
-        Assert.assertEquals(0, dataSource.getCachedPreparedStatementCount());
+        assertEquals(0, dataSource.getCachedPreparedStatementCount());
         {
             Connection conn = dataSource.getConnection();
 
@@ -81,8 +78,8 @@ public class PoolPreparedStatementsChangeTest extends PoolTestCase {
 
             conn.close();
         }
-        Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
-        Assert.assertEquals(1, dataSource.getCachedPreparedStatementAccessCount());
+        assertEquals(1, dataSource.getCachedPreparedStatementCount());
+        assertEquals(1, dataSource.getCachedPreparedStatementAccessCount());
 
         {
             Connection conn = dataSource.getConnection();
@@ -95,12 +92,12 @@ public class PoolPreparedStatementsChangeTest extends PoolTestCase {
 
             conn.close();
         }
-        Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
-        Assert.assertEquals(2, dataSource.getCachedPreparedStatementAccessCount());
+        assertEquals(1, dataSource.getCachedPreparedStatementCount());
+        assertEquals(2, dataSource.getCachedPreparedStatementAccessCount());
 
         dataSource.setPoolPreparedStatements(false);
-        Assert.assertEquals(0, dataSource.getCachedPreparedStatementCount());
-        Assert.assertEquals(2, dataSource.getCachedPreparedStatementAccessCount());
+        assertEquals(0, dataSource.getCachedPreparedStatementCount());
+        assertEquals(2, dataSource.getCachedPreparedStatementAccessCount());
 
         {
             Connection conn = dataSource.getConnection();
@@ -113,7 +110,7 @@ public class PoolPreparedStatementsChangeTest extends PoolTestCase {
 
             conn.close();
         }
-        Assert.assertEquals(0, dataSource.getCachedPreparedStatementCount());
-        Assert.assertEquals(2, dataSource.getCachedPreparedStatementAccessCount());
+        assertEquals(0, dataSource.getCachedPreparedStatementCount());
+        assertEquals(2, dataSource.getCachedPreparedStatementAccessCount());
     }
 }

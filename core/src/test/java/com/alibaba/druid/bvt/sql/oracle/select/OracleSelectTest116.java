@@ -20,11 +20,9 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-
 
 public class OracleSelectTest116 extends MysqlTest {
     public void test_0() throws Exception {
@@ -55,5 +53,4 @@ public class OracleSelectTest116 extends MysqlTest {
                 "SELECT a\n" +
                 "FROM a4", stmt.toString());
     }
-
 }

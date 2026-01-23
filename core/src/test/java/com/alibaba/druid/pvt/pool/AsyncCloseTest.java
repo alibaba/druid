@@ -1,17 +1,15 @@
 package com.alibaba.druid.pvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class AsyncCloseTest extends TestCase {
     protected DruidDataSource dataSource;
@@ -29,7 +27,6 @@ public class AsyncCloseTest extends TestCase {
 
         connExecutor = Executors.newFixedThreadPool(100);
         closeExecutor = Executors.newFixedThreadPool(100);
-
     }
 
     protected void tearDown() throws Exception {
@@ -96,7 +93,5 @@ public class AsyncCloseTest extends TestCase {
         closeLatch.await();
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(16, dataSource.getPoolingCount());
-
-
     }
 }

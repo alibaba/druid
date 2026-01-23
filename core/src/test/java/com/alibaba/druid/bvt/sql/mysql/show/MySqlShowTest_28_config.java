@@ -45,5 +45,4 @@ public class MySqlShowTest_28_config extends MysqlTest {
         assertEquals("SHOW CONFIG a.b.c", stmt.toString());
         assertEquals("show config a.b.c", stmt.toLowerCaseString());
     }
-
 }

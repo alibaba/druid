@@ -18,10 +18,12 @@ package com.alibaba.druid.bvt.filter.wall;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.WallUtils;
-import com.alibaba.druid.wall.spi.*;
+import com.alibaba.druid.wall.spi.DB2WallProvider;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
+import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class WallSelectLimitTest extends TestCase {
     private String sql = "select * from t";

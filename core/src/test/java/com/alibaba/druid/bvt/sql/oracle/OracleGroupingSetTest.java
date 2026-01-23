@@ -15,12 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import junit.framework.TestCase;
 
 public class OracleGroupingSetTest extends TestCase {
     public void test_interval() throws Exception {
@@ -51,9 +49,8 @@ public class OracleGroupingSetTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expected, text);
+        assertEquals(expected, text);
 
         System.out.println(text);
     }
-
 }

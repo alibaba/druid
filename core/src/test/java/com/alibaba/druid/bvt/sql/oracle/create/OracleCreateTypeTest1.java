@@ -32,7 +32,7 @@ public class OracleCreateTypeTest1 extends OracleTest {
                         "  begin\n" +
                         "      cs_ctx := strcat_type( null );\n" +
                         "      return ODCIConst.Success;\n" +
-                        "  end;"; //
+                        "  end;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

@@ -1,15 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.reflect.Field;
-import java.sql.PreparedStatement;
-
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import junit.framework.TestCase;
+
+import java.lang.reflect.Field;
+import java.sql.PreparedStatement;
+
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * 这个场景测试initialSize > maxActive
@@ -60,12 +59,11 @@ public class LastActiveTest_0 extends TestCase {
             stmt.close();
             conn.close();
         }
-        Assert.assertNotEquals(t0, t1);
+        assertNotEquals(t0, t1);
     }
 
     private long getLastActiveTime(DruidPooledConnection conn) throws IllegalAccessException {
         DruidConnectionHolder holder = (DruidConnectionHolder) field.get(conn);
         return holder.getLastActiveTimeMillis();
     }
-
 }

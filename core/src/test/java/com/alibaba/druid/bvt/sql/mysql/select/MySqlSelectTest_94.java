@@ -15,9 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -38,7 +36,6 @@ public class MySqlSelectTest_94 extends MysqlTest {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         assertEquals("SELECT *\n" + "FROM test\n" + "WHERE name = 'cail1';", stmt.toString());
     }
-
 
     public void test_2() throws Exception {
         String sql = "select * from test where name = 'cail\\\\1';";
@@ -158,5 +155,4 @@ public class MySqlSelectTest_94 extends MysqlTest {
                 + "\tPRIMARY KEY (key)\n"
                 + ");", stmt.toString());
     }
-
 }

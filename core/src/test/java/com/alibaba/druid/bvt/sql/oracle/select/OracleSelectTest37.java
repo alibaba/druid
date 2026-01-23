@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -32,13 +31,13 @@ public class OracleSelectTest37 extends OracleTest {
                         + "from ( "
                         + "       select * from audit_url_log "
                         + "       where project_id = ? and to_char(begin_time,'yyyy-MM-dd') > = ? and to_char(begin_time,'yyyy-MM-dd') < = ? ) "
-                        + "       group by resource_value,http_method having count(resource_value) > = ?"; //
+                        + "       group by resource_value,http_method having count(resource_value) > = ?";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals("SELECT resource_value, count(resource_value) AS nums, http_method"
+        assertEquals("SELECT resource_value, count(resource_value) AS nums, http_method"
                 + "\nFROM ("
                 + "\n\tSELECT *"
                 + "\n\tFROM audit_url_log"
@@ -49,7 +48,7 @@ public class OracleSelectTest37 extends OracleTest {
                 + "\nGROUP BY resource_value, http_method"
                 + "\nHAVING count(resource_value) >= ?", SQLUtils.toOracleString(stmt));
 
-        Assert.assertEquals("select resource_value, count(resource_value) as nums, http_method"
+        assertEquals("select resource_value, count(resource_value) as nums, http_method"
                 + "\nfrom ("
                 + "\n\tselect *"
                 + "\n\tfrom audit_url_log"
@@ -60,7 +59,7 @@ public class OracleSelectTest37 extends OracleTest {
                 + "\ngroup by resource_value, http_method"
                 + "\nhaving count(resource_value) >= ?", SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -71,15 +70,15 @@ public class OracleSelectTest37 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("audit_url_log")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("audit_url_log")));
 
-        Assert.assertEquals(5, visitor.getColumns().size());
+        assertEquals(5, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("audit_url_log", "project_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("audit_url_log", "begin_time")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("audit_url_log", "project_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("audit_url_log", "begin_time")));
 
-        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+        // assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

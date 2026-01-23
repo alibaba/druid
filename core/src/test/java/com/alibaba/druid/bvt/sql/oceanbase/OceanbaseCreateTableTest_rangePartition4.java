@@ -15,30 +15,28 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
+import java.util.List;
+
 public class OceanbaseCreateTableTest_rangePartition4 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE employees ( " //
-                + "id INT NOT NULL, " //
-                + "fname VARCHAR(30), " //
-                + "lname VARCHAR(30), " //
-                + "hired DATE NOT NULL DEFAULT '1970-01-01', " //
-                + "separated DATE NOT NULL DEFAULT '9999-12-31', " //
-                + "job_code INT, store_id INT " //
-                + ") PARTITION BY RANGE (YEAR(separated)) ( " //
-                + "PARTITION p0 VALUES LESS THAN (1991), " //
+        String sql = "CREATE TABLE employees ( "
+                + "id INT NOT NULL, "
+                + "fname VARCHAR(30), "
+                + "lname VARCHAR(30), "
+                + "hired DATE NOT NULL DEFAULT '1970-01-01', "
+                + "separated DATE NOT NULL DEFAULT '9999-12-31', "
+                + "job_code INT, store_id INT "
+                + ") PARTITION BY RANGE (YEAR(separated)) ( "
+                + "PARTITION p0 VALUES LESS THAN (1991), "
                 + "PARTITION p1 VALUES LESS THAN (1996), "
                 + "PARTITION p2 VALUES LESS THAN (2001), "
-                + "PARTITION p3 VALUES LESS THAN MAXVALUE )"; //
+                + "PARTITION p3 VALUES LESS THAN MAXVALUE )";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -46,7 +44,7 @@ public class OceanbaseCreateTableTest_rangePartition4 extends MysqlTest {
 
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE employees ("
+            assertEquals("CREATE TABLE employees ("
                             + "\n\tid INT NOT NULL,"
                             + "\n\tfname VARCHAR(30),"
                             + "\n\tlname VARCHAR(30),"
@@ -65,7 +63,7 @@ public class OceanbaseCreateTableTest_rangePartition4 extends MysqlTest {
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table employees ("
+            assertEquals("create table employees ("
                             + "\n\tid INT not null,"
                             + "\n\tfname VARCHAR(30),"
                             + "\n\tlname VARCHAR(30),"
@@ -83,7 +81,7 @@ public class OceanbaseCreateTableTest_rangePartition4 extends MysqlTest {
                     result);
         }
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -93,11 +91,10 @@ public class OceanbaseCreateTableTest_rangePartition4 extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(7, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(7, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
     }
 }

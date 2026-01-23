@@ -102,6 +102,10 @@ public class CKCreateTableParser extends SQLCreateTableParser {
                 break;
             }
         }
+
+        if (lexer.nextIf(Token.COMMENT)) {
+            ckStmt.setComment(this.exprParser.expr());
+        }
     }
 
     @Override
@@ -109,7 +113,8 @@ public class CKCreateTableParser extends SQLCreateTableParser {
         if (lexer.token() == Token.ON) {
             lexer.nextToken();
             acceptIdentifier("CLUSTER");
-            if (lexer.token() == Token.IDENTIFIER) {
+            // 支持 IDENTIFIER 或 DEFAULT 关键字作为 cluster 名称
+            if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.DEFAULT) {
                 String clusterName = lexer.stringVal();
                 CKCreateTableStatement ckStmt = (CKCreateTableStatement) createTable;
                 ckStmt.setOnClusterName(clusterName);

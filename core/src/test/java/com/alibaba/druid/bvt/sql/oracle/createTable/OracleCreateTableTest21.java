@@ -22,17 +22,16 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleCreateTableTest21 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "CREATE TABLE divisions " //
-                        + "    (div_no     NUMBER(2), " //
+                "CREATE TABLE divisions "
+                        + "    (div_no     NUMBER(2), "
                         + "     div_name   VARCHAR2(14), "//
-                        + "     location   VARCHAR2(13) ) " //
+                        + "     location   VARCHAR2(13) ) "
                         + "     STORAGE  ( INITIAL 8M MAXSIZE 1G );";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -40,9 +39,9 @@ public class OracleCreateTableTest21 extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE divisions (\n" +
+        assertEquals("CREATE TABLE divisions (\n" +
                         "\tdiv_no NUMBER(2),\n" +
                         "\tdiv_name VARCHAR2(14),\n" +
                         "\tlocation VARCHAR2(13)\n" +
@@ -50,7 +49,7 @@ public class OracleCreateTableTest21 extends OracleTest {
                         "STORAGE (\n" +
                         "\tINITIAL 8M\n" +
                         "\tMAXSIZE 1G\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -62,10 +61,10 @@ public class OracleCreateTableTest21 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("divisions", "div_no")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("divisions", "div_no")));
     }
 }

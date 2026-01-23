@@ -7,5 +7,4 @@ import junit.framework.TestCase;
  * date 2012-11-26 下午11:35
  */
 public class TestHibernateCRUDWithTransactional extends TestCase {
-
 }

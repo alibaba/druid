@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class MySqlCreateTable_refactor_test extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         assertEquals("CREATE TABLE test001 (\n" +
                         "\ta varchar(10),\n" +
@@ -73,5 +72,4 @@ public class MySqlCreateTable_refactor_test extends MysqlTest {
                         "TBPARTITION BY hash(b) TBPARTITIONS 4",
                 SQLUtils.toMySqlString(statementList.get(0)));
     }
-
 }

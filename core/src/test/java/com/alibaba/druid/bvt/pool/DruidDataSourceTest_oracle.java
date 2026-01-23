@@ -1,10 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试minIdle > maxActive
@@ -34,6 +32,6 @@ public class DruidDataSourceTest_oracle extends TestCase {
 
     public void test_error() throws Exception {
         dataSource.init();
-        Assert.assertTrue(dataSource.isOracle());
+        assertTrue(dataSource.isOracle());
     }
 }

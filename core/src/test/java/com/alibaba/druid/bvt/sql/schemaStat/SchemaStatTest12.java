@@ -9,7 +9,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.Set;
 
@@ -53,8 +52,8 @@ public class SchemaStatTest12 extends TestCase {
         System.out.println("functionns : " + statVisitor.getFunctions());
         assertEquals(3, relationships.size());
 
-        Assert.assertEquals(24, statVisitor.getColumns().size());
-        Assert.assertEquals(20, statVisitor.getConditions().size());
+        assertEquals(24, statVisitor.getColumns().size());
+        assertEquals(20, statVisitor.getConditions().size());
         assertEquals(1, statVisitor.getFunctions().size());
     }
 }

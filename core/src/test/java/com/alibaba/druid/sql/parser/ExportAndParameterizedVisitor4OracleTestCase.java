@@ -15,28 +15,24 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
-
 import junit.framework.TestCase;
+import org.junit.Assert;
 
 public class ExportAndParameterizedVisitor4OracleTestCase extends TestCase {
-
     public void testParameterizedVisitor() {
          Object[][] sqlAndExpectedCases = {
-        		{ "SELECT XMLSERIALIZE(CONTENT XMLTYPE('<Owner>Grandco</Owner>') as varchar(200) ) AS xmlserialize_doc   FROM DUAL",1},
+                 {"SELECT XMLSERIALIZE(CONTENT XMLTYPE('<Owner>Grandco</Owner>') as varchar(200) ) AS xmlserialize_doc   FROM DUAL", 1},
              };
 
         final DbType[] dbTypes = { DbType.oracle };
         for (final DbType dbType : dbTypes) {
             System.out.println("dbType:" + dbType);
             for (Object[] arr : sqlAndExpectedCases) {
-
                 final String sql = (String) arr[0];
                 StringBuilder out = new StringBuilder();
 
@@ -50,7 +46,7 @@ public class ExportAndParameterizedVisitor4OracleTestCase extends TestCase {
                 System.out.println("before:" + sql);
                 System.out.println("after:" + out);
                 System.out.println("size:" + vistor2.getParameters());
-                final int expectedSize = arr.length > 1 ?  (Integer) arr[1] : 0 ;
+                final int expectedSize = arr.length > 1 ? (Integer) arr[1] : 0;
                 Assert.assertEquals(expectedSize, vistor2.getParameters().size());
             }
         }

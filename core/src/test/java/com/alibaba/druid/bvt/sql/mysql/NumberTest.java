@@ -15,18 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
+import java.util.List;
 
 public class NumberTest extends TestCase {
     public void test_0() throws Exception {
@@ -37,7 +33,7 @@ public class NumberTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SELECT -32032.6809e+10;", text);
+        assertEquals("SELECT -32032.6809e+10;", text);
     }
 
     public void test_1() throws Exception {
@@ -48,7 +44,6 @@ public class NumberTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SELECT 294.42;", text);
+        assertEquals("SELECT 294.42;", text);
     }
-
 }

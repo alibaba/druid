@@ -1,0 +1,232 @@
+CREATE TABLE `work_info_detail_2` (
+  `id` BIGINT NOT NULL,
+  `serial` VARCHAR(64) NULL,
+  `create_time` DATETIME NOT NULL,
+  `eid` VARCHAR(64) NULL,
+  `update_time` DATETIME NULL,
+  `tenant_code` VARCHAR(64) NULL,
+  `work_serial` VARCHAR(128) NULL,
+  `vin` VARCHAR(64) NULL,
+  `iccid` VARCHAR(64) NULL,
+  `callback_id` VARCHAR(64) NULL,
+  `iot_callback_id` VARCHAR(64) NULL,
+  `iot_invoke_serial` VARCHAR(128) NULL,
+  `interface_type` VARCHAR(64) NULL,
+  `oper_type` VARCHAR(64) NULL,
+  `rnr_status` VARCHAR(64) NULL,
+  `opr_rst` VARCHAR(64) NULL,
+  `failure_cause` TEXT NULL,
+  `failure_desc` TEXT NULL,
+  `invoke_status` VARCHAR(100) NULL,
+  `work_status` VARCHAR(100) NULL,
+  `request_type` VARCHAR(128) NULL,
+  `vehicle_status` VARCHAR(255) NULL,
+  `status_update_time` DATETIME NULL,
+  `accept_time` DATETIME NULL,
+  `platform_id` VARCHAR(255) NULL,
+  `customer_type` VARCHAR(64) NULL COMMENT '实名类型（1-个人，2-单位）',
+  `__op` BOOLEAN NULL COMMENT 'CloudCanal迁移标志位',
+  `column_name_27` INT NULL
+) ENGINE=OLAP
+UNIQUE KEY(`id`, `serial`, `create_time`, `eid`)
+AUTO PARTITION BY RANGE (date_trunc(`create_time`, 'month'))
+(PARTITION p20230901000000 VALUES [('2023-09-01 00:00:00'), ('2023-10-01 00:00:00')),
+PARTITION p20231001000000 VALUES [('2023-10-01 00:00:00'), ('2023-11-01 00:00:00')),
+PARTITION p20231101000000 VALUES [('2023-11-01 00:00:00'), ('2023-12-01 00:00:00')),
+PARTITION p20231201000000 VALUES [('2023-12-01 00:00:00'), ('2024-01-01 00:00:00')),
+PARTITION p20240101000000 VALUES [('2024-01-01 00:00:00'), ('2024-02-01 00:00:00')),
+PARTITION p20240201000000 VALUES [('2024-02-01 00:00:00'), ('2024-03-01 00:00:00')),
+PARTITION p20240301000000 VALUES [('2024-03-01 00:00:00'), ('2024-04-01 00:00:00')),
+PARTITION p20240401000000 VALUES [('2024-04-01 00:00:00'), ('2024-05-01 00:00:00')),
+PARTITION p20240501000000 VALUES [('2024-05-01 00:00:00'), ('2024-06-01 00:00:00')),
+PARTITION p20240601000000 VALUES [('2024-06-01 00:00:00'), ('2024-07-01 00:00:00')),
+PARTITION p20240701000000 VALUES [('2024-07-01 00:00:00'), ('2024-08-01 00:00:00')),
+PARTITION p20240801000000 VALUES [('2024-08-01 00:00:00'), ('2024-09-01 00:00:00')),
+PARTITION p20240901000000 VALUES [('2024-09-01 00:00:00'), ('2024-10-01 00:00:00')),
+PARTITION p20241001000000 VALUES [('2024-10-01 00:00:00'), ('2024-11-01 00:00:00')),
+PARTITION p20241101000000 VALUES [('2024-11-01 00:00:00'), ('2024-12-01 00:00:00')),
+PARTITION p202412 VALUES [('2024-12-01 00:00:00'), ('2025-01-01 00:00:00')))
+DISTRIBUTED BY HASH(`eid`) BUCKETS 8
+PROPERTIES (
+"replication_allocation" = "tag.location.default: 1",
+"min_load_replica_num" = "-1",
+"is_being_synced" = "false",
+"storage_medium" = "hdd",
+"storage_format" = "V2",
+"inverted_index_storage_format" = "V1",
+"enable_unique_key_merge_on_write" = "true",
+"light_schema_change" = "true",
+"disable_auto_compaction" = "false",
+"enable_single_replica_compaction" = "false",
+"group_commit_interval_ms" = "10000",
+"group_commit_data_bytes" = "134217728"
+);
+--------------------
+CREATE TABLE `work_info_detail_2` (
+	`id` BIGINT NOT NULL,
+	`serial` VARCHAR(64) NULL,
+	`create_time` DATETIME NOT NULL,
+	`eid` VARCHAR(64) NULL,
+	`update_time` DATETIME NULL,
+	`tenant_code` VARCHAR(64) NULL,
+	`work_serial` VARCHAR(128) NULL,
+	`vin` VARCHAR(64) NULL,
+	`iccid` VARCHAR(64) NULL,
+	`callback_id` VARCHAR(64) NULL,
+	`iot_callback_id` VARCHAR(64) NULL,
+	`iot_invoke_serial` VARCHAR(128) NULL,
+	`interface_type` VARCHAR(64) NULL,
+	`oper_type` VARCHAR(64) NULL,
+	`rnr_status` VARCHAR(64) NULL,
+	`opr_rst` VARCHAR(64) NULL,
+	`failure_cause` TEXT NULL,
+	`failure_desc` TEXT NULL,
+	`invoke_status` VARCHAR(100) NULL,
+	`work_status` VARCHAR(100) NULL,
+	`request_type` VARCHAR(128) NULL,
+	`vehicle_status` VARCHAR(255) NULL,
+	`status_update_time` DATETIME NULL,
+	`accept_time` DATETIME NULL,
+	`platform_id` VARCHAR(255) NULL,
+	`customer_type` VARCHAR(64) NULL COMMENT '实名类型（1-个人，2-单位）',
+	`__op` BOOLEAN NULL COMMENT 'CloudCanal迁移标志位',
+	`column_name_27` INT NULL
+) ENGINE = OLAP
+UNIQUE KEY (`id`, `serial`, `create_time`, `eid`)
+PARTITION BY RANGE (date_trunc(`create_time`, 'month')) (
+	PARTITION p20230901000000 VALUES [('2023-09-01 00:00:00'), ('2023-10-01 00:00:00')),
+	PARTITION p20231001000000 VALUES [('2023-10-01 00:00:00'), ('2023-11-01 00:00:00')),
+	PARTITION p20231101000000 VALUES [('2023-11-01 00:00:00'), ('2023-12-01 00:00:00')),
+	PARTITION p20231201000000 VALUES [('2023-12-01 00:00:00'), ('2024-01-01 00:00:00')),
+	PARTITION p20240101000000 VALUES [('2024-01-01 00:00:00'), ('2024-02-01 00:00:00')),
+	PARTITION p20240201000000 VALUES [('2024-02-01 00:00:00'), ('2024-03-01 00:00:00')),
+	PARTITION p20240301000000 VALUES [('2024-03-01 00:00:00'), ('2024-04-01 00:00:00')),
+	PARTITION p20240401000000 VALUES [('2024-04-01 00:00:00'), ('2024-05-01 00:00:00')),
+	PARTITION p20240501000000 VALUES [('2024-05-01 00:00:00'), ('2024-06-01 00:00:00')),
+	PARTITION p20240601000000 VALUES [('2024-06-01 00:00:00'), ('2024-07-01 00:00:00')),
+	PARTITION p20240701000000 VALUES [('2024-07-01 00:00:00'), ('2024-08-01 00:00:00')),
+	PARTITION p20240801000000 VALUES [('2024-08-01 00:00:00'), ('2024-09-01 00:00:00')),
+	PARTITION p20240901000000 VALUES [('2024-09-01 00:00:00'), ('2024-10-01 00:00:00')),
+	PARTITION p20241001000000 VALUES [('2024-10-01 00:00:00'), ('2024-11-01 00:00:00')),
+	PARTITION p20241101000000 VALUES [('2024-11-01 00:00:00'), ('2024-12-01 00:00:00')),
+	PARTITION p202412 VALUES [('2024-12-01 00:00:00'), ('2025-01-01 00:00:00'))
+)
+DISTRIBUTED BY HASH (`eid`) BUCKETS 8
+PROPERTIES (
+	"replication_allocation" = "tag.location.default: 1",
+	"min_load_replica_num" = "-1",
+	"is_being_synced" = "false",
+	"storage_medium" = "hdd",
+	"storage_format" = "V2",
+	"inverted_index_storage_format" = "V1",
+	"enable_unique_key_merge_on_write" = "true",
+	"light_schema_change" = "true",
+	"disable_auto_compaction" = "false",
+	"enable_single_replica_compaction" = "false",
+	"group_commit_interval_ms" = "10000",
+	"group_commit_data_bytes" = "134217728"
+);
+------------------------------------------------------------------------------------------------------------------------
+create table if not exists `test`.`ztts_deliv_statu`(
+  `mandt` varchar(9) not null ,
+  `delinum` varchar(33) not null ,
+  `delistatus` varchar(6) not null ,
+  `vbeln_vl` varchar(30) null ,
+  `delistatus_date`  date NOT NULL,
+  `delistatus_time` varchar(18) null ,
+  `zout_date` varchar(24) null ,
+  `zout_time` varchar(18) null ,
+  `zout_status` varchar(3) null ,
+  `message` varchar(3072) null ,
+  `zout_date_oms` varchar(24) null ,
+  `zout_time_oms` varchar(18) null ,
+  `zout_status_oms` varchar(3) null ,
+  `message_oms` varchar(3072) null ,
+  `zweb_time` varchar(18) null ,
+  `zweb_date` varchar(24) null ,
+  `zweb_msg` varchar(660) null ,
+  `zweb_status` varchar(3) null ,
+  `delitway` varchar(3) null ,
+  `__op` boolean  )
+unique key (`mandt`, `delinum`, `delistatus`)
+DISTRIBUTED BY HASH (`mandt`, `delinum`, `delistatus`) BUCKETS 4
+PROPERTIES("replication_num" = "1");
+--------------------
+CREATE TABLE IF NOT EXISTS `test`.`ztts_deliv_statu` (
+	`mandt` varchar(9) NOT NULL,
+	`delinum` varchar(33) NOT NULL,
+	`delistatus` varchar(6) NOT NULL,
+	`vbeln_vl` varchar(30) NULL,
+	`delistatus_date` date NOT NULL,
+	`delistatus_time` varchar(18) NULL,
+	`zout_date` varchar(24) NULL,
+	`zout_time` varchar(18) NULL,
+	`zout_status` varchar(3) NULL,
+	`message` varchar(3072) NULL,
+	`zout_date_oms` varchar(24) NULL,
+	`zout_time_oms` varchar(18) NULL,
+	`zout_status_oms` varchar(3) NULL,
+	`message_oms` varchar(3072) NULL,
+	`zweb_time` varchar(18) NULL,
+	`zweb_date` varchar(24) NULL,
+	`zweb_msg` varchar(660) NULL,
+	`zweb_status` varchar(3) NULL,
+	`delitway` varchar(3) NULL,
+	`__op` boolean
+)
+UNIQUE KEY (`mandt`, `delinum`, `delistatus`)
+DISTRIBUTED BY HASH (`mandt`, `delinum`, `delistatus`) BUCKETS 4
+PROPERTIES (
+	"replication_num" = "1"
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `sales_records_test_simple` (
+  `record_id` BIGINT NOT NULL COMMENT '记录唯一ID',
+  `item_id` VARCHAR(100) NULL COMMENT '商品ID',
+  `item_name` VARCHAR(255) NULL COMMENT '商品名称',
+  `quantity` INT NULL COMMENT '销售数量',
+  `unit_price` DECIMAL(10, 2) NULL COMMENT '销售单价',
+  `event_date` DATE NOT NULL COMMENT '分区日期'
+)
+ENGINE=OLAP
+DUPLICATE KEY(`record_id`, `item_id`)
+COMMENT '销售记录测试表'
+PARTITION BY RANGE(`event_date`)
+DISTRIBUTED BY HASH(`item_id`) BUCKETS 8
+PROPERTIES (
+    "replication_allocation" = "tag.location.default: 3",
+    "storage_medium" = "SSD",
+    "storage_format" = "V2",
+    "dynamic_partition.enable" = "true",
+    "dynamic_partition.time_unit" = "DAY",
+    "dynamic_partition.time_zone" = "Asia/Shanghai",
+    "dynamic_partition.start" = "-30",
+    "dynamic_partition.end" = "3",
+    "dynamic_partition.prefix" = "p",
+    "dynamic_partition.buckets" = "8"
+);
+--------------------
+CREATE TABLE `sales_records_test_simple` (
+	`record_id` BIGINT NOT NULL COMMENT '记录唯一ID',
+	`item_id` VARCHAR(100) NULL COMMENT '商品ID',
+	`item_name` VARCHAR(255) NULL COMMENT '商品名称',
+	`quantity` INT NULL COMMENT '销售数量',
+	`unit_price` DECIMAL(10, 2) NULL COMMENT '销售单价',
+	`event_date` DATE NOT NULL COMMENT '分区日期'
+) ENGINE = OLAP
+DUPLICATE KEY (`record_id`, `item_id`)
+COMMENT '销售记录测试表'
+PARTITION BY RANGE (`event_date`) ()
+DISTRIBUTED BY HASH (`item_id`) BUCKETS 8
+PROPERTIES (
+	"replication_allocation" = "tag.location.default: 3",
+	"storage_medium" = "SSD",
+	"storage_format" = "V2",
+	"dynamic_partition.enable" = "true",
+	"dynamic_partition.time_unit" = "DAY",
+	"dynamic_partition.time_zone" = "Asia/Shanghai",
+	"dynamic_partition.start" = "-30",
+	"dynamic_partition.end" = "3",
+	"dynamic_partition.prefix" = "p",
+	"dynamic_partition.buckets" = "8"
+);

@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.util.Properties;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.DruidPasswordCallback;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.util.Properties;
 
 public class PasswordCallbackTest extends TestCase {
     protected void setUp() throws Exception {
@@ -31,7 +29,7 @@ public class PasswordCallbackTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_0() throws Exception {
@@ -44,8 +42,8 @@ public class PasswordCallbackTest extends TestCase {
         Connection conn = dataSource.getConnection();
         conn.close();
 
-        Assert.assertEquals(dataSource.getUrl(), passwordCallback.getUrl());
-        Assert.assertEquals(dataSource.getConnectProperties(), passwordCallback.getProperties());
+        assertEquals(dataSource.getUrl(), passwordCallback.getUrl());
+        assertEquals(dataSource.getConnectProperties(), passwordCallback.getProperties());
 
         dataSource.close();
     }

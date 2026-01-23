@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SQLMethodInvokeExprTest {
-
     @Test
     public void testMethodRemoveBrackets() {
         SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr("CURRENT_SCHEMA");

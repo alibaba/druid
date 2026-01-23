@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -32,13 +31,13 @@ public class HiveCreateTableTest_18 extends OracleTest {
                         "\tlanguages array<string>,\n" +
                         "\treligions map<string,array<int>>)\n" +
                         "ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'\n" +
-                        "STORED AS TEXTFILE;"; //
+                        "STORED AS TEXTFILE;";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -69,6 +68,5 @@ public class HiveCreateTableTest_18 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("json_nested_test"));
-
     }
 }

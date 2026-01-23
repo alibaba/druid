@@ -20,6 +20,4 @@ public class MySqlSelectTest_131_div extends MysqlTest {
         assertEquals("SELECT id % id % id % id / id\n" +
                 "FROM t", stmt.toString());
     }
-
-
 }

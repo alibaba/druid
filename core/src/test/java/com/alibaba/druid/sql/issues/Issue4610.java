@@ -1,5 +1,9 @@
 package com.alibaba.druid.sql.issues;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
+import junit.framework.TestCase;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,24 +17,11 @@ import java.sql.Clob;
 import java.sql.NClob;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-
-import junit.framework.TestCase;
 
 /**
  * 验证各种类型的参数的格式化sql合法性的用例
@@ -39,8 +30,6 @@ import junit.framework.TestCase;
  * @see <a href="https://github.com/alibaba/druid/issues/4610">LocalDateTime等类型的输出问题</a>
  */
 public class Issue4610 extends TestCase {
-
-
     public void test_printParameter_BigDecimal() throws Exception {
         String sql = "update t set bigdecimal_val = ?";
         String sqlNeed = "UPDATE t\nSET bigdecimal_val = 50000000000";
@@ -110,12 +99,10 @@ public class Issue4610 extends TestCase {
 
             @Override
             public void truncate(long len) throws SQLException {
-
             }
 
             @Override
             public void free() throws SQLException {
-
             }
 
             @Override
@@ -181,7 +168,6 @@ public class Issue4610 extends TestCase {
         String sqlNeed = "UPDATE t\nSET clob_val = '<NClob>'";
         List<Object> parameters = new ArrayList<>();
         parameters.add(new NClob() {
-
             @Override
             public long length() throws SQLException {
                 return 0;
@@ -234,12 +220,10 @@ public class Issue4610 extends TestCase {
 
             @Override
             public void truncate(long len) throws SQLException {
-
             }
 
             @Override
             public void free() throws SQLException {
-
             }
 
             @Override
@@ -258,7 +242,6 @@ public class Issue4610 extends TestCase {
         String sqlNeed = "UPDATE t\nSET clob_val = '<Clob>'";
         List<Object> parameters = new ArrayList<>();
         parameters.add(new Clob() {
-
             @Override
             public long length() throws SQLException {
                 return 0;
@@ -311,12 +294,10 @@ public class Issue4610 extends TestCase {
 
             @Override
             public void truncate(long len) throws SQLException {
-
             }
 
             @Override
             public void free() throws SQLException {
-
             }
 
             @Override
@@ -512,7 +493,6 @@ public class Issue4610 extends TestCase {
 
             @Override
             public void close() throws IOException {
-
             }
         });
         String fromatedSql = SQLUtils.format(sql, DbType.mysql, parameters);
@@ -574,7 +554,6 @@ public class Issue4610 extends TestCase {
         assertEquals(sqlNeed, fromatedSql);
     }
 
-
     /**
      * 来自 com.mysql.cj.NativeQueryBindings.DEFAULT_MYSQL_TYPES
      */
@@ -632,6 +611,4 @@ public class Issue4610 extends TestCase {
             System.out.println(javaCode);
         }
     }
-
-
 }

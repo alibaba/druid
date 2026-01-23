@@ -15,16 +15,8 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 
 public class Bug_for_weizhi extends TestCase {
     public void test_for_issue() throws Exception {
@@ -32,6 +24,6 @@ public class Bug_for_weizhi extends TestCase {
 
         String expected = "INSERT INTO aaa\nVALUES (1, 2, '这是个反斜杠\\\\');";
 
-        Assert.assertEquals(expected, SQLUtils.formatMySql(sql));
+        assertEquals(expected, SQLUtils.formatMySql(sql));
     }
 }

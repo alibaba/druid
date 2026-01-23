@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class OracleSelectTest90_isof extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
                 "select * from persons p\n" +
-                        "       where value(p) is of type(only employee_t)"; //
+                        "       where value(p) is of type(only employee_t)";
 
         System.out.println(sql);
 
@@ -38,7 +37,7 @@ public class OracleSelectTest90_isof extends OracleTest {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -63,6 +62,4 @@ public class OracleSelectTest90_isof extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
     }
-
-
 }

@@ -1,14 +1,13 @@
 package com.alibaba.druid.bvt.support.spring;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.spring.DruidLobCreator;
+import junit.framework.TestCase;
+
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.spring.DruidLobCreator;
 
 public class DruidLobCreatorTest extends TestCase {
     private DruidDataSource dataSource;
@@ -18,7 +17,6 @@ public class DruidLobCreatorTest extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setInitialSize(1);
-
     }
 
     protected void tearDown() throws Exception {

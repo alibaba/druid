@@ -1,12 +1,11 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import junit.framework.TestCase;
+
+import static org.junit.Assert.assertNotEquals;
 
 public class EqualTest_interval_mysql extends TestCase {
     public void test_exits() throws Exception {
@@ -25,13 +24,13 @@ public class EqualTest_interval_mysql extends TestCase {
             SQLExprParser parser = new MySqlExprParser(sql_c);
             exprC = (SQLIntervalExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLIntervalExpr(), new SQLIntervalExpr());
-        Assert.assertEquals(new SQLIntervalExpr().hashCode(), new SQLIntervalExpr().hashCode());
+        assertEquals(new SQLIntervalExpr(), new SQLIntervalExpr());
+        assertEquals(new SQLIntervalExpr().hashCode(), new SQLIntervalExpr().hashCode());
     }
 }

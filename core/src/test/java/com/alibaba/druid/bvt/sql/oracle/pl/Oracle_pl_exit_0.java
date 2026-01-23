@@ -37,7 +37,7 @@ public class Oracle_pl_exit_0 extends OracleTest {
                 "  END LOOP;\n" +
                 "  -- After EXIT, control resumes here\n" +
                 "  DBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -57,46 +57,50 @@ public class Oracle_pl_exit_0 extends OracleTest {
 
         assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
 
-//        Assert.assertEquals(7, visitor.getColumns().size());
-//        Assert.assertEquals(3, visitor.getConditions().size());
-//        Assert.assertEquals(1, visitor.getRelationships().size());
+//        assertEquals(7, visitor.getColumns().size());
+//        assertEquals(3, visitor.getConditions().size());
+//        assertEquals(1, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
         {
             String output = SQLUtils.toOracleString(stmt);
-            assertEquals("DECLARE\n" +
-                            "\tx NUMBER := 0;\n" +
-                            "BEGIN\n" +
-                            "\tLOOP\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n" +
-                            "\t\tx := x + 1;\n" +
-                            "\t\tIF x > 3 THEN\n" +
-                            "\t\t\tEXIT;\n" +
-                            "\t\tEND IF;\n" +
-                            "\tEND LOOP;\n" +
-                            "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n" +
-                            "END;", //
-                    output);
+            assertEquals(
+              "DECLARE\n"
+                  + "\tx NUMBER := 0;\n"
+                  + "BEGIN\n"
+                  + "\tLOOP\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n"
+                  + "\t\tx := x + 1;\n"
+                  + "\t\tIF x > 3 THEN\n"
+                  + "\t\t\tEXIT;\n"
+                  + "\t\tEND IF;\n"
+                  + "\tEND LOOP;\n"
+                  + "\t-- After EXIT, control resumes here\n"
+                  + "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n"
+                  + "END;", //
+              output);
         }
         {
             String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("declare\n" +
-                            "\tx NUMBER := 0;\n" +
-                            "begin\n" +
-                            "\tloop\n" +
-                            "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n" +
-                            "\t\tx := x + 1;\n" +
-                            "\t\tif x > 3 then\n" +
-                            "\t\t\texit;\n" +
-                            "\t\tend if;\n" +
-                            "\tend loop;\n" +
-                            "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n" +
-                            "end;", //
-                    output);
+            assertEquals(
+              "declare\n"
+                  + "\tx NUMBER := 0;\n"
+                  + "begin\n"
+                  + "\tloop\n"
+                  + "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n"
+                  + "\t\tx := x + 1;\n"
+                  + "\t\tif x > 3 then\n"
+                  + "\t\t\texit;\n"
+                  + "\t\tend if;\n"
+                  + "\tend loop;\n"
+                  + "\t-- After EXIT, control resumes here\n"
+                  + "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n"
+                  + "end;", //
+              output);
         }
     }
 }

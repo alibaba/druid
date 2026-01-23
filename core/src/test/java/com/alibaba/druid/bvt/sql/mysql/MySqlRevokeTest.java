@@ -28,7 +28,6 @@ public class MySqlRevokeTest extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "REVOKE INSERT ON *.* FROM 'jeffrey'@'localhost';";
 
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 //        print(statementList);
@@ -61,6 +60,4 @@ public class MySqlRevokeTest extends MysqlTest {
                     output);
         }
     }
-
-
 }

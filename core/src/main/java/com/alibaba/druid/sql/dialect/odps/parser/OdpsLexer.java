@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
 import com.alibaba.druid.sql.parser.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,23 +29,62 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OdpsLexer extends HiveLexer {
-    public OdpsLexer(String input, SQLParserFeature... features) {
-        super(input);
-
-        init();
-
-        dbType = DbType.odps;
-        this.skipComment = true;
-        this.keepComments = false;
-
-        for (SQLParserFeature feature : features) {
-            config(feature, true);
-        }
-    }
-
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords ODPS_KEYWORDS;
+    static final DialectFeature ODPS_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    ScanSQLTypeBlockComment,
+                    ScanSQLTypeWithSemi,
+                    ScanSQLTypeWithFunction,
+                    ScanSQLTypeWithBegin,
+                    ScanSQLTypeWithAt,
+                    ScanVariableAt,
+                    ScanVariableMoveToSemi,
+                    ScanVariableSkipIdentifiers,
+                    ScanNumberCommonProcess,
+                    ScanHiveCommentDoubleSpace,
+                    QueryRestSemi,
+                    JoinAt,
+                    UDJ,
+                    TwoConsecutiveUnion,
+                    RewriteGroupByCubeRollupToFunction,
+                    PrimaryTwoConsecutiveSet,
+                    ParseAllIdentifier,
+                    PrimaryRestCommaAfterLparen,
+                    InRestSpecificOperation,
+                    ParseAssignItemEqSemiReturn,
+                    ParseAssignItemEqeq,
+                    ParseStatementListLparenContinue,
+                    ParseRevokeFromUser,
+                    ParseCreateSql,
+                    TableAliasConnectWhere,
+                    TableAliasTable,
+                    TableAliasBetween,
+                    TableAliasRest,
+                    AliasLiteralFloat,
+                    ScanSQLTypeWithFrom,
+                    NextTokenColon,
+                    ScanAliasU,
+                    JoinRightTableFrom,
+                    GroupByAll,
+                    SQLDateExpr,
+                    ParseAssignItemRparenCommaSetReturn,
+                    TableAliasLock,
+                    TableAliasPartition,
+                    AsSkip,
+                    AsSequence,
+                    AsDatabase,
+                    AsDefault
+            ),
+            Arrays.asList(
+                    ParseStatementListSelectUnsupportedSyntax,
+                    ScanNumberPrefixB,
+                    ScanAliasU,
+                    AcceptUnion,
+                    PrimaryBangBangSupport
+            )
+    );
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -65,7 +105,25 @@ public class OdpsLexer extends HiveLexer {
         map.put("MATCHED", Token.MATCHED);
         map.put("；", Token.SEMI);
 
-        return new Keywords(map);
+        ODPS_KEYWORDS = new Keywords(map);
+    }
+    public OdpsLexer(String input, SQLParserFeature... features) {
+        super(input);
+
+        init();
+
+        dbType = DbType.odps;
+        this.skipComment = true;
+        this.keepComments = false;
+
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return ODPS_KEYWORDS;
     }
 
     private void init() {
@@ -158,7 +216,7 @@ public class OdpsLexer extends HiveLexer {
                 break;
             }
 
-            if (ch == '；') {
+            if (ch == ';') {
                 break;
             }
 
@@ -242,43 +300,6 @@ public class OdpsLexer extends HiveLexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                ScanSQLTypeBlockComment,
-                ScanSQLTypeWithSemi,
-                ScanSQLTypeWithFunction,
-                ScanSQLTypeWithBegin,
-                ScanSQLTypeWithAt,
-                ScanVariableAt,
-                ScanVariableMoveToSemi,
-                ScanVariableSkipIdentifiers,
-                ScanNumberCommonProcess,
-                ScanHiveCommentDoubleSpace,
-                QueryRestSemi,
-                JoinAt,
-                UDJ,
-                TwoConsecutiveUnion,
-                RewriteGroupByCubeRollupToFunction,
-                PrimaryTwoConsecutiveSet,
-                ParseAllIdentifier,
-                PrimaryRestCommaAfterLparen,
-                InRestSpecificOperation,
-                ParseAssignItemEqSemiReturn,
-                ParseAssignItemEqeq,
-                ParseStatementListLparenContinue,
-                ParseRevokeFromUser,
-                ParseCreateSql,
-                TableAliasConnectWhere,
-                TableAliasTable,
-                TableAliasBetween,
-                TableAliasRest,
-                AliasLiteralFloat
-        );
-        this.dialectFeature.unconfigFeature(
-                ParseStatementListSelectUnsupportedSyntax,
-                ScanNumberPrefixB,
-                ScanAliasU,
-                AcceptUnion
-        );
+        this.dialectFeature = ODPS_FEATURE;
     }
 }

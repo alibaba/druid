@@ -40,7 +40,7 @@ public class AntlrMySqlTest extends TestCase {
                 stmt.accept(schemaStatVisitor);
                 assertTrue(stmtSql, provider.checkValid(stmtSql));
             }
-            
+
             // test different style newline.
             if (sql.indexOf("\r\n") == -1) {
                 sql = sql.replace("\n", "\r\n");

@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class MySqlWallTest108 extends TestCase {
     public void test_false() throws Exception {
@@ -29,7 +26,6 @@ public class MySqlWallTest108 extends TestCase {
 
         String sql = "select * \u0009 from t where id = ? or bin(94) = 1011110";
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
-
 }

@@ -31,7 +31,6 @@ public class MySqlSelectTest_28 extends MysqlTest {
                 + "WHERE `gmt_create` < DATE_ADD(NOW(), INTERVAL (- 7) DAY) "
                 + "LIMIT 0, 1000";
 
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -71,6 +70,4 @@ public class MySqlSelectTest_28 extends MysqlTest {
                     output);
         }
     }
-
-
 }

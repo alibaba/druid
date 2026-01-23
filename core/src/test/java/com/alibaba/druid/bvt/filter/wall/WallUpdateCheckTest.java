@@ -1,7 +1,6 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallCheckResult;
-import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUpdateCheckHandler;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import junit.framework.TestCase;

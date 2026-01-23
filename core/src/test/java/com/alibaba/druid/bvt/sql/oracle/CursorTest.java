@@ -15,12 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import junit.framework.TestCase;
 
 public class CursorTest extends TestCase {
     public void test_cursor() throws Exception {
@@ -32,7 +30,7 @@ public class CursorTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT department_name, CURSOR(\n\t\tSELECT salary, commission_pct\n" + "\t\tFROM employees e\n"
+        assertEquals("SELECT department_name, CURSOR(\n\t\tSELECT salary, commission_pct\n" + "\t\tFROM employees e\n"
                 + "\t\tWHERE e.department_id = d.department_id\n\t)\n" + "FROM departments d;", text);
 
         System.out.println(text);

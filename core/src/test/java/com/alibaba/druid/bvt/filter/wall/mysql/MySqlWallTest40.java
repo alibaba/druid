@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -34,18 +31,18 @@ public class MySqlWallTest40 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setUseAllow(false);
 
-        Assert.assertFalse(provider.checkValid(//
-                "use huaianapp")); //
+        assertFalse(provider.checkValid(//
+                "use huaianapp"));
 
-        Assert.assertEquals(0, provider.getTableStats().size());
+        assertEquals(0, provider.getTableStats().size());
     }
 
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
-                "use huaianapp")); //
+        assertTrue(provider.checkValid(//
+                "use huaianapp"));
 
-        Assert.assertEquals(0, provider.getTableStats().size());
+        assertEquals(0, provider.getTableStats().size());
     }
 }

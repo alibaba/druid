@@ -1,18 +1,15 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Iterator;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Iterator;
 
 public class TestOnBorrowFileAndNameTest extends TestCase {
     private DruidDataSource dataSource;
@@ -28,12 +25,11 @@ public class TestOnBorrowFileAndNameTest extends TestCase {
         dataSource.setTestOnBorrow(true);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-
     }
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_stat() throws Exception {
@@ -49,8 +45,8 @@ public class TestOnBorrowFileAndNameTest extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(true, stmt.isClosed());
-        Assert.assertEquals(true, rs.isClosed());
+        assertEquals(true, stmt.isClosed());
+        assertEquals(true, rs.isClosed());
 
         rs.close();
         stmt.close();
@@ -58,20 +54,20 @@ public class TestOnBorrowFileAndNameTest extends TestCase {
         dataSource.shrink();
 
         JdbcStatManager.getInstance().getDataSourceList();
-        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
-        Assert.assertEquals(1, dataSource.getDataSourceStat().getSqlList().size());
+        assertEquals(1, dataSource.getDataSourceStat().getSqlList().size());
 
         Iterator<JdbcSqlStat> iterator = dataSource.getDataSourceStat().getSqlStatMap().values().iterator();
         JdbcSqlStat sql_0 = iterator.next();
 
         // there are no JdbcSqlStat of 'SELECT 1' as connection validation will skip all filters now.
-        // Assert.assertEquals("SELECT 1", sql_0.getSql());
-        // Assert.assertNull(sql_0.getFile());
-        // Assert.assertNull(sql_0.getName());
+        // assertEquals("SELECT 1", sql_0.getSql());
+        // assertNull(sql_0.getFile());
+        // assertNull(sql_0.getName());
 
-        Assert.assertEquals("SELECT NOW()", sql_0.getSql());
-        Assert.assertEquals("test_file", sql_0.getFile());
-        Assert.assertEquals("select_now", sql_0.getName());
+        assertEquals("SELECT NOW()", sql_0.getSql());
+        assertEquals("test_file", sql_0.getFile());
+        assertEquals("select_now", sql_0.getName());
     }
 }

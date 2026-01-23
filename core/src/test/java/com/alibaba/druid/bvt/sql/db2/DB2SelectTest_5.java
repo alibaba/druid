@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.db2;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.DB2Test;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -28,22 +24,24 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.List;
+
 public class DB2SelectTest_5 extends DB2Test {
     public void test_0() throws Exception {
-        String sql = "SELECT * FROM (SELECT TEMP_TAB.*,ROWNUMBER() OVER() AS IDX FROM (SELECT" //
-                + "            DISTINCT  ( OH.ORDER_ID )" //
-                + "        FROM" //
-                + "            ORDER_HEADER OH," //
-                + "            ORDER_ITEM OI," //
-                + "            ORDER_PAYMENT_PERFERENCE OPP," //
-                + "            ORDER_SHIPMENT_PERFERENCE OSP" //
-                + "        WHERE" //
-                + "            OH.ORDER_ID = OI.ORDER_ID" //
-                + "        AND OH.ORDER_ID = OPP.ORDER_ID" //
-                + "        AND OH.ORDER_ID = OSP.ORDER_ID" //
-                + "             " //
+        String sql = "SELECT * FROM (SELECT TEMP_TAB.*,ROWNUMBER() OVER() AS IDX FROM (SELECT"
+                + "            DISTINCT  ( OH.ORDER_ID )"
+                + "        FROM"
+                + "            ORDER_HEADER OH,"
+                + "            ORDER_ITEM OI,"
+                + "            ORDER_PAYMENT_PERFERENCE OPP,"
+                + "            ORDER_SHIPMENT_PERFERENCE OSP"
+                + "        WHERE"
+                + "            OH.ORDER_ID = OI.ORDER_ID"
+                + "        AND OH.ORDER_ID = OPP.ORDER_ID"
+                + "        AND OH.ORDER_ID = OSP.ORDER_ID"
+                + "             "
                 + "                AND OH.ORDER_ID = ? ) AS TEMP_TAB ) AS TEMP_TAB_WITH_IDX "//
-                + " WHERE TEMP_TAB_WITH_IDX.IDX > 0 AND TEMP_TAB_WITH_IDX.IDX <= 20" //
+                + " WHERE TEMP_TAB_WITH_IDX.IDX > 0 AND TEMP_TAB_WITH_IDX.IDX <= 20"
                 + "";
 
         DB2StatementParser parser = new DB2StatementParser(sql);
@@ -51,7 +49,7 @@ public class DB2SelectTest_5 extends DB2Test {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
@@ -61,18 +59,18 @@ public class DB2SelectTest_5 extends DB2Test {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(4, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(4, visitor.getConditions().size());
+        assertEquals(4, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(4, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ORDER_HEADER")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ORDER_HEADER")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("ORDER_HEADER", "ORDER_ID")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+        assertTrue(visitor.getColumns().contains(new Column("ORDER_HEADER", "ORDER_ID")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        // assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                         "FROM (\n" +
                         "\tSELECT TEMP_TAB.*, ROWNUMBER() OVER () AS IDX\n" +
                         "\tFROM (\n" +

@@ -1,10 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试defaultAutoCommit
@@ -31,6 +28,6 @@ public class DruidDataSourceTest_wrapDriverFilters extends TestCase {
     public void test_autoCommit() throws Exception {
         dataSource.init();
 
-        Assert.assertEquals(2, dataSource.getProxyFilters().size());
+        assertEquals(2, dataSource.getProxyFilters().size());
     }
 }

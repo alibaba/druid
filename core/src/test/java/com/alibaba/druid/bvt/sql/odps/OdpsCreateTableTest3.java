@@ -1,13 +1,10 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import junit.framework.TestCase;
 
 public class OdpsCreateTableTest3 extends TestCase {
     public void test_0() throws Exception {
@@ -16,6 +13,6 @@ public class OdpsCreateTableTest3 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("CREATE TABLE sale_detail_like\nLIKE sale_detail;", output);
+        assertEquals("CREATE TABLE sale_detail_like\nLIKE sale_detail;", output);
     }
 }

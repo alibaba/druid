@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-
 public class OracleSelectTest129 extends TestCase {
     public void test_0() throws Exception {
         String sql = "select to_number（floor(months_between(sysdate,to_Date(t1.csny, 'yyyy-mm-dd')) / 12)） from dual;";
@@ -58,5 +57,4 @@ public class OracleSelectTest129 extends TestCase {
 
 //        assertTrue(visitor.containsColumn("srm1.CONSIGNEE_ADDRESS", "id"));
     }
-
 }

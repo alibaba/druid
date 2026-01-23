@@ -15,17 +15,15 @@
  */
 package com.alibaba.druid;
 
-import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.management.ManagementFactory;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.management.ManagementFactory;
 
 public class TestUtil {
     public static long getYoungGC() {

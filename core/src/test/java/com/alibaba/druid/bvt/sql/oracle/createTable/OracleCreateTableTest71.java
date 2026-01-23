@@ -68,7 +68,7 @@ public class OracleCreateTableTest71 extends OracleTest {
                         "\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t)\n" +
                         "\tPCTTHRESHOLD 50\n" +
-                        "MONITORING",//
+                        "MONITORING",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

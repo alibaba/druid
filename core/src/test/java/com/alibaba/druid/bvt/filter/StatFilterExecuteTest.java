@@ -15,19 +15,17 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class StatFilterExecuteTest extends TestCase {
     private DruidDataSource dataSource;
@@ -55,17 +53,17 @@ public class StatFilterExecuteTest extends TestCase {
     }
 
     public void test_stat() throws Exception {
-        Assert.assertTrue(dataSource.isInited());
+        assertTrue(dataSource.isInited());
         final String sql = "update x";
 
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement(sql);
 
-        Assert.assertEquals(0, dataSource.getDataSourceStat().getSqlStat(sql).getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals(0, dataSource.getDataSourceStat().getSqlStat(sql).getExecuteAndResultHoldTimeHistogramSum());
 
         boolean firstResult = stmt.execute();
-        Assert.assertFalse(firstResult);
+        assertFalse(firstResult);
 
         stmt.close();
 
@@ -73,9 +71,9 @@ public class StatFilterExecuteTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(1, sqlStat.getHistogramSum());
+        assertEquals(1, sqlStat.getHistogramSum());
 
-        Assert.assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
     }
 
     static class MyMockPreparedStatement extends MockPreparedStatement {

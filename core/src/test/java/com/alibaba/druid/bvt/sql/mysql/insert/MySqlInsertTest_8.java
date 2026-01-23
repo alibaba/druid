@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.insert;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+
+import java.util.List;
 
 public class MySqlInsertTest_8 extends MysqlTest {
     public void test_0() throws Exception {
@@ -36,10 +34,10 @@ public class MySqlInsertTest_8 extends MysqlTest {
 
         MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
 
-        Assert.assertEquals(2, insertStmt.getColumns().size());
-        Assert.assertEquals(0, insertStmt.getValuesList().size());
+        assertEquals(2, insertStmt.getColumns().size());
+        assertEquals(0, insertStmt.getValuesList().size());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -49,13 +47,13 @@ public class MySqlInsertTest_8 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals("INSERT INTO dd.table1 (d, e)" //
-                        + "\nSELECT *" //
+        assertEquals("INSERT INTO dd.table1 (d, e)"
+                        + "\nSELECT *"
                         + "\nFROM bb.table3", //
                 SQLUtils.toMySqlString(insertStmt));
 
-        Assert.assertEquals("insert into dd.table1 (d, e)" //
-                        + "\nselect *" //
+        assertEquals("insert into dd.table1 (d, e)"
+                        + "\nselect *"
                         + "\nfrom bb.table3", //
                 SQLUtils.toMySqlString(insertStmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }

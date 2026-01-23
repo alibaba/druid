@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.insert;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -27,9 +23,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.List;
+
 public class OracleInsertTest13 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "INSERT INTO bonuses" //
+        String sql = "INSERT INTO bonuses"
                 + "   SELECT employee_id, salary*1.1 "//
                 + "   FROM employees"//
                 + "   WHERE commission_pct > 0.25; ";
@@ -39,12 +37,12 @@ public class OracleInsertTest13 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("INSERT INTO bonuses" //
+        assertEquals("INSERT INTO bonuses"
                         + "\nSELECT employee_id, salary * 1.1"//
                         + "\nFROM employees"//
-                        + "\nWHERE commission_pct > 0.25;",//
+                        + "\nWHERE commission_pct > 0.25;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -55,15 +53,14 @@ public class OracleInsertTest13 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("bonuses")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("bonuses")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
     }
-
 }

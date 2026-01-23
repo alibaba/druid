@@ -87,7 +87,7 @@ public class OdpsSelectTest24 extends TestCase {
                 "WHERE t1.add_date = '${date_minus_1}'\n" +
                 "\tOR t2.order_id IS NOT NULL\n" +
                 "GROUP BY t1.member_id, \n" +
-                "\tt3.city_id";//
+                "\tt3.city_id";
         assertEquals("SELECT ta.member_id AS member_id, ta.city_id\n" +
                 "\t, COUNT(IF(ta.add_date = '${date_minus_1}', 1, NULL)) AS order_cnt\n" +
                 "\t, COUNT(ta.is_open_order) AS open_order_cnt, COUNT(t1.is_normal_order) AS normal_order_cnt\n" +
@@ -215,5 +215,4 @@ public class OdpsSelectTest24 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

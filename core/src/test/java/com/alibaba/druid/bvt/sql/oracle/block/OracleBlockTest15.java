@@ -18,11 +18,9 @@ package com.alibaba.druid.bvt.sql.oracle.block;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class OracleBlockTest15 extends OracleTest {
                 "        salary + bonus\n" +
                 "          WHERE employee_id = emp_id;\n" +
                 "   END IF;\n" +
-                " END;"; //
+                " END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());
@@ -62,7 +60,7 @@ public class OracleBlockTest15 extends OracleTest {
                 "\tEND IF;\n" +
                 "END;", result);
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         for (SQLStatement statement : stmtList) {
@@ -75,14 +73,14 @@ public class OracleBlockTest15 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getRelationships().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
+        assertEquals(0, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
 }

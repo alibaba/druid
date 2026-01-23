@@ -23,8 +23,5 @@ public class MySqlSelectTest_165_json extends MysqlTest {
                 "WHERE l_shipdate BETWEEN '1997-01-27' AND '1997-02-20'\n" +
                 "\tAND json_extract(l_comment, '$.id') = JSON '1997-01-2810'\n" +
                 "LIMIT 3", stmt.toString());
-
-
     }
-
 }

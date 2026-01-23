@@ -164,5 +164,4 @@ public class DruidStatServiceTest2 extends TestCase {
     public void test_getWallStatMap() throws Exception {
         DruidStatService.getInstance().getWallStatMap(Collections.<String, String>emptyMap());
     }
-
 }

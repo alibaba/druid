@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+
+import java.util.List;
 
 public class MySqlDeleteTest_0 extends MysqlTest {
     public void test_0() throws Exception {
@@ -37,7 +35,7 @@ public class MySqlDeleteTest_0 extends MysqlTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -47,14 +45,14 @@ public class MySqlDeleteTest_0 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("t1", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
     }
 }

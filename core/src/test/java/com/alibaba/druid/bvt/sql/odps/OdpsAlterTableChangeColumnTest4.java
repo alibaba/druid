@@ -25,7 +25,7 @@ import java.util.List;
 
 public class OdpsAlterTableChangeColumnTest4 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "ALTER TABLE table_name CHANGE COLUMN old_col_name new_col_name column_type COMMENT '';";//
+        String sql = "ALTER TABLE table_name CHANGE COLUMN old_col_name new_col_name column_type COMMENT '';";
         assertEquals("ALTER TABLE table_name\n" +
                 "\tCHANGE COLUMN old_col_name new_col_name COLUMN_TYPE COMMENT '';", SQLUtils.formatOdps(sql));
         assertEquals("alter table table_name\n" +
@@ -50,5 +50,4 @@ public class OdpsAlterTableChangeColumnTest4 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

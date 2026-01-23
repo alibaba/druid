@@ -1,3 +1,33 @@
+select * from [test].[test] where [a] in (select [c] from [test])
+--------------------
+SELECT *
+FROM [test].[test]
+WHERE [a] IN (
+	SELECT [c]
+	FROM [test]
+)
+------------------------------------------------------------------------------------------------------------------------
+select * from [test].[test]
+--------------------
+SELECT *
+FROM [test].[test]
+------------------------------------------------------------------------------------------------------------------------
+CREATE VIEW [a].[b]
+AS SELECT
+*
+, [c] = DATEDIFF(MILLISECOND, request_time, GETDATE()) / 1000.0
+FROM
+tbl
+WHERE
+[state] = 'Queued';
+--------------------
+CREATE VIEW [a].[b]
+AS
+SELECT *
+	, [c] = DATEDIFF(MILLISECOND, request_time, GETDATE()) / 1000.0
+FROM tbl
+WHERE [state] = 'Queued';
+------------------------------------------------------------------------------------------------------------------------
 USE AdventureWorks2008R2
 --------------------
 USE AdventureWorks2008R2

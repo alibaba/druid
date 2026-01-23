@@ -24,16 +24,15 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class MySqlSelectTest_group_concat extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "SELECT GROUP_CONCAT(ext_customer_id Separator '.') " //
-                + "from ad_texts " //
-                + "where customer_id=13001 " //
-                + "and description1 like '%爱丽%' " //
+        String sql = "SELECT GROUP_CONCAT(ext_customer_id Separator '.') "
+                + "from ad_texts "
+                + "where customer_id=13001 "
+                + "and description1 like '%爱丽%' "
                 + "order by id asc;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -43,35 +42,34 @@ public class MySqlSelectTest_group_concat extends MysqlTest {
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
 
         SQLSelect select = selectStmt.getSelect();
-        Assert.assertNotNull(select.getQuery());
+        assertNotNull(select.getQuery());
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
-        Assert.assertNotNull(queryBlock.getOrderBy());
+        assertNotNull(queryBlock.getOrderBy());
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
-        Assert.assertEquals(1, visitor.getOrderByColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
+        assertEquals(1, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ad_texts")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ad_texts")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT GROUP_CONCAT(ext_customer_id SEPARATOR '.')" //
-                        + "\nFROM ad_texts" //
-                        + "\nWHERE customer_id = 13001" //
-                        + "\n\tAND description1 LIKE '%爱丽%'" //
+        assertEquals("SELECT GROUP_CONCAT(ext_customer_id SEPARATOR '.')"
+                        + "\nFROM ad_texts"
+                        + "\nWHERE customer_id = 13001"
+                        + "\n\tAND description1 LIKE '%爱丽%'"
                         + "\nORDER BY id ASC;", //
                 output);
     }

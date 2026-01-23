@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class TestStat extends TestCase {
     private DruidDataSource dataSource;
@@ -37,12 +35,11 @@ public class TestStat extends TestCase {
         dataSource.setName("com.alibaba.dragoon.monitor");
         dataSource.setMinIdle(0);
         dataSource.setPoolPreparedStatements(false);
-
     }
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_stat() throws Exception {
@@ -55,8 +52,8 @@ public class TestStat extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(true, stmt.isClosed());
-        Assert.assertEquals(true, rs.isClosed());
+        assertEquals(true, stmt.isClosed());
+        assertEquals(true, rs.isClosed());
 
         rs.close();
         stmt.close();
@@ -64,7 +61,6 @@ public class TestStat extends TestCase {
         dataSource.shrink();
 
         JdbcStatManager.getInstance().getDataSourceList();
-        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 }

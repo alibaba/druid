@@ -57,6 +57,5 @@ public class KeepAliveTest extends TestCase {
             connections[i].close();
         }
         // assertEquals(dataSource.getMaxActive(), dataSource.getPoolingCount());
-
     }
 }

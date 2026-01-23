@@ -21,11 +21,10 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 public class MySqlCreateTableTest49 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "    create table tauth (" //
+        String sql = "    create table tauth ("
                 + "        cid varchar(36) not null unique,"//
                 + "        cdesc varchar(200),"//
                 + "        cname varchar(100) not null,"//
@@ -33,7 +32,7 @@ public class MySqlCreateTableTest49 extends MysqlTest {
                 + "        curl varchar(200),"//
                 + "        cpid varchar(36),"//
                 + "        primary key (cid)"//
-                + "    )"; //
+                + "    )";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -46,14 +45,14 @@ public class MySqlCreateTableTest49 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(6, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(6, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tauth")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("tauth")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE tauth (" //
+        assertEquals("CREATE TABLE tauth ("
                         + "\n\tcid varchar(36) NOT NULL UNIQUE,"//
                         + "\n\tcdesc varchar(200),"//
                         + "\n\tcname varchar(100) NOT NULL,"//
@@ -61,8 +60,7 @@ public class MySqlCreateTableTest49 extends MysqlTest {
                         + "\n\tcurl varchar(200),"//
                         + "\n\tcpid varchar(36),"//
                         + "\n\tPRIMARY KEY (cid)"//
-                        + "\n)",//
+                        + "\n)",
                 output);
-
     }
 }

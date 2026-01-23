@@ -116,7 +116,7 @@ public class OracleCreateTableTest75 extends OracleTest {
                         "\tCACHE\n" +
                         "\tRETENTION\n" +
                         ")\n" +
-                        "MONITORING",//
+                        "MONITORING",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

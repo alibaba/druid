@@ -17,7 +17,6 @@ public class MySqlCreateTableTest139 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE IF NOT EXISTS simiao_alter_partition2 (\n" +
                 "\tid int,\n" +
                 "\tid2 int,\n" +
@@ -67,8 +66,5 @@ public class MySqlCreateTableTest139 extends MysqlTest {
                 "\tpartition p13 values less than maxvalue\n" +
                 ")\n" +
                 "dbpartition by hash(id) dbpartitions 4;", stmt.toLowerCaseString());
-
     }
-
-
 }

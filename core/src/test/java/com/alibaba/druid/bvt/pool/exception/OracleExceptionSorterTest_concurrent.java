@@ -1,14 +1,5 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.concurrent.CountDownLatch;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
@@ -16,12 +7,17 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.concurrent.CountDownLatch;
 
 public class OracleExceptionSorterTest_concurrent extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
 
@@ -38,7 +34,7 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_connect() throws Exception {
@@ -52,7 +48,7 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
                     latch_0.countDown();
 
                     MockConnection mockConn = conn.unwrap(MockConnection.class);
-                    Assert.assertNotNull(mockConn);
+                    assertNotNull(mockConn);
 
                     SQLException exception = new SQLException("xx", "xxx", 28);
                     mockConn.setError(exception);
@@ -96,7 +92,6 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
 
         workCompleteLatch.await();
 
-        Assert.assertEquals(2001, dataSource.getConnectCount());
+        assertEquals(2001, dataSource.getConnectCount());
     }
-
 }

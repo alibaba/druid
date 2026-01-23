@@ -1,17 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * 这个场景测试defaultAutoCommit
@@ -34,7 +31,6 @@ public class DruidDataSourceTest_autocommit2 extends TestCase {
                 return conn;
             }
         });
-
     }
 
     protected void tearDown() throws Exception {
@@ -44,7 +40,7 @@ public class DruidDataSourceTest_autocommit2 extends TestCase {
     public void test_autoCommit() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertFalse(conn.getAutoCommit());
+        assertFalse(conn.getAutoCommit());
 
         conn.close();
     }

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
-
 public class MySqlSelectTest_104_union_orderBy extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "\n" +
@@ -59,5 +58,4 @@ public class MySqlSelectTest_104_union_orderBy extends MysqlTest {
                 "FROM a5\n" +
                 "ORDER BY a DESC", stmt.toString());
     }
-
 }

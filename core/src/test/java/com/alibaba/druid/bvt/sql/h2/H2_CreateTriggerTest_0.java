@@ -20,20 +20,19 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class H2_CreateTriggerTest_0 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "create trigger employee_trigger after insert,update,delete on employee for each row call \"test.redisson.h2cluster.trigger.ClusterTrigger\"\n"; //
+                "create trigger employee_trigger after insert,update,delete on employee for each row call \"test.redisson.h2cluster.trigger.ClusterTrigger\"\n";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.H2);
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -60,7 +59,6 @@ public class H2_CreateTriggerTest_0 extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.containsTable("employee"));
-
+        assertTrue(visitor.containsTable("employee"));
     }
 }

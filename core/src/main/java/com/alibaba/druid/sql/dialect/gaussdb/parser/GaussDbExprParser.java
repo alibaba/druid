@@ -187,8 +187,34 @@ public class GaussDbExprParser extends PGExprParser {
         if (split.length == 2) {
             return new SQLIntervalExpr(new SQLIntegerExpr(Integer.parseInt(split[0])), SQLIntervalUnit.of(split[1]));
         } else {
+            if (lexer.identifierEquals(FnvHash.Constants.DAY)) {
+                lexer.nextToken();
+                intervalExpr.setUnit(SQLIntervalUnit.DAY);
+            } else if (lexer.identifierEquals(FnvHash.Constants.MONTH)) {
+                lexer.nextToken();
+                intervalExpr.setUnit(SQLIntervalUnit.MONTH);
+            } else if (lexer.identifierEquals(FnvHash.Constants.YEAR)) {
+                lexer.nextToken();
+                intervalExpr.setUnit(SQLIntervalUnit.YEAR);
+            } else if (lexer.identifierEquals(FnvHash.Constants.HOUR)) {
+                lexer.nextToken();
+                intervalExpr.setUnit(SQLIntervalUnit.HOUR);
+            } else if (lexer.identifierEquals(FnvHash.Constants.MINUTE)) {
+                lexer.nextToken();
+                intervalExpr.setUnit(SQLIntervalUnit.MINUTE);
+            } else if (lexer.identifierEquals(FnvHash.Constants.SECOND)) {
+                lexer.nextToken();
+                intervalExpr.setUnit(SQLIntervalUnit.SECOND);
+            }
             intervalExpr.setValue(value);
             return intervalExpr;
         }
+    }
+
+    @Override
+    protected String nameCommon() {
+        String identName = lexer.stringVal();
+        lexer.nextToken();
+        return identName;
     }
 }

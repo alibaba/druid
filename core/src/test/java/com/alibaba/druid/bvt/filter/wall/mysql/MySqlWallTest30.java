@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -30,7 +27,7 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest30 extends TestCase {
     public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-                "select * from t where FID = 1 OR UNHEX(HEX('MySQL')) = 'MySQL'")); //
+        assertFalse(WallUtils.isValidateMySql(//
+                "select * from t where FID = 1 OR UNHEX(HEX('MySQL')) = 'MySQL'"));
     }
 }

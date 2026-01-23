@@ -107,7 +107,7 @@ FROM phoenix_task_inst
 WHERE dag_inst_id = 302537384
 	AND cycle_time >= '2018-08-14 09:00:00'
 	AND cycle_time < '2018-08-14 10:00:00' -- select  count(*)  from phoenix_task_relation WHERE child_dag_inst_id = 302537384
--- select dag_inst_id,gmtdate,flow_id,dag_type,root_node_id,app_id,create_time from \"phoenix_dag_inst\" where project_env = 'PROD' AND dag_type = 0 AND root_node_id=1  order by gmtdate DESC limit 10;
+	-- select dag_inst_id,gmtdate,flow_id,dag_type,root_node_id,app_id,create_time from \"phoenix_dag_inst\" where project_env = 'PROD' AND dag_type = 0 AND root_node_id=1  order by gmtdate DESC limit 10;
 ------------------------------------------------------------------------------------------------------------------------
 -- select  count(*)  from phoenix_task_relation WHERE child_dag_inst_id = 302537384
 select 1
@@ -119,9 +119,9 @@ select son_id,parent_id from ((select son_id,parent_id from lance_temp limit 10)
 --------------------
 SELECT son_id, parent_id
 FROM (
-	(SELECT son_id, parent_id
+	SELECT son_id, parent_id
 	FROM lance_temp
-	LIMIT 10)
+	LIMIT 10
 	UNION ALL
 	(SELECT son_id, parent_id
 	FROM lance_temp
@@ -205,22 +205,26 @@ SELECT a.*, avg(a.nv_roe_lag) OVER () AS nv_roe_avg
 	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_roe_lag > 0) AS ih50_win_cnt
 	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_roe_lag > a.idx_roe_lag) AS ih50_win_idx_cnt
 	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_roe_lag > 0) AS ic500_win_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_roe_lag > a.idx_roe_lag) AS ic500_win_idx_cnt
+	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_roe_lag > a.idx_roe_lag) AS ic500_win_idx_cnt-- 根据所有输入点(X,Y)利用最小二乘法计算一个线性方程式。然后返回该直线的斜率
+	
 	, regr_slope(a.nv_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_beta
 	, regr_slope(a.idx_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_beta
 	, regr_slope(a.if300_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS if300_beta
 	, regr_slope(a.ih50_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ih50_beta
-	, regr_slope(a.ic500_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_beta
+	, regr_slope(a.ic500_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_beta-- 根据所有输入点(X,Y)利用最小二乘法计算一个线性方程式。然后返回该直线的Y轴截距
+	
 	, regr_intercept(a.nv_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_alpha
 	, regr_intercept(a.idx_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_alpha
 	, regr_intercept(a.if300_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS if300_alpha
 	, regr_intercept(a.ih50_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ih50_alpha
-	, regr_intercept(a.ic500_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_alpha
+	, regr_intercept(a.ic500_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_alpha-- 相关系数
+	
 	, corr(a.nv_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_corr
 	, corr(a.idx_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_corr
 	, corr(a.if300_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS if300_corr
 	, corr(a.ih50_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ih50_corr
-	, corr(a.ic500_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_corr
+	, corr(a.ic500_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_corr-- 样本标准差
+	
 	, stddev_samp(a.nv_roe_lag) OVER (ORDER BY a.stat_date) AS nv_stddev
 	, stddev_samp(a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_stddev
 	, stddev_samp(a.if300_roe_lag) OVER (ORDER BY a.stat_date) AS if300_stddev
@@ -355,7 +359,7 @@ select * from a where a.id in (VALUES (4096), (4097))
 --------------------
 SELECT *
 FROM a
-WHERE a.id IN (VALUES ((4096), (4097))
+WHERE a.id IN (VALUES(4096), (4097))
 ------------------------------------------------------------------------------------------------------------------------
 select array_to_string(array ( select jsonb_array_elements ( '[{"aa":"123","bb":"123"},{"aa":"12356","bb":"12356"}]') ->> 'aa' ) ,',') as aa
 --------------------

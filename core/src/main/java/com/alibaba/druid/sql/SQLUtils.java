@@ -38,7 +38,7 @@ import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.hologres.visitor.HologresOutputVisitor;
 import com.alibaba.druid.sql.dialect.impala.visitor.ImpalaOutputVisitor;
-import com.alibaba.druid.sql.dialect.infomix.visitor.InformixOutputVisitor;
+import com.alibaba.druid.sql.dialect.informix.visitor.InformixOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -70,6 +70,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
 import com.alibaba.druid.sql.dialect.supersql.visitor.SuperSqlOutputVisitor;
+import com.alibaba.druid.sql.dialect.synapse.visitor.SynapseOutputVisitor;
 import com.alibaba.druid.sql.dialect.teradata.visitor.TDOutputVisitor;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.repository.SchemaRepository;
@@ -530,6 +531,7 @@ public class SQLUtils {
         switch (dbType) {
             case oracle:
             case oceanbase_oracle:
+            case polardb2:
                 if (statementList == null || statementList.size() == 1) {
                     return new OracleOutputVisitor(out, false);
                 } else {
@@ -553,6 +555,8 @@ public class SQLUtils {
             case sqlserver:
             case jtds:
                 return new SQLServerOutputVisitor(out);
+            case synapse:
+                return new SynapseOutputVisitor(out);
             case db2:
                 return new DB2OutputVisitor(out);
             case odps:
@@ -633,6 +637,8 @@ public class SQLUtils {
                 return new PGSchemaStatVisitor(repository);
             case sqlserver:
             case jtds:
+                return new SQLServerSchemaStatVisitor(repository);
+            case synapse:
                 return new SQLServerSchemaStatVisitor(repository);
             case db2:
                 return new DB2SchemaStatVisitor(repository);
@@ -2295,6 +2301,276 @@ public class SQLUtils {
         return insertLists;
     }
 
+    public static boolean isQuoteChar(char c) {
+        return c == '`' || c == '\'' || c == '"';
+    }
+
+    public static String removeQuote(String str) {
+        return str.replace("`", "").replace("'", "").replace("\"", "");
+    }
+
+    /**
+     * TokenInfo class to hold token, its corresponding string value, and position
+     */
+    public static class TokenInfo {
+        private final Token token;
+        private final String stringVal;
+        private final int pos;
+
+        public TokenInfo(Token token, String stringVal, int pos) {
+            this.token = token;
+            this.stringVal = stringVal;
+            this.pos = pos;
+        }
+
+        public Token getToken() {
+            return token;
+        }
+
+        public String getStringVal() {
+            return stringVal;
+        }
+
+        public int getPos() {
+            return pos;
+        }
+
+        @Override
+        public String toString() {
+            if (stringVal == null) {
+                return token + "@" + pos;
+            }
+            return token + "(" + stringVal + ")@" + pos;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            TokenInfo tokenInfo = (TokenInfo) o;
+            if (token != tokenInfo.token) {
+                return false;
+            }
+            if (pos != tokenInfo.pos) {
+                return false;
+            }
+            return stringVal != null ? stringVal.equals(tokenInfo.stringVal) : tokenInfo.stringVal == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = token != null ? token.hashCode() : 0;
+            result = 31 * result + (stringVal != null ? stringVal.hashCode() : 0);
+            result = 31 * result + pos;
+            return result;
+        }
+    }
+
+    /**
+     * Get all tokens from SQL parsing based on dialect type, including their string values
+     *
+     * @param sql    SQL statement to parse
+     * @param dbType Database type (dialect)
+     * @return List of TokenInfo objects containing token and corresponding stringVal pairs (excluding comments)
+     */
+    public static List<TokenInfo> getAllTokens(String sql, DbType dbType) {
+        return getAllTokens(sql, dbType, false);
+    }
+
+    /**
+     * Get all tokens from SQL parsing based on dialect type, including their string values
+     *
+     * @param sql    SQL statement to parse
+     * @param dbType Database type (dialect)
+     * @param keepComments Whether to keep comment tokens (LINE_COMMENT, MULTI_LINE_COMMENT, HINT)
+     * @return List of TokenInfo objects containing token and corresponding stringVal pairs
+     */
+    public static List<TokenInfo> getAllTokens(String sql, DbType dbType, boolean keepComments) {
+        if (sql == null || sql.isEmpty()) {
+            return new ArrayList<TokenInfo>();
+        }
+
+        List<TokenInfo> tokens = new ArrayList<TokenInfo>();
+        Lexer lexer = SQLParserUtils.createLexer(sql, dbType);
+
+        // Configure lexer to keep or skip comments
+        lexer.config(SQLParserFeature.SkipComments, !keepComments);
+        lexer.config(SQLParserFeature.KeepComments, keepComments);
+
+        for (; ; ) {
+            lexer.nextToken();
+            Token token = lexer.token();
+
+            // Filter out comment tokens if keepComments is false
+            if (!keepComments && (token == Token.LINE_COMMENT || token == Token.MULTI_LINE_COMMENT || token == Token.HINT)) {
+                continue;
+            }
+
+            // Create and add token info
+            tokens.add(createTokenInfo(token, lexer));
+
+            // Exit on EOF or ERROR
+            if (token == Token.EOF || token == Token.ERROR) {
+                break;
+            }
+        }
+
+        return tokens;
+    }
+
+    /**
+     * Create a TokenInfo object from the current lexer state
+     */
+    private static TokenInfo createTokenInfo(Token token, Lexer lexer) {
+        int pos = lexer.pos();
+        String stringVal;
+
+        // Get stringVal - use numberString() for numeric literals, stringVal() for others
+        if (token == Token.LITERAL_INT || token == Token.LITERAL_FLOAT || token == Token.LITERAL_HEX) {
+            stringVal = lexer.numberString();
+        } else {
+            stringVal = lexer.stringVal();
+        }
+
+        // Create a defensive copy to prevent mutation
+        if (stringVal != null) {
+            stringVal = new String(stringVal.toCharArray());
+        }
+
+        return new TokenInfo(token, stringVal, pos);
+    }
+
+    /**
+     * Get all tokens from SQL parsing based on dialect type (overloaded method with String dbType)
+     *
+     * @param sql    SQL statement to parse
+     * @param dbType Database type string (will be converted to DbType)
+     * @return List of TokenInfo objects containing token and corresponding stringVal pairs
+     */
+    public static List<TokenInfo> getAllTokens(String sql, String dbType) {
+        return getAllTokens(sql, DbType.of(dbType), false);
+    }
+
+    /**
+     * Get all tokens from SQL parsing based on dialect type (overloaded method with String dbType)
+     *
+     * @param sql    SQL statement to parse
+     * @param dbType Database type string (will be converted to DbType)
+     * @param keepComments Whether to keep comment tokens (LINE_COMMENT, MULTI_LINE_COMMENT, HINT)
+     * @return List of TokenInfo objects containing token and corresponding stringVal pairs
+     */
+    public static List<TokenInfo> getAllTokens(String sql, String dbType, boolean keepComments) {
+        return getAllTokens(sql, DbType.of(dbType), keepComments);
+    }
+
+    /**
+     * Calculate Levenshtein distance between two SQL statements based on their token sequences.
+     * For IDENTIFIER, PROPERTY, and LITERAL_INT tokens, the stringVal must also match for tokens to be considered equal.
+     *
+     * @param sql1 First SQL statement
+     * @param dbType1 Database type for first SQL
+     * @param sql2 Second SQL statement
+     * @param dbType2 Database type for second SQL
+     * @return Levenshtein distance between the two token sequences
+     */
+    public static int calculateTokenLevenshteinDistance(String sql1, DbType dbType1, String sql2, DbType dbType2) {
+        // Step 1: Parse both SQLs and get their token lists
+        List<TokenInfo> tokens1 = getAllTokens(sql1, dbType1);
+        List<TokenInfo> tokens2 = getAllTokens(sql2, dbType2);
+
+        // Step 2: Calculate Levenshtein distance based on tokens
+        return calculateLevenshteinDistance(tokens1, tokens2);
+    }
+
+    /**
+     * Calculate Levenshtein distance between two token sequences
+     */
+    private static int calculateLevenshteinDistance(List<TokenInfo> tokens1, List<TokenInfo> tokens2) {
+        int len1 = tokens1.size();
+        int len2 = tokens2.size();
+
+        // Create DP matrix
+        int[][] dp = new int[len1 + 1][len2 + 1];
+
+        // Initialize base cases
+        for (int i = 0; i <= len1; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= len2; j++) {
+            dp[0][j] = j;
+        }
+
+        // Fill DP matrix
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                TokenInfo tokenInfo1 = tokens1.get(i - 1);
+                TokenInfo tokenInfo2 = tokens2.get(j - 1);
+
+                int cost;
+                if (areTokensEqual(tokenInfo1, tokenInfo2)) {
+                    cost = 0; // Tokens are equal
+                } else {
+                    cost = 1; // Tokens are different
+                }
+
+                dp[i][j] = Math.min(
+                        Math.min(
+                                dp[i - 1][j] + 1,      // Deletion
+                                dp[i][j - 1] + 1       // Insertion
+                        ),
+                        dp[i - 1][j - 1] + cost        // Substitution
+                );
+            }
+        }
+
+        return dp[len1][len2];
+    }
+
+    /**
+     * Check if two tokens are equal.
+     * For IDENTIFIER, PROPERTY, and LITERAL_INT tokens, stringVal must also match.
+     */
+    private static boolean areTokensEqual(
+            TokenInfo tokenInfo1,
+            TokenInfo tokenInfo2
+    ) {
+        // First check if token types are the same
+        if (tokenInfo1.getToken() != tokenInfo2.getToken()) {
+            return false;
+        }
+
+        // For IDENTIFIER, PROPERTY, and LITERAL_INT tokens, check stringVal
+        if (tokenInfo1.getToken() == Token.IDENTIFIER
+                || tokenInfo1.getToken() == Token.LITERAL_INT
+                || tokenInfo1.getToken() == Token.LITERAL_FLOAT
+                || tokenInfo1.getToken() == Token.LITERAL_CHARS
+                || tokenInfo1.getToken() == Token.LITERAL_NCHARS
+                || tokenInfo1.getToken() == Token.LITERAL_HEX) {
+            String stringVal1 = tokenInfo1.getStringVal();
+            String stringVal2 = tokenInfo2.getStringVal();
+
+            // Both should have string values
+            if (stringVal1 == null && stringVal2 == null) {
+                return true;
+            }
+            if (stringVal1 == null || stringVal2 == null) {
+                return false;
+            }
+
+            return stringVal1.equals(stringVal2);
+        }
+
+        // For other token types, just matching the token type is enough
+        return true;
+    }
+
+    /**
+     * Helper class to hold token sequence and string value map
+     */
     static class TimeZoneVisitor extends SQLASTVisitorAdapter {
         private TimeZone from;
         private TimeZone to;
@@ -2309,7 +2585,7 @@ public class SQLUtils {
 
             String newTime = format.format(x.getDate(from));
 
-            x.setLiteral(newTime);
+            x.setValue(newTime);
 
             return true;
         }

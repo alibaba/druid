@@ -17,7 +17,6 @@ package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class OracleWallTest10 extends TestCase {
     public void test_true() throws Exception {
@@ -54,6 +53,6 @@ public class OracleWallTest10 extends TestCase {
                         "tpl.transactor,\n" +
                         "tpl.transactor_tel\n" +
                         "order by tpl.projectname";
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

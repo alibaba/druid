@@ -15,20 +15,11 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+
+import java.sql.*;
 
 public class CallStatementTest extends TestCase {
     /**
@@ -93,7 +84,7 @@ public class CallStatementTest extends TestCase {
     protected void tearDown() throws Exception {
         dropTable();
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_precall() throws Exception {
@@ -111,7 +102,7 @@ public class CallStatementTest extends TestCase {
             error = sqle;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
         stmt.close();
         connect.close();
     }
@@ -127,7 +118,7 @@ public class CallStatementTest extends TestCase {
         } catch (SQLException sqle) {
             error = sqle;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
         cs.close();
         connect.close();
     }
@@ -168,7 +159,9 @@ public class CallStatementTest extends TestCase {
         ps.setInt(1, p2);
         data2[0] = ps.executeQuery();
 
-        if (p2 == 99) data2[0].close();
+        if (p2 == 99) {
+            data2[0].close();
+        }
 
         // return no results
         if (p2 == 199) {
@@ -225,10 +218,16 @@ public class CallStatementTest extends TestCase {
 
     public static void parameter1(int a, String b, String c, java.sql.ResultSet[] rs) throws SQLException {
         System.out.print("PT1 a=" + a);
-        if (b == null) System.out.println(" b = null");
-        else System.out.print(" b=<" + b + ">(" + b.length() + ")");
-        if (c == null) System.out.println(" c = null");
-        else System.out.print(" c=<" + c + ">(" + c.length() + ")");
+        if (b == null) {
+            System.out.println(" b = null");
+        } else {
+            System.out.print(" b=<" + b + ">(" + b.length() + ")");
+        }
+        if (c == null) {
+            System.out.println(" c = null");
+        } else {
+            System.out.print(" c=<" + c + ">(" + c.length() + ")");
+        }
 
         System.out.println("");
 
@@ -281,5 +280,4 @@ public class CallStatementTest extends TestCase {
     public static void outparams1(int[] p1, int p2) {
         p1[0] = p2 * 2;
     }
-
 }

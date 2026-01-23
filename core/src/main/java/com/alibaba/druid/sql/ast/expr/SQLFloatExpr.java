@@ -24,20 +24,19 @@ import java.util.Collections;
 import java.util.List;
 
 public class SQLFloatExpr extends SQLNumericLiteralExpr implements SQLValuableExpr, Comparable<SQLFloatExpr> {
-    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("FLOAT");
-
     private float value;
 
     public SQLFloatExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.FLOAT));
     }
 
     public SQLFloatExpr(String value) {
-        super();
+        this();
         this.value = Float.parseFloat(value);
     }
 
     public SQLFloatExpr(float value) {
-        super();
+        this();
         this.value = value;
     }
 

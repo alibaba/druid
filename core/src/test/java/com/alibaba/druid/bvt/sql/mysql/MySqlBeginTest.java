@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class MySqlBeginTest extends MysqlTest {
     public void test_0() throws Exception {
@@ -34,12 +32,11 @@ public class MySqlBeginTest extends MysqlTest {
                 + "\nCOMMIT;"
                 + "\n";
 
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 //        print(statementList);
 
-        Assert.assertEquals(4, statementList.size());
+        assertEquals(4, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         for (SQLStatement stmt : statementList) {
@@ -51,10 +48,10 @@ public class MySqlBeginTest extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.MYSQL);
@@ -87,6 +84,4 @@ public class MySqlBeginTest extends MysqlTest {
                     output);
         }
     }
-
-
 }

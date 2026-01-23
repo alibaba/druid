@@ -38,6 +38,7 @@ public enum SQLIntervalUnit {
     SECOND,
     SECOND_MICROSECOND,
     MICROSECOND,
+    MILLISECOND,
     DAY_OF_WEEK,
     DOW,
     DAY_OF_MONTH,
@@ -99,6 +100,7 @@ public enum SQLIntervalUnit {
             case MINUTE:
             case SECOND:
             case MICROSECOND:
+            case MILLISECOND:
                 return true;
             default:
                 return false;
@@ -126,6 +128,10 @@ public enum SQLIntervalUnit {
                 return MINUTE;
             case "SECONDS":
                 return SECOND;
+            case "MILLISECONDS":
+                return MILLISECOND;
+            case "MICROSECOND":
+                return MICROSECOND;
             default:
                 break;
         }

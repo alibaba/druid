@@ -23,19 +23,18 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class MySqlSelectTest_POSITION extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "select a.rule_id, " + //
-                "b.object_id, " + //
-                "a.user_nick, " + //
-                "SUBSTRING(b.content, POSITION('bizOrderId' IN b.content), 30) as dingdanhao, " + //
-                "SUBSTRING(b.content, POSITION('loginIn7Days' IN b.content), 88) as shengdajieguo, " + //
-                "a.action_time " + //
-                "from ctu_scheme_0025 a, " + //
+        String sql = "select a.rule_id, " +
+                "b.object_id, " +
+                "a.user_nick, " +
+                "SUBSTRING(b.content, POSITION('bizOrderId' IN b.content), 30) as dingdanhao, " +
+                "SUBSTRING(b.content, POSITION('loginIn7Days' IN b.content), 88) as shengdajieguo, " +
+                "a.action_time " +
+                "from ctu_scheme_0025 a, " +
                 "ctu_scheme_detail_0025 b";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -45,23 +44,23 @@ public class MySqlSelectTest_POSITION extends MysqlTest {
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
 
         SQLSelect select = selectStmt.getSelect();
-        Assert.assertNotNull(select.getQuery());
+        assertNotNull(select.getQuery());
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
-        Assert.assertNull(queryBlock.getOrderBy());
+        assertNull(queryBlock.getOrderBy());
 
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ctu_scheme_0025")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ctu_scheme_detail_0025")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ctu_scheme_0025")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("ctu_scheme_detail_0025")));
     }
 }

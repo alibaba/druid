@@ -49,5 +49,4 @@ public class MySqlShowTest_29_plancache extends MysqlTest {
                 "select *\n" +
                 "from table1;", stmt.toLowerCaseString());
     }
-
 }

@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -30,6 +27,6 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class SQLServerWallTest_1 extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateSqlServer("SELECT @ret"));
+        assertTrue(WallUtils.isValidateSqlServer("SELECT @ret"));
     }
 }

@@ -3,12 +3,10 @@ package com.alibaba.druid.bvt.pool.exception;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.vendor.OceanBaseOracleExceptionSorter;
-import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,7 +15,7 @@ public class OceanBaseOracleExceptionSorterTest extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
 
@@ -57,7 +55,7 @@ public class OceanBaseOracleExceptionSorterTest extends TestCase {
         } catch (SQLException ex) {
             fatal = true;
         }
-        Assert.assertTrue(fatal);
+        assertTrue(fatal);
 
         pstmt.close();
 
@@ -68,10 +66,9 @@ public class OceanBaseOracleExceptionSorterTest extends TestCase {
             commitError = ex;
         }
 
-        Assert.assertNotNull(commitError);
-        Assert.assertSame(exception, commitError.getCause());
+        assertNotNull(commitError);
+        assertSame(exception, commitError.getCause());
 
         conn.close();
     }
-
 }

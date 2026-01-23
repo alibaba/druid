@@ -15,20 +15,18 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import java.sql.Connection;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
 
 public class Bug_for_happyday517_3 extends TestCase {
     private DruidDataSource dataSource;
     private MockDriver driver;
 
-    private int originalDataSourceCount = 0;
+    private int originalDataSourceCount;
 
     protected void setUp() throws Exception {
         originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
@@ -43,12 +41,12 @@ public class Bug_for_happyday517_3 extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_bug() throws Exception {
         Connection conn = dataSource.getConnection();
-        Assert.assertEquals(false, conn.getAutoCommit());
+        assertEquals(false, conn.getAutoCommit());
         conn.close();
     }
 }

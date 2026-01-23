@@ -15,24 +15,21 @@
  */
 package com.alibaba.druid.test;
 
-import java.io.File;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import junit.framework.TestCase;
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
+
+import java.io.File;
+import java.util.List;
 
 public class OdpsSelectTest6 extends TestCase {
     public void test_distribute_by() throws Exception {
         File file = new File("/Users/wenshao/Downloads/datasafe_base_dev.udf_test.txt");
         String sql = FileUtils.readFileToString(file, "UTF-8");
-
 
         SQLStatementParser parser = new OdpsStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -48,5 +45,4 @@ public class OdpsSelectTest6 extends TestCase {
 //                + "\nWHERE ds = '20160303'"
 //                + "\n\tAND hour IN ('18')", SQLUtils.formatOdps(sql));
     }
-
 }

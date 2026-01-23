@@ -19,10 +19,9 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateSchemaStatement;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2DropSchemaStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -33,6 +32,8 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
+
+import static com.alibaba.druid.sql.parser.Token.*;
 
 public class DB2StatementParser extends SQLStatementParser {
     public DB2StatementParser(String sql) {
@@ -61,6 +62,79 @@ public class DB2StatementParser extends SQLStatementParser {
         }
 
         return false;
+    }
+
+    @Override
+    public SQLStatement parseCreateSchema() {
+        accept(Token.CREATE);
+        accept(Token.SCHEMA);
+
+        DB2CreateSchemaStatement stmt = new DB2CreateSchemaStatement();
+
+        stmt.setSchemaName(this.exprParser.name());
+
+        while (lexer.token() != SEMI && !lexer.isEOF()) {
+            if (lexer.token() == Token.CREATE) {
+                Lexer.SavePoint mark = lexer.markOut();
+                lexer.nextToken();
+                if (lexer.token() == Token.TABLE) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatements().add(this.parseCreateTable());
+                    continue;
+                } else if (lexer.token() == VIEW) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatements().add(this.parseCreateView());
+                    continue;
+                } else if (lexer.token() == INDEX) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatements().add(this.parseCreateIndex());
+                    continue;
+                } else if (lexer.token() == SEQUENCE) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatements().add(this.parseCreateSequence());
+                    continue;
+                } else if (lexer.token() == TRIGGER) {
+                    lexer.reset(mark);
+                    stmt.getCreateStatements().add(this.parseCreateTrigger());
+                    continue;
+                }
+            }
+
+            throw new ParserException("syntax error. " + lexer.info());
+        }
+
+        return stmt;
+    }
+
+    @Override
+    protected SQLDropStatement parseDropSchema(boolean physical) {
+        DB2DropSchemaStatement stmt = new DB2DropSchemaStatement();
+
+        if (lexer.token() == Token.SCHEMA) {
+            lexer.nextToken();
+        }
+
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+
+        SQLName name = this.exprParser.name();
+        stmt.setSchemaName(name);
+
+        if (lexer.token() == Token.CASCADE) {
+            lexer.nextToken();
+            stmt.setCascade(true);
+        } else {
+            stmt.setCascade(false);
+        }
+        if (lexer.token() == Token.RESTRICT) {
+            lexer.nextToken();
+            stmt.setRestrict(true);
+        }
+
+        return stmt;
     }
 
     public SQLCreateTableParser getSQLCreateTableParser() {
@@ -147,5 +221,73 @@ public class DB2StatementParser extends SQLStatementParser {
         }
 
         return deleteStatement;
+    }
+
+    @Override
+    public SQLStatement parseTruncate() {
+        accept(Token.TRUNCATE);
+        if (!lexer.nextIf(Token.TABLE)) {
+            lexer.nextIfIdentifier("TABLE");
+        }
+        SQLTruncateStatement stmt = new SQLTruncateStatement(getDbType());
+
+        SQLName name = this.exprParser.name();
+        stmt.addTableSource(name);
+
+        for (;;) {
+            if (lexer.token() == Token.DROP) {
+                lexer.nextToken();
+                acceptIdentifier("STORAGE");
+                stmt.setDropStorage(true);
+                continue;
+            }
+
+            if (lexer.identifierEquals("REUSE")) {
+                lexer.nextToken();
+                acceptIdentifier("STORAGE");
+                stmt.setReuseStorage(true);
+                continue;
+            }
+
+            if (lexer.identifierEquals("IGNORE")) {
+                lexer.nextToken();
+                accept(Token.DELETE);
+                acceptIdentifier("TRIGGERS");
+                stmt.setIgnoreDeleteTriggers(true);
+                continue;
+            }
+
+            if (lexer.token() == Token.RESTRICT) {
+                lexer.nextToken();
+                accept(Token.WHEN);
+                accept(Token.DELETE);
+                acceptIdentifier("TRIGGERS");
+                stmt.setRestrictWhenDeleteTriggers(true);
+                continue;
+            }
+
+            if (lexer.token() == Token.CONTINUE) {
+                lexer.nextToken();
+                accept(Token.IDENTITY);
+                continue;
+            }
+
+            if (lexer.token() == Token.RESTART) {
+                lexer.nextToken();
+                accept(Token.IDENTITY);
+                stmt.setRestartIdentity(Boolean.TRUE);
+                continue;
+            }
+
+            if (lexer.identifierEquals("IMMEDIATE")) {
+                lexer.nextToken();
+                stmt.setImmediate(true);
+                continue;
+            }
+
+            break;
+        }
+
+        return stmt;
     }
 }

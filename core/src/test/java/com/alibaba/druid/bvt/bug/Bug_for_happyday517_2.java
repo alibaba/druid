@@ -15,20 +15,18 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import java.sql.Connection;
-import java.sql.DataTruncation;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.DataTruncation;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class Bug_for_happyday517_2 extends TestCase {
     private DruidDataSource dataSource;
@@ -36,7 +34,7 @@ public class Bug_for_happyday517_2 extends TestCase {
 
     final DataTruncation exception = new java.sql.DataTruncation(0, true, true, 0, 0);
 
-    private int originalDataSourceCount = 0;
+    private int originalDataSourceCount;
 
     protected void setUp() throws Exception {
         originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
@@ -61,12 +59,11 @@ public class Bug_for_happyday517_2 extends TestCase {
         dataSource.setDriver(driver);
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setFilters("stat,trace,log4j,encoding");
-
     }
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_bug() throws Exception {
@@ -81,7 +78,7 @@ public class Bug_for_happyday517_2 extends TestCase {
             error = ex;
         }
 
-        Assert.assertTrue(exception == error);
+        assertTrue(exception == error);
 
         stmt.close();
 

@@ -1,9 +1,9 @@
 package com.alibaba.druid.stat;
 
+import junit.framework.TestCase;
+
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
-
-import junit.framework.TestCase;
 
 public class JdbcSqlStatTest1 extends TestCase {
     private JdbcDataSourceStat dataSourceStat = new JdbcDataSourceStat("", "");

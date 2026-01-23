@@ -238,13 +238,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
         return true;
     }
 
-    default void endVisit(MySqlResetStatement x) {
-    }
-
-    default boolean visit(MySqlResetStatement x) {
-        return true;
-    }
-
     default void endVisit(MySqlCreateUserStatement x) {
     }
 
@@ -916,6 +909,13 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(MySqlAlterTableLock x) {
+    }
+
+    default boolean visit(MySqlAlterTableAlgorithm x) {
+        return true;
+    }
+
+    default void endVisit(MySqlAlterTableAlgorithm x) {
     }
 
     default boolean visit(MySqlAlterTableOrderBy x) {

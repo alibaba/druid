@@ -106,6 +106,4 @@ public class MySqlSelectTest_112_orderBy extends TestCase {
                 "GROUP BY coach_id, tournament_name, tournament_id, season_id, season\n" +
                 "ORDER BY season_id DESC", stmt.toString());
     }
-
-
 }

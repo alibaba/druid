@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcTraceManager;
 import com.alibaba.druid.util.JMXUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 @SuppressWarnings("deprecation")
 public class TestTraceFilter extends TestCase {

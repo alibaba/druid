@@ -1,12 +1,9 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
+import junit.framework.TestCase;
 
 public class EqualTest_not_2 extends TestCase {
     public void test_exits() throws Exception {
@@ -19,7 +16,7 @@ public class EqualTest_not_2 extends TestCase {
             exprB = (SQLNotExpr) binaryEpr.getRight();
         }
 
-        Assert.assertNotNull(exprA);
-        Assert.assertNotNull(exprB);
+        assertNotNull(exprA);
+        assertNotNull(exprB);
     }
 }

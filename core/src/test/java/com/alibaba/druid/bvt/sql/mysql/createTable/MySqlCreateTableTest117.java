@@ -18,12 +18,9 @@ public class MySqlCreateTableTest117 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE IF NOT EXISTS `Employee` (\n" +
                 "\tid int(10) AUTO_INCREMENT\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", stmt.toString());
-
-
     }
 
     public void test_0() throws Exception {
@@ -36,12 +33,9 @@ public class MySqlCreateTableTest117 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE IF NOT EXISTS `Employee` (\n" +
                 "\tid int(10) AUTO_INCREMENT BY GROUP\n" +
                 ") AUTO_INCREMENT = 12313 ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", stmt.toString());
-
-
     }
 
     public void test_1() throws Exception {
@@ -54,12 +48,9 @@ public class MySqlCreateTableTest117 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE IF NOT EXISTS `Employee` (\n" +
                 "\tid int(10) AUTO_INCREMENT BY SIMPLE\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", stmt.toString());
-
-
     }
 
     public void test_2() throws Exception {
@@ -72,12 +63,9 @@ public class MySqlCreateTableTest117 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE IF NOT EXISTS `Employee` (\n" +
                 "\tid int(10) AUTO_INCREMENT BY SIMPLE WITH CACHE\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", stmt.toString());
-
-
     }
 
     public void test_3() throws Exception {
@@ -90,12 +78,8 @@ public class MySqlCreateTableTest117 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE IF NOT EXISTS `Employee` (\n" +
                 "\tid int(10) AUTO_INCREMENT BY TIME\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", stmt.toString());
-
-
     }
-
 }

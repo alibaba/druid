@@ -85,6 +85,7 @@ public final class DruidConnectionHolder {
     final ReentrantLock lock = new ReentrantLock();
     protected String initSchema;
     protected Socket socket;
+    protected final long userPasswordVersion;
 
     volatile FilterChainImpl filterChain;
 
@@ -116,6 +117,7 @@ public final class DruidConnectionHolder {
         this.createNanoSpan = connectNanoSpan;
         this.variables = variables;
         this.globalVariables = globalVariables;
+        this.userPasswordVersion = dataSource.getUserPasswordVersion();
 
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;
@@ -468,4 +470,7 @@ public final class DruidConnectionHolder {
         return buf.toString();
     }
 
+    public long getUserPasswordVersion() {
+        return userPasswordVersion;
+    }
 }

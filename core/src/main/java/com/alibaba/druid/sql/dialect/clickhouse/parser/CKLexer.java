@@ -1,20 +1,32 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 
 public class CKLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords CK_KEYWORDS;
+    static final DialectFeature CK_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    AsofJoin,
+                    GlobalJoin,
+                    JoinRightTableAlias,
+                    ParseLimitBy,
+                    TableAliasAsof
+            ),
+            null
+    );
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -39,16 +51,20 @@ public class CKLexer extends Lexer {
         map.put("FINAL", Token.FINAL);
         map.put("TTL", Token.TTL);
         map.put("CODEC", Token.CODEC);
+        map.remove("ANY");
 
-        return new Keywords(map);
+        CK_KEYWORDS = new Keywords(map);
     }
-    public CKLexer(String input) {
-        super(input);
-        dbType = DbType.clickhouse;
+
+    @Override
+    protected Keywords loadKeywords() {
+        return CK_KEYWORDS;
     }
 
     public CKLexer(String input, SQLParserFeature... features) {
-        super(input);
+        super(input, DbType.clickhouse);
+        this.skipComment = true;
+        this.keepComments = true;
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
@@ -56,13 +72,6 @@ public class CKLexer extends Lexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                AsofJoin,
-                GlobalJoin,
-                JoinRightTableAlias,
-                ParseLimitBy,
-                TableAliasAsof
-        );
+        this.dialectFeature = CK_FEATURE;
     }
 }

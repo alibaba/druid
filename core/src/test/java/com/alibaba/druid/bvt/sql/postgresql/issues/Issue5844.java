@@ -1,18 +1,12 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,7 +19,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://www.postgresql.org/docs/current/sql-select.html#SQL-TABLESAMPLE">TABLESAMPLE</a>
  */
 public class Issue5844 {
-
     @Test
     public void test_parse_postgresql_tablesample() {
         for (String sql : new String[]{

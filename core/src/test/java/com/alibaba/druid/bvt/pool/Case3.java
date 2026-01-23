@@ -15,18 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.DruidDataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Case3 extends PoolTestCase {
     // public void test_0() throws Exception {
@@ -47,8 +43,8 @@ public class Case3 extends PoolTestCase {
     //
     // conn.close();
     //
-    // Assert.assertEquals(true, stmt.isClosed());
-    // Assert.assertEquals(true, rs.isClosed());
+    // assertEquals(true, stmt.isClosed());
+    // assertEquals(true, rs.isClosed());
     //
     // rs.close();
     // stmt.close();
@@ -68,14 +64,14 @@ public class Case3 extends PoolTestCase {
         rs.next();
 
         Statement mockStmt = stmt.unwrap(Statement.class);
-        Assert.assertEquals(false, mockStmt.isClosed());
+        assertEquals(false, mockStmt.isClosed());
 
         conn.close();
 
-        Assert.assertEquals(true, mockStmt.isClosed());
+        assertEquals(true, mockStmt.isClosed());
 
-        Assert.assertEquals(true, stmt.isClosed());
-        Assert.assertEquals(true, rs.isClosed());
+        assertEquals(true, stmt.isClosed());
+        assertEquals(true, rs.isClosed());
 
         rs.close();
         stmt.close();
@@ -86,7 +82,7 @@ public class Case3 extends PoolTestCase {
         } catch (SQLException ex) {
             error = ex;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         dataSource.close();
     }

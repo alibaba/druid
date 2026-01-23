@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -23,9 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -40,23 +37,23 @@ public class MySqlSelectTest_10 extends MysqlTest {
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
 
         SQLSelect select = selectStmt.getSelect();
-        Assert.assertNotNull(select.getQuery());
+        assertNotNull(select.getQuery());
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
-        Assert.assertNotNull(queryBlock.getOrderBy());
+        assertNotNull(queryBlock.getOrderBy());
 
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
-        Assert.assertEquals(1, visitor.getOrderByColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_department")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_department")));
     }
 
 //    public void test_1() throws Exception {
@@ -70,9 +67,9 @@ public class MySqlSelectTest_10 extends MysqlTest {
 //        SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
 //
 //        SQLSelect select = selectStmt.getSelect();
-//        Assert.assertNotNull(select.getQuery());
+//        assertNotNull(select.getQuery());
 //        MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
-//        Assert.assertNotNull(queryBlock.getOrderBy());
+//        assertNotNull(queryBlock.getOrderBy());
 //
 //        print(statementList);
 //    }
@@ -86,9 +83,9 @@ public class MySqlSelectTest_10 extends MysqlTest {
 //        SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
 //
 //        SQLSelect select = selectStmt.getSelect();
-//        Assert.assertNotNull(select.getQuery());
+//        assertNotNull(select.getQuery());
 //        MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
-//        Assert.assertNotNull(queryBlock.getOrderBy());
+//        assertNotNull(queryBlock.getOrderBy());
 //
 //        print(statementList);
 //    }
@@ -102,9 +99,9 @@ public class MySqlSelectTest_10 extends MysqlTest {
 //        SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
 //
 //        SQLSelect select = selectStmt.getSelect();
-//        Assert.assertNotNull(select.getQuery());
+//        assertNotNull(select.getQuery());
 //        MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
-//        Assert.assertNotNull(queryBlock.getOrderBy());
+//        assertNotNull(queryBlock.getOrderBy());
 //
 //        print(statementList);
 //    }
@@ -153,6 +150,4 @@ public class MySqlSelectTest_10 extends MysqlTest {
 //                  + "  version bigint\n" + ")"
 //        ));
 //    }
-
-
 }

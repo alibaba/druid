@@ -22,18 +22,17 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2CreateTableStatement;
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
+import com.alibaba.druid.sql.dialect.db2.Db2;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisitor {
     public DB2OutputVisitor(StringBuilder appender) {
-        super(appender, DbType.db2);
+        super(appender, DbType.db2, Db2.DIALECT);
     }
 
     public DB2OutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.db2, parameterized);
+        super(appender, DbType.db2, Db2.DIALECT, parameterized);
     }
 
     @Override
@@ -136,6 +135,46 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
 
     @Override
     public void endVisit(DB2CreateTableStatement x) {
+    }
+
+    @Override
+    public boolean visit(DB2CreateSchemaStatement x) {
+        printUcase("CREATE SCHEMA ");
+        if (x.getSchemaName() != null) {
+            x.getSchemaName().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(DB2CreateSchemaStatement x) {
+    }
+
+    @Override
+    public boolean visit(DB2DropSchemaStatement x) {
+        printUcase("DROP SCHEMA ");
+
+        if (x.isIfExists()) {
+            printUcase("IF EXISTS ");
+        }
+
+        if (x.getSchemaName() != null) {
+            x.getSchemaName().accept(this);
+        }
+
+        if (x.isCascade()) {
+            print0(ucase ? " CASCADE" : " cascade");
+        }
+        if (x.isRestrict()) {
+            print0(ucase ? " RESTRICT" : " restrict");
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(DB2DropSchemaStatement x) {
     }
 
     protected void printOperator(SQLBinaryOperator operator) {

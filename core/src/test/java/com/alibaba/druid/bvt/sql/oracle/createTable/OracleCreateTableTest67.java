@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -36,9 +35,9 @@ public class OracleCreateTableTest67 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE new_duplications_index (\n" +
+        assertEquals("CREATE TABLE new_duplications_index (\n" +
                         "\t\"ID\" PRIMARY KEY,\n" +
                         "\tproject_snapshot_id,\n" +
                         "\tsnapshot_id,\n" +
@@ -51,7 +50,7 @@ public class OracleCreateTableTest67 extends OracleTest {
                         "AS\n" +
                         "SELECT CAST(duplications_index_seq.NEXTVAL AS NUMBER(38)) AS \"ID\", project_snapshot_id, snapshot_id, hash, index_in_file\n" +
                         "\t, start_line, end_line\n" +
-                        "FROM duplications_index",//
+                        "FROM duplications_index",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -63,10 +62,10 @@ public class OracleCreateTableTest67 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertEquals(13, visitor.getColumns().size());
+        assertEquals(13, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("duplications_index", "project_snapshot_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("duplications_index", "project_snapshot_id")));
     }
 }

@@ -24,5 +24,4 @@ public class MySqlSelectTest_168_union extends MysqlTest {
                 "FROM tb2\n" +
                 "ORDER BY id1);", stmt.toString());
     }
-
 }

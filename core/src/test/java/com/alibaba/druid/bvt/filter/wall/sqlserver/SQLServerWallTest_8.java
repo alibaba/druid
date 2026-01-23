@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -35,8 +32,6 @@ public class SQLServerWallTest_8 extends TestCase {
 
         provider.getConfig().setMustParameterized(true);
 
-        Assert.assertFalse(provider.checkValid("select * from t where fid = 1"));
-
+        assertFalse(provider.checkValid("select * from t where fid = 1"));
     }
-
 }

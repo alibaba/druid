@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -36,9 +35,9 @@ public class OracleCreateViewTest0 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE VIEW \"SC0\".\"V_001\" (\n" +
+        assertEquals("CREATE OR REPLACE VIEW \"SC0\".\"V_001\" (\n" +
                         "\t\"ID\", \n" +
                         "\t\"GROUP_ID\", \n" +
                         "\t\"IND_BY_ALL\", \n" +
@@ -50,7 +49,7 @@ public class OracleCreateViewTest0 extends OracleTest {
                         "AS\n" +
                         "SELECT id, GROUP_ID, IND_BY_ALL, IND_BY_GROUP, OWNER_MEMBER_ID\n" +
                         "\t, OWNER_MEMBER_SEQ, gmt_modified\n" +
-                        "FROM DUAL",//
+                        "FROM DUAL",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -62,10 +61,10 @@ public class OracleCreateViewTest0 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertEquals(0, visitor.getColumns().size());
+//        assertEquals(0, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("customers_part", "customer_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("customers_part", "customer_id")));
     }
 }

@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE FULLTEXT ANALYZER test1(\n"
+        assertEquals("CREATE FULLTEXT ANALYZER test1(\n"
                 + "\"TOKENIZER\" = dictionary-name,\n"
                 + "\"CHARFILTER\" = [\"name1\", \"name2\"],\n"
                 + "\"TOKENFILTER\" = [\"name1\", \"name2\"]\n" + ")", output);
@@ -57,7 +56,7 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE FULLTEXT ANALYZER test1(\n"
+        assertEquals("CREATE FULLTEXT ANALYZER test1(\n"
                 + "\"TOKENIZER\" = dictionary-name,\n"
                 + "\"CHARFILTER\" = [\"name1\", \"name2\"],\n"
                 + "\"TOKENFILTER\" = [\"name1\", \"name2\"]\n"
@@ -73,7 +72,7 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE FULLTEXT ANALYZER test_analyzer(\n"
+        assertEquals("CREATE FULLTEXT ANALYZER test_analyzer(\n"
                 + "\"TOKENIZER\" = test_alinlp,\n"
                 + "\"CHARFILTER\" = [\"test_stconv\"],\n"
                 + "\"TOKENFILTER\" = [\"test_pinyin\"]\n"
@@ -89,7 +88,7 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW FULLTEXT ANALYZERS", output);
+        assertEquals("SHOW FULLTEXT ANALYZERS", output);
     }
 
     @Test
@@ -101,7 +100,7 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW CREATE FULLTEXT ANALYZER test1", output);
+        assertEquals("SHOW CREATE FULLTEXT ANALYZER test1", output);
     }
 
     @Test
@@ -113,7 +112,7 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER FULLTEXT ANALYZER test1 SET k = 'a';", output);
+        assertEquals("ALTER FULLTEXT ANALYZER test1 SET k = 'a';", output);
     }
 
     @Test
@@ -125,6 +124,6 @@ public class MySqlCreateFullTextAnalyzerTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DROP FULLTEXT ANALYZER test1", output);
+        assertEquals("DROP FULLTEXT ANALYZER test1", output);
     }
 }

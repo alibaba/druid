@@ -2,7 +2,6 @@ package com.alibaba.druid.bvt.pool.profile;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-
 import junit.framework.TestCase;
 
 public class ProfileEnableTest extends TestCase {
@@ -27,5 +26,4 @@ public class ProfileEnableTest extends TestCase {
             conn.close();
         }
     }
-
 }

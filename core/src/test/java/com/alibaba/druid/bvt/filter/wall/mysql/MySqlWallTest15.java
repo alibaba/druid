@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -30,16 +27,16 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest15 extends TestCase {
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-                "SELECT m.*, m.icon AS micon, md.uid as md.uid, md.lastmsg,md.postnum," + //
-                        "md.rvrc,md.money,md.credit,md.currency,md.lastvisit,md.thisvisit," + //
-                        "md.onlinetime,md.lastpost,md.todaypost, md.monthpost,md.onlineip," + //
-                        "md.uploadtime,md.uploadnum,md.starttime,md.pwdctime,md.monoltime," + //
-                        "md.digests,md.f_num,md.creditpop, md.jobnum,md.lastgrab,md.follows,md.fans," + //
-                        "md.newfans,md.newreferto,md.newcomment,md.postcheck,md.punch, mi.customdata " + //
-                        "FROM pw_members m " + //
-                        "   LEFT JOIN pw_memberdata md ON m.uid=md.uid " + //
-                        "   LEFT JOIN pw_memberinfo mi ON mi.uid=m.uid " + //
-                        "WHERE m.uid IN (?)")); //
+        assertTrue(WallUtils.isValidateMySql(//
+                "SELECT m.*, m.icon AS micon, md.uid as md.uid, md.lastmsg,md.postnum," +
+                        "md.rvrc,md.money,md.credit,md.currency,md.lastvisit,md.thisvisit," +
+                        "md.onlinetime,md.lastpost,md.todaypost, md.monthpost,md.onlineip," +
+                        "md.uploadtime,md.uploadnum,md.starttime,md.pwdctime,md.monoltime," +
+                        "md.digests,md.f_num,md.creditpop, md.jobnum,md.lastgrab,md.follows,md.fans," +
+                        "md.newfans,md.newreferto,md.newcomment,md.postcheck,md.punch, mi.customdata " +
+                        "FROM pw_members m " +
+                        "   LEFT JOIN pw_memberdata md ON m.uid=md.uid " +
+                        "   LEFT JOIN pw_memberinfo mi ON mi.uid=m.uid " +
+                        "WHERE m.uid IN (?)"));
     }
 }

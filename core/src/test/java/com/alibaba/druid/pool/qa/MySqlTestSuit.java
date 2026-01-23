@@ -1,15 +1,14 @@
 package com.alibaba.druid.pool.qa;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class MySqlTestSuit extends TestCase {
     private DruidDataSource dataSource;
@@ -87,5 +86,4 @@ public class MySqlTestSuit extends TestCase {
             e.printStackTrace();
         }
     }
-
 }

@@ -15,13 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
+import junit.framework.TestCase;
 
 /**
  * 这个场景，检测可疑的Having条件
@@ -42,21 +39,19 @@ public class WallReadOnlyTest2 extends TestCase {
 
     public void testMySql() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider(config);
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
-        Assert.assertFalse(provider.checkValid(insert_sql));
-        Assert.assertFalse(provider.checkValid(update_sql));
-        Assert.assertFalse(provider.checkValid(delete_sql));
-
+        assertFalse(provider.checkValid(insert_sql));
+        assertFalse(provider.checkValid(update_sql));
+        assertFalse(provider.checkValid(delete_sql));
     }
 
     public void testORACLE() throws Exception {
         OracleWallProvider provider = new OracleWallProvider(config);
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
-        Assert.assertFalse(provider.checkValid(insert_sql));
-        Assert.assertFalse(provider.checkValid(update_sql));
-        Assert.assertFalse(provider.checkValid(delete_sql));
-
+        assertFalse(provider.checkValid(insert_sql));
+        assertFalse(provider.checkValid(update_sql));
+        assertFalse(provider.checkValid(delete_sql));
     }
 }

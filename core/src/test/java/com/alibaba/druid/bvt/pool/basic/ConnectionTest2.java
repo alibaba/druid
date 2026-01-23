@@ -15,18 +15,15 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class ConnectionTest2 extends PoolTestCase {
     private MockDriver driver;
@@ -55,9 +52,9 @@ public class ConnectionTest2 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.resetStat();
-        Assert.assertEquals(0, dataSource.getCreateCount());
+        assertEquals(0, dataSource.getCreateCount());
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         super.tearDown();
     }

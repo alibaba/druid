@@ -15,16 +15,6 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledStatement;
@@ -32,6 +22,13 @@ import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class PoolableStatementTest2 extends TestCase {
     private MockDriver driver;
@@ -58,9 +55,9 @@ public class PoolableStatementTest2 extends TestCase {
         dataSource.setRemoveAbandoned(true);
         dataSource.setExceptionSorterClassName(null);
 
-        Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
+        assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
         dataSource.setExceptionSorterClassName("");
-        Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
+        assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
 
         JdbcStatContext context = new JdbcStatContext();
         context.setTraceEnable(true);
@@ -68,9 +65,9 @@ public class PoolableStatementTest2 extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(true, dataSource.getCreateTimespanNano() > 0);
+        assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
         JdbcStatManager.getInstance().setStatContext(null);
     }
 
@@ -103,7 +100,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -123,7 +120,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -143,7 +140,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -164,7 +161,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -176,7 +173,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.setMaxFieldSize(23);
-        Assert.assertEquals(23, stmt.getMaxFieldSize());
+        assertEquals(23, stmt.getMaxFieldSize());
 
         ((DruidPooledStatement) stmt).getStatement().close();
 
@@ -187,7 +184,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -197,7 +194,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -209,7 +206,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.setQueryTimeout(33);
-        Assert.assertEquals(33, stmt.getQueryTimeout());
+        assertEquals(33, stmt.getQueryTimeout());
 
         ((DruidPooledStatement) stmt).getStatement().close();
 
@@ -220,7 +217,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -230,7 +227,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -242,7 +239,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.setMaxRows(44);
-        Assert.assertEquals(44, stmt.getMaxRows());
+        assertEquals(44, stmt.getMaxRows());
 
         ((DruidPooledStatement) stmt).getStatement().close();
 
@@ -253,7 +250,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -263,7 +260,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -275,7 +272,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.setFetchDirection(144);
-        Assert.assertEquals(144, stmt.getFetchDirection());
+        assertEquals(144, stmt.getFetchDirection());
 
         ((DruidPooledStatement) stmt).getStatement().close();
 
@@ -286,7 +283,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -296,7 +293,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -308,7 +305,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.setFetchSize(144);
-        Assert.assertEquals(144, stmt.getFetchSize());
+        assertEquals(144, stmt.getFetchSize());
 
         ((DruidPooledStatement) stmt).getStatement().close();
 
@@ -319,7 +316,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -329,7 +326,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -350,7 +347,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -371,7 +368,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -392,7 +389,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -413,7 +410,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -434,7 +431,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -456,7 +453,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -477,7 +474,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -498,7 +495,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -519,7 +516,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -540,7 +537,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -561,7 +558,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -582,7 +579,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -603,7 +600,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -624,7 +621,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -645,7 +642,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -666,7 +663,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -687,7 +684,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -708,7 +705,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -729,7 +726,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -750,7 +747,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -771,7 +768,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -792,7 +789,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -813,7 +810,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -834,7 +831,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -855,7 +852,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -876,7 +873,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -897,7 +894,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -918,7 +915,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -939,7 +936,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -960,7 +957,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -981,7 +978,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -1002,7 +999,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -1022,7 +1019,7 @@ public class PoolableStatementTest2 extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();

@@ -32,7 +32,7 @@ public class OdpsSelectTest26 extends TestCase {
                 "    ds='20170706' and value6='MOBILE_TB' and value1 REGEXP '^00'\n" +
                 "    and process in('preCheckMobile','VerifyScrollCheckcode','SendMobileCheckcode','VerifyMobile',\n" +
                 "    'VerifyMobileCheckCode','VerifyNick','VerifyPasswordFormat','register','CheckMobileConflict','VerifyEmail') \n" +
-                "    group  by process,value5";//
+                "    group  by process,value5";
         assertEquals("SELECT count(DISTINCT (trackid)) AS total, process, value5 AS result\n" +
                 "FROM havanaapp.s_register_process_log\n" +
                 "WHERE ds = '20170706'\n" +
@@ -94,5 +94,4 @@ public class OdpsSelectTest26 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

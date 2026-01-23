@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * 这个场景，检测
@@ -41,25 +38,25 @@ public class WallUpdateTest3 extends TestCase {
         config.setUpdateWhereAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(sql2, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql2, config));
 
         config.setUpdateWhereAlwayTrueCheck(false);
         config.setConditionAndAlwayTrueAllow(true);
-        Assert.assertTrue(WallUtils.isValidateMySql(sql2, config));
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql2, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void testORACLE() throws Exception {
         config.setUpdateWhereAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(sql2, config));
+        assertFalse(WallUtils.isValidateOracle(sql, config));
+        assertFalse(WallUtils.isValidateOracle(sql2, config));
 
         config.setUpdateWhereAlwayTrueCheck(false);
         config.setConditionAndAlwayTrueAllow(true);
-        Assert.assertTrue(WallUtils.isValidateOracle(sql2, config));
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
+        assertTrue(WallUtils.isValidateOracle(sql2, config));
+        assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 }

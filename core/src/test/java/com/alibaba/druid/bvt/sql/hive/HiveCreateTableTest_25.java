@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -30,13 +29,13 @@ public class HiveCreateTableTest_25 extends OracleTest {
                 "create table aliyun_cdm.test_910_table(\n" +
                         "col1 BIGINT,col2 STRING,col3 BOOLEAN,col4 DOUBLE,col5 DATETIME,\n" +
                         "constraint c11 foreign key(col1,col2) references aliyun_cdm.test_910_table_f (col1,col2)  disable novalidate\n" +
-                        ")\n"; //
+                        ")\n";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -68,7 +67,5 @@ public class HiveCreateTableTest_25 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("aliyun_cdm.test_910_table"));
-
     }
-
 }

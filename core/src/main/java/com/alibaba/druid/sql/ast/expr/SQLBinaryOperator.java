@@ -91,6 +91,7 @@ public enum SQLBinaryOperator {
     RegExp("REGEXP", 110),
     NotRegExp("NOT REGEXP", 110),
     Equality("=", 110),
+    EqEq("==", 110),
 
     MATCH_ALL("MATCH_ALL", 110),
     NOT_MATCH_ALL("NOT MATCH_ALL", 110),
@@ -110,6 +111,7 @@ public enum SQLBinaryOperator {
     BooleanXor("XOR", 150),
     BooleanOr("OR", 160),
     Assignment(":=", 169),
+    Blank("", 170),
 
     PG_And("&&", 140),
     PG_ST_DISTANCE("<->", 20);

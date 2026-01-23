@@ -15,14 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.reflect.Field;
-
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
+
+import java.lang.reflect.Field;
 
 public class ConfigErrorTestMysql extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -50,9 +47,9 @@ public class ConfigErrorTestMysql extends PoolTestCase {
 
         LOG.resetStat();
 
-        Assert.assertEquals(0, LOG.getWarnCount());
+        assertEquals(0, LOG.getWarnCount());
         dataSource.init();
-        Assert.assertEquals(0, LOG.getWarnCount());
+        assertEquals(0, LOG.getWarnCount());
     }
 
     public void test_warn() throws Exception {
@@ -64,8 +61,8 @@ public class ConfigErrorTestMysql extends PoolTestCase {
 
         LOG.resetStat();
 
-        Assert.assertEquals(0, LOG.getWarnCount());
+        assertEquals(0, LOG.getWarnCount());
         dataSource.init();
-        Assert.assertEquals(0, LOG.getWarnCount());
+        assertEquals(0, LOG.getWarnCount());
     }
 }

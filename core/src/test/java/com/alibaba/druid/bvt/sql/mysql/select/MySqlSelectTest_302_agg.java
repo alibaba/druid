@@ -71,5 +71,4 @@ public class MySqlSelectTest_302_agg
         assertEquals("SELECT db.sum(1)\n" +
                 "FROM test", stmt.toString());
     }
-
 }

@@ -32,7 +32,6 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
                 "order by -ABS(10 - level) desc\n" +
                 "limit 0,100";
 
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -45,7 +44,6 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
         visitor.setExportTables(true);
 
         stmt.accept(visitor);
-
 
         assertEquals("SELECT *\n" +
                         "FROM my_table\n" +
@@ -62,7 +60,6 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
     public void test_1() throws Exception {
         String sql = "SELECT * FROM table1 INNER JOIN table2 ON table1.id = table2.id;";
 
-
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -76,7 +73,6 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
 
         stmt.accept(visitor);
 
-
         assertEquals("SELECT *\n" +
                         "FROM table1\n" +
                         "\tINNER JOIN table2 ON table1.id = table2.id;", //
@@ -86,5 +82,4 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
         assertEquals(2, visitor.getTables().size());
         assertEquals("[table1, table2]", visitor.getTables().toString());
     }
-
 }

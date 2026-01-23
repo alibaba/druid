@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_274 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "/*+ run_async=true,mq-notify-by=ons,mq-delayed-by=10 */ /*+ orc-bloomfilters-enabled=true */ insert into t1( x,y) select * from t2";
@@ -34,6 +33,4 @@ public class MySqlSelectTest_274 extends MysqlTest {
                 "SELECT *\n" +
                 "FROM t2", stmt.toString());
     }
-
-
 }

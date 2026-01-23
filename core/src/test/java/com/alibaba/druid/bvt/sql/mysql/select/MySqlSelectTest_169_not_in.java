@@ -5,12 +5,9 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 public class MySqlSelectTest_169_not_in extends MysqlTest {
     public void test_0() throws Exception {
@@ -22,13 +19,13 @@ public class MySqlSelectTest_169_not_in extends MysqlTest {
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
-        String newSql=stmt.toString();
+        String newSql = stmt.toString();
         System.out.println("首次解析后生成的sql===" + newSql);
-        SQLSelectStatement sqlStatementNew = (SQLSelectStatement) SQLUtils.parseSingleStatement(newSql, DbType.mysql,true);
+        SQLSelectStatement sqlStatementNew = (SQLSelectStatement) SQLUtils.parseSingleStatement(newSql, DbType.mysql, true);
 
-        String newSql2=sqlStatementNew.toString();
+        String newSql2 = sqlStatementNew.toString();
         System.out.println("再次解析后生成的sql===" + newSql2);
-        assertEquals(newSql,newSql2);
+        assertEquals(newSql, newSql2);
         assertEquals(1, statementList.size());
 
         assertEquals("SELECT (10 != ((HEX('abc')) IS false)), (((('a'\n" +

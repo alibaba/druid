@@ -15,18 +15,10 @@
  */
 package com.alibaba.druid;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-
+import com.alibaba.druid.util.Utils;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.util.Utils;
+import java.io.*;
 
 public class TestReplaceLicense extends TestCase {
     private String license;
@@ -46,7 +38,6 @@ public class TestReplaceLicense extends TestCase {
     public void test_0() throws Exception {
         File file = new File("/usr/alibaba/workspace/druid");
         listFile(file);
-
     }
 
     public void listFile(File file) throws Exception {
@@ -79,7 +70,6 @@ public class TestReplaceLicense extends TestCase {
             Writer writer = new OutputStreamWriter(out, "utf-8");
             writer.write(newContent);
             writer.close();
-        } else {
         }
     }
 }

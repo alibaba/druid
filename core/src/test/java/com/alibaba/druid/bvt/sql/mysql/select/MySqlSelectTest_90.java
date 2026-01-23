@@ -15,14 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
+import java.util.List;
 
 public class MySqlSelectTest_90 extends MysqlTest {
     public void test_0() throws Exception {
@@ -31,9 +28,9 @@ public class MySqlSelectTest_90 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         String text = output(statementList);
-        Assert.assertEquals("SELECT *\nFROM tbl_name USE INDEX (idx1) USE INDEX (idx2)", text);
+        assertEquals("SELECT *\nFROM tbl_name USE INDEX (idx1) USE INDEX (idx2)", text);
     }
 }

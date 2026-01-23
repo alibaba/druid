@@ -1,16 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class ExceptionSorterTest extends TestCase {
     private DruidDataSource dataSource;
@@ -31,7 +28,7 @@ public class ExceptionSorterTest extends TestCase {
     }
 
     public void test_exceptionSorter() throws Exception {
-        Assert.assertTrue(dataSource.getExceptionSorterClassName(),
+        assertTrue(dataSource.getExceptionSorterClassName(),
                 dataSource.getExceptionSorter() instanceof MockExceptionSorter);
 
         Connection conn = dataSource.getConnection();
@@ -49,7 +46,7 @@ public class ExceptionSorterTest extends TestCase {
         } catch (Exception ex) {
             stmtClosedError = ex;
         }
-        Assert.assertNotNull(stmtClosedError);
+        assertNotNull(stmtClosedError);
         conn.close();
     }
 }

@@ -31,7 +31,7 @@ public class OdpsSelectTest35 extends TestCase {
                 "FROM dw_x001_cp_used_car_detail a\n" +
                 "WHERE status = 'PUBLISHED'\n" +
                 "  AND model_id = 4419\n" +
-                "  AND abs(datediff(licensed_date, '2013-07-01 00:00:00', 'mm')) <= 5;";//
+                "  AND abs(datediff(licensed_date, '2013-07-01 00:00:00', 'mm')) <= 5;";
         assertEquals("SELECT a.city, a.car_id, a.rrc_id, a.brand, a.car_series\n" +
                 "\t, a.title\n" +
                 "FROM dw_x001_cp_used_car_detail a\n" +
@@ -67,5 +67,4 @@ public class OdpsSelectTest35 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

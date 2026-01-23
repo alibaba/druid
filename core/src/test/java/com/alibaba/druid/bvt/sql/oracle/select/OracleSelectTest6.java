@@ -20,17 +20,16 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleSelectTest6 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "SELECT * FROM departments " + //
-                "   WHERE EXISTS " + //
-                "   (SELECT * FROM employees " + //
-                "       WHERE departments.department_id = employees.department_id " + //
-                "       AND employees.salary > 2500)" + //
+        String sql = "SELECT * FROM departments " +
+                "   WHERE EXISTS " +
+                "   (SELECT * FROM employees " +
+                "       WHERE departments.department_id = employees.department_id " +
+                "       AND employees.salary > 2500)" +
                 "   ORDER BY department_name; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -38,7 +37,7 @@ public class OracleSelectTest6 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -49,18 +48,18 @@ public class OracleSelectTest6 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "*")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "*")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "*")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "*")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
 }

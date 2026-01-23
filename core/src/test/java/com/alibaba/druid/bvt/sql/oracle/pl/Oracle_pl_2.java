@@ -27,7 +27,7 @@ public class Oracle_pl_2 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "BEGIN\n" +
                 "    SET :id = sys.dbms_transaction.local_transaction_id;\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, statementList.size());
@@ -46,14 +46,14 @@ public class Oracle_pl_2 extends OracleTest {
 
         assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
 
-//        Assert.assertEquals(7, visitor.getColumns().size());
-//        Assert.assertEquals(3, visitor.getConditions().size());
-//        Assert.assertEquals(1, visitor.getRelationships().size());
+//        assertEquals(7, visitor.getColumns().size());
+//        assertEquals(3, visitor.getConditions().size());
+//        assertEquals(1, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
         {
             String output = SQLUtils.toOracleString(stmt);

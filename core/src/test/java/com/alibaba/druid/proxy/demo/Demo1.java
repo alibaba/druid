@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.proxy.demo;
 
+import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.stat.JdbcStatManager;
 
 public class Demo1 extends TestCase {
     public void test_0() throws Exception {

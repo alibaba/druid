@@ -15,22 +15,20 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.visitor.VisitorFeature;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class OdpsResourceTest extends SQLResourceTest {
     public OdpsResourceTest() {
@@ -130,14 +128,14 @@ public class OdpsResourceTest extends SQLResourceTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new OdpsSchemaStatVisitor();
         stmt.accept(visitor);
 
         if (expect != null) {
             String result = stmt.toString(VisitorFeature.OutputPrettyFormat);
-            Assert.assertEquals(expect, result);
+            assertEquals(expect, result);
         }
     }
 }

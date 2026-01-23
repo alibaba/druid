@@ -1,16 +1,14 @@
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySqlCreateTableTest133_drds_gsi extends MysqlTest {
     // Constraint XXX may not show in parsed sql, so removed it.
@@ -124,10 +122,9 @@ public class MySqlCreateTableTest133_drds_gsi extends MysqlTest {
             for (String e : errorGsiDefs) {
                 System.out.println(e);
             }
-            Assert.fail(errors.size() + " out of " + GSI_DEFINITIONS.size() + " CREATE TABLE statement failed");
+            fail(errors.size() + " out of " + GSI_DEFINITIONS.size() + " CREATE TABLE statement failed");
         } else {
             System.out.println(GSI_DEFINITIONS.size() + " CREATE TABLE statement success!");
         }
     }
-
 }

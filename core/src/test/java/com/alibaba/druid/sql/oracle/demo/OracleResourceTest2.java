@@ -71,5 +71,4 @@ public class OracleResourceTest2 extends OracleTest {
 
         Assert.assertEquals(expect, out.toString());
     }
-
 }

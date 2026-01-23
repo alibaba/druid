@@ -216,6 +216,5 @@ public class OracleCreateTableTest94 extends OracleTest {
                 "\tBUFFER_POOL DEFAULT\n" +
                 ")\n" +
                 "PARALLEL 8", stmt.toString());
-
     }
 }

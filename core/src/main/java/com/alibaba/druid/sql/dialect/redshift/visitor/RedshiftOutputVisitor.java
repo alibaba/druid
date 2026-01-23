@@ -8,17 +8,16 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
+import com.alibaba.druid.sql.dialect.redshift.Redshift;
 import com.alibaba.druid.sql.dialect.redshift.stmt.*;
 
 public class RedshiftOutputVisitor extends PGOutputVisitor implements RedshiftASTVisitor {
     public RedshiftOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.hologres;
+        super(appender, DbType.redshift, Redshift.dialect, parameterized);
     }
 
     public RedshiftOutputVisitor(StringBuilder appender) {
-        super(appender);
-        dbType = DbType.hologres;
+        super(appender, DbType.redshift, Redshift.dialect);
     }
 
     public boolean visit(RedshiftSelectQueryBlock x) {

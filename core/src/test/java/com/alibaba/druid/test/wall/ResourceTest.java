@@ -1,15 +1,14 @@
 package com.alibaba.druid.test.wall;
 
-import java.io.File;
-import java.io.FileInputStream;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
+
+import java.io.File;
+import java.io.FileInputStream;
 
 public class ResourceTest extends TestCase {
     private String[] items;
@@ -41,5 +40,4 @@ public class ResourceTest extends TestCase {
 
         System.out.println("violaionCount : " + provider.getViolationCount());
     }
-
 }

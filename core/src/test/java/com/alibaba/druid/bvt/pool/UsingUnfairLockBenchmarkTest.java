@@ -4,20 +4,7 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import org.junit.Assert;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Level;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.annotations.Threads;
-import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -26,6 +13,10 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.sql.Connection;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 1, time = 3)
@@ -72,7 +63,7 @@ public class UsingUnfairLockBenchmarkTest {
     @TearDown(Level.Trial)
     public void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     @Benchmark
@@ -82,14 +73,14 @@ public class UsingUnfairLockBenchmarkTest {
         try {
             for (; i < count; ++i) {
                 Connection conn = dataSource.getConnection();
-                Assert.assertNotNull(conn);
+                assertNotNull(conn);
                 conn.close();
-                Assert.assertTrue(conn.isClosed());
+                assertTrue(conn.isClosed());
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            Assert.assertEquals(count, i);
+            assertEquals(count, i);
         }
     }
 

@@ -86,7 +86,7 @@ public class MySqlCreateViewTest5 extends TestCase {
 //        assertTrue(visitor.getColumns().contains(new Column("t2", "l_suppkey")));
     }
     public void test_1() throws Exception {
-        String sql="CREATE ALGORITHM=UNDEFINED " +
+        String sql = "CREATE ALGORITHM=UNDEFINED " +
             "DEFINER=`root`@`%` " +
             "SQL SECURITY DEFINER VIEW `test_view` AS \n" +
             "select  `t1`.`US_USERID` AS `US_USERID`,  `t1`.`US_USERNAME` AS `US_USERNAME` from `test_userinfo` `t1`";
@@ -132,5 +132,4 @@ public class MySqlCreateViewTest5 extends TestCase {
         assertTrue(visitor.getColumns().contains(new Column("test_userinfo", "US_USERID")));
         assertTrue(visitor.getColumns().contains(new Column("test_userinfo", "US_USERNAME")));
     }
-
 }

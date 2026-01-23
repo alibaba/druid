@@ -1,0 +1,110 @@
+CREATE TABLE test_roundrobin (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+DISTRIBUTE BY ROUNDROBIN
+--------------------
+CREATE TABLE test_roundrobin (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+DISTRIBUTE BY ROUNDROBIN
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE test_replication (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+DISTRIBUTE BY REPLICATION
+--------------------
+CREATE TABLE test_replication (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+DISTRIBUTE BY REPLICATION
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE test_on_commit (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+ON COMMIT PRESERVE ROWS
+--------------------
+CREATE TABLE test_on_commit (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+ON COMMIT PRESERVE ROWS
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE test_on_commit2 (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+ON COMMIT DELETE ROWS
+--------------------
+CREATE TABLE test_on_commit2 (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+ON COMMIT DELETE ROWS
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE test_compress (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+COMPRESS
+--------------------
+CREATE TABLE test_compress (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+COMPRESS
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE test_nocompress (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+NOCOMPRESS
+COMMENT='this is comment'
+--------------------
+CREATE TABLE test_nocompress (
+	L_ORDERKEY BIGINT NOT NULL,
+	L_QUANTITY DECIMAL(15, 2) NOT NULL
+)
+WITH (
+	orientation = column
+)
+NOCOMPRESS
+COMMENT 'this is comment'
+

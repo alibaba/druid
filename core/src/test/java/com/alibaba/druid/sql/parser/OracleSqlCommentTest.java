@@ -16,13 +16,8 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-
-import java.util.List;
 
 /**
  * for pr #5877
@@ -34,15 +29,15 @@ public class OracleSqlCommentTest extends TestCase {
         System.out.println(SQLUtils.parseSingleStatement(sql, JdbcConstants.ORACLE, true));
     }
     public void test_1() throws Exception {
-        String sql =  "insert into user (id,name) select '501'||/*啊打发*/'|502|' as id, s,name from order s";
+        String sql = "insert into user (id,name) select '501'||/*啊打发*/'|502|' as id, s,name from order s";
         System.out.println(SQLUtils.parseSingleStatement(sql, JdbcConstants.ORACLE, true));
     }
     public void test_2() throws Exception {
-        String sql =  "update user set age=3 where id in ( select '501'||/*啊打发*/'|502|' as id from order s)";
+        String sql = "update user set age=3 where id in ( select '501'||/*啊打发*/'|502|' as id from order s)";
         System.out.println(SQLUtils.parseSingleStatement(sql, JdbcConstants.ORACLE, true));
     }
     public void test_3() throws Exception {
-        String sql =  "delete from user where id in (select '501'||/*啊打发*/'|502|' as id from order s)";
+        String sql = "delete from user where id in (select '501'||/*啊打发*/'|502|' as id from order s)";
         System.out.println(SQLUtils.parseSingleStatement(sql, JdbcConstants.ORACLE, true));
     }
 }

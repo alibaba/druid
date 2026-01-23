@@ -21,13 +21,11 @@ public class MySqlCreateTableTest118 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE sal_emp (\n" +
                 "\tname int,\n" +
                 "\tpay_by_quarter int[],\n" +
                 "\tschedule long[256]\n" +
                 ");", stmt.toString());
-
     }
 
     public void test_1() throws Exception {
@@ -43,13 +41,10 @@ public class MySqlCreateTableTest118 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE sal_emp (\n" +
                 "\tname int,\n" +
                 "\tpay_by_quarter ARRAY<int>,\n" +
                 "\tschedule ARRAY<long>(256)\n" +
                 ");", stmt.toString());
-
     }
-
 }

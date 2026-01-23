@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid;
 
+import junit.framework.TestCase;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import junit.framework.TestCase;
 
 public class LockTest extends TestCase {
     public void test_0() throws Exception {

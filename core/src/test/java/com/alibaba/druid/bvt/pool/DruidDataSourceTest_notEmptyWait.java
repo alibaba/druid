@@ -1,13 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * 这个场景测试maxActive < 0
@@ -33,13 +31,13 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
         {
             Connection conn = dataSource.getConnection();
             conn.close();
-            Assert.assertEquals(1, dataSource.getNotEmptyWaitCount());
+            assertEquals(1, dataSource.getNotEmptyWaitCount());
         }
 
         {
             Connection conn = dataSource.getConnection();
             conn.close();
-            Assert.assertEquals(1, dataSource.getNotEmptyWaitCount()); // notEmptyWaitCount没有增长
+            assertEquals(1, dataSource.getNotEmptyWaitCount()); // notEmptyWaitCount没有增长
         }
 
         Connection conn = dataSource.getConnection();
@@ -75,15 +73,15 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
             Thread.sleep(10);
         }
 
-        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadCount());
-        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
+        assertEquals(10, dataSource.getNotEmptyWaitThreadCount());
+        assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
 
         conn.close();
 
         endLatch.await(100, TimeUnit.MILLISECONDS);
 
         Thread.sleep(10);
-//        Assert.assertEquals(0, dataSource.getNotEmptyWaitThreadCount());
-        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
+//        assertEquals(0, dataSource.getNotEmptyWaitThreadCount());
+        assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
     }
 }

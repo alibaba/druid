@@ -57,7 +57,7 @@ import com.alibaba.druid.sql.dialect.hologres.parser.HologresStatementParser;
 import com.alibaba.druid.sql.dialect.impala.parser.ImpalaExprParser;
 import com.alibaba.druid.sql.dialect.impala.parser.ImpalaLexer;
 import com.alibaba.druid.sql.dialect.impala.parser.ImpalaStatementParser;
-import com.alibaba.druid.sql.dialect.infomix.parser.InformixStatementParser;
+import com.alibaba.druid.sql.dialect.informix.parser.InformixStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
@@ -102,6 +102,9 @@ import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
 import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlExprParser;
 import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlLexer;
 import com.alibaba.druid.sql.dialect.supersql.parser.SuperSqlStatementParser;
+import com.alibaba.druid.sql.dialect.synapse.parser.SynapseExprParser;
+import com.alibaba.druid.sql.dialect.synapse.parser.SynapseLexer;
+import com.alibaba.druid.sql.dialect.synapse.parser.SynapseStatementParser;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDExprParser;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDLexer;
 import com.alibaba.druid.sql.dialect.teradata.parser.TDStatementParser;
@@ -150,6 +153,7 @@ public class SQLParserUtils {
         switch (dbType) {
             case oracle:
             case oceanbase_oracle:
+            case polardb2:
                 return new OracleStatementParser(sql, features);
             case mysql:
             case tidb:
@@ -179,6 +183,8 @@ public class SQLParserUtils {
             case sqlserver:
             case jtds:
                 return new SQLServerStatementParser(sql, features);
+            case synapse:
+                return new SynapseStatementParser(sql, features);
             case h2:
             case lealone:
                 return new H2StatementParser(sql, features);
@@ -204,13 +210,13 @@ public class SQLParserUtils {
             case snowflake:
                 return new SnowflakeStatementParser(sql, features);
             case spark:
-                return new SparkStatementParser(sql);
+                return new SparkStatementParser(sql, features);
             case databricks:
                 return new DatabricksStatementParser(sql, features);
             case clickhouse:
-                return new CKStatementParser(sql);
+                return new CKStatementParser(sql, features);
             case starrocks:
-                return new StarRocksStatementParser(sql);
+                return new StarRocksStatementParser(sql, features);
             case informix:
                 return new InformixStatementParser(sql, features);
             case impala:
@@ -258,6 +264,8 @@ public class SQLParserUtils {
             case sqlserver:
             case jtds:
                 return new SQLServerExprParser(sql, features);
+            case synapse:
+                return new SynapseExprParser(sql, features);
             case db2:
                 return new DB2ExprParser(sql, features);
             case odps:
@@ -344,6 +352,8 @@ public class SQLParserUtils {
                 return new SuperSqlLexer(sql, features);
             case athena:
                 return new AthenaLexer(sql, features);
+            case synapse:
+                return new SynapseLexer(sql, features);
             case spark:
                 return new SparkLexer(sql);
             case databricks:
@@ -397,6 +407,8 @@ public class SQLParserUtils {
             case odps:
                 return new OdpsSelectQueryBlock();
             case sqlserver:
+                return new SQLServerSelectQueryBlock();
+            case synapse:
                 return new SQLServerSelectQueryBlock();
             case oscar:
                 return new OscarSelectQueryBlock();
@@ -718,7 +730,7 @@ public class SQLParserUtils {
                 set = true;
             }
 
-            if (lexer.identifierEquals("ADD") && (dbType == DbType.hive || dbType == DbType.odps)) {
+            if (lexer.identifierEquals("ADD") && (dbType == DbType.hive || dbType == DbType.odps || dbType == DbType.spark)) {
                 lexer.nextToken();
                 if (lexer.identifierEquals("JAR")) {
                     lexer.nextPath();
@@ -890,7 +902,7 @@ public class SQLParserUtils {
             }
 
             prePos = lexer.pos;
-            if (lexer.identifierEquals("ADD") && (dbType == DbType.hive || dbType == DbType.odps)) {
+            if (lexer.identifierEquals("ADD") && (dbType == DbType.hive || dbType == DbType.odps || dbType == DbType.spark)) {
                 lexer.nextToken();
                 if (lexer.identifierEquals("JAR")) {
                     lexer.nextPath();

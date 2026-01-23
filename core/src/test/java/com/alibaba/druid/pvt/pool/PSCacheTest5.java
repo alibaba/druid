@@ -1,15 +1,13 @@
 package com.alibaba.druid.pvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class PSCacheTest5 extends TestCase {
     private DruidDataSource dataSource;

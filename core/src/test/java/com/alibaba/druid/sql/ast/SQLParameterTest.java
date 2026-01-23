@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class SQLParameterTest {
-
     @Test
     public void testDefaultConstructor() {
         SQLParameter parameter = new SQLParameter();
@@ -27,7 +26,7 @@ public class SQLParameterTest {
         assertEquals(name, sqlParameter.getName());
         assertEquals(dataType, sqlParameter.getDataType());
         assertNull(sqlParameter.getDefaultValue());
-        
+
         // Test parent relationship
         assertEquals(sqlParameter, name.getParent());
         assertEquals(sqlParameter, dataType.getParent());

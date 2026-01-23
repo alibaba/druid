@@ -18,7 +18,6 @@ package com.alibaba.druid.bvt.filter.wall;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 /**
  * @author wenshao
@@ -29,10 +28,10 @@ public class WallSelectWhereTest3 extends TestCase {
     public void testMySql() throws Exception {
         WallConfig config = new WallConfig();
         config.setConditionAndAlwayFalseAllow(true);
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

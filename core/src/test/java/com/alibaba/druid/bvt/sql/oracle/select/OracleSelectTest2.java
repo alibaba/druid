@@ -21,24 +21,23 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleSelectTest2 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "WITH " + //
-                "   dept_costs AS (" + //
-                "      SELECT d.department_name, SUM(d.salary) dept_total" + //
-                "         FROM employees e, departments d" + //
-                "         WHERE e.department_id = d.department_id" + //
-                "      GROUP BY d.department_name)," + //
-                "   avg_cost AS (" + //
-                "      SELECT SUM(dept_total)/COUNT(*) avg" + //
-                "      FROM dept_costs)" + //
-                "SELECT * FROM dept_costs" + //
-                "   WHERE dept_total >" + //
-                "      (SELECT avg FROM avg_cost)" + //
+        String sql = "WITH " +
+                "   dept_costs AS (" +
+                "      SELECT d.department_name, SUM(d.salary) dept_total" +
+                "         FROM employees e, departments d" +
+                "         WHERE e.department_id = d.department_id" +
+                "      GROUP BY d.department_name)," +
+                "   avg_cost AS (" +
+                "      SELECT SUM(dept_total)/COUNT(*) avg" +
+                "      FROM dept_costs)" +
+                "SELECT * FROM dept_costs" +
+                "   WHERE dept_total >" +
+                "      (SELECT avg FROM avg_cost)" +
                 "      ORDER BY department_name;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -46,12 +45,12 @@ public class OracleSelectTest2 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         String result = SQLUtils.toOracleString(stmt);
         String result_lcase = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-        Assert.assertEquals(result.toLowerCase(), result_lcase);
+        assertEquals(result.toLowerCase(), result_lcase);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -61,14 +60,13 @@ public class OracleSelectTest2 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(4, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "producer_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "producer_id")));
     }
-
 }

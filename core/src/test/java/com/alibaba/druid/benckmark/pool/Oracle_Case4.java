@@ -15,6 +15,15 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.util.Assert;
+
+import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,17 +31,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
-
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.springframework.util.Assert;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class Oracle_Case4 extends TestCase {
     private String jdbcUrl;
@@ -46,7 +44,7 @@ public class Oracle_Case4 extends TestCase {
     private int threadCount = 1;
     private int loopCount = 5;
     final int LOOP_COUNT = 1000 * 1;
-    private boolean testOnBorrow = false;
+    private boolean testOnBorrow;
     private boolean preparedStatementCache = true;
     private int preparedStatementCacheSize = 50;
     private String properties = "defaultRowPrefetch=50";

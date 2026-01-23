@@ -29,6 +29,4 @@ public class MySqlSelectTest_135 extends MysqlTest {
                 "\tAND (date_test)) IN (smallint_test, bigint_test, tinyint_1bit_test, (WEIGHT_STRING(? LEVEL 1 DESC))))\n" +
                 "FROM select_base_two_multi_db_multi_tb", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
-
-
 }

@@ -15,19 +15,6 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.logging.CommonsLogFilter;
 import com.alibaba.druid.filter.logging.Log4jFilter;
@@ -46,11 +33,15 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
+import junit.framework.TestCase;
+
+import java.sql.*;
+import java.util.Properties;
 
 public class LogFilterTest extends TestCase {
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_logFilter_0() throws Exception {
@@ -326,7 +317,7 @@ public class LogFilterTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         stmt.close();
@@ -362,5 +353,4 @@ public class LogFilterTest extends TestCase {
         logFilter.setResultSetLogErrorEnabled(enable);
         logFilter.setResultSetCloseAfterLogEnabled(enable);
     }
-
 }

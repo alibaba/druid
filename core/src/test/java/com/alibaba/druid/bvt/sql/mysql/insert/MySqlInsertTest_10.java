@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.insert;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+
+import java.util.List;
 
 public class MySqlInsertTest_10 extends MysqlTest {
     public void test_parseCompleteValues_false() throws Exception {
@@ -38,10 +36,10 @@ public class MySqlInsertTest_10 extends MysqlTest {
 
         MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
 
-        Assert.assertEquals(3, insertStmt.getValuesList().size());
-        Assert.assertEquals(2, insertStmt.getValues().getValues().size());
-        Assert.assertEquals(2, insertStmt.getColumns().size());
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(3, insertStmt.getValuesList().size());
+        assertEquals(2, insertStmt.getValues().getValues().size());
+        assertEquals(2, insertStmt.getColumns().size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -50,7 +48,7 @@ public class MySqlInsertTest_10 extends MysqlTest {
                 + "\nVALUES ('a1', 'b1'),"//
                 + "\n\t('a2', 'b2'),"//
                 + "\n\t('a3', 'b3')";
-        Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
+        assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 
     public void test_parseCompleteValues_true() throws Exception {
@@ -63,10 +61,10 @@ public class MySqlInsertTest_10 extends MysqlTest {
 
         MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
 
-        Assert.assertEquals(4, insertStmt.getValuesList().size());
-        Assert.assertEquals(2, insertStmt.getValues().getValues().size());
-        Assert.assertEquals(2, insertStmt.getColumns().size());
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(4, insertStmt.getValuesList().size());
+        assertEquals(2, insertStmt.getValues().getValues().size());
+        assertEquals(2, insertStmt.getColumns().size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -76,6 +74,6 @@ public class MySqlInsertTest_10 extends MysqlTest {
                 + "\n\t('a2', 'b2'),"//
                 + "\n\t('a3', 'b3'),"//
                 + "\n\t('a4', 'b4');";
-        Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
+        assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 }

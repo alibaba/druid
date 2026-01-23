@@ -164,7 +164,6 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "ALTER MATERIALIZED VIEW mymv\n" +
                         "REFRESH FAST ON OVERWRITE\n" +
                         "DISABLE QUERY REWRITE;");
-
     }
 
     public void test_bad_case() {
@@ -195,7 +194,6 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 " REFRESH COMPLETE " +
                 "ENABLE QUERY";
         failed(sql7);
-
     }
 
     public void failed(String sql) {
@@ -212,5 +210,4 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
         System.out.println(stmt.toString());
         assertEquals(expectedSql, stmt.toString());
     }
-
 }

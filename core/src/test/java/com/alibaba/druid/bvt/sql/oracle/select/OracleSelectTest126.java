@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-
 public class OracleSelectTest126 extends TestCase {
     public void test_0() throws Exception {
         String sql = "SELECT *\n" +
@@ -53,5 +52,4 @@ public class OracleSelectTest126 extends TestCase {
                 "\tand insurance_order.status = '3'\n" +
                 "\tand at.produce_id = 'BX'", stmt.toLowerCaseString());
     }
-
 }

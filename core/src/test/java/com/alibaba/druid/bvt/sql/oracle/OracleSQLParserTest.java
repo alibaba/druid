@@ -15,24 +15,21 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OracleSQLParserTest extends TestCase {
-
     public void test_1() throws Exception {
         String sql = "SELECT employees_seq.nextval FROM DUAL;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         String text = output(statementList);
         System.out.println(text);
@@ -44,7 +41,7 @@ public class OracleSQLParserTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         String text = output(statementList);
         System.out.println(text);

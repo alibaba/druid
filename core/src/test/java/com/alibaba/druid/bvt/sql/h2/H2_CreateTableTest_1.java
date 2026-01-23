@@ -19,11 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-
-import java.util.List;
 
 public class H2_CreateTableTest_1 extends OracleTest {
     public void test_0() throws Exception {
@@ -33,7 +28,7 @@ public class H2_CreateTableTest_1 extends OracleTest {
                         "   title VARCHAR(50) NOT NULL, \n" +
                         "   author VARCHAR(20) NOT NULL, \n" +
                         "   submission_date DATE \n" +
-                        ");"; //
+                        ");";
 
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.h2);
         assertEquals("CREATE TABLE tutorials_tbl (\n" +

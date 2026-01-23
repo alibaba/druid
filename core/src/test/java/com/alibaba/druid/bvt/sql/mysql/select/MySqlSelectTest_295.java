@@ -71,6 +71,4 @@ public class MySqlSelectTest_295
 
         assertEquals("SELECT CAST(row(1, row(2, 3)) AS ROW(varchar,ROW(integer)));", stmt.toString());
     }
-
-
 }

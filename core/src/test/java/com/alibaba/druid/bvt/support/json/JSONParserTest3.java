@@ -1,12 +1,11 @@
 package com.alibaba.druid.bvt.support.json;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.Utils;
+import junit.framework.TestCase;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class JSONParserTest3 extends TestCase {
     public void test_parse() throws Exception {

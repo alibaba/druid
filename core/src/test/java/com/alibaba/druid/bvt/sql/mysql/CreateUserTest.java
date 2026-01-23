@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+
+import java.util.List;
 
 public class CreateUserTest extends MysqlTest {
     public void test_0() throws Exception {
@@ -33,7 +31,7 @@ public class CreateUserTest extends MysqlTest {
         SQLStatement statemen = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -41,8 +39,6 @@ public class CreateUserTest extends MysqlTest {
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertTrue(visitor.getTables().size() == 0);
+        assertTrue(visitor.getTables().size() == 0);
     }
-
-
 }

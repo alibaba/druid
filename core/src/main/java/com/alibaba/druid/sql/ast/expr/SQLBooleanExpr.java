@@ -17,31 +17,31 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;
 import java.util.List;
 
-public final class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralExpr, SQLValuableExpr {
+public final class SQLBooleanExpr extends SQLTypeExpr {
     public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl(SQLDataType.Constants.BOOLEAN);
 
     private boolean value;
 
     public SQLBooleanExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.BOOLEAN));
     }
 
     public SQLBooleanExpr(boolean value) {
+        this();
         this.value = value;
     }
 
     public boolean getBooleanValue() {
-        return value;
+        return getValue();
     }
 
     public Boolean getValue() {
-        return value;
+        return (Boolean) value;
     }
 
     public void setValue(boolean value) {
@@ -56,14 +56,14 @@ public final class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLit
     }
 
     public void output(StringBuilder buf) {
-        buf.append(value ? "true" : "false");
+        buf.append(getValue() ? "true" : "false");
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (value ? 1231 : 1237);
+        result = prime * result + (getValue() ? 1231 : 1237);
         return result;
     }
 
@@ -85,12 +85,8 @@ public final class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLit
         return true;
     }
 
-    public SQLDataType computeDataType() {
-        return DATA_TYPE;
-    }
-
     public SQLBooleanExpr clone() {
-        return new SQLBooleanExpr(value);
+        return new SQLBooleanExpr(getValue());
     }
 
     @Override

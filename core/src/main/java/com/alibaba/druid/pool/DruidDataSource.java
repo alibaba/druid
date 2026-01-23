@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.AutoLoad;
@@ -190,8 +191,199 @@ public class DruidDataSource extends DruidAbstractDataSource
         configFromPropeties(properties);
     }
 
+    @Deprecated
     public void configFromPropeties(Properties properties) {
-        DruidDataSourceUtils.configFromProperties(this, properties);
+        configFromProperties(properties);
+    }
+
+    /**
+     * support config after init
+     */
+    public void configFromProperties(Properties properties) {
+        boolean init;
+        lock.lock();
+        try {
+            init = this.inited;
+        } finally {
+            lock.unlock();
+        }
+        if (init) {
+            configFromPropertiesAfterInit(properties);
+        } else {
+            DruidDataSourceUtils.configFromProperties(this, properties);
+        }
+    }
+
+    private void configFromPropertiesAfterInit(Properties properties) {
+        String url = properties.getProperty("druid.url");
+        if (url != null) {
+            url = url.trim();
+        }
+
+        String username = properties.getProperty("druid.username");
+        if (username != null) {
+            username = username.trim();
+        }
+
+        String password = properties.getProperty("druid.password");
+
+        Properties connectProperties = new Properties();
+
+        final String connectUrl;
+        final boolean urlUserPasswordChanged;
+        lock.lock();
+        try {
+            urlUserPasswordChanged = (url != null && !this.jdbcUrl.equals(url))
+                    || (username != null && !username.equals(this.username))
+                    || (password != null && !password.equals(this.password));
+
+            String connectUser = username != null ? username : this.username;
+            if (username != null) {
+                connectProperties.put("user", connectUser);
+            }
+
+            String connectPassword = password != null ? password : this.password;
+            if (connectPassword != null) {
+                connectProperties.put("password", connectPassword);
+            }
+            connectUrl = url != null ? url : this.jdbcUrl;
+        } finally {
+            lock.unlock();
+        }
+
+        if (urlUserPasswordChanged) {
+            Connection conn = null;
+            try {
+                conn = getDriver().connect(connectUrl, connectProperties);
+                LOG.info("check connection info success");
+                // ignore
+            } catch (SQLException e) {
+                throw new DruidRuntimeException("check connection info failed", e);
+            } finally {
+                JdbcUtils.close(conn);
+            }
+        }
+
+        lock.lock();
+        try {
+            if (urlUserPasswordChanged) {
+                if (url != null && !url.equals(this.jdbcUrl)) {
+                    this.jdbcUrl = url; // direct set url, ignore init check
+                    LOG.info("jdbcUrl changed");
+                }
+
+                if (username != null && !username.equals(this.username)) {
+                    this.username = username; // direct set, ignore init check
+                    LOG.info("username changed");
+                }
+
+                if (password != null && !password.equals(this.password)) {
+                    this.password = password; // direct set, ignore init check
+                    LOG.info("password changed");
+                }
+                incrementUserPasswordVersion();
+            }
+
+            {
+                Integer initialSize = DruidDataSourceUtils.getPropertyInt(properties, "druid.initialSize");
+                if (initialSize != null) {
+                    this.initialSize = initialSize;
+                }
+            }
+
+            Integer maxActive = DruidDataSourceUtils.getPropertyInt(properties, "druid.maxActive");
+            Integer minIdle = DruidDataSourceUtils.getPropertyInt(properties, "druid.minIdle");
+            if (maxActive != null || minIdle != null) {
+                int compareMaxActive = maxActive != null ? maxActive.intValue() : this.maxActive;
+                int compareMinIdle = minIdle != null ? minIdle.intValue() : this.minIdle;
+                if (compareMaxActive < compareMinIdle) {
+                    throw new IllegalArgumentException("maxActive less than minIdle, " + compareMaxActive + " < " + compareMinIdle);
+                }
+            }
+            if (maxActive != null) {
+                this.maxActive = maxActive;
+            }
+            if (minIdle != null) {
+                this.minIdle = minIdle;
+            }
+
+            DruidDataSourceUtils.configFromProperties(this, properties);
+        } finally {
+            lock.unlock();
+        }
+
+        int replaceCount = 0;
+        // replace older version urlUserPassword Connection
+        while ((hasOlderVersionUrlUserPasswordConnection())) {
+            try {
+                PhysicalConnectionInfo phyConnInfo = createPhysicalConnection();
+
+                boolean result = false;
+                lock.lock();
+                try {
+                    for (int i = poolingCount - 1; i >= 0; i--) {
+                        if (connections[i].getUserPasswordVersion() < userPasswordVersion) {
+                            connections[i] = new DruidConnectionHolder(DruidDataSource.this, phyConnInfo);
+                            result = true;
+                            replaceCount++;
+                            break;
+                        }
+                    }
+                } finally {
+                    lock.unlock();
+                }
+
+                if (!result) {
+                    JdbcUtils.close(phyConnInfo.getPhysicalConnection());
+                    LOG.info("replace older version urlUserPassword failed.");
+                    break;
+                }
+            } catch (SQLException e) {
+                LOG.error("fill init connection error", e);
+            }
+        }
+
+        if (replaceCount > 0) {
+            LOG.info("replace older version urlUserPassword Connection : " + replaceCount);
+        }
+
+        while ((isLowWaterLevel())) {
+            try {
+                PhysicalConnectionInfo physicalConnection = createPhysicalConnection();
+
+                boolean result = put(physicalConnection);
+                if (!result) {
+                    JdbcUtils.close(physicalConnection.getPhysicalConnection());
+                    LOG.info("put physical connection to pool failed.");
+                }
+            } catch (SQLException e) {
+                LOG.error("fill init connection error", e);
+            }
+        }
+    }
+
+    private boolean hasOlderVersionUrlUserPasswordConnection() {
+        lock.lock();
+        try {
+            long userPasswordVersion = this.userPasswordVersion;
+            for (int i = 0; i < poolingCount; i++) {
+                if (connections[i].getUserPasswordVersion() < userPasswordVersion) {
+                    return true;
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return false;
+    }
+
+    private boolean isLowWaterLevel() {
+        lock.lock();
+        try {
+            return activeCount + poolingCount < minIdle;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public boolean isKillWhenSocketReadTimeout() {
@@ -258,7 +450,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             this.closed = false;
 
             if (properties != null) {
-                configFromPropeties(properties);
+                DruidDataSourceUtils.configFromProperties(this, properties);
             }
         } finally {
             lock.unlock();
@@ -1066,7 +1258,8 @@ public class DruidDataSource extends DruidAbstractDataSource
         } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.OPENGAUSS_DRIVER)
-                || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
+                || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)
+                || realDriverClassName.equals(JdbcConstants.POLARDB2_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
         } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)
                 || (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER2))) {
@@ -1109,7 +1302,8 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
                     || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)
-                    || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)) {
+                    || realDriverClassName.equals(JdbcConstants.POLARDB_DRIVER)
+                    || realDriverClassName.equals(JdbcConstants.POLARDB2_DRIVER)) {
                 this.exceptionSorter = new PGExceptionSorter();
 
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
@@ -1762,7 +1956,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                 return;
             }
 
-            if (phyMaxUseCount > 0 && holder.useCount >= phyMaxUseCount) {
+            if ((phyMaxUseCount > 0 && holder.useCount >= phyMaxUseCount)
+                    || holder.userPasswordVersion < getUserPasswordVersion()) {
                 discardConnection(holder);
                 return;
             }
@@ -1822,6 +2017,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
 
+            boolean full = false;
             lock.lock();
             try {
                 if (holder.active) {
@@ -1832,13 +2028,20 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                 result = putLast(holder, currentTimeMillis);
                 recycleCount++;
+                if (!result) {
+                    full = poolingCount + activeCount >= maxActive;
+                }
             } finally {
                 lock.unlock();
             }
 
             if (!result) {
                 JdbcUtils.close(holder.conn);
-                LOG.info("connection recycle failed.");
+                String msg = "connection recycle failed.";
+                if (full) {
+                    msg += " pool is full";
+                }
+                LOG.info(msg);
             }
         } catch (Throwable e) {
             holder.clearStatementCache();
@@ -2289,7 +2492,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     protected boolean put(PhysicalConnectionInfo physicalConnectionInfo) {
-        DruidConnectionHolder holder = null;
+        DruidConnectionHolder holder;
         try {
             holder = new DruidConnectionHolder(DruidDataSource.this, physicalConnectionInfo);
         } catch (SQLException ex) {
@@ -2665,7 +2868,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     if (timeBetweenEvictionRunsMillis > 0) {
                         Thread.sleep(timeBetweenEvictionRunsMillis);
                     } else {
-                        Thread.sleep(1000); //
+                        Thread.sleep(1000);
                     }
 
                     if (Thread.interrupted()) {
@@ -2946,6 +3149,9 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             // shrink connections by HotSpot intrinsic function _arraycopy for performance optimization.
             int removeCount = evictCount + keepAliveCount;
+            if (removeCount > poolingCount) {
+                removeCount = poolingCount;
+            }
             if (removeCount > 0) {
                 int breakedCount = poolingCount - i;
                 if (breakedCount > 0) {
@@ -3050,7 +3256,9 @@ public class DruidDataSource extends DruidAbstractDataSource
             lock.lock();
             try {
                 int fillCount = minIdle - (activeCount + poolingCount + createTaskCount);
-                emptySignal(fillCount);
+                if (fillCount > 0) {
+                    emptySignal(fillCount);
+                }
             } finally {
                 lock.unlock();
             }

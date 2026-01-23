@@ -41,5 +41,4 @@ public class MySqlCreateIndexTest_11_adb extends MysqlTest {
         String output = SQLUtils.toMySqlString(stmt);
         assertEquals("CREATE CLUSTERED INDEX `g_i_seller` ON t_order (`seller_id`)", output);
     }
-
 }

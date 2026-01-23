@@ -1,5 +1,11 @@
 package com.alibaba.druid.bvt.log;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+import junit.framework.TestCase;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -8,13 +14,6 @@ import java.sql.Connection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.util.Utils;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class LoggerTest extends TestCase {
     private static java.security.ProtectionDomain DOMAIN;

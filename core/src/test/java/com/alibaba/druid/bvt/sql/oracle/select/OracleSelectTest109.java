@@ -15,15 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.select;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.repository.SchemaRepository;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 import java.util.List;
 
@@ -64,6 +59,5 @@ public class OracleSelectTest109 extends OracleTest {
 //        assertEquals(3, visitor.getConditions().size());
 //        assertEquals(1, visitor.getRelationships().size());
 //        assertEquals(2, visitor.getOrderByColumns().size());
-
     }
 }

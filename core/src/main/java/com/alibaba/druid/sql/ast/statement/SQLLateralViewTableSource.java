@@ -43,6 +43,7 @@ public class SQLLateralViewTableSource extends SQLTableSourceImpl {
             acceptChild(visitor, tableSource);
             acceptChild(visitor, method);
             acceptChild(visitor, columns);
+            super.accept0(visitor);
         }
         visitor.endVisit(this);
     }

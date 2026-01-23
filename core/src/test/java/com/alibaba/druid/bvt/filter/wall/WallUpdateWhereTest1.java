@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * @author wenshao
@@ -35,8 +32,8 @@ public class WallUpdateWhereTest1 extends TestCase {
         config.setConditionAndAlwayTrueAllow(true);
         config.setCommentAllow(true);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(sql1, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql1, config));
     }
 
     public void test_check_false() throws Exception {
@@ -45,7 +42,7 @@ public class WallUpdateWhereTest1 extends TestCase {
         config.setConditionAndAlwayTrueAllow(true);
         config.setCommentAllow(true);
 
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
-        Assert.assertTrue(WallUtils.isValidateMySql(sql1, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql1, config));
     }
 }

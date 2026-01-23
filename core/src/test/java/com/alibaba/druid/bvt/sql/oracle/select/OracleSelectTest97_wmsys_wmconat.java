@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
                         "FROM ECC_CPR.CCG_GTS_OSG3A_V O\n" +
                         "WHERE O.ENABLED_FLAG = ?\n" +
                         "\tAND NVL(O.PRICE, ?) = ?\n" +
-                        "\tAND O.CONTRACT_HEADER_ID = :B1"; //
+                        "\tAND O.CONTRACT_HEADER_ID = :B1";
 
         System.out.println(sql);
 
@@ -44,7 +43,7 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SQLMethodInvokeExpr expr = (SQLMethodInvokeExpr) stmt.getSelect().getQueryBlock().getSelectList().get(0).getExpr();
         SQLMethodInvokeExpr param0 = (SQLMethodInvokeExpr) expr.getArguments().get(0);
@@ -83,7 +82,7 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
                         "FROM ECC_CPR.CCG_GTS_OSG3A_V O\n" +
                         "WHERE O.ENABLED_FLAG = ?\n" +
                         "\tAND NVL(O.PRICE, ?) = ?\n" +
-                        "\tAND O.CONTRACT_HEADER_ID = :B1"; //
+                        "\tAND O.CONTRACT_HEADER_ID = :B1";
 
         System.out.println(sql);
 
@@ -92,7 +91,7 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SQLSelectQueryBlock queryBlock = stmt.getSelect()
                 .getQueryBlock();

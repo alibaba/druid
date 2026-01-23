@@ -31,7 +31,7 @@ public class mysql_block_0 extends OracleTest {
                 "    INSERT INTO ktv_ind_columns(index_owner,index_name,table_owner,TABLE_NAME,COLUMN_NAME,column_position,column_length,descend,dbId,collection_time)\n" +
                 "    SELECT DISTINCT index_owner,index_name,table_owner,TABLE_NAME,COLUMN_NAME,column_position,column_length,descend,dbId,now()\n" +
                 "    FROM ktv_tmp_ind_columns WHERE dbid=?;\n" +
-                "    COMMIT;"; //
+                "    COMMIT;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         assertEquals(4, statementList.size());
@@ -50,14 +50,14 @@ public class mysql_block_0 extends OracleTest {
 
         assertEquals(2, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
 
-//        Assert.assertEquals(7, visitor.getColumns().size());
-//        Assert.assertEquals(3, visitor.getConditions().size());
-//        Assert.assertEquals(1, visitor.getRelationships().size());
+//        assertEquals(7, visitor.getColumns().size());
+//        assertEquals(3, visitor.getConditions().size());
+//        assertEquals(1, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
         {
             String output = SQLUtils.toSQLString(statementList, DbType.mysql);

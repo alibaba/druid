@@ -5,9 +5,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
-import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import java.util.HashMap;

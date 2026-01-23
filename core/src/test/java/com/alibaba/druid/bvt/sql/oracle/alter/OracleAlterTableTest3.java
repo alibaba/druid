@@ -15,23 +15,21 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.alter;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleAlterTableTest3 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "alter table WRH$_ROWCACHE_SUMMARY split partition WRH$_ROWCAC_1870432296_13862 " //
-                        + "   at (1870432296,13910) " //
-                        + "   into (partition WRH$_ROWCAC_1870432296_13862 tablespace SYSAUX, partition WRH$_ROWCAC_1870432296_13910 tablespace SYSAUX" //
-                        + ") " + //
+                "alter table WRH$_ROWCACHE_SUMMARY split partition WRH$_ROWCAC_1870432296_13862 "
+                        + "   at (1870432296,13910) "
+                        + "   into (partition WRH$_ROWCAC_1870432296_13862 tablespace SYSAUX, partition WRH$_ROWCAC_1870432296_13910 tablespace SYSAUX"
+                        + ") " +
                         "   update indexes";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -39,7 +37,7 @@ public class OracleAlterTableTest3 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -50,14 +48,14 @@ public class OracleAlterTableTest3 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WRH$_ROWCACHE_SUMMARY")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("WRH$_ROWCACHE_SUMMARY")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

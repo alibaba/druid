@@ -15,27 +15,25 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.block;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
+import java.util.List;
+
 public class OracleBlockTest3 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "DECLARE " + //
-                "  job BINARY_INTEGER := :job; " + //
-                "  next_date DATE := :mydate;  " + //
-                "  broken BOOLEAN := FALSE; " + //
-                "BEGIN " + //
-                "  get_promo_product_search; " + //
-                "  :mydate := next_date; " + //
-                "  IF broken THEN :b := 1; " + //
-                "  ELSE :b := 0; " + //
-                "  END IF; " + //
+        String sql = "DECLARE " +
+                "  job BINARY_INTEGER := :job; " +
+                "  next_date DATE := :mydate;  " +
+                "  broken BOOLEAN := FALSE; " +
+                "BEGIN " +
+                "  get_promo_product_search; " +
+                "  :mydate := next_date; " +
+                "  IF broken THEN :b := 1; " +
+                "  ELSE :b := 0; " +
+                "  END IF; " +
                 "END; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -43,7 +41,7 @@ public class OracleBlockTest3 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -54,12 +52,12 @@ public class OracleBlockTest3 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));
     }
 }

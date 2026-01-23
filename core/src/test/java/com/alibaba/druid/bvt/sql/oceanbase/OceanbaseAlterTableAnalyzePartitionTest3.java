@@ -15,37 +15,35 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
+import java.util.List;
+
 public class OceanbaseAlterTableAnalyzePartitionTest3 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "ALTER TABLE tnrange ANALYZE PARTITION p1, p2;"; //
+        String sql = "ALTER TABLE tnrange ANALYZE PARTITION p1, p2;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("ALTER TABLE tnrange"
+            assertEquals("ALTER TABLE tnrange"
                             + "\n\tANALYZE PARTITION p1, p2;",
                     result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("alter table tnrange"
+            assertEquals("alter table tnrange"
                             + "\n\tanalyze partition p1, p2;",
                     result);
         }
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -55,11 +53,10 @@ public class OceanbaseAlterTableAnalyzePartitionTest3 extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
     }
 }

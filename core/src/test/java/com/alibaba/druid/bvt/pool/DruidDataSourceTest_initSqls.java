@@ -1,12 +1,9 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
+import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
+import java.sql.Connection;
 
 public class DruidDataSourceTest_initSqls extends TestCase {
     private DruidDataSource dataSource;
@@ -27,11 +24,10 @@ public class DruidDataSourceTest_initSqls extends TestCase {
     public void testDefault() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(true, conn.isReadOnly());
-        Assert.assertEquals(Connection.TRANSACTION_SERIALIZABLE, conn.getTransactionIsolation());
-        Assert.assertEquals("c123", conn.getCatalog());
+        assertEquals(true, conn.isReadOnly());
+        assertEquals(Connection.TRANSACTION_SERIALIZABLE, conn.getTransactionIsolation());
+        assertEquals("c123", conn.getCatalog());
 
         conn.close();
     }
-
 }

@@ -15,17 +15,13 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.util.Properties;
-
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JMXUtils;
+
+import java.sql.Connection;
+import java.util.Properties;
 
 /**
  * 类Case2.java的实现描述：TODO 类实现描述
@@ -48,9 +44,9 @@ public class Case2 extends PoolTestCase {
 
         final int COUNT = 10;
 
-        Assert.assertEquals(0, dataSource.getCreateCount());
-        Assert.assertEquals(0, dataSource.getDestroyCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getCreateCount());
+        assertEquals(0, dataSource.getDestroyCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         Connection[] connections = new Connection[COUNT];
         for (int i = 0; i < COUNT; ++i) {
@@ -61,9 +57,9 @@ public class Case2 extends PoolTestCase {
             connections[i].close();
         }
 
-        Assert.assertEquals(0, dataSource.getDestroyCount());
+        assertEquals(0, dataSource.getDestroyCount());
 
         dataSource.close();
-        Assert.assertEquals(dataSource.getCreateCount(), dataSource.getDestroyCount());
+        assertEquals(dataSource.getCreateCount(), dataSource.getDestroyCount());
     }
 }

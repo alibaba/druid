@@ -14,10 +14,8 @@ import java.util.List;
  * @author abomb4 2022-06-19
  */
 public class DB2OutputVisitorTest {
-
     @Test
     public void test() {
-
         List<TestCase> testCases = Arrays.asList(
                 new TestCase("interval 表达式应该带括号 select",
                         "SELECT A, B, C FROM D WHERE C < CURRENT TIMESTAMP + (10 * 60) SECONDS",

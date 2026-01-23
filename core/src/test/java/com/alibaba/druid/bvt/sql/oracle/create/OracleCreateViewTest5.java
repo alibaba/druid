@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -49,9 +48,9 @@ public class OracleCreateViewTest5 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE VIEW \"SC_001\".\"TB_001\" (\n" +
+        assertEquals("CREATE OR REPLACE VIEW \"SC_001\".\"TB_001\" (\n" +
                         "\t\"OBJECT_NAME\", \n" +
                         "\t\"SESSION_ID\", \n" +
                         "\t\"ORACLE_USERNAME\", \n" +
@@ -64,7 +63,7 @@ public class OracleCreateViewTest5 extends OracleTest {
                         "\t, DECODE(locked_mode, 1, 'SELECT', 2, 'SELECT FOR UPDATE / LOCK ROW SHARE', 3, 'INSERT/UPDATE/DELETE/LOCK ROW EXCLUSIVE', 4, 'CREATE INDEX/LOCK SHARE', 5, 'LOCK SHARE ROW EXCLUSIVE', 6, 'ALTER TABLE/DROP TABLE/DROP INDEX/TRUNCATE TABLE/LOCK EXCLUSIVE') AS sql_actions\n" +
                         "\t, DECODE(locked_mode, 1, 'NULL', 2, 'SS - SUB SHARE', 3, 'SX - SUB EXCLUSIVE', 4, 'S - SHARE', 5, 'SSX - SHARE/SUB EXCLUSIVE', 6, 'X - EXCLUSIVE') AS Lock_mode\n" +
                         "FROM sys.V_$LOCKED_OBJECT lo, TB_002 DO\n" +
-                        "WHERE DO.object_id = lo.object_id",//
+                        "WHERE DO.object_id = lo.object_id",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -76,10 +75,10 @@ public class OracleCreateViewTest5 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        assertEquals(7, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_002", "object_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_002", "object_id")));
     }
 }

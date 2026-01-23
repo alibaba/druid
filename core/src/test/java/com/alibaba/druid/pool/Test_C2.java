@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.pool;
 
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
 
 public class Test_C2 extends TestCase {
     private String jdbcUrl;

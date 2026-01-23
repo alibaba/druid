@@ -22,20 +22,19 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class MySqlCreateTableTest8 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE Persons\n" + //
-                "(\n" + //
-                "Id_P int NOT NULL,\n" + //
-                "LastName varchar(255) NOT NULL,\n" + //
-                "FirstName varchar(255),\n" + //
-                "Address varchar(255),\n" + //
-                "City varchar(255),\n" + //
-                "CHECK (Id_P>0)\n" + //
+        String sql = "CREATE TABLE Persons\n" +
+                "(\n" +
+                "Id_P int NOT NULL,\n" +
+                "LastName varchar(255) NOT NULL,\n" +
+                "FirstName varchar(255),\n" +
+                "Address varchar(255),\n" +
+                "City varchar(255),\n" +
+                "CHECK (Id_P>0)\n" +
                 ")";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -43,7 +42,7 @@ public class MySqlCreateTableTest8 extends MysqlTest {
         MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -53,16 +52,16 @@ public class MySqlCreateTableTest8 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("Persons")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("Persons")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Persons", "Id_P")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Persons", "LastName")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Persons", "FirstName")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Persons", "Address")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Persons", "City")));
+        assertTrue(visitor.getColumns().contains(new Column("Persons", "Id_P")));
+        assertTrue(visitor.getColumns().contains(new Column("Persons", "LastName")));
+        assertTrue(visitor.getColumns().contains(new Column("Persons", "FirstName")));
+        assertTrue(visitor.getColumns().contains(new Column("Persons", "Address")));
+        assertTrue(visitor.getColumns().contains(new Column("Persons", "City")));
     }
 }

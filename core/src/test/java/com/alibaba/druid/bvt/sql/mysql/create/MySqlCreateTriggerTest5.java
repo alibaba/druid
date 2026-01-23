@@ -46,5 +46,4 @@ public class MySqlCreateTriggerTest5 extends MysqlTest {
                 "\tVALUES ('txxx', new.object_id, 'UPDATE');\n" +
                 "END", stmt.toString());
     }
-
 }

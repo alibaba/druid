@@ -15,13 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -34,10 +31,10 @@ public class MySqlWallTest36 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
-                "select *  FROM `13452845947`   WHERE gpstime < (now()-90) order by gpstime desc")); //
+        assertTrue(provider.checkValid(//
+                "select *  FROM `13452845947`   WHERE gpstime < (now()-90) order by gpstime desc"));
 
-        Assert.assertEquals(1, provider.getTableStat("13452845947").getSelectCount());
+        assertEquals(1, provider.getTableStat("13452845947").getSelectCount());
         System.out.println(JSONUtils.toJSONString(provider.getStatsMap()));
     }
 }

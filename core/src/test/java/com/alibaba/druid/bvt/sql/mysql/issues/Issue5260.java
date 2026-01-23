@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.Map;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -10,8 +8,9 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Name;
-
 import org.junit.Test;
+
+import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +23,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/join.html">MySQL join语法</a>
  */
 public class Issue5260 {
-
     @Test
     public void test_natural_join() throws Exception {
         for (DbType dbType : new DbType[]{DbType.mysql, DbType.oracle}) {

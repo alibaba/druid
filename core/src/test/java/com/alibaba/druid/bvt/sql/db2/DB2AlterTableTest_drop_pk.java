@@ -17,12 +17,9 @@ package com.alibaba.druid.bvt.sql.db2;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class DB2AlterTableTest_drop_pk extends TestCase {
     public void test_alter_constraint() throws Exception {
@@ -38,11 +35,10 @@ public class DB2AlterTableTest_drop_pk extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
-        Assert.assertEquals("ALTER TABLE supplier\n" +
+        assertEquals("ALTER TABLE supplier\n" +
                 "\tDROP PRIMARY KEY;", output);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
-
 }

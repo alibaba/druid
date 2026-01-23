@@ -23,7 +23,7 @@ import com.alibaba.druid.util.JdbcConstants;
 public class OracleSelectTest65_error extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "select 1 from hhh as select 1"; //
+                "select 1 from hhh as select 1";
 
         Throwable error = null;
         try {

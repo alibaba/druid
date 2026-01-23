@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -37,10 +36,10 @@ public class MySqlInsertTest_16_hint extends MysqlTest {
 
         MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
 
-        Assert.assertEquals(1, insertStmt.getValuesList().size());
-        Assert.assertEquals(3, insertStmt.getValues().getValues().size());
-        Assert.assertEquals(0, insertStmt.getColumns().size());
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, insertStmt.getValuesList().size());
+        assertEquals(3, insertStmt.getValues().getValues().size());
+        assertEquals(0, insertStmt.getColumns().size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -54,7 +53,6 @@ public class MySqlInsertTest_16_hint extends MysqlTest {
 
         String formatSql = "INSERT INTO mytable /*!(col2, col3, col1) */\n" +
                 "VALUES (load_file('sompath'), 'str1', 2);";
-        Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
+        assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
-
 }

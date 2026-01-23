@@ -45,7 +45,7 @@ public class OracleBlockTest18 extends OracleTest {
                 "    UPDATE employees\n" +
                 "    SET salary = salary + bonus \n" +
                 "    WHERE employee_id = emp_id;\n" +
-                "  END p;"; //
+                "  END p;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());
@@ -92,6 +92,6 @@ public class OracleBlockTest18 extends OracleTest {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
 }

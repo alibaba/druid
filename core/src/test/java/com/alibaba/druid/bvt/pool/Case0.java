@@ -15,18 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Case0 extends PoolTestCase {
     public void test_0() throws Exception {
@@ -64,11 +60,11 @@ public class Case0 extends PoolTestCase {
         t.start();
 
         startLatch.await();
-        Assert.assertFalse(completeLatch.await(1, TimeUnit.SECONDS));
+        assertFalse(completeLatch.await(1, TimeUnit.SECONDS));
         conn1.close();
-        Assert.assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
+        assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
         conn2.close();
-        Assert.assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
+        assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
 
         dataSource.close();
     }

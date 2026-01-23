@@ -14,7 +14,7 @@ public class HiveInsert_3 extends TestCase {
                 "INSERT OVERWRITE TABLE sale_detail_multi partition (sale_date='2010', region='china' )\n" +
                 "SELECT shop_name, customer_id, total_price\n" +
                 "INSERT OVERWRITE TABLE sale_detail_multi partition (sale_date='2010', region='china' )\n" +
-                "SELECT shop_name, customer_id, total_price;";//
+                "SELECT shop_name, customer_id, total_price;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -50,6 +50,5 @@ public class HiveInsert_3 extends TestCase {
         assertTrue(visitor.containsColumn("sale_detail", "shop_name"));
         assertTrue(visitor.containsColumn("sale_detail", "customer_id"));
         assertTrue(visitor.containsColumn("sale_detail", "total_price"));
-
     }
 }

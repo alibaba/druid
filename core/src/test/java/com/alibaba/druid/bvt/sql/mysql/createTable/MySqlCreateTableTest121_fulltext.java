@@ -115,5 +115,4 @@ public class MySqlCreateTableTest121_fulltext extends MysqlTest {
         assertFalse(column.isPrimaryKey());
         assertEquals(Types.BIGINT, column.jdbcType());
     }
-
 }

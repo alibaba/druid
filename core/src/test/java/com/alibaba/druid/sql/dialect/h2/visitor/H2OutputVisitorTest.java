@@ -5,9 +5,18 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
+import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.sql.Connection;
@@ -18,8 +27,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 public class H2OutputVisitorTest {
-
-    private final static Log LOG = LogFactory.getLog(H2OutputVisitorTest.class);
+    private static final Log LOG = LogFactory.getLog(H2OutputVisitorTest.class);
 
     @BeforeClass
     public static void loadDriver() {
@@ -74,14 +82,14 @@ public class H2OutputVisitorTest {
         LOG.info("Executing script " + s);
 
         InputStream input = new BufferedInputStream(getClass().getResourceAsStream("/com/alibaba/druid/sql/dialect/h2/visitor/" + s));
-        PushbackInputStream pb = new PushbackInputStream( input, 2 );
+        PushbackInputStream pb = new PushbackInputStream(input, 2);
         byte [] magicbytes = new byte[2];
         pb.read(magicbytes);
         pb.unread(magicbytes);
         ByteBuffer bb = ByteBuffer.wrap(magicbytes);
         bb.order(ByteOrder.LITTLE_ENDIAN);
         short magic = bb.getShort();
-        if( magic == (short) GZIPInputStream.GZIP_MAGIC ) {
+        if (magic == (short) GZIPInputStream.GZIP_MAGIC) {
             executeScript(new InputStreamReader(new GZIPInputStream(pb)));
         } else {
             executeScript(new InputStreamReader(pb));
@@ -141,5 +149,4 @@ public class H2OutputVisitorTest {
     public void testChampScripts() throws Exception {
         loadScript("champ.sql");
     }
-
 }

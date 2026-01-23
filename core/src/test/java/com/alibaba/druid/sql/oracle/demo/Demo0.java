@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.sql.oracle.demo;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class Demo0 extends TestCase {
     public void test_demo_0() throws Exception {
@@ -30,7 +29,7 @@ public class Demo0 extends TestCase {
 
         // parser得到AST
         SQLStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> stmtList = parser.parseStatementList(); //
+        List<SQLStatement> stmtList = parser.parseStatementList();
 
         // 将AST通过visitor输出
         StringBuilder out = new StringBuilder();

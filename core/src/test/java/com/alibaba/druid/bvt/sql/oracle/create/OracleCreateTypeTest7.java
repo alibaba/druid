@@ -41,7 +41,7 @@ public class OracleCreateTypeTest7 extends OracleTest {
         assertEquals("CREATE OR REPLACE TYPE histogram_entry_type AUTHID CURRENT_USER AS OBJECT (\n" +
                         "\tcount NUMBER, \n" +
                         "\tvalue NUMBER(5)\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

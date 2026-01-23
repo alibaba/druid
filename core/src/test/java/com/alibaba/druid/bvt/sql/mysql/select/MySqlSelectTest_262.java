@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
-
 public class MySqlSelectTest_262 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT   s.acctbal,\n" +
@@ -56,6 +55,4 @@ public class MySqlSelectTest_262 extends MysqlTest {
                 "ORDER BY s.acctbal DESC, n.name, s.name, p.partkey\n" +
                 "LIMIT 100", stmt.toString());
     }
-
-
 }

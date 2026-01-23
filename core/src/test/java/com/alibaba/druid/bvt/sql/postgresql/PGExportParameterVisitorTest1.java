@@ -1,15 +1,11 @@
 package com.alibaba.druid.bvt.sql.postgresql;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGExportParameterVisitor;
+import junit.framework.TestCase;
 
+import java.util.List;
 
 public class PGExportParameterVisitorTest1 extends TestCase {
     public void test_pg() throws Exception {
@@ -23,7 +19,7 @@ public class PGExportParameterVisitorTest1 extends TestCase {
 
         List<Object> parameters = visitor.getParameters();
 
-        Assert.assertEquals(1, parameters.size());
-        Assert.assertEquals(1, parameters.get(0));
+        assertEquals(1, parameters.size());
+        assertEquals(1, parameters.get(0));
     }
 }

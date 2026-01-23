@@ -15,14 +15,13 @@
  */
 package com.alibaba.druid.sql;
 
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.util.JdbcUtils;
 
 public class TestOnlineSQLTest3 extends TestCase {
     private String url = "jdbc:mysql://a.b.c.d/dragoon_v25_masterdb";

@@ -1,17 +1,5 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.security.auth.callback.NameCallback;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.mock.MockResultSet;
@@ -21,6 +9,15 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.DruidPasswordCallback;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import javax.security.auth.callback.NameCallback;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DruidDataSourceTest6 extends TestCase {
     private DruidDataSource dataSource;
@@ -81,7 +78,7 @@ public class DruidDataSourceTest6 extends TestCase {
             error = e;
         }
         // 'SELECT 1' for connection validation will skip all filters, so error is null.
-        Assert.assertNull(error);
+        assertNull(error);
 
         {
             Connection conn = dataSource.getConnection();
@@ -102,8 +99,8 @@ public class DruidDataSourceTest6 extends TestCase {
             }
             conn.close();
         }
-        Assert.assertNotNull(error);
-        
+        assertNotNull(error);
+
         {
             returnEmptyCount.set(1);
             Connection conn = dataSource.getConnection();
@@ -125,10 +122,9 @@ public class DruidDataSourceTest6 extends TestCase {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
-        Assert.assertEquals(100, stmt.getQueryTimeout());
+        assertEquals(100, stmt.getQueryTimeout());
         stmt.close();
 
         conn.close();
     }
-
 }

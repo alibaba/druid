@@ -73,7 +73,6 @@ public class OracleSelectTest111 extends OracleTest {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(1, visitor.getOrderByColumns().size());
-
     }
 
     public void test_1() throws Exception {
@@ -113,7 +112,6 @@ public class OracleSelectTest111 extends OracleTest {
         assertEquals(4, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
     }
 //
 //    public void test_2() throws Exception {

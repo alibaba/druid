@@ -1,8 +1,5 @@
 package com.alibaba.druid.sql.issues;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -10,13 +7,13 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Issue3989 extends TestCase {
-
     public void test_create_trigger() {
-
         String ddl2 = "CREATE TABLE table_1 (\n" +
             "  id INT AUTO_INCREMENT,\n" +
             "  name VARCHAR(100),\n" +

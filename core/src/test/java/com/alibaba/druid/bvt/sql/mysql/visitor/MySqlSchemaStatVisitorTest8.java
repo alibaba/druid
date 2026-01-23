@@ -31,7 +31,7 @@ public class MySqlSchemaStatVisitorTest8 extends TestCase {
                 "(SELECT count() FROM warn_condition_strategy WHERE user_id = 2510701 AND (is_delete = 1 OR strategy_state IN (3, 4, 5))) AS historyNum,\n" +
                 "(SELECT count() FROM warn_condition_trade_history WHERE user_id = 2510701 AND status = 1) AS unreadEntrustNum";
 
-//		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
+        // sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -43,7 +43,7 @@ public class MySqlSchemaStatVisitorTest8 extends TestCase {
 
         System.out.println(stmt.toString());
 
-//		System.out.println(sql);
+        // System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println(visitor.getConditions());
@@ -58,7 +58,5 @@ public class MySqlSchemaStatVisitorTest8 extends TestCase {
         assertEquals(true, visitor.containsColumn("warn_condition_strategy", "strategy_state"));
         // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "name")));
-
     }
-
 }

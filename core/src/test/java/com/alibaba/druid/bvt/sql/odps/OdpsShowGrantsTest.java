@@ -1,13 +1,10 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import junit.framework.TestCase;
 
 public class OdpsShowGrantsTest extends TestCase {
     public void test_0() throws Exception {
@@ -17,7 +14,7 @@ public class OdpsShowGrantsTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         //System.out.println(output);
-        Assert.assertEquals("SHOW GRANTS FOR aliyun$DXP_XXXX@aliyun.com", output);
+        assertEquals("SHOW GRANTS FOR aliyun$DXP_XXXX@aliyun.com", output);
     }
 
     public void test_1() throws Exception {
@@ -27,7 +24,6 @@ public class OdpsShowGrantsTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         //System.out.println(output);
-        Assert.assertEquals("SHOW GRANTS FOR aliyun$DXP_XXXX@aliyun.com ON TYPE table", output);
+        assertEquals("SHOW GRANTS FOR aliyun$DXP_XXXX@aliyun.com ON TYPE table", output);
     }
-
 }

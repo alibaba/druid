@@ -1,9 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试initialSize > maxActive
@@ -27,7 +25,7 @@ public class DruidDataSourceTest_getProperties extends TestCase {
     }
 
     public void test_error() throws Exception {
-        Assert.assertEquals(-1, dataSource.getProperties().indexOf("xxx"));
-        Assert.assertEquals(true, dataSource.getProperties().indexOf("******") != -1);
+        assertEquals(-1, dataSource.getProperties().indexOf("xxx"));
+        assertEquals(true, dataSource.getProperties().indexOf("******") != -1);
     }
 }

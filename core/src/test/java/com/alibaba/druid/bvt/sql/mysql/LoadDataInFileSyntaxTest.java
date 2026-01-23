@@ -15,17 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class LoadDataInFileSyntaxTest extends TestCase {
     public void test_0() throws Exception {
@@ -36,7 +33,7 @@ public class LoadDataInFileSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("LOAD DATA INFILE 'data.txt' INTO TABLE db2.my_table;", text);
+        assertEquals("LOAD DATA INFILE 'data.txt' INTO TABLE db2.my_table;", text);
     }
 
     public void test_1() throws Exception {
@@ -47,7 +44,7 @@ public class LoadDataInFileSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("LOAD DATA INFILE '/tmp/test.txt' INTO TABLE test COLUMNS TERMINATED BY ',' LINES STARTING BY 'xxx';",
+        assertEquals("LOAD DATA INFILE '/tmp/test.txt' INTO TABLE test COLUMNS TERMINATED BY ',' LINES STARTING BY 'xxx';",
                 text);
     }
 
@@ -59,7 +56,7 @@ public class LoadDataInFileSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("LOAD DATA INFILE '/home/Order.txt' INTO TABLE Orders (Order_Number, Order_Date, Customer_ID);",
+        assertEquals("LOAD DATA INFILE '/home/Order.txt' INTO TABLE Orders (Order_Number, Order_Date, Customer_ID);",
                 text);
     }
 
@@ -71,7 +68,7 @@ public class LoadDataInFileSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("LOAD DATA INFILE 'data.txt' INTO TABLE tbl_name COLUMNS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;",
+        assertEquals("LOAD DATA INFILE 'data.txt' INTO TABLE tbl_name COLUMNS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;",
                 text);
     }
 

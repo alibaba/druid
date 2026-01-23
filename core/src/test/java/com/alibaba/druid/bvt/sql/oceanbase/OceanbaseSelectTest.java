@@ -28,7 +28,7 @@ public class OceanbaseSelectTest extends MysqlTest {
     protected final DbType dbType = JdbcConstants.MYSQL;
 
     public void test_0() throws Exception {
-        String sql = "SELECT EmpID, EmpName, MgrId, Level FROM emp START WITH MgrId IS NULL CONNECT BY PRIOR EmpId = MgrId"; //
+        String sql = "SELECT EmpID, EmpName, MgrId, Level FROM emp START WITH MgrId IS NULL CONNECT BY PRIOR EmpId = MgrId";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
         SQLStatement stmt = stmtList.get(0);
@@ -63,6 +63,5 @@ public class OceanbaseSelectTest extends MysqlTest {
         assertEquals(3, visitor.getConditions().size());
 
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
     }
 }

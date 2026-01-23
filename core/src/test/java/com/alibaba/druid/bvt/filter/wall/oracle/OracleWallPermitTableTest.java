@@ -15,33 +15,30 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class OracleWallPermitTableTest extends TestCase {
     public void test_permitTable() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from TAB"));
-        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from tab"));
-        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from SYS.TAB"));
-        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from SYS.\"TAB\""));
+        assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from TAB"));
+        assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from tab"));
+        assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from SYS.TAB"));
+        assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from SYS.\"TAB\""));
 
-        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from all_users"));
+        assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from all_users"));
     }
 
     public void test_permitTable_subquery() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle("select * from(select * from TAB) a"));
-        Assert.assertTrue(WallUtils.isValidateOracle("select * from(select * from tab) a"));
-        Assert.assertTrue(WallUtils.isValidateOracle("select * from(select * from SYS.TAB) a"));
-        Assert.assertTrue(WallUtils.isValidateOracle("select * from(select * from SYS.\"TAB\") a"));
+        assertTrue(WallUtils.isValidateOracle("select * from(select * from TAB) a"));
+        assertTrue(WallUtils.isValidateOracle("select * from(select * from tab) a"));
+        assertTrue(WallUtils.isValidateOracle("select * from(select * from SYS.TAB) a"));
+        assertTrue(WallUtils.isValidateOracle("select * from(select * from SYS.\"TAB\") a"));
     }
 
     public void test_permitTable_join() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle("select * from t1, TAB"));
-        Assert.assertTrue(WallUtils.isValidateOracle("select * from t1, tab"));
-        Assert.assertTrue(WallUtils.isValidateOracle("select * from t1, SYS.TAB"));
-        Assert.assertTrue(WallUtils.isValidateOracle("select * from t1, SYS.\"TAB\""));
+        assertTrue(WallUtils.isValidateOracle("select * from t1, TAB"));
+        assertTrue(WallUtils.isValidateOracle("select * from t1, tab"));
+        assertTrue(WallUtils.isValidateOracle("select * from t1, SYS.TAB"));
+        assertTrue(WallUtils.isValidateOracle("select * from t1, SYS.\"TAB\""));
     }
 }

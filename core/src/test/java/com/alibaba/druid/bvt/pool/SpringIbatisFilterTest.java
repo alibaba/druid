@@ -15,21 +15,6 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
@@ -38,6 +23,18 @@ import com.alibaba.druid.spring.User;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.json.JSONUtils;
+import junit.framework.TestCase;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import javax.sql.DataSource;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SpringIbatisFilterTest extends TestCase {
     protected void setUp() throws Exception {
@@ -45,11 +42,11 @@ public class SpringIbatisFilterTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_spring() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
@@ -87,7 +84,7 @@ public class SpringIbatisFilterTest extends TestCase {
         service.addUser(user);
 
         TestFilter filter = (TestFilter) context.getBean("test-filter");
-        Assert.assertEquals(2, filter.getConnectCount());
+        assertEquals(2, filter.getConnectCount());
 
         {
             Connection conn = dataSource.getConnection();
@@ -104,7 +101,7 @@ public class SpringIbatisFilterTest extends TestCase {
             conn.close();
         }
 
-        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         Map<String, Object> wallStats = DruidStatService.getInstance().getWallStatMap(Collections.<String, String>emptyMap());
 
@@ -112,7 +109,7 @@ public class SpringIbatisFilterTest extends TestCase {
 
         context.close();
 
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public static class TestFilter extends FilterAdapter {

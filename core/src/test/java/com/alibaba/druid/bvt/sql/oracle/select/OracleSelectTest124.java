@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.select;
 
-import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -23,7 +22,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import java.util.List;
-
 
 public class OracleSelectTest124 extends TestCase {
     public void test_0() throws Exception {

@@ -1,13 +1,12 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,7 +15,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://github.com/alibaba/druid/issues/5710">Issue来源</a>
  */
 public class Issue5710 {
-
     @Test
     public void test_parse_show_sql() {
         for (String sql : new String[]{

@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试访问Oracle系统对象
@@ -33,13 +30,13 @@ public class MySqlWallPermitVariantTest extends TestCase {
         MySqlWallProvider provider = new MySqlWallProvider();
         provider.getConfig().setVariantCheck(false);
 
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
     }
 
     public void test_not_allow() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider();
         provider.getConfig().setVariantCheck(true);
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 }

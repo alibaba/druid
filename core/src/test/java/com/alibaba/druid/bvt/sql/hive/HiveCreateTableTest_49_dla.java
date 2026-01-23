@@ -48,5 +48,4 @@ public class HiveCreateTableTest_49_dla
 
         assertEquals(stmt.toString(), SQLUtils.parseSingleStatement(stmt.toString(), DbType.hive, SQLParserFeature.KeepComments).toString());
     }
-
 }

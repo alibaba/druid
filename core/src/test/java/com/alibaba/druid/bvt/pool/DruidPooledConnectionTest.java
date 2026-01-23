@@ -1,13 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.Savepoint;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.Savepoint;
 
 public class DruidPooledConnectionTest extends TestCase {
     private DruidDataSource dataSource;
@@ -45,7 +43,7 @@ public class DruidPooledConnectionTest extends TestCase {
     public void test_getOwnerThread() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
 
-        Assert.assertEquals(Thread.currentThread(), conn.getOwnerThread());
+        assertEquals(Thread.currentThread(), conn.getOwnerThread());
 
         conn.close();
     }
@@ -53,11 +51,11 @@ public class DruidPooledConnectionTest extends TestCase {
     public void test_isDiable() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
 
-        Assert.assertEquals(false, conn.isDisable());
+        assertEquals(false, conn.isDisable());
 
         conn.close();
 
-        Assert.assertEquals(true, conn.isDisable());
+        assertEquals(true, conn.isDisable());
     }
 
     public void test_dupClose() throws Exception {
@@ -68,18 +66,18 @@ public class DruidPooledConnectionTest extends TestCase {
     }
 
     public void test_disable() throws Exception {
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
 
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
         conn.disable();
-        Assert.assertEquals(true, conn.isDisable());
+        assertEquals(true, conn.isDisable());
 
-        Assert.assertEquals(1, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getActiveCount());
 
         conn.close();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
     }
 }

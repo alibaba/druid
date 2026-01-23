@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import java.util.concurrent.CountDownLatch;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.Statement;
+import java.util.concurrent.CountDownLatch;
 
 public class StatFilterConcurrentTest extends TestCase {
     private DruidDataSource dataSource;
@@ -79,6 +78,5 @@ public class StatFilterConcurrentTest extends TestCase {
             threads[i].start();
         }
         endLatch.await();
-
     }
 }

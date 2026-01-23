@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -44,9 +43,9 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        assertEquals("DELETE t1" + //
-                "\nFROM t1" + //
-                "\n\tLEFT JOIN t2 ON t1.id = t2.id" + //
+        assertEquals("DELETE t1" +
+                "\nFROM t1" +
+                "\n\tLEFT JOIN t2 ON t1.id = t2.id" +
                 "\nWHERE t2.id IS NULL;", SQLUtils.toMySqlString(stmt));
     }
 
@@ -58,8 +57,8 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        assertEquals("DELETE a1, a2\nFROM t1 a1" + //
-                "\n\tINNER JOIN t2 a2" + //
+        assertEquals("DELETE a1, a2\nFROM t1 a1" +
+                "\n\tINNER JOIN t2 a2" +
                 "\nWHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
     }
 
@@ -71,11 +70,11 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("DELETE FROM a1, a2\n" +
+        assertEquals("DELETE FROM a1, a2\n" +
                 "USING t1 a1\n" +
                 "\tINNER JOIN t2 a2\n" +
                 "WHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("delete from a1, a2\n" +
+        assertEquals("delete from a1, a2\n" +
                 "using t1 a1\n" +
                 "\tinner join t2 a2\n" +
                 "where a1.id = a2.id", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
@@ -89,8 +88,7 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("DELETE LOW_PRIORITY QUICK IGNORE FROM T", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("delete low_priority quick ignore from T", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("DELETE LOW_PRIORITY QUICK IGNORE FROM T", SQLUtils.toMySqlString(stmt));
+        assertEquals("delete low_priority quick ignore from T", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

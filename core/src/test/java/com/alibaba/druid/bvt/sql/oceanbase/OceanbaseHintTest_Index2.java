@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oceanbase;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+
+import java.util.List;
 
 public class OceanbaseHintTest_Index2 extends MysqlTest {
     public void test_0() throws Exception {
@@ -34,11 +32,11 @@ public class OceanbaseHintTest_Index2 extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE /*+ INDEX(t1 i1) */ FROM t1"
+        assertEquals("DELETE /*+ INDEX(t1 i1) */ FROM t1"
                 + "\nWHERE t1.c1 = 1;", result);
         print(stmtList);
 
-        Assert.assertEquals(1, stmtList.size());
+        assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -48,11 +46,10 @@ public class OceanbaseHintTest_Index2 extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
     }
 }

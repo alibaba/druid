@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.alter;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+
+import java.util.List;
 
 public class OracleAlterSessionTest extends OracleTest {
     public void test_0() throws Exception {
@@ -33,7 +31,7 @@ public class OracleAlterSessionTest extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -43,12 +41,11 @@ public class OracleAlterSessionTest extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees@remote")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees@remote")));
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
     }
-
 }

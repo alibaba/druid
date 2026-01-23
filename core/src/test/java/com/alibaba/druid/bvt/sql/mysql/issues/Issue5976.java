@@ -1,16 +1,13 @@
 package com.alibaba.druid.bvt.sql.mysql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLParseAssertUtil;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import java.util.List;
 
 /**
  * @author lizongbo
@@ -18,8 +15,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://dev.mysql.com/doc/refman/8.4/en/alter-table.html">mysql alter table </a>
  */
 public class Issue5976 {
-
-
     @Test
     public void test_parse_alter() {
         for (DbType dbType : new DbType[]{DbType.mysql}) {
@@ -77,7 +72,6 @@ public class Issue5976 {
             }
         }
     }
-
 
     @Test
     public void test_parse_rename() {

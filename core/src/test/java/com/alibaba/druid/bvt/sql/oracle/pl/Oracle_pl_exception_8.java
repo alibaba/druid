@@ -71,7 +71,7 @@ public class Oracle_pl_exception_8 extends OracleTest {
                 "    END;  -- sub-block ends\n" +
                 " \n" +
                 "  END LOOP;\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(6, statementList.size());
@@ -89,95 +89,103 @@ public class Oracle_pl_exception_8 extends OracleTest {
 
         assertEquals(1, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
 
-//        Assert.assertEquals(7, visitor.getColumns().size());
-//        Assert.assertEquals(3, visitor.getConditions().size());
-//        Assert.assertEquals(1, visitor.getRelationships().size());
+//        assertEquals(7, visitor.getColumns().size());
+//        assertEquals(3, visitor.getConditions().size());
+//        assertEquals(1, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
             System.out.println(output);
-            assertEquals("DROP TABLE results;\n" +
-                            "CREATE TABLE results (\n" +
-                            "\tres_name VARCHAR(20),\n" +
-                            "\tres_answer VARCHAR2(3)\n" +
-                            ");\n" +
-                            "CREATE UNIQUE INDEX res_name_ix ON results(res_name);\n" +
-                            "INSERT INTO results (res_name, res_answer)\n" +
-                            "VALUES ('SMYTHE', 'YES');\n" +
-                            "INSERT INTO results (res_name, res_answer)\n" +
-                            "VALUES ('JONES', 'NO');\n" +
-                            "DECLARE\n" +
-                            "\tname VARCHAR2(20) := 'SMYTHE';\n" +
-                            "\tanswer VARCHAR2(3) := 'NO';\n" +
-                            "\tsuffix NUMBER := 1;\n" +
-                            "BEGIN\n" +
-                            "\tFOR i IN 1..5\n" +
-                            "\tLOOP\n" +
-                            "\t\tDBMS_OUTPUT.PUT('Try #' || i);\n" +
-                            "\t\tBEGIN\n" +
-                            "\t\t\tSAVEPOINT TO start_transaction;\n" +
-                            "\t\t\tDELETE FROM results\n" +
-                            "\t\t\tWHERE res_answer = 'NO';\n" +
-                            "\t\t\tINSERT INTO results (res_name, res_answer)\n" +
-                            "\t\t\tVALUES (name, answer);\n" +
-                            "\t\t\tCOMMIT;\n" +
-                            "\t\t\tDBMS_OUTPUT.PUT_LINE(' succeeded.');\n" +
-                            "\t\t\tEXIT;\n" +
-                            "\t\tEXCEPTION\n" +
-                            "\t\t\tWHEN DUP_VAL_ON_INDEX THEN\n" +
-                            "\t\t\t\tDBMS_OUTPUT.PUT_LINE(' failed; trying again.');\n" +
-                            "\t\t\t\tROLLBACK TO start_transaction;\n" +
-                            "\t\t\t\tsuffix := suffix + 1;\n" +
-                            "\t\t\t\tname := name || TO_CHAR(suffix);\n" +
-                            "\t\tEND;\n" +
-                            "\tEND LOOP;\n" +
-                            "END;", //
-                    output);
+            assertEquals(
+              "DROP TABLE results;\n"
+                  + "CREATE TABLE results (\n"
+                  + "\tres_name VARCHAR(20),\n"
+                  + "\tres_answer VARCHAR2(3)\n"
+                  + ");\n"
+                  + "CREATE UNIQUE INDEX res_name_ix ON results(res_name);\n"
+                  + "INSERT INTO results (res_name, res_answer)\n"
+                  + "VALUES ('SMYTHE', 'YES');\n"
+                  + "INSERT INTO results (res_name, res_answer)\n"
+                  + "VALUES ('JONES', 'NO');\n"
+                  + "DECLARE\n"
+                  + "\tname VARCHAR2(20) := 'SMYTHE';\n"
+                  + "\tanswer VARCHAR2(3) := 'NO';\n"
+                  + "\tsuffix NUMBER := 1;\n"
+                  + "BEGIN\n"
+                  + "\tFOR i IN 1..5\n"
+                  + "\tLOOP\n"
+                  + "\t\t-- Try transaction at most 5 times.\n"
+                  + "\t\tDBMS_OUTPUT.PUT('Try #' || i);\n"
+                  + "\t\tBEGIN\n"
+                  + "\t\t\tSAVEPOINT TO start_transaction;\n"
+                  + "\t\t\tDELETE FROM results\n"
+                  + "\t\t\tWHERE res_answer = 'NO';\n"
+                  + "\t\t\tINSERT INTO results (res_name, res_answer)\n"
+                  + "\t\t\tVALUES (name, answer);\n"
+                  + "\t\t\tCOMMIT;\n"
+                  + "\t\t\tDBMS_OUTPUT.PUT_LINE(' succeeded.');\n"
+                  + "\t\t\tEXIT;\n"
+                  + "\t\tEXCEPTION\n"
+                  + "\t\t\tWHEN DUP_VAL_ON_INDEX THEN\n"
+                  + "\t\t\t\tDBMS_OUTPUT.PUT_LINE(' failed; trying again.');\n"
+                  + "\t\t\t\tROLLBACK TO start_transaction;\n"
+                  + "\t\t\t\t-- Undo changes.\n"
+                  + "\t\t\t\tsuffix := suffix + 1;\n"
+                  + "\t\t\t\t-- Try to fix problem.\n"
+                  + "\t\t\t\tname := name || TO_CHAR(suffix);\n"
+                  + "\t\tEND;\n"
+                  + "\tEND LOOP;\n"
+                  + "END;", //
+              output);
         }
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            assertEquals("drop table results;\n" +
-                            "create table results (\n" +
-                            "\tres_name VARCHAR(20),\n" +
-                            "\tres_answer VARCHAR2(3)\n" +
-                            ");\n" +
-                            "create UNIQUE index res_name_ix on results(res_name);\n" +
-                            "insert into results (res_name, res_answer)\n" +
-                            "values ('SMYTHE', 'YES');\n" +
-                            "insert into results (res_name, res_answer)\n" +
-                            "values ('JONES', 'NO');\n" +
-                            "declare\n" +
-                            "\tname VARCHAR2(20) := 'SMYTHE';\n" +
-                            "\tanswer VARCHAR2(3) := 'NO';\n" +
-                            "\tsuffix NUMBER := 1;\n" +
-                            "begin\n" +
-                            "\tfor i in 1..5\n" +
-                            "\tloop\n" +
-                            "\t\tDBMS_OUTPUT.PUT('Try #' || i);\n" +
-                            "\t\tbegin\n" +
-                            "\t\t\tsavepoint to start_transaction;\n" +
-                            "\t\t\tdelete from results\n" +
-                            "\t\t\twhere res_answer = 'NO';\n" +
-                            "\t\t\tinsert into results (res_name, res_answer)\n" +
-                            "\t\t\tvalues (name, answer);\n" +
-                            "\t\t\tcommit;\n" +
-                            "\t\t\tDBMS_OUTPUT.PUT_LINE(' succeeded.');\n" +
-                            "\t\t\texit;\n" +
-                            "\t\texception\n" +
-                            "\t\t\twhen DUP_VAL_ON_INDEX then\n" +
-                            "\t\t\t\tDBMS_OUTPUT.PUT_LINE(' failed; trying again.');\n" +
-                            "\t\t\t\trollback to start_transaction;\n" +
-                            "\t\t\t\tsuffix := suffix + 1;\n" +
-                            "\t\t\t\tname := name || TO_CHAR(suffix);\n" +
-                            "\t\tend;\n" +
-                            "\tend loop;\n" +
-                            "end;", //
-                    output);
+            assertEquals(
+              "drop table results;\n"
+                  + "create table results (\n"
+                  + "\tres_name VARCHAR(20),\n"
+                  + "\tres_answer VARCHAR2(3)\n"
+                  + ");\n"
+                  + "create UNIQUE index res_name_ix on results(res_name);\n"
+                  + "insert into results (res_name, res_answer)\n"
+                  + "values ('SMYTHE', 'YES');\n"
+                  + "insert into results (res_name, res_answer)\n"
+                  + "values ('JONES', 'NO');\n"
+                  + "declare\n"
+                  + "\tname VARCHAR2(20) := 'SMYTHE';\n"
+                  + "\tanswer VARCHAR2(3) := 'NO';\n"
+                  + "\tsuffix NUMBER := 1;\n"
+                  + "begin\n"
+                  + "\tfor i in 1..5\n"
+                  + "\tloop\n"
+                  + "\t\t-- Try transaction at most 5 times.\n"
+                  + "\t\tDBMS_OUTPUT.PUT('Try #' || i);\n"
+                  + "\t\tbegin\n"
+                  + "\t\t\tsavepoint to start_transaction;\n"
+                  + "\t\t\tdelete from results\n"
+                  + "\t\t\twhere res_answer = 'NO';\n"
+                  + "\t\t\tinsert into results (res_name, res_answer)\n"
+                  + "\t\t\tvalues (name, answer);\n"
+                  + "\t\t\tcommit;\n"
+                  + "\t\t\tDBMS_OUTPUT.PUT_LINE(' succeeded.');\n"
+                  + "\t\t\texit;\n"
+                  + "\t\texception\n"
+                  + "\t\t\twhen DUP_VAL_ON_INDEX then\n"
+                  + "\t\t\t\tDBMS_OUTPUT.PUT_LINE(' failed; trying again.');\n"
+                  + "\t\t\t\trollback to start_transaction;\n"
+                  + "\t\t\t\t-- Undo changes.\n"
+                  + "\t\t\t\tsuffix := suffix + 1;\n"
+                  + "\t\t\t\t-- Try to fix problem.\n"
+                  + "\t\t\t\tname := name || TO_CHAR(suffix);\n"
+                  + "\t\tend;\n"
+                  + "\tend loop;\n"
+                  + "end;", //
+              output);
         }
     }
 }

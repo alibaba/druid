@@ -70,7 +70,7 @@ public class OracleCreatePackageTest5 extends OracleTest {
                         "\tBEGIN\n" +
                         "\t\tRETURN;\n" +
                         "\tEND;\n" +
-                        "END cms_con_attributes_pkg;",//
+                        "END cms_con_attributes_pkg;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -85,14 +85,14 @@ public class OracleCreatePackageTest5 extends OracleTest {
         SQLUtils.toPGString(stmt);
         stmt.clone();
 
-//        Assert.assertEquals(2, visitor.getTables().size());
+//        assertEquals(2, visitor.getTables().size());
 //
-//        Assert.assertEquals(5, visitor.getColumns().size());
+//        assertEquals(5, visitor.getColumns().size());
 //
-//        Assert.assertTrue(visitor.containsColumn("employees", "employee_id"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "*"));
-//        Assert.assertTrue(visitor.containsColumn("departments", "department_id"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "salary"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "commission_pct"));
+//        assertTrue(visitor.containsColumn("employees", "employee_id"));
+//        assertTrue(visitor.containsColumn("employees", "*"));
+//        assertTrue(visitor.containsColumn("departments", "department_id"));
+//        assertTrue(visitor.containsColumn("employees", "salary"));
+//        assertTrue(visitor.containsColumn("employees", "commission_pct"));
     }
 }

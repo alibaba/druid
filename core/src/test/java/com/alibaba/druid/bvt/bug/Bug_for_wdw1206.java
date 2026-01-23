@@ -1,11 +1,10 @@
 package com.alibaba.druid.bvt.bug;
 
-import java.sql.Connection;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
 
 public class Bug_for_wdw1206 extends TestCase {
     private ClassLoader ctxClassLoader;

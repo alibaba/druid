@@ -1,21 +1,18 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledCallableStatement;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
+import junit.framework.TestCase;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 
 public class DruidPooledCallableStatementTest extends TestCase {
     private DruidDataSource dataSource;
@@ -53,12 +50,12 @@ public class DruidPooledCallableStatementTest extends TestCase {
         throwError = false;
         stmt.wasNull();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 
     public void test_wasNull_error() throws Exception {
@@ -66,7 +63,7 @@ public class DruidPooledCallableStatementTest extends TestCase {
         CallableStatement stmt = conn.prepareCall("select 1");
         stmt.execute();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -74,14 +71,14 @@ public class DruidPooledCallableStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 
     public void test_getObject() throws Exception {
@@ -89,7 +86,7 @@ public class DruidPooledCallableStatementTest extends TestCase {
         DruidPooledCallableStatement stmt = (DruidPooledCallableStatement) conn.prepareCall("select 1");
         stmt.execute();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -97,14 +94,14 @@ public class DruidPooledCallableStatementTest extends TestCase {
         } catch (SQLFeatureNotSupportedException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 
     public void test_getObject_1() throws Exception {
@@ -112,7 +109,7 @@ public class DruidPooledCallableStatementTest extends TestCase {
         DruidPooledCallableStatement stmt = (DruidPooledCallableStatement) conn.prepareCall("select 1");
         stmt.execute();
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -120,22 +117,22 @@ public class DruidPooledCallableStatementTest extends TestCase {
         } catch (SQLFeatureNotSupportedException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 
     public void test_wrap() throws Exception {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("select 1");
 
-        Assert.assertNotNull(stmt.unwrap(CallableStatement.class));
-        Assert.assertEquals(MockCallableStatement.class, stmt.unwrap(CallableStatement.class).getClass());
+        assertNotNull(stmt.unwrap(CallableStatement.class));
+        assertEquals(MockCallableStatement.class, stmt.unwrap(CallableStatement.class).getClass());
 
         stmt.close();
         conn.close();
@@ -145,8 +142,8 @@ public class DruidPooledCallableStatementTest extends TestCase {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("select 1");
 
-        Assert.assertNotNull(stmt.unwrap(PreparedStatement.class));
-        Assert.assertEquals(MockCallableStatement.class, stmt.unwrap(CallableStatement.class).getClass());
+        assertNotNull(stmt.unwrap(PreparedStatement.class));
+        assertEquals(MockCallableStatement.class, stmt.unwrap(CallableStatement.class).getClass());
 
         stmt.close();
         conn.close();
@@ -158,8 +155,8 @@ public class DruidPooledCallableStatementTest extends TestCase {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("select 1");
 
-        Assert.assertNotNull(stmt.unwrap(PreparedStatement.class));
-        Assert.assertEquals(MockCallableStatement.class, stmt.unwrap(CallableStatement.class).getClass());
+        assertNotNull(stmt.unwrap(PreparedStatement.class));
+        assertEquals(MockCallableStatement.class, stmt.unwrap(CallableStatement.class).getClass());
 
         stmt.close();
         conn.close();

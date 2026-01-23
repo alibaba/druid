@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
-
 import junit.framework.TestCase;
 
 public class CobarHintsTest extends TestCase {
@@ -37,7 +34,7 @@ public class CobarHintsTest extends TestCase {
                 ") b    Order by       product_id desc  ) a limit 25 offset (1-1)*20";
 
         String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.POSTGRESQL);
-        Assert.assertEquals("SELECT product_id, noeff_days, total_cnt\n" +
+        assertEquals("SELECT product_id, noeff_days, total_cnt\n" +
                 "FROM (\n" +
                 "\tSELECT product_id, noeff_days, count(*) OVER () AS total_cnt\n" +
                 "\tFROM (\n" +

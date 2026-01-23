@@ -127,6 +127,5 @@ public class OracleCreateTableTest97 extends OracleTest {
                 "\t\t\tNOCOMPRESS\n" +
                 "\t)\n" +
                 ");", stmt.toString());
-
     }
 }

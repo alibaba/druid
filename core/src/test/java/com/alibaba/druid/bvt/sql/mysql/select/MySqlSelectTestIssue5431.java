@@ -15,17 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import java.util.List;
-
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import com.alibaba.druid.util.Utils;
 
-import org.junit.Assert;
+import java.util.List;
 
 public class MySqlSelectTestIssue5431
         extends MysqlTest {
@@ -36,7 +31,7 @@ public class MySqlSelectTestIssue5431
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statement = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
@@ -44,8 +39,7 @@ public class MySqlSelectTestIssue5431
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("columns : " + visitor.getColumns());
-        assertEquals(2,visitor.getColumns().size());
-
+        assertEquals(2, visitor.getColumns().size());
     }
     public void test2() throws Exception {
         String sql = "select a from table1 group by a ";
@@ -54,7 +48,7 @@ public class MySqlSelectTestIssue5431
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statement = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
@@ -62,8 +56,6 @@ public class MySqlSelectTestIssue5431
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("columns : " + visitor.getColumns());
-        assertEquals(1,visitor.getColumns().size());
-
+        assertEquals(1, visitor.getColumns().size());
     }
-
 }

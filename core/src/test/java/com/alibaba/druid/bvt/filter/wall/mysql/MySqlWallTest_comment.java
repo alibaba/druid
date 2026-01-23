@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -65,5 +62,4 @@ public class MySqlWallTest_comment extends TestCase {
         assertFalse(provider.checkValid("SELECT * FROM t where a=1 -- and c=1"));
         assertFalse(provider.checkValid("SELECT * FROM t where a=1 /* and c=1 */"));
     }
-
 }

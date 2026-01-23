@@ -1,15 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.DruidDataSource;
+
 import java.sql.Connection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class DestorySchedulerTest extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -45,6 +41,6 @@ public class DestorySchedulerTest extends PoolTestCase {
         }
 
         Thread.sleep(100);
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getPoolingCount());
     }
 }

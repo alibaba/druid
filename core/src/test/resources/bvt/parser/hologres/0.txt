@@ -1,3 +1,79 @@
+select []
+--------------------
+SELECT ARRAY[]
+------------------------------------------------------------------------------------------------------------------------
+select cast(($0 + interval $1 week) as date)
+--------------------
+SELECT CAST(($0 + INTERVAL '$1' WEEK) AS date)
+------------------------------------------------------------------------------------------------------------------------
+select a from test
+-- origin
+-- ${if(gFinPeriod="季度","/*","")}
+-- origin end
+-- new
+/*
+-- new end
+where 1=1
+-- origin
+-- ${if(gFinPeriod="季度","","*/")}
+-- origin end
+-- new
+*/
+--new end
+--------------------
+SELECT a
+FROM test -- origin
+-- ${if(gFinPeriod="季度","/*","")}
+-- origin end
+-- new
+
+/*
+-- new end
+where 1=1
+-- origin
+-- ${if(gFinPeriod="季度","","*/")}
+-- origin end
+-- new
+*/
+-- new end
+------------------------------------------------------------------------------------------------------------------------
+SELECT sum(ret_amount) AS '应收金额'
+FROM test.test
+GROUP BY a ORDER BY '应收金额' DESC;
+--------------------
+SELECT sum(ret_amount) AS "应收金额"
+FROM test.test
+GROUP BY a
+ORDER BY "应收金额" DESC;
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS my_partitioned_table (
+id INT,
+name text,
+value FLOAT ,
+arr ARRAY<INT>,
+dt TEXT  not null,
+region TEXT not null
+)
+LOGICAL PARTITION BY LIST (dt, region) 
+WITH (
+    orientation = 'column',
+    partition_require_filter = FALSE 
+);
+--------------------
+CREATE TABLE IF NOT EXISTS my_partitioned_table (
+	id INT,
+	name text,
+	value FLOAT,
+	arr INT[],
+	dt TEXT NOT NULL,
+	region TEXT NOT NULL
+)
+LOGICAL PARTITION BY LIST (dt, region)
+WITH (
+	orientation = 'column',
+	partition_require_filter = false
+);
+------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE public.tb0 (
     id text NOT NULL,
     name text NOT NULL,

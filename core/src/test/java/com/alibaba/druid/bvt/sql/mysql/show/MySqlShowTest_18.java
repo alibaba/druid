@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowHMSMetaStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class MySqlShowTest_18 extends MysqlTest {
         MySqlShowHMSMetaStatement stmt = (MySqlShowHMSMetaStatement) stmtList.get(0);
 
         String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW HMSMETA s1.table1", result);
+        assertEquals("SHOW HMSMETA s1.table1", result);
         assertEquals("s1", stmt.getSchema());
         assertEquals("table1", stmt.getTableName());
     }
@@ -46,7 +45,7 @@ public class MySqlShowTest_18 extends MysqlTest {
         MySqlShowHMSMetaStatement stmt = (MySqlShowHMSMetaStatement) stmtList.get(0);
 
         String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW HMSMETA table1", result);
+        assertEquals("SHOW HMSMETA table1", result);
         assertEquals(null, stmt.getSchema());
         assertEquals("table1", stmt.getTableName());
     }

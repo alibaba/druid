@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StarRocksLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords STARROCKS_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -23,6 +23,8 @@ public class StarRocksLexer extends Lexer {
         map.put("FORCE", Token.FORCE);
         map.put("IF", Token.IF);
         map.put("KILL", Token.KILL);
+        map.put("BITMAP", Token.BITMAP);
+        map.put("NGRAMBF", Token.NGRAMBF);
 
         map.put("TRUE", Token.TRUE);
         map.put("SHOW", Token.SHOW);
@@ -35,7 +37,12 @@ public class StarRocksLexer extends Lexer {
         map.put("RLIKE", Token.RLIKE);
         map.put("USING", Token.USING);
         map.put("OVERWRITE", Token.OVERWRITE);
-        return new Keywords(map);
+        STARROCKS_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return STARROCKS_KEYWORDS;
     }
 
     public StarRocksLexer(String input) {

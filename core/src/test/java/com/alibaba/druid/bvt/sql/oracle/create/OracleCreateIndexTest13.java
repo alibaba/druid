@@ -45,8 +45,8 @@ public class OracleCreateIndexTest13 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE UNIQUE INDEX nested_tab_ix ON textdocs_nestedtab(NESTED_TABLE_ID, document_typ);"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE UNIQUE INDEX nested_tab_ix ON textdocs_nestedtab(NESTED_TABLE_ID, document_typ);",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

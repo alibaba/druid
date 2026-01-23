@@ -1,12 +1,9 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
-import org.junit.Assert;
-
+import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import java.sql.Connection;
 
 public class FullTest extends TestCase {
     private DruidDataSource dataSource;
@@ -24,13 +21,13 @@ public class FullTest extends TestCase {
     }
 
     public void test_restart() throws Exception {
-        Assert.assertEquals(false, dataSource.isFull());
+        assertEquals(false, dataSource.isFull());
         dataSource.fill();
 
-        Assert.assertEquals(true, dataSource.isFull());
+        assertEquals(true, dataSource.isFull());
         Connection conn = dataSource.getConnection();
-        Assert.assertEquals(true, dataSource.isFull());
+        assertEquals(true, dataSource.isFull());
         conn.close();
-        Assert.assertEquals(true, dataSource.isFull());
+        assertEquals(true, dataSource.isFull());
     }
 }

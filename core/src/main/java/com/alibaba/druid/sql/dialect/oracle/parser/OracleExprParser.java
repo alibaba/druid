@@ -546,7 +546,7 @@ public class OracleExprParser extends SQLExprParser {
                 SQLTimestampExpr timestamp = new SQLTimestampExpr();
 
                 String literal = lexer.stringVal();
-                timestamp.setLiteral(literal);
+                timestamp.setValue(literal);
                 accept(Token.LITERAL_CHARS);
 
                 if (lexer.identifierEquals("AT")) {

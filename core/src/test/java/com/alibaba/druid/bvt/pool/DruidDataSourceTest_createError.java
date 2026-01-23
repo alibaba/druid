@@ -1,16 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.SQLException;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import junit.framework.TestCase;
+
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * 这个场景测试createError
@@ -31,7 +28,6 @@ public class DruidDataSourceTest_createError extends TestCase {
                 throw new SQLException();
             }
         });
-
     }
 
     protected void tearDown() throws Exception {
@@ -46,6 +42,6 @@ public class DruidDataSourceTest_createError extends TestCase {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

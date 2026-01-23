@@ -1,13 +1,12 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,11 +17,9 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://www.postgresql.org/docs/current/sql-createindex.html">CREATE INDEX</a>
  */
 public class Issue5780 {
-
     @Test
     public void test_parse_alter_table_sql() {
         for (DbType dbType : new DbType[]{DbType.postgresql, DbType.greenplum, DbType.edb}) {
-
             for (String sql : new String[]{
                 "CREATE INDEX \"index_log\" ON \"public\".\"check_log\" USING btree (\n" +
                     "  \"t_no\" COLLATE \"pg_catalog\".\"default\" \"pg_catalog\".\"text_ops\" ASC NULLS LAST\n" +

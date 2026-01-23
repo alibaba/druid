@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import java.util.List;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OracleSchemaStatVisitorTest_Subquery2 extends TestCase {
     public void test_0() throws Exception {
@@ -33,7 +31,7 @@ public class OracleSchemaStatVisitorTest_Subquery2 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -42,17 +40,15 @@ public class OracleSchemaStatVisitorTest_Subquery2 extends TestCase {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("users"));
-        Assert.assertEquals(true, visitor.containsTable("groups"));
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("users"));
+        assertEquals(true, visitor.containsTable("groups"));
 
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "groupId")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("groups", "id")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("groups", "name")));
-
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "groupId")));
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
+        assertEquals(true, visitor.getColumns().contains(new Column("groups", "id")));
+        assertEquals(true, visitor.getColumns().contains(new Column("groups", "name")));
     }
-
 }

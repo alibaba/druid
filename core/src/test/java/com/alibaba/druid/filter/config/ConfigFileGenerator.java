@@ -1,17 +1,15 @@
 package com.alibaba.druid.filter.config;
 
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import org.junit.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-
-import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author Jonas Yang
@@ -50,5 +48,4 @@ public class ConfigFileGenerator {
             file.delete();
         }
     }
-
 }

@@ -15,19 +15,17 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-import oracle.jdbc.OracleConnection;
-import oracle.jdbc.internal.OraclePreparedStatement;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import oracle.jdbc.OracleConnection;
+import oracle.jdbc.internal.OraclePreparedStatement;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class TestOraclePrefetch extends TestCase {
     private DruidDataSource dataSource;
@@ -57,18 +55,18 @@ public class TestOraclePrefetch extends TestCase {
 
             {
                 oracleConn = conn.unwrap(OracleConnection.class);
-                Assert.assertEquals(50, oracleConn.getDefaultRowPrefetch());
+                assertEquals(50, oracleConn.getDefaultRowPrefetch());
             }
 
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             oracleStmt = stmt.unwrap(OraclePreparedStatement.class);
-            Assert.assertEquals(50, oracleStmt.getRowPrefetch());
+            assertEquals(50, oracleStmt.getRowPrefetch());
 
-            Assert.assertTrue(stmt.isWrapperFor(PreparedStatementHolder.class));
+            assertTrue(stmt.isWrapperFor(PreparedStatementHolder.class));
             stmtHolder = stmt.unwrap(PreparedStatementHolder.class);
-            Assert.assertNotNull(stmtHolder);
-            Assert.assertEquals(0, stmtHolder.getHitCount());
+            assertNotNull(stmtHolder);
+            assertEquals(0, stmtHolder.getHitCount());
 
             ResultSet rs = stmt.executeQuery();
             rs.next();
@@ -83,16 +81,16 @@ public class TestOraclePrefetch extends TestCase {
 
             {
                 OracleConnection oracleConn2 = conn.unwrap(OracleConnection.class);
-                Assert.assertEquals(50, oracleConn2.getDefaultRowPrefetch());
-                Assert.assertSame(oracleConn, oracleConn2);
+                assertEquals(50, oracleConn2.getDefaultRowPrefetch());
+                assertSame(oracleConn, oracleConn2);
             }
 
             PreparedStatement stmt = conn.prepareStatement(sql);
 
             {
                 PreparedStatementHolder stmtHolder2 = stmt.unwrap(PreparedStatementHolder.class);
-                Assert.assertSame(stmtHolder2, stmtHolder);
-                Assert.assertEquals(1, stmtHolder.getHitCount());
+                assertSame(stmtHolder2, stmtHolder);
+                assertEquals(1, stmtHolder.getHitCount());
             }
 
             ResultSet rs = stmt.executeQuery();
@@ -101,14 +99,13 @@ public class TestOraclePrefetch extends TestCase {
             stmt.close();
             {
                 OraclePreparedStatement oracleStmt2 = stmt.unwrap(OraclePreparedStatement.class);
-                Assert.assertSame(oracleStmt, oracleStmt2);
-                Assert.assertEquals(2, oracleStmt.getRowPrefetch());
+                assertSame(oracleStmt, oracleStmt2);
+                assertEquals(2, oracleStmt.getRowPrefetch());
             }
 
             conn.close();
         }
 
-        Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
-
+        assertEquals(1, dataSource.getCachedPreparedStatementCount());
     }
 }

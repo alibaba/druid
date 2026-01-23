@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class WallInsertTest2 extends TestCase {
     private String sql = "INSERT INTO T (F1, F2) VALUES (1, 2)";
@@ -32,10 +29,10 @@ public class WallInsertTest2 extends TestCase {
     }
 
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
+        assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 }

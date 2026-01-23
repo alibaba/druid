@@ -44,7 +44,7 @@ public class mysql_block_1 extends OracleTest {
                 "ts`,`elapsed_time`,`user_io_wait_time`,`collection_time`\n" +
                 "    FROM ktv_tmp_sqlarea WHERE dbid=? and sql_fulltext is not null;\n" +
                 "    COMMIT;\n" +
-                "    DELETE FROM ktv_tmp_sqlarea WHERE dbid=?;"; //
+                "    DELETE FROM ktv_tmp_sqlarea WHERE dbid=?;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         assertEquals(7, statementList.size());
@@ -63,14 +63,14 @@ public class mysql_block_1 extends OracleTest {
 
         assertEquals(2, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
 
-//        Assert.assertEquals(7, visitor.getColumns().size());
-//        Assert.assertEquals(3, visitor.getConditions().size());
-//        Assert.assertEquals(1, visitor.getRelationships().size());
+//        assertEquals(7, visitor.getColumns().size());
+//        assertEquals(3, visitor.getConditions().size());
+//        assertEquals(1, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
         {
             String output = SQLUtils.toSQLString(statementList, DbType.mysql);

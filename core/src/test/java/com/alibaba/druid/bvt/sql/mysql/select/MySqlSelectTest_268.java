@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_268 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from (select * from mm union select * from mm) a,(select * from mm union select * from mm) b;";
@@ -44,6 +43,4 @@ public class MySqlSelectTest_268 extends MysqlTest {
                 "\t\tFROM mm\n" +
                 "\t) b;", stmt.toString());
     }
-
-
 }

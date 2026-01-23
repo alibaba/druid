@@ -15,16 +15,13 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class TenantDeleteTest extends TestCase {
     private String sql = "DELETE FROM orders WHERE FID = ?";
@@ -42,10 +39,10 @@ public class TenantDeleteTest extends TestCase {
 
         WallProvider.setTenantValue("test");
         WallCheckResult checkResult = provider.check(sql);
-        Assert.assertEquals(0, checkResult.getViolations().size());
+        assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals("DELETE FROM orders" + //
+        assertEquals("DELETE FROM orders" +
                 "\nWHERE FID = ?", resultSql);
     }
 }

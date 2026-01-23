@@ -54,7 +54,7 @@ public class DB2ResourceTest extends OracleTest {
         DB2StatementParser parser = new DB2StatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        // Assert.assertEquals(1, statementList.size());
+        // assertEquals(1, statementList.size());
 
         System.out.println(sql);
 
@@ -85,5 +85,4 @@ public class DB2ResourceTest extends OracleTest {
             }
         }
     }
-
 }

@@ -15,29 +15,26 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OdpsSelectTest6 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "select true from abc";//
-        Assert.assertEquals("SELECT true"
+        String sql = "select true from abc";
+        assertEquals("SELECT true"
                 + "\nFROM abc", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select true"
+        assertEquals("select true"
                 + "\nfrom abc", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
@@ -47,9 +44,8 @@ public class OdpsSelectTest6 extends TestCase {
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
     }
-
 }

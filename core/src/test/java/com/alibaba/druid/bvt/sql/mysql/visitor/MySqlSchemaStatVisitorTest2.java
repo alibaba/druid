@@ -15,16 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.visitor;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class MySqlSchemaStatVisitorTest2 extends TestCase {
     public void test_0() throws Exception {
@@ -34,7 +31,7 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -43,13 +40,12 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("users"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("users"));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
     }
 
     public void test_2() throws Exception {
@@ -59,7 +55,7 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -68,13 +64,12 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("users"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("users"));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
     }
 
     public void test_3() throws Exception {
@@ -84,7 +79,7 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -93,12 +88,11 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("users"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("users"));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
-
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
     }
 }

@@ -17,22 +17,19 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OdpsWhoamiTest extends TestCase {
     public void test_select() throws Exception {
-        String sql = "WHOAMI";//
-        Assert.assertEquals("WHOAMI", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("whoami", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        String sql = "WHOAMI";
+        assertEquals("WHOAMI", SQLUtils.formatOdps(sql));
+        assertEquals("whoami", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
         assertEquals("WHOAMI", stmt.toString());
     }
-
 }

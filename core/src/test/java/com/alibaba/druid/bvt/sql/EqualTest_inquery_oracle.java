@@ -1,12 +1,11 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import junit.framework.TestCase;
+
+import static org.junit.Assert.assertNotEquals;
 
 public class EqualTest_inquery_oracle extends TestCase {
     public void test_exits() throws Exception {
@@ -25,13 +24,13 @@ public class EqualTest_inquery_oracle extends TestCase {
             SQLExprParser parser = new OracleExprParser(sql_c);
             exprC = (SQLInSubQueryExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLInSubQueryExpr(), new SQLInSubQueryExpr());
-        Assert.assertEquals(new SQLInSubQueryExpr().hashCode(), new SQLInSubQueryExpr().hashCode());
+        assertEquals(new SQLInSubQueryExpr(), new SQLInSubQueryExpr());
+        assertEquals(new SQLInSubQueryExpr().hashCode(), new SQLInSubQueryExpr().hashCode());
     }
 }

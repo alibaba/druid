@@ -21,29 +21,28 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleCreateTableTest20 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "   CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" " //
-                        + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                        + "    \"CREATED_AT\" TIMESTAMP (6), " //
-                        + "    \"UPDATED_AT\" TIMESTAMP (6), " //
-                        + "    \"ACTIVE_RULE_ID\" NUMBER(38,0), " //
-                        + "    \"USER_LOGIN\" VARCHAR2(40 BYTE), " //
-                        + "    \"DATA\" BLOB, " //
-                        + "     PRIMARY KEY (\"ID\")" //
-                        + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
-                        + "  TABLESPACE \"USERS\"  ENABLE" //
-                        + "   ) SEGMENT CREATION DEFERRED " //
-                        + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 " //
-                        + " NOCOMPRESS LOGGING" //
-                        + "  TABLESPACE \"USERS\" " //
-                        + " LOB (\"DATA\") STORE AS SECUREFILE (" //
-                        + "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192" //
+                "   CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" "
+                        + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, "
+                        + "    \"CREATED_AT\" TIMESTAMP (6), "
+                        + "    \"UPDATED_AT\" TIMESTAMP (6), "
+                        + "    \"ACTIVE_RULE_ID\" NUMBER(38,0), "
+                        + "    \"USER_LOGIN\" VARCHAR2(40 BYTE), "
+                        + "    \"DATA\" BLOB, "
+                        + "     PRIMARY KEY (\"ID\")"
+                        + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS "
+                        + "  TABLESPACE \"USERS\"  ENABLE"
+                        + "   ) SEGMENT CREATION DEFERRED "
+                        + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 "
+                        + " NOCOMPRESS LOGGING"
+                        + "  TABLESPACE \"USERS\" "
+                        + " LOB (\"DATA\") STORE AS SECUREFILE ("
+                        + "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192"
                         + "  NOCACHE LOGGING  NOCOMPRESS  KEEP_DUPLICATES ) ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -51,9 +50,9 @@ public class OracleCreateTableTest20 extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" (\n" +
+        assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" (\n" +
                         "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
                         "\t\"CREATED_AT\" TIMESTAMP(6),\n" +
                         "\t\"UPDATED_AT\" TIMESTAMP(6),\n" +
@@ -84,7 +83,7 @@ public class OracleCreateTableTest20 extends OracleTest {
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
                         "\tKEEP_DUPLICATES\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -96,10 +95,10 @@ public class OracleCreateTableTest20 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("SONAR.ACTIVE_RULE_NOTES", "ID"));
+        assertTrue(visitor.containsColumn("SONAR.ACTIVE_RULE_NOTES", "ID"));
     }
 }

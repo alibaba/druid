@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class OracleSelectTest38 extends OracleTest {
                         + "  left join" + " acduser.vw_sc_kreis_code_lv2 f on e.xzqh = f.short_kreis_code) "
                         + "   where kreis_code in" + "(select * from "
                         + "  (select tbek_code from acduser.vw_kreis_code start with tbek_code = ? connect by prior tbek_pk=tbek_parent ) "
-                        + "where  tbek_code != ?)"; //
+                        + "where  tbek_code != ?)";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -54,7 +53,7 @@ public class OracleSelectTest38 extends OracleTest {
 
         {
             String result = SQLUtils.toOracleString(stmt);
-            Assert.assertEquals("SELECT *\n" +
+            assertEquals("SELECT *\n" +
                     "FROM (\n" +
                     "\tWITH vw_kreis_statics_t AS (\n" +
                     "\t\t\tSELECT substr(xzqh, 1, 6) AS xzqh, swrslx\n" +
@@ -151,7 +150,7 @@ public class OracleSelectTest38 extends OracleTest {
                     ")", result);
         }
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         System.out.println(stmt);
 
@@ -164,16 +163,16 @@ public class OracleSelectTest38 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(4, visitor.getTables().size());
+        assertEquals(4, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("acduser.vw_acd_info")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("acduser.vw_acd_info")));
 
-        Assert.assertEquals(18, visitor.getColumns().size());
+        assertEquals(18, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "sglx")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_sc_kreis_code_lv2", "kreis_code")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "sglx")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_sc_kreis_code_lv2", "kreis_code")));
 
-        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+        // assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

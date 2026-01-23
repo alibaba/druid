@@ -104,75 +104,87 @@ public class OracleCreateViewTest11_error_encoding extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE OR REPLACE VIEW \"TCP_CPR\".\"CPR_SYS_BOM_MODULE_V\" (\n" +
-                        "\t\"PROD_TYPE_ID\", \n" +
-                        "\t\"PROD_TYPE_NAME\", \n" +
-                        "\t\"PROD_ID\", \n" +
-                        "\t\"PROD_NAME\", \n" +
-                        "\t\"DEVICE_ID\", \n" +
-                        "\t\"DEVICE_NAME\", \n" +
-                        "\t\"MODULE_ID\", \n" +
-                        "\t\"STRUCTURE_CODE\", \n" +
-                        "\t\"MODULE_NAME\", \n" +
-                        "\t\"ENG_DESCRIPTION\", \n" +
-                        "\t\"ZH_UNIT\", \n" +
-                        "\t\"EN_UNIT\", \n" +
-                        "\t\"ITEM_CODE\", \n" +
-                        "\t\"SALES_DEPT_ID\", \n" +
-                        "\t\"CLUEIDS\", \n" +
-                        "\t\"SEQ\", \n" +
-                        "\t\"ORGANIZATION_ID\", \n" +
-                        "\t\"ORGANIZATION_NAME\", \n" +
-                        "\t\"ATTRIBUTE1\", \n" +
-                        "\t\"ATTRIBUTE2\", \n" +
-                        "\t\"ATTRIBUTE3\", \n" +
-                        "\t\"ATTRIBUTE4\", \n" +
-                        "\t\"ATTRIBUTE5\", \n" +
-                        "\t\"ATTRIBUTE6\", \n" +
-                        "\t\"TSM_FLAG\", \n" +
-                        "\t\"TSM_CODE\", \n" +
-                        "\t\"HARD_PARAM\", \n" +
-                        "\t\"SOFT_PARAM\", \n" +
-                        "\t\"MAKE_PARAM\", \n" +
-                        "\t\"RISK_PARAM\", \n" +
-                        "\t\"SOFT_COST_PARAM\", \n" +
-                        "\t\"FIXED_RATE\", \n" +
-                        "\t\"TEMP_FIELD1\", \n" +
-                        "\t\"TEMP_FIELD2\"\n" +
-                        ")\n" +
-                        "AS\n" +
-                        "SELECT CP.Parent_System_Bom_Id AS PROD_TYPE_ID, FL.DESCRIPTION AS PROD_TYPE_NAME, CP.System_Bom_Id AS PROD_ID, CPD.DESCRIPTION AS PROD_NAME, DV.System_Bom_Id AS DEVICE_ID\n" +
-                        "\t, DVD.DESCRIPTION AS DEVICE_NAME, B1.SYSTEM_BOM_ID AS MODULE_ID, B1.STRUCTURE_CODE -- !WID\n" +
-                        "\t, B2.DESCRIPTION AS MODULE_NAME, B3.DESCRIPTION AS ENG_DESCRIPTION, B2.PRIMARY_UNIT_OF_MEASURE AS ZH_UNIT, B3.PRIMARY_UNIT_OF_MEASURE AS EN_UNIT, B1.ITEM_CODE -- 駠UM\n" +
-                        "\t, B1.SALES_DEPT_ID, B1.CLUEIDS, B1.SEQ, B1.ORGANIZATION_ID, ORGN.NAME AS ORGANIZATION_NAME\n" +
-                        "\t, B1.ATTRIBUTE1, B1.ATTRIBUTE2, B1.ATTRIBUTE3, B1.ATTRIBUTE4, B1.ATTRIBUTE5\n" +
-                        "\t, B1.ATTRIBUTE6, B1.TSM_FLAG, B1.TSM_CODE, B1.HARD_PARAM, B1.SOFT_PARAM\n" +
-                        "\t, B1.MAKE_PARAM, B1.RISK_PARAM, B1.SOFT_COST_PARAM, B1.FIXED_RATE, B1.TEMP_FIELD1\n" +
-                        "\t, B1.TEMP_FIELD2\n" +
-                        "FROM TCP_CPR.SYSTEM_BOM B1, TCP_CPR.SYSTEM_BOM_DESC B2, TCP_CPR.SYSTEM_BOM_DESC B3, TCP_CPR.SYSTEM_BOM_DESC FL, TCP_CPR.SYSTEM_BOM CP, TCP_CPR.SYSTEM_BOM_DESC CPD, TCP_CPR.SYSTEM_BOM DV, TCP_CPR.SYSTEM_BOM_DESC DVD, TCP_FND.TCP_FND_ORGANIZATION ORGN\n" +
-                        "WHERE B1.SYSTEM_BOM_ID = B2.SYSTEM_BOM_ID(+)\n" +
-                        "\tAND B2.ENABLED_FLAG(+) = 'Y'\n" +
-                        "\tAND B1.SYSTEM_BOM_ID = B3.SYSTEM_BOM_ID(+)\n" +
-                        "\tAND B3.ENABLED_FLAG(+) = 'Y'\n" +
-                        "\tAND B1.ENABLED_FLAG(+) = 'Y'\n" +
-                        "\tAND B1.LAYER = 4\n" +
-                        "\tAND B3.LANGUAGE(+) = 'en-US'\n" +
-                        "\tAND B2.LANGUAGE(+) = 'zh-CN'\n" +
-                        "\tAND B1.Parent_System_Bom_Id = DV.SYSTEM_BOM_ID(+)\n" +
-                        "\tAND DV.ENABLED_FLAG = 'Y'\n" +
-                        "\tAND DV.SYSTEM_BOM_ID = DVD.SYSTEM_BOM_ID\n" +
-                        "\tAND DVD.ENABLED_FLAG(+) = 'Y'\n" +
-                        "\tAND DVD.LANGUAGE(+) = 'zh-CN'\n" +
-                        "\tAND DV.Parent_System_Bom_Id = CP.SYSTEM_BOM_ID(+)\n" +
-                        "\tAND CP.ENABLED_FLAG = 'Y'\n" +
-                        "\tAND CP.SYSTEM_BOM_ID = CPD.SYSTEM_BOM_ID\n" +
-                        "\tAND CPD.ENABLED_FLAG(+) = 'Y'\n" +
-                        "\tAND CPD.LANGUAGE(+) = 'zh-CN'\n" +
-                        "\tAND CP.Parent_System_Bom_Id = FL.SYSTEM_BOM_ID(+)\n" +
-                        "\tAND FL.ENABLED_FLAG(+) = 'Y'\n" +
-                        "\tAND FL.LANGUAGE(+) = 'zh-CN'\n" +
-                        "\tAND B1.ORGANIZATION_ID = ORGN.ORGANIZATION_ID(+)",//
-                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals(
+            "CREATE OR REPLACE VIEW \"TCP_CPR\".\"CPR_SYS_BOM_MODULE_V\" (\n"
+                + "\t\"PROD_TYPE_ID\", \n"
+                + "\t\"PROD_TYPE_NAME\", \n"
+                + "\t\"PROD_ID\", \n"
+                + "\t\"PROD_NAME\", \n"
+                + "\t\"DEVICE_ID\", \n"
+                + "\t\"DEVICE_NAME\", \n"
+                + "\t\"MODULE_ID\", \n"
+                + "\t\"STRUCTURE_CODE\", \n"
+                + "\t\"MODULE_NAME\", \n"
+                + "\t\"ENG_DESCRIPTION\", \n"
+                + "\t\"ZH_UNIT\", \n"
+                + "\t\"EN_UNIT\", \n"
+                + "\t\"ITEM_CODE\", \n"
+                + "\t\"SALES_DEPT_ID\", \n"
+                + "\t\"CLUEIDS\", \n"
+                + "\t\"SEQ\", \n"
+                + "\t\"ORGANIZATION_ID\", \n"
+                + "\t\"ORGANIZATION_NAME\", \n"
+                + "\t\"ATTRIBUTE1\", \n"
+                + "\t\"ATTRIBUTE2\", \n"
+                + "\t\"ATTRIBUTE3\", \n"
+                + "\t\"ATTRIBUTE4\", \n"
+                + "\t\"ATTRIBUTE5\", \n"
+                + "\t\"ATTRIBUTE6\", \n"
+                + "\t\"TSM_FLAG\", \n"
+                + "\t\"TSM_CODE\", \n"
+                + "\t\"HARD_PARAM\", \n"
+                + "\t\"SOFT_PARAM\", \n"
+                + "\t\"MAKE_PARAM\", \n"
+                + "\t\"RISK_PARAM\", \n"
+                + "\t\"SOFT_COST_PARAM\", \n"
+                + "\t\"FIXED_RATE\", \n"
+                + "\t\"TEMP_FIELD1\", \n"
+                + "\t\"TEMP_FIELD2\"\n"
+                + ")\n"
+                + "AS\n"
+                + "SELECT CP.Parent_System_Bom_Id AS PROD_TYPE_ID-- Я'{ID\n"
+                + "\t, FL.DESCRIPTION AS PROD_TYPE_NAME-- Я'{\n"
+                + "\t, CP.System_Bom_Id AS PROD_ID-- ЯID\n"
+                + "\t, CPD.DESCRIPTION AS PROD_NAME-- Я\n"
+                + "\t, DV.System_Bom_Id AS DEVICE_ID-- :婭D\n"
+                + "\t\n"
+                + "\t, DVD.DESCRIPTION AS DEVICE_NAME-- :�\n"
+                + "\t, B1.SYSTEM_BOM_ID AS MODULE_ID-- !WID\n"
+                + "\t, B1.STRUCTURE_CODE -- !WID\n"
+                + "\t, B2.DESCRIPTION AS MODULE_NAME-- !W\n"
+                + "\t, B3.DESCRIPTION AS ENG_DESCRIPTION-- 駠\n"
+                + "\t, B2.PRIMARY_UNIT_OF_MEASURE AS ZH_UNIT---嘦M\n"
+                + "\t, B3.PRIMARY_UNIT_OF_MEASURE AS EN_UNIT-- 駠UM\n"
+                + "\t, B1.ITEM_CODE -- 駠UM\n"
+                + "\t, B1.SALES_DEPT_ID, B1.CLUEIDS, B1.SEQ, B1.ORGANIZATION_ID, ORGN.NAME AS ORGANIZATION_NAME\n"
+                + "\t, B1.ATTRIBUTE1, B1.ATTRIBUTE2, B1.ATTRIBUTE3, B1.ATTRIBUTE4, B1.ATTRIBUTE5\n"
+                + "\t, B1.ATTRIBUTE6, B1.TSM_FLAG, B1.TSM_CODE, B1.HARD_PARAM, B1.SOFT_PARAM\n"
+                + "\t, B1.MAKE_PARAM, B1.RISK_PARAM, B1.SOFT_COST_PARAM, B1.FIXED_RATE, B1.TEMP_FIELD1\n"
+                + "\t, B1.TEMP_FIELD2\n"
+                + "FROM TCP_CPR.SYSTEM_BOM B1, TCP_CPR.SYSTEM_BOM_DESC B2, TCP_CPR.SYSTEM_BOM_DESC B3, TCP_CPR.SYSTEM_BOM_DESC FL, TCP_CPR.SYSTEM_BOM CP, TCP_CPR.SYSTEM_BOM_DESC CPD, TCP_CPR.SYSTEM_BOM DV, TCP_CPR.SYSTEM_BOM_DESC DVD, TCP_FND.TCP_FND_ORGANIZATION ORGN\n"
+                + "WHERE B1.SYSTEM_BOM_ID = B2.SYSTEM_BOM_ID(+)\n"
+                + "\tAND B2.ENABLED_FLAG(+) = 'Y'\n"
+                + "\tAND B1.SYSTEM_BOM_ID = B3.SYSTEM_BOM_ID(+)\n"
+                + "\tAND B3.ENABLED_FLAG(+) = 'Y'\n"
+                + "\tAND B1.ENABLED_FLAG(+) = 'Y'\n"
+                + "\tAND B1.LAYER = 4\n"
+                + "\tAND B3.LANGUAGE(+) = 'en-US'\n"
+                + "\tAND B2.LANGUAGE(+) = 'zh-CN'\n"
+                + "\tAND B1.Parent_System_Bom_Id = DV.SYSTEM_BOM_ID(+)\n"
+                + "\tAND DV.ENABLED_FLAG = 'Y'\n"
+                + "\tAND DV.SYSTEM_BOM_ID = DVD.SYSTEM_BOM_ID\n"
+                + "\tAND DVD.ENABLED_FLAG(+) = 'Y'\n"
+                + "\tAND DVD.LANGUAGE(+) = 'zh-CN'\n"
+                + "\tAND DV.Parent_System_Bom_Id = CP.SYSTEM_BOM_ID(+)\n"
+                + "\tAND CP.ENABLED_FLAG = 'Y'\n"
+                + "\tAND CP.SYSTEM_BOM_ID = CPD.SYSTEM_BOM_ID\n"
+                + "\tAND CPD.ENABLED_FLAG(+) = 'Y'\n"
+                + "\tAND CPD.LANGUAGE(+) = 'zh-CN'\n"
+                + "\tAND CP.Parent_System_Bom_Id = FL.SYSTEM_BOM_ID(+)\n"
+                + "\tAND FL.ENABLED_FLAG(+) = 'Y'\n"
+                + "\tAND FL.LANGUAGE(+) = 'zh-CN'\n"
+                + "\tAND B1.ORGANIZATION_ID = ORGN.ORGANIZATION_ID(+)", //
+            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

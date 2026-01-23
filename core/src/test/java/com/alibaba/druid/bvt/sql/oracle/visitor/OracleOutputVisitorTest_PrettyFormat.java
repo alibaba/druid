@@ -1,17 +1,16 @@
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import java.util.List;
-
-import org.junit.Assert;
-
-import org.junit.Test;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * User: carvin
@@ -33,7 +32,7 @@ public class OracleOutputVisitorTest_PrettyFormat {
         }
 
         String expectResult = "SELECT *\nFROM ge_rms_company\nSTART WITH comcode = '00'\nCONNECT BY NOCYCLE PRIOR comcode = uppercomcode";
-        Assert.assertEquals(expectResult, out.toString());
+        assertEquals(expectResult, out.toString());
 
         out.setLength(0);
         visitor = new OracleOutputVisitor(out);
@@ -43,6 +42,6 @@ public class OracleOutputVisitorTest_PrettyFormat {
             statement.accept(visitor);
         }
         expectResult = "SELECT * FROM ge_rms_company START WITH comcode = '00' CONNECT BY NOCYCLE PRIOR comcode = uppercomcode";
-        Assert.assertEquals(expectResult, out.toString());
+        assertEquals(expectResult, out.toString());
     }
 }

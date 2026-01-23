@@ -73,7 +73,6 @@ public class CreateCompareTest_cycle extends TestCase {
 
         List stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
 
-
         SQLCreateTableStatement.sort(stmtList);
 
         String sortedSql = SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
@@ -93,7 +92,5 @@ public class CreateCompareTest_cycle extends TestCase {
         assertEquals("t4", ((SQLAlterTableStatement) stmtList.get(10)).getName().getSimpleName());
 
         assertEquals(11, stmtList.size());
-
-
     }
 }

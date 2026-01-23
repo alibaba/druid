@@ -1,15 +1,16 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import java.sql.SQLException;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.alibaba.druid.filter.config.ConfigFileGenerator;
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.Test;
+
+import java.sql.SQLException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Jonas Yang
@@ -25,7 +26,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         try {
             dataSource.init();
 
-            Assert.assertEquals("The username is " + dataSource.getUsername(), "test1", dataSource.getUsername());
+            assertEquals("The username is " + dataSource.getUsername(), "test1", dataSource.getUsername());
         } finally {
             JdbcUtils.close(dataSource);
         }
@@ -40,7 +41,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         try {
             dataSource.init();
 
-            Assert.assertEquals("The username is " + dataSource.getUsername(), "test1", dataSource.getUsername());
+            assertEquals("The username is " + dataSource.getUsername(), "test1", dataSource.getUsername());
         } finally {
             System.clearProperty(ConfigFilter.SYS_PROP_CONFIG_FILE);
             JdbcUtils.close(dataSource);
@@ -61,7 +62,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         } finally {
             JdbcUtils.close(dataSource);
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
     @Test
@@ -76,7 +77,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
 
         try {
             dataSource.init();
-            Assert.assertEquals("The password is " + dataSource.getPassword() + ", is not xiaoyu", "xiaoyu",
+            assertEquals("The password is " + dataSource.getPassword() + ", is not xiaoyu", "xiaoyu",
                     dataSource.getPassword());
         } finally {
             JdbcUtils.close(dataSource);
@@ -91,7 +92,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         try {
             dataSource.init();
 
-            Assert.assertEquals("The password is " + dataSource.getPassword(), "xiaoyu", dataSource.getPassword());
+            assertEquals("The password is " + dataSource.getPassword(), "xiaoyu", dataSource.getPassword());
         } finally {
             JdbcUtils.close(dataSource);
         }
@@ -124,6 +125,6 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         } finally {
             JdbcUtils.close(dataSource);
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

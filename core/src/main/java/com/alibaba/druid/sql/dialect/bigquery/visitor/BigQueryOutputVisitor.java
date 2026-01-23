@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.bigquery.BQ;
 import com.alibaba.druid.sql.dialect.bigquery.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
@@ -13,11 +14,11 @@ import java.util.List;
 public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         implements BigQueryVisitor {
     public BigQueryOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.bigquery);
+        super(appender, DbType.bigquery, BQ.DIALECT);
     }
 
     public BigQueryOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.bigquery, parameterized);
+        super(appender, DbType.bigquery, BQ.DIALECT, parameterized);
     }
 
     protected void printPartitionedBy(SQLCreateTableStatement x) {

@@ -45,8 +45,8 @@ public class OracleCreateIndexTest15 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals("CREATE INDEX idx_t12 ON t1(id)\n" +
-                        "TABLESPACE users ONLINE;"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        "TABLESPACE users ONLINE;",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

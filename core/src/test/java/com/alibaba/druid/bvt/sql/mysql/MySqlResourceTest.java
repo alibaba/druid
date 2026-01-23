@@ -28,5 +28,4 @@ public class MySqlResourceTest extends SQLResourceTest {
     public void mysql_parse() throws Exception {
         fileTest(0, 999, i -> "bvt/parser/mysql/" + i + ".txt");
     }
-
 }

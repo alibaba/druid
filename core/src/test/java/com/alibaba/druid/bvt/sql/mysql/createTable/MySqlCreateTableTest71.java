@@ -21,15 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class MySqlCreateTableTest71 extends MysqlTest {
     @Test
     public void test_one() throws Exception {
-        String sql = "create table xx (id bigint unsigned not null comment 'aa' auto_increment," //
-                + "gmt_create datetime not null comment '创建时间'," //
-                + "gmt_modified datetime not null comment '修改时间', " //
+        String sql = "create table xx (id bigint unsigned not null comment 'aa' auto_increment,"
+                + "gmt_create datetime not null comment '创建时间',"
+                + "gmt_modified datetime not null comment '修改时间', "
                 + "primary key (id)) comment='re'";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -39,12 +38,12 @@ public class MySqlCreateTableTest71 extends MysqlTest {
         stmt.accept(visitor);
 
         Column column = visitor.getColumn("xx", "id");
-        Assert.assertNotNull(column);
-        Assert.assertEquals("bigint", column.getDataType());
+        assertNotNull(column);
+        assertEquals("bigint", column.getDataType());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE xx ("
+            assertEquals("CREATE TABLE xx ("
                     + "\n\tid bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'aa',"
                     + "\n\tgmt_create datetime NOT NULL COMMENT '创建时间',"
                     + "\n\tgmt_modified datetime NOT NULL COMMENT '修改时间',"
@@ -54,7 +53,7 @@ public class MySqlCreateTableTest71 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table xx ("
+            assertEquals("create table xx ("
                     + "\n\tid bigint unsigned not null auto_increment comment 'aa',"
                     + "\n\tgmt_create datetime not null comment '创建时间',"
                     + "\n\tgmt_modified datetime not null comment '修改时间',"

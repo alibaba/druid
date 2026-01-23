@@ -15,17 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class InformationFunctionsTest extends TestCase {
     public void test_0() throws Exception {
@@ -36,7 +33,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT BENCHMARK(1000000, ENCODE('hello', 'goodbye'))", text);
+        assertEquals("SELECT BENCHMARK(1000000, ENCODE('hello', 'goodbye'))", text);
     }
 
     public void test_1() throws Exception {
@@ -47,7 +44,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CHARSET('abc');", text);
+        assertEquals("SELECT CHARSET('abc');", text);
     }
 
     public void test_2() throws Exception {
@@ -58,7 +55,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CHARSET(CONVERT('abc' USING utf8));", text);
+        assertEquals("SELECT CHARSET(CONVERT('abc' USING utf8));", text);
     }
 
     public void test_3() throws Exception {
@@ -69,7 +66,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CHARSET(USER());", text);
+        assertEquals("SELECT CHARSET(USER());", text);
     }
 
     public void test_4() throws Exception {
@@ -80,7 +77,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT COERCIBILITY('abc' COLLATE latin1_swedish_ci);", text);
+        assertEquals("SELECT COERCIBILITY('abc' COLLATE latin1_swedish_ci);", text);
     }
 
     public void test_5() throws Exception {
@@ -91,7 +88,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT COLLATION('abc');", text);
+        assertEquals("SELECT COLLATION('abc');", text);
     }
 
     public void test_6() throws Exception {
@@ -102,7 +99,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM mysql.user;", text);
+        assertEquals("SELECT *\nFROM mysql.user;", text);
     }
 
     public void test_7() throws Exception {
@@ -113,7 +110,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CURRENT_USER();", text);
+        assertEquals("SELECT CURRENT_USER();", text);
     }
 
     public void test_8() throws Exception {
@@ -124,7 +121,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATABASE();", text);
+        assertEquals("SELECT DATABASE();", text);
     }
 
     public void test_9() throws Exception {
@@ -135,7 +132,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SQL_CALC_FOUND_ROWS *\nFROM tbl_name;", text);
+        assertEquals("SELECT SQL_CALC_FOUND_ROWS *\nFROM tbl_name;", text);
     }
 
     public void test_10() throws Exception {
@@ -146,7 +143,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT FOUND_ROWS();", text);
+        assertEquals("SELECT FOUND_ROWS();", text);
     }
 
     public void test_11() throws Exception {
@@ -157,7 +154,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT LAST_INSERT_ID();", text);
+        assertEquals("SELECT LAST_INSERT_ID();", text);
     }
 
     public void test_12() throws Exception {
@@ -168,7 +165,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ROW_COUNT();", text);
+        assertEquals("SELECT ROW_COUNT();", text);
     }
 
     public void test_13() throws Exception {
@@ -179,7 +176,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT USER();", text);
+        assertEquals("SELECT USER();", text);
     }
 
     public void test_14() throws Exception {
@@ -190,7 +187,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT VERSION();", text);
+        assertEquals("SELECT VERSION();", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

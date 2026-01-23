@@ -1,9 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试initialSize > maxActive
@@ -34,6 +32,6 @@ public class DruidDataSourceTest_maxActive4 extends TestCase {
         } catch (IllegalArgumentException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -32,13 +31,13 @@ public class HiveCreateTableTest_21 extends OracleTest {
                         ",col6 FLOAT,col7 DOUBLE,col8 DOUBLE PRECISION,col9 STRING,col10 BINARY\n" +
                         ",col11 TIMESTAMP,col12 DECIMAL,col13 DECIMAL(10,2),col13 DATE,col14 VARCHAR,col15 CHAR\n" +
                         ",col16 ARRAY<STRING>,col17 MAP<STRING,INT>,col18 STRUCT<col19:STRING comment 'column19'>,col20 UNIONTYPE<STRING,INT>\n" +
-                        ") clustered by (PAR1,PAR2) INTO 32 BUCKETS\n"; //
+                        ") clustered by (PAR1,PAR2) INTO 32 BUCKETS\n";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -85,6 +84,5 @@ public class HiveCreateTableTest_21 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("aliyun_cdm.test_903_table"));
-
     }
 }

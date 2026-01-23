@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class HiveCreateTableTest_38_dla extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(2, statementList.size());
+        assertEquals(2, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -84,7 +83,5 @@ public class HiveCreateTableTest_38_dla extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
 //        assertTrue(visitor.containsTable("customer_case.tradelist_csv"));
-
     }
-
 }

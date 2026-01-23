@@ -20,33 +20,32 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleCreateProcedureTest2 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "CREATE OR REPLACE PROCEDURE transfer (" + //
-                "  from_acct  NUMBER," + //
-                "  to_acct    NUMBER," + //
-                "  amount     NUMBER" + //
-                ") AS " + //
-                "BEGIN" + //
-                "  UPDATE accounts" + //
-                "  SET balance = balance - amount" + //
-                "  WHERE account_id = from_acct;" + //
-                " " + //
-                "  UPDATE accounts" + //
-                "  SET balance = balance + amount" + //
-                "  WHERE account_id = to_acct;" + //
-                " " + //
-                "  COMMIT WRITE IMMEDIATE NOWAIT;" + //
-                "END;"; //
+        String sql = "CREATE OR REPLACE PROCEDURE transfer (" +
+                "  from_acct  NUMBER," +
+                "  to_acct    NUMBER," +
+                "  amount     NUMBER" +
+                ") AS " +
+                "BEGIN" +
+                "  UPDATE accounts" +
+                "  SET balance = balance - amount" +
+                "  WHERE account_id = from_acct;" +
+                " " +
+                "  UPDATE accounts" +
+                "  SET balance = balance + amount" +
+                "  WHERE account_id = to_acct;" +
+                " " +
+                "  COMMIT WRITE IMMEDIATE NOWAIT;" +
+                "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
 
-        Assert.assertEquals("CREATE OR REPLACE PROCEDURE transfer (\n" +
+        assertEquals("CREATE OR REPLACE PROCEDURE transfer (\n" +
                         "\tfrom_acct NUMBER, \n" +
                         "\tto_acct NUMBER, \n" +
                         "\tamount NUMBER\n" +
@@ -63,7 +62,7 @@ public class OracleCreateProcedureTest2 extends OracleTest {
                         "END;",
                 statementList.get(0).toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         for (SQLStatement statement : statementList) {
@@ -76,15 +75,15 @@ public class OracleCreateProcedureTest2 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("accounts")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("accounts")));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getRelationships().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
+        assertEquals(0, visitor.getRelationships().size());
 
-        Assert.assertTrue(visitor.containsColumn("accounts", "balance"));
-        Assert.assertTrue(visitor.containsColumn("accounts", "account_id"));
+        assertTrue(visitor.containsColumn("accounts", "balance"));
+        assertTrue(visitor.containsColumn("accounts", "account_id"));
     }
 }

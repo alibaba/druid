@@ -15,25 +15,23 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
+import java.util.List;
+
 public class OracleExplainTest2 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "EXPLAIN PLAN " + //
-                        "    SET STATEMENT_ID = 'Raise in Tokyo' " + //
-                        "    INTO plan_table " + //
-                        "    FOR UPDATE employees " + //
-                        "        SET salary = salary * 1.10 " + //
-                        "        WHERE department_id =  " + //
-                        "           (SELECT department_id FROM departments" + //
+                "EXPLAIN PLAN " +
+                        "    SET STATEMENT_ID = 'Raise in Tokyo' " +
+                        "    INTO plan_table " +
+                        "    FOR UPDATE employees " +
+                        "        SET salary = salary * 1.10 " +
+                        "        WHERE department_id =  " +
+                        "           (SELECT department_id FROM departments" +
                         "               WHERE location_id = 1700); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -41,7 +39,7 @@ public class OracleExplainTest2 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -52,14 +50,14 @@ public class OracleExplainTest2 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("\"DUAL\"")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("\"DUAL\"")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

@@ -20,23 +20,22 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleCreateTableTest8 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "CREATE TABLE \"PRODUCT_NEW_CLUSTER_YZS_0210\" (" + //
-                        "\"PRODUCT_ID\" NUMBER NOT NULL ENABLE, " + //
-                        "\"NEW_CLUSTER_ID\" NUMBER NOT NULL ENABLE, " + //
-                        "\"STATUS\" VARCHAR2(1) NOT NULL ENABLE" + //
-                        ")  " + //
-                        "PCTFREE 10 " + //
-                        "PCTUSED 40 " + //
-                        "INITRANS 1 " + //
-                        "MAXTRANS 255 " + //
-                        "STORAGE(INITIAL 2624585728 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) " + //
+                "CREATE TABLE \"PRODUCT_NEW_CLUSTER_YZS_0210\" (" +
+                        "\"PRODUCT_ID\" NUMBER NOT NULL ENABLE, " +
+                        "\"NEW_CLUSTER_ID\" NUMBER NOT NULL ENABLE, " +
+                        "\"STATUS\" VARCHAR2(1) NOT NULL ENABLE" +
+                        ")  " +
+                        "PCTFREE 10 " +
+                        "PCTUSED 40 " +
+                        "INITRANS 1 " +
+                        "MAXTRANS 255 " +
+                        "STORAGE(INITIAL 2624585728 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT) " +
                         "TABLESPACE \"MCSHADOWTS\" LOGGING NOCOMPRESS";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -44,7 +43,7 @@ public class OracleCreateTableTest8 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -55,15 +54,15 @@ public class OracleCreateTableTest8 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("PRODUCT_NEW_CLUSTER_YZS_0210")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("PRODUCT_NEW_CLUSTER_YZS_0210")));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("PRODUCT_NEW_CLUSTER_YZS_0210", "PRODUCT_ID"));
-        Assert.assertTrue(visitor.containsColumn("PRODUCT_NEW_CLUSTER_YZS_0210", "NEW_CLUSTER_ID"));
-        Assert.assertTrue(visitor.containsColumn("PRODUCT_NEW_CLUSTER_YZS_0210", "STATUS"));
-        // Assert.assertTrue(visitor.containsColumn("pivot_table", "order_mode")));
+        assertTrue(visitor.containsColumn("PRODUCT_NEW_CLUSTER_YZS_0210", "PRODUCT_ID"));
+        assertTrue(visitor.containsColumn("PRODUCT_NEW_CLUSTER_YZS_0210", "NEW_CLUSTER_ID"));
+        assertTrue(visitor.containsColumn("PRODUCT_NEW_CLUSTER_YZS_0210", "STATUS"));
+        // assertTrue(visitor.containsColumn("pivot_table", "order_mode")));
     }
 }

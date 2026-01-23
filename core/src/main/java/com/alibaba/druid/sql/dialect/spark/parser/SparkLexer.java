@@ -6,22 +6,51 @@ package com.alibaba.druid.sql.dialect.spark.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveLexer;
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.NextTokenColon;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.ScanAliasU;
+import static com.alibaba.druid.sql.parser.DialectFeature.LexerFeature.ScanSQLTypeWithFrom;
 import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 /**
  * @author peiheng.qph
  * @version $Id: AntsparkLexer.java, v 0.1 2018年09月14日 15:04 peiheng.qph Exp $
  */
 public class SparkLexer extends HiveLexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords SPARK_KEYWORDS;
+    static final DialectFeature SPARK_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    QueryTable,
+                    ParseSelectItemPrefixX,
+                    JoinRightTableFrom,
+                    ScanSQLTypeWithFrom,
+                    NextTokenColon,
+                    ScanAliasU,
+                    JoinRightTableFrom,
+                    GroupByAll,
+                    SQLDateExpr,
+                    ParseAssignItemRparenCommaSetReturn,
+                    TableAliasLock,
+                    TableAliasPartition,
+                    AsSkip,
+                    AsSequence,
+                    AsDatabase,
+                    AsDefault
+            ),
+            Collections.singletonList(
+                    PrimaryBangBangSupport
+            )
+    );
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -45,8 +74,14 @@ public class SparkLexer extends HiveLexer {
         map.put("CONSTRAINT", Token.CONSTRAINT);
         map.put("CACHE", Token.CACHE);
         map.put("QUALIFY", Token.QUALIFY);
+        map.put("OR", Token.OR);
 
-        return new Keywords(map);
+        SPARK_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return SPARK_KEYWORDS;
     }
 
     public SparkLexer(String input) {
@@ -65,11 +100,6 @@ public class SparkLexer extends HiveLexer {
     }
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                QueryTable,
-                ParseSelectItemPrefixX,
-                JoinRightTableFrom
-        );
+        this.dialectFeature = SPARK_FEATURE;
     }
 }

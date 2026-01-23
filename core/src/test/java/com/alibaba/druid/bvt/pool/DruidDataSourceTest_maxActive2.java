@@ -1,9 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
 
 /**
  * 这个场景测试maxActive < 0
@@ -19,7 +17,6 @@ public class DruidDataSourceTest_maxActive2 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setFilters("stat");
         dataSource.setMaxActive(-1);
-
     }
 
     protected void tearDown() throws Exception {
@@ -33,6 +30,6 @@ public class DruidDataSourceTest_maxActive2 extends TestCase {
         } catch (IllegalArgumentException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

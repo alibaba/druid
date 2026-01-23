@@ -1,3 +1,298 @@
+
+select a from t --aaa
+--------------------
+SELECT a
+FROM t -- aaa
+------------------------------------------------------------------------------------------------------------------------
+        select b.merge_region_code as region_code,b.merge_region_name as region_name,b.govern_region_area_union as region_area_subtotal
+		      ${if(gRegionAreaLevel='合并营运区',",b.govern_region_area_union as region_area_code,b.govern_region_area_union as region_area_name",",b.region_area_code as region_area_code,b.region_area_name as region_area_name")}
+--        	  ${if(len(gQtrMonth)=5,"/*","")}
+              ,sum(case when a.stat_date = ${gQtrMonth} then a.period_loc_amt else 0 end) as bq_amt
+              from b
+--------------------
+SELECT b.merge_region_code AS region_code, b.merge_region_name AS region_name, b.govern_region_area_union AS region_area_subtotal ${if(gRegionAreaLevel='合并营运区',",b.govern_region_area_union as region_area_code,b.govern_region_area_union as region_area_name",",b.region_area_code as region_area_code,b.region_area_name as region_area_name")} --        	  ${if(len(gQtrMonth)=5,"/*","")}
+	, sum(CASE
+		WHEN a.stat_date = ${gQtrMonth} THEN a.period_loc_amt
+		ELSE 0
+	END) AS bq_amt
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+select
+	case when 
+-- origin
+-- '${date}'
+-- origin end
+-- new
+'2025-07-08'
+-- new end
+ = toString(toMonday(yesterday())) and 
+-- origin
+-- '${time_type}'='周'
+-- origin end
+-- new
+'周'='周'
+-- new end
+
+			then toInt32(replace(toString(yesterday()),'-',''))
+		
+		when 
+-- origin
+-- '${date}'
+-- origin end
+-- new
+'2025-07-08'
+-- new end
+ = toString(toStartOfQuarter(yesterday())) and 
+-- origin
+-- '${time_type}'='年'
+-- origin end
+-- new
+'周'='年'
+-- new end
+
+			then toInt32(replace(toString(yesterday()),'-',''))
+		else toInt32(concat(left(
+-- origin
+-- '${date}'
+-- origin end
+-- new
+'2025-07-08'
+-- new end
+,4),'1231'))
+	end as date_e
+--------------------
+SELECT CASE
+		WHEN -- origin
+			-- '${date}'
+			-- origin end
+			-- new
+			'2025-07-08' -- new end
+			 = toString(toMonday(yesterday()))
+			AND -- origin
+			-- '${time_type}'='周'
+			-- origin end
+			-- new
+			'周' = '周' -- new end
+		THEN toInt32(replace(toString(yesterday()), '-', ''))
+		WHEN -- origin
+			-- '${date}'
+			-- origin end
+			-- new
+			'2025-07-08' -- new end
+			 = toString(toStartOfQuarter(yesterday()))
+			AND -- origin
+			-- '${time_type}'='年'
+			-- origin end
+			-- new
+			'周' = '年' -- new end
+		THEN toInt32(replace(toString(yesterday()), '-', ''))
+		ELSE toInt32(concat(LEFT(-- origin
+		-- '${date}'
+		-- origin end
+		-- new
+		'2025-07-08' -- new end, 4
+		), '1231'))
+	END AS date_e
+------------------------------------------------------------------------------------------------------------------------
+select physical_wh--,wh_type
+      ,case when wh_type ='集团仓' then 1 else 0 end as sfjtc
+from dim.dim_wh
+where physical_wh in (
+-- origin
+-- '${warehouse}'
+-- origin end
+-- new
+'0'
+-- new end
+) -- 仓库名称
+group by physical_wh,wh_type
+--------------------
+SELECT physical_wh -- ,wh_type
+	, CASE
+		WHEN wh_type = '集团仓' THEN 1
+		ELSE 0
+	END AS sfjtc
+FROM dim.dim_wh
+WHERE physical_wh IN (-- origin
+-- '${warehouse}'
+-- origin end
+-- new
+'0' -- new end
+) -- 仓库名称
+GROUP BY physical_wh, wh_type
+------------------------------------------------------------------------------------------------------------------------
+select function(
+-- origin
+-- b
+-- origin end
+-- new
+a
+-- new end
+)
+from b1
+--------------------
+SELECT function(-- origin
+	-- b
+	-- origin end
+	-- new
+	a -- new end
+	)
+FROM b1
+------------------------------------------------------------------------------------------------------------------------
+select DISTINCT
+-- origin
+-- ${if(gGyzy_hz=='G',"b1.buyer_name GS_NAME","substringUTF8(b1.buyer_name,1,positionUTF8(b1.buyer_name,'(')-1) GS_NAME")}
+-- origin end
+-- new
+b1.buyer_name GS_NAME
+-- new end
+
+from dim.dim_buyer b1
+where 1=1
+order by GS_NAME
+--------------------
+SELECT DISTINCT -- origin
+	-- ${if(gGyzy_hz=='G',"b1.buyer_name GS_NAME","substringUTF8(b1.buyer_name,1,positionUTF8(b1.buyer_name,'(')-1) GS_NAME")}
+	-- origin end
+	-- new
+	b1.buyer_name AS GS_NAME -- new end
+FROM dim.dim_buyer b1
+WHERE 1 = 1
+ORDER BY GS_NAME
+------------------------------------------------------------------------------------------------------------------------
+create view test (a uint32) as select a from b
+--------------------
+CREATE VIEW test (
+	a uint32
+)
+AS
+SELECT a
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+select 
+/*
+/*
+xxx
+*/
+*/ a from test
+--------------------
+SELECT 
+	/*
+/*
+xxx
+*
+	a
+FROM test
+------------------------------------------------------------------------------------------------------------------------
+select if(a=='G', b, c) from test
+--------------------
+SELECT if(a == 'G', b, c)
+FROM test
+------------------------------------------------------------------------------------------------------------------------
+select a, b, count(1) from test group by a as c, b as d
+--------------------
+SELECT a, b, count(1)
+FROM test
+GROUP BY a AS c, b AS d
+------------------------------------------------------------------------------------------------------------------------
+select c from b where c=1 ${if(len(a)=0,'and 1=1',"and a>0")} ${if(len(a)=0,'and 1=1',"and a>0")}
+--------------------
+SELECT c
+FROM b
+WHERE c = 1 ${if(len(a)=0,'and 1=1',"and a>0")} ${if(len(a)=0,'and 1=1',"and a>0")}
+------------------------------------------------------------------------------------------------------------------------
+select  ${if(len(a)=0,' 1=1 ',"c")}， ${if(len(a)=0,' 1=1 ',"c")} from b
+--------------------
+SELECT ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")}
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+select a from test where 1=1 ${if(a=1, "and b","and c")} in d
+--------------------
+SELECT a
+FROM test
+WHERE 1 = 1 ${if(a=1, "and b","and c")} IN (d)
+------------------------------------------------------------------------------------------------------------------------ 
+select a from test where 1=1
+				and (
+					a.report_item_code in ('${gFinReportItem}')  or a.report_item_code ='B002'
+					${if(find('E069',gFinReportItem)>0," or (c.yn_offset_report = 'Y' and a.report_item_code ='E06802') "," ")}
+				)
+--------------------
+SELECT a
+FROM test
+WHERE 1 = 1
+	AND (a.report_item_code IN ('${gFinReportItem}')
+	OR a.report_item_code = 'B002' ${if(find('E069',gFinReportItem)>0," or (c.yn_offset_report = 'Y' and a.report_item_code ='E06802') "," ")})
+------------------------------------------------------------------------------------------------------------------------ 
+select  ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")} from b
+--------------------
+SELECT ${if(len(a)=0,' 1=1 ',"c")}, ${if(len(a)=0,' 1=1 ',"c")}
+FROM b
+------------------------------------------------------------------------------------------------------------------------ 
+select 
+    ${if(gGyzy_hz=='G'," buyer_name as buyer_name, "," syr as buyer_name, ")}
+    substringUTF8(buyer_name,1,positionUTF8(buyer_name,'(')-1) as tg
+    from a
+--------------------
+SELECT ${if(gGyzy_hz=='G'," buyer_name as buyer_name, "," syr as buyer_name, ")}
+	, substringUTF8(buyer_name, 1, positionUTF8(buyer_name, '(') - 1) AS tg
+FROM a
+------------------------------------------------------------------------------------------------------------------------
+select c from b where c=1 ${if(len(a)=0,'and 1=1',"and a>0")} ${if(len(a)=0,'and 1=1',"and a>0")}
+--------------------
+SELECT c
+FROM b
+WHERE c = 1 ${if(len(a)=0,'and 1=1',"and a>0")} ${if(len(a)=0,'and 1=1',"and a>0")}
+------------------------------------------------------------------------------------------------------------------------
+--test
+select a from b
+--------------------
+-- test
+SELECT a
+FROM b
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE test.test (  
+`aa` Array(UInt64) ) 
+ENGINE = MergeTree()
+--------------------
+CREATE TABLE test.test (
+	`aa` ARRAY(UInt64)
+) ENGINE = MergeTree()
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE tmp.tmp_exp_mobile_tzfx_tzqy_m_20240506
+(
+date_code Int32 COMMENT '日期编码',
+date_type String COMMENT '日期类型',
+area_man_code String COMMENT '大区编码',
+area_man_name String COMMENT '大区',
+region_man_code String COMMENT '营运区编码',
+region_man_name String COMMENT '营运区',
+ind_type String COMMENT '拓展类型',
+ind_target Int32 COMMENT '指标',
+ind_value Int32 COMMENT '指标值',
+stat_date Int32 COMMENT '分区字段'
+)
+ENGINE=ReplicatedMergeTree('/clickhouse/tables/{database}/{table}/{uuid}/{C16_all_shard}', '{C16_all_replica}')
+ORDER BY (stat_date,date_code,region_man_code)
+SETTINGS storage_policy = 'data0234_jbod', index_granularity = 8192
+COMMENT '营运区拓展指标跟踪缓存表';
+--------------------
+CREATE TABLE tmp.tmp_exp_mobile_tzfx_tzqy_m_20240506 (
+	date_code Int32 COMMENT '日期编码',
+	date_type String COMMENT '日期类型',
+	area_man_code String COMMENT '大区编码',
+	area_man_name String COMMENT '大区',
+	region_man_code String COMMENT '营运区编码',
+	region_man_name String COMMENT '营运区',
+	ind_type String COMMENT '拓展类型',
+	ind_target Int32 COMMENT '指标',
+	ind_value Int32 COMMENT '指标值',
+	stat_date Int32 COMMENT '分区字段'
+) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{database}/{table}/{uuid}/{C16_all_shard}', '{C16_all_replica}')
+ORDER BY (stat_date, date_code, region_man_code)
+SETTINGS storage_policy = 'data0234_jbod', index_granularity = 8192
+COMMENT '营运区拓展指标跟踪缓存表';
+------------------------------------------------------------------------------------------------------------------------
 SELECT uniq(UserID) FROM distributed_table WHERE CounterID = 101500
     AND UserID GLOBAL IN (
         SELECT UserID FROM distributed_table WHERE CounterID = 34
@@ -142,8 +437,8 @@ CREATE TABLE if not exists etda.mytable1
 --------------------
 CREATE TABLE IF NOT EXISTS etda.mytable1 (
 	`id` UInt64,
-	`action_parameter_uint64_list` Array(UInt64),
-	`action_parameter_string_list` Array(String)
+	`action_parameter_uint64_list` ARRAY(UInt64),
+	`action_parameter_string_list` ARRAY(String)
 )
 ------------------------------------------------------------------------------------------------------------------------
 SELECT level, sum(cnt) OVER (PARTITION BY NULL ORDER BY level DESC) AS cnt

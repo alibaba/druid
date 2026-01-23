@@ -29,7 +29,6 @@ public class MySqlCreateTableTest128_quote extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE \"linxi_test\".\"linxi_subpart11\" (\n" +
                 "\t\"id\" BIGINT NOT NULL COMMENT '',\n" +
                 "\t\"int_test\" BIGINT NOT NULL COMMENT '',\n" +
@@ -41,8 +40,5 @@ public class MySqlCreateTableTest128_quote extends MysqlTest {
                 "SUBPARTITION BY LIST (\"subcol\" BIGINT)\n" +
                 "SUBPARTITION OPTIONS (available_Partition_Num = 100)\n" +
                 "TABLEGROUP group2", stmt.toString());
-
     }
-
-
 }

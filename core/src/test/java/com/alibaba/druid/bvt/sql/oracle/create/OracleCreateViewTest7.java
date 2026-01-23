@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -39,13 +38,13 @@ public class OracleCreateViewTest7 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE VIEW emp_view\n" +
+        assertEquals("CREATE VIEW emp_view\n" +
                         "AS\n" +
                         "SELECT last_name, salary * 12 AS annual_salary\n" +
                         "FROM employees\n" +
-                        "WHERE department_id = 20;",//
+                        "WHERE department_id = 20;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -57,10 +56,10 @@ public class OracleCreateViewTest7 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,9 +41,7 @@ public class MysqlVarantRefTest {
 
         String text = SQLUtils.toSQLString(stmtList, DbType.mysql);
         Assert.assertEquals("SET @@session.tx_variables = 1, @@session.asdfsa = 2", text);
-
     }
-
 
     @Test
     public void test11() {
@@ -82,7 +79,6 @@ public class MysqlVarantRefTest {
         Assert.assertTrue(!resultExpr2.isSession());
     }
 
-
     @Test
     public void test3() {
         String sql = "set  tx_variables = 1, asdfsa = 2 ";
@@ -97,7 +93,6 @@ public class MysqlVarantRefTest {
         Assert.assertTrue(!resultExpr2.isSession());
     }
 
-
     @Test
     public void test4() {
         String sql = "set  tx_variables = 1,session asdfsa = 2 ";
@@ -111,7 +106,6 @@ public class MysqlVarantRefTest {
         Assert.assertTrue(!resultExpr.isSession());
         Assert.assertTrue(resultExpr2.isSession());
     }
-
 
     @Test
     public void test5() {
@@ -128,7 +122,6 @@ public class MysqlVarantRefTest {
         Assert.assertTrue(resultExpr2.isSession());
         Assert.assertTrue(resultExpr3.isSession());
     }
-
 
     @Test
     public void test6() {
@@ -149,5 +142,4 @@ public class MysqlVarantRefTest {
         Assert.assertTrue(!resultExpr4.isSession());
         Assert.assertTrue(resultExpr5.isSession());
     }
-
 }

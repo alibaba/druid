@@ -1,17 +1,14 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
 
 public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
     public void test_oracle_oderby_0() throws Exception {
         String sql = "select * from t order by id";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 0, 10);
-        Assert.assertEquals("SELECT XX.*, ROWNUM AS RN\n" +
+        assertEquals("SELECT XX.*, ROWNUM AS RN\n" +
                 "FROM (\n" +
                 "\tSELECT *\n" +
                 "\tFROM t\n" +
@@ -23,15 +20,15 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
     public void test_oracle_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 0, 10);
-        Assert.assertEquals("SELECT *" + //
-                "\nFROM t" + //
+        assertEquals("SELECT *" +
+                "\nFROM t" +
                 "\nWHERE ROWNUM <= 10", result);
     }
 
     public void test_oracle_1() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 10, 10);
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                 "FROM (\n" +
                 "\tSELECT XX.*, ROWNUM AS RN\n" +
                 "\tFROM (\n" +
@@ -46,7 +43,7 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
     public void test_oracle_2() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 20, 10);
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                 "FROM (\n" +
                 "\tSELECT XX.*, ROWNUM AS RN\n" +
                 "\tFROM (\n" +
@@ -61,7 +58,7 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
     public void test_oracle_3() throws Exception {
         String sql = "select id, name, salary from t order by id, name";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 20, 10);
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                 "FROM (\n" +
                 "\tSELECT XX.*, ROWNUM AS RN\n" +
                 "\tFROM (\n" +
@@ -82,7 +79,7 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
                 "to_date('2014', 'yyyy')) / 12";
 
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 20, 10);
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                 "FROM (\n" +
                 "\tSELECT XX.*, ROWNUM AS RN\n" +
                 "\tFROM (\n" +

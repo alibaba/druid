@@ -5,7 +5,6 @@ import com.alibaba.druid.bvt.sql.mysql.issues.Issue5421;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -17,7 +16,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://github.com/alibaba/druid/issues/5631">Issue来源</a>
  */
 public class Issue5631 {
-
     @Test
     public void test_merge_into() throws Exception {
         for (DbType dbType : new DbType[]{DbType.oracle}) {

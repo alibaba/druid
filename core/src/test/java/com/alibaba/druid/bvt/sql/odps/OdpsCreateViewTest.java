@@ -1,12 +1,9 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-
 import junit.framework.TestCase;
 
 public class OdpsCreateViewTest extends TestCase {
@@ -16,9 +13,9 @@ public class OdpsCreateViewTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("CREATE VIEW sale_detail" //
-                + "\nAS" //
-                + "\nSELECT *" //
+        assertEquals("CREATE VIEW sale_detail"
+                + "\nAS"
+                + "\nSELECT *"
                 + "\nFROM dual;", output);
     }
 
@@ -28,9 +25,9 @@ public class OdpsCreateViewTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("CREATE OR REPLACE VIEW sale_detail" //
-                + "\nAS" //
-                + "\nSELECT *" //
+        assertEquals("CREATE OR REPLACE VIEW sale_detail"
+                + "\nAS"
+                + "\nSELECT *"
                 + "\nFROM dual;", output);
     }
 
@@ -40,9 +37,9 @@ public class OdpsCreateViewTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("CREATE VIEW IF NOT EXISTS sale_detail" //
-                + "\nAS" //
-                + "\nSELECT *" //
+        assertEquals("CREATE VIEW IF NOT EXISTS sale_detail"
+                + "\nAS"
+                + "\nSELECT *"
                 + "\nFROM dual;", output);
     }
 
@@ -52,10 +49,10 @@ public class OdpsCreateViewTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("CREATE VIEW IF NOT EXISTS sale_detail" //
-                + "\nCOMMENT 'aaaa'" //
-                + "\nAS" //
-                + "\nSELECT *" //
+        assertEquals("CREATE VIEW IF NOT EXISTS sale_detail"
+                + "\nCOMMENT 'aaaa'"
+                + "\nAS"
+                + "\nSELECT *"
                 + "\nFROM dual;", output);
     }
 
@@ -65,7 +62,7 @@ public class OdpsCreateViewTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("CREATE VIEW IF NOT EXISTS sale_detail (\n" +
+        assertEquals("CREATE VIEW IF NOT EXISTS sale_detail (\n" +
                 "\tf1 COMMENT 'aaaa', \n" +
                 "\tf2 COMMENT 'bbb'\n" +
                 ")\n" +

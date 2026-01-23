@@ -9,6 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
+
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -36,13 +37,12 @@ public class Oracle_pl_for_2 extends OracleTest {
                 "    DELETE FROM employees_temp\n" +
                 "    WHERE department_id = depts(i);\n" +
                 "  END LOOP;\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(3, statementList.size());
 
         SQLStatement stmt = statementList.get(0);
-
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -57,14 +57,14 @@ public class Oracle_pl_for_2 extends OracleTest {
 
         assertEquals(2, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
 
-//        Assert.assertEquals(7, visitor.getColumns().size());
-//        Assert.assertEquals(3, visitor.getConditions().size());
-//        Assert.assertEquals(1, visitor.getRelationships().size());
+//        assertEquals(7, visitor.getColumns().size());
+//        assertEquals(3, visitor.getConditions().size());
+//        assertEquals(1, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
@@ -102,7 +102,7 @@ public class Oracle_pl_for_2 extends OracleTest {
                             "\t\tdelete from employees_temp\n" +
                             "\t\twhere department_id = depts(i);\n" +
                             "\tend loop;\n" +
-                            "end;", //
+                            "end;",
                     output);
         }
     }

@@ -20,20 +20,19 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class HiveCreateDatabase_0 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "CREATE DATABASE merge_data;"; //
+                "CREATE DATABASE merge_data;";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -56,7 +55,6 @@ public class HiveCreateDatabase_0 extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-//        Assert.assertTrue(visitor.containsTable("merge_data.transactions"));
-
+//        assertTrue(visitor.containsTable("merge_data.transactions"));
     }
 }

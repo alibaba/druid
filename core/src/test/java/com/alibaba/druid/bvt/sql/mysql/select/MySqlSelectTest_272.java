@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
-
 public class MySqlSelectTest_272 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from (select product from mysql_olap_t1 \n" +
@@ -47,6 +46,4 @@ public class MySqlSelectTest_272 extends MysqlTest {
                 ") tmp\n" +
                 "ORDER BY 1", stmt.toString());
     }
-
-
 }

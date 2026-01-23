@@ -371,7 +371,7 @@ public class OdpsExprParser extends HiveExprParser {
     protected SQLExpr parseAssignItemOnLiteralFloat(SQLExpr sqlExpr) {
         while (lexer.token() == Token.LITERAL_FLOAT && lexer.numberString().startsWith(".")) {
             if (sqlExpr instanceof SQLNumberExpr) {
-                String numStr = ((SQLNumberExpr) sqlExpr).getLiteral();
+                String numStr = String.valueOf(((SQLNumberExpr) sqlExpr).getValue());
                 numStr += lexer.numberString();
                 sqlExpr = new SQLIdentifierExpr(numStr);
                 lexer.nextToken();
@@ -643,6 +643,7 @@ public class OdpsExprParser extends HiveExprParser {
         if (expr instanceof SQLIdentifierExpr
                 && ((SQLIdentifierExpr) expr).nameHashCode64() == FnvHash.Constants.NEW) {
             SQLIdentifierExpr ident = (SQLIdentifierExpr) expr;
+            Lexer.SavePoint savePoint = lexer.markOut();
 
             OdpsNewExpr newExpr = new OdpsNewExpr();
             if (lexer.token() == Token.IDENTIFIER) { //.GSON
@@ -730,6 +731,9 @@ public class OdpsExprParser extends HiveExprParser {
                     } else {
                         expr = newExpr;
                     }
+                } else if (lexer.token() != Token.LPAREN) {
+                    lexer.reset(savePoint);
+                    return ident;
                 } else {
                     accept(Token.LPAREN);
                     this.exprList(newExpr.getArguments(), newExpr);
@@ -817,5 +821,26 @@ public class OdpsExprParser extends HiveExprParser {
             }
         }
         return super.methodRest(expr, acceptLPAREN);
+    }
+
+    @Override
+    public SQLName name() {
+        SQLObject locationHolder = null;
+        if (lexer.isKeepSourceLocation()) {
+            locationHolder = new SQLIdentifierExpr("temp");
+            lexer.computeRowAndColumn(locationHolder);
+        }
+
+        SQLName name = super.name();
+
+        if (locationHolder != null) {
+            name.setSource(locationHolder.getSourceLine(), locationHolder.getSourceColumn());
+        }
+
+        return name;
+    }
+
+    protected SQLExpr relationalRestVariant(SQLExpr expr) {
+        return expr;
     }
 }

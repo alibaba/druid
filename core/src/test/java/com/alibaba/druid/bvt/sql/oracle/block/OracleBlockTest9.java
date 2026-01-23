@@ -15,43 +15,41 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.block;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleBlockTest9 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "DECLARE" + //
-                "  my_emp_id NUMBER(6);" + //
-                "  my_job_id VARCHAR2(10);" + //
-                "  my_sal    NUMBER(8,2);" + //
-                "  CURSOR c1 IS" + //
-                "    SELECT employee_id, job_id, salary" + //
-                "    FROM employees FOR UPDATE;" + //
-                "BEGIN" + //
-                "  OPEN c1;" + //
-                "  LOOP" + //
-                "    FETCH c1 INTO my_emp_id, my_job_id, my_sal;" + //
-                "    IF my_job_id = 'SA_REP' THEN" + //
-                "      UPDATE employees" + //
-                "      SET salary = salary * 1.02" + //
-                "      WHERE CURRENT OF c1;" + //
-                "    END IF;" + //
-                "    EXIT WHEN c1%NOTFOUND;" + //
-                "  END LOOP;" + //
-                "END;"; //
+        String sql = "DECLARE" +
+                "  my_emp_id NUMBER(6);" +
+                "  my_job_id VARCHAR2(10);" +
+                "  my_sal    NUMBER(8,2);" +
+                "  CURSOR c1 IS" +
+                "    SELECT employee_id, job_id, salary" +
+                "    FROM employees FOR UPDATE;" +
+                "BEGIN" +
+                "  OPEN c1;" +
+                "  LOOP" +
+                "    FETCH c1 INTO my_emp_id, my_job_id, my_sal;" +
+                "    IF my_job_id = 'SA_REP' THEN" +
+                "      UPDATE employees" +
+                "      SET salary = salary * 1.02" +
+                "      WHERE CURRENT OF c1;" +
+                "    END IF;" +
+                "    EXIT WHEN c1%NOTFOUND;" +
+                "  END LOOP;" +
+                "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         for (SQLStatement statement : statementList) {
@@ -64,15 +62,15 @@ public class OracleBlockTest9 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "job_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "job_id")));
     }
 }

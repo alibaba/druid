@@ -82,5 +82,4 @@ public class MySqlCreateTableTest115 extends MysqlTest {
                 .getStatement()
                 .toString());
     }
-
 }

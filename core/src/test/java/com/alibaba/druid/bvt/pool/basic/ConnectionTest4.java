@@ -15,18 +15,7 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -36,6 +25,13 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class ConnectionTest4 extends PoolTestCase {
     private MockDriver driver;
@@ -68,7 +64,7 @@ public class ConnectionTest4 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         JdbcStatManager.getInstance().setStatContext(null);
         super.tearDown();
@@ -77,17 +73,17 @@ public class ConnectionTest4 extends PoolTestCase {
     public void test_basic() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
-        Assert.assertEquals(null, conn.unwrap(Date.class));
-        Assert.assertEquals(null, conn.unwrap(null));
+        assertEquals(null, conn.unwrap(Date.class));
+        assertEquals(null, conn.unwrap(null));
         Connection statementConn = ((ConnectionProxy) conn.getConnection()).getRawObject();
-        Assert.assertTrue(statementConn instanceof DruidStatementConnection);
-        Assert.assertEquals(((DruidStatementConnection) statementConn).getConnection(), conn.unwrap(Connection.class));
+        assertTrue(statementConn instanceof DruidStatementConnection);
+        assertEquals(((DruidStatementConnection) statementConn).getConnection(), conn.unwrap(Connection.class));
 
-        Assert.assertEquals(false, conn.isWrapperFor(null));
-        Assert.assertEquals(true, conn.isWrapperFor(DruidPooledConnection.class));
-        Assert.assertEquals(true, conn.isWrapperFor(Connection.class));
+        assertEquals(false, conn.isWrapperFor(null));
+        assertEquals(true, conn.isWrapperFor(DruidPooledConnection.class));
+        assertEquals(true, conn.isWrapperFor(Connection.class));
 
-        Assert.assertEquals("SELECT 1", conn.nativeSQL("SELECT 1"));
+        assertEquals("SELECT 1", conn.nativeSQL("SELECT 1"));
 
         conn.toString();
 
@@ -107,7 +103,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -125,7 +121,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -144,7 +140,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -161,7 +157,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -177,7 +173,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -194,7 +190,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -211,7 +207,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -228,7 +224,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -247,7 +243,7 @@ public class ConnectionTest4 extends PoolTestCase {
         {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
                     ResultSet.CONCUR_READ_ONLY);
-            Assert.assertSame(raw, stmt.unwrap(MockPreparedStatement.class));
+            assertSame(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
 
@@ -269,7 +265,7 @@ public class ConnectionTest4 extends PoolTestCase {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
                     ResultSet.CONCUR_READ_ONLY,
                     ResultSet.HOLD_CURSORS_OVER_COMMIT);
-            Assert.assertSame(raw, stmt.unwrap(MockPreparedStatement.class));
+            assertSame(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
 
@@ -287,7 +283,7 @@ public class ConnectionTest4 extends PoolTestCase {
         }
         {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", new int[0]);
-            Assert.assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
+            assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
 
@@ -305,7 +301,7 @@ public class ConnectionTest4 extends PoolTestCase {
         }
         {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", new String[0]);
-            Assert.assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
+            assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
 
@@ -323,7 +319,7 @@ public class ConnectionTest4 extends PoolTestCase {
         }
         {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", 0);
-            Assert.assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
+            assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
 
@@ -342,7 +338,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -359,7 +355,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -376,7 +372,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -395,7 +391,7 @@ public class ConnectionTest4 extends PoolTestCase {
         {
             PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
                     ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
-            Assert.assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
+            assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
 
@@ -415,7 +411,7 @@ public class ConnectionTest4 extends PoolTestCase {
         {
             PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
                     ResultSet.CONCUR_READ_ONLY);
-            Assert.assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
+            assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
 
@@ -439,7 +435,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -457,7 +453,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -474,7 +470,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -493,7 +489,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -510,7 +506,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -531,7 +527,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -548,7 +544,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -565,7 +561,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         conn.close();
@@ -582,7 +578,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (IllegalStateException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -597,7 +593,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (IllegalStateException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -612,7 +608,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (IllegalStateException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -627,7 +623,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (IllegalStateException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -642,7 +638,7 @@ public class ConnectionTest4 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 }

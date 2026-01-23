@@ -18,7 +18,6 @@ package com.alibaba.druid.bvt.sql.sqlserver;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class SQLServerParameterizedOutputVisitorTest_2 extends TestCase {
     public void test_0() throws Exception {
@@ -31,5 +30,4 @@ public class SQLServerParameterizedOutputVisitorTest_2 extends TestCase {
                 "\tCONSTRAINT pk_AO_B9A0F0_APPLIED_TEMPLATE_ID PRIMARY KEY (ID)\n" +
                 ")", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER));
     }
-
 }

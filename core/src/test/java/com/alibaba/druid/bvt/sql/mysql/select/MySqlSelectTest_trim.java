@@ -23,7 +23,6 @@ public class MySqlSelectTest_trim extends MysqlTest {
 
         //assertEquals("SELECT trim('x')", stmt.toString());
 
-
         List<Object> outParameters = new ArrayList<Object>();
         String parameterizeSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParameters,
                 VisitorFeature.OutputParameterizedQuesUnMergeInList,
@@ -41,7 +40,6 @@ public class MySqlSelectTest_trim extends MysqlTest {
 
         //assertEquals("SELECT trim('x')", stmt.toString());
 
-
         outParameters = new ArrayList<Object>();
         parameterizeSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParameters,
                 VisitorFeature.OutputParameterizedQuesUnMergeInList,
@@ -58,7 +56,6 @@ public class MySqlSelectTest_trim extends MysqlTest {
 
         //assertEquals("SELECT trim('x')", stmt.toString());
 
-
         outParameters = new ArrayList<Object>();
         parameterizeSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParameters,
                 VisitorFeature.OutputParameterizedQuesUnMergeInList,
@@ -68,5 +65,4 @@ public class MySqlSelectTest_trim extends MysqlTest {
         System.out.println(parameterizeSql);
         System.out.println(outParameters);
     }
-
 }

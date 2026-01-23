@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.Connection;
-
+import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
+import java.sql.Connection;
 
 public class MySqlValdConnectionTest extends TestCase {
     private String jdbcUrl;

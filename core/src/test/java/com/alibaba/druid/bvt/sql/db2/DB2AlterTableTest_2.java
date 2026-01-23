@@ -17,7 +17,6 @@ package com.alibaba.druid.bvt.sql.db2;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
@@ -44,5 +43,4 @@ public class DB2AlterTableTest_2 extends TestCase {
         assertEquals(1, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
     }
-
 }

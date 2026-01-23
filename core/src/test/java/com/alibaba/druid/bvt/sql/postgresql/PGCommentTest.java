@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.postgresql;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.stat.TableStat;
+
+import java.util.List;
 
 public class PGCommentTest extends PGTest {
     public void test_0() {
@@ -64,7 +62,7 @@ public class PGCommentTest extends PGTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
@@ -73,7 +71,6 @@ public class PGCommentTest extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("a")));
-
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("a")));
     }
 }

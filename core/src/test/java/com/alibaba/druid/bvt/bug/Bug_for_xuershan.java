@@ -15,17 +15,15 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class Bug_for_xuershan extends TestCase {
     private DruidDataSource dataSource;
@@ -52,7 +50,7 @@ public class Bug_for_xuershan extends TestCase {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.execute();
-        Assert.assertNull(stmt.getResultSet());
+        assertNull(stmt.getResultSet());
         stmt.close();
         conn.close();
     }

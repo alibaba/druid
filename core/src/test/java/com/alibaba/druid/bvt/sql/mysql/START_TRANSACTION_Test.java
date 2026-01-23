@@ -15,17 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class START_TRANSACTION_Test extends TestCase {
     public void test_0() throws Exception {
@@ -36,7 +33,7 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("START TRANSACTION;", text);
+        assertEquals("START TRANSACTION;", text);
     }
 
     public void test_1() throws Exception {
@@ -47,7 +44,7 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("START TRANSACTION WITH CONSISTENT SNAPSHOT;", text);
+        assertEquals("START TRANSACTION WITH CONSISTENT SNAPSHOT;", text);
     }
 
     public void test_2() throws Exception {
@@ -58,7 +55,7 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("START TRANSACTION BEGIN;", text);
+        assertEquals("START TRANSACTION BEGIN;", text);
     }
 
     public void test_3() throws Exception {
@@ -69,7 +66,7 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("START TRANSACTION BEGIN WORK;", text);
+        assertEquals("START TRANSACTION BEGIN WORK;", text);
     }
 
     public void test_4() throws Exception {
@@ -80,7 +77,7 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("COMMIT;", text);
+        assertEquals("COMMIT;", text);
     }
 
     public void test_5() throws Exception {
@@ -91,7 +88,7 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("COMMIT WORK;", text);
+        assertEquals("COMMIT WORK;", text);
     }
 
     public void test_6() throws Exception {
@@ -102,7 +99,7 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("ROLLBACK;", text);
+        assertEquals("ROLLBACK;", text);
     }
 
     public void test_7() throws Exception {
@@ -113,7 +110,7 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SET autocommit = 0;", text);
+        assertEquals("SET autocommit = 0;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

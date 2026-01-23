@@ -10,7 +10,6 @@ import com.alibaba.druid.wall.WallProviderCreator;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class Test02WallProviderCreator implements WallProviderCreator {
-
     private static final Log LOG = LogFactory.getLog(Test02WallProviderCreator.class);
 
     @Override

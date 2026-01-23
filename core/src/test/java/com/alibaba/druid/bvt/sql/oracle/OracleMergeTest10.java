@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class OracleMergeTest10 extends OracleTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLMergeStatement mergeStatement = (SQLMergeStatement) stmtList.get(0);
         String result = SQLUtils.toOracleString(mergeStatement);
-        Assert.assertEquals("MERGE INTO bonuses d\n" +
+        assertEquals("MERGE INTO bonuses d\n" +
                         "USING (\n" +
                         "\tSELECT employee_id.*\n" +
                         "\tFROM employees\n" +
@@ -52,11 +51,10 @@ public class OracleMergeTest10 extends OracleTest {
                         "SET d.bonus = bonus\n" +
                         "DELETE WHERE (salary > 8000)",
             result);
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
     }
-
 }

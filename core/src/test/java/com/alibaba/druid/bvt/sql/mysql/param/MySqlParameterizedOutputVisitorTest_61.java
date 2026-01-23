@@ -1,8 +1,8 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson2.JSON;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -46,5 +46,4 @@ public class MySqlParameterizedOutputVisitorTest_61 extends TestCase {
                 "\t\t, now(), 2, 2, 1515032652532, 51\n" +
                 "\t\t, 0, 91605449, '', 'mingguo', 0)", rsql);
     }
-
 }

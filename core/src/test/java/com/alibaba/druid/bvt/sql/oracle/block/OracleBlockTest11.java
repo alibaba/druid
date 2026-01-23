@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.block;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+
+import java.util.List;
 
 public class OracleBlockTest11 extends OracleTest {
     public void test_0() throws Exception {
@@ -52,7 +50,7 @@ public class OracleBlockTest11 extends OracleTest {
                 " " +
                 "    COMMIT;  -- releases locks\n" +
                 "  END LOOP;" +
-                "END;"; //
+                "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -62,7 +60,7 @@ public class OracleBlockTest11 extends OracleTest {
             System.out.println();
         }
 
-        Assert.assertEquals(3, statementList.size());
+        assertEquals(3, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         for (SQLStatement statement : statementList) {
@@ -75,17 +73,17 @@ public class OracleBlockTest11 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.containsColumn("employees", "*"));
-        Assert.assertTrue(visitor.containsColumn("emp", "employee_id"));
-        Assert.assertTrue(visitor.containsColumn("emp", "*"));
-        Assert.assertTrue(visitor.containsColumn("emp", "salary"));
+        assertTrue(visitor.containsColumn("employees", "*"));
+        assertTrue(visitor.containsColumn("emp", "employee_id"));
+        assertTrue(visitor.containsColumn("emp", "*"));
+        assertTrue(visitor.containsColumn("emp", "salary"));
     }
 }

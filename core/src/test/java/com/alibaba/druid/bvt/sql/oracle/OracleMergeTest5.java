@@ -15,26 +15,24 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleMergeTest5 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "MERGE " + //
-                "INTO MEMBER_LAST_LOGIN M2 " + //
-                "USING MEMBER_LAST_LOGIN_HZ M1 ON (M1.ID = M2.ID) " + //
-                "  WHEN MATCHED THEN " + //
-                "      UPDATE SET M2.LAST_LOGIN_TIME = M1.LAST_LOGIN_TIME, M2.GMT_MODIFIED = M1.GMT_MODIFIED" + //
-                "        , M2.OWNER_SEQ = M1.OWNER_SEQ, M2.OWNER_MEMBER_ID = M1.OWNER_MEMBER_ID, M2.IP = M1.IP " + //
-                "  WHEN NOT MATCHED THEN " + //
-                "      INSERT VALUES (M1.ID, M1.GMT_CREATE, M1.GMT_MODIFIED, M1.OWNER_SEQ" + //
+        String sql = "MERGE " +
+                "INTO MEMBER_LAST_LOGIN M2 " +
+                "USING MEMBER_LAST_LOGIN_HZ M1 ON (M1.ID = M2.ID) " +
+                "  WHEN MATCHED THEN " +
+                "      UPDATE SET M2.LAST_LOGIN_TIME = M1.LAST_LOGIN_TIME, M2.GMT_MODIFIED = M1.GMT_MODIFIED" +
+                "        , M2.OWNER_SEQ = M1.OWNER_SEQ, M2.OWNER_MEMBER_ID = M1.OWNER_MEMBER_ID, M2.IP = M1.IP " +
+                "  WHEN NOT MATCHED THEN " +
+                "      INSERT VALUES (M1.ID, M1.GMT_CREATE, M1.GMT_MODIFIED, M1.OWNER_SEQ" +
                 "        , M1.LAST_LOGIN_TIME, M1.OWNER_MEMBER_ID, M1.IP)";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -42,7 +40,7 @@ public class OracleMergeTest5 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -52,14 +50,13 @@ public class OracleMergeTest5 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MEMBER_LAST_LOGIN_HZ")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MEMBER_LAST_LOGIN")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("MEMBER_LAST_LOGIN_HZ")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("MEMBER_LAST_LOGIN")));
 
-        Assert.assertEquals(13, visitor.getColumns().size());
+        assertEquals(13, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("MEMBER_LAST_LOGIN_HZ", "ID"));
+        assertTrue(visitor.containsColumn("MEMBER_LAST_LOGIN_HZ", "ID"));
     }
-
 }

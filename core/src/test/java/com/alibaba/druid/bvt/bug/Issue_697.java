@@ -1,14 +1,7 @@
 package com.alibaba.druid.bvt.bug;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import org.junit.Assert;
 import junit.framework.TestCase;
-
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 
 public class Issue_697 extends TestCase {
     public void test_for_issue() throws Exception {
@@ -25,6 +18,6 @@ public class Issue_697 extends TestCase {
                 "VALUES (1010103, now(), now(), 10101, 0\n" +
                 "\t, 'flow=''Ctr''', 'be:login,dev:pc, env:web, type:ctr, from:$loginfrom, result:true');";
 
-        Assert.assertEquals(expected, SQLUtils.formatMySql(sql));
+        assertEquals(expected, SQLUtils.formatMySql(sql));
     }
 }

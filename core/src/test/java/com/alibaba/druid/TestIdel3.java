@@ -15,17 +15,16 @@
  */
 package com.alibaba.druid;
 
-import java.lang.management.ManagementFactory;
-import java.sql.Connection;
-import java.util.concurrent.CountDownLatch;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 import javax.management.ObjectName;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
+import java.lang.management.ManagementFactory;
+import java.sql.Connection;
+import java.util.concurrent.CountDownLatch;
 
 public class TestIdel3 extends TestCase {
     public void test_idle2() throws Exception {
@@ -113,7 +112,6 @@ public class TestIdel3 extends TestCase {
 
         Thread.sleep(1000 * 100);
         dataSource.close();
-
     }
 
     private void concurrent(final DruidDataSource dataSource, int threadCount, final int loopCount)

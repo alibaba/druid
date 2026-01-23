@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -33,13 +32,13 @@ public class HiveCreateTableTest_4 extends OracleTest {
                         "\tlast_update_user string)\n" +
                         "PARTITIONED BY (tran_date string)\n" +
                         "CLUSTERED BY (ID) into 5 buckets \n" +
-                        "STORED AS ORC TBLPROPERTIES ('transactional'='true');\n"; //
+                        "STORED AS ORC TBLPROPERTIES ('transactional'='true');\n";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -75,7 +74,6 @@ public class HiveCreateTableTest_4 extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.containsTable("merge_data.transactions"));
-
+        assertTrue(visitor.containsTable("merge_data.transactions"));
     }
 }

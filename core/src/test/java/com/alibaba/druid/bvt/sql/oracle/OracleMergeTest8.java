@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,11 +22,13 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
+import java.util.List;
+
 public class OracleMergeTest8 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "merge into (select * from T09_RULE_CAL_COUNT where data_dt = '20160328' and rule_type = '2') t " //
+        String sql = "merge into (select * from T09_RULE_CAL_COUNT where data_dt = '20160328' and rule_type = '2') t "
                 + "using ("
-                + "     select cust_no,organ_key " //
+                + "     select cust_no,organ_key "
                 + "     from (select t1.cust_no, t1.organ_key from t08_cust_result_c_mid t1 "
                 + "         union "
                 + "         (select t2.cust_no, t2.organ_key from t08_cust_result_i_mid t2)"
@@ -41,7 +39,7 @@ public class OracleMergeTest8 extends OracleTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLMergeStatement mergeStatement = (SQLMergeStatement) stmtList.get(0);
         String result = SQLUtils.toOracleString(mergeStatement);
-        Assert.assertEquals("MERGE INTO (\n" +
+        assertEquals("MERGE INTO (\n" +
                         "\tSELECT *\n" +
                         "\tFROM T09_RULE_CAL_COUNT\n" +
                         "\tWHERE data_dt = '20160328'\n" +
@@ -60,11 +58,10 @@ public class OracleMergeTest8 extends OracleTest {
                         "WHEN MATCHED THEN UPDATE\n" +
                         "SET t.organ_key = t3.organ_key",
                 result);
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
     }
-
 }

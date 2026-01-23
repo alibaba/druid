@@ -1,18 +1,16 @@
 package com.alibaba.druid.polardb;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class PolarDBDataSourceTest extends TestCase {
     private String jdbcUrl;
@@ -38,10 +36,11 @@ public class PolarDBDataSourceTest extends TestCase {
         Assert.assertTrue(JdbcConstants.POLARDB.equals(DbType.of(dataSource.getDbType())));
         Assert.assertTrue(JdbcConstants.POLARDB_DRIVER.equals(dataSource.getDriverClassName()));
 
-        Connection conn = dataSource.getConnection();
+        Connection conn = dataSource.getConnection(1000);
         PreparedStatement stmt = conn.prepareStatement("SELECT 1");
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
+            System.out.println("result: " + rs.getInt(1));
         }
         JdbcUtils.close(rs);
         JdbcUtils.close(stmt);

@@ -56,22 +56,21 @@ public class MySqlCreateProcedureTest11 extends MysqlTest {
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = statementList.get(0);
-//    	print(statementList);
-//        assertEquals(1, statementList.size());
+        // print(statementList);
+        // assertEquals(1, statementList.size());
 
         System.out.println(SQLUtils.toMySqlString(stmt));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        // System.out.println("Tables : " + visitor.getTables());
+        // System.out.println("fields : " + visitor.getColumns());
+        // System.out.println("coditions : " + visitor.getConditions());
+        // System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(3, visitor.getTables().size());
         assertEquals(3, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
     }
-
 }

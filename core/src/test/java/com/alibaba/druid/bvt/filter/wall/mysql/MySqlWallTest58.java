@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -34,12 +31,11 @@ public class MySqlWallTest58 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(false);
 
-        Assert.assertTrue(provider.checkValid(//
-                "SELECT COUNT(*) FROM information_schema.processlist " + //
-                        "WHERE user <> 'replication' AND id <> CONNECTION_ID() " + //
+        assertTrue(provider.checkValid(//
+                "SELECT COUNT(*) FROM information_schema.processlist " +
+                        "WHERE user <> 'replication' AND id <> CONNECTION_ID() " +
                         "AND time > 60 AND command <> 'Sleep'"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
-
 }

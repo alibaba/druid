@@ -37,6 +37,7 @@ public interface SQLObject {
     SQLObject clone();
 
     SQLObject getParent();
+    SQLObject getParent(int level);
 
     void setParent(SQLObject parent);
 

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -35,13 +34,13 @@ public class HiveCreateTableTest_3 extends OracleTest {
                         "COMMENT 'session来源类型维表'\n" +
                         "PARTITIONED BY(date STRING COMMENT '日期', pos STRING COMMENT '位置')\n" +
                         "ROW FORMAT DELIMITED FIELDS TERMINATED BY ','\n" +
-                        "STORED AS SEQUENCEFILE"; //
+                        "STORED AS SEQUENCEFILE";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -75,7 +74,6 @@ public class HiveCreateTableTest_3 extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.containsTable("pub_ae_sess_type_dimt0_text"));
-
+        assertTrue(visitor.containsTable("pub_ae_sess_type_dimt0_text"));
     }
 }

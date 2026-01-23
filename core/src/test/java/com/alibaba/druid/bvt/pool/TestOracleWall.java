@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class TestOracleWall extends TestCase {
     private DruidDataSource dataSource;
@@ -75,7 +73,6 @@ public class TestOracleWall extends TestCase {
             conn.close();
         }
 
-        Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
-
+        assertEquals(1, dataSource.getCachedPreparedStatementCount());
     }
 }

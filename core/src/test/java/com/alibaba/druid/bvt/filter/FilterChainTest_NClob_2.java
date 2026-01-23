@@ -15,14 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.util.Collections;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.mock.MockNClob;
@@ -32,12 +24,17 @@ import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.NClobProxy;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.Collections;
 
 public class FilterChainTest_NClob_2 extends TestCase {
     private DruidDataSource dataSource;
     private CallableStatementProxy statement;
 
-    private int invokeCount = 0;
+    private int invokeCount;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -51,7 +48,6 @@ public class FilterChainTest_NClob_2 extends TestCase {
         };
 
         statement = new CallableStatementProxyImpl(new ConnectionProxyImpl(null, null, null, 0), mockStmt, "", 1);
-
     }
 
     protected void tearDown() throws Exception {
@@ -65,8 +61,8 @@ public class FilterChainTest_NClob_2 extends TestCase {
 
         Clob clob = chain.callableStatement_getClob(statement, 1);
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_getClob_1() throws Exception {
@@ -74,18 +70,17 @@ public class FilterChainTest_NClob_2 extends TestCase {
 
         Clob clob = chain.callableStatement_getClob(statement, "1");
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
-
 
     public void test_getObject() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         Clob clob = (Clob) chain.callableStatement_getObject(statement, 1);
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_getObject_1() throws Exception {
@@ -93,8 +88,8 @@ public class FilterChainTest_NClob_2 extends TestCase {
 
         Clob clob = (Clob) chain.callableStatement_getObject(statement, "1");
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_getObject_2() throws Exception {
@@ -102,8 +97,8 @@ public class FilterChainTest_NClob_2 extends TestCase {
 
         Clob clob = (Clob) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 
     public void test_getObject_3() throws Exception {
@@ -111,7 +106,7 @@ public class FilterChainTest_NClob_2 extends TestCase {
 
         Clob clob = (Clob) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof NClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof NClobProxy);
+        assertEquals(1, invokeCount);
     }
 }

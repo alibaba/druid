@@ -19,24 +19,22 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleSelectTest43 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "SELECT * FROM table(t_department)  " + //
-                        "WHERE name IN ('0000','4444') " + //
-                        "ORDER BY name ASC"; //
+                "SELECT * FROM table(t_department)  " +
+                        "WHERE name IN ('0000','4444') " +
+                        "ORDER BY name ASC";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -51,7 +49,7 @@ public class OracleSelectTest43 extends OracleTest {
 
         assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("t_department", "*"));
-        Assert.assertTrue(visitor.containsColumn("t_department", "name"));
+        assertTrue(visitor.containsColumn("t_department", "*"));
+        assertTrue(visitor.containsColumn("t_department", "name"));
     }
 }

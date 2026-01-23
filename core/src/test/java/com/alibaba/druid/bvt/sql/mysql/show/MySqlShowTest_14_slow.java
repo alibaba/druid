@@ -36,6 +36,5 @@ public class MySqlShowTest_14_slow extends MysqlTest {
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
 }

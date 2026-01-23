@@ -46,5 +46,4 @@ public class HiveCreateTableTest_45_dla extends OracleTest {
                 "\t'TABLE_MAPPING' = `device_group_relation`\n" +
                 ")", stmt.toString());
     }
-
 }

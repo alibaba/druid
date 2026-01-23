@@ -21,14 +21,13 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class MySqlCreateTableTest1 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE lookup" + //
-                "  (id INT, INDEX USING BTREE (id))" + //
+        String sql = "CREATE TABLE lookup" +
+                "  (id INT, INDEX USING BTREE (id))" +
                 "  ENGINE = MEMORY;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -36,7 +35,7 @@ public class MySqlCreateTableTest1 extends MysqlTest {
         SQLStatement statemen = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -46,12 +45,12 @@ public class MySqlCreateTableTest1 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("lookup")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("lookup")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("lookup", "id")));
+        assertTrue(visitor.getColumns().contains(new Column("lookup", "id")));
     }
 }

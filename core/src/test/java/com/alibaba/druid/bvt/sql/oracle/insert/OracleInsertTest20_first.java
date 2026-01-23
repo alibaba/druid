@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -68,7 +67,7 @@ public class OracleInsertTest20_first extends OracleTest {
                         "SELECT o.order_id AS oid, o.customer_id AS cid, o.order_total AS ottl, o.sales_rep_id AS sid, c.credit_limit AS cl\n" +
                         "\t, c.cust_email AS cem\n" +
                         "FROM orders o, customers c\n" +
-                        "WHERE o.customer_id = c.customer_id;",//
+                        "WHERE o.customer_id = c.customer_id;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -86,5 +85,4 @@ public class OracleInsertTest20_first extends OracleTest {
 
         assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "customer_id")));
     }
-
 }

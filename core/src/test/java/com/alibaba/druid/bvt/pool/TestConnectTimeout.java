@@ -15,18 +15,16 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class TestConnectTimeout extends TestCase {
     private DruidDataSource dataSource;
@@ -40,7 +38,7 @@ public class TestConnectTimeout extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setMaxOpenPreparedStatements(30);
         dataSource.setMaxActive(4);
-        dataSource.setMaxWait(50000);//时间灵敏度不够，容易导致单测失败，因此调大一点
+        dataSource.setMaxWait(50000); //时间灵敏度不够，容易导致单测失败，因此调大一点
         dataSource.setMinIdle(0);
         dataSource.setInitialSize(1);
         dataSource.init();
@@ -51,7 +49,7 @@ public class TestConnectTimeout extends TestCase {
             Connection conn = dataSource.getConnection();
             conn.close();
             dataSource.shrink();
-            Assert.assertEquals(0, dataSource.getPoolingCount());
+            assertEquals(0, dataSource.getPoolingCount());
         }
 
         final List<Connection> connections = new ArrayList<Connection>();
@@ -69,7 +67,7 @@ public class TestConnectTimeout extends TestCase {
                     try {
                         for (int i = 0; i < 100; ++i) {
                             Connection conn = dataSource.getConnection();
-                            System.out.println(LocalDateTime.now() +" : " + Thread.currentThread() + " " + conn);
+                            System.out.println(LocalDateTime.now() + " : " + Thread.currentThread() + " " + conn);
                             Thread.sleep(1);
                             conn.close();
                         }
@@ -85,7 +83,7 @@ public class TestConnectTimeout extends TestCase {
         }
 
         latch.await();
-        Assert.assertEquals(0, errorCount.get());
+        assertEquals(0, errorCount.get());
     }
 
     protected void tearDown() throws Exception {

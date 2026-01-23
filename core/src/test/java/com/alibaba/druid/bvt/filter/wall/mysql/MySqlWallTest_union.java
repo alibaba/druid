@@ -15,33 +15,30 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 public class MySqlWallTest_union extends TestCase {
     public void testUnion() throws Exception {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2", config)); // not end of comment
-        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2 --", config));
+        assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2", config)); // not end of comment
+        assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2 --", config));
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t union select 1, 2", config)); // no where
+        assertTrue(WallUtils.isValidateMySql("select f1, f2 from t union select 1, 2", config)); // no where
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select null, '1', 2 --", config));
+        assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select null, '1', 2 --", config));
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select c1, c2", config)); //union select item is not const
+        assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select c1, c2", config)); //union select item is not const
 
-        Assert.assertTrue(WallUtils.isValidateMySql("SELECT typeid, typename FROM (SELECT typeid, typename FROM materialtype UNION ALL SELECT ? AS typeid, ? AS typename) a ORDER BY typeid",
+        assertTrue(WallUtils.isValidateMySql("SELECT typeid, typename FROM (SELECT typeid, typename FROM materialtype UNION ALL SELECT ? AS typeid, ? AS typename) a ORDER BY typeid",
                 config)); // union select item has alias
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from (select 1 as f1, 2 as f2) t union select 'u1', 'u2' --", config)); // from is subQuery
+        assertFalse(WallUtils.isValidateMySql("select f1, f2 from (select 1 as f1, 2 as f2) t union select 'u1', 'u2' --", config)); // from is subQuery
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 'u1' as u1, 'u2' as u2", config)); // union select item has alias
+        assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 'u1' as u1, 'u2' as u2", config)); // union select item has alias
     }
 
     public void testUnion2() throws Exception {
@@ -56,7 +53,5 @@ public class MySqlWallTest_union extends TestCase {
         assertFalse(
                 WallUtils.isValidateMySql("SELECT name, surname FROM users WHERE name=' ' UNION SELECT /*! (select table_name FROM information_schema.tables limit 1,1),*/ 'string1'")
         );
-
-
     }
 }

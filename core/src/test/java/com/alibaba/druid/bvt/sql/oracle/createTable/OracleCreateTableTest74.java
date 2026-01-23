@@ -117,7 +117,7 @@ public class OracleCreateTableTest74 extends OracleTest {
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")\n" +
                         "PARALLEL\n" +
-                        "CACHE",//
+                        "CACHE",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

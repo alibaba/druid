@@ -15,18 +15,16 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockClob;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class StatFilterClobTest extends TestCase {
     private DruidDataSource dataSource;
@@ -57,7 +55,7 @@ public class StatFilterClobTest extends TestCase {
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        Assert.assertTrue(rs.getObject(1) instanceof ClobProxy);
+        assertTrue(rs.getObject(1) instanceof ClobProxy);
         rs.close();
 
         stmt.close();
@@ -65,11 +63,10 @@ public class StatFilterClobTest extends TestCase {
         conn.close();
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
-        Assert.assertNotNull(sqlStat);
+        assertNotNull(sqlStat);
 
-        Assert.assertEquals(1, sqlStat.getClobOpenCount());
+        assertEquals(1, sqlStat.getClobOpenCount());
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
     }
-
 }

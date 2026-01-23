@@ -15,16 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.create;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.stat.TableStat.Column;
+
+import java.util.List;
 
 public class MySqlCreateProcedureTest extends MysqlTest {
     public void test_0() throws Exception {
@@ -62,8 +59,8 @@ public class MySqlCreateProcedureTest extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-//    	print(statementList);
-        Assert.assertEquals(1, statementList.size());
+        // print(statementList);
+        assertEquals(1, statementList.size());
 
         System.out.println(stmt);
 
@@ -72,15 +69,15 @@ public class MySqlCreateProcedureTest extends MysqlTest {
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        // System.out.println("coditions : " + visitor.getConditions());
+        // System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
 
-        Assert.assertTrue(visitor.containsColumn("test", "id"));
+        assertTrue(visitor.containsColumn("test", "id"));
     }
 }

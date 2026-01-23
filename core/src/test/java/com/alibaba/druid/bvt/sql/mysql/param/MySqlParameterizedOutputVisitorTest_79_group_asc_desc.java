@@ -1,10 +1,10 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson2.JSON;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -38,5 +38,4 @@ public class MySqlParameterizedOutputVisitorTest_79_group_asc_desc extends TestC
                 "GROUP BY 1 DESC, 2, 3 ASC\n" +
                 "ORDER BY 4 DESC, 3 ASC;", rsql);
     }
-
 }

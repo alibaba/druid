@@ -40,7 +40,6 @@ public class MySqlShowTest_15_outlines extends MysqlTest {
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
 
     public void test_1() throws Exception {
@@ -58,7 +57,5 @@ public class MySqlShowTest_15_outlines extends MysqlTest {
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
-
 }

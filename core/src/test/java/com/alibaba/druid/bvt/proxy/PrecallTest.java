@@ -15,28 +15,14 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.sql.Blob;
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.NClob;
-import java.sql.ResultSet;
-import java.sql.SQLDataException;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.Statement;
-import java.sql.Types;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.sql.*;
 
 public class PrecallTest extends TestCase {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=preCallTest:jdbc:derby:memory:preCallDB;create=true";
@@ -71,7 +57,7 @@ public class PrecallTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_precall() throws Exception {
@@ -338,5 +324,4 @@ public class PrecallTest extends TestCase {
             JdbcUtils.close(conn);
         }
     }
-
 }

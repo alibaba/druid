@@ -1,11 +1,9 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
-import org.junit.Assert;
+import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import java.sql.Connection;
 
 /**
  * 这个场景测试initialSize > maxActive
@@ -19,7 +17,6 @@ public class DruidDataSourceTest_getPoolingPeakTime extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
-
     }
 
     protected void tearDown() throws Exception {
@@ -27,13 +24,13 @@ public class DruidDataSourceTest_getPoolingPeakTime extends TestCase {
     }
 
     public void test_error() throws Exception {
-        Assert.assertNull(dataSource.getPoolingPeakTime());
-        Assert.assertNull(dataSource.getActivePeakTime());
+        assertNull(dataSource.getPoolingPeakTime());
+        assertNull(dataSource.getActivePeakTime());
 
         Connection conn = dataSource.getConnection();
         conn.close();
 
-        Assert.assertNotNull(dataSource.getPoolingPeakTime());
-        Assert.assertNotNull(dataSource.getActivePeakTime());
+        assertNotNull(dataSource.getPoolingPeakTime());
+        assertNotNull(dataSource.getActivePeakTime());
     }
 }

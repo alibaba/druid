@@ -62,7 +62,6 @@ public class OracleCreateTypeTest10 extends OracleTest {
 
         System.out.println(sql);
 
-
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -105,7 +104,7 @@ public class OracleCreateTypeTest10 extends OracleTest {
                         "\t\tEND IF;\n" +
                         "\t\tRETURN ODCIConst.Success;\n" +
                         "\tEND;\n" +
-                        "END",//
+                        "END",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

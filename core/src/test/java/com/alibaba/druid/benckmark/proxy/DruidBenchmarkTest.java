@@ -15,9 +15,8 @@
  */
 package com.alibaba.druid.benckmark.proxy;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.benckmark.proxy.sqlcase.SelectNow;
+import junit.framework.TestCase;
 
 public class DruidBenchmarkTest extends TestCase {
     public void test_druid_benchmark() throws Exception {

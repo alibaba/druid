@@ -1,25 +1,22 @@
 package com.alibaba.druid.bvt.proxy.filter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class GlobalStatTest1 extends TestCase {
     private DruidDataSource dataSourceA;
     private DruidDataSource dataSourceB;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSourceA = new DruidDataSource();
         dataSourceA.setUrl("jdbc:mock:xx_A");
@@ -38,7 +35,7 @@ public class GlobalStatTest1 extends TestCase {
 
         JdbcDataSourceStat.setGlobal(null);
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_execute() throws Exception {
@@ -47,6 +44,7 @@ public class GlobalStatTest1 extends TestCase {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1");
             while (rs.next()) {
+                // Empty loop
             }
             rs.close();
             stmt.close();
@@ -57,16 +55,16 @@ public class GlobalStatTest1 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // Empty loop
             }
             rs.close();
             stmt.close();
             conn.close();
         }
 
-        Assert.assertSame(JdbcDataSourceStat.getGlobal(), dataSourceA.getDataSourceStat());
-        Assert.assertSame(JdbcDataSourceStat.getGlobal(), dataSourceB.getDataSourceStat());
+        assertSame(JdbcDataSourceStat.getGlobal(), dataSourceA.getDataSourceStat());
+        assertSame(JdbcDataSourceStat.getGlobal(), dataSourceB.getDataSourceStat());
 
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(1, JdbcStatManager.getInstance().getSqlList().size());
     }
-
 }

@@ -49,7 +49,6 @@ public class OracleLockTableTest4 extends OracleTest {
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
     }
-
 }

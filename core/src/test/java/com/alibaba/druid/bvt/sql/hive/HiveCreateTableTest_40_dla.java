@@ -77,7 +77,5 @@ public class HiveCreateTableTest_40_dla extends OracleTest {
                 "\t'recursive.directories' = 'false',\n" +
                 "\t'file.filter' = 'shangjian_6e958954-f2c7-11e8-94b7-0c54159e4818.json.snappy'\n" +
                 ");", SQLUtils.toSQLString(statementList, JdbcConstants.HIVE));
-
     }
-
 }

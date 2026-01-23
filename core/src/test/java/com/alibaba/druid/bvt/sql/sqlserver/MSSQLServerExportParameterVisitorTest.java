@@ -1,15 +1,12 @@
 package com.alibaba.druid.bvt.sql.sqlserver;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
+import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MSSQLServerExportParameterVisitorTest extends TestCase {
     public void test_sqlserver() throws Exception {
@@ -22,7 +19,7 @@ public class MSSQLServerExportParameterVisitorTest extends TestCase {
         MSSQLServerExportParameterVisitor visitor = new MSSQLServerExportParameterVisitor(parameters);
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, parameters.size());
-        Assert.assertEquals(1, parameters.get(0));
+        assertEquals(1, parameters.size());
+        assertEquals(1, parameters.get(0));
     }
 }

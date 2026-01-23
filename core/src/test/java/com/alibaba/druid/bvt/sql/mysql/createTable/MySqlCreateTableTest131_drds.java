@@ -22,7 +22,6 @@ public class MySqlCreateTableTest131_drds extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE shard_hot_test_table (\n" +
                 "\tid int(11) NOT NULL AUTO_INCREMENT BY GROUP,\n" +
                 "\tname varchar(30) DEFAULT NULL,\n" +
@@ -41,6 +40,4 @@ public class MySqlCreateTableTest131_drds extends MysqlTest {
         assertNotNull(id);
         assertTrue(id.isPrimaryKey());
     }
-
-
 }

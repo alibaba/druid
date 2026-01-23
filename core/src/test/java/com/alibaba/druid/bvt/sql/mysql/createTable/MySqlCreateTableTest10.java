@@ -22,19 +22,18 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class MySqlCreateTableTest10 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "create table TACCOUNT (" + //
-                "        ID varchar(36) not null," + //
-                "        ACCOUNT varchar(100) not null," + //
-                "        account_money double precision," + //
-                "        NAME varchar(100) not null," + //
-                "        TYPE integer," + //
-                "        primary key (ID)" + //
+        String sql = "create table TACCOUNT (" +
+                "        ID varchar(36) not null," +
+                "        ACCOUNT varchar(100) not null," +
+                "        account_money double precision," +
+                "        NAME varchar(100) not null," +
+                "        TYPE integer," +
+                "        primary key (ID)" +
                 "    )";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -42,7 +41,7 @@ public class MySqlCreateTableTest10 extends MysqlTest {
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -52,16 +51,16 @@ public class MySqlCreateTableTest10 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("TACCOUNT")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("TACCOUNT")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "ACCOUNT")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "account_money")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "NAME")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "TYPE")));
+        assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "ID")));
+        assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "ACCOUNT")));
+        assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "account_money")));
+        assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "NAME")));
+        assertTrue(visitor.getColumns().contains(new Column("TACCOUNT", "TYPE")));
     }
 }

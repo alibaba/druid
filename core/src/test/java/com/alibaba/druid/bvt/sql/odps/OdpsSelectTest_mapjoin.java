@@ -15,10 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
 
 public class OdpsSelectTest_mapjoin extends TestCase {
@@ -29,11 +26,10 @@ public class OdpsSelectTest_mapjoin extends TestCase {
                 + "\nb.total_price"
                 + "\nfrom shop a join sale_detail b"
                 + "\non a.shop_name = b.shop_name and b.ds = '20150101';";
-        Assert.assertEquals("SELECT /*+ mapjoin(a) */ a.shop_name, b.customer_id, b.total_price\n" +
+        assertEquals("SELECT /*+ mapjoin(a) */ a.shop_name, b.customer_id, b.total_price\n" +
                 "FROM shop a\n" +
                 "JOIN sale_detail b\n" +
                 "ON a.shop_name = b.shop_name\n" +
                 "\tAND b.ds = '20150101';", SQLUtils.formatOdps(sql));
     }
-
 }

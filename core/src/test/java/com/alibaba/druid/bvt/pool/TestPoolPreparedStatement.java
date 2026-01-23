@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class TestPoolPreparedStatement extends TestCase {
     private MockDriver driver;
@@ -54,7 +52,7 @@ public class TestPoolPreparedStatement extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_removeAbandoned() throws Exception {
@@ -71,13 +69,13 @@ public class TestPoolPreparedStatement extends TestCase {
         {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("SELECT ?");
-            Assert.assertTrue(raw == stmt.unwrap(MockPreparedStatement.class));
+            assertTrue(raw == stmt.unwrap(MockPreparedStatement.class));
             stmt.execute();
             stmt.close();
             conn.close();
         }
 
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 }

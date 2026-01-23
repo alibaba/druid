@@ -20,21 +20,20 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleSelectTest14 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "select /* EXEC_FROM_DBMS_XPLAN */ case when upper(sql_text) like '%DBMS_XPLAN%' then 0 else 1 end case, SQL_ID, child_number"
-                + " from v$sql where SQL_ID ='90jx354zd6jx5' and child_number =0"; //
+                + " from v$sql where SQL_ID ='90jx354zd6jx5' and child_number =0";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -45,14 +44,14 @@ public class OracleSelectTest14 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("v$sql")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("v$sql")));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("v$sql", "sql_text")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("v$sql", "SQL_ID")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("v$sql", "child_number")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("v$sql", "sql_text")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("v$sql", "SQL_ID")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("v$sql", "child_number")));
     }
 }

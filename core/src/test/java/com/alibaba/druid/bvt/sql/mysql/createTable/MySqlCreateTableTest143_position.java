@@ -40,7 +40,6 @@ public class MySqlCreateTableTest143_position extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE `resume_position_portrait` (\n" +
                 "\t`resume_id` varchar(36) NOT NULL,\n" +
                 "\t`method` varchar(50) NOT NULL,\n" +
@@ -80,7 +79,5 @@ public class MySqlCreateTableTest143_position extends MysqlTest {
                 ") engine = InnoDB charset = utf8mb4\n" +
                 "dbpartition by hash(`resume_id`)\n" +
                 "tbpartition by hash(`resume_id`) tbpartitions 4", stmt.toLowerCaseString());
-
-
     }
 }

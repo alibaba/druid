@@ -18,7 +18,6 @@ package com.alibaba.druid.bvt.sql.hive;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -37,6 +36,5 @@ public class HiveSelectTest_44_issue_3973 extends TestCase {
                 "INSERT OVERWRITE TABLE t2\n" +
                 "SELECT *\n" +
                 "FROM t;", stmt.toString());
-
     }
 }

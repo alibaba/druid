@@ -1,13 +1,5 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -16,12 +8,17 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class OracleExceptionSorterTest_stmt_execute_2 extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
         dataSource = new DruidDataSource();
 
@@ -36,7 +33,7 @@ public class OracleExceptionSorterTest_stmt_execute_2 extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_connect() throws Exception {
@@ -52,7 +49,7 @@ public class OracleExceptionSorterTest_stmt_execute_2 extends TestCase {
 
         DruidPooledConnection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);
-        Assert.assertNotNull(mockConn);
+        assertNotNull(mockConn);
 
         Statement stmt = conn.createStatement();
 
@@ -65,8 +62,8 @@ public class OracleExceptionSorterTest_stmt_execute_2 extends TestCase {
         } catch (SQLException ex) {
             execErrror = ex;
         }
-        Assert.assertNotNull(execErrror);
-        Assert.assertSame(exception, execErrror);
+        assertNotNull(execErrror);
+        assertSame(exception, execErrror);
 
         SQLException commitError = null;
         try {
@@ -75,10 +72,9 @@ public class OracleExceptionSorterTest_stmt_execute_2 extends TestCase {
             commitError = ex;
         }
 
-        Assert.assertNotNull(commitError);
-        Assert.assertSame(exception, commitError.getCause());
+        assertNotNull(commitError);
+        assertSame(exception, commitError.getCause());
 
         conn.close();
     }
-
 }

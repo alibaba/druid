@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -53,12 +52,12 @@ public class MySqlSchemaStatVisitorTest_pk_0 extends TestCase {
                 "  KEY `idx_search_name` (`search_name`(255))\n" +
                 ") ENGINE=InnoDB AUTO_INCREMENT=408695 DEFAULT CHARSET=utf8 COMMENT='数据库表信息'";
 
-//		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
+        // sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -67,10 +66,10 @@ public class MySqlSchemaStatVisitorTest_pk_0 extends TestCase {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("m_dt"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("m_dt"));
 
-        Assert.assertEquals(15, visitor.getColumns().size());
+        assertEquals(15, visitor.getColumns().size());
 
         {
             TableStat.Column column = visitor.getColumn("m_dt", "id");
@@ -96,11 +95,9 @@ public class MySqlSchemaStatVisitorTest_pk_0 extends TestCase {
                 }
             }
         }
-        // Assert.assertEquals(true, visitor.getFields().contains(new
+        // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "id")));
-        // Assert.assertEquals(true, visitor.getFields().contains(new
+        // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "name")));
-
     }
-
 }

@@ -1,22 +1,17 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import com.alibaba.druid.pool.DataSourceClosedException;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 
 public class DruidDataSourceTest5 extends TestCase {
     private DruidDataSource dataSource;
 
     private final AtomicBoolean validate = new AtomicBoolean(true);
-
 
     protected void setUp() throws Exception {
         validate.set(true);
@@ -34,7 +29,6 @@ public class DruidDataSourceTest5 extends TestCase {
         });
     }
 
-
     public void tearDown() throws Exception {
         dataSource.close();
     }
@@ -48,7 +42,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
@@ -65,7 +59,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
@@ -82,12 +76,11 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
         Connection conn = dataSource.getConnection();
         conn.close();
     }
-
 }

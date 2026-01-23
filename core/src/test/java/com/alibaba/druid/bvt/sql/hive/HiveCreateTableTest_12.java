@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -37,13 +36,13 @@ public class HiveCreateTableTest_12 extends OracleTest {
                         "   FIELDS TERMINATED BY '\\001'\n" +
                         "   COLLECTION ITEMS TERMINATED BY '\\002'\n" +
                         "   MAP KEYS TERMINATED BY '\\003'\n" +
-                        " STORED AS SEQUENCEFILE;"; //
+                        " STORED AS SEQUENCEFILE;";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -86,6 +85,5 @@ public class HiveCreateTableTest_12 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("page_view"));
-
     }
 }

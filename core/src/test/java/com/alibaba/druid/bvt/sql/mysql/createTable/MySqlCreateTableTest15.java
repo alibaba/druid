@@ -20,24 +20,23 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class MySqlCreateTableTest15 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE `xxx` (" + //
-                "                `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID'," + //
-                "                `create_date` datetime DEFAULT NULL," + //
-                "                `update_date` datetime DEFAULT NULL," + //
-                "                `product_id` int(11) NOT NULL COMMENT '产品ID'," + //
-                "                `memeber_id` int(11) NOT NULL COMMENT '用户ID'," + //
-                "                `name` varchar(50) DEFAULT NULL COMMENT '姓名'," + //
-                "                `address` varchar(500) DEFAULT NULL COMMENT '地址'," + //
-                "                `mobile` varchar(50) DEFAULT NULL COMMENT '手机'," + //
-                "                `amount` int(11) DEFAULT NULL COMMENT '兑换数量'," + //
-                "                PRIMARY KEY (`id`)" + //
-                "              ) ENGINE=InnoDB DEFAULT CHARSET=gbk;" + //
+        String sql = "CREATE TABLE `xxx` (" +
+                "                `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID'," +
+                "                `create_date` datetime DEFAULT NULL," +
+                "                `update_date` datetime DEFAULT NULL," +
+                "                `product_id` int(11) NOT NULL COMMENT '产品ID'," +
+                "                `memeber_id` int(11) NOT NULL COMMENT '用户ID'," +
+                "                `name` varchar(50) DEFAULT NULL COMMENT '姓名'," +
+                "                `address` varchar(500) DEFAULT NULL COMMENT '地址'," +
+                "                `mobile` varchar(50) DEFAULT NULL COMMENT '手机'," +
+                "                `amount` int(11) DEFAULT NULL COMMENT '兑换数量'," +
+                "                PRIMARY KEY (`id`)" +
+                "              ) ENGINE=InnoDB DEFAULT CHARSET=gbk;" +
                 "";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -45,7 +44,7 @@ public class MySqlCreateTableTest15 extends MysqlTest {
         SQLStatement statemen = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -55,13 +54,13 @@ public class MySqlCreateTableTest15 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(9, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(9, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("xxx")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("xxx")));
 
-        Assert.assertTrue(visitor.containsColumn("xxx", "id"));
-        Assert.assertTrue(visitor.containsColumn("xxx", "amount"));
+        assertTrue(visitor.containsColumn("xxx", "id"));
+        assertTrue(visitor.containsColumn("xxx", "amount"));
     }
 }

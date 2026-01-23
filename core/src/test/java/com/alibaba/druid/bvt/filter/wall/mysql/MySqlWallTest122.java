@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class MySqlWallTest122 extends TestCase {
     public void test_false() throws Exception {
@@ -29,7 +26,6 @@ public class MySqlWallTest122 extends TestCase {
 
         String sql = "SELECT name, '******' password, createTime from user where name like 'admin%' AND 4667=(SELECT UPPER(XMLType(CHR(60)||CHR(58)||CHR(115)||CHR(114)||CHR(110)||CHR(58)||(SELECT (CASE WHEN (4667=4667) THEN 1 ELSE 0 END) FROM DUAL)||CHR(58)||CHR(106)||CHR(112)||CHR(122)||CHR(58)||CHR(62))) FROM DUAL) AND '%'=''";
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
-
 }

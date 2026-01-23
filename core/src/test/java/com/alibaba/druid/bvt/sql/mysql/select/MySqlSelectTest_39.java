@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -28,11 +27,10 @@ public class MySqlSelectTest_39 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select DATE_ADD(now(),INTERVAL -1 day);";
 
-
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
@@ -42,23 +40,21 @@ public class MySqlSelectTest_39 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-//        Assert.assertEquals(1, visitor.getTables().size());
-//        Assert.assertEquals(1, visitor.getColumns().size());
-//        Assert.assertEquals(0, visitor.getConditions().size());
-//        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+//        assertEquals(1, visitor.getTables().size());
+//        assertEquals(1, visitor.getColumns().size());
+//        assertEquals(0, visitor.getConditions().size());
+//        assertEquals(0, visitor.getOrderByColumns().size());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT DATE_ADD(now(), INTERVAL -1 DAY);", //
+            assertEquals("SELECT DATE_ADD(now(), INTERVAL -1 DAY);", //
                     output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select DATE_ADD(now(), interval -1 day);", //
+            assertEquals("select DATE_ADD(now(), interval -1 day);", //
                     output);
         }
 
     }
-
-
 }

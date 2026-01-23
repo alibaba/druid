@@ -1043,33 +1043,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLStatement parseReset() {
-        acceptIdentifier(RESET);
-
-        MySqlResetStatement stmt = new MySqlResetStatement();
-
-        for (; ; ) {
-            if (lexer.token() == Token.IDENTIFIER) {
-                if (lexer.identifierEquals("QUERY")) {
-                    lexer.nextToken();
-                    accept(Token.CACHE);
-                    stmt.getOptions().add("QUERY CACHE");
-                } else {
-                    stmt.getOptions().add(lexer.stringVal());
-                    lexer.nextToken();
-                }
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-            }
-            break;
-        }
-
-        return stmt;
-    }
-
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         if (lexer.identifierEquals("PREPARE")) {
             MySqlPrepareStatement stmt = parsePrepare();
@@ -4067,68 +4040,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLStartTransactionStatement parseStart() {
-        acceptIdentifier("START");
-        acceptIdentifier("TRANSACTION");
-
-        SQLStartTransactionStatement stmt = new SQLStartTransactionStatement(dbType);
-
-        if (lexer.token() == WITH) {
-            lexer.nextToken();
-            acceptIdentifier("CONSISTENT");
-            acceptIdentifier("SNAPSHOT");
-            stmt.setConsistentSnapshot(true);
-        }
-
-        if (lexer.token() == Token.BEGIN) {
-            lexer.nextToken();
-            stmt.setBegin(true);
-            if (lexer.identifierEquals("WORK")) {
-                lexer.nextToken();
-                stmt.setWork(true);
-            }
-        }
-
-        if (lexer.token() == Token.HINT) {
-            stmt.setHints(this.exprParser.parseHints());
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.ISOLATION)) {
-            lexer.nextToken();
-            acceptIdentifier("LEVEL");
-
-            if (lexer.identifierEquals(FnvHash.Constants.READ)) {
-                lexer.nextToken();
-                if (lexer.identifierEquals(FnvHash.Constants.UNCOMMITTED)) {
-                    lexer.nextToken();
-                    stmt.setIsolationLevel(SQLStartTransactionStatement.IsolationLevel.READ_UNCOMMITTED);
-                } else if (lexer.identifierEquals(FnvHash.Constants.COMMITTED)) {
-                    lexer.nextToken();
-                    stmt.setIsolationLevel(SQLStartTransactionStatement.IsolationLevel.READ_COMMITTED);
-                } else {
-                    throw new ParserException(lexer.info());
-                }
-            } else if (lexer.identifierEquals(FnvHash.Constants.REPEATABLE)) {
-                lexer.nextToken();
-                acceptIdentifier("READ");
-                stmt.setIsolationLevel(SQLStartTransactionStatement.IsolationLevel.REPEATABLE_READ);
-            } else if (lexer.identifierEquals(FnvHash.Constants.SERIALIZABLE)) {
-                lexer.nextToken();
-                stmt.setIsolationLevel(SQLStartTransactionStatement.IsolationLevel.SERIALIZABLE);
-            } else {
-                throw new ParserException(lexer.info());
-            }
-        }
-
-        if (lexer.identifierEquals(FnvHash.Constants.READ)) {
-            lexer.nextToken();
-            acceptIdentifier("ONLY");
-            stmt.setReadOnly(true);
-        }
-
-        return stmt;
-    }
-
     @Override
     public SQLStatement parseRollback() {
         acceptIdentifier("ROLLBACK");
@@ -5864,12 +5775,14 @@ public class MySqlStatementParser extends SQLStatementParser {
                     alterTableAdd(stmt);
                     return true;
                 } else if (lexer.identifierEquals(FnvHash.Constants.ALGORITHM)) {
-                    // ALGORITHM [=] {DEFAULT|INPLACE|COPY}
+                    // ALGORITHM [=] {DEFAULT | INSTANT | INPLACE | COPY}
                     lexer.nextToken();
                     if (lexer.token() == Token.EQ) {
                         lexer.nextToken();
                     }
-                    stmt.addItem(new MySqlAlterTableOption("ALGORITHM", lexer.stringVal()));
+                    MySqlAlterTableAlgorithm item = new MySqlAlterTableAlgorithm();
+                    item.setAlgorithmType(new SQLIdentifierExpr(lexer.stringVal()));
+                    stmt.addItem(item);
                     lexer.nextToken();
                     return true;
                 } else if (lexer.identifierEquals(FnvHash.Constants.CHANGE)) {

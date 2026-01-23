@@ -1,11 +1,11 @@
 package com.alibaba.druid.bvt.hibernate.entity;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author yinheli [yinheli@gmail.com]

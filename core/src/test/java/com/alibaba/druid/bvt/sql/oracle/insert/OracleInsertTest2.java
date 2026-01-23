@@ -15,23 +15,21 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.insert;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleInsertTest2 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "INSERT INTO employees " + //
-                "      (employee_id, last_name, email, hire_date, job_id, salary)" + //
-                "   VALUES " + //
-                "   (employees_seq.nextval, 'Doe', 'john.doe@example.com', " + //
-                "       SYSDATE, 'SH_CLERK', 2400) " + //
+        String sql = "INSERT INTO employees " +
+                "      (employee_id, last_name, email, hire_date, job_id, salary)" +
+                "   VALUES " +
+                "   (employees_seq.nextval, 'Doe', 'john.doe@example.com', " +
+                "       SYSDATE, 'SH_CLERK', 2400) " +
                 "   RETURNING salary*12, job_id INTO :bnd1, :bnd2; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -39,7 +37,7 @@ public class OracleInsertTest2 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -49,19 +47,19 @@ public class OracleInsertTest2 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "email")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "hire_date")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "job_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "email")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "hire_date")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "job_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
-  
+
     public void test_1() throws Exception {
         String sql = "BEGIN\n" +
                 "\tINSERT INTO employees (first_name, last_name, job_title)\n" +
@@ -74,7 +72,7 @@ public class OracleInsertTest2 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -84,15 +82,15 @@ public class OracleInsertTest2 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "first_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "job_title")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "first_name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "job_title")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
     }
 
     public void test_2() throws Exception {
@@ -105,7 +103,7 @@ public class OracleInsertTest2 extends OracleTest {
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -115,13 +113,13 @@ public class OracleInsertTest2 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "hire_date")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "hire_date")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
     }
 }

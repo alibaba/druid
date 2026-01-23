@@ -5,10 +5,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.wall.WallCheckResult;
-import com.alibaba.druid.wall.spi.OracleWallProvider;
 import junit.framework.TestCase;
 
 import java.util.List;

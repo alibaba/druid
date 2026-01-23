@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -29,13 +28,13 @@ public class HiveCreateTableTest_29 extends OracleTest {
         String sql = //
                 "CREATE TABLE dataphin_test (id STRING, name STRING) \n" +
                         "ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' \n" +
-                        "LINES TERMINATED BY '\\n' STORED AS PARQUET;"; //
+                        "LINES TERMINATED BY '\\n' STORED AS PARQUET;";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -66,7 +65,5 @@ public class HiveCreateTableTest_29 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
         assertTrue(visitor.containsTable("dataphin_test"));
-
     }
-
 }

@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -28,14 +27,14 @@ public class OracleSelectTest13 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "select id,     table_id,     event_type,     pk_data,     transaction_id,     ignore_node_cluster_id,     gmt_create "
                 + " from retl_data_search"
-                + " where  id>=50001 and id<52001 and GMT_CREATE between sysdate-2 and sysdate order by id"; //
+                + " where  id>=50001 and id<52001 and GMT_CREATE between sysdate-2 and sysdate order by id";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -46,14 +45,14 @@ public class OracleSelectTest13 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("retl_data_search")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("retl_data_search")));
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        assertEquals(7, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

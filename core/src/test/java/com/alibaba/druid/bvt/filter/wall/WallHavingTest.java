@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * 这个场景，检测可疑的Having条件
@@ -30,10 +27,10 @@ public class WallHavingTest extends TestCase {
     private String sql = "SELECT F1, COUNT(*) FROM T GROUP BY F1 HAVING COUNT(*) OR 1 = 1";
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        assertFalse(WallUtils.isValidateMySql(sql));
     }
 
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        assertFalse(WallUtils.isValidateOracle(sql));
     }
 }

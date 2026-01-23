@@ -1,12 +1,10 @@
 package com.alibaba.druid.bvt.pool;
 
-
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import junit.framework.TestCase;
+
+import java.sql.Statement;
 
 /**
  * 这个场景测试initialSize > maxActive

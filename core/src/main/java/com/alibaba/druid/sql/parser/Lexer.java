@@ -39,6 +39,7 @@ import static com.alibaba.druid.sql.parser.Token.*;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class Lexer {
+    protected static final DialectFeature FEATURE = new DialectFeature();
     protected static SymbolTable symbols_l2 = new SymbolTable(512);
 
     protected int features; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
@@ -265,7 +266,7 @@ public class Lexer {
     }
 
     protected void initDialectFeature() {
-        this.dialectFeature = new DialectFeature();
+        this.dialectFeature = FEATURE;
     }
 
     public Lexer(char[] input, int inputLength, boolean skipComment) {
@@ -2278,7 +2279,6 @@ public class Lexer {
         if (ch != ':' && ch != '#' && ch != '$' && !(ch == '@' && dialectFeatureEnabled(ScanVariableAt))) {
             throw new ParserException("illegal variable. " + info());
         }
-
         mark = pos;
         bufPos = 1;
         char ch;
@@ -2323,7 +2323,7 @@ public class Lexer {
                     if (isWhitespace(ch)) {
                         pos--;
                         break;
-                    } else if (ch == ',' || ch == ')' || ch == '(' || ch == ';') {
+                    } else if (ch == ',' || ch == ')' || ch == '(') {
                         pos--;
                         break;
                     }
@@ -2518,17 +2518,25 @@ public class Lexer {
             if (ch == '/' && charAt(pos + 1) == '*') {
                 scanChar();
                 scanChar();
-                if (ch == '!' || ch == '+') {
-                    scanChar();
-                    ++depth;
-                }
+                ++depth;
             }
 
             if (ch == '*' && charAt(pos + 1) == '/') {
-                scanChar();
-                scanChar();
-                if (0 == --depth) {
-                    break;
+                int curPos = pos;
+                boolean terminated = true;
+                // If '*/' has leading '--' in the same line, just skip it. For example '-- xxxx */'.
+                while (curPos > 0 && charAt(curPos) != '\n') {
+                    if (charAt(curPos) == '-' && (curPos + 1) < text.length() && charAt(curPos + 1) == '-') {
+                        terminated = false;
+                    }
+                    curPos--;
+                }
+                if (terminated) {
+                    scanChar();
+                    scanChar();
+                    if (0 == --depth) {
+                        break;
+                    }
                 }
             }
 

@@ -15,25 +15,22 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import java.util.Hashtable;
-import java.util.Properties;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+import junit.framework.TestCase;
 
 import javax.naming.RefAddr;
 import javax.naming.Reference;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSourceFactory;
+import java.util.Hashtable;
+import java.util.Properties;
 
 public class DruidDataSourceFactoryTest extends TestCase {
     @SuppressWarnings("serial")
     public void test_factory() throws Exception {
         DruidDataSourceFactory factory = new DruidDataSourceFactory();
 
-        Assert.assertNull(factory.getObjectInstance(null, null, null, null));
-        Assert.assertNull(factory.getObjectInstance(new Reference("javax.sql.Date"), null, null, null));
+        assertNull(factory.getObjectInstance(null, null, null, null));
+        assertNull(factory.getObjectInstance(new Reference("javax.sql.Date"), null, null, null));
 
         Reference ref = new Reference("javax.sql.DataSource");
         ref.add(new RefAddr("user") {

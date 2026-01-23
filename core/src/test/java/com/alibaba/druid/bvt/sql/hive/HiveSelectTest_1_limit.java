@@ -5,13 +5,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class HiveSelectTest_1_limit extends TestCase {
     public void test_select() throws Exception {
-        String sql = "SELECT * FROM customers ORDER BY create_date LIMIT 2,5";//
+        String sql = "SELECT * FROM customers ORDER BY create_date LIMIT 2,5";
         assertEquals("SELECT *\n" +
                 "FROM customers\n" +
                 "ORDER BY create_date\n" +

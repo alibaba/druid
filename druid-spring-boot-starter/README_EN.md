@@ -3,6 +3,7 @@
 
 ## English | [中文](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README.md)
 Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
+druid-spring-boot-starter is for Spring boot 2. If Spring boot version >= 3.0.0, please use druid-spring-boot-3-starter.
 
 ## Usage
 1. Add the ```druid-spring-boot-starter``` dependency in Spring Boot project ([click get last version](https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter)).

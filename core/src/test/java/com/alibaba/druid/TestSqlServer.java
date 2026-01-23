@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-
 import junit.framework.TestCase;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class TestSqlServer extends TestCase {
     private String jdbcUrl;

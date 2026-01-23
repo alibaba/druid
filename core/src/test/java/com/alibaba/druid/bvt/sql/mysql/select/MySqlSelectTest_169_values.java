@@ -33,5 +33,4 @@ public class MySqlSelectTest_169_values extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM (\n" + "\tVALUES (89),\n" + "\t(35),\n" + "\t(77)\n" + ")\n" + "EXCEPT\n"
                 + "SELECT *\n" + "FROM (\n" + "\tVALUES (33),\n" + "\t(35),\n" + "\t(60)\n" + ")", stmt.toString());
     }
-
 }

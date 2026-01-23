@@ -19,39 +19,29 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.Collections;
-import java.util.List;
-
-public class SQLJSONExpr extends SQLExprImpl implements SQLValuableExpr {
-    public static final SQLDataType DATA_TYPE = new SQLDataTypeImpl("JSON");
-
-    protected String literal;
-
+public class SQLJSONExpr extends SQLTypeExpr {
     public SQLJSONExpr() {
+        super(new SQLDataTypeImpl(SQLDataType.Constants.JSON));
     }
 
-    public SQLJSONExpr(String literal) {
-        this.literal = literal;
+    public SQLJSONExpr(String value) {
+        this();
+        this.value = value;
     }
 
     public SQLJSONExpr clone() {
-        SQLJSONExpr x = new SQLJSONExpr(literal);
+        SQLJSONExpr x = new SQLJSONExpr(getValue());
         return x;
     }
 
     public String getValue() {
-        return literal;
+        return (String) value;
     }
 
-    public String getLiteral() {
-        return literal;
-    }
-
-    public void setLiteral(String literal) {
-        this.literal = literal;
+    public void setValue(String literal) {
+        this.value = literal;
     }
 
     @Override
@@ -65,12 +55,12 @@ public class SQLJSONExpr extends SQLExprImpl implements SQLValuableExpr {
 
         SQLJSONExpr that = (SQLJSONExpr) o;
 
-        return literal != null ? literal.equals(that.literal) : that.literal == null;
+        return value != null ? value.equals(that.value) : that.value == null;
     }
 
     @Override
     public int hashCode() {
-        return literal != null ? literal.hashCode() : 0;
+        return value != null ? value.hashCode() : 0;
     }
 
     @Override
@@ -82,14 +72,5 @@ public class SQLJSONExpr extends SQLExprImpl implements SQLValuableExpr {
 
     public String toString() {
         return SQLUtils.toSQLString(this, (DbType) null);
-    }
-
-    public SQLDataType computeDataType() {
-        return DATA_TYPE;
-    }
-
-    @Override
-    public List getChildren() {
-        return Collections.emptyList();
     }
 }

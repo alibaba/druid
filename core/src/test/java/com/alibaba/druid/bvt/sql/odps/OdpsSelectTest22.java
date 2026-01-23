@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class OdpsSelectTest22 extends TestCase {
                 ") CLK on UT.ad_session = CLK.ad_session and UT.item_id = CLK.item_id\n" +
                 "where UT.ad_clk > 0 or CLK.clk > 0\n" +
                 ") A\n" +
-                "group by bucket_id;";//
+                "group by bucket_id;";
         assertEquals("SELECT bucket_id, sum(pv) AS pv, sum(clk) AS clk\n" +
                 "\t, sum(clk) / (sum(pv) + 1e-10) AS ctr\n" +
                 "\t, sum(ut_ad_clk) AS ut_ad_clk, sum(ad_clk) AS ad_clk\n" +
@@ -155,5 +154,4 @@ public class OdpsSelectTest22 extends TestCase {
 
         assertTrue(visitor.containsColumn("alimama_algo.fund_mlr_n_chicago_user_track_distinct_shark", "item_id"));
     }
-
 }

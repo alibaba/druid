@@ -1,11 +1,9 @@
 package com.alibaba.druid.bvt.support.profile;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.support.profile.ProfileEntryKey;
 import com.alibaba.druid.support.profile.ProfileEntryReqStat;
 import com.alibaba.druid.support.profile.Profiler;
+import junit.framework.TestCase;
 
 public class ProfilerTest extends TestCase {
     public void test_profile() throws Exception {
@@ -23,26 +21,26 @@ public class ProfilerTest extends TestCase {
             execA();
         }
 
-        Assert.assertEquals(2, Profiler.getStatsMap().size());
+        assertEquals(2, Profiler.getStatsMap().size());
 
         {
             ProfileEntryReqStat stat = Profiler.getStatsMap().get(new ProfileEntryKey("/", "com.xxx.a(int)",
                     Profiler.PROFILE_TYPE_SPRING));
-            Assert.assertEquals(100, stat.getExecuteCount());
-            Assert.assertEquals(100, stat.getExecuteTimeNanos());
+            assertEquals(100, stat.getExecuteCount());
+            assertEquals(100, stat.getExecuteTimeNanos());
         }
 
         {
             ProfileEntryReqStat stat = Profiler.getStatsMap().get(new ProfileEntryKey("com.xxx.a(int)",
                     "com.xxx.b(int)",
                     Profiler.PROFILE_TYPE_SPRING));
-            Assert.assertEquals(1000 * 100, stat.getExecuteCount());
-            Assert.assertEquals(1000 * 100, stat.getExecuteTimeNanos());
+            assertEquals(1000 * 100, stat.getExecuteCount());
+            assertEquals(1000 * 100, stat.getExecuteTimeNanos());
         }
 
         Profiler.release(1);
 
-        Assert.assertEquals(3, Profiler.getStatsMap().size());
+        assertEquals(3, Profiler.getStatsMap().size());
 
         Profiler.removeLocal();
     }

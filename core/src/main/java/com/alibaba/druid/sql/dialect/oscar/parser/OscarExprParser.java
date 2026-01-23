@@ -280,7 +280,7 @@ public class OscarExprParser extends SQLExprParser {
                 }
 
                 String literal = lexer.stringVal();
-                timestamp.setLiteral(literal);
+                timestamp.setValue(literal);
                 accept(Token.LITERAL_CHARS);
 
                 if (lexer.identifierEquals("AT")) {
@@ -306,7 +306,7 @@ public class OscarExprParser extends SQLExprParser {
                 timestamp.setWithTimeZone(true);
 
                 String literal = lexer.stringVal();
-                timestamp.setLiteral(literal);
+                timestamp.setValue(literal);
                 accept(Token.LITERAL_CHARS);
 
                 if (lexer.identifierEquals("AT")) {

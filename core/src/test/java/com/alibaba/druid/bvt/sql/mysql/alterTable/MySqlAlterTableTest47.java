@@ -23,5 +23,4 @@ public class MySqlAlterTableTest47 extends TestCase {
         assertEquals("ALTER TABLE aaaaa\n" +
                 "\tSET TBLPROPERTIES (RULE.BROADCAST = true)", output);
     }
-
 }

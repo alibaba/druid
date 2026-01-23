@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallUtils;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -35,9 +34,9 @@ public class OracleListAggTest1 extends OracleTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("SELECT count(0)\n" +
+        assertEquals("SELECT count(0)\n" +
                         "FROM WEP_USER T\n" +
                         "\tLEFT JOIN (\n" +
                         "\t\tSELECT T.ID, LISTAGG(T2.ROLE_NAME, ',') WITHIN GROUP (ORDER BY T.ID) AS ROLENAMES\n" +
@@ -49,7 +48,7 @@ public class OracleListAggTest1 extends OracleTest {
                         "\t\t\tAND T2.IS_DELETED = 0\n" +
                         "\t\tGROUP BY T.ID\n" +
                         "\t) T1 ON T.ID = T1.ID \n" +
-                        "WHERE t.IS_DELETED = 0",//
+                        "WHERE t.IS_DELETED = 0",
                 SQLUtils.toSQLString(stmt, dbType));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
@@ -60,16 +59,15 @@ public class OracleListAggTest1 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(3, visitor.getTables().size());
-        Assert.assertEquals(8, visitor.getColumns().size());
+        assertEquals(3, visitor.getTables().size());
+        assertEquals(8, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WEP_USER_ROLE")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WEP_ROLE")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("WEP_USER_ROLE")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("WEP_ROLE")));
 
-        Assert.assertTrue(visitor.containsColumn("WEP_USER_ROLE", "IS_DELETED"));
-        Assert.assertTrue(visitor.containsColumn("WEP_ROLE", "IS_DELETED"));
+        assertTrue(visitor.containsColumn("WEP_USER_ROLE", "IS_DELETED"));
+        assertTrue(visitor.containsColumn("WEP_ROLE", "IS_DELETED"));
 
         WallUtils.isValidateOracle(sql);
     }
-
 }

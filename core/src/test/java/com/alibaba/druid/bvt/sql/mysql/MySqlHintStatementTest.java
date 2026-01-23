@@ -22,11 +22,11 @@ public class MySqlHintStatementTest extends TestCase {
     public void test() {
         String sql = "DROP TABLE IF EXISTS `item_similarity`;"//
                 + "\n/*!40101 SET @saved_cs_client     = @@character_set_client */;"//
-                + "\n/*!40101 SET character_set_client = utf8 */;" //
+                + "\n/*!40101 SET character_set_client = utf8 */;"
                 + "\nCREATE TABLE `item_similarity` ("//
                 + " `id` bigint(20) unsigned NOT NULL, "//
                 + " `sellerId` bigint(20) DEFAULT NULL,"//
-                + " PRIMARY KEY (`id`)" //
+                + " PRIMARY KEY (`id`)"
                 + " ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"//
                 + " \n/*!40101 SET character_set_client = @saved_cs_client */;";
         String rs = SQLUtils.formatMySql(sql);

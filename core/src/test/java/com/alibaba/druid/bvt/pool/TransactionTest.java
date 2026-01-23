@@ -1,11 +1,10 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
+import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class TransactionTest extends TestCase {
     private DruidDataSource dataSource;

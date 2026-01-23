@@ -15,19 +15,17 @@
  */
 package com.alibaba.druid.bvt.utils;
 
+import com.alibaba.druid.mock.MockConnection;
+import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.druid.mock.MockConnection;
-import com.alibaba.druid.mock.MockStatement;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class JdbcUtilsTest extends TestCase {
     private DruidDataSource dataSource;
@@ -39,7 +37,6 @@ public class JdbcUtilsTest extends TestCase {
         dataSource.setTestOnBorrow(false);
 
         JdbcUtils.execute(dataSource, "CREATE TABLE user (id INT, name VARCHAR(40))");
-
     }
 
     protected void tearDown() throws Exception {
@@ -50,7 +47,7 @@ public class JdbcUtilsTest extends TestCase {
     public void test_curd() throws Exception {
         {
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, "select * from user");
-            Assert.assertEquals(0, list.size());
+            assertEquals(0, list.size());
         }
         {
             Map<String, Object> data = new LinkedHashMap<String, Object>();
@@ -60,26 +57,26 @@ public class JdbcUtilsTest extends TestCase {
         }
         {
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, "select * from user");
-            Assert.assertEquals(1, list.size());
+            assertEquals(1, list.size());
             Map<String, Object> data = list.get(0);
 
-            Assert.assertEquals(123, data.get("ID"));
-            Assert.assertEquals("高傲的羊", data.get("NAME"));
+            assertEquals(123, data.get("ID"));
+            assertEquals("高傲的羊", data.get("NAME"));
         }
         {
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, "select id \"id\", name \"name\" from user");
-            Assert.assertEquals(1, list.size());
+            assertEquals(1, list.size());
             Map<String, Object> data = list.get(0);
 
-            Assert.assertEquals(123, data.get("id"));
-            Assert.assertEquals("高傲的羊", data.get("name"));
+            assertEquals(123, data.get("id"));
+            assertEquals("高傲的羊", data.get("name"));
         }
         {
             JdbcUtils.executeUpdate(dataSource, "delete from user");
         }
         {
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, "select * from user");
-            Assert.assertEquals(0, list.size());
+            assertEquals(0, list.size());
         }
     }
 

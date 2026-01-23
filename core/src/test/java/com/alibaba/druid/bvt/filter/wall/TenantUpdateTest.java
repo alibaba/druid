@@ -15,21 +15,18 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class TenantUpdateTest extends TestCase {
     private String sql = "UPDATE T_USER SET FNAME = ? WHERE FID = ?";
-    private String expect_sql = "UPDATE T_USER" + //
-            "\nSET FNAME = ?, tenant = 123" + //
+    private String expect_sql = "UPDATE T_USER" +
+            "\nSET FNAME = ?, tenant = 123" +
             "\nWHERE FID = ?";
 
     private WallConfig config = new WallConfig();
@@ -46,19 +43,19 @@ public class TenantUpdateTest extends TestCase {
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
-        Assert.assertEquals(0, checkResult.getViolations().size());
+        assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals(expect_sql, resultSql);
+        assertEquals(expect_sql, resultSql);
     }
 
     public void testMySql2() throws Exception {
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config_callback);
         WallCheckResult checkResult = provider.check(sql);
-        Assert.assertEquals(0, checkResult.getViolations().size());
+        assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals(expect_sql, resultSql);
+        assertEquals(expect_sql, resultSql);
     }
 }

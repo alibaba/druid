@@ -1,11 +1,10 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
+import junit.framework.TestCase;
+
+import static org.junit.Assert.assertNotEquals;
 
 public class EqualTest_OracleTimestampExpr extends TestCase {
     public void test_exits() throws Exception {
@@ -24,13 +23,13 @@ public class EqualTest_OracleTimestampExpr extends TestCase {
             OracleExprParser parser = new OracleExprParser(sql_c);
             exprC = (SQLTimestampExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLTimestampExpr(), new SQLTimestampExpr());
-        Assert.assertEquals(new SQLTimestampExpr().hashCode(), new SQLTimestampExpr().hashCode());
+        assertEquals(new SQLTimestampExpr(), new SQLTimestampExpr());
+        assertEquals(new SQLTimestampExpr().hashCode(), new SQLTimestampExpr().hashCode());
     }
 }

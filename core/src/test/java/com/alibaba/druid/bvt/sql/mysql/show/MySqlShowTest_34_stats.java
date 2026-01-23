@@ -69,5 +69,4 @@ public class MySqlShowTest_34_stats extends MysqlTest {
         assertEquals("SHOW FULL STATS", stmt.toString());
         assertEquals("show full stats", stmt.toLowerCaseString());
     }
-
 }

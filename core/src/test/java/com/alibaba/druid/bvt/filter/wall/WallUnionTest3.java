@@ -15,11 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import junit.framework.TestCase;
 
 /**
  * 这个场景，被攻击者用于测试当前SQL拥有多少字段
@@ -28,8 +25,8 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class WallUnionTest3 extends TestCase {
     public void testMySql() throws Exception {
-//        Assert.assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x'"));
-//        Assert.assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x';"));
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x'/*,10 ;"));
+//        assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x'"));
+//        assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x';"));
+        assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x'/*,10 ;"));
     }
 }

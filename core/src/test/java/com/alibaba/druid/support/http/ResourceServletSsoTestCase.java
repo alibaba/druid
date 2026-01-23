@@ -8,12 +8,11 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.lang.reflect.Field;
 
 public class ResourceServletSsoTestCase extends TestCase {
-
-
     public void testSso() throws Exception {
         final File file = new File("target/test-classes/META-INF/services/com.alibaba.druid.support.http.DruidWebSecurityProvider");
         FileUtils.write(file, DruidWebSecurityProviderMockSsoOk.class.getName());

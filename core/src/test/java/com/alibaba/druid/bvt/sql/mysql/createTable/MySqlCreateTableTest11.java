@@ -21,18 +21,17 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class MySqlCreateTableTest11 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE `tmall_campaign` (" + //
-                "`id` int(11) NOT NULL AUTO_INCREMENT," + //
-                "`campaign_name` varchar(200) NOT NULL COMMENT '活动名称'," + //
-                "`create_date` datetime DEFAULT NULL COMMENT '活动创建时间'," + //
-                "`delete_flag` int(11) DEFAULT '0' COMMENT '活动删除标识'," + //
-                "PRIMARY KEY (`id`)" + //
+        String sql = "CREATE TABLE `tmall_campaign` (" +
+                "`id` int(11) NOT NULL AUTO_INCREMENT," +
+                "`campaign_name` varchar(200) NOT NULL COMMENT '活动名称'," +
+                "`create_date` datetime DEFAULT NULL COMMENT '活动创建时间'," +
+                "`delete_flag` int(11) DEFAULT '0' COMMENT '活动删除标识'," +
+                "PRIMARY KEY (`id`)" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=gbk;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -40,7 +39,7 @@ public class MySqlCreateTableTest11 extends MysqlTest {
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -50,15 +49,15 @@ public class MySqlCreateTableTest11 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tmall_campaign")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("tmall_campaign")));
 
-        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "id"));
-        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "campaign_name"));
-        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "create_date"));
-        Assert.assertTrue(visitor.containsColumn("tmall_campaign", "delete_flag"));
+        assertTrue(visitor.containsColumn("tmall_campaign", "id"));
+        assertTrue(visitor.containsColumn("tmall_campaign", "campaign_name"));
+        assertTrue(visitor.containsColumn("tmall_campaign", "create_date"));
+        assertTrue(visitor.containsColumn("tmall_campaign", "delete_flag"));
     }
 }

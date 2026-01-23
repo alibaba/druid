@@ -15,25 +15,22 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class OdpsSelectTest12 extends TestCase {
     public void test_select() throws Exception {
-        String sql = "select name, sp from abc lateral view explode(split(concat(',','1','2','3'),',')) t as sp;";//
-        Assert.assertEquals("SELECT name, sp\n" +
+        String sql = "select name, sp from abc lateral view explode(split(concat(',','1','2','3'),',')) t as sp;";
+        assertEquals("SELECT name, sp\n" +
                 "FROM abc\n" +
                 "\tLATERAL VIEW EXPLODE(SPLIT(concat(',', '1', '2', '3'), ',')) t AS sp;", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select name, sp"
+        assertEquals("select name, sp"
                 + "\nfrom abc"
                 + "\n\tlateral view explode(split(concat(',', '1', '2', '3'), ',')) t as sp;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
@@ -42,7 +39,7 @@ public class OdpsSelectTest12 extends TestCase {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
@@ -52,11 +49,10 @@ public class OdpsSelectTest12 extends TestCase {
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
+        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

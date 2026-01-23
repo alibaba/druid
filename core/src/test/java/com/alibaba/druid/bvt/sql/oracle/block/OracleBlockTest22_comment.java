@@ -35,24 +35,27 @@ public class OracleBlockTest22_comment extends OracleTest {
                 "  FROM USER_OBJECTS\n" +
                 "  WHERE OBJECT_TYPE = 'TABLE'; -- Check number of tables\n" +
                 "  num_tables := howmany;       -- Compute another value\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());
 
         String result = SQLUtils.toOracleString(stmtList.get(0));
         System.out.println(result);
-        assertEquals("DECLARE\n" +
-                "\thowmany NUMBER;\n" +
-                "\tnum_tables NUMBER;\n" +
-                "BEGIN\n" +
-                "\t-- Begin processing\n" +
-                "\tSELECT COUNT(*)\n" +
-                "\tINTO howmany\n" +
-                "\tFROM USER_OBJECTS\n" +
-                "\tWHERE OBJECT_TYPE = 'TABLE';\n" +
-                "\tnum_tables := howmany;\n" +
-                "END;", result);
+        assertEquals(
+            "DECLARE\n"
+                + "\thowmany NUMBER;\n"
+                + "\tnum_tables NUMBER;\n"
+                + "BEGIN\n"
+                + "\t-- Begin processing\n"
+                + "\tSELECT COUNT(*)\n"
+                + "\tINTO howmany\n"
+                + "\tFROM USER_OBJECTS\n"
+                + "\tWHERE OBJECT_TYPE = 'TABLE';\n"
+                + "\t-- Check number of tables\n"
+                + "\tnum_tables := howmany;\n"
+                + "END;",
+            result);
 
         assertEquals(1, stmtList.size());
 

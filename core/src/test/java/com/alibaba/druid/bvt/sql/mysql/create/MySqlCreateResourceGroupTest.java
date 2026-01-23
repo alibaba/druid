@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE RESOURCE GROUP sql_thread THREAD_PRIORITY = -20 VCPU = 1,3 TYPE = USER", output);
+        assertEquals("CREATE RESOURCE GROUP sql_thread THREAD_PRIORITY = -20 VCPU = 1,3 TYPE = USER", output);
     }
 
     @Test
@@ -52,7 +51,7 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE RESOURCE GROUP sql_thread THREAD_PRIORITY = -20 VCPU = 1,3 TYPE = USER DISABLE", output);
+        assertEquals("CREATE RESOURCE GROUP sql_thread THREAD_PRIORITY = -20 VCPU = 1,3 TYPE = USER DISABLE", output);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE RESOURCE GROUP group_name QUERY_EXECUTION_TYPE = USER ACU = 3 ENABLE", output);
+        assertEquals("CREATE RESOURCE GROUP group_name QUERY_EXECUTION_TYPE = USER ACU = 3 ENABLE", output);
     }
 
     @Test
@@ -84,7 +83,7 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE RESOURCE GROUP group_name ENABLE", output);
+        assertEquals("CREATE RESOURCE GROUP group_name ENABLE", output);
     }
 
     @Test
@@ -98,7 +97,7 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER RESOURCE GROUP sql_thread THREAD_PRIORITY = -20 VCPU = 1,3 TYPE = USER", output);
+        assertEquals("ALTER RESOURCE GROUP sql_thread THREAD_PRIORITY = -20 VCPU = 1,3 TYPE = USER", output);
     }
 
     @Test
@@ -115,7 +114,7 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER RESOURCE GROUP group_name QUERY_EXECUTION_TYPE = USER ACU = 3 ENABLE", output);
+        assertEquals("ALTER RESOURCE GROUP group_name QUERY_EXECUTION_TYPE = USER ACU = 3 ENABLE", output);
     }
 
     @Test
@@ -130,7 +129,7 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER RESOURCE GROUP group_name ENABLE", output);
+        assertEquals("ALTER RESOURCE GROUP group_name ENABLE", output);
     }
 
     @Test
@@ -144,7 +143,7 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DROP RESOURCE GROUP sql_thread;", output);
+        assertEquals("DROP RESOURCE GROUP sql_thread;", output);
     }
 
     @Test
@@ -158,7 +157,7 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("LIST RESOURCE GROUP;", output);
+        assertEquals("LIST RESOURCE GROUP;", output);
     }
 
     @Test
@@ -172,7 +171,6 @@ public class MySqlCreateResourceGroupTest
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("LIST RESOURCE GROUP", output);
+        assertEquals("LIST RESOURCE GROUP", output);
     }
-
 }

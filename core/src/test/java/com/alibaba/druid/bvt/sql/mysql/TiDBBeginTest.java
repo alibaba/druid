@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -25,13 +23,12 @@ import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-import org.junit.Assert;
+import java.util.List;
 
 /**
  * @author lizongbo
  */
 public class TiDBBeginTest extends MysqlTest {
-
     public void test_0() throws Exception {
         String sql = "BEGIN ;";
         testSql(sql);
@@ -92,33 +89,29 @@ public class TiDBBeginTest extends MysqlTest {
         SQLStatement statement = statementList.get(0);
         //System.out.println(statement.getClass());
         print(statementList);
-        Assert.assertEquals(1, statementList.size());
-        Assert.assertTrue(statement instanceof SQLBlockStatement);
+        assertEquals(1, statementList.size());
+        assertTrue(statement instanceof SQLBlockStatement);
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
     }
 
-
     void testSql(String sql) throws Exception {
-
         // MySqlStatementParser parser = new MySqlStatementParser(sql, SQLParserFeature.KeepComments);
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.TIDB);
         SQLStatement statement = statementList.get(0);
         //System.out.println(statement.getClass());
         print(statementList);
-        Assert.assertEquals(1, statementList.size());
-        Assert.assertTrue(statement instanceof SQLBeginStatement);
+        assertEquals(1, statementList.size());
+        assertTrue(statement instanceof SQLBeginStatement);
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statement.accept(visitor);
 
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
     }
-
-
 }

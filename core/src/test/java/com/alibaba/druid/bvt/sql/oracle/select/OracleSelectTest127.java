@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-
 public class OracleSelectTest127 extends TestCase {
     public void test_0() throws Exception {
         String sql = "select \"fid\" from t1;";
@@ -58,5 +57,4 @@ public class OracleSelectTest127 extends TestCase {
 
         assertTrue(visitor.containsColumn("t1", "fid"));
     }
-
 }

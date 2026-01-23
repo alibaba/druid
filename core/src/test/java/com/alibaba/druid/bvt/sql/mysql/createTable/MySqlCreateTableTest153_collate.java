@@ -42,7 +42,6 @@ public class MySqlCreateTableTest153_collate extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE `t_file` (\n" +
                 "\t`id` BIGINT(20) NOT NULL AUTO_INCREMENT,\n" +
                 "\t`account_id` VARCHAR(32) COLLATE 'utf8mb4_bin' NULL DEFAULT '0' COMMENT '账户id',\n" +
@@ -94,8 +93,5 @@ public class MySqlCreateTableTest153_collate extends MysqlTest {
                 ") collate = 'utf8mb4_bin' engine = InnoDB\n" +
                 "dbpartition by hash(`src_file_id`)\n" +
                 "tbpartition by hash(`src_file_id`) tbpartitions 2", stmt.toLowerCaseString());
-
     }
-
-
 }

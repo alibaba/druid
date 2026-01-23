@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class MySqlAlterTableAddIndex_2 extends TestCase {
     public void test_alter_first() throws Exception {
@@ -32,10 +31,10 @@ public class MySqlAlterTableAddIndex_2 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE geom\n" +
+        assertEquals("ALTER TABLE geom\n" +
                 "\tADD SPATIAL INDEX (g);", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table geom\n" +
+        assertEquals("alter table geom\n" +
                 "\tadd spatial index (g);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -45,5 +44,4 @@ public class MySqlAlterTableAddIndex_2 extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(1, tableStat.getCreateIndexCount());
     }
-
 }

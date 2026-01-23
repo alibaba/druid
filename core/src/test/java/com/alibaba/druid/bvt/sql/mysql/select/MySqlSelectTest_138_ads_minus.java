@@ -55,11 +55,8 @@ public class MySqlSelectTest_138_ads_minus extends MysqlTest {
         SQLUnionQuery q2 = (SQLUnionQuery) q1.getLeft();
         assertTrue(q2.getRight() instanceof SQLSelectQueryBlock);
 
-
         SQLUnionQuery q3 = (SQLUnionQuery) q2.getLeft();
         assertTrue(q3.getRight() instanceof SQLSelectQueryBlock);
         assertTrue(q3.getLeft() instanceof SQLSelectQueryBlock);
     }
-
-
 }

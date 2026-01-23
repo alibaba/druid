@@ -21,14 +21,13 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 public class MySqlCreateTableTest50 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "CREATE  TABLE `test`.`a` (" //
+        String sql = "CREATE  TABLE `test`.`a` ("
                 + "  `ida` INT NOT NULL COMMENT 'aaa' ,"//
                 + "  PRIMARY KEY (`ida`) )"//
-                + " COMMENT = 'bb';"; //
+                + " COMMENT = 'bb';";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -41,18 +40,17 @@ public class MySqlCreateTableTest50 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test.a")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("test.a")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE `test`.`a` (" //
+        assertEquals("CREATE TABLE `test`.`a` ("
                         + "\n\t`ida` INT NOT NULL COMMENT 'aaa',"//
                         + "\n\tPRIMARY KEY (`ida`)"//
-                        + "\n) COMMENT 'bb'",//
+                        + "\n) COMMENT 'bb'",
                 output);
-
     }
 }

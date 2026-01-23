@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 public class IdentifierTest extends TestCase {
     public void test_0() throws Exception {
@@ -34,7 +32,7 @@ public class IdentifierTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT t.1c\nFROM tab t;", text);
+        assertEquals("SELECT t.1c\nFROM tab t;", text);
     }
 
     public void test_1() throws Exception {
@@ -45,7 +43,7 @@ public class IdentifierTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT tid, seller_nick, jdp_response\nFROM 2df1479e96cb4ac8b57f2502b5425bb5;", text);
+        assertEquals("SELECT tid, seller_nick, jdp_response\nFROM 2df1479e96cb4ac8b57f2502b5425bb5;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

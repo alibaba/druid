@@ -15,22 +15,14 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.io.StringReader;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.io.StringReader;
+import java.sql.*;
 
 public class ClobTest extends TestCase {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=clobTest:jdbc:derby:memory:clobTestDB;create=true";
@@ -49,7 +41,7 @@ public class ClobTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     private void createTable() throws SQLException {
@@ -82,7 +74,7 @@ public class ClobTest extends TestCase {
             Clob clob = conn.createClob();
 
             ClobProxy clobWrapper = (ClobProxy) clob;
-            Assert.assertNotNull(clobWrapper.getConnectionWrapper());
+            assertNotNull(clobWrapper.getConnectionWrapper());
             clob.setAsciiStream(1);
             clob.setCharacterStream(1);
 
@@ -92,18 +84,18 @@ public class ClobTest extends TestCase {
             pstmt.setInt(1, 1);
             pstmt.setClob(2, clob);
             int updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             pstmt.setInt(1, 1);
             pstmt.setClob(2, new StringReader("XXXXXXX"));
             updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             pstmt.setInt(1, 1);
             pstmt.setClob(2, new StringReader("ABCAAAAAAAAAAABCAAAAAAAAAAAAABCAAAAAAAAAAABCAAAAAAAAAAAA"),
                     "ABCAAAAAAAAAAABCAAAAAAAAAAAAABCAAAAAAAAAAABCAAAAAAAAAAAA".length());
             updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
                     ResultSet.CLOSE_CURSORS_AT_COMMIT);
@@ -203,5 +195,4 @@ public class ClobTest extends TestCase {
             JdbcUtils.close(conn);
         }
     }
-
 }

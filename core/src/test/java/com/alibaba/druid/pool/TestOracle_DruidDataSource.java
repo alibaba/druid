@@ -15,16 +15,15 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.support.json.JSONUtils;
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestOracle_DruidDataSource extends TestCase {
     private String jdbcUrl;

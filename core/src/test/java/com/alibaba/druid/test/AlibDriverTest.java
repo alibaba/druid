@@ -1,6 +1,5 @@
 package com.alibaba.druid.test;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import junit.framework.TestCase;
 
 import java.sql.Connection;

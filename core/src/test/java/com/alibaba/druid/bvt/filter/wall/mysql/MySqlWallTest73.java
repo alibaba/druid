@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 /**
  * SQLServerWallTest
@@ -35,17 +32,16 @@ public class MySqlWallTest73 extends TestCase {
 
         provider.getConfig().setCommentAllow(true);
 
-        Assert.assertTrue(provider.checkValid(//
-                "DELETE FROM D1 USING PCHS_DETAIL D1 " + //
-                        "   INNER JOIN (" + //
-                        "       SELECT D.DETAIL_UID " + //
-                        "       FROM PCHS_DETAIL D " + //
-                        "           INNER JOIN PCHS_BILL B ON D.BILL_UID=B.BILL_UID " + //
-                        "       WHERE B.COM_UID='0892E8A38EF83AB6B9E25C25D8085486' " + //
-                        "       LIMIT 1000 " + //
+        assertTrue(provider.checkValid(//
+                "DELETE FROM D1 USING PCHS_DETAIL D1 " +
+                        "   INNER JOIN (" +
+                        "       SELECT D.DETAIL_UID " +
+                        "       FROM PCHS_DETAIL D " +
+                        "           INNER JOIN PCHS_BILL B ON D.BILL_UID=B.BILL_UID " +
+                        "       WHERE B.COM_UID='0892E8A38EF83AB6B9E25C25D8085486' " +
+                        "       LIMIT 1000 " +
                         "   ) D2 ON D1.DETAIL_UID=D2.DETAIL_UID"));
 
-        Assert.assertEquals(3, provider.getTableStats().size());
+        assertEquals(3, provider.getTableStats().size());
     }
-
 }

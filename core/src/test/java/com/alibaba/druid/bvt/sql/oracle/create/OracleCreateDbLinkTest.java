@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -35,13 +34,13 @@ public class OracleCreateDbLinkTest extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals("CREATE PUBLIC DATABASE LINK remote USING 'remote';",
+        assertEquals("CREATE PUBLIC DATABASE LINK remote USING 'remote';",
                 SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
     }
 
     public void test_1() throws Exception {
@@ -53,15 +52,14 @@ public class OracleCreateDbLinkTest extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals("CREATE DATABASE LINK local CONNECT TO hr IDENTIFIED BY hr USING 'local';",
+        assertEquals("CREATE DATABASE LINK local CONNECT TO hr IDENTIFIED BY hr USING 'local';",
                 SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
     }
-
 
     public void test_2() throws Exception {
         String sql = //
@@ -72,12 +70,12 @@ public class OracleCreateDbLinkTest extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals("CREATE DATABASE LINK remote.us.oracle.com CONNECT TO CURRENT_USER USING 'remote';",
+        assertEquals("CREATE DATABASE LINK remote.us.oracle.com CONNECT TO CURRENT_USER USING 'remote';",
                 SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getTables().size());
     }
 }

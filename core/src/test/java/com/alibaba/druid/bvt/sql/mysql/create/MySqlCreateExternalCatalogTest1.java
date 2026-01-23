@@ -61,5 +61,4 @@ public class MySqlCreateExternalCatalogTest1 extends MysqlTest {
                 + "'connection-user'=\"x'!xx\"\n"
                 + "'connection-password'=\"x'xx\")", stmt.toString());
     }
-
 }

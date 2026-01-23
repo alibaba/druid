@@ -23,5 +23,4 @@ public class MySqlParameterizedOutputVisitorTest_73 extends TestCase {
                 VisitorFeature.OutputParameterizedUnMergeShardingTable);
         assertEquals("REPLACE INTO t1 (pk, integer_test, varchar_test)\n" + "VALUES (?, ?, ?)", psql);
     }
-
 }

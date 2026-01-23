@@ -1,16 +1,12 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.reflect.Field;
-import java.sql.PreparedStatement;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+
+import java.lang.reflect.Field;
+import java.sql.PreparedStatement;
 
 public class DruidConnectionHolderTest4 extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -22,7 +18,6 @@ public class DruidConnectionHolderTest4 extends PoolTestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setPoolPreparedStatements(true);
-
     }
 
     protected void tearDown() throws Exception {
@@ -38,15 +33,15 @@ public class DruidConnectionHolderTest4 extends PoolTestCase {
 
         Field field = DruidConnectionHolder.class.getDeclaredField("statementPool");
         field.setAccessible(true);
-        Assert.assertNull(field.get(holder));
+        assertNull(field.get(holder));
 
         holder.toString();
 
-        Assert.assertNull(field.get(holder));
+        assertNull(field.get(holder));
 
         holder.getStatementPool();
 
-        Assert.assertNotNull(field.get(holder));
+        assertNotNull(field.get(holder));
 
         holder.toString();
 
@@ -56,7 +51,7 @@ public class DruidConnectionHolderTest4 extends PoolTestCase {
 
         conn.close();
 
-        Assert.assertEquals(1, holder.getStatementPool().size());
+        assertEquals(1, holder.getStatementPool().size());
 
         holder.toString();
     }

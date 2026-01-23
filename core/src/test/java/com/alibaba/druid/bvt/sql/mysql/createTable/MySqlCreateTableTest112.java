@@ -47,5 +47,4 @@ public class MySqlCreateTableTest112 extends MysqlTest {
         assertTrue(column.isPrimaryKey());
         assertEquals(Types.INTEGER, column.jdbcType());
     }
-
 }

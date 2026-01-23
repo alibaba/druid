@@ -1,19 +1,17 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class StatFilterReadBytesLengthTest extends TestCase {
     private DruidDataSource dataSource;
@@ -53,8 +51,8 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        assertEquals(0, sqlStat.getReadStringLength());
+        assertEquals(0, sqlStat.getReadBytesLength());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -64,12 +62,12 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(6, sqlStat.getReadBytesLength());
+        assertEquals(0, sqlStat.getReadStringLength());
+        assertEquals(6, sqlStat.getReadBytesLength());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        assertEquals(0, sqlStat.getReadStringLength());
+        assertEquals(0, sqlStat.getReadBytesLength());
     }
 
     public void test_stat_1() throws Exception {
@@ -80,8 +78,8 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        assertEquals(0, sqlStat.getReadStringLength());
+        assertEquals(0, sqlStat.getReadBytesLength());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -91,11 +89,11 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(7, sqlStat.getReadBytesLength());
+        assertEquals(0, sqlStat.getReadStringLength());
+        assertEquals(7, sqlStat.getReadBytesLength());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        assertEquals(0, sqlStat.getReadStringLength());
+        assertEquals(0, sqlStat.getReadBytesLength());
     }
 }

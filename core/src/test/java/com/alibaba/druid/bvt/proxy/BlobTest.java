@@ -15,22 +15,13 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.io.ByteArrayInputStream;
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.io.ByteArrayInputStream;
+import java.sql.*;
 
 public class BlobTest extends TestCase {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:blobTestDB;create=true";
@@ -65,7 +56,7 @@ public class BlobTest extends TestCase {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_blob() throws Exception {
@@ -94,17 +85,17 @@ public class BlobTest extends TestCase {
             pstmt.setBlob(2, blob);
 
             int updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             pstmt.setInt(1, 2);
             pstmt.setBlob(2, new ByteArrayInputStream("XBCSDasdfasdfasfasfF".getBytes()));
             updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             pstmt.setInt(1, 2);
             pstmt.setBlob(2, new ByteArrayInputStream("XBCSDasdfasdfasfasfF".getBytes()), 20);
             updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
                     ResultSet.CLOSE_CURSORS_AT_COMMIT);
@@ -185,5 +176,4 @@ public class BlobTest extends TestCase {
             JdbcUtils.close(conn);
         }
     }
-
 }

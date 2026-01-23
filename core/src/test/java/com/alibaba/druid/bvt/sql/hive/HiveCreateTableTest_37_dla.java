@@ -20,19 +20,18 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class HiveCreateTableTest_37_dla extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "create table dla_table1 like mapping('mysql_table1');"; //
+        String sql = "create table dla_table1 like mapping('mysql_table1');";
 
         List<SQLStatement> statementList = SQLUtils.toStatementList(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);
@@ -57,7 +56,5 @@ public class HiveCreateTableTest_37_dla extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
 
 //        assertTrue(visitor.containsTable("customer_case.tradelist_csv"));
-
     }
-
 }

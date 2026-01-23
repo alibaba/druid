@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
@@ -247,5 +248,15 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
             x.setParent(this);
         }
         this.unpivot = x;
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.flashback);
+            acceptChild(visitor, this.pivot);
+            acceptChild(visitor, this.unpivot);
+        }
+        visitor.endVisit(this);
     }
 }

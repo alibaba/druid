@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid;
 
+import junit.framework.TestCase;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -22,8 +24,6 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
-
-import junit.framework.TestCase;
 
 public class DragoonMetaInfTest extends TestCase {
     public void test_0() throws Exception {

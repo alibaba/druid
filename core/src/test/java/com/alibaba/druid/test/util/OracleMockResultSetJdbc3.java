@@ -3,7 +3,6 @@ package com.alibaba.druid.test.util;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
 public class OracleMockResultSetJdbc3 extends OracleMockResultSet {
     public OracleMockResultSetJdbc3(Statement statement) {
         super(statement);

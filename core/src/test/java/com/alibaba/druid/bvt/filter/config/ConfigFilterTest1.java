@@ -1,12 +1,10 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.filter.config.ConfigTools;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
 
 public class ConfigFilterTest1 extends TestCase {
     private DruidDataSource dataSource;
@@ -26,13 +24,12 @@ public class ConfigFilterTest1 extends TestCase {
 
         dataSource.setPassword(ConfigTools.encrypt(plainPassword));
 
-        Assert.assertFalse(plainPassword.equals(dataSource.getPassword()));
+        assertFalse(plainPassword.equals(dataSource.getPassword()));
 
         dataSource.addConnectionProperty(ConfigFilter.CONFIG_DECRYPT, "true");
 
         dataSource.init();
 
-        Assert.assertEquals(plainPassword, dataSource.getPassword());
+        assertEquals(plainPassword, dataSource.getPassword());
     }
-
 }

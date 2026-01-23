@@ -1,11 +1,10 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
+import junit.framework.TestCase;
+
+import static org.junit.Assert.assertNotEquals;
 
 public class EqualTest_exists extends TestCase {
     public void test_exits() throws Exception {
@@ -24,13 +23,13 @@ public class EqualTest_exists extends TestCase {
             OracleExprParser parser = new OracleExprParser(sql_c);
             exprC = (SQLExistsExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLExistsExpr(), new SQLExistsExpr());
-        Assert.assertEquals(new SQLExistsExpr().hashCode(), new SQLExistsExpr().hashCode());
+        assertEquals(new SQLExistsExpr(), new SQLExistsExpr());
+        assertEquals(new SQLExistsExpr().hashCode(), new SQLExistsExpr().hashCode());
     }
 }

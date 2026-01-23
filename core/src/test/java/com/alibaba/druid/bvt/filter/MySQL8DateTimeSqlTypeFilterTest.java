@@ -15,12 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDateTime;
-
 import com.alibaba.druid.filter.mysql8datetime.MySQL8DateTimeSqlTypeFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
@@ -29,16 +23,19 @@ import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.util.JdbcUtils;
-
 import junit.framework.TestCase;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
-import org.junit.Assert;
+import java.time.LocalDateTime;
 
 /**
  * lizongbo
  */
 public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
-
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -65,7 +62,7 @@ public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
     }
 
     public void test_mysql8datetime() throws Exception {
-        Assert.assertTrue(dataSource.isInited());
+        assertTrue(dataSource.isInited());
 
         MySQL8DateTimeSqlTypeFilter filter = (MySQL8DateTimeSqlTypeFilter) dataSource.getProxyFilters().get(0);
 
@@ -81,20 +78,18 @@ public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
         rs.next();
         Object obj1 = rs.getObject(1);
         System.out.println(obj1.getClass() + "|" + obj1);
-        Assert.assertEquals(Timestamp.class, obj1.getClass());
+        assertEquals(Timestamp.class, obj1.getClass());
         Object obj2 = rs.getObject("cc");
         System.out.println(obj2.getClass() + "|" + obj2);
-        Assert.assertEquals(Timestamp.class, obj2.getClass());
+        assertEquals(Timestamp.class, obj2.getClass());
 
         rs.close();
         stmt.close();
 
         conn.close();
-
     }
 
     public static class MyResultSet extends MockResultSet {
-
         public MyResultSet(Statement statement) {
             super(statement);
         }
@@ -108,7 +103,5 @@ public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
         public Object getObject(String columnLabel) throws SQLException {
             return LocalDateTime.now();
         }
-
-
     }
 }

@@ -20,25 +20,24 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleSelectTest48 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "select sequence_name from all_sequences  " //
-                        + "union select synonym_name" //
-                        + "   from all_synonyms us, all_sequences asq" //
-                        + "  where asq.sequence_name = us.table_name" //
-                        + "    and asq.sequence_owner = us.table_owner"; //
+                "select sequence_name from all_sequences  "
+                        + "union select synonym_name"
+                        + "   from all_synonyms us, all_sequences asq"
+                        + "  where asq.sequence_name = us.table_name"
+                        + "    and asq.sequence_owner = us.table_owner";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -49,22 +48,22 @@ public class OracleSelectTest48 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertEquals(5, visitor.getColumns().size());
+        assertEquals(5, visitor.getColumns().size());
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT sequence_name" //
-                + "\nFROM all_sequences" //
-                + "\nUNION" //
-                + "\nSELECT synonym_name" //
-                + "\nFROM all_synonyms us, all_sequences asq" //
-                + "\nWHERE asq.sequence_name = us.table_name" //
+        assertEquals("SELECT sequence_name"
+                + "\nFROM all_sequences"
+                + "\nUNION"
+                + "\nSELECT synonym_name"
+                + "\nFROM all_synonyms us, all_sequences asq"
+                + "\nWHERE asq.sequence_name = us.table_name"
                 + "\n\tAND asq.sequence_owner = us.table_owner", text);
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
-        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+        // assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

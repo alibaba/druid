@@ -15,23 +15,20 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.util.Properties;
 
 public class DruidDriverTest extends TestCase {
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public static class PublicJdbcFilterAdapter extends FilterAdapter {
@@ -64,7 +61,7 @@ public class DruidDriverTest extends TestCase {
     }
 
     public void test_registerDriver() throws Exception {
-        Assert.assertFalse(DruidDriver.registerDriver(null));
+        assertFalse(DruidDriver.registerDriver(null));
     }
 
     public void test_getRawDriverClassName() throws Exception {
@@ -75,11 +72,11 @@ public class DruidDriverTest extends TestCase {
             assertEquals("com.mysql.cj.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
         }
 
-        Assert.assertEquals("oracle.jdbc.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
-        Assert.assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver",
+        assertEquals("oracle.jdbc.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
+        assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver",
                 JdbcUtils.getDriverClassName("jdbc:microsoft:"));
-        Assert.assertEquals("org.postgresql.Driver", JdbcUtils.getDriverClassName("jdbc:postgresql:xx"));
-        Assert.assertEquals("net.sourceforge.jtds.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:jtds:"));
+        assertEquals("org.postgresql.Driver", JdbcUtils.getDriverClassName("jdbc:postgresql:xx"));
+        assertEquals("net.sourceforge.jtds.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:jtds:"));
         {
             Exception error = null;
             try {
@@ -87,13 +84,13 @@ public class DruidDriverTest extends TestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
     public void test_getRawDriver() throws Exception {
         DruidDriver driver = new DruidDriver();
-        Assert.assertNotNull(driver.createDriver(MockDriver.class.getName()));
+        assertNotNull(driver.createDriver(MockDriver.class.getName()));
 
         {
             Exception error = null;
@@ -102,7 +99,7 @@ public class DruidDriverTest extends TestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         {
             Exception error = null;
@@ -111,7 +108,7 @@ public class DruidDriverTest extends TestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -121,7 +118,7 @@ public class DruidDriverTest extends TestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
     }
@@ -132,37 +129,37 @@ public class DruidDriverTest extends TestCase {
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:filters=:name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
                     new Properties());
-            Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
+            assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:filters=,:name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
                     new Properties());
-            Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
+            assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:filters=,:jdbc:derby:memory:driverWrapperTestDB;create=true",
                     new Properties());
-            Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
+            assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:filters=,:name=:jdbc:derby:memory:driverWrapperTestDB;create=true",
                     new Properties());
-            Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
+            assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:driver=:filters=,:name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
                     new Properties());
-            Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
+            assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
             ConnectionProxyImpl conn = (ConnectionProxyImpl) driver.connect("jdbc:wrap-jdbc:name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
                     new Properties());
-            Assert.assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
+            assertEquals(0, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
@@ -170,7 +167,7 @@ public class DruidDriverTest extends TestCase {
                             + PublicJdbcFilterAdapter.class.getName()
                             + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
                     new Properties());
-            Assert.assertEquals(1, conn.getDirectDataSource().getProxyFilters().size());
+            assertEquals(1, conn.getDirectDataSource().getProxyFilters().size());
             conn.close();
         }
         {
@@ -182,7 +179,7 @@ public class DruidDriverTest extends TestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         {
             Exception error = null;
@@ -193,8 +190,7 @@ public class DruidDriverTest extends TestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
-
 }

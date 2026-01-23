@@ -43,8 +43,8 @@ public class OracleDropTypeTest_0 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("DROP TYPE dmcfck;"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("DROP TYPE dmcfck;",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(0, visitor.getTables().size());
 

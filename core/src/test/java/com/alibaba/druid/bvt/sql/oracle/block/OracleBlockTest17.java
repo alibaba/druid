@@ -40,27 +40,30 @@ public class OracleBlockTest17 extends OracleTest {
                 "  END LOOP;\n" +
                 " \n" +
                 "  DBMS_OUTPUT.PUT_LINE (' After loop:  x = ' || TO_CHAR(x));\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());
 
         String result = SQLUtils.toOracleString(stmtList.get(0));
         System.out.println(result);
-        assertEquals("DECLARE\n" +
-                "\tx NUMBER := 0;\n" +
-                "BEGIN\n" +
-                "\tLOOP\n" +
-                "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n" +
-                "\t\tx := x + 1;\n" +
-                "\t\tIF x < 3 THEN\n" +
-                "\t\t\tCONTINUE;\n" +
-                "\t\tEND IF;\n" +
-                "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop, after CONTINUE:  x = ' || TO_CHAR(x));\n" +
-                "\t\tEXIT WHEN x = 5;\n" +
-                "\tEND LOOP;\n" +
-                "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n" +
-                "END;", result);
+        assertEquals(
+            "DECLARE\n"
+                + "\tx NUMBER := 0;\n"
+                + "BEGIN\n"
+                + "\tLOOP\n"
+                + "\t\t-- After CONTINUE statement, control resumes here\n"
+                + "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop:  x = ' || TO_CHAR(x));\n"
+                + "\t\tx := x + 1;\n"
+                + "\t\tIF x < 3 THEN\n"
+                + "\t\t\tCONTINUE;\n"
+                + "\t\tEND IF;\n"
+                + "\t\tDBMS_OUTPUT.PUT_LINE('Inside loop, after CONTINUE:  x = ' || TO_CHAR(x));\n"
+                + "\t\tEXIT WHEN x = 5;\n"
+                + "\tEND LOOP;\n"
+                + "\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n"
+                + "END;",
+            result);
 
         assertEquals(1, stmtList.size());
 
@@ -77,12 +80,12 @@ public class OracleBlockTest17 extends OracleTest {
 
         assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
 }

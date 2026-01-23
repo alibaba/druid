@@ -1,13 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +16,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://github.com/alibaba/druid/issues/5791">Issue来源</a>
  */
 public class Issue5791 {
-
     @Test
     public void test_parse_comment() {
         for (DbType dbType : new DbType[]{
@@ -31,7 +29,6 @@ public class Issue5791 {
 //            DbType.hive, DbType.dm, DbType.kingbase, DbType.gaussdb
 
         }) {
-
             for (String sql : new String[]{
                 "select a -- C1\n"
                     + "from  -- C2\n"

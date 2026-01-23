@@ -1,18 +1,16 @@
 package com.alibaba.druid.bvt.bug;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-
 import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  */
 public class Issue5845 extends TestCase {
-
     public void test_for_issue() throws Exception {
         String sql = "delete from table01 t where t.id=1";
         List<DbType> dbTypes = new ArrayList<>();
@@ -41,7 +39,7 @@ public class Issue5845 extends TestCase {
             DbType.greenplum,
             DbType.gaussdb,
             DbType.tidb,
-            DbType.goldendb,}) {
+            DbType.goldendb, }) {
             String mergeSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
             System.out.println(dbType + "==" + mergeSql);
             dbTypes.add(dbType);

@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
@@ -32,7 +31,6 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 "\tcolumn_list text,\n" +
                 "\tsql text\n" +
                 ")", stmt.toString());
-
     }
 
     public void test_1() throws Exception {
@@ -57,7 +55,6 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 "\tcolumn_list text,\n" +
                 "\tsql text\n" +
                 ")", stmt.toString());
-
     }
 
     public void test_2() throws Exception {
@@ -82,7 +79,6 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 "\tcolumn_list text,\n" +
                 "\tsql text\n" +
                 ")", stmt.toString());
-
     }
 
     public void test_3() throws Exception {
@@ -117,7 +113,6 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 "\tcreate_time timestamp,\n" +
                 "\tupdate_time timestamp\n" +
                 ")", stmt.toString());
-
     }
 
     public void test_4() throws Exception {
@@ -142,6 +137,5 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 "\tPRIMARY KEY (Host, Db, User),\n" +
                 "\tKEY User (User)\n" +
                 ") ENGINE = MyISAM CHARSET = utf8 COLLATE = utf8_bin COMMENT 'Database privileges'", stmt.toString());
-
     }
 }

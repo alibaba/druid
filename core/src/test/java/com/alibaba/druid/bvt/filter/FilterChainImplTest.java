@@ -1,18 +1,5 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Types;
-
-import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockNClob;
@@ -20,6 +7,14 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.NClob;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Types;
 
 public class FilterChainImplTest extends TestCase {
     private DruidDataSource dataSource;
@@ -41,39 +36,39 @@ public class FilterChainImplTest extends TestCase {
     }
 
     public void test_size() {
-        Assert.assertEquals(dataSource.getProxyFilters().size(), new FilterChainImpl(dataSource).getFilterSize());
+        assertEquals(dataSource.getProxyFilters().size(), new FilterChainImpl(dataSource).getFilterSize());
     }
 
     public void test_unwrap() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).unwrap(null, null));
+        assertNull(new FilterChainImpl(dataSource).unwrap(null, null));
     }
 
     public void test_unwrap_5() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+        assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
                 (Clob) null));
     }
 
     public void test_unwrap_6() throws Exception {
         Connection conn = dataSource.getConnection();
-        Assert.assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+        assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
                 new MockNClob()) instanceof NClob);
         conn.close();
     }
 
     public void test_unwrap_8() throws Exception {
         Connection conn = dataSource.getConnection();
-        Assert.assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+        assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
                 (Clob) new MockNClob()) instanceof NClob);
         conn.close();
     }
 
     public void test_unwrap_7() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+        assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
                 (NClob) null));
     }
 
     public void test_unwrap_9() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((StatementProxy) null, (NClob) null));
+        assertNull(new FilterChainImpl(dataSource).wrap((StatementProxy) null, (NClob) null));
     }
 
     public void test_getUnicodeStream() throws Exception {
@@ -83,12 +78,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getUnicodeStream(1));
+        assertNull(rs.getUnicodeStream(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getUnicodeStream_1() throws Exception {
@@ -98,12 +92,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getUnicodeStream("1"));
+        assertNull(rs.getUnicodeStream("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getRef() throws Exception {
@@ -113,12 +106,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getRef(1));
+        assertNull(rs.getRef(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getRef_1() throws Exception {
@@ -128,12 +120,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getRef("1"));
+        assertNull(rs.getRef("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getArray() throws Exception {
@@ -143,12 +134,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getArray(1));
+        assertNull(rs.getArray(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getArray_1() throws Exception {
@@ -158,12 +148,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getArray("1"));
+        assertNull(rs.getArray("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getURL() throws Exception {
@@ -173,12 +162,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getURL(1));
+        assertNull(rs.getURL(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getURL_1() throws Exception {
@@ -188,12 +176,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getURL("1"));
+        assertNull(rs.getURL("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getRowId() throws Exception {
@@ -203,12 +190,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getRowId(1));
+        assertNull(rs.getRowId(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getRowId_1() throws Exception {
@@ -218,12 +204,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getRowId("1"));
+        assertNull(rs.getRowId("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getNClob() throws Exception {
@@ -233,12 +218,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getNClob(1));
+        assertNull(rs.getNClob(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getNClob_1() throws Exception {
@@ -248,12 +232,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getNClob("1"));
+        assertNull(rs.getNClob("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getSQLXML() throws Exception {
@@ -263,12 +246,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getSQLXML(1));
+        assertNull(rs.getSQLXML(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getSQLXML_1() throws Exception {
@@ -278,12 +260,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getSQLXML("1"));
+        assertNull(rs.getSQLXML("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getNString() throws Exception {
@@ -293,12 +274,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getNString(1));
+        assertNull(rs.getNString(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getNString_1() throws Exception {
@@ -308,12 +288,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getNString("1"));
+        assertNull(rs.getNString("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getNCharacterStream() throws Exception {
@@ -323,12 +302,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getNCharacterStream(1));
+        assertNull(rs.getNCharacterStream(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getNCharacterStream_1() throws Exception {
@@ -338,12 +316,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getNCharacterStream("1"));
+        assertNull(rs.getNCharacterStream("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getObject() throws Exception {
@@ -353,12 +330,11 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getObject(1));
+        assertNull(rs.getObject(1));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 
     public void test_getObject_1() throws Exception {
@@ -368,11 +344,10 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        Assert.assertNull(rs.getObject("1"));
+        assertNull(rs.getObject("1"));
 
         rs.close();
         stmt.close();
         conn.close();
-
     }
 }

@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-import org.junit.Assert;
 
 public class PolarDBXTest extends TestCase {
     public void test_polardb_x_1() throws Throwable {
@@ -19,7 +18,7 @@ public class PolarDBXTest extends TestCase {
         repository.console(sql1);
 //        repository.setDefaultSchema("test1");
         SchemaObject table = repository.findTable("test1");
-        Assert.assertTrue(table != null);
+        assertTrue(table != null);
         System.out.println(table.getStatement());
     }
 
@@ -33,7 +32,7 @@ public class PolarDBXTest extends TestCase {
         repository.console(sql2);
 //        repository.setDefaultSchema("test2");
         SchemaObject table = repository.findTable("test2");
-        Assert.assertTrue(table != null);
+        assertTrue(table != null);
         System.out.println(table.getStatement());
     }
 
@@ -47,7 +46,7 @@ public class PolarDBXTest extends TestCase {
         repository.console(sql3);
 //        repository.setDefaultSchema("test3");
         SchemaObject table = repository.findTable("test3");
-        Assert.assertTrue(table != null);
+        assertTrue(table != null);
         System.out.println(table.getStatement());
     }
 
@@ -73,7 +72,7 @@ public class PolarDBXTest extends TestCase {
         repository.console(sql4);
 //        repository.setDefaultSchema("test4");
         SchemaObject table = repository.findTable("test4");
-        Assert.assertTrue(table != null);
+        assertTrue(table != null);
         System.out.println(table.getStatement());
     }
 
@@ -102,10 +101,9 @@ public class PolarDBXTest extends TestCase {
         repository.console(sql5);
 //        repository.setDefaultSchema("test4");
         SchemaObject table = repository.findTable("test5");
-        Assert.assertTrue(table != null);
+        assertTrue(table != null);
         System.out.println(table.getStatement());
     }
-
 
     public void test_polardb_x_5_1() throws Throwable {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
@@ -121,11 +119,11 @@ public class PolarDBXTest extends TestCase {
         repository.console(sql5);
 //        repository.setDefaultSchema("test4");
         SchemaObject table = repository.findTable("test");
-        Assert.assertTrue(table != null);
+        assertTrue(table != null);
         System.out.println(table.getStatement());
     }
 
-    public void test_polardb_x_6(){
+    public void test_polardb_x_6() {
         // test for global index with partition by
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql6 = "CREATE TABLE `test6` (\n"
@@ -151,9 +149,9 @@ public class PolarDBXTest extends TestCase {
             + "PIVOTDATE NOW()";
         repository.console(sql6);
         SchemaObject table = repository.findTable("test6");
-        Assert.assertNotNull(table);
+        assertNotNull(table);
         System.out.println(table.getStatement());
-        Assert.assertEquals("CREATE TABLE test6 (\n"
+        assertEquals("CREATE TABLE test6 (\n"
             + "\tId varchar(32) NOT NULL COMMENT '',\n"
             + "\tExitId varchar(32) NOT NULL COMMENT '',\n"
             + "\tCreateTime datetime NOT NULL COMMENT '创建时间',\n"
@@ -165,6 +163,6 @@ public class PolarDBXTest extends TestCase {
             + "\tKEY i_id_ExitId USING BTREE (Id, ExitId),\n"
             + "\tKEY auto_shard_key_ExitId_id USING BTREE (ExitId, Id)\n"
             + ") ENGINE = InnoDB CHARSET = utf8\n"
-            + "PARTITION BY KEY (ExitId, Id) PARTITIONS 16",table.getStatement().toString());
+            + "PARTITION BY KEY (ExitId, Id) PARTITIONS 16", table.getStatement().toString());
     }
 }

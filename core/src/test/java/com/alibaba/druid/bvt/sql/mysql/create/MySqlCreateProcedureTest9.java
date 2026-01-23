@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
@@ -41,20 +40,20 @@ public class MySqlCreateProcedureTest9 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-//    	print(statementList);
-        Assert.assertEquals(1, statementList.size());
+        // print(statementList);
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        // System.out.println("Tables : " + visitor.getTables());
+        // System.out.println("fields : " + visitor.getColumns());
+        // System.out.println("coditions : " + visitor.getConditions());
+        // System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
     }
 
     public void test_2() throws Exception {
@@ -66,20 +65,20 @@ public class MySqlCreateProcedureTest9 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-//    	print(statementList);
-        Assert.assertEquals(1, statementList.size());
+        // print(statementList);
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        // System.out.println("Tables : " + visitor.getTables());
+        // System.out.println("fields : " + visitor.getColumns());
+        // System.out.println("coditions : " + visitor.getConditions());
+        // System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
     }
 
     public void test_3() throws Exception {
@@ -92,14 +91,14 @@ public class MySqlCreateProcedureTest9 extends MysqlTest {
                 + " declare condition_name CONDITION FOR 1002;"
                 + " declare continue handler FOR condition_name SET done = 1;"
                 + " if param then"
-                + " 		select concat_ws(',',user_name,user_pass) into result from test.users where id=param;"
+                + "     select concat_ws(',',user_name,user_pass) into result from test.users where id=param;"
                 + " else"
-                + " 		open cur_test;"
-                + " 		repeat"
-                + " 		fetch cur_test into name, pass;"
-                + " 		select concat_ws(',',result,name,pass) into result;"
-                + " 		until done end repeat;"
-                + " 		close cur_test;"
+                + "     open cur_test;"
+                + "     repeat"
+                + "     fetch cur_test into name, pass;"
+                + "     select concat_ws(',',result,name,pass) into result;"
+                + "     until done end repeat;"
+                + "     close cur_test;"
                 + " end if;"
                 + " end;";
 
@@ -107,7 +106,7 @@ public class MySqlCreateProcedureTest9 extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
         System.out.println(SQLUtils.toSQLString(statementList, JdbcConstants.MYSQL));
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -117,9 +116,8 @@ public class MySqlCreateProcedureTest9 extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(5, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
     }
-
 }

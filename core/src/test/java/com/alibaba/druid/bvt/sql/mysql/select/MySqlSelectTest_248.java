@@ -18,22 +18,15 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataTypeRefExpr;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-
 
 public class MySqlSelectTest_248 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select top.* from t1 top";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
         assertEquals("SELECT top.*\n" +
                 "FROM t1 top", stmt.toString());
     }
-
-
 }

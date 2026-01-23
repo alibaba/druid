@@ -15,30 +15,27 @@
  */
 package com.alibaba.druid.bvt.mock;
 
+import com.alibaba.druid.mock.MockResultSetMetaData;
+import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase;
+import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
+import junit.framework.TestCase;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSetMetaData;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.mock.MockResultSetMetaData;
-import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase;
-import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
-
 public class MockResultSetMetaDataTest extends TestCase {
     public void test_resultSet_metadata() throws Exception {
         MockResultSetMetaData meta = new MockResultSetMetaData();
-        Assert.assertTrue(meta.isWrapperFor(MockResultSetMetaData.class));
-        Assert.assertFalse(meta.isWrapperFor(BigDecimal.class));
-        Assert.assertTrue(meta.unwrap(MockResultSetMetaData.class) instanceof MockResultSetMetaData);
-        Assert.assertTrue(meta.unwrap(ResultSetMetaDataBase.class) instanceof MockResultSetMetaData);
-        Assert.assertTrue(meta.unwrap(ResultSetMetaData.class) instanceof MockResultSetMetaData);
-        Assert.assertTrue(meta.unwrap(null) == null);
-        Assert.assertTrue(meta.unwrap(java.sql.ResultSetMetaData.class) != null);
-        Assert.assertTrue(meta.unwrap(Object.class) != null);
-        Assert.assertTrue(meta.unwrap(Date.class) == null);
+        assertTrue(meta.isWrapperFor(MockResultSetMetaData.class));
+        assertFalse(meta.isWrapperFor(BigDecimal.class));
+        assertTrue(meta.unwrap(MockResultSetMetaData.class) instanceof MockResultSetMetaData);
+        assertTrue(meta.unwrap(ResultSetMetaDataBase.class) instanceof MockResultSetMetaData);
+        assertTrue(meta.unwrap(ResultSetMetaData.class) instanceof MockResultSetMetaData);
+        assertTrue(meta.unwrap(null) == null);
+        assertTrue(meta.unwrap(java.sql.ResultSetMetaData.class) != null);
+        assertTrue(meta.unwrap(Object.class) != null);
+        assertTrue(meta.unwrap(Date.class) == null);
 
         ColumnMetaData column = new ColumnMetaData();
         meta.getColumns().add(column);
@@ -61,6 +58,5 @@ public class MockResultSetMetaDataTest extends TestCase {
         meta.isWritable(1);
         meta.isDefinitelyWritable(1);
         meta.getColumnClassName(1);
-
     }
 }

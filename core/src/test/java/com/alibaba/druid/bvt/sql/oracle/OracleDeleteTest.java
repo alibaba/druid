@@ -15,20 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import java.util.List;
+
 public class OracleDeleteTest extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "delete from BILLING_LOG_MONITOR log where log.guid in (" + //
-                "'wb_xinmin.zhao_test121','wb_xinmin.zhao_test122'" + //
+        String sql = "delete from BILLING_LOG_MONITOR log where log.guid in (" +
+                "'wb_xinmin.zhao_test121','wb_xinmin.zhao_test122'" +
                 ",'wb_xinmin.zhao_test123','wb_xinmin.zhao_test124'" + ")";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -37,7 +35,7 @@ public class OracleDeleteTest extends OracleTest {
 
         System.out.println(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -47,15 +45,14 @@ public class OracleDeleteTest extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("BILLING_LOG_MONITOR")));
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("BILLING_LOG_MONITOR")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
         //
-        Assert.assertTrue(visitor.containsColumn("BILLING_LOG_MONITOR", "guid"));
-        // Assert.assertTrue(visitor.containsColumn("employees", "salary"));
-        // Assert.assertTrue(visitor.containsColumn("employees", "commission_pct"));
+        assertTrue(visitor.containsColumn("BILLING_LOG_MONITOR", "guid"));
+        // assertTrue(visitor.containsColumn("employees", "salary"));
+        // assertTrue(visitor.containsColumn("employees", "commission_pct"));
     }
-
 }

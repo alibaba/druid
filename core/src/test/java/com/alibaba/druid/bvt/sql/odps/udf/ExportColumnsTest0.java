@@ -1,7 +1,6 @@
 package com.alibaba.druid.bvt.sql.odps.udf;
 
 import com.alibaba.druid.support.opds.udf.ExportColumns;
-
 import junit.framework.TestCase;
 
 public class ExportColumnsTest0 extends TestCase {

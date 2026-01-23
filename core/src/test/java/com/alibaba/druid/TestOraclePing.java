@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid;
 
+import junit.framework.TestCase;
+import oracle.jdbc.OracleConnection;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import junit.framework.TestCase;
-import oracle.jdbc.OracleConnection;
 
 public class TestOraclePing extends TestCase {
     private String jdbcUrl;

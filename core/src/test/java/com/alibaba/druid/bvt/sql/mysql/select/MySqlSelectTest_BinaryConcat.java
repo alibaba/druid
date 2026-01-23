@@ -22,15 +22,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class MySqlSelectTest_BinaryConcat extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "select campaignId from Campaign" + //
-                "   where   advertiserId =   ?" + //
-                "   and   deleteStatus = false" + //
+        String sql = "select campaignId from Campaign" +
+                "   where   advertiserId =   ?" +
+                "   and   deleteStatus = false" +
                 "   and   campaignName like binary CONCAT('%',?,'%')";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -40,13 +39,13 @@ public class MySqlSelectTest_BinaryConcat extends MysqlTest {
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
 
         SQLSelect select = selectStmt.getSelect();
-        Assert.assertNotNull(select.getQuery());
+        assertNotNull(select.getQuery());
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
-        Assert.assertNull(queryBlock.getOrderBy());
+        assertNull(queryBlock.getOrderBy());
 
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -56,11 +55,11 @@ public class MySqlSelectTest_BinaryConcat extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(3, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
+        // assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
     }
 }

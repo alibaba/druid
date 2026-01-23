@@ -21,25 +21,24 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
 public class OracleCreateTableTest18 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
-                "  CREATE TABLE \"SONAR\".\"AUTHORS\" " //
-                        + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                        + "    \"PERSON_ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                        + "    \"LOGIN\" VARCHAR2(100 BYTE), " //
-                        + "    \"CREATED_AT\" TIMESTAMP (6), " //
-                        + "    \"UPDATED_AT\" TIMESTAMP (6), " //
-                        + "     PRIMARY KEY (\"ID\")" //
-                        + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
-                        + "  TABLESPACE \"USERS\"  ENABLE" //
-                        + "   ) SEGMENT CREATION DEFERRED " //
-                        + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 " //
-                        + " NOCOMPRESS LOGGING" //
+                "  CREATE TABLE \"SONAR\".\"AUTHORS\" "
+                        + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, "
+                        + "    \"PERSON_ID\" NUMBER(38,0) NOT NULL ENABLE, "
+                        + "    \"LOGIN\" VARCHAR2(100 BYTE), "
+                        + "    \"CREATED_AT\" TIMESTAMP (6), "
+                        + "    \"UPDATED_AT\" TIMESTAMP (6), "
+                        + "     PRIMARY KEY (\"ID\")"
+                        + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS "
+                        + "  TABLESPACE \"USERS\"  ENABLE"
+                        + "   ) SEGMENT CREATION DEFERRED "
+                        + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 "
+                        + " NOCOMPRESS LOGGING"
                         + "  TABLESPACE \"USERS\" ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -47,9 +46,9 @@ public class OracleCreateTableTest18 extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"AUTHORS\" (\n" +
+        assertEquals("CREATE TABLE \"SONAR\".\"AUTHORS\" (\n" +
                         "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
                         "\t\"PERSON_ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
                         "\t\"LOGIN\" VARCHAR2(100 BYTE),\n" +
@@ -82,10 +81,10 @@ public class OracleCreateTableTest18 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(5, visitor.getColumns().size());
+        assertEquals(5, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.containsColumn("SONAR.AUTHORS", "ID"));
+        assertTrue(visitor.containsColumn("SONAR.AUTHORS", "ID"));
     }
 }

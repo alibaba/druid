@@ -11,7 +11,6 @@ import java.util.Set;
  * Created by yunning on 16/7/10.
  */
 public class TestNewSpout {
-
     public static int indexOf_nsharp(byte[] bytes, int fromIndex) {
         int end = bytes.length - 2;
         for (int i = fromIndex; i < end; ++i) {
@@ -133,6 +132,7 @@ public class TestNewSpout {
                 long itemTime = MathUtil.str2Long(datas, currItemOffset + 6, nextItemOffset);
                 System.out.println("TIME : " + itemTime);
                 if (itemTime < 0 || itemTime > 2000000000000000L) {
+                    // Handle invalid time value
                 }
                 sqlInfo.setTime(itemTime);
 
@@ -156,6 +156,7 @@ public class TestNewSpout {
                 if (dbLen > 0 && SqlUtil.filterDbs.indexOf(db) != -1) {
 //                    sqlInfo.setNotValiDB(true);
                 } else {
+                    // Handle the valid case
                 }
 
                 //table_name
@@ -170,8 +171,9 @@ public class TestNewSpout {
                 int totalLen = sql.length();
                 if (totalLen < 9 ||
                         totalLen >= 8000) {
-//                    sqlInfo.setParseRes(0);
+                    // sqlInfo.setParseRes(0);
                 } else {
+                    // Handle the valid case
                 }
 
                 //query_time
@@ -193,6 +195,7 @@ public class TestNewSpout {
                 nextItemOffset = offsets[7];
                 long itemRowsSent = MathUtil.str2Long(datas, currItemOffset + 12, nextItemOffset);
                 if (itemRowsSent < 0 || itemRowsSent > 1000000000) {
+                    // Handle invalid value
                 }
 //                sqlInfo.setRowsSent(itemRowsSent);
 
@@ -201,6 +204,7 @@ public class TestNewSpout {
                 nextItemOffset = offsets[8];
                 long itemRowsExam = MathUtil.str2Long(datas, currItemOffset + 16, nextItemOffset);
                 if (itemRowsExam < 0 || itemRowsExam > 1000000000) {
+                    // Handle invalid value
                 }
 //                sqlInfo.setRowsExamined(itemRowsExam);
 
@@ -209,6 +213,7 @@ public class TestNewSpout {
                 nextItemOffset = offsets[9];
                 long itemRowsAffected = MathUtil.str2Long(datas, currItemOffset + 16, nextItemOffset);
                 if (itemRowsAffected < 0 || itemRowsAffected > 1000000000) {
+                    // Handle invalid value
                 }
                 sqlInfo.setRowsAffected(itemRowsAffected);
 
@@ -217,6 +222,7 @@ public class TestNewSpout {
                 nextItemOffset = offsets[10];
                 long itemPageRead = MathUtil.str2Long(datas, currItemOffset + 20, nextItemOffset);
                 if (itemPageRead < 0 || itemPageRead > 1000000000) {
+                    // Handle invalid value
                 }
                 sqlInfo.setInnodbPagesRead(itemPageRead);
 
@@ -225,6 +231,7 @@ public class TestNewSpout {
                 nextItemOffset = offsets[11];
                 long itemPageIORead = MathUtil.str2Long(datas, currItemOffset + 23, nextItemOffset);
                 if (itemPageIORead < 0 || itemPageIORead > 1000000000) {
+                    // Handle invalid value
                 }
 //                sqlInfo.setInnodbPagesIoRead(itemPageIORead);
                 // currItemOffset = nextItemOffset;
@@ -286,7 +293,9 @@ public class TestNewSpout {
             long value = 0;
             for (int i = start; i < end; ++i) {
                 byte ch = data[i];
-                if (ch == '.') break;
+                if (ch == '.') {
+                    break;
+                }
                 int digit = data[i] - '0';
                 value = value * 10 + digit;
             }

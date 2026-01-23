@@ -8,14 +8,13 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class StarrocksKeywordsTest {
     @Test
-    public void test_keywords(){
+    public void test_keywords() {
         DbType dbType = DbType.starrocks;
         String sql =
             "CREATE TABLE test (\n"
@@ -36,7 +35,7 @@ public class StarrocksKeywordsTest {
                 + "\t\"replication_num\" = \"tag.location.default: 3\",\n"
                 + "\t\"storage_format\" = \"V2\"\n"
                 + ");";
-        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, 
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql,
                 dbType,
                 SQLParserFeature.IgnoreNameQuotes);
         SQLStatement stmt = parser.parseStatement();
@@ -60,6 +59,6 @@ public class StarrocksKeywordsTest {
                 + "\t\"replication_num\" = \"tag.location.default: 3\",\n"
                 + "\t\"storage_format\" = \"V2\"\n"
                 + ");";
-        Assert.assertEquals(expectedSql, result);
+        assertEquals(expectedSql, result);
     }
 }

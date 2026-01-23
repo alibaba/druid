@@ -1,14 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
+import junit.framework.TestCase;
+
+import java.sql.SQLException;
 
 public class DruidPooledConnectionTest1 extends TestCase {
     private DruidDataSource dataSource;
@@ -19,7 +16,6 @@ public class DruidPooledConnectionTest1 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setFilters("stat");
         dataSource.setPoolPreparedStatements(true);
-
     }
 
     protected void tearDown() throws Exception {
@@ -37,12 +33,12 @@ public class DruidPooledConnectionTest1 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getRecycleCount());
-        Assert.assertEquals(1, dataSource.getCloseCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getRecycleCount());
+        assertEquals(1, dataSource.getCloseCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
     public void test_handleException_1() throws Exception {
@@ -54,14 +50,14 @@ public class DruidPooledConnectionTest1 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getRecycleCount());
-        Assert.assertEquals(1, dataSource.getCloseCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getRecycleCount());
+        assertEquals(1, dataSource.getCloseCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
     public void test_closePoolableStatement() throws Exception {
@@ -77,10 +73,10 @@ public class DruidPooledConnectionTest1 extends TestCase {
         conn.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getRecycleCount());
-        Assert.assertEquals(1, dataSource.getCloseCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getRecycleCount());
+        assertEquals(1, dataSource.getCloseCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
     public void test_recycle() throws Exception {
@@ -91,13 +87,13 @@ public class DruidPooledConnectionTest1 extends TestCase {
         conn.close();
         conn.recycle();
 
-        Assert.assertEquals(1, dataSource.getRecycleCount());
-        Assert.assertEquals(1, dataSource.getCloseCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getRecycleCount());
+        assertEquals(1, dataSource.getCloseCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
 
         conn = (DruidPooledConnection) dataSource.getConnection();
-        Assert.assertEquals(defaultIsolation, conn.getTransactionIsolation());
+        assertEquals(defaultIsolation, conn.getTransactionIsolation());
         conn.close();
     }
 
@@ -110,13 +106,13 @@ public class DruidPooledConnectionTest1 extends TestCase {
         conn.recycle();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getRecycleCount());
-        Assert.assertEquals(1, dataSource.getCloseCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getRecycleCount());
+        assertEquals(1, dataSource.getCloseCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
 
         conn = (DruidPooledConnection) dataSource.getConnection();
-        Assert.assertEquals(defaultIsolation, conn.getTransactionIsolation());
+        assertEquals(defaultIsolation, conn.getTransactionIsolation());
         conn.close();
     }
 }

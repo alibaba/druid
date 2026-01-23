@@ -4,7 +4,9 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLDialect;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class SQLDialectTest {
     @Test
@@ -12,7 +14,7 @@ public class SQLDialectTest {
         DbType dbType = DbType.odps;
         SQLDialect dialect = SQLDialect.of(dbType);
         assertEquals(dbType, dialect.getDbType());
-        assertEquals('`', dialect.getQuoteChar());
+        assertTrue(SQLDialect.Quote.isValidQuota(dialect.getQuoteChars(), SQLDialect.Quote.BACK_QUOTE));
 
         assertFalse(dialect.isKeyword(""));
         assertTrue(dialect.isKeyword("AND"));
@@ -55,7 +57,7 @@ public class SQLDialectTest {
         DbType dbType = DbType.postgresql;
         SQLDialect dialect = SQLDialect.of(dbType);
         assertEquals(dbType, dialect.getDbType());
-        assertEquals('"', dialect.getQuoteChar());
+        assertTrue(SQLDialect.Quote.isValidQuota(dialect.getQuoteChars(), SQLDialect.Quote.DOUBLE_QUOTE));
 
         assertFalse(dialect.isKeyword(""));
         assertTrue(dialect.isKeyword("asymmetric"));

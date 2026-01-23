@@ -34,7 +34,5 @@ public class HiveCreateTableTest_41 extends OracleTest {
                 "\tid int COMMENT '学号',\n" +
                 "\tname string COMMENT '姓名'\n" +
                 ");", SQLUtils.toSQLString(statementList, JdbcConstants.HIVE));
-
     }
-
 }

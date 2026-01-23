@@ -15,12 +15,9 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import junit.framework.TestCase;
 
 public class MySqlWallTest_concat extends TestCase {
     public void test_true() throws Exception {
@@ -28,11 +25,10 @@ public class MySqlWallTest_concat extends TestCase {
 
         provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "select * from tb_product_word where name='' or CONCAT(name,style)='' or CONCAT(shop,style)=''  or CONCAT(ename,style)=''"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
-        Assert.assertTrue(provider.getTableStats().containsKey("tb_product_word"));
+        assertEquals(1, provider.getTableStats().size());
+        assertTrue(provider.getTableStats().containsKey("tb_product_word"));
     }
-
 }

@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.stat;
 
+import junit.framework.TestCase;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-
-import junit.framework.TestCase;
 
 public class TestBeidou extends TestCase {
     public void test_0() throws Exception {

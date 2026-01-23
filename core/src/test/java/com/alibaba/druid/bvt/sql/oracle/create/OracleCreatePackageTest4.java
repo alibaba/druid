@@ -117,7 +117,7 @@ public class OracleCreatePackageTest4 extends OracleTest {
                         "\t\tIN_CALC_ID NUMBER\n" +
                         "\t)\n" +
                         "\t;\n" +
-                        "END XON_CALC_RIGHT_PRICE_PKG;",//
+                        "END XON_CALC_RIGHT_PRICE_PKG;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -129,14 +129,14 @@ public class OracleCreatePackageTest4 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-//        Assert.assertEquals(2, visitor.getTables().size());
+//        assertEquals(2, visitor.getTables().size());
 //
-//        Assert.assertEquals(5, visitor.getColumns().size());
+//        assertEquals(5, visitor.getColumns().size());
 //
-//        Assert.assertTrue(visitor.containsColumn("employees", "employee_id"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "*"));
-//        Assert.assertTrue(visitor.containsColumn("departments", "department_id"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "salary"));
-//        Assert.assertTrue(visitor.containsColumn("employees", "commission_pct"));
+//        assertTrue(visitor.containsColumn("employees", "employee_id"));
+//        assertTrue(visitor.containsColumn("employees", "*"));
+//        assertTrue(visitor.containsColumn("departments", "department_id"));
+//        assertTrue(visitor.containsColumn("employees", "salary"));
+//        assertTrue(visitor.containsColumn("employees", "commission_pct"));
     }
 }

@@ -21,15 +21,11 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataTypeRefExpr;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-
 
 public class MySqlSelectTest_247 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select CONVERT(id, char(20))";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.mysql);
 
@@ -39,6 +35,4 @@ public class MySqlSelectTest_247 extends MysqlTest {
         SQLExpr arg1 = convert.getArguments().get(1);
         assertEquals(SQLDataTypeRefExpr.class, arg1.getClass());
     }
-
-
 }

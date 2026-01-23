@@ -55,5 +55,4 @@ public class MySqlCreateTableUnitTest extends MysqlTest {
         }
         System.out.println(strBuilder.toString());
     }
-
 }
