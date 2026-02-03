@@ -73,7 +73,9 @@ public class OracleSelectTest86_comment extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(1, visitor.getTables().size());
-        assertEquals(8, visitor.getColumns().size());
+        //before:[SYS.KU$_HTABLE_VIEW.KU$, SYS.KU$_HTABLE_VIEW.OBJ_NUM, SYS.KU$_HTABLE_VIEW.PROPERTY, UNKNOWN.FLAGS, KU$.SCHEMA_OBJ.NAME, UNKNOWN.NAME, KU$.SCHEMA_OBJ.OWNER_NAME, UNKNOWN.OWNER_NAME]
+        //after:[SYS.KU$_HTABLE_VIEW.KU$, SYS.KU$_HTABLE_VIEW.OBJ_NUM, SYS.KU$_HTABLE_VIEW.PROPERTY, KU$.SCHEMA_OBJ.FLAGS, KU$.SCHEMA_OBJ.NAME, KU$.SCHEMA_OBJ.OWNER_NAME]
+        assertEquals(6, visitor.getColumns().size());
         assertEquals(2, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
