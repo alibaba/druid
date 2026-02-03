@@ -1400,10 +1400,13 @@ public class SQLSelectParser extends SQLParser {
 
                 if (lexer.nextIf(Token.WITH)) {
                     acceptIdentifier("OFFSET");
-                    lexer.nextIf(Token.AS);
-                    unnest.setOffset(
-                            this.exprParser.expr()
-                    );
+                    unnest.setWithOffset(true);
+
+                    if (lexer.nextIf(Token.AS)) {
+                        unnest.setOffsetAs(
+                                this.exprParser.expr()
+                        );
+                    }
                 }
                 return unnest;
             } else {
