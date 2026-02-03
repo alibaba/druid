@@ -87,11 +87,9 @@ public class RedshiftCreateTableParser
                 redshiftCreateTableStatement.setSortKey(sortKey);
             } else if (lexer.nextIf(Token.SORTKEY)) {
                 RedshiftSortKey sortKey = new RedshiftSortKey();
-                if (lexer.token() == Token.AUTO) {
-                    lexer.nextToken();
+                if (lexer.nextIf(Token.AUTO)) {
                     sortKey.setAuto(true);
-                } else if (lexer.token() == Token.LPAREN) {
-                    accept(Token.LPAREN);
+                } else if (lexer.nextIf(Token.LPAREN)) {
                     for (;;) {
                         sortKey.addColumn(this.exprParser.expr());
                         if (!lexer.nextIf(Token.COMMA)) {
