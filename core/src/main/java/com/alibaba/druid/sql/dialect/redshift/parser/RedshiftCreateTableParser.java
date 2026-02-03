@@ -86,9 +86,20 @@ public class RedshiftCreateTableParser
                 accept(Token.RPAREN);
                 redshiftCreateTableStatement.setSortKey(sortKey);
             } else if (lexer.nextIf(Token.SORTKEY)) {
-                accept(Token.AUTO);
                 RedshiftSortKey sortKey = new RedshiftSortKey();
-                sortKey.setAuto(true);
+                if (lexer.token() == Token.AUTO) {
+                    lexer.nextToken();
+                    sortKey.setAuto(true);
+                } else if (lexer.token() == Token.LPAREN) {
+                    accept(Token.LPAREN);
+                    for (;;) {
+                        sortKey.addColumn(this.exprParser.expr());
+                        if (!lexer.nextIf(Token.COMMA)) {
+                            break;
+                        }
+                    }
+                    accept(Token.RPAREN);
+                }
                 redshiftCreateTableStatement.setSortKey(sortKey);
             }
 
