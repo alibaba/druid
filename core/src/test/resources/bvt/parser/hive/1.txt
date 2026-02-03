@@ -83,3 +83,27 @@ select * from cd${template}.ab${suffix}
 -------------------- 
 SELECT *
 FROM cd${template}.ab${suffix}
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS dim_compound_spu_info (
+	product_id BIGINT COMMENT 'SPU ID',
+	spu_code STRING COMMENT 'SPU编码'
+)
+PARTITIONED BY (pt STRING)
+COMMENT 'SPU替换宽表'
+STORED AS ORC
+LOCATION 's3://cider-warehouse/output/dim_compound_spu_info'
+TBLPROPERTIES ('orc.compression' = 'SNAPPY')
+--------------------
+CREATE TABLE IF NOT EXISTS dim_compound_spu_info (
+	product_id BIGINT COMMENT 'SPU ID',
+	spu_code STRING COMMENT 'SPU编码'
+)
+COMMENT 'SPU替换宽表'
+PARTITIONED BY (
+	pt STRING
+)
+STORED AS ORC
+LOCATION 's3://cider-warehouse/output/dim_compound_spu_info'
+TBLPROPERTIES (
+	'orc.compression' = 'SNAPPY'
+)
