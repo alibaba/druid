@@ -57,6 +57,7 @@ public class HiveLexer extends Lexer {
                     PrimaryBangBangSupport
             )
     );
+
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -180,43 +181,13 @@ public class HiveLexer extends Lexer {
                     arraycopy(mark + 1, buf, 0, bufPos);
                     hasSpecial = true;
                 }
-
                 switch (ch) {
-                    case '0':
-                        putChar('\0');
-                        break;
-                    case '\'':
-                        putChar('\'');
-                        break;
-                    case '"':
-                        putChar('"');
-                        break;
-                    case 'b':
-                        putChar('\b');
-                        break;
-                    case 'n':
-                        putChar('\n');
-                        break;
-                    case 'r':
-                        putChar('\r');
-                        break;
-                    case 't':
-                        putChar('\t');
-                        break;
-                    case '\\':
-                        putChar('\\');
-                        break;
-                    case 'Z':
-                        putChar((char) 0x1A); // ctrl + Z
-                        break;
-                    case '%':
-                        putChar('%');
-                        break;
-                    case '_':
-                        putChar('_');
-                        break;
+                    // only deal with unicode other remains the same
                     case 'u':
-                        if ((features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
+                        if ((features & SQLParserFeature.KeepUnicodeEscape.mask) != 0) {
+                            putChar('\\');
+                            putChar('u');
+                        } else if ((features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
                             int codePointSize = 0;
                             for (int i = 0; i < 4; i++, codePointSize++) {
                                 char c = charAt(pos + 1 + i);
@@ -234,6 +205,7 @@ public class HiveLexer extends Lexer {
                         }
                         break;
                     default:
+                        putChar('\\');
                         putChar(ch);
                         break;
                 }
