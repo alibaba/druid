@@ -11,7 +11,7 @@
     <artifactId>druid-spring-boot-4-starter</artifactId>
     <packaging>jar</packaging>
     <name>druid-spring-boot-4-starter</name>
-    <description>Spring Boot with Druid support,help you simplify Druid config in Spring Boot.</description>
+    <description>Spring Boot 4 with Druid support,help you simplify Druid config in Spring Boot.</description>
     <url>https://github.com/alibaba/druid</url>
 
     <developers>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
+            <version>6.1.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -64,6 +64,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-jdbc</artifactId>
             <version>${springboot4.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>6.2.0</version>
             <optional>true</optional>
         </dependency>
         <!-- @ConfigurationProperties annotation processing (metadata for IDEs) -->
@@ -127,8 +132,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>21</source>
+                    <target>21</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.springframework.boot</groupId>
