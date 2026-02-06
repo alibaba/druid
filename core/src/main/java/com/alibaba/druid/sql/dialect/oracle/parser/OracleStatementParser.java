@@ -47,6 +47,10 @@ public class OracleStatementParser extends SQLStatementParser {
         super(new OracleExprParser(lexer));
     }
 
+    protected OracleStatementParser(OracleExprParser exprParser) {
+        super(exprParser);
+    }
+
     @Override
     public OracleExprParser getExprParser() {
         return (OracleExprParser) exprParser;

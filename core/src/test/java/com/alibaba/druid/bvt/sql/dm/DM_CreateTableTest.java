@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-
 public class DM_CreateTableTest extends TestCase {
     public void test_simple_create_table() throws Exception {
         String sql = "CREATE TABLE users (" +

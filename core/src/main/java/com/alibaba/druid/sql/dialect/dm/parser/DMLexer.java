@@ -41,6 +41,7 @@ public class DMLexer extends Lexer {
         map.put("CASCADE", Token.CASCADE);
         map.put("CONNECT", Token.CONNECT);
         map.put("CONTINUE", Token.CONTINUE);
+        map.put("CROSS", Token.CROSS);
         map.put("CURRENT", Token.CURRENT);
         map.put("CURSOR", Token.CURSOR);
 
@@ -63,6 +64,7 @@ public class DMLexer extends Lexer {
 
         map.put("ROW", Token.ROW);
         map.put("ROWS", Token.ROWS);
+        map.put("SAVEPOINT", Token.SAVEPOINT);
         map.put("SHARE", Token.SHARE);
         map.put("SHOW", Token.SHOW);
         map.put("START", Token.START);

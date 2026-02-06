@@ -15,7 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.dm.visitor;
 
+import com.alibaba.druid.sql.dialect.dm.ast.stmt.DMAlterTableOption;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public interface DMASTVisitor extends OracleASTVisitor {
+    default boolean visit(DMAlterTableOption x) {
+        return true;
+    }
+
+    default void endVisit(DMAlterTableOption x) {
+    }
 }

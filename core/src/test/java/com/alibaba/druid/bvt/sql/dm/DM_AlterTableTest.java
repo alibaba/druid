@@ -69,6 +69,7 @@ public class DM_AlterTableTest extends TestCase {
         String sql = "ALTER TABLE users DROP COLUMN ref_id RESTRICT";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("RESTRICT"));
     }
 
     // =============== ADD CONSTRAINT ===============
@@ -161,12 +162,14 @@ public class DM_AlterTableTest extends TestCase {
         String sql = "ALTER TABLE users ENABLE ALL TRIGGERS";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("ENABLE ALL TRIGGERS"));
     }
 
     public void test_alter_disable_all_triggers() {
         String sql = "ALTER TABLE users DISABLE ALL TRIGGERS";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("DISABLE ALL TRIGGERS"));
     }
 
     // =============== MODIFY CONSTRAINT ===============
@@ -206,6 +209,14 @@ public class DM_AlterTableTest extends TestCase {
         String sql = "ALTER TABLE users DROP PRIMARY KEY CASCADE";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("DROP PRIMARY KEY CASCADE"));
+    }
+
+    public void test_alter_drop_primary_key_restrict() {
+        String sql = "ALTER TABLE users DROP PRIMARY KEY RESTRICT";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
+        assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("DROP PRIMARY KEY RESTRICT"));
     }
 
     // =============== TRUNCATE PARTITION ===============
@@ -219,6 +230,21 @@ public class DM_AlterTableTest extends TestCase {
         String sql = "ALTER TABLE orders TRUNCATE SUBPARTITION sp_jan";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("TRUNCATE SUBPARTITION"));
+    }
+
+    public void test_alter_truncate_partition_drop_storage() {
+        String sql = "ALTER TABLE orders TRUNCATE PARTITION p2023 DROP STORAGE";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
+        assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("DROP STORAGE"));
+    }
+
+    public void test_alter_truncate_subpartition_reuse_storage() {
+        String sql = "ALTER TABLE orders TRUNCATE SUBPARTITION sp_jan REUSE STORAGE";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
+        assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("REUSE STORAGE"));
     }
 
     // =============== MOVE TABLESPACE ===============
@@ -233,18 +259,21 @@ public class DM_AlterTableTest extends TestCase {
         String sql = "ALTER TABLE orders PARALLEL";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("PARALLEL"));
     }
 
     public void test_alter_parallel_degree() {
         String sql = "ALTER TABLE orders PARALLEL 4";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("PARALLEL 4"));
     }
 
     public void test_alter_noparallel() {
         String sql = "ALTER TABLE orders NOPARALLEL";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("NOPARALLEL"));
     }
 
     // =============== READ ONLY / READ WRITE ===============
@@ -252,12 +281,14 @@ public class DM_AlterTableTest extends TestCase {
         String sql = "ALTER TABLE archive_data READ ONLY";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("READ ONLY"));
     }
 
     public void test_alter_read_write() {
         String sql = "ALTER TABLE archive_data READ WRITE";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("READ WRITE"));
     }
 
     public void test_alter_with_schema() {
@@ -270,6 +301,7 @@ public class DM_AlterTableTest extends TestCase {
         String sql = "ALTER TABLE users AUTO_INCREMENT = 1000";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmtList.size());
+        assertTrue(SQLUtils.toSQLString(stmtList, DbType.dm).contains("AUTO_INCREMENT = 1000"));
     }
 
     public void test_alter_drop_auto_increment() {

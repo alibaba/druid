@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.dm.ast.stmt.DMAlterTableOption;
+import com.alibaba.druid.sql.dialect.dm.ast.stmt.DMAlterTableOption.OptionType;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
@@ -34,11 +36,11 @@ import com.alibaba.druid.util.FnvHash;
 
 public class DMStatementParser extends OracleStatementParser {
     public DMStatementParser(String sql) {
-        super(sql);
+        super(new DMExprParser(sql));
     }
 
     public DMStatementParser(String sql, SQLParserFeature... features) {
-        super(sql, features);
+        super(new DMExprParser(sql, features));
     }
 
     @Override
@@ -94,19 +96,26 @@ public class DMStatementParser extends OracleStatementParser {
                 continue;
             } else if (lexer.identifierEquals("PARALLEL")) {
                 lexer.nextToken();
-                // PARALLEL with optional degree
+                DMAlterTableOption item = new DMAlterTableOption(OptionType.PARALLEL);
                 if (lexer.token() == Token.LITERAL_INT) {
-                    lexer.nextToken(); // skip the degree
+                    item.setValue(this.exprParser.integerExpr());
                 }
-                // DM PARALLEL - 使用通用的 SQLAlterTableStatement 标记
+                stmt.addItem(item);
                 continue;
             } else if (lexer.identifierEquals("NOPARALLEL")) {
                 lexer.nextToken();
+                stmt.addItem(new DMAlterTableOption(OptionType.NOPARALLEL));
                 continue;
             } else if (lexer.identifierEquals("READ")) {
                 lexer.nextToken();
-                if (lexer.identifierEquals("ONLY") || lexer.identifierEquals("WRITE")) {
+                if (lexer.token() == Token.ONLY || lexer.identifierEquals("ONLY")) {
                     lexer.nextToken();
+                    stmt.addItem(new DMAlterTableOption(OptionType.READ_ONLY));
+                } else if (lexer.identifierEquals("WRITE")) {
+                    lexer.nextToken();
+                    stmt.addItem(new DMAlterTableOption(OptionType.READ_WRITE));
+                } else {
+                    throw new ParserException("TODO : " + lexer.info());
                 }
                 continue;
             } else if (lexer.identifierEquals("AUTO_INCREMENT")) {
@@ -114,7 +123,9 @@ public class DMStatementParser extends OracleStatementParser {
                 if (lexer.token() == Token.EQ) {
                     lexer.nextToken();
                 }
-                this.exprParser.expr(); // skip the value
+                DMAlterTableOption item = new DMAlterTableOption(OptionType.AUTO_INCREMENT);
+                item.setValue(this.exprParser.expr());
+                stmt.addItem(item);
                 continue;
             }
             break;
@@ -125,17 +136,14 @@ public class DMStatementParser extends OracleStatementParser {
     private void parseAlterTableAdd(SQLAlterTableStatement stmt) {
         if (lexer.token() == Token.COLUMN) {
             lexer.nextToken();
-            parseAlterTableAddColumn(stmt);
+            parseDMAlterTableAddColumn(stmt);
         } else if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             SQLAlterTableAddColumn item = parseAlterTableAddColumn();
             stmt.addItem(item);
             accept(Token.RPAREN);
         } else if (lexer.token() == Token.IF) {
-            lexer.nextToken();
-            accept(Token.NOT);
-            accept(Token.EXISTS);
-            parseAlterTableAddColumn(stmt);
+            parseDMAlterTableAddColumn(stmt);
         } else if (lexer.token() == Token.CONSTRAINT
                 || lexer.token() == Token.FOREIGN
                 || lexer.token() == Token.PRIMARY
@@ -223,18 +231,9 @@ public class DMStatementParser extends OracleStatementParser {
                 lexer.nextToken();
                 item.setName(partitionName);
             }
-            // Handle DROP STORAGE / REUSE STORAGE - check both Token and identifier for
-            // DROP
-            if (lexer.token() == Token.DROP || lexer.identifierEquals("DROP")) {
-                lexer.nextToken(); // consume DROP
-                if (lexer.identifierEquals("STORAGE")) {
-                    lexer.nextToken(); // consume STORAGE
-                }
-            } else if (lexer.identifierEquals("REUSE")) {
-                lexer.nextToken(); // consume REUSE
-                if (lexer.identifierEquals("STORAGE")) {
-                    lexer.nextToken(); // consume STORAGE
-                }
+            StorageOption storageOption = parseStorageOption();
+            if (storageOption != StorageOption.NONE) {
+                item.putAttribute("dm.storage", storageOption.value);
             }
             stmt.addItem(item);
         } else if (lexer.identifierEquals("SUBPARTITION")) {
@@ -247,26 +246,32 @@ public class DMStatementParser extends OracleStatementParser {
             } else {
                 item.addPartition(this.exprParser.name());
             }
-            // DROP STORAGE / REUSE STORAGE
-            parseStorageOption();
+            item.putAttribute("dm.subpartition", Boolean.TRUE);
+            StorageOption storageOption = parseStorageOption();
+            if (storageOption != StorageOption.NONE) {
+                item.putAttribute("dm.storage", storageOption.value);
+            }
             stmt.addItem(item);
         } else {
             throw new ParserException("TODO : " + lexer.info());
         }
     }
 
-    private void parseStorageOption() {
+    private StorageOption parseStorageOption() {
         if (lexer.token() == Token.DROP || lexer.identifierEquals("DROP")) {
             lexer.nextToken();
-            if (lexer.identifierEquals("STORAGE")) {
+            if (lexer.token() == Token.STORAGE || lexer.identifierEquals("STORAGE")) {
                 lexer.nextToken();
             }
+            return StorageOption.DROP;
         } else if (lexer.identifierEquals("REUSE")) {
             lexer.nextToken();
-            if (lexer.identifierEquals("STORAGE")) {
+            if (lexer.token() == Token.STORAGE || lexer.identifierEquals("STORAGE")) {
                 lexer.nextToken();
             }
+            return StorageOption.REUSE;
         }
+        return StorageOption.NONE;
     }
 
     private void parseAlterTableDrop(SQLAlterTableStatement stmt) {
@@ -279,8 +284,9 @@ public class DMStatementParser extends OracleStatementParser {
             if (lexer.token() == Token.CASCADE) {
                 lexer.nextToken();
                 item.setCascade(true);
-            } else if (lexer.identifierEquals("RESTRICT")) {
+            } else if (lexer.token() == Token.RESTRICT || lexer.identifierEquals("RESTRICT")) {
                 lexer.nextToken();
+                item.setRestrict(true);
             }
             stmt.addItem(item);
         } else if (lexer.token() == Token.COLUMN) {
@@ -296,8 +302,9 @@ public class DMStatementParser extends OracleStatementParser {
             if (lexer.token() == Token.CASCADE) {
                 lexer.nextToken();
                 item.setCascade(true);
-            } else if (lexer.identifierEquals("RESTRICT")) {
+            } else if (lexer.token() == Token.RESTRICT || lexer.identifierEquals("RESTRICT")) {
                 lexer.nextToken();
+                item.setRestrict(true);
             }
             stmt.addItem(item);
         } else if (lexer.token() == Token.LPAREN) {
@@ -324,11 +331,13 @@ public class DMStatementParser extends OracleStatementParser {
             // DM supports CASCADE / RESTRICT after DROP PRIMARY KEY
             if (lexer.token() == Token.CASCADE) {
                 lexer.nextToken();
-            } else if (lexer.identifierEquals("RESTRICT")) {
+                item.putAttribute("dm.cascade", Boolean.TRUE);
+            } else if (lexer.token() == Token.RESTRICT || lexer.identifierEquals("RESTRICT")) {
                 lexer.nextToken();
+                item.putAttribute("dm.restrict", Boolean.TRUE);
             }
             stmt.addItem(item);
-        } else if (lexer.identifierEquals("IDENTITY")) {
+        } else if (lexer.token() == Token.IDENTITY || lexer.identifierEquals("IDENTITY")) {
             lexer.nextToken();
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
             item.getColumns().add(new SQLIdentifierExpr("IDENTITY"));
@@ -344,8 +353,9 @@ public class DMStatementParser extends OracleStatementParser {
             if (lexer.token() == Token.CASCADE) {
                 lexer.nextToken();
                 item.setCascade(true);
-            } else if (lexer.identifierEquals("RESTRICT")) {
+            } else if (lexer.token() == Token.RESTRICT || lexer.identifierEquals("RESTRICT")) {
                 lexer.nextToken();
+                item.setRestrict(true);
             }
             stmt.addItem(item);
         } else {
@@ -363,8 +373,7 @@ public class DMStatementParser extends OracleStatementParser {
             lexer.nextToken();
             if (lexer.identifierEquals("TRIGGERS")) {
                 lexer.nextToken();
-                SQLAlterTableDisableLifecycle item = new SQLAlterTableDisableLifecycle();
-                stmt.addItem(item);
+                stmt.addItem(new DMAlterTableOption(OptionType.DISABLE_ALL_TRIGGERS));
             } else {
                 throw new ParserException("TODO : " + lexer.info());
             }
@@ -383,8 +392,7 @@ public class DMStatementParser extends OracleStatementParser {
             lexer.nextToken();
             if (lexer.identifierEquals("TRIGGERS")) {
                 lexer.nextToken();
-                SQLAlterTableEnableLifecycle item = new SQLAlterTableEnableLifecycle();
-                stmt.addItem(item);
+                stmt.addItem(new DMAlterTableOption(OptionType.ENABLE_ALL_TRIGGERS));
             } else {
                 throw new ParserException("TODO : " + lexer.info());
             }
@@ -445,6 +453,18 @@ public class DMStatementParser extends OracleStatementParser {
             }
         } else {
             throw new ParserException("TODO : " + lexer.info());
+        }
+    }
+
+    private enum StorageOption {
+        NONE(""),
+        DROP("DROP"),
+        REUSE("REUSE");
+
+        private final String value;
+
+        StorageOption(String value) {
+            this.value = value;
         }
     }
 }

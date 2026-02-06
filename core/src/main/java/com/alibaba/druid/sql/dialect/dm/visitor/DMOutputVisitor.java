@@ -16,6 +16,10 @@
 package com.alibaba.druid.sql.dialect.dm.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableTruncatePartition;
+import com.alibaba.druid.sql.dialect.dm.ast.stmt.DMAlterTableOption;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 
 /**
@@ -31,5 +35,81 @@ public class DMOutputVisitor extends OracleOutputVisitor implements DMASTVisitor
     public DMOutputVisitor(StringBuilder appender, boolean printPostSemi) {
         super(appender, printPostSemi);
         this.dbType = DbType.dm;
+    }
+
+    @Override
+    public boolean visit(DMAlterTableOption x) {
+        switch (x.getOptionType()) {
+            case PARALLEL:
+                print0(ucase ? "PARALLEL" : "parallel");
+                if (x.getValue() != null) {
+                    print(' ');
+                    x.getValue().accept(this);
+                }
+                break;
+            case NOPARALLEL:
+                print0(ucase ? "NOPARALLEL" : "noparallel");
+                break;
+            case READ_ONLY:
+                print0(ucase ? "READ ONLY" : "read only");
+                break;
+            case READ_WRITE:
+                print0(ucase ? "READ WRITE" : "read write");
+                break;
+            case AUTO_INCREMENT:
+                print0(ucase ? "AUTO_INCREMENT = " : "auto_increment = ");
+                if (x.getValue() != null) {
+                    x.getValue().accept(this);
+                }
+                break;
+            case ENABLE_ALL_TRIGGERS:
+                print0(ucase ? "ENABLE ALL TRIGGERS" : "enable all triggers");
+                break;
+            case DISABLE_ALL_TRIGGERS:
+                print0(ucase ? "DISABLE ALL TRIGGERS" : "disable all triggers");
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropPrimaryKey x) {
+        print0(ucase ? "DROP PRIMARY KEY" : "drop primary key");
+        if (Boolean.TRUE.equals(x.getAttribute("dm.cascade"))) {
+            print0(ucase ? " CASCADE" : " cascade");
+        } else if (Boolean.TRUE.equals(x.getAttribute("dm.restrict"))) {
+            print0(ucase ? " RESTRICT" : " restrict");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableTruncatePartition x) {
+        print0(ucase ? "TRUNCATE PARTITION " : "truncate partition ");
+        x.getName().accept(this);
+        appendStorageOption(x);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableTruncatePartition x) {
+        if (Boolean.TRUE.equals(x.getAttribute("dm.subpartition"))) {
+            print0(ucase ? "TRUNCATE SUBPARTITION " : "truncate subpartition ");
+            printAndAccept(x.getPartitions(), ", ");
+            appendStorageOption(x);
+            return false;
+        }
+        return super.visit(x);
+    }
+
+    private void appendStorageOption(com.alibaba.druid.sql.ast.SQLObject x) {
+        Object storageOption = x.getAttribute("dm.storage");
+        if ("DROP".equals(storageOption)) {
+            print0(ucase ? " DROP STORAGE" : " drop storage");
+        } else if ("REUSE".equals(storageOption)) {
+            print0(ucase ? " REUSE STORAGE" : " reuse storage");
+        }
     }
 }
