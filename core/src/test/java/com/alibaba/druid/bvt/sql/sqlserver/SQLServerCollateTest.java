@@ -12,7 +12,6 @@ import org.junit.Assert;
 import java.util.List;
 
 public class SQLServerCollateTest extends TestCase {
-
     public void testCollateWithColumn() {
         String sql = "SELECT name COLLATE Chinese_PRC_CI_AI_WS FROM users";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -97,5 +96,3 @@ public class SQLServerCollateTest extends TestCase {
         Assert.assertTrue("正常SQL应该通过校验", isValid);
     }
 }
-
-
