@@ -1,0 +1,37 @@
+SELECT department_id, COUNT(*) AS employee_count, AVG(salary) AS avg_salary FROM employees GROUP BY department_id;
+--------------------
+SELECT department_id, COUNT(*) AS employee_count, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department_id;
+------------------------------------------------------------------------------------------------------------------------
+SELECT department_id, SUM(salary) AS total_salary FROM employees GROUP BY department_id HAVING SUM(salary) > 1000000;
+--------------------
+SELECT department_id, SUM(salary) AS total_salary
+FROM employees
+GROUP BY department_id
+HAVING SUM(salary) > 1000000;
+------------------------------------------------------------------------------------------------------------------------
+SELECT category, COUNT(*) AS product_count FROM products GROUP BY category ORDER BY product_count DESC;
+--------------------
+SELECT category, COUNT(*) AS product_count
+FROM products
+GROUP BY category
+ORDER BY product_count DESC;
+------------------------------------------------------------------------------------------------------------------------
+SELECT department_id, job_title, COUNT(*) AS cnt FROM employees GROUP BY department_id, job_title;
+--------------------
+SELECT department_id, job_title, COUNT(*) AS cnt
+FROM employees
+GROUP BY department_id, job_title;
+------------------------------------------------------------------------------------------------------------------------
+SELECT year, month, SUM(amount) AS total FROM sales GROUP BY ROLLUP (year, month);
+--------------------
+SELECT year, month, SUM(amount) AS total
+FROM sales
+GROUP BY ROLLUP (year, month);
+------------------------------------------------------------------------------------------------------------------------
+SELECT year, month, SUM(amount) AS total FROM sales GROUP BY CUBE (year, month);
+--------------------
+SELECT year, month, SUM(amount) AS total
+FROM sales
+GROUP BY CUBE (year, month);

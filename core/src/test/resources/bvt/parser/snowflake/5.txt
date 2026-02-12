@@ -1,0 +1,21 @@
+CREATE VIEW simple_view AS SELECT id, name FROM source_table;
+--------------------
+CREATE VIEW simple_view
+AS
+SELECT id, name
+FROM source_table;
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE VIEW updatable_view AS SELECT * FROM source_table WHERE active = true;
+--------------------
+CREATE OR REPLACE VIEW updatable_view
+AS
+SELECT *
+FROM source_table
+WHERE active = true;
+------------------------------------------------------------------------------------------------------------------------
+CREATE VIEW IF NOT EXISTS optional_view AS SELECT id FROM source_table;
+--------------------
+CREATE VIEW IF NOT EXISTS optional_view
+AS
+SELECT id
+FROM source_table;

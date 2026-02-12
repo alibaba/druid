@@ -1160,6 +1160,32 @@ public final class FnvHash {
         long INSTALL = fnv1a_64_lower("INSTALL");
         long UNLOAD = fnv1a_64_lower("UNLOAD");
 
+        // Snowflake specific
+        long STAGE = fnv1a_64_lower("STAGE");
+        long PIPE = fnv1a_64_lower("PIPE");
+        long STREAM = fnv1a_64_lower("STREAM");
+        long TASK = fnv1a_64_lower("TASK");
+        long WAREHOUSE = fnv1a_64_lower("WAREHOUSE");
+        long URL = fnv1a_64_lower("URL");
+        long VALIDATION_MODE = fnv1a_64_lower("VALIDATION_MODE");
+        long PATTERN = fnv1a_64_lower("PATTERN");
+        long FILES = fnv1a_64_lower("FILES");
+        long UNPIVOT = fnv1a_64_lower("UNPIVOT");
+        long UNDROP = fnv1a_64_lower("UNDROP");
+        long MASKING = fnv1a_64_lower("MASKING");
+        long NETWORK = fnv1a_64_lower("NETWORK");
+        long INTEGRATION = fnv1a_64_lower("INTEGRATION");
+        long NOTIFICATION = fnv1a_64_lower("NOTIFICATION");
+        long SECURITY = fnv1a_64_lower("SECURITY");
+        long API = fnv1a_64_lower("API");
+        long POOL = fnv1a_64_lower("POOL");
+        long MONITOR = fnv1a_64_lower("MONITOR");
+        long ALERT = fnv1a_64_lower("ALERT");
+        long APPLICATION = fnv1a_64_lower("APPLICATION");
+        long SERVICE = fnv1a_64_lower("SERVICE");
+        long IMAGE = fnv1a_64_lower("IMAGE");
+        long MINING = fnv1a_64_lower("MINING");
+
         long AGGREGATE = fnv1a_64_lower("AGGREGATE");
         long UNIQUE = fnv1a_64_lower("UNIQUE");
         long PRIMARY = fnv1a_64_lower("PRIMARY");

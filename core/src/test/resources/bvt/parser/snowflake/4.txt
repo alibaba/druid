@@ -1,0 +1,38 @@
+CREATE TABLE simple_table (id NUMBER, name VARCHAR(100));
+--------------------
+CREATE TABLE simple_table (
+	id NUMBER,
+	name VARCHAR(100)
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE cloned_table CLONE source_table;
+--------------------
+CREATE TABLE cloned_table
+CLONE source_table;
+------------------------------------------------------------------------------------------------------------------------
+CREATE TEMPORARY TABLE temp_session_table (session_id VARCHAR, data VARIANT);
+--------------------
+CREATE TEMPORARY TABLE temp_session_table (
+	session_id VARCHAR,
+	data VARIANT
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS optional_table (id NUMBER);
+--------------------
+CREATE TABLE IF NOT EXISTS optional_table (
+	id NUMBER
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE TABLE replaceable_table (id NUMBER, status VARCHAR);
+--------------------
+CREATE OR REPLACE TABLE replaceable_table (
+	id NUMBER,
+	status VARCHAR
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE constrained_table (id NUMBER NOT NULL, name VARCHAR(100) NOT NULL);
+--------------------
+CREATE TABLE constrained_table (
+	id NUMBER NOT NULL,
+	name VARCHAR(100) NOT NULL
+);

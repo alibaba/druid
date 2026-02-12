@@ -1,0 +1,6 @@
+CREATE OR REPLACE VIEW my_view AS SELECT id, name FROM my_table;
+--------------------
+CREATE OR REPLACE VIEW my_view
+AS
+SELECT id, name
+FROM my_table;

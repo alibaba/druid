@@ -1,0 +1,44 @@
+SELECT * FROM employees QUALIFY ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) = 1;
+--------------------
+SELECT *
+FROM employees
+QUALIFY ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) = 1;
+------------------------------------------------------------------------------------------------------------------------
+SELECT employee_id, department_id, salary FROM employees QUALIFY RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) <= 3;
+--------------------
+SELECT employee_id, department_id, salary
+FROM employees
+QUALIFY RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) <= 3;
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM sales QUALIFY DENSE_RANK() OVER (ORDER BY amount DESC) <= 10;
+--------------------
+SELECT *
+FROM sales
+QUALIFY DENSE_RANK() OVER (ORDER BY amount DESC) <= 10;
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM large_table LIMIT 100 OFFSET 50;
+--------------------
+SELECT *
+FROM large_table
+LIMIT 100 OFFSET 50;
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM large_table LIMIT 1000;
+--------------------
+SELECT *
+FROM large_table
+LIMIT 1000;
+------------------------------------------------------------------------------------------------------------------------
+SELECT DISTINCT category FROM products;
+--------------------
+SELECT DISTINCT category
+FROM products;
+------------------------------------------------------------------------------------------------------------------------
+SELECT DISTINCT department_id, job_title FROM employees;
+--------------------
+SELECT DISTINCT department_id, job_title
+FROM employees;
+------------------------------------------------------------------------------------------------------------------------
+SELECT ALL category FROM products;
+--------------------
+SELECT ALL category
+FROM products;

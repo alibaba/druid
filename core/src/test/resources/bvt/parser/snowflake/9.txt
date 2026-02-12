@@ -1,0 +1,10 @@
+WITH regional_sales AS (SELECT region, SUM(amount) AS total_sales FROM orders GROUP BY region) SELECT * FROM regional_sales WHERE total_sales > 100000;
+--------------------
+WITH regional_sales AS (
+		SELECT region, SUM(amount) AS total_sales
+		FROM orders
+		GROUP BY region
+	)
+SELECT *
+FROM regional_sales
+WHERE total_sales > 100000;
