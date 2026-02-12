@@ -1,0 +1,39 @@
+SELECT * FROM t1 QUALIFY ROW_NUMBER() OVER (PARTITION BY category ORDER BY amount DESC) = 1
+--------------------
+SELECT *
+FROM t1
+QUALIFY ROW_NUMBER() OVER (PARTITION BY category ORDER BY amount DESC) = 1
+------------------------------------------------------------------------------------------------------------------------
+SELECT product, amount, RANK() OVER (ORDER BY amount DESC) as rnk FROM sales QUALIFY rnk <= 3
+--------------------
+SELECT product, amount, RANK() OVER (ORDER BY amount DESC) AS rnk
+FROM sales
+QUALIFY rnk <= 3
+------------------------------------------------------------------------------------------------------------------------
+WITH cte AS (SELECT id, name, ROW_NUMBER() OVER (PARTITION BY name ORDER BY id) as rn FROM t1) SELECT * FROM cte WHERE rn = 1
+--------------------
+WITH cte AS (
+		SELECT id, name, ROW_NUMBER() OVER (PARTITION BY name ORDER BY id) AS rn
+		FROM t1
+	)
+SELECT *
+FROM cte
+WHERE rn = 1
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 PIVOT (SUM(amount) FOR month IN ('Jan', 'Feb', 'Mar'))
+--------------------
+SELECT *
+FROM t1
+PIVOT (SUM(amount) FOR month IN ('Jan', 'Feb', 'Mar'))
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 UNPIVOT (value FOR column_name IN (col1, col2, col3))
+--------------------
+SELECT *
+FROM t1
+UNPIVOT (value FOR column_name IN (col1, col2, col3))
+------------------------------------------------------------------------------------------------------------------------
+SELECT department, SUM(salary) FROM employees GROUP BY ALL
+--------------------
+SELECT department, SUM(salary)
+FROM employees
+GROUP BY ALL
