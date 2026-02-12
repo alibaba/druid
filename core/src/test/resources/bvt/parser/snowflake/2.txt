@@ -1,0 +1,24 @@
+CREATE TABLE my_table (id NUMBER, name VARCHAR);
+--------------------
+CREATE TABLE my_table (
+	id NUMBER,
+	name VARCHAR
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE my_clone_table CLONE my_table;
+--------------------
+CREATE TABLE my_clone_table
+CLONE my_table;
+------------------------------------------------------------------------------------------------------------------------
+CREATE TEMPORARY TABLE temp_table (id NUMBER, value VARCHAR);
+--------------------
+CREATE TEMPORARY TABLE temp_table (
+	id NUMBER,
+	value VARCHAR
+);
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS my_table (id NUMBER);
+--------------------
+CREATE TABLE IF NOT EXISTS my_table (
+	id NUMBER
+);

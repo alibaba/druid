@@ -1,0 +1,11 @@
+SELECT * FROM employees QUALIFY ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) = 1;
+--------------------
+SELECT *
+FROM employees
+QUALIFY ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) = 1;
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM table1 LIMIT 10 OFFSET 5;
+--------------------
+SELECT *
+FROM table1
+LIMIT 10 OFFSET 5;
