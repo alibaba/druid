@@ -27,8 +27,8 @@ public class SnowflakeStatementParser extends SQLStatementParser {
     @Override
     protected void createOptionSkip() {
         super.createOptionSkip();
-        if (lexer.identifierEquals("TRANSIENT") || lexer.identifierEquals("VOLATILE")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("TRANSIENT") || lexer.nextIfIdentifier("VOLATILE")) {
+            // consumed
         }
     }
 
@@ -44,39 +44,29 @@ public class SnowflakeStatementParser extends SQLStatementParser {
     protected SQLStatement alterRest(Lexer.SavePoint mark) {
         // Handle Snowflake-specific ALTER statements
         // Note: ALTER token has already been consumed when we reach here
-        if (lexer.token() == Token.SESSION) {
-            lexer.nextToken(); // consume SESSION
+        if (lexer.nextIf(Token.SESSION)) {
             return parseAlterSessionRest();
         }
-        if (lexer.identifierEquals("WAREHOUSE")) {
-            lexer.nextToken(); // consume WAREHOUSE
+        if (lexer.nextIfIdentifier("WAREHOUSE")) {
             return parseAlterWarehouseRest();
         }
-        if (lexer.identifierEquals("STAGE")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("STAGE")) {
             return parseAlterStageRest();
         }
-        if (lexer.identifierEquals("TASK")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("TASK")) {
             return parseAlterTaskRest();
         }
-        if (lexer.identifierEquals("STREAM")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("STREAM")) {
             return parseAlterStreamRest();
         }
-        if (lexer.identifierEquals("PIPE")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("PIPE")) {
             return parseAlterPipeRest();
         }
-        if (lexer.identifierEquals("FILE")) {
-            lexer.nextToken();
-            if (lexer.identifierEquals("FORMAT")) {
-                lexer.nextToken();
-            }
+        if (lexer.nextIfIdentifier("FILE")) {
+            lexer.nextIfIdentifier("FORMAT");
             return parseAlterFileFormatRest();
         }
-        if (lexer.identifierEquals("FORMAT")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("FORMAT")) {
             return parseAlterFileFormatRest();
         }
         return super.alterRest(mark);
@@ -88,12 +78,12 @@ public class SnowflakeStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (lexer.identifierEquals(FnvHash.Constants.COPY)) {
+        if (lexer.nextIfIdentifier(FnvHash.Constants.COPY)) {
             statementList.add(parseCopy());
             return true;
         }
 
-        if (lexer.identifierEquals("CALL")) {
+        if (lexer.nextIfIdentifier("CALL")) {
             statementList.add(parseCall());
             return true;
         }
@@ -109,11 +99,9 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
     public SQLStatement parseBlock() {
         accept(Token.BEGIN);
-        if (lexer.identifierEquals("TRANSACTION") || lexer.identifierEquals("TRAN")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("TRANSACTION") || lexer.nextIfIdentifier("TRAN")) {
             // Handle optional NAME clause
-            if (lexer.identifierEquals("NAME")) {
-                lexer.nextToken();
+            if (lexer.nextIfIdentifier("NAME")) {
                 this.exprParser.name();
             }
             SQLStartTransactionStatement startTrans = new SQLStartTransactionStatement(dbType);
@@ -121,7 +109,7 @@ public class SnowflakeStatementParser extends SQLStatementParser {
         }
         SQLBlockStatement block = new SQLBlockStatement();
         parseStatementList(block.getStatementList(), -1, block);
-        if (lexer.token() == Token.EXCEPTION) {
+        if (lexer.nextIf(Token.EXCEPTION)) {
             block.setException(parseException());
         }
         accept(Token.END);
@@ -168,20 +156,16 @@ public class SnowflakeStatementParser extends SQLStatementParser {
         SQLUseStatement stmt = new SQLUseStatement(getDbType());
 
         // USE DATABASE db_name / USE SCHEMA schema_name / USE WAREHOUSE wh_name / USE ROLE role_name
-        if (lexer.token() == Token.DATABASE) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.DATABASE)) {
             SQLName name = this.exprParser.name();
             stmt.setDatabase(new SQLPropertyExpr(new SQLIdentifierExpr("DATABASE"), name.getSimpleName()));
-        } else if (lexer.token() == Token.SCHEMA) {
-            lexer.nextToken();
+        } else if (lexer.nextIf(Token.SCHEMA)) {
             SQLName name = this.exprParser.name();
             stmt.setDatabase(new SQLPropertyExpr(new SQLIdentifierExpr("SCHEMA"), name.getSimpleName()));
-        } else if (lexer.identifierEquals("WAREHOUSE")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("WAREHOUSE")) {
             SQLName name = this.exprParser.name();
             stmt.setDatabase(new SQLPropertyExpr(new SQLIdentifierExpr("WAREHOUSE"), name.getSimpleName()));
-        } else if (lexer.identifierEquals("ROLE")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("ROLE")) {
             SQLName name = this.exprParser.name();
             stmt.setDatabase(new SQLPropertyExpr(new SQLIdentifierExpr("ROLE"), name.getSimpleName()));
         } else {
@@ -224,9 +208,8 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
     private void parseCopyIntoOptions() {
         for (;;) {
-            if (lexer.identifierEquals("FILES")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("FILES")) {
+                lexer.nextIf(Token.EQ);
                 accept(Token.LPAREN);
                 for (;;) {
                     this.exprParser.expr();
@@ -238,18 +221,15 @@ public class SnowflakeStatementParser extends SQLStatementParser {
                 continue;
             }
 
-            if (lexer.identifierEquals("PATTERN")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("PATTERN")) {
+                lexer.nextIf(Token.EQ);
                 this.exprParser.expr();
                 continue;
             }
 
-            if (lexer.identifierEquals("FILE_FORMAT")) {
-                lexer.nextToken();
-                accept(Token.EQ);
-                if (lexer.token() == Token.LPAREN) {
-                    lexer.nextToken();
+            if (lexer.nextIfIdentifier("FILE_FORMAT")) {
+                lexer.nextIf(Token.EQ);
+                if (lexer.nextIf(Token.LPAREN)) {
                     parseKeyValuePairs();
                     accept(Token.RPAREN);
                 } else {
@@ -258,9 +238,8 @@ public class SnowflakeStatementParser extends SQLStatementParser {
                 continue;
             }
 
-            if (lexer.identifierEquals("VALIDATION_MODE")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("VALIDATION_MODE")) {
+                lexer.nextIf(Token.EQ);
                 this.exprParser.expr();
                 continue;
             }
@@ -270,8 +249,7 @@ public class SnowflakeStatementParser extends SQLStatementParser {
                 Lexer.SavePoint mark = lexer.mark();
                 String key = lexer.stringVal();
                 lexer.nextToken();
-                if (lexer.token() == Token.EQ) {
-                    lexer.nextToken();
+                if (lexer.nextIf(Token.EQ)) {
                     this.exprParser.expr();
                     continue;
                 } else {
@@ -295,13 +273,11 @@ public class SnowflakeStatementParser extends SQLStatementParser {
                     || lexer.token() == Token.COMMENT
                     || lexer.token() == Token.LOGGING) {
                 lexer.nextToken();
-                if (lexer.token() == Token.EQ) {
-                    accept(Token.EQ);
+                if (lexer.nextIf(Token.EQ)) {
                     this.exprParser.expr();
                 }
                 // Check for comma separator between key-value pairs
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
+                if (lexer.nextIf(Token.COMMA)) {
                     continue;
                 }
                 // If no comma, check if we're at the closing paren
@@ -352,19 +328,13 @@ public class SnowflakeStatementParser extends SQLStatementParser {
     public SQLStatement parseShow() {
         accept(Token.SHOW);
 
-        if (lexer.identifierEquals("TABLES")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("TABLES")) {
             SQLShowTablesStatement stmt = new SQLShowTablesStatement();
             parseShowLikeAndIn(stmt);
             return stmt;
         }
 
-        if (lexer.token() == Token.DATABASE || lexer.identifierEquals("DATABASES")) {
-            if (lexer.token() == Token.DATABASE) {
-                lexer.nextToken();
-            } else {
-                lexer.nextToken();
-            }
+        if (lexer.nextIf(Token.DATABASE) || lexer.nextIfIdentifier("DATABASES")) {
             SQLShowDatabasesStatement stmt = new SQLShowDatabasesStatement();
             if (lexer.nextIf(Token.LIKE)) {
                 stmt.setLike(this.exprParser.expr());
@@ -372,23 +342,19 @@ public class SnowflakeStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        if (lexer.identifierEquals("SCHEMAS")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("SCHEMAS")) {
             SQLShowDatabasesStatement stmt = new SQLShowDatabasesStatement();
             if (lexer.nextIf(Token.LIKE)) {
                 stmt.setLike(this.exprParser.expr());
             }
             if (lexer.nextIf(Token.IN) || lexer.nextIf(Token.FROM)) {
-                if (lexer.token() == Token.DATABASE) {
-                    lexer.nextToken();
-                }
+                lexer.nextIf(Token.DATABASE);
                 stmt.setDatabase(this.exprParser.name());
             }
             return stmt;
         }
 
-        if (lexer.identifierEquals("COLUMNS")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("COLUMNS")) {
             SQLShowColumnsStatement stmt = new SQLShowColumnsStatement();
             if (lexer.nextIf(Token.LIKE)) {
                 stmt.setLike(this.exprParser.expr());
@@ -400,30 +366,20 @@ public class SnowflakeStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        if (lexer.token() == Token.VIEW || lexer.identifierEquals("VIEWS")) {
-            if (lexer.token() == Token.VIEW) {
-                lexer.nextToken();
-            } else {
-                lexer.nextToken();
-            }
+        if (lexer.nextIf(Token.VIEW) || lexer.nextIfIdentifier("VIEWS")) {
             SQLShowViewsStatement stmt = new SQLShowViewsStatement();
             if (lexer.nextIf(Token.LIKE)) {
                 stmt.setLike(this.exprParser.expr());
             }
             if (lexer.nextIf(Token.IN) || lexer.nextIf(Token.FROM)) {
-                if (lexer.token() == Token.DATABASE) {
-                    lexer.nextToken();
-                }
-                if (lexer.token() == Token.SCHEMA) {
-                    lexer.nextToken();
-                }
+                lexer.nextIf(Token.DATABASE);
+                lexer.nextIf(Token.SCHEMA);
                 stmt.setDatabase(this.exprParser.name());
             }
             return stmt;
         }
 
-        if (lexer.identifierEquals("WAREHOUSES")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("WAREHOUSES")) {
             SQLShowTablesStatement stmt = new SQLShowTablesStatement();
             if (lexer.nextIf(Token.LIKE)) {
                 stmt.setLike(this.exprParser.expr());
@@ -431,8 +387,7 @@ public class SnowflakeStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        if (lexer.identifierEquals("GRANTS")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("GRANTS")) {
             SQLShowGrantsStatement stmt = new SQLShowGrantsStatement();
             if (lexer.nextIf(Token.ON)) {
                 lexer.nextIf(Token.TABLE);
@@ -460,12 +415,8 @@ public class SnowflakeStatementParser extends SQLStatementParser {
             stmt.setLike(this.exprParser.expr());
         }
         if (lexer.nextIf(Token.IN) || lexer.nextIf(Token.FROM)) {
-            if (lexer.token() == Token.DATABASE) {
-                lexer.nextToken();
-            }
-            if (lexer.token() == Token.SCHEMA) {
-                lexer.nextToken();
-            }
+            lexer.nextIf(Token.DATABASE);
+            lexer.nextIf(Token.SCHEMA);
             lexer.nextIf(Token.TABLE);
             stmt.setDatabase(this.exprParser.name());
         }
@@ -477,43 +428,38 @@ public class SnowflakeStatementParser extends SQLStatementParser {
             stmt.setLike(this.exprParser.expr());
         }
         if (lexer.nextIf(Token.IN) || lexer.nextIf(Token.FROM)) {
-            if (lexer.token() == Token.DATABASE) {
-                lexer.nextToken();
-            }
-            if (lexer.token() == Token.SCHEMA) {
-                lexer.nextToken();
-            }
+            lexer.nextIf(Token.DATABASE);
+            lexer.nextIf(Token.SCHEMA);
             stmt.setDatabase(this.exprParser.name());
         }
     }
 
     @Override
     public SQLStatement parseDescribe() {
-        if (lexer.token() == Token.DESC || lexer.identifierEquals("DESCRIBE")) {
-            lexer.nextToken();
-        }
+        lexer.nextIf(Token.DESC);
+        lexer.nextIfIdentifier("DESCRIBE");
 
         SQLDescribeStatement stmt = new SQLDescribeStatement();
         stmt.setDbType(getDbType());
 
-        if (lexer.token() == Token.TABLE) {
-            lexer.nextToken();
-        } else if (lexer.token() == Token.FUNCTION) {
-            lexer.nextToken();
-        } else if (lexer.token() == Token.VIEW) {
-            lexer.nextToken();
-        } else if (lexer.identifierEquals("SCHEMA")) {
-            lexer.nextToken();
-        } else if (lexer.identifierEquals("DATABASE")) {
-            lexer.nextToken();
-        } else if (lexer.identifierEquals("STAGE")) {
-            lexer.nextToken();
-        } else if (lexer.identifierEquals("TASK")) {
-            lexer.nextToken();
-        } else if (lexer.identifierEquals("STREAM")) {
-            lexer.nextToken();
-        } else if (lexer.identifierEquals("PIPE")) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.TABLE)) {
+            // consumed
+        } else if (lexer.nextIf(Token.FUNCTION)) {
+            // consumed
+        } else if (lexer.nextIf(Token.VIEW)) {
+            // consumed
+        } else if (lexer.nextIfIdentifier("SCHEMA")) {
+            // consumed
+        } else if (lexer.nextIfIdentifier("DATABASE")) {
+            // consumed
+        } else if (lexer.nextIfIdentifier("STAGE")) {
+            // consumed
+        } else if (lexer.nextIfIdentifier("TASK")) {
+            // consumed
+        } else if (lexer.nextIfIdentifier("STREAM")) {
+            // consumed
+        } else if (lexer.nextIfIdentifier("PIPE")) {
+            // consumed
         }
 
         stmt.setObject(this.exprParser.name());
@@ -542,8 +488,7 @@ public class SnowflakeStatementParser extends SQLStatementParser {
                     break;
                 }
             }
-        } else if (lexer.identifierEquals("UNSET")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("UNSET")) {
             for (;;) {
                 SQLName name = this.exprParser.name();
                 stmt.getItems().add(new SQLAssignItem(name, new SQLIdentifierExpr("UNSET")));
@@ -573,25 +518,21 @@ public class SnowflakeStatementParser extends SQLStatementParser {
         SQLName name = this.exprParser.name();
         stmt.setName(name);
 
-        if (lexer.identifierEquals("SUSPEND") || lexer.identifierEquals("RESUME")
-                || lexer.identifierEquals("ABORT")) {
-            lexer.nextToken();
-            if (lexer.identifierEquals("ALL")) {
-                lexer.nextToken();
+        if (lexer.nextIfIdentifier("SUSPEND") || lexer.nextIfIdentifier("RESUME")
+                || lexer.nextIfIdentifier("ABORT")) {
+            if (lexer.nextIfIdentifier("ALL")) {
                 acceptIdentifier("QUERIES");
             }
         } else if (lexer.nextIf(Token.SET)) {
             parseWarehouseParameters(stmt);
-        } else if (lexer.identifierEquals("UNSET")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("UNSET")) {
             while (lexer.token() == Token.IDENTIFIER) {
                 this.exprParser.name();
                 if (!lexer.nextIf(Token.COMMA)) {
                     break;
                 }
             }
-        } else if (lexer.identifierEquals("RENAME")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("RENAME")) {
             accept(Token.TO);
             this.exprParser.name();
         }
@@ -631,26 +572,22 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
         stmt.setName(this.exprParser.name());
 
-        if (lexer.identifierEquals("RENAME")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("RENAME")) {
             accept(Token.TO);
             stmt.putAttribute("NEW_NAME", this.exprParser.name());
         } else if (lexer.nextIf(Token.SET)) {
             parseStageOptions(stmt);
-        } else if (lexer.identifierEquals("UNSET")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("UNSET")) {
             while (lexer.token() == Token.IDENTIFIER) {
                 this.exprParser.name();
                 if (!lexer.nextIf(Token.COMMA)) {
                     break;
                 }
             }
-        } else if (lexer.identifierEquals("REFRESH")) {
-            lexer.nextToken();
-            if (lexer.token() == Token.LPAREN) {
-                lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("REFRESH")) {
+            if (lexer.nextIf(Token.LPAREN)) {
                 lexer.nextIfIdentifier("SUBPATH");
-                accept(Token.EQ);
+                lexer.nextIf(Token.EQ);
                 this.exprParser.expr();
                 accept(Token.RPAREN);
             }
@@ -661,39 +598,33 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
     private void parseStageOptions(SQLAlterTableStatement stmt) {
         for (;;) {
-            if (lexer.identifierEquals("URL")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("URL")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("URL", this.exprParser.expr());
                 continue;
             }
-            if (lexer.identifierEquals("STORAGE_INTEGRATION")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("STORAGE_INTEGRATION")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("STORAGE_INTEGRATION", this.exprParser.name());
                 continue;
             }
-            if (lexer.identifierEquals("CREDENTIALS")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("CREDENTIALS")) {
+                lexer.nextIf(Token.EQ);
                 accept(Token.LPAREN);
                 parseKeyValuePairs();
                 accept(Token.RPAREN);
                 continue;
             }
-            if (lexer.identifierEquals("ENCRYPTION")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("ENCRYPTION")) {
+                lexer.nextIf(Token.EQ);
                 accept(Token.LPAREN);
                 parseKeyValuePairs();
                 accept(Token.RPAREN);
                 continue;
             }
-            if (lexer.identifierEquals("FILE_FORMAT")) {
-                lexer.nextToken();
-                accept(Token.EQ);
-                if (lexer.token() == Token.LPAREN) {
-                    lexer.nextToken();
+            if (lexer.nextIfIdentifier("FILE_FORMAT")) {
+                lexer.nextIf(Token.EQ);
+                if (lexer.nextIf(Token.LPAREN)) {
                     parseKeyValuePairs();
                     accept(Token.RPAREN);
                 } else {
@@ -701,17 +632,15 @@ public class SnowflakeStatementParser extends SQLStatementParser {
                 }
                 continue;
             }
-            if (lexer.identifierEquals("COPY_OPTIONS")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("COPY_OPTIONS")) {
+                lexer.nextIf(Token.EQ);
                 accept(Token.LPAREN);
                 parseKeyValuePairs();
                 accept(Token.RPAREN);
                 continue;
             }
-            if (lexer.identifierEquals("COMMENT")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("COMMENT")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("COMMENT", this.exprParser.expr());
                 continue;
             }
@@ -735,36 +664,29 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
         stmt.setName(this.exprParser.name());
 
-        if (lexer.identifierEquals("SUSPEND") || lexer.identifierEquals("RESUME")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("SUSPEND") || lexer.nextIfIdentifier("RESUME")) {
             stmt.putAttribute("ACTION", lexer.stringVal());
-        } else if (lexer.identifierEquals("REMOVE")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("REMOVE")) {
             acceptIdentifier("AFTER");
             stmt.putAttribute("REMOVE_AFTER", true);
-        } else if (lexer.identifierEquals("ADD")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("ADD")) {
             acceptIdentifier("AFTER");
             stmt.putAttribute("ADD_AFTER", this.exprParser.name());
-        } else if (lexer.identifierEquals("RENAME")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("RENAME")) {
             accept(Token.TO);
             stmt.putAttribute("NEW_NAME", this.exprParser.name());
         } else if (lexer.nextIf(Token.SET)) {
             parseTaskOptions(stmt);
-        } else if (lexer.identifierEquals("UNSET")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("UNSET")) {
             while (lexer.token() == Token.IDENTIFIER) {
                 this.exprParser.name();
                 if (!lexer.nextIf(Token.COMMA)) {
                     break;
                 }
             }
-        } else if (lexer.identifierEquals("FINALIZE")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("FINALIZE")) {
             stmt.putAttribute("FINALIZE", true);
-        } else if (lexer.identifierEquals("MODIFY")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("MODIFY")) {
             accept(Token.AS);
             SQLStatement taskSql = parseStatement();
             stmt.putAttribute("TASK_SQL", taskSql);
@@ -775,37 +697,31 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
     private void parseTaskOptions(SQLAlterTableStatement stmt) {
         for (;;) {
-            if (lexer.identifierEquals("WAREHOUSE")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("WAREHOUSE")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("WAREHOUSE", this.exprParser.name());
                 continue;
             }
-            if (lexer.identifierEquals("SCHEDULE")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("SCHEDULE")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("SCHEDULE", this.exprParser.expr());
                 continue;
             }
-            if (lexer.identifierEquals("ALLOW_OVERLAPPING_EXECUTION")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("ALLOW_OVERLAPPING_EXECUTION")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("ALLOW_OVERLAPPING_EXECUTION", this.exprParser.expr());
                 continue;
             }
-            if (lexer.identifierEquals("COMMENT")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("COMMENT")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("COMMENT", this.exprParser.expr());
                 continue;
             }
-            if (lexer.identifierEquals("AFTER")) {
-                lexer.nextToken();
+            if (lexer.nextIfIdentifier("AFTER")) {
                 stmt.putAttribute("AFTER", this.exprParser.name());
                 continue;
             }
-            if (lexer.token() == Token.WHEN) {
-                lexer.nextToken();
+            if (lexer.nextIf(Token.WHEN)) {
                 stmt.putAttribute("WHEN", this.exprParser.expr());
                 continue;
             }
@@ -829,21 +745,16 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
         stmt.setName(this.exprParser.name());
 
-        if (lexer.identifierEquals("RENAME")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("RENAME")) {
             accept(Token.TO);
             stmt.putAttribute("NEW_NAME", this.exprParser.name());
         } else if (lexer.nextIf(Token.SET)) {
-            if (lexer.identifierEquals("COMMENT")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("COMMENT")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("COMMENT", this.exprParser.expr());
             }
-        } else if (lexer.identifierEquals("UNSET")) {
-            lexer.nextToken();
-            if (lexer.identifierEquals("COMMENT")) {
-                lexer.nextToken();
-            }
+        } else if (lexer.nextIfIdentifier("UNSET")) {
+            lexer.nextIfIdentifier("COMMENT");
         }
 
         return stmt;
@@ -865,30 +776,22 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
         stmt.setName(this.exprParser.name());
 
-        if (lexer.identifierEquals("RENAME")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("RENAME")) {
             accept(Token.TO);
             stmt.putAttribute("NEW_NAME", this.exprParser.name());
         } else if (lexer.nextIf(Token.SET)) {
-            if (lexer.identifierEquals("COMMENT")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("COMMENT")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("COMMENT", this.exprParser.expr());
             }
-        } else if (lexer.identifierEquals("UNSET")) {
-            lexer.nextToken();
-            if (lexer.identifierEquals("COMMENT")) {
-                lexer.nextToken();
-            }
-        } else if (lexer.identifierEquals("REFRESH")) {
-            lexer.nextToken();
-            if (lexer.identifierEquals("PREFIX")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+        } else if (lexer.nextIfIdentifier("UNSET")) {
+            lexer.nextIfIdentifier("COMMENT");
+        } else if (lexer.nextIfIdentifier("REFRESH")) {
+            if (lexer.nextIfIdentifier("PREFIX")) {
+                lexer.nextIf(Token.EQ);
                 this.exprParser.expr();
             }
-        } else if (lexer.identifierEquals("PAUSE") || lexer.identifierEquals("RESUME")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("PAUSE") || lexer.nextIfIdentifier("RESUME")) {
             stmt.putAttribute("ACTION", lexer.stringVal());
         }
 
@@ -899,12 +802,8 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
     public SQLStatement parseAlterFileFormat() {
         accept(Token.ALTER);
-        if (lexer.identifierEquals("FILE")) {
-            lexer.nextToken();
-        }
-        if (lexer.identifierEquals("FORMAT")) {
-            lexer.nextToken();
-        }
+        lexer.nextIfIdentifier("FILE");
+        lexer.nextIfIdentifier("FORMAT");
         return parseAlterFileFormatRest();
     }
 
@@ -916,14 +815,12 @@ public class SnowflakeStatementParser extends SQLStatementParser {
 
         stmt.setName(this.exprParser.name());
 
-        if (lexer.identifierEquals("RENAME")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("RENAME")) {
             accept(Token.TO);
             stmt.putAttribute("NEW_NAME", this.exprParser.name());
         } else if (lexer.nextIf(Token.SET)) {
-            if (lexer.identifierEquals("COMMENT")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("COMMENT")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("COMMENT", this.exprParser.expr());
             }
         }

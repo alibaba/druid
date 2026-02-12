@@ -30,28 +30,24 @@ public class SnowflakeCreateTableParser extends SQLCreateTableParser {
         }
 
         // Support LOCAL/GLOBAL keywords (compatibility)
-        if (lexer.identifierEquals("LOCAL") || lexer.identifierEquals("GLOBAL")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("LOCAL") || lexer.nextIfIdentifier("GLOBAL")) {
+            // consumed
         }
 
         // Support TRANSIENT keyword
-        if (lexer.identifierEquals("TRANSIENT")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("TRANSIENT")) {
             createTable.putAttribute("TRANSIENT", true);
         }
 
         // Support VOLATILE keyword
-        if (lexer.identifierEquals("VOLATILE")) {
-            lexer.nextToken();
+        if (lexer.nextIfIdentifier("VOLATILE")) {
             createTable.putAttribute("VOLATILE", true);
         }
 
         // Support TEMPORARY/TEMP keywords (as Token or identifier)
-        if (lexer.token() == Token.TEMPORARY) {
-            lexer.nextToken();
+        if (lexer.nextIf(Token.TEMPORARY)) {
             createTable.setTemporary(true);
-        } else if (lexer.identifierEquals("TEMPORARY") || lexer.identifierEquals("TEMP")) {
-            lexer.nextToken();
+        } else if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")) {
             createTable.setTemporary(true);
         }
 
@@ -103,50 +99,43 @@ public class SnowflakeCreateTableParser extends SQLCreateTableParser {
             }
 
             // DATA_RETENTION_TIME_IN_DAYS = n
-            if (lexer.identifierEquals("DATA_RETENTION_TIME_IN_DAYS")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("DATA_RETENTION_TIME_IN_DAYS")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("DATA_RETENTION_TIME_IN_DAYS", this.exprParser.expr());
                 continue;
             }
 
             // MAX_DATA_EXTENSION_TIME_IN_DAYS = n
-            if (lexer.identifierEquals("MAX_DATA_EXTENSION_TIME_IN_DAYS")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("MAX_DATA_EXTENSION_TIME_IN_DAYS")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("MAX_DATA_EXTENSION_TIME_IN_DAYS", this.exprParser.expr());
                 continue;
             }
 
             // CHANGE_TRACKING = TRUE/FALSE
-            if (lexer.identifierEquals("CHANGE_TRACKING")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("CHANGE_TRACKING")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("CHANGE_TRACKING", this.exprParser.expr());
                 continue;
             }
 
             // ENABLE_SCHEMA_EVOLUTION = TRUE/FALSE
-            if (lexer.identifierEquals("ENABLE_SCHEMA_EVOLUTION")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("ENABLE_SCHEMA_EVOLUTION")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("ENABLE_SCHEMA_EVOLUTION", this.exprParser.expr());
                 continue;
             }
 
             // DEFAULT_DDL_COLLATION = 'spec'
-            if (lexer.identifierEquals("DEFAULT_DDL_COLLATION")) {
-                lexer.nextToken();
-                accept(Token.EQ);
+            if (lexer.nextIfIdentifier("DEFAULT_DDL_COLLATION")) {
+                lexer.nextIf(Token.EQ);
                 stmt.putAttribute("DEFAULT_DDL_COLLATION", this.exprParser.expr());
                 continue;
             }
 
             // COPY GRANTS
-            if (lexer.identifierEquals("COPY")) {
-                lexer.nextToken();
-                if (lexer.token() == Token.GRANT) {
-                    lexer.nextToken();
+            if (lexer.nextIfIdentifier("COPY")) {
+                if (lexer.nextIf(Token.GRANT)) {
                     stmt.putAttribute("COPY_GRANTS", true);
                     continue;
                 }
@@ -154,12 +143,12 @@ public class SnowflakeCreateTableParser extends SQLCreateTableParser {
 
             // TAG
             if (lexer.nextIf(Token.WITH)) {
-                if (lexer.identifierEquals("TAG")) {
+                if (lexer.nextIfIdentifier("TAG")) {
                     parseTag(stmt);
                     continue;
                 }
             }
-            if (lexer.identifierEquals("TAG")) {
+            if (lexer.nextIfIdentifier("TAG")) {
                 parseTag(stmt);
                 continue;
             }
