@@ -1,0 +1,55 @@
+SELECT a::VARCHAR FROM t1
+--------------------
+SELECT CAST(a AS VARCHAR)
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT a::INTEGER::VARCHAR FROM t1
+--------------------
+SELECT CAST(CAST(a AS INTEGER) AS VARCHAR)
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT TRY_CAST('123' AS INTEGER)
+--------------------
+SELECT TRY_CAST('123' AS INTEGER)
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 WHERE name ILIKE '%test%'
+--------------------
+SELECT *
+FROM t1
+WHERE name ILIKE '%test%'
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 WHERE name NOT ILIKE '%test%'
+--------------------
+SELECT *
+FROM t1
+WHERE name NOT ILIKE '%test%'
+------------------------------------------------------------------------------------------------------------------------
+SELECT DISTINCT city FROM customers ORDER BY city ASC
+--------------------
+SELECT DISTINCT city
+FROM customers
+ORDER BY city ASC
+------------------------------------------------------------------------------------------------------------------------
+SELECT col1, col2 FROM t1 UNION ALL SELECT col1, col2 FROM t2
+--------------------
+SELECT col1, col2
+FROM t1
+UNION ALL
+SELECT col1, col2
+FROM t2
+------------------------------------------------------------------------------------------------------------------------
+SELECT col1, col2 FROM t1 EXCEPT SELECT col1, col2 FROM t2
+--------------------
+SELECT col1, col2
+FROM t1
+EXCEPT
+SELECT col1, col2
+FROM t2
+------------------------------------------------------------------------------------------------------------------------
+SELECT col1, col2 FROM t1 INTERSECT SELECT col1, col2 FROM t2
+--------------------
+SELECT col1, col2
+FROM t1
+INTERSECT
+SELECT col1, col2
+FROM t2
