@@ -1,0 +1,35 @@
+SELECT o.order_id, c.customer_name FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id;
+--------------------
+SELECT o.order_id, c.customer_name
+FROM orders o
+	INNER JOIN customers c ON o.customer_id = c.customer_id;
+------------------------------------------------------------------------------------------------------------------------
+SELECT c.customer_name, o.order_id FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id;
+--------------------
+SELECT c.customer_name, o.order_id
+FROM customers c
+	LEFT JOIN orders o ON c.customer_id = o.customer_id;
+------------------------------------------------------------------------------------------------------------------------
+SELECT o.order_id, c.customer_name FROM orders o RIGHT JOIN customers c ON o.customer_id = c.customer_id;
+--------------------
+SELECT o.order_id, c.customer_name
+FROM orders o
+	RIGHT JOIN customers c ON o.customer_id = c.customer_id;
+------------------------------------------------------------------------------------------------------------------------
+SELECT c.customer_name, o.order_id FROM customers c FULL OUTER JOIN orders o ON c.customer_id = o.customer_id;
+--------------------
+SELECT c.customer_name, o.order_id
+FROM customers c
+	FULL JOIN orders o ON c.customer_id = o.customer_id;
+------------------------------------------------------------------------------------------------------------------------
+SELECT a.name, b.category FROM table_a a CROSS JOIN table_b b;
+--------------------
+SELECT a.name, b.category
+FROM table_a a
+	CROSS JOIN table_b b;
+------------------------------------------------------------------------------------------------------------------------
+SELECT e1.employee_name AS employee, e2.employee_name AS manager FROM employees e1 JOIN employees e2 ON e1.manager_id = e2.employee_id;
+--------------------
+SELECT e1.employee_name AS employee, e2.employee_name AS manager
+FROM employees e1
+	JOIN employees e2 ON e1.manager_id = e2.employee_id;

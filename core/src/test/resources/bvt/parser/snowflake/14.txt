@@ -1,0 +1,16 @@
+SELECT id, array_col[0] AS first_element FROM arrays_table;
+--------------------
+SELECT id, array_col[0] AS first_element
+FROM arrays_table;
+------------------------------------------------------------------------------------------------------------------------
+SELECT PARSE_JSON('{"name": "John"}') AS json_data;
+--------------------
+SELECT PARSE_JSON('{"name": "John"}') AS json_data;
+------------------------------------------------------------------------------------------------------------------------
+SELECT ARRAY_CONSTRUCT(1, 2, 3) AS numbers;
+--------------------
+SELECT ARRAY_CONSTRUCT(1, 2, 3) AS numbers;
+------------------------------------------------------------------------------------------------------------------------
+SELECT OBJECT_CONSTRUCT('name', 'Alice') AS person;
+--------------------
+SELECT OBJECT_CONSTRUCT('name', 'Alice') AS person;

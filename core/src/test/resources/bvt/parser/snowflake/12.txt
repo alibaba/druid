@@ -1,0 +1,19 @@
+SELECT employee_id, salary, ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num FROM employees;
+--------------------
+SELECT employee_id, salary, ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num
+FROM employees;
+------------------------------------------------------------------------------------------------------------------------
+SELECT employee_id, department_id, salary, ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rank_in_dept FROM employees;
+--------------------
+SELECT employee_id, department_id, salary, ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rank_in_dept
+FROM employees;
+------------------------------------------------------------------------------------------------------------------------
+SELECT employee_id, salary, RANK() OVER (ORDER BY salary DESC) AS rnk FROM employees;
+--------------------
+SELECT employee_id, salary, RANK() OVER (ORDER BY salary DESC) AS rnk
+FROM employees;
+------------------------------------------------------------------------------------------------------------------------
+SELECT order_id, amount, LAG(amount) OVER (ORDER BY order_id) AS prev_amount FROM orders;
+--------------------
+SELECT order_id, amount, LAG(amount) OVER (ORDER BY order_id) AS prev_amount
+FROM orders;

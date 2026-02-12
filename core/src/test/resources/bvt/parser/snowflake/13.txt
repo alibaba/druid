@@ -1,0 +1,15 @@
+SELECT id, name FROM table_a UNION SELECT id, name FROM table_b;
+--------------------
+SELECT id, name
+FROM table_a
+UNION
+SELECT id, name
+FROM table_b;
+------------------------------------------------------------------------------------------------------------------------
+SELECT id, name FROM table_a UNION ALL SELECT id, name FROM table_b;
+--------------------
+SELECT id, name
+FROM table_a
+UNION ALL
+SELECT id, name
+FROM table_b;
