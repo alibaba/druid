@@ -113,8 +113,198 @@ import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class SQLParserUtils {
+    private static final ConcurrentMap<String, DialectParserProvider> DIALECT_PARSER_PROVIDERS = new ConcurrentHashMap<>();
+    private static final Map<DbType, StatementParserFactory> BUILTIN_STATEMENT_PARSER_FACTORIES = new EnumMap<>(DbType.class);
+    private static final Map<DbType, ExprParserFactory> BUILTIN_EXPR_PARSER_FACTORIES = new EnumMap<>(DbType.class);
+    private static final Map<DbType, LexerFactory> BUILTIN_LEXER_FACTORIES = new EnumMap<>(DbType.class);
+
+    private interface StatementParserFactory {
+        SQLStatementParser create(String sql, DbType dbType, SQLParserFeature... features);
+    }
+
+    private interface ExprParserFactory {
+        SQLExprParser create(String sql, DbType dbType, SQLParserFeature... features);
+    }
+
+    private interface LexerFactory {
+        Lexer create(String sql, DbType dbType, SQLParserFeature... features);
+    }
+
+    public interface DialectParserProvider {
+        SQLStatementParser createSQLStatementParser(String sql, DbType dbType, SQLParserFeature... features);
+
+        SQLExprParser createExprParser(String sql, DbType dbType, SQLParserFeature... features);
+
+        Lexer createLexer(String sql, DbType dbType, SQLParserFeature... features);
+    }
+
+    static {
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new OracleStatementParser(sql, features),
+                DbType.oracle, DbType.oceanbase_oracle, DbType.polardb2);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new MySqlStatementParser(sql, features),
+                DbType.mysql, DbType.tidb, DbType.mariadb, DbType.goldendb, DbType.oceanbase, DbType.drds, DbType.polardbx);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> {
+            MySqlStatementParser parser = new MySqlStatementParser(sql, features);
+            parser.dbType = dbType;
+            parser.exprParser.dbType = dbType;
+            return parser;
+        }, DbType.elastic_search);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new PGSQLStatementParser(sql, features),
+                DbType.postgresql, DbType.greenplum, DbType.edb);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new GaussDbStatementParser(sql, features), DbType.gaussdb);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new HologresStatementParser(sql, features), DbType.hologres);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new RedshiftStatementParser(sql, features), DbType.redshift);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new SQLServerStatementParser(sql, features),
+                DbType.sqlserver, DbType.jtds);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new SynapseStatementParser(sql, features), DbType.synapse);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new H2StatementParser(sql, features), DbType.h2, DbType.lealone);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new BlinkStatementParser(sql, features), DbType.blink);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new DB2StatementParser(sql, features), DbType.db2);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new OdpsStatementParser(sql, features), DbType.odps);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new PhoenixStatementParser(sql), DbType.phoenix);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new HiveStatementParser(sql, features), DbType.hive);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new PrestoStatementParser(sql, features), DbType.presto, DbType.trino);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new SuperSqlStatementParser(sql, features), DbType.supersql);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new AthenaStatementParser(sql, features), DbType.athena);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new BigQueryStatementParser(sql, features), DbType.bigquery);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new SnowflakeStatementParser(sql, features), DbType.snowflake);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new SparkStatementParser(sql, features), DbType.spark);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new DatabricksStatementParser(sql, features), DbType.databricks);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new CKStatementParser(sql, features), DbType.clickhouse);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new StarRocksStatementParser(sql, features), DbType.starrocks);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new InformixStatementParser(sql, features), DbType.informix);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new ImpalaStatementParser(sql, features), DbType.impala);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new DorisStatementParser(sql, features), DbType.doris);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new OscarStatementParser(sql, features), DbType.oscar);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new TDStatementParser(sql, features), DbType.teradata);
+
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new OracleExprParser(sql, features), DbType.oracle);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new MySqlExprParser(sql, features), DbType.mysql, DbType.mariadb);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> {
+            MySqlExprParser parser = new MySqlExprParser(sql, features);
+            parser.dbType = dbType;
+            return parser;
+        }, DbType.elastic_search);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new H2ExprParser(sql, features), DbType.h2, DbType.lealone);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new PGExprParser(sql, features),
+                DbType.postgresql, DbType.greenplum, DbType.edb);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new GaussDbExprParser(sql, features), DbType.gaussdb);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new HologresExprParser(sql, features), DbType.hologres);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new RedshiftExprParser(sql, features), DbType.redshift);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new SQLServerExprParser(sql, features), DbType.sqlserver, DbType.jtds);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new SynapseExprParser(sql, features), DbType.synapse);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new DB2ExprParser(sql, features), DbType.db2);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new OdpsExprParser(sql, features), DbType.odps);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new PhoenixExprParser(sql, features), DbType.phoenix);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new PrestoExprParser(sql, features), DbType.presto, DbType.trino);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new SuperSqlExprParser(sql, features), DbType.supersql);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new AthenaExprParser(sql, features), DbType.athena);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new HiveExprParser(sql, features), DbType.hive);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new SparkExprParser(sql, features), DbType.spark);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new DatabricksExprParser(sql, features), DbType.databricks);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new BigQueryExprParser(sql, features), DbType.bigquery);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new SnowflakeExprParser(sql, features), DbType.snowflake);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new CKExprParser(sql, features), DbType.clickhouse);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new OscarExprParser(sql, features), DbType.oscar);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new StarRocksExprParser(sql, features), DbType.starrocks);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new ImpalaExprParser(sql, features), DbType.impala);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new DorisExprParser(sql, features), DbType.doris);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new TDExprParser(sql, features), DbType.teradata);
+
+        registerBuiltinLexerFactory((sql, dbType, features) -> new OracleLexer(sql, features), DbType.oracle);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new MySqlLexer(sql, features), DbType.mysql, DbType.mariadb);
+        registerBuiltinLexerFactory((sql, dbType, features) -> {
+            MySqlLexer lexer = new MySqlLexer(sql, features);
+            lexer.dbType = dbType;
+            return lexer;
+        }, DbType.elastic_search);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new H2Lexer(sql, features), DbType.h2, DbType.lealone);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new PGLexer(sql, features),
+                DbType.postgresql, DbType.greenplum, DbType.edb);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new GaussDbLexer(sql, features), DbType.gaussdb);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new HologresLexer(sql, features), DbType.hologres);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new RedshiftLexer(sql, features), DbType.redshift);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new DB2Lexer(sql, features), DbType.db2);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new OdpsLexer(sql, features), DbType.odps);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new PhoenixLexer(sql, features), DbType.phoenix);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new PrestoLexer(sql, features), DbType.presto, DbType.trino);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new SuperSqlLexer(sql, features), DbType.supersql);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new AthenaLexer(sql, features), DbType.athena);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new SynapseLexer(sql, features), DbType.synapse);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new SparkLexer(sql), DbType.spark);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new DatabricksLexer(sql), DbType.databricks);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new OscarLexer(sql, features), DbType.oscar);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new CKLexer(sql, features), DbType.clickhouse);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new StarRocksLexer(sql, features), DbType.starrocks);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new HiveLexer(sql, features), DbType.hive);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new BigQueryLexer(sql, features), DbType.bigquery);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new SnowflakeLexer(sql, features), DbType.snowflake);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new ImpalaLexer(sql, features), DbType.impala);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new DorisLexer(sql, features), DbType.doris);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new TDLexer(sql, features), DbType.teradata);
+    }
+
+    private static void registerBuiltinStatementParserFactory(StatementParserFactory factory, DbType... dbTypes) {
+        for (DbType dbType : dbTypes) {
+            BUILTIN_STATEMENT_PARSER_FACTORIES.put(dbType, factory);
+        }
+    }
+
+    private static void registerBuiltinExprParserFactory(ExprParserFactory factory, DbType... dbTypes) {
+        for (DbType dbType : dbTypes) {
+            BUILTIN_EXPR_PARSER_FACTORIES.put(dbType, factory);
+        }
+    }
+
+    private static void registerBuiltinLexerFactory(LexerFactory factory, DbType... dbTypes) {
+        for (DbType dbType : dbTypes) {
+            BUILTIN_LEXER_FACTORIES.put(dbType, factory);
+        }
+    }
+
+    public static DialectParserProvider registerDialectParserProvider(String dialectKey, DialectParserProvider provider) {
+        String normalizedDialectKey = normalizeDialectKey(dialectKey);
+        if (provider == null) {
+            throw new IllegalArgumentException("provider must not be null");
+        }
+
+        return DIALECT_PARSER_PROVIDERS.put(normalizedDialectKey, provider);
+    }
+
+    public static DialectParserProvider unregisterDialectParserProvider(String dialectKey) {
+        String normalizedDialectKey = normalizeDialectKey(dialectKey);
+        return DIALECT_PARSER_PROVIDERS.remove(normalizedDialectKey);
+    }
+
+    public static DialectParserProvider getDialectParserProvider(String dialectKey) {
+        String normalizedDialectKey = normalizeDialectKey(dialectKey);
+        return DIALECT_PARSER_PROVIDERS.get(normalizedDialectKey);
+    }
+
+    private static String normalizeDialectKey(String dialectKey) {
+        if (dialectKey == null) {
+            throw new IllegalArgumentException("dialectKey must not be null");
+        }
+
+        String normalizedDialectKey = dialectKey.trim();
+        if (normalizedDialectKey.isEmpty()) {
+            throw new IllegalArgumentException("dialectKey must not be blank");
+        }
+
+        return normalizedDialectKey.toLowerCase(Locale.ROOT);
+    }
+
+    private static DialectParserProvider getDialectParserProvider(DbType dbType) {
+        if (dbType == null) {
+            return null;
+        }
+        return DIALECT_PARSER_PROVIDERS.get(dbType.name().toLowerCase(Locale.ROOT));
+    }
+
     public static SQLStatementParser createSQLStatementParser(String sql, DbType dbType) {
         SQLParserFeature[] features;
         if (DbType.odps == dbType || DbType.mysql == dbType) {
@@ -137,6 +327,14 @@ public class SQLParserUtils {
     }
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType, SQLParserFeature... features) {
+        DialectParserProvider provider = dbType == null ? null : getDialectParserProvider(dbType);
+        if (provider != null) {
+            DbType parsedDbType = DbType.of(dbType);
+            SQLStatementParser parser = provider.createSQLStatementParser(sql, parsedDbType == null ? DbType.other : parsedDbType, features);
+            if (parser != null) {
+                return parser;
+            }
+        }
         return createSQLStatementParser(sql, dbType == null ? null : DbType.valueOf(dbType), features);
     }
 
@@ -150,86 +348,18 @@ public class SQLParserUtils {
             dbType = DbType.other;
         }
 
-        switch (dbType) {
-            case oracle:
-            case oceanbase_oracle:
-            case polardb2:
-                return new OracleStatementParser(sql, features);
-            case mysql:
-            case tidb:
-            case mariadb:
-            case goldendb:
-            case oceanbase:
-            case drds:
-            case polardbx: {
-                return new MySqlStatementParser(sql, features);
-            }
-            case elastic_search: {
-                MySqlStatementParser parser = new MySqlStatementParser(sql, features);
-                parser.dbType = dbType;
-                parser.exprParser.dbType = dbType;
+        DialectParserProvider provider = getDialectParserProvider(dbType);
+        if (provider != null) {
+            SQLStatementParser parser = provider.createSQLStatementParser(sql, dbType, features);
+            if (parser != null) {
                 return parser;
             }
-            case postgresql:
-            case greenplum:
-            case edb:
-                return new PGSQLStatementParser(sql, features);
-            case gaussdb:
-                return new GaussDbStatementParser(sql, features);
-            case hologres:
-                return new HologresStatementParser(sql, features);
-            case redshift:
-                return new RedshiftStatementParser(sql, features);
-            case sqlserver:
-            case jtds:
-                return new SQLServerStatementParser(sql, features);
-            case synapse:
-                return new SynapseStatementParser(sql, features);
-            case h2:
-            case lealone:
-                return new H2StatementParser(sql, features);
-            case blink:
-                return new BlinkStatementParser(sql, features);
-            case db2:
-                return new DB2StatementParser(sql, features);
-            case odps:
-                return new OdpsStatementParser(sql, features);
-            case phoenix:
-                return new PhoenixStatementParser(sql);
-            case hive:
-                return new HiveStatementParser(sql, features);
-            case presto:
-            case trino:
-                return new PrestoStatementParser(sql, features);
-            case supersql:
-                return new SuperSqlStatementParser(sql, features);
-            case athena:
-                return new AthenaStatementParser(sql, features);
-            case bigquery:
-                return new BigQueryStatementParser(sql, features);
-            case snowflake:
-                return new SnowflakeStatementParser(sql, features);
-            case spark:
-                return new SparkStatementParser(sql, features);
-            case databricks:
-                return new DatabricksStatementParser(sql, features);
-            case clickhouse:
-                return new CKStatementParser(sql, features);
-            case starrocks:
-                return new StarRocksStatementParser(sql, features);
-            case informix:
-                return new InformixStatementParser(sql, features);
-            case impala:
-                return new ImpalaStatementParser(sql, features);
-            case doris:
-                return new DorisStatementParser(sql, features);
-            case oscar:
-                return new OscarStatementParser(sql, features);
-            case teradata:
-                return new TDStatementParser(sql, features);
-            default:
-                return new SQLStatementParser(sql, dbType, features);
         }
+        StatementParserFactory factory = BUILTIN_STATEMENT_PARSER_FACTORIES.get(dbType);
+        if (factory != null) {
+            return factory.create(sql, dbType, features);
+        }
+        return new SQLStatementParser(sql, dbType, features);
     }
 
     public static SQLExprParser createExprParser(String sql, DbType dbType, SQLParserFeature... features) {
@@ -237,73 +367,18 @@ public class SQLParserUtils {
             dbType = DbType.other;
         }
 
-        switch (dbType) {
-            case oracle:
-                return new OracleExprParser(sql, features);
-            case mysql:
-            case mariadb:
-                return new MySqlExprParser(sql, features);
-            case elastic_search: {
-                MySqlExprParser parser = new MySqlExprParser(sql, features);
-                parser.dbType = dbType;
+        DialectParserProvider provider = getDialectParserProvider(dbType);
+        if (provider != null) {
+            SQLExprParser parser = provider.createExprParser(sql, dbType, features);
+            if (parser != null) {
                 return parser;
             }
-            case h2:
-            case lealone:
-                return new H2ExprParser(sql, features);
-            case postgresql:
-            case greenplum:
-            case edb:
-                return new PGExprParser(sql, features);
-            case gaussdb:
-                return new GaussDbExprParser(sql, features);
-            case hologres:
-                return new HologresExprParser(sql, features);
-            case redshift:
-                return new RedshiftExprParser(sql, features);
-            case sqlserver:
-            case jtds:
-                return new SQLServerExprParser(sql, features);
-            case synapse:
-                return new SynapseExprParser(sql, features);
-            case db2:
-                return new DB2ExprParser(sql, features);
-            case odps:
-                return new OdpsExprParser(sql, features);
-            case phoenix:
-                return new PhoenixExprParser(sql, features);
-            case presto:
-            case trino:
-                return new PrestoExprParser(sql, features);
-            case supersql:
-                return new SuperSqlExprParser(sql, features);
-            case athena:
-                return new AthenaExprParser(sql, features);
-            case hive:
-                return new HiveExprParser(sql, features);
-            case spark:
-                return new SparkExprParser(sql, features);
-            case databricks:
-                return new DatabricksExprParser(sql, features);
-            case bigquery:
-                return new BigQueryExprParser(sql, features);
-            case snowflake:
-                return new SnowflakeExprParser(sql, features);
-            case clickhouse:
-                return new CKExprParser(sql, features);
-            case oscar:
-                return new OscarExprParser(sql, features);
-            case starrocks:
-                return new StarRocksExprParser(sql, features);
-            case impala:
-                return new ImpalaExprParser(sql, features);
-            case doris:
-                return new DorisExprParser(sql, features);
-            case teradata:
-                return new TDExprParser(sql, features);
-            default:
-                return new SQLExprParser(sql, dbType, features);
         }
+        ExprParserFactory factory = BUILTIN_EXPR_PARSER_FACTORIES.get(dbType);
+        if (factory != null) {
+            return factory.create(sql, dbType, features);
+        }
+        return new SQLExprParser(sql, dbType, features);
     }
 
     public static Lexer createLexer(String sql, DbType dbType) {
@@ -315,75 +390,22 @@ public class SQLParserUtils {
             dbType = DbType.other;
         }
 
-        switch (dbType) {
-            case oracle:
-                return new OracleLexer(sql, features);
-            case mysql:
-            case mariadb:
-                return new MySqlLexer(sql, features);
-            case elastic_search: {
-                MySqlLexer lexer = new MySqlLexer(sql, features);
-                lexer.dbType = dbType;
-                return lexer;
-            }
-            case h2:
-            case lealone:
-                return new H2Lexer(sql, features);
-            case postgresql:
-            case greenplum:
-            case edb:
-                return new PGLexer(sql, features);
-            case gaussdb:
-                return new GaussDbLexer(sql, features);
-            case hologres:
-                return new HologresLexer(sql, features);
-            case redshift:
-                return new RedshiftLexer(sql, features);
-            case db2:
-                return new DB2Lexer(sql, features);
-            case odps:
-                return new OdpsLexer(sql, features);
-            case phoenix:
-                return new PhoenixLexer(sql, features);
-            case presto:
-            case trino:
-                return new PrestoLexer(sql, features);
-            case supersql:
-                return new SuperSqlLexer(sql, features);
-            case athena:
-                return new AthenaLexer(sql, features);
-            case synapse:
-                return new SynapseLexer(sql, features);
-            case spark:
-                return new SparkLexer(sql);
-            case databricks:
-                return new DatabricksLexer(sql);
-            case oscar:
-                return new OscarLexer(sql, features);
-            case clickhouse:
-                return new CKLexer(sql, features);
-            case starrocks:
-                return new StarRocksLexer(sql, features);
-            case hive:
-                return new HiveLexer(sql, features);
-            case bigquery:
-                return new BigQueryLexer(sql, features);
-            case snowflake:
-                return new SnowflakeLexer(sql, features);
-            case impala:
-                return new ImpalaLexer(sql, features);
-            case doris:
-                return new DorisLexer(sql, features);
-            case teradata:
-                return new TDLexer(sql, features);
-            default: {
-                Lexer lexer = new Lexer(sql, null, dbType);
-                for (SQLParserFeature feature : features) {
-                    lexer.config(feature, true);
-                }
+        DialectParserProvider provider = getDialectParserProvider(dbType);
+        if (provider != null) {
+            Lexer lexer = provider.createLexer(sql, dbType, features);
+            if (lexer != null) {
                 return lexer;
             }
         }
+        LexerFactory factory = BUILTIN_LEXER_FACTORIES.get(dbType);
+        if (factory != null) {
+            return factory.create(sql, dbType, features);
+        }
+        Lexer lexer = new Lexer(sql, null, dbType);
+        for (SQLParserFeature feature : features) {
+            lexer.config(feature, true);
+        }
+        return lexer;
     }
 
     public static SQLSelectQueryBlock createSelectQueryBlock(DbType dbType) {

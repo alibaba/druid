@@ -13,12 +13,22 @@ The SQL parsing capability SHALL process SQL text through a layered pipeline of 
 
 ### Requirement: Dialect-Specific Parser Dispatch
 
-The parser framework SHALL dispatch to dialect-specific parser implementations based on `DbType`.
+The parser framework SHALL dispatch to dialect-specific parser implementations using a deterministic two-step strategy: resolve a registered dialect provider first, and fallback to built-in `DbType` parser dispatch when no provider is registered.
 
-#### Scenario: Parse SQL with selected dialect
-- **WHEN** caller provides SQL text with a specific `DbType`
-- **THEN** parser creation SHALL use the matching dialect parser family
-- **AND** dialect-specific grammar rules SHALL be applied during parsing
+#### Scenario: Use registered provider when available
+- **WHEN** caller parses SQL for a dialect key with a registered provider
+- **THEN** parser creation SHALL use the registered provider
+- **AND** built-in dispatch for that key SHALL NOT be selected for that call
+
+#### Scenario: Fallback to built-in dispatch when provider missing
+- **WHEN** caller parses SQL for a dialect key without a registered provider
+- **THEN** parser creation SHALL use the existing built-in `DbType` dispatch path
+- **AND** parse behavior SHALL remain equivalent to pre-registration baseline
+
+#### Scenario: Resume built-in behavior after unregister
+- **WHEN** a previously registered dialect key is unregistered and parsing is invoked again
+- **THEN** parser creation SHALL fallback to built-in `DbType` dispatch
+- **AND** no stale provider reference SHALL be used
 
 ### Requirement: Parser Behavior Preservation During Refactoring
 
