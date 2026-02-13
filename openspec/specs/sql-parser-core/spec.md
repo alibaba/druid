@@ -32,13 +32,13 @@ The parser framework SHALL dispatch to dialect-specific parser implementations u
 
 ### Requirement: Parser Behavior Preservation During Refactoring
 
-Snowflake parser internal refactoring SHALL preserve externally observable parsing behavior and SHALL allow a no-op implementation when eligible refactor candidates are absent.
+Parser internal refactoring SHALL preserve externally observable parsing behavior, including Snowflake token-consumption refactors and `SQLStatementParser` giant-method decomposition changes.
 
 **Previous Behavior:**
-Snowflake parser used explicit `if (lexer.token() == X) { lexer.nextToken(); }` and `if (lexer.identifierEquals("X")) { lexer.nextToken(); }` patterns in multiple parsing branches.
+Snowflake parser used explicit `if (lexer.token() == X) { lexer.nextToken(); }` and `if (lexer.identifierEquals("X")) { lexer.nextToken(); }` patterns in multiple parsing branches. `SQLStatementParser` also contained oversized methods with dense branch dispatch logic.
 
 **New Behavior:**
-Snowflake parser uses equivalent helper methods (`lexer.nextIf`, `lexer.nextIfIdentifier`) for conditional token consumption while preserving statement parsing outcomes and AST semantics.
+Snowflake parser uses equivalent helper methods (`lexer.nextIf`, `lexer.nextIfIdentifier`) for conditional token consumption while preserving statement parsing outcomes and AST semantics. `SQLStatementParser` giant methods may be decomposed into helper methods while keeping branch ordering, token advancement semantics, AST output, and parser diagnostics behavior-equivalent.
 
 **Migration Notes:**
 No external API or behavior migration is required. This is an internal readability refactor.
@@ -58,6 +58,21 @@ No external API or behavior migration is required. This is an internal readabili
 - **WHEN** the change is applied in this repository state
 - **THEN** no Java source rewrite SHALL be required
 - **AND** change completion SHALL rely on artifact/spec alignment and verification evidence
+
+#### Scenario: Preserve AST output after method decomposition
+- **WHEN** `SQLStatementParser` giant methods are decomposed into smaller helpers
+- **THEN** parsing the same SQL input SHALL produce equivalent statement/AST semantics as before decomposition
+- **AND** existing parser regression suites SHALL continue to pass
+
+#### Scenario: Preserve optional-branch token behavior in decomposed paths
+- **WHEN** optional grammar clauses are present or absent in inputs handled by decomposed methods
+- **THEN** token advancement and branch selection SHALL remain equivalent to pre-refactor behavior
+- **AND** no new acceptance or rejection behavior SHALL be introduced
+
+#### Scenario: Preserve parser error locality after decomposition
+- **WHEN** malformed SQL triggers parser errors in code paths touched by method decomposition
+- **THEN** exceptions SHALL retain meaningful token/location context
+- **AND** decomposition SHALL NOT suppress or generalize previously specific parse diagnostics
 
 ### Requirement: Parser Error Locality
 
