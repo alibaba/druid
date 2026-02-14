@@ -71,11 +71,11 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatementParser(String sql, DbType dbType) {
-        this(new SQLExprParser(sql, dbType));
+        this(SQLParserUtils.createExprParser(sql, dbType));
     }
 
     public SQLStatementParser(String sql, DbType dbType, SQLParserFeature... features) {
-        this(new SQLExprParser(sql, dbType, features));
+        this(SQLParserUtils.createExprParser(sql, dbType, features));
     }
 
     public SQLStatementParser(SQLExprParser exprParser) {
