@@ -1,3 +1,3 @@
-refresh materialized concurrently view v1 with no data
+refresh materialized view concurrently v1 with no data
 --------------------
-REFRESH MATERIALIZED CONCURRENTLY VIEW v1 WITH NO DATA
+REFRESH MATERIALIZED VIEW CONCURRENTLY v1 WITH NO DATA
