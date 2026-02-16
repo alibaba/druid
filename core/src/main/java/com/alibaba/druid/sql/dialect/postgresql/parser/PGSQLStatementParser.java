@@ -787,6 +787,18 @@ public class PGSQLStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     accept(Token.NULL);
                     alterColumn.setSetNotNull(true);
+                } else if (lexer.identifierEquals("DATA")) {
+                    // alter column ... set data type ...
+                    lexer.nextToken();
+                    accept(Token.TYPE);
+                    SQLDataType dataType = this.exprParser.parseDataType();
+                    alterColumn.setDataType(dataType);
+                    // using ...
+                    if (lexer.token() == USING) {
+                        lexer.nextToken();
+                        SQLExpr usingExpr = this.exprParser.expr();
+                        alterColumn.setUsing(usingExpr);
+                    }
                 } else {
                     accept(Token.DEFAULT);
                     SQLExpr defaultValue = this.exprParser.expr();
