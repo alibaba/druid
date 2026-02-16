@@ -98,6 +98,9 @@ public class SQLListExpr extends SQLExprImpl implements SQLReplaceable {
 
     public SQLListExpr clone() {
         SQLListExpr x = new SQLListExpr();
+        if (isParenthesized()) {
+            x.setParenthesized(true);
+        }
         for (SQLExpr item : items) {
             SQLExpr item2 = item.clone();
             item2.setParent(x);

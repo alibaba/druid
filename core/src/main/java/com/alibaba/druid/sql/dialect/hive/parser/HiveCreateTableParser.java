@@ -229,6 +229,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             for (; ; ) {
                 if (lexer.token() == Token.LPAREN) {
                     SQLListExpr list = new SQLListExpr();
+                    list.setParenthesized(true);
                     lexer.nextToken();
                     this.exprParser.exprList(list.getItems(), list);
                     accept(Token.RPAREN);
