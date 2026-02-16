@@ -1176,10 +1176,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (leftRational) {
                     this.indentCount++;
                 }
-                //print('(');
+                if (!((SQLBinaryOpExpr) left).isParenthesized()) {
+                    print('(');
+                }
                 printExpr(left, parameterized);
-               // print(')');
-
+                if (!((SQLBinaryOpExpr) left).isParenthesized()) {
+                    print(')');
+                }
                 if (leftRational) {
                     this.indentCount--;
                 }
