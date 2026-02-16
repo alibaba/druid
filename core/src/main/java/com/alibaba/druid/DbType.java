@@ -100,6 +100,7 @@ public enum DbType {
      */
     polardb2(1L << 57),
     synapse(1L << 58),
+    duckdb(1L << 59),
 
     ingres(0),
     cloudscape(0),
