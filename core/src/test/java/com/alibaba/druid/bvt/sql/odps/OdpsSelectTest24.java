@@ -208,7 +208,9 @@ public class OdpsSelectTest24 extends TestCase {
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(3, visitor.getTables().size());
-        assertEquals(19, visitor.getColumns().size());
+        // before:[bds_order_base_d.order_id, bds_order_base_d.member_id, bds_order_base_d.order_price, bds_order_base_d.region_id, bds_order_base_d.appoint_method, bds_order_base_d.category, bds_order_base_d.serve_types, bds_order_base_d.add_time, bds_order_base_d.dt, ods_order_tracking_time_d.order_id, ods_order_tracking_time_d.status, ods_order_tracking_time_d.dt, d_prov_city_district.region_id, d_prov_city_district.lvl2region_id, UNKNOWN.member_id, UNKNOWN.city_id, ta.add_date, UNKNOWN.add_date, UNKNOWN.is_open_order]
+        // after:[bds_order_base_d.order_id, bds_order_base_d.member_id, bds_order_base_d.order_price, bds_order_base_d.region_id, bds_order_base_d.appoint_method, bds_order_base_d.category, bds_order_base_d.serve_types, bds_order_base_d.add_time, bds_order_base_d.dt, ods_order_tracking_time_d.order_id, ods_order_tracking_time_d.status, ods_order_tracking_time_d.dt, d_prov_city_district.region_id, d_prov_city_district.lvl2region_id, ta.member_id, ta.city_id, ta.add_date, ta.is_open_order]
+        assertEquals(18, visitor.getColumns().size());
         assertEquals(13, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));

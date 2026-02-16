@@ -61,7 +61,9 @@ public class HiveSelectTest_13_cluster_by
         System.out.println("groupBy : " + visitor.getGroupByColumns());
 
         assertEquals(1, visitor.getTables().size());
-        assertEquals(5, visitor.getColumns().size());
+        // before:[LD_aly.fct_pay_ord_cn_di.buyer_id, LD_aly.fct_pay_ord_cn_di.seller_id, LD_aly.fct_pay_ord_cn_di.order_id, LD_aly.fct_pay_ord_cn_di.div_pay_amt, UNKNOWN.member_id]
+        // after:[LD_aly.fct_pay_ord_cn_di.buyer_id, LD_aly.fct_pay_ord_cn_di.seller_id, LD_aly.fct_pay_ord_cn_di.order_id, LD_aly.fct_pay_ord_cn_di.div_pay_amt, t1.dim_seller.member_id, t1.dim_buyer.member_id]
+        assertEquals(6, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
         assertEquals(0, visitor.getGroupByColumns().size());
 
