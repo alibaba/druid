@@ -56,6 +56,16 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
                 if (lastResultSet.isClosed()) {
                     resultSetTrace.set(lastIndex, resultSet);
                     return;
+                } else if (resultSet instanceof DruidPooledResultSet) {
+                    // Check if the raw result set has been closed
+                    // By default, only one ResultSet object per Statement object can be open at the same time
+                    DruidPooledResultSet druidPooledResultSet = (DruidPooledResultSet) lastResultSet;
+                    ResultSet rawResultSet = druidPooledResultSet.getRawResultSet();
+                    if (rawResultSet.isClosed()) {
+                        druidPooledResultSet.closed = true;
+                        resultSetTrace.set(lastIndex, resultSet);
+                        return;
+                    }
                 }
             } catch (SQLException ex) {
                 // skip
