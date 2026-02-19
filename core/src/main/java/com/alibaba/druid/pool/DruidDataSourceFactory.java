@@ -57,7 +57,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
     public static final String PROP_USERNAME = "username";
     public static final String PROP_VALIDATIONQUERY = "validationQuery";
     public static final String PROP_VALIDATIONQUERY_TIMEOUT = "validationQueryTimeout";
-    public static final String PROP_INITCONNECTIONSQLS = "initConnectionSqls";
+    public static final String PROP_CONNECTIONINITSQLS = "connectionInitSqls";
     public static final String PROP_ACCESSTOUNDERLYINGCONNECTIONALLOWED = "accessToUnderlyingConnectionAllowed";
     public static final String PROP_REMOVEABANDONED = "removeAbandoned";
     public static final String PROP_REMOVEABANDONEDTIMEOUT = "removeAbandonedTimeout";
@@ -97,7 +97,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
             PROP_USERNAME,
             PROP_VALIDATIONQUERY,
             PROP_VALIDATIONQUERY_TIMEOUT,
-            PROP_INITCONNECTIONSQLS,
+            PROP_CONNECTIONINITSQLS,
             PROP_ACCESSTOUNDERLYINGCONNECTIONALLOWED,
             PROP_REMOVEABANDONED,
             PROP_REMOVEABANDONEDTIMEOUT,
@@ -368,7 +368,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
             dataSource.setExceptionSorter(value);
         }
 
-        value = (String) properties.get(PROP_INITCONNECTIONSQLS);
+        value = (String) properties.get(PROP_CONNECTIONINITSQLS);
         if (value != null) {
             StringTokenizer tokenizer = new StringTokenizer(value, ";");
             dataSource.setConnectionInitSqls(Collections.list(tokenizer));
