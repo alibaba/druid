@@ -161,7 +161,7 @@ druid.common = function () {
         ajaxRequestForBasicInfo: function () {
             $.ajax({
                 type: 'POST',
-                url: druid.common.getAjaxUrl(druid.common.ajaxuri),
+                url: encodeURIComponent(druid.common.getAjaxUrl(druid.common.ajaxuri)),
                 success: function (data) {
                     druid.common.handleAjaxResult(data);
                 },
