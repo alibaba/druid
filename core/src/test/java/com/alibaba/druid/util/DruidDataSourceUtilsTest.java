@@ -393,6 +393,8 @@ public class DruidDataSourceUtilsTest extends TestCase {
         properties.put("druid.disableException", druidDisableException);
         String druidInstanceKey = "@lizongbo";
         properties.put("druid.instanceKey", druidInstanceKey);
+        String druidCloseConnOnFatalError = "false";
+        properties.put("druid.closeConnOnFatalError", druidCloseConnOnFatalError);
 
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.configFromPropeties(properties);
@@ -452,6 +454,7 @@ public class DruidDataSourceUtilsTest extends TestCase {
         assertEquals(druidKillWhenSocketReadTimeout, String.valueOf(dataSource.isKillWhenSocketReadTimeout()));
         //assertEquals(druidCheckExecuteTime, String.valueOf(dataSource.isCheckExecuteTime()));
         //assertEquals(druidLoadSpifilterSkip, String.valueOf(dataSource.isLoadSpifilterSkip()));
+        assertEquals(druidCloseConnOnFatalError, String.valueOf(dataSource.isCloseConnOnFatalError()));
     }
 
     public void testGenTestCode() {
