@@ -1,0 +1,58 @@
+SELECT region, product, SUM(amount) FROM sales GROUP BY CUBE (region, product)
+--------------------
+SELECT region, product, SUM(amount)
+FROM sales
+GROUP BY CUBE (region, product)
+------------------------------------------------------------------------------------------------------------------------
+SELECT region, product, SUM(amount) FROM sales GROUP BY ROLLUP (region, product)
+--------------------
+SELECT region, product, SUM(amount)
+FROM sales
+GROUP BY ROLLUP (region, product)
+------------------------------------------------------------------------------------------------------------------------
+SELECT region, product, SUM(amount) FROM sales GROUP BY GROUPING SETS ((region), (product), ())
+--------------------
+SELECT region, product, SUM(amount)
+FROM sales
+GROUP BY GROUPING SETS ((region), (product), ())
+------------------------------------------------------------------------------------------------------------------------
+SELECT department, AVG(salary) FROM employees GROUP BY department HAVING AVG(salary) > 50000
+--------------------
+SELECT department, AVG(salary)
+FROM employees
+GROUP BY department
+HAVING AVG(salary) > 50000
+------------------------------------------------------------------------------------------------------------------------
+SELECT id FROM t1 WHERE id IN (SELECT id FROM t2 WHERE status = 'active')
+--------------------
+SELECT id
+FROM t1
+WHERE id IN (
+	SELECT id
+	FROM t2
+	WHERE status = 'active'
+)
+------------------------------------------------------------------------------------------------------------------------
+SELECT id, name, (SELECT COUNT(*) FROM orders o WHERE o.customer_id = c.id) AS order_count FROM customers c
+--------------------
+SELECT id, name
+	, (
+		SELECT COUNT(*)
+		FROM orders o
+		WHERE o.customer_id = c.id
+	) AS order_count
+FROM customers c
+------------------------------------------------------------------------------------------------------------------------
+SELECT DATE_TRUNC('month', created_at) AS month, COUNT(*) FROM orders GROUP BY month ORDER BY month
+--------------------
+SELECT DATE_TRUNC('month', created_at) AS month, COUNT(*)
+FROM orders
+GROUP BY month
+ORDER BY month
+------------------------------------------------------------------------------------------------------------------------
+SELECT YEAR(created_at) AS yr, MONTH(created_at) AS mo, COUNT(*) FROM events GROUP BY yr, mo
+--------------------
+SELECT YEAR(created_at) AS yr, MONTH(created_at) AS mo
+	, COUNT(*)
+FROM events
+GROUP BY yr, mo

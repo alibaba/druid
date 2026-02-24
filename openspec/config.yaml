@@ -1,0 +1,127 @@
+schema: spec-driven
+
+# ============================================================================
+# Druid Project OpenSpec Configuration
+# ============================================================================
+
+# Project context - shown to AI when creating artifacts
+context: |
+  ## Project Overview
+
+  Druid is a high-performance JDBC connection pool implementation developed by Alibaba.
+  It provides efficient database connection management with monitoring and statistics capabilities.
+
+  ## Tech Stack
+  - **Language**: Java 8+ (target JDK 1.8)
+  - **Build Tool**: Apache Maven (multi-module project)
+  - **Core Framework**: JDBC, JMX (monitoring)
+  - **Integration**: Spring Boot 2.x/3.x/4.x starters
+  - **Testing**: JUnit 4.x
+
+  ## Project Structure
+  ```
+  druid/
+  ├── core/                           # Main Druid library
+  │   └── src/main/java/com/alibaba/druid/
+  │       ├── pool/                   # Connection pooling (DruidDataSource)
+  │       ├── sql/                    # SQL parsing and analysis
+  │       ├── stat/                   # Statistics collection
+  │       ├── wall/                   # SQL firewall/filtering
+  │       ├── filter/                 # Extensible filter mechanism
+  │       └── util/                   # Utilities
+  ├── druid-spring-boot-starter/      # Spring Boot 2.x integration
+  ├── druid-spring-boot-3-starter/    # Spring Boot 3.x integration (JDK 17+)
+  ├── druid-spring-boot-4-starter/    # Spring Boot 4.x integration (JDK 17+)
+  ├── druid-wrapper/                  # Wrapper module
+  └── druid-demo-petclinic/           # Demo application
+  ```
+
+  ## Code Conventions
+
+  ### Checkstyle Rules (enforced)
+  - No trailing whitespace
+  - Newline at end of file
+  - No multiple consecutive blank lines
+  - No blank line after opening brace
+  - Import order: `*`, `javax`, `java` (separated)
+  - Modifier order: public, protected, private, abstract, static, final, etc.
+  - Single space separator
+  - One statement per line
+  - Default comes last in switch statements
+  - Equals and hashCode must be paired
+  - Package names must be lowercase
+
+  ### Naming Conventions
+  - Classes: PascalCase (e.g., `DruidDataSource`)
+  - Methods/Variables: camelCase (e.g., `getConnection`, `maxActive`)
+  - Constants: UPPER_SNAKE_CASE (e.g., `DEFAULT_MAX_ACTIVE`)
+  - Generic type parameters: Single uppercase letter (e.g., `T`, `K`, `V`)
+
+  ### File Header
+  All Java files must include the Apache License header:
+  ```java
+  /*
+   * Copyright 1999-2018 Alibaba Group Holding Ltd.
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * ...
+   */
+  ```
+
+  ### Testing Conventions
+  - Unit tests in `src/test/java/`
+  - Benchmark tests in `benckmark/` subdirectory
+  - Bug fix tests named `Issue{number}.java` or `Bug_for_{description}.java`
+  - BVT (Build Verification Tests) in `bvt/` subdirectory
+
+  ## Module Dependencies
+  - Core module has no external runtime dependencies beyond JDBC
+  - Spring Boot starters depend on Spring Boot autoconfigure
+  - All modules use Maven for dependency management
+
+  ## Key Patterns
+  - Filter Chain pattern for extensibility (Filter, FilterChain)
+  - Factory pattern (DruidDataSourceFactory)
+  - MBean pattern for monitoring (DruidDataSourceMBean)
+  - Holder pattern for connection wrapping (DruidConnectionHolder)
+
+  ## Architecture Capability Baseline
+  Main specs in `openspec/specs/` map to architecture domains:
+  - `sql-parser-core`: lexer/parser/AST layering and dialect parser dispatch
+  - `connection-pool-core`: pool sizing, lifecycle tasks, and concurrent safety
+  - `filter-chain`: ordered filter execution and chain continuation contract
+  - `wall-security`: AST-based security checks and dialect-aware wall validation
+  - `monitoring-stat`: datasource/sql statistics collection and exposure channels
+
+  Changes should update these capabilities via delta specs at:
+  `openspec/changes/<change-name>/specs/<capability>/spec.md`
+
+# Per-artifact rules
+rules:
+  proposal:
+    - Clearly state which module(s) are affected (core, starter, etc.)
+    - Identify if this is a feature, enhancement, bug fix, or refactoring
+    - Consider backward compatibility implications
+    - List affected public APIs if any
+
+  specs:
+    - Use WHEN/THEN format for scenarios
+    - Main specs live in openspec/specs/<capability>/spec.md and MUST stay stable as the baseline
+    - Delta specs MUST use openspec/changes/<change>/specs/<capability>/spec.md structure
+    - For refactoring changes, capture behavioral equivalence scenarios (AST/test parity) instead of implementation details
+    - Include edge cases: null handling, empty inputs, concurrent access
+    - Consider thread-safety requirements (DruidDataSource is heavily concurrent)
+    - Document performance expectations where relevant
+
+  design:
+    - Include class diagram or flow diagram for complex changes
+    - Consider filter chain integration if modifying core
+    - Address thread-safety and concurrent access patterns
+    - Document any new configuration properties
+
+  tasks:
+    - Include checkstyle compliance verification
+    - Add unit tests for each functional change
+    - Consider benchmark tests for performance-critical changes
+    - Update VERSION.java if changing version-related code
+    - Update MBean interfaces if adding new monitoring capabilities
