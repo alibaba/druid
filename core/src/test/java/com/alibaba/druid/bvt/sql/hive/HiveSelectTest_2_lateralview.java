@@ -2,11 +2,10 @@ package com.alibaba.druid.bvt.sql.hive;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.testutil.ParserTestUtils;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-
-import java.util.List;
 
 public class HiveSelectTest_2_lateralview extends TestCase {
     public void test_select() throws Exception {
@@ -19,10 +18,7 @@ public class HiveSelectTest_2_lateralview extends TestCase {
                 "from pageAds\n" +
                 "\tlateral view explode(adid_list) adTable as adid;", SQLUtils.formatHive(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
-        SQLStatement stmt = statementList.get(0);
-
-        assertEquals(1, statementList.size());
+        SQLStatement stmt = ParserTestUtils.parseSingleStatement(sql, JdbcConstants.HIVE);
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);

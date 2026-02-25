@@ -34,7 +34,7 @@ public class MySqlLexer extends Lexer {
     public static DialectFeature MYSQL_FEATURE = new DialectFeature(
             Arrays.asList(
                     NextTokenPrefixN,
-                    ScanString2PutDoubleBackslash,
+                    ScanStringDoubleBackslash,
                     JoinRightTableWith,
                     PostNaturalJoin,
                     MultipleJoinOn,

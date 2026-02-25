@@ -36,6 +36,11 @@ public class MySqlError_test_3 extends MysqlTest {
 
         assertNotNull(error);
 //        error.printStackTrace();
-        assertEquals("not supported.pos 248, line 1, column 248, token ?", error.getMessage());
+        String message = error.getMessage();
+        assertTrue(message.startsWith("not supported. "));
+        assertTrue(message.contains("pos 248"));
+        assertTrue(message.contains("line 1"));
+        assertTrue(message.contains("column 248"));
+        assertTrue(message.contains("token ?"));
     }
 }

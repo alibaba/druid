@@ -59,7 +59,7 @@ public class SQLStatementParser extends SQLParser {
 
     protected Token expectedNextToken;
     private static final boolean END_TOKEN_CHECKING_ENABLED = !Boolean.getBoolean("druid_sql_parser_end_token_checking_disabled");
-    private static final String UNSUPPORT_TOKEN_MSG_PREFIX = "not supported.";
+    private static final String UNSUPPORT_TOKEN_MSG_PREFIX = "not supported. ";
     private enum StatementListParseResult {
         NOT_MATCHED,
         CONTINUE,
