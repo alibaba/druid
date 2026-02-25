@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleCreateTableParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -46,6 +47,11 @@ public class DMStatementParser extends OracleStatementParser {
     @Override
     public DbType getDbType() {
         return DbType.dm;
+    }
+
+    @Override
+    public OracleCreateTableParser getSQLCreateTableParser() {
+        return new OracleCreateTableParser((OracleExprParser) this.exprParser);
     }
 
     @Override

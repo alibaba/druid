@@ -16,9 +16,12 @@
 package com.alibaba.druid.sql.dialect.dm.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.Token;
 
 public class DMExprParser extends OracleExprParser {
     public DMExprParser(String sql) {
@@ -36,5 +39,29 @@ public class DMExprParser extends OracleExprParser {
     public DMExprParser(Lexer lexer) {
         super(lexer);
         this.dbType = DbType.dm;
+    }
+
+    @Override
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        if (lexer.token() == Token.IDENTITY) {
+            lexer.nextToken();
+
+            SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+
+                SQLIntegerExpr seed = (SQLIntegerExpr) this.primary();
+                accept(Token.COMMA);
+                SQLIntegerExpr increment = (SQLIntegerExpr) this.primary();
+                accept(Token.RPAREN);
+
+                identity.setSeed((Integer) seed.getNumber());
+                identity.setIncrement((Integer) increment.getNumber());
+            }
+
+            column.setIdentity(identity);
+        }
+
+        return super.parseColumnRest(column);
     }
 }

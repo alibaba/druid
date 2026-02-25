@@ -119,4 +119,27 @@ public class DM_CreateTableTest extends TestCase {
 
         SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
     }
+
+    public void test_create_table_with_identity() throws Exception {
+        String sql = "CREATE TABLE TEST.TEST_CREATE (\n" +
+                "id INT IDENTITY(1,1),\n" +
+                "name VARCHAR(64) NOT NULL,\n" +
+                "PRIMARY KEY (id)\n" +
+                ")";
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.dm);
+        assertEquals(1, statementList.size());
+
+        SQLStatement stmt = statementList.get(0);
+        assertTrue(stmt instanceof SQLCreateTableStatement);
+
+        SQLCreateTableStatement createStmt = (SQLCreateTableStatement) stmt;
+        assertEquals("TEST_CREATE", createStmt.getTableSource().getName().getSimpleName());
+        assertEquals(2, createStmt.getColumnDefinitions().size());
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("TEST.TEST_CREATE")));
+
+        SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
+    }
 }
