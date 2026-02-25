@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.dm.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -35,6 +36,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
+import java.util.List;
+
 public class DMStatementParser extends OracleStatementParser {
     public DMStatementParser(String sql) {
         super(new DMExprParser(sql));
@@ -47,6 +50,34 @@ public class DMStatementParser extends OracleStatementParser {
     @Override
     public DbType getDbType() {
         return DbType.dm;
+    }
+
+    @Override
+    public DMSelectParser createSQLSelectParser() {
+        return new DMSelectParser(this.exprParser, selectListCache);
+    }
+
+    @Override
+    public void parseStatementList(List<SQLStatement> statementList, int max, SQLObject parent) {
+        for (;;) {
+            if (max != -1 && statementList.size() >= max) {
+                return;
+            }
+
+            if (lexer.token() == Token.EOF || lexer.token() == Token.END || lexer.token() == Token.ELSE) {
+                return;
+            }
+
+            if (lexer.token() == Token.SELECT) {
+                SQLStatement stmt = parseSelect();
+                stmt.setParent(parent);
+                statementList.add(stmt);
+                continue;
+            }
+
+            super.parseStatementList(statementList, max, parent);
+            return;
+        }
     }
 
     @Override

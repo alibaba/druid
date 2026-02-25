@@ -138,4 +138,65 @@ public class DM_SelectTest extends TestCase {
 
         SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
     }
+
+    public void test_select_top() throws Exception {
+        String sql = "SELECT TOP 0,4 \"ID\", \"NAME\" FROM \"SYSDBA\".\"TEST1\"";
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.dm);
+        assertEquals(1, statementList.size());
+
+        SQLStatement stmt = statementList.get(0);
+        assertTrue(stmt instanceof SQLSelectStatement);
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+        assertEquals(1, visitor.getTables().size());
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("SYSDBA.TEST1")));
+
+        String formatted = SQLUtils.toSQLString(statementList, DbType.dm);
+        assertTrue(formatted.contains("TOP"));
+        assertFalse(formatted.contains("LIMIT"));
+
+        SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
+    }
+
+    public void test_select_top_count() throws Exception {
+        String sql = "SELECT TOP 4 \"ID\", \"NAME\" FROM \"SYSDBA\".\"TEST1\"";
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.dm);
+        assertEquals(1, statementList.size());
+
+        String formatted = SQLUtils.toSQLString(statementList, DbType.dm);
+        assertTrue(formatted.contains("TOP"));
+        assertFalse(formatted.contains("LIMIT"));
+
+        SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
+    }
+
+    public void test_select_listagg_with_connect_by() throws Exception {
+        String sql = "SELECT project_id, user_id, LISTAGG(path_module_id_seq, ',')" +
+                "  as moduleIds FROM ( SELECT DISTINCT t1.project_id, t1.user_id," +
+                " t2.path_module_id_seq FROM t_face_map_path_user t1 LEFT JOIN" +
+                " ( SELECT id, project_id,corp_code,is_delete," +
+                " TRIM(REGEXP_SUBSTR(path_module_id_seq, '[^,]+', 1, LEVEL))" +
+                " as path_module_id_seq from t_face_map_path" +
+                " CONNECT BY LEVEL <= (REGEXP_COUNT(path_module_id_seq, ',') + 1)" +
+                " AND id = PRIOR id AND PRIOR DBMS_RANDOM.VALUE IS NOT NULL ) t2" +
+                " on t1.path_id = t2.id and t1.project_id = t2.project_id" +
+                " WHERE t1.corp_code = ? and t2.corp_code = ?" +
+                " and t2.is_delete = FALSE AND t1.project_id = ?" +
+                " AND t1.user_id in (?, ?, ?, ?, ?, ?, ?)) GROUP BY project_id,user_id";
+
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.dm);
+        assertEquals(1, statementList.size());
+
+        SQLStatement stmt = statementList.get(0);
+        assertTrue(stmt instanceof SQLSelectStatement);
+
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        stmt.accept(visitor);
+        assertEquals(2, visitor.getTables().size());
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_face_map_path_user")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_face_map_path")));
+
+        SQLParseAssertUtil.assertParseSql(sql, DbType.dm);
+    }
 }

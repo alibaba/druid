@@ -16,11 +16,17 @@
 package com.alibaba.druid.sql.dialect.dm.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.dm.ast.stmt.DMAlterTableOption;
+import com.alibaba.druid.sql.dialect.dm.parser.DMSelectParser;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 
 /**
@@ -28,6 +34,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
  * 继承 Oracle 输出访问器，达梦兼容 Oracle 语法
  */
 public class DMOutputVisitor extends OracleOutputVisitor implements DMASTVisitor {
+    private static final String ATTRIBUTE_DM_TOP = DMSelectParser.ATTRIBUTE_DM_TOP;
+
     public DMOutputVisitor(StringBuilder appender) {
         super(appender);
         this.dbType = DbType.dm;
@@ -36,6 +44,67 @@ public class DMOutputVisitor extends OracleOutputVisitor implements DMASTVisitor
     public DMOutputVisitor(StringBuilder appender, boolean printPostSemi) {
         super(appender, printPostSemi);
         this.dbType = DbType.dm;
+    }
+
+    @Override
+    public boolean visit(OracleSelectQueryBlock x) {
+        if (!Boolean.TRUE.equals(x.getAttribute(ATTRIBUTE_DM_TOP))) {
+            return super.visit(x);
+        }
+
+        if (isPrettyFormat() && x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+        if (x.isParenthesized()) {
+            print('(');
+        }
+        print0(ucase ? "SELECT " : "select ");
+
+        if (x.getHintsSize() > 0) {
+            printAndAccept(x.getHints(), ", ");
+            print(' ');
+        }
+
+        if (SQLSetQuantifier.ALL == x.getDistionOption()) {
+            print0(ucase ? "ALL " : "all ");
+        } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
+            print0(ucase ? "DISTINCT " : "distinct ");
+        } else if (SQLSetQuantifier.UNIQUE == x.getDistionOption()) {
+            print0(ucase ? "UNIQUE " : "unique ");
+        }
+
+        printDmTop(x.getLimit());
+        printSelectList(x.getSelectList());
+        printInto(x);
+        printFrom(x);
+        printWhere(x);
+        printHierarchical(x);
+        printGroupBy(x);
+        printModel(x);
+        printOrderBy(x);
+
+        if (x.isForUpdate()) {
+            println();
+            print0(ucase ? "FOR UPDATE" : "for update");
+            if (x.getForUpdateOfSize() > 0) {
+                print(" OF ");
+                printAndAccept(x.getForUpdateOf(), ", ");
+            }
+
+            if (x.isNoWait()) {
+                print0(ucase ? " NOWAIT" : " nowait");
+            } else if (x.isSkipLocked()) {
+                print0(ucase ? " SKIP LOCKED" : " skip locked");
+            } else if (x.getWaitTime() != null) {
+                print0(ucase ? " WAIT " : " wait ");
+                x.getWaitTime().accept(this);
+            }
+        }
+
+        if (x.isParenthesized()) {
+            print(')');
+        }
+        return false;
     }
 
     @Override
@@ -112,5 +181,35 @@ public class DMOutputVisitor extends OracleOutputVisitor implements DMASTVisitor
         } else if ("REUSE".equals(storageOption)) {
             print0(ucase ? " REUSE STORAGE" : " reuse storage");
         }
+    }
+
+    private void printDmTop(SQLLimit limit) {
+        if (limit == null) {
+            return;
+        }
+
+        SQLExpr offset = limit.getOffset();
+        SQLExpr rowCount = limit.getRowCount();
+
+        if (rowCount == null) {
+            return;
+        }
+
+        print0(ucase ? "TOP " : "top ");
+        if (offset != null) {
+            offset.accept(this);
+            print(',');
+        }
+        rowCount.accept(this);
+        print(' ');
+    }
+
+    private void printModel(OracleSelectQueryBlock x) {
+        ModelClause model = x.getModelClause();
+        if (model == null) {
+            return;
+        }
+        println();
+        model.accept(this);
     }
 }

@@ -64,4 +64,9 @@ public class DMExprParser extends OracleExprParser {
 
         return super.parseColumnRest(column);
     }
+
+    @Override
+    public DMSelectParser createSelectParser() {
+        return new DMSelectParser(this);
+    }
 }
