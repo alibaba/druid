@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.dm.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.dm.ast.stmt.DMAlterTableOption;
@@ -104,7 +105,7 @@ public class DMOutputVisitor extends OracleOutputVisitor implements DMASTVisitor
         return super.visit(x);
     }
 
-    private void appendStorageOption(com.alibaba.druid.sql.ast.SQLObject x) {
+    private void appendStorageOption(SQLObject x) {
         Object storageOption = x.getAttribute("dm.storage");
         if ("DROP".equals(storageOption)) {
             print0(ucase ? " DROP STORAGE" : " drop storage");
