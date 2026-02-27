@@ -59,18 +59,23 @@ public class SQLStatementParser extends SQLParser {
 
     protected Token expectedNextToken;
     private static final boolean END_TOKEN_CHECKING_ENABLED = !Boolean.getBoolean("druid_sql_parser_end_token_checking_disabled");
-    private static final String UNSUPPORT_TOKEN_MSG_PREFIX = "not supported.";
+    private static final String UNSUPPORT_TOKEN_MSG_PREFIX = "not supported. ";
+    private enum StatementListParseResult {
+        NOT_MATCHED,
+        CONTINUE,
+        RETURN
+    }
 
     public SQLStatementParser(String sql) {
         this(sql, null);
     }
 
     public SQLStatementParser(String sql, DbType dbType) {
-        this(new SQLExprParser(sql, dbType));
+        this(SQLParserUtils.createExprParser(sql, dbType));
     }
 
     public SQLStatementParser(String sql, DbType dbType, SQLParserFeature... features) {
-        this(new SQLExprParser(sql, dbType, features));
+        this(SQLParserUtils.createExprParser(sql, dbType, features));
     }
 
     public SQLStatementParser(SQLExprParser exprParser) {
@@ -476,227 +481,11 @@ public class SQLStatementParser extends SQLParser {
                     break;
             }
 
-            if (lexer.token == Token.LBRACE || lexer.identifierEquals("CALL")) {
-                SQLCallStatement stmt = parseCall();
-                statementList.add(stmt);
-                continue;
+            StatementListParseResult parseResult = parseStatementListNonStandard(statementList, parent);
+            if (parseResult == StatementListParseResult.RETURN) {
+                return;
             }
-
-            if (lexer.identifierEquals("UPSERT")) {
-                SQLStatement stmt = parseUpsert();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals("LIST")) {
-                Lexer.SavePoint mark = lexer.mark();
-
-                SQLStatement stmt = parseList();
-                if (stmt != null) {
-                    statementList.add(stmt);
-                    continue;
-                } else {
-                    lexer.reset(mark);
-                }
-            }
-
-            if (lexer.identifierEquals("RENAME")) {
-                SQLStatement stmt = parseRename();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals("RELEASE")) {
-                SQLStatement stmt = parseReleaseSavePoint();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals("SAVEPOINT")) {
-                SQLStatement stmt = parseSavePoint();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals("REFRESH")) {
-                SQLStatement stmt = parseRefresh();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals("SETPROJECT")) {
-                SQLStatement stmt = parseSet();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals(FnvHash.Constants.COPY)) {
-                SQLStatement stmt = parseCopy();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.token == Token.DESC || lexer.identifierEquals(FnvHash.Constants.DESCRIBE)) {
-                SQLStatement stmt = parseDescribe();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals("ROLLBACK")) {
-                SQLStatement stmt = parseRollback();
-                statementList.add(stmt);
-
-                if (parent instanceof SQLBlockStatement
-                        && dialectFeatureEnabled(ParseStatementListRollbackReturn)) {
-                    return;
-                }
-
-                continue;
-            }
-
-            if (lexer.identifierEquals("DUMP")) {
-                SQLStatement stmt = parseDump();
-                statementList.add(stmt);
-
-                continue;
-            }
-
-            if (lexer.identifierEquals(FnvHash.Constants.COMMIT)) {
-                SQLStatement stmt = parseCommit();
-
-                statementList.add(stmt);
-
-                if (parent instanceof SQLBlockStatement
-                        && dialectFeatureEnabled(ParseStatementListCommitReturn)) {
-                    return;
-                }
-
-                continue;
-            }
-
-            if (lexer.identifierEquals(FnvHash.Constants.RETURN)) {
-                SQLStatement stmt = parseReturn();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals(FnvHash.Constants.PURGE)) {
-                SQLStatement stmt = parsePurge();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals(FnvHash.Constants.FLASHBACK)) {
-                SQLStatement stmt = parseFlashback();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals(FnvHash.Constants.WHO)) {
-                SQLStatement stmt = parseWhoami();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.token == Token.FOR) {
-                SQLStatement stmt = parseFor();
-                statementList.add(stmt);
-                stmt.setParent(parent);
-                continue;
-            }
-
-            if (lexer.token == Token.LPAREN) {
-                Lexer.SavePoint savePoint = lexer.markOut();
-
-                int parenCount = 0;
-                do {
-                    lexer.nextToken();
-                    parenCount++;
-                } while (lexer.token == Token.LPAREN);
-
-                if (lexer.token == RPAREN && parenCount == 1 && dialectFeatureEnabled(ParseStatementListLparenContinue)) {
-                    lexer.nextToken();
-                    continue;
-                }
-
-                if (lexer.token == Token.SELECT) {
-                    lexer.reset(savePoint);
-                    SQLStatement stmt = parseSelect();
-                    statementList.add(stmt);
-                    continue;
-                } else {
-                    throw new ParserException("TODO " + lexer.info());
-                }
-            }
-
-            if (lexer.token == Token.VALUES) {
-                SQLValuesTableSource values = this.createSQLSelectParser().parseValues();
-                SQLSelectStatement stmt = new SQLSelectStatement();
-                stmt.setSelect(
-                        new SQLSelect(values)
-                );
-                statementList.add(stmt);
-                stmt.setParent(parent);
-                continue;
-            }
-
-            if (lexer.identifierEquals("OPTIMIZE")) {
-                SQLStatement stmt = parseOptimize();
-                statementList.add(stmt);
-                stmt.setParent(parent);
-                continue;
-            }
-
-            if (lexer.token == WHILE) {
-                SQLStatement stmt = parseWhile();
-                statementList.add(stmt);
-                stmt.setParent(parent);
-                continue;
-            }
-
-            if (lexer.token == LOOP) {
-                SQLStatement stmt = parseLoop();
-                statementList.add(stmt);
-                stmt.setParent(parent);
-                continue;
-            }
-
-            if (lexer.token == CONTINUE) {
-                SQLStatement stmt = parseContinue();
-                statementList.add(stmt);
-                stmt.setParent(parent);
-                continue;
-            }
-
-            if (lexer.token == LEAVE) {
-                SQLStatement stmt = parseLeave();
-                statementList.add(stmt);
-                stmt.setParent(parent);
-                continue;
-            }
-
-            if (lexer.identifierEquals("EXECUTE")) {
-                SQLStatement stmt = parseExecute();
-                statementList.add(stmt);
-                stmt.setParent(parent);
-                continue;
-            }
-
-            if (lexer.identifierEquals("START")) {
-                SQLStartTransactionStatement stmt = parseStart();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.token == COMPUTE) {
-                SQLStatement stmt = parseCompute();
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.identifierEquals("RESET")) {
-                SQLStatement stmt = parseReset();
-                statementList.add(stmt);
+            if (parseResult == StatementListParseResult.CONTINUE) {
                 continue;
             }
 
@@ -718,6 +507,227 @@ public class SQLStatementParser extends SQLParser {
             throw new ParserException(UNSUPPORT_TOKEN_MSG_PREFIX + lexer.info());
         }
 
+    }
+
+    private StatementListParseResult parseStatementListNonStandard(List<SQLStatement> statementList, SQLObject parent) {
+        if (lexer.token == Token.LBRACE || lexer.identifierEquals("CALL")) {
+            SQLCallStatement stmt = parseCall();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("UPSERT")) {
+            SQLStatement stmt = parseUpsert();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("LIST")) {
+            Lexer.SavePoint mark = lexer.mark();
+            SQLStatement stmt = parseList();
+            if (stmt != null) {
+                statementList.add(stmt);
+                return StatementListParseResult.CONTINUE;
+            } else {
+                lexer.reset(mark);
+            }
+        }
+
+        if (lexer.identifierEquals("RENAME")) {
+            SQLStatement stmt = parseRename();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("RELEASE")) {
+            SQLStatement stmt = parseReleaseSavePoint();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("SAVEPOINT")) {
+            SQLStatement stmt = parseSavePoint();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("REFRESH")) {
+            SQLStatement stmt = parseRefresh();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("SETPROJECT")) {
+            SQLStatement stmt = parseSet();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.COPY)) {
+            SQLStatement stmt = parseCopy();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.token == Token.DESC || lexer.identifierEquals(FnvHash.Constants.DESCRIBE)) {
+            SQLStatement stmt = parseDescribe();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("ROLLBACK")) {
+            SQLStatement stmt = parseRollback();
+            statementList.add(stmt);
+            if (parent instanceof SQLBlockStatement
+                    && dialectFeatureEnabled(ParseStatementListRollbackReturn)) {
+                return StatementListParseResult.RETURN;
+            }
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("DUMP")) {
+            SQLStatement stmt = parseDump();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.COMMIT)) {
+            SQLStatement stmt = parseCommit();
+            statementList.add(stmt);
+            if (parent instanceof SQLBlockStatement
+                    && dialectFeatureEnabled(ParseStatementListCommitReturn)) {
+                return StatementListParseResult.RETURN;
+            }
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.RETURN)) {
+            SQLStatement stmt = parseReturn();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.PURGE)) {
+            SQLStatement stmt = parsePurge();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.FLASHBACK)) {
+            SQLStatement stmt = parseFlashback();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.WHO)) {
+            SQLStatement stmt = parseWhoami();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.token == Token.FOR) {
+            SQLStatement stmt = parseFor();
+            statementList.add(stmt);
+            stmt.setParent(parent);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.token == Token.LPAREN) {
+            Lexer.SavePoint savePoint = lexer.markOut();
+
+            int parenCount = 0;
+            do {
+                lexer.nextToken();
+                parenCount++;
+            } while (lexer.token == Token.LPAREN);
+
+            if (lexer.token == RPAREN && parenCount == 1 && dialectFeatureEnabled(ParseStatementListLparenContinue)) {
+                lexer.nextToken();
+                return StatementListParseResult.CONTINUE;
+            }
+
+            if (lexer.token == Token.SELECT) {
+                lexer.reset(savePoint);
+                SQLStatement stmt = parseSelect();
+                statementList.add(stmt);
+                return StatementListParseResult.CONTINUE;
+            } else {
+                throw new ParserException("TODO " + lexer.info());
+            }
+        }
+
+        if (lexer.token == Token.VALUES) {
+            SQLValuesTableSource values = this.createSQLSelectParser().parseValues();
+            SQLSelectStatement stmt = new SQLSelectStatement();
+            stmt.setSelect(
+                    new SQLSelect(values)
+            );
+            statementList.add(stmt);
+            stmt.setParent(parent);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("OPTIMIZE")) {
+            SQLStatement stmt = parseOptimize();
+            statementList.add(stmt);
+            stmt.setParent(parent);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.token == WHILE) {
+            SQLStatement stmt = parseWhile();
+            statementList.add(stmt);
+            stmt.setParent(parent);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.token == LOOP) {
+            SQLStatement stmt = parseLoop();
+            statementList.add(stmt);
+            stmt.setParent(parent);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.token == CONTINUE) {
+            SQLStatement stmt = parseContinue();
+            statementList.add(stmt);
+            stmt.setParent(parent);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.token == LEAVE) {
+            SQLStatement stmt = parseLeave();
+            statementList.add(stmt);
+            stmt.setParent(parent);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("EXECUTE")) {
+            SQLStatement stmt = parseExecute();
+            statementList.add(stmt);
+            stmt.setParent(parent);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("START")) {
+            SQLStartTransactionStatement stmt = parseStart();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.token == COMPUTE) {
+            SQLStatement stmt = parseCompute();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        if (lexer.identifierEquals("RESET")) {
+            SQLStatement stmt = parseReset();
+            statementList.add(stmt);
+            return StatementListParseResult.CONTINUE;
+        }
+
+        return StatementListParseResult.NOT_MATCHED;
     }
 
     public SQLStatement parseExecute() {

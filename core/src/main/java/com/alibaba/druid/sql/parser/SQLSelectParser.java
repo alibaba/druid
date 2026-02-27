@@ -2041,7 +2041,7 @@ public class SQLSelectParser extends SQLParser {
                     join.addCondition(joinOn2);
                 }
 
-                if (dialectFeatureEnabled(UDJ) && lexer.identifierEquals(FnvHash.Constants.USING)) {
+                if (dialectFeatureEnabled(UserDefinedJoin) && lexer.identifierEquals(FnvHash.Constants.USING)) {
                     SQLJoinTableSource.UDJ udj = new SQLJoinTableSource.UDJ();
                     lexer.nextToken();
                     udj.setFunction(this.exprParser.name());

@@ -1861,64 +1861,7 @@ public class Lexer {
                     hasSpecial = true;
                 }
 
-                switch (ch) {
-                    case '0':
-                        putChar('\0');
-                        break;
-                    case '\'':
-                        putChar('\'');
-                        break;
-                    case '"':
-                        putChar('"');
-                        break;
-                    case 'b':
-                        putChar('\b');
-                        break;
-                    case 'n':
-                        putChar('\n');
-                        break;
-                    case 'r':
-                        putChar('\r');
-                        break;
-                    case 't':
-                        putChar('\t');
-                        break;
-                    case '\\':
-                        putChar('\\');
-                        break;
-                    case 'Z':
-                        putChar((char) 0x1A); // ctrl + Z
-                        break;
-                    case '%':
-                        if (dialectFeatureEnabled(ScanString2PutDoubleBackslash)) {
-                            putChar('\\');
-                        }
-                        putChar('%');
-                        break;
-                    case '_':
-                        if (dialectFeatureEnabled(ScanString2PutDoubleBackslash)) {
-                            putChar('\\');
-                        }
-                        putChar('_');
-                        break;
-                    case 'u':
-                        if ((features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
-                            char c1 = charAt(++pos);
-                            char c2 = charAt(++pos);
-                            char c3 = charAt(++pos);
-                            char c4 = charAt(++pos);
-
-                            int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
-
-                            putChar((char) intVal);
-                        } else {
-                            putChar(ch);
-                        }
-                        break;
-                    default:
-                        putChar(ch);
-                        break;
-                }
+                scanString2PutEscapedChar(ch, true);
 
                 continue;
             }
@@ -2039,50 +1982,7 @@ public class Lexer {
                     hasSpecial = true;
                 }
 
-                switch (ch) {
-                    case '0':
-                        putChar('\0');
-                        break;
-                    case '\'':
-                        putChar('\'');
-                        break;
-                    case '"':
-                        putChar('"');
-                        break;
-                    case 'b':
-                        putChar('\b');
-                        break;
-                    case 'n':
-                        putChar('\n');
-                        break;
-                    case 'r':
-                        putChar('\r');
-                        break;
-                    case 't':
-                        putChar('\t');
-                        break;
-                    case '\\':
-                        putChar('\\');
-                        break;
-                    case 'Z':
-                        putChar((char) 0x1A); // ctrl + Z
-                        break;
-                    case '%':
-                        if (dialectFeatureEnabled(ScanString2PutDoubleBackslash)) {
-                            putChar('\\');
-                        }
-                        putChar('%');
-                        break;
-                    case '_':
-                        if (dialectFeatureEnabled(ScanString2PutDoubleBackslash)) {
-                            putChar('\\');
-                        }
-                        putChar('_');
-                        break;
-                    default:
-                        putChar(ch);
-                        break;
-                }
+                scanString2PutEscapedChar(ch, false);
 
                 continue;
             }
@@ -2121,6 +2021,65 @@ public class Lexer {
             stringVal = subString(mark + 1, bufPos);
         } else {
             stringVal = new String(buf, 0, bufPos);
+        }
+    }
+
+    private void scanString2PutEscapedChar(char escaped, boolean supportUnicodeCodePoint) {
+        switch (escaped) {
+            case '0':
+                putChar('\0');
+                return;
+            case '\'':
+                putChar('\'');
+                return;
+            case '"':
+                putChar('"');
+                return;
+            case 'b':
+                putChar('\b');
+                return;
+            case 'n':
+                putChar('\n');
+                return;
+            case 'r':
+                putChar('\r');
+                return;
+            case 't':
+                putChar('\t');
+                return;
+            case '\\':
+                putChar('\\');
+                return;
+            case 'Z':
+                putChar((char) 0x1A); // ctrl + Z
+                return;
+            case '%':
+                if (dialectFeatureEnabled(ScanStringDoubleBackslash)) {
+                    putChar('\\');
+                }
+                putChar('%');
+                return;
+            case '_':
+                if (dialectFeatureEnabled(ScanStringDoubleBackslash)) {
+                    putChar('\\');
+                }
+                putChar('_');
+                return;
+            case 'u':
+                if (supportUnicodeCodePoint
+                        && (features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
+                    char c1 = charAt(++pos);
+                    char c2 = charAt(++pos);
+                    char c3 = charAt(++pos);
+                    char c4 = charAt(++pos);
+                    int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
+                    putChar((char) intVal);
+                    return;
+                }
+                putChar(escaped);
+                return;
+            default:
+                putChar(escaped);
         }
     }
 

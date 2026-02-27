@@ -17,19 +17,17 @@ package com.alibaba.druid.bvt.sql.hive;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.testutil.ParserTestUtils;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-
-import java.util.List;
 
 public class HiveSelectTest_distribute
         extends TestCase {
     public void test_0() throws Exception {
         String sql = "select * from LD_aly.fct_pay_ord_cn_di t1 distribute by buyer_id sort by seller_id";
 
-        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
-        SQLStatement stmt = statementList.get(0);
+        SQLStatement stmt = ParserTestUtils.parseSingleStatement(sql, JdbcConstants.HIVE);
 
         assertEquals("SELECT *\n" +
                 "FROM LD_aly.fct_pay_ord_cn_di t1\n" +
@@ -40,8 +38,6 @@ public class HiveSelectTest_distribute
                 "FROM LD_aly.fct_pay_ord_cn_di t1\n" +
                 "DISTRIBUTE BY buyer_id\n" +
                 "SORT BY seller_id", SQLUtils.toSQLString(stmt));
-
-        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.HIVE);
         stmt.accept(visitor);

@@ -116,15 +116,32 @@ public interface SQLASTVisitor {
     default void preVisit(SQLObject x) {
     }
 
+    /**
+     * Compatibility-first default entry for table-source visit paths.
+     * Specific table-source visit methods delegate here unless overridden.
+     */
+    default boolean visitTableSource(SQLTableSource x) {
+        return true;
+    }
+
+    /**
+     * Compatibility-first default exit for table-source visit paths.
+     * Specific table-source endVisit methods delegate here unless overridden.
+     */
+    default void endVisitTableSource(SQLTableSource x) {
+    }
+
     default boolean visit(SQLAllColumnExpr x) {
         return true;
     }
 
     default boolean visit(SQLTableSourceImpl x) {
-        return true;
+        return visitTableSource(x);
     }
 
-    default void endVisit(SQLTableSourceImpl x) {}
+    default void endVisit(SQLTableSourceImpl x) {
+        endVisitTableSource(x);
+    }
     default boolean visit(SQLBetweenExpr x) {
         return true;
     }
@@ -288,10 +305,11 @@ public interface SQLASTVisitor {
     }
 
     default boolean visit(SQLExprTableSource x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLExprTableSource x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(SQLOrderBy x) {
@@ -463,10 +481,11 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLJoinTableSource x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(SQLJoinTableSource x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLJoinTableSource.UDJ x) {
@@ -512,10 +531,11 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLSubqueryTableSource x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(SQLSubqueryTableSource x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLTruncateStatement x) {
@@ -694,10 +714,11 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLWithSubqueryClause.Entry x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(SQLWithSubqueryClause.Entry x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLAlterTableAlterColumn x) {
@@ -972,10 +993,11 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLUnionQueryTableSource x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(SQLUnionQueryTableSource x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLTimestampExpr x) {
@@ -1621,10 +1643,11 @@ public interface SQLASTVisitor {
     }
 
     default boolean visit(SQLLateralViewTableSource x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLLateralViewTableSource x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(SQLShowErrorsStatement x) {
@@ -1971,10 +1994,11 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(SQLValuesTableSource x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(SQLValuesTableSource x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLExtractExpr x) {
@@ -2230,10 +2254,11 @@ public interface SQLASTVisitor {
     }
 
     default boolean visit(SQLAdhocTableSource x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLAdhocTableSource x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(HiveInputOutputFormat x) {
@@ -2286,17 +2311,19 @@ public interface SQLASTVisitor {
     }
 
     default boolean visit(SQLUnnestTableSource x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLUnnestTableSource x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(SQLGeneratedTableSource x) {
-        return true;
+        return visitTableSource(x);
     }
 
     default void endVisit(SQLGeneratedTableSource x) {
+        endVisitTableSource(x);
     }
 
     default boolean visit(SQLCopyFromStatement x) {

@@ -4,6 +4,14 @@
 
 ---
 
+## 0. Preprocessing
+
+- [ ] 0.1 For architecture changes, execute baseline `MySqlPerfTest` and memory tests before task execution
+  - Performance: <!-- baseline command/result before architecture change -->
+  - Memory: <!-- baseline command/result before architecture change -->
+
+---
+
 ## 1. Core Implementation
 
 - [ ] 1.1 Implement core logic in `<!-- ClassName -->`
@@ -62,6 +70,19 @@
   - Location: `core/src/test/java/com/alibaba/druid/`
   - Details: <!-- integration test scenarios -->
 
+- [ ] 4.5 For architecture changes, execute `MySqlPerfTest`
+  - Location: `core/src/test/java/com/alibaba/druid/`
+  - Details: <!-- architecture-change performance scenarios -->
+
+- [ ] 4.6 For architecture changes, execute memory tests
+  - Location: `core/src/test/java/com/alibaba/druid/`
+  - Details: <!-- memory footprint/leak scenarios -->
+
+- [ ] 4.7 For architecture changes, compare baseline vs post-change perf/memory results
+  - Baseline: <!-- results collected before architecture change -->
+  - Post-change: <!-- results collected after architecture change -->
+  - Delta: <!-- key differences and conclusion -->
+
 ---
 
 ## 5. Code Quality
@@ -115,6 +136,8 @@
 - [ ] Backward compatibility maintained (or documented)
 - [ ] Thread-safety verified for concurrent components
 - [ ] No memory leaks (verified for connection-related changes)
+- [ ] For architecture changes, `MySqlPerfTest` and memory tests are both present
+- [ ] For architecture changes, task pre-run baseline and post-change comparison are documented
 
 ---
 

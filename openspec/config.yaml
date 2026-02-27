@@ -118,10 +118,13 @@ rules:
     - Consider filter chain integration if modifying core
     - Address thread-safety and concurrent access patterns
     - Document any new configuration properties
+    - For architecture-level changes, include performance and memory validation plan using MySqlPerf* benchmarks with before/after comparison criteria
 
   tasks:
     - Include checkstyle compliance verification
     - Add unit tests for each functional change
     - Consider benchmark tests for performance-critical changes
+    - For architecture changes, MUST add `MySqlPerfTest` and memory tests
+    - Before running task for architecture changes, run one baseline performance/memory test and compare against post-change results
     - Update VERSION.java if changing version-related code
     - Update MBean interfaces if adding new monitoring capabilities
