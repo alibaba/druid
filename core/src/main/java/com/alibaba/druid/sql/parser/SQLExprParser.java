@@ -126,6 +126,9 @@ public class SQLExprParser extends SQLParser {
             parenthesized = false;
             ((SQLQueryExpr) expr).setParenthesized(true);
         }
+        if (parenthesized && expr instanceof SQLNotExpr) {
+            parenthesized = false;
+        }
         if (parenthesized && expr instanceof SQLIdentifierExpr) {
             parenthesized = false;
             ((SQLIdentifierExpr) expr).setParenthesized(true);
@@ -1135,9 +1138,10 @@ public class SQLExprParser extends SQLParser {
             SQLExpr notTarget = expr();
             if (notTarget instanceof SQLBinaryOpExpr) {
                 ((SQLBinaryOpExpr) notTarget).setParenthesized(true);
-            }
-            if (notTarget instanceof SQLUnaryExpr) {
+            } else if (notTarget instanceof SQLUnaryExpr) {
                 ((SQLUnaryExpr) notTarget).setParenthesized(true);
+            } else if (notTarget instanceof SQLIdentifierExpr) {
+                ((SQLIdentifierExpr) notTarget).setParenthesized(true);
             }
             accept(Token.RPAREN);
             notTarget = bitXorRest(notTarget);

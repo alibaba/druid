@@ -196,3 +196,38 @@ Parser/visitor refactors touching SQL AST inheritance layers SHALL keep equivale
 - **WHEN** visitor inheritance cleanup introduces support or adapter classes for internal dispatch
 - **THEN** externally used visitor entry paths SHALL remain behavior-equivalent for supported AST inputs
 - **AND** existing integration tests for output and traversal compatibility SHALL continue to pass
+
+### Requirement: ODPS Dialect Output Correctness
+
+For the ODPS dialect, AST-to-SQL output visitors SHALL preserve the original SQL semantics for bracketed expressions, NOT expressions, subquery operands, and QUALIFY clauses, and ODPS-specific behavior fixes SHALL be captured primarily via dialect resource tests.
+
+#### Scenario: Prefer dialect resource tests for ODPS output fixes
+- **WHEN** a behavior change targets ODPS dialect-level serialization or output (such as brackets, keyword placement, or missing clauses)
+- **THEN** regression coverage SHALL use the ODPS resource tests as the primary verification mechanism (for example `com.alibaba.druid.bvt.sql.odps.OdpsResourceTest` with `core/src/test/resources/bvt/parser/odps/*.txt`) to define input/expected pretty-printed output
+- **AND** each such fix SHALL add or update at least one ODPS resource test case pairing input SQL and expected pretty output as the golden result
+- **AND** only when the behavior cannot be expressed via resource tests (for example, clone semantics or pure API-level behavior) MAY additional unit tests be used to supplement coverage
+
+#### Scenario: Preserve NOT-expression brackets in ODPS
+- **WHEN** an ODPS expression like `NOT (a) AND (NOT b) AND (c)` is parsed and then serialized back to ODPS SQL
+- **THEN** the output SHALL preserve equivalent bracket semantics (for example `NOT (a) AND (NOT b) AND (c)`)
+- **AND** the visitor SHALL NOT drop required brackets (for example it MUST NOT output `NOT a AND NOT b AND (c)`)
+
+#### Scenario: Preserve leading NOT brackets in comparisons for ODPS
+- **WHEN** an ODPS expression like `(NOT a) != b` is parsed and then serialized back to ODPS SQL
+- **THEN** the output SHALL keep the brackets scoped to the NOT target (for example `(NOT a) != b`)
+- **AND** the visitor SHALL NOT expand the brackets to cover the entire comparison (for example it MUST NOT output `(NOT a != b)`)
+
+#### Scenario: Preserve multiple brackets for ODPS expressions
+- **WHEN** an ODPS expression like `((a = 1))` is parsed and then serialized back to ODPS SQL
+- **THEN** the output SHALL preserve the multiple-bracket structure as `((a = 1))`
+- **AND** the visitor SHALL NOT collapse the expression to a single-bracket form `(a = 1)` in ODPS output
+
+#### Scenario: Wrap subquery operands in ODPS binary expressions
+- **WHEN** an ODPS binary expression uses a subquery (SQLQueryExpr) as an operand (for example `1 = <subquery>`)
+- **THEN** the ODPS output visitor SHALL wrap the subquery operand in brackets (for example `1 = (SELECT ...)`)
+- **AND** the generated SQL SHALL remain syntactically and semantically correct for ODPS
+
+#### Scenario: Preserve QUALIFY clause in ODPS clone and output
+- **WHEN** an ODPS `SELECT` with a QUALIFY clause (for example `QUALIFY ROW_NUMBER() OVER (PARTITION BY c ORDER BY d DESC) = 1`) is cloned via `SQLSelectStatement.clone()`
+- **THEN** the cloned statement SHALL still contain an equivalent QUALIFY clause
+- **AND** serializing the cloned statement to ODPS SQL SHALL emit the QUALIFY clause in the correct position (for example after WHERE and before ORDER BY)
