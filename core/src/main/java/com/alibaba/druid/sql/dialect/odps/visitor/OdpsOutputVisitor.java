@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveLoadDataStatement;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
 import com.alibaba.druid.sql.dialect.odps.Odps;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.FnvHash;
 
@@ -1136,5 +1137,167 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
     @Override
     public void printMergeInsertRow() {
         print(" *");
+    }
+
+    @Override
+    public boolean visit(SQLNotExpr x) {
+        tryPrintLparen(x);
+        print0(ucase ? "NOT " : "not ");
+        SQLExpr expr = x.getExpr();
+
+        boolean needParentheses = false;
+
+        if (expr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
+            needParentheses = binaryOpExpr.getOperator().isLogical();
+            if (binaryOpExpr.isParenthesized()) {
+                needParentheses = false;
+            }
+        } else if (expr instanceof SQLInListExpr || expr instanceof SQLNotExpr
+                || expr instanceof SQLBinaryOpExprGroup || expr instanceof SQLQueryExpr) {
+            needParentheses = true;
+        }
+        if (expr instanceof SQLExprImpl) {
+            SQLExprImpl exprImpl = (SQLExprImpl) expr;
+            if (exprImpl.getParenthesizedCount() > 0) {
+                needParentheses = false;
+            }
+        }
+
+        if (needParentheses) {
+            print('(');
+        }
+        if (needParentheses
+                && expr instanceof SQLQueryExpr
+                && isPrettyFormat()
+                && indentCount > 0) {
+            this.indentCount++;
+            println();
+            printExpr(expr, parameterized);
+            this.indentCount--;
+            println();
+            print(')');
+        } else {
+            printExpr(expr, parameterized);
+            if (needParentheses) {
+                print(')');
+            }
+        }
+        tryPrintRparen(x);
+
+        SQLCommentHint hint = x.getHint();
+        if (hint != null) {
+            hint.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLBinaryOpExpr x) {
+        int parenCount = x.getParenthesizedCount();
+        if (parenCount <= 0 && x.isParenthesized()) {
+            parenCount = 1;
+        }
+        for (int i = 0; i < parenCount; i++) {
+            print('(');
+        }
+
+        boolean rs = visitInternal(x);
+
+        for (int i = 0; i < parenCount; i++) {
+            print(')');
+        }
+
+        List<String> afterComments = x.getAfterCommentsDirect();
+        if (!parameterized) {
+            if (afterComments != null && !afterComments.isEmpty() && isPrettyFormat()) {
+                print(' ');
+            }
+            printlnComment(afterComments);
+        }
+        return rs;
+    }
+
+    @Override
+    public boolean visit(SQLQueryExpr x) {
+        SQLObject parent = x.getParent();
+        if (parent instanceof SQLSelect) {
+            parent = parent.getParent();
+        }
+
+        // ODPS特殊处理：在二元运算符中，query表达式需要括号
+        if (parent instanceof SQLBinaryOpExpr) {
+            print('(');
+            SQLSelect subQuery = x.getSubQuery();
+            if (subQuery != null) {
+                if (isPrettyFormat() && indentCount > 0) {
+                    this.indentCount++;
+                    println();
+                    subQuery.accept(this);
+                    this.indentCount--;
+                    println();
+                } else {
+                    subQuery.accept(this);
+                }
+            }
+            print(')');
+            return false;
+        }
+
+        if (x.isParenthesized()) {
+            print('(');
+        }
+        SQLSelect subQuery = x.getSubQuery();
+        if (subQuery != null) {
+            if (parent instanceof SQLInsertStatement.ValuesClause) {
+                println();
+                subQuery.accept(this);
+                println();
+            } else if ((parent instanceof SQLStatement
+                    && !(parent instanceof OracleForStatement))
+                    || (parent instanceof SQLSelectItem
+                    && (parent.getParent() instanceof SQLPivot || parent.getParent() instanceof SQLUnpivot))
+            ) {
+                this.indentCount++;
+
+                println();
+                subQuery.accept(this);
+
+                this.indentCount--;
+            } else if (parent instanceof SQLOpenStatement) {
+                println();
+                subQuery.accept(this);
+                println();
+            } else {
+                subQuery.accept(this);
+            }
+        }
+        if (x.isParenthesized()) {
+            print(')');
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLListExpr x) {
+        // ODPS特殊处理：支持多层括号
+        int parenCount = x.getParenthesizedCount();
+        for (int i = 0; i < parenCount; i++) {
+            print('(');
+        }
+        if (parenCount == 0) {
+            print('(');
+        }
+        printAndAccept(x.getItems(), ", ");
+        for (int i = 0; i < parenCount; i++) {
+            print(')');
+        }
+        if (parenCount == 0) {
+            print(')');
+        }
+
+        return false;
     }
 }

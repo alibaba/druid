@@ -1085,6 +1085,10 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
             x.setGroupBy(groupBy.clone());
         }
 
+        if (qualify != null) {
+            x.setQualify(qualify.clone());
+        }
+
         if (orderBy != null) {
             x.setOrderBy(orderBy.clone());
         }
