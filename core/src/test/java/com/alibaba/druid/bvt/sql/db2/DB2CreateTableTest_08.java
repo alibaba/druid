@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.List;
 
 public class DB2CreateTableTest_08 extends DB2Test {
-
     public void test_0() throws Exception {
         String sql = "CREATE TABLE test.EAST_JRG_0911 \n" +
                 "AS ( SELECT * FROM test.EAST_JRGJXXB a WHERE 1=2 ) \n" +
