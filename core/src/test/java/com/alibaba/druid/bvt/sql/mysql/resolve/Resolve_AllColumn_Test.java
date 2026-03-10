@@ -83,4 +83,25 @@ public class Resolve_AllColumn_Test extends TestCase {
                 "\tFROM t_emp\n" +
                 ") x", stmt.toString());
     }
+
+    public void test_resolve_3() throws Exception {
+        SchemaRepository repository = new SchemaRepository(DbType.mysql);
+
+        repository.acceptDDL("create table t_emp(emp_id bigint, name varchar(20));");
+        repository.acceptDDL("create table t_emp_copy(emp_copy_id bigint, name_copy varchar(20));");
+
+
+        SQLStatement stmt = SQLUtils.parseSingleMysqlStatement("select * from (select * from t_emp) a, (select * from t_emp_copy) b where a.emp_id = b.emp_copy_id");
+        repository.resolve(stmt, SchemaResolveVisitor.Option.ResolveAllColumn);
+
+        assertEquals("SELECT a.emp_id, a.name, b.emp_copy_id, b.name_copy\n" +
+                "FROM (\n" +
+                "\tSELECT emp_id, name\n" +
+                "\tFROM t_emp\n" +
+                ") a, (\n" +
+                "\t\tSELECT emp_copy_id, name_copy\n" +
+                "\t\tFROM t_emp_copy\n" +
+                "\t) b\n" +
+                "WHERE a.emp_id = b.emp_copy_id", stmt.toString());
+    }
 }
