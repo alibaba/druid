@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnnestTableSource;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class UnnestTest {
     @Test
@@ -28,5 +28,52 @@ public class UnnestTest {
 
         SQLJoinTableSource left = (SQLJoinTableSource) join.getLeft();
         assertTrue(left.getRight() instanceof SQLUnnestTableSource);
+    }
+
+    // https://github.com/alibaba/druid/issues/6547
+    @Test
+    public void test_unnest_with_offset_no_alias() throws Exception {
+        String sql = "SELECT * FROM UNNEST ([10,20,30]) as numbers WITH OFFSET";
+        SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.bigquery);
+        SQLTableSource from = stmt.getSelect().getQueryBlock().getFrom();
+        assertTrue(from instanceof SQLUnnestTableSource);
+        SQLUnnestTableSource unnest = (SQLUnnestTableSource) from;
+        assertEquals("numbers", unnest.getAlias());
+        assertTrue(unnest.isWithOffset());
+        assertNull(unnest.getOffset());
+
+        String output = SQLUtils.toSQLString(stmt, DbType.bigquery);
+        assertTrue(output.toUpperCase().contains("WITH OFFSET"));
+        assertFalse(output.toUpperCase().contains("WITH OFFSET AS"));
+    }
+
+    // https://github.com/alibaba/druid/issues/6547
+    @Test
+    public void test_unnest_with_offset_as_alias() throws Exception {
+        String sql = "SELECT * FROM UNNEST ([10,20,30]) as numbers WITH OFFSET AS off";
+        SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.bigquery);
+        SQLTableSource from = stmt.getSelect().getQueryBlock().getFrom();
+        assertTrue(from instanceof SQLUnnestTableSource);
+        SQLUnnestTableSource unnest = (SQLUnnestTableSource) from;
+        assertEquals("numbers", unnest.getAlias());
+        assertTrue(unnest.isWithOffset());
+        assertNotNull(unnest.getOffset());
+
+        String output = SQLUtils.toSQLString(stmt, DbType.bigquery);
+        assertTrue(output.toUpperCase().contains("WITH OFFSET AS"));
+    }
+
+    // https://github.com/alibaba/druid/issues/6547
+    @Test
+    public void test_unnest_with_offset_implicit_alias() throws Exception {
+        // BigQuery allows: WITH OFFSET offset_alias (without AS keyword)
+        String sql = "SELECT * FROM UNNEST ([10,20,30]) as numbers WITH OFFSET off";
+        SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, DbType.bigquery);
+        SQLTableSource from = stmt.getSelect().getQueryBlock().getFrom();
+        assertTrue(from instanceof SQLUnnestTableSource);
+        SQLUnnestTableSource unnest = (SQLUnnestTableSource) from;
+        assertEquals("numbers", unnest.getAlias());
+        assertTrue(unnest.isWithOffset());
+        assertNotNull(unnest.getOffset());
     }
 }
