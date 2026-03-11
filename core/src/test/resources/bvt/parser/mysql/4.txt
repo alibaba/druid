@@ -1,0 +1,32 @@
+SELECT * FROM t CROSS JOIN LATERAL (VALUES 1)
+--------------------
+SELECT *
+FROM t
+	CROSS JOIN LATERAL(
+		VALUES 1
+	)
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t FULL JOIN LATERAL (VALUES 1) ON true
+--------------------
+SELECT *
+FROM t
+	FULL JOIN LATERAL(
+		VALUES 1
+	)
+	ON true
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t, LATERAL (VALUES 1) a(x)
+--------------------
+SELECT *
+FROM t, LATERAL(
+		VALUES 1
+	) AS a (x)
+------------------------------------------------------------------------------------------------------------------------
+SELECT numbers, n, a FROM ( VALUES (ARRAY[2, 5]), (ARRAY[7, 8, 9]) ) AS x (numbers) CROSS JOIN UNNEST(numbers) WITH ORDINALITY AS t (n, a);
+--------------------
+SELECT numbers, n, a
+FROM (
+	VALUES (ARRAY[2, 5]),
+	(ARRAY[7, 8, 9])
+) AS x (numbers)
+	CROSS JOIN UNNEST(numbers) WITH ORDINALITY AS t (n, a);

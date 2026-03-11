@@ -730,6 +730,80 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public boolean visit(PGCreateExtensionStatement x) {
+        print0(ucase ? "CREATE EXTENSION " : "create extension ");
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        x.getName().accept(this);
+
+        if (x.getSchema() != null) {
+            print0(ucase ? " SCHEMA " : " schema ");
+            x.getSchema().accept(this);
+        }
+
+        if (x.getVersion() != null) {
+            print0(ucase ? " VERSION " : " version ");
+            print0("'");
+            print0(x.getVersion());
+            print0("'");
+        }
+
+        if (x.isCascade()) {
+            print0(ucase ? " CASCADE" : " cascade");
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGCopyStatement x) {
+        print0(ucase ? "COPY " : "copy ");
+
+        if (x.getQuery() != null) {
+            print('(');
+            x.getQuery().accept(this);
+            print(')');
+        } else if (x.getTable() != null) {
+            x.getTable().accept(this);
+            if (!x.getColumns().isEmpty()) {
+                print('(');
+                printAndAccept(x.getColumns(), ", ");
+                print(')');
+            }
+        }
+
+        if (x.isDirectionTo()) {
+            print0(ucase ? " TO " : " to ");
+        } else {
+            print0(ucase ? " FROM " : " from ");
+        }
+
+        if (x.isProgram()) {
+            print0(ucase ? "PROGRAM " : "program ");
+        }
+
+        if (x.getTarget() != null) {
+            x.getTarget().accept(this);
+        }
+
+        if (!x.getOptions().isEmpty()) {
+            print0(ucase ? " WITH (" : " with (");
+            printAndAccept(x.getOptions(), ", ");
+            print(')');
+        }
+
+        if (x.getWhere() != null) {
+            print0(ucase ? " WHERE " : " where ");
+            x.getWhere().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean visit(PGDropSchemaStatement x) {
         printUcase("DROP SCHEMA ");
         if (x.isIfExists()) {

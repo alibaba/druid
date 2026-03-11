@@ -543,6 +543,30 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
+    public boolean visit(SQLServerTryCatchStatement x) {
+        print0(ucase ? "BEGIN TRY" : "begin try");
+        this.indentCount++;
+        for (SQLStatement stmt : x.getTryStatements()) {
+            println();
+            stmt.accept(this);
+        }
+        this.indentCount--;
+        println();
+        print0(ucase ? "END TRY" : "end try");
+        println();
+        print0(ucase ? "BEGIN CATCH" : "begin catch");
+        this.indentCount++;
+        for (SQLStatement stmt : x.getCatchStatements()) {
+            println();
+            stmt.accept(this);
+        }
+        this.indentCount--;
+        println();
+        print0(ucase ? "END CATCH" : "end catch");
+        return false;
+    }
+
+    @Override
     protected void printAfterFetch(SQLSelectQueryBlock queryBlock) {
         if (queryBlock instanceof SQLServerSelectQueryBlock) {
             SQLServerSelectQueryBlock sqlServerSelectQueryBlock = ((SQLServerSelectQueryBlock) queryBlock);

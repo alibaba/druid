@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.clickhouse.CK;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKAlterTableUpdateStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateMaterializedViewStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateTableStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKDropTableStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
@@ -412,6 +413,72 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
         print0(ucase ? "ARRAY(" : "array(");
         x.getComponentType().accept(this);
         print(')');
+        return false;
+    }
+
+    @Override
+    public boolean visit(CKCreateMaterializedViewStatement x) {
+        print0(ucase ? "CREATE MATERIALIZED VIEW " : "create materialized view ");
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        x.getName().accept(this);
+
+        if (x.getOnCluster() != null) {
+            print0(ucase ? " ON CLUSTER " : " on cluster ");
+            print0(x.getOnCluster());
+        }
+
+        SQLName to = x.getTo();
+        if (to != null) {
+            print0(ucase ? " TO " : " to ");
+            to.accept(this);
+        }
+
+        if (x.getEngine() != null) {
+            println();
+            print0(ucase ? "ENGINE = " : "engine = ");
+            x.getEngine().accept(this);
+        }
+
+        if (x.getCkPartitionBy() != null) {
+            println();
+            print0(ucase ? "PARTITION BY " : "partition by ");
+            x.getCkPartitionBy().accept(this);
+        }
+
+        if (x.getPrimaryKey() != null) {
+            println();
+            print0(ucase ? "PRIMARY KEY " : "primary key ");
+            x.getPrimaryKey().accept(this);
+        }
+
+        if (x.getOrderBy() != null) {
+            println();
+            x.getOrderBy().accept(this);
+        }
+
+        if (!x.getSettings().isEmpty()) {
+            println();
+            print0(ucase ? "SETTINGS " : "settings ");
+            printAndAccept(x.getSettings(), ", ");
+        }
+
+        if (x.isPopulate()) {
+            println();
+            print0(ucase ? "POPULATE" : "populate");
+        }
+
+        SQLSelect query = x.getQuery();
+        if (query != null) {
+            println();
+            print0(ucase ? "AS" : "as");
+            println();
+            query.accept(this);
+        }
+
         return false;
     }
 

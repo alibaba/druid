@@ -1,0 +1,43 @@
+COPY my_table FROM '/tmp/data.csv' WITH (FORMAT csv, HEADER true)
+--------------------
+COPY my_table FROM '/tmp/data.csv' WITH (FORMAT = csv, HEADER = true)
+------------------------------------------------------------------------------------------------------------------------
+COPY my_table TO '/tmp/data.csv' WITH (FORMAT csv)
+--------------------
+COPY my_table TO '/tmp/data.csv' WITH (FORMAT = csv)
+------------------------------------------------------------------------------------------------------------------------
+COPY my_table (col1, col2, col3) FROM '/tmp/data.csv'
+--------------------
+COPY my_table(col1, col2, col3) FROM '/tmp/data.csv'
+------------------------------------------------------------------------------------------------------------------------
+COPY my_table FROM STDIN
+--------------------
+COPY my_table FROM STDIN
+------------------------------------------------------------------------------------------------------------------------
+COPY my_table TO STDOUT
+--------------------
+COPY my_table TO STDOUT
+------------------------------------------------------------------------------------------------------------------------
+COPY my_table FROM PROGRAM 'gzip -d < /tmp/data.csv.gz'
+--------------------
+COPY my_table FROM PROGRAM 'gzip -d < /tmp/data.csv.gz'
+------------------------------------------------------------------------------------------------------------------------
+COPY (SELECT id, name FROM users WHERE active = true) TO '/tmp/users.csv' WITH (FORMAT csv, HEADER true)
+--------------------
+COPY (SELECT id, name
+FROM users
+WHERE active = true) TO '/tmp/users.csv' WITH (FORMAT = csv, HEADER = true)
+------------------------------------------------------------------------------------------------------------------------
+COPY my_table FROM '/tmp/data.csv' WITH (FORMAT csv) WHERE id > 100
+--------------------
+COPY my_table FROM '/tmp/data.csv' WITH (FORMAT = csv) WHERE id > 100
+------------------------------------------------------------------------------------------------------------------------
+COPY my_table FROM '/tmp/data.csv' WITH (FORMAT csv, DELIMITER ',', NULL 'N', HEADER true, QUOTE '|', ESCAPE '|', ENCODING 'UTF8')
+--------------------
+COPY my_table FROM '/tmp/data.csv' WITH (FORMAT = csv, DELIMITER = ',', NULL = 'N', HEADER = true, QUOTE = '|', ESCAPE = '|', ENCODING = 'UTF8')
+------------------------------------------------------------------------------------------------------------------------
+COPY (SELECT * FROM orders WHERE date > '2024-01-01') TO STDOUT WITH (FORMAT csv)
+--------------------
+COPY (SELECT *
+FROM orders
+WHERE date > '2024-01-01') TO STDOUT WITH (FORMAT = csv)
