@@ -2212,7 +2212,7 @@ public class SQLStatementParser extends SQLParser {
             break;
         }
 
-        if (lexer.nextIf(AS)) {
+        if (lexer.nextIf(AS) || lexer.token() == SELECT) {
             if (lexer.token() == SELECT) {
                 alterView.setSubQuery(
                         createSQLSelectParser()
@@ -5143,7 +5143,9 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected void createViewAs(SQLCreateViewStatement createView) {
-        accept(Token.AS);
+        if (lexer.token == Token.AS) {
+            lexer.nextToken();
+        }
 
         if (lexer.identifierEquals(Constants.BEGIN)) {
             SQLBlockStatement block = (SQLBlockStatement) this.parseBlock();
