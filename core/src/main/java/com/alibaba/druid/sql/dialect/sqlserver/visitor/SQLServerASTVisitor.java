@@ -97,4 +97,11 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     default void endVisit(SQLServerParameter x) {
     }
 
+    default boolean visit(SQLServerTryCatchStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLServerTryCatchStatement x) {
+    }
+
 }

@@ -484,6 +484,10 @@ public class SQLServerStatementParser extends SQLStatementParser {
     public SQLStatement parseBlock() {
         accept(Token.BEGIN);
 
+        if (lexer.identifierEquals("TRY")) {
+            return parseTryCatch();
+        }
+
         if (lexer.identifierEquals("TRANSACTION") || lexer.identifierEquals("TRAN")) {
             lexer.nextToken();
 
@@ -577,6 +581,27 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 stmt.setTimeout(this.exprParser.expr());
             }
         }
+
+        return stmt;
+    }
+
+    protected SQLStatement parseTryCatch() {
+        acceptIdentifier("TRY");
+
+        SQLServerTryCatchStatement stmt = new SQLServerTryCatchStatement();
+
+        parseStatementList(stmt.getTryStatements(), -1, stmt);
+
+        accept(Token.END);
+        acceptIdentifier("TRY");
+
+        accept(Token.BEGIN);
+        acceptIdentifier("CATCH");
+
+        parseStatementList(stmt.getCatchStatements(), -1, stmt);
+
+        accept(Token.END);
+        acceptIdentifier("CATCH");
 
         return stmt;
     }

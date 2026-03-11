@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.clickhouse.visitor;
 
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKAlterTableUpdateStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateMaterializedViewStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateTableStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKDropTableStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
@@ -49,5 +50,12 @@ public interface CKASTVisitor extends SQLASTVisitor {
     }
 
     default void endVisit(CKDropTableStatement x) {
+    }
+
+    default boolean visit(CKCreateMaterializedViewStatement x) {
+        return true;
+    }
+
+    default void endVisit(CKCreateMaterializedViewStatement x) {
     }
 }

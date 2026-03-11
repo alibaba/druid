@@ -1855,7 +1855,43 @@ public class SQLSelectParser extends SQLParser {
                     }
                 }
             } else {
-                if (lexer.token == Token.VALUES) {
+                if (lexer.token == Token.LATERAL || lexer.identifierEquals(FnvHash.Constants.LATERAL)) {
+                    lexer.nextToken();
+                    if (lexer.token == Token.LPAREN) {
+                        Lexer.SavePoint mark = lexer.mark();
+                        lexer.nextToken();
+                        if (lexer.token == Token.SELECT || lexer.token == Token.WITH) {
+                            SQLSelect select = select();
+                            accept(Token.RPAREN);
+                            SQLSubqueryTableSource subquery = new SQLSubqueryTableSource(select);
+                            subquery.setLateral(true);
+                            String alias = tableAlias();
+                            if (alias != null) {
+                                subquery.setAlias(alias);
+                            }
+                            rightTableSource = subquery;
+                        } else {
+                            lexer.reset(mark);
+                            SQLExpr funcExpr = this.exprParser.expr();
+                            SQLExprTableSource funcTableSource = new SQLExprTableSource(funcExpr);
+                            funcTableSource.setLateral(true);
+                            String alias = tableAlias();
+                            if (alias != null) {
+                                funcTableSource.setAlias(alias);
+                            }
+                            rightTableSource = funcTableSource;
+                        }
+                    } else {
+                        SQLExpr funcExpr = this.exprParser.expr();
+                        SQLExprTableSource funcTableSource = new SQLExprTableSource(funcExpr);
+                        funcTableSource.setLateral(true);
+                        String alias = tableAlias();
+                        if (alias != null) {
+                            funcTableSource.setAlias(alias);
+                        }
+                        rightTableSource = funcTableSource;
+                    }
+                } else if (lexer.token == Token.VALUES) {
                     rightTableSource = this.parseValues();
                 } else {
                     SQLTableSource unnestTableSource = parseUnnestTableSource();

@@ -3121,6 +3121,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return name;
     }
     public boolean visit(SQLExprTableSource x) {
+        if (x.isLateral()) {
+            print0(ucase ? "LATERAL " : "lateral ");
+        }
         printTableSourceExpr(x.getExpr());
 
         final SQLTableSampling sampling = x.getSampling();
@@ -4857,6 +4860,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLSubqueryTableSource x) {
+        if (x.isLateral()) {
+            print0(ucase ? "LATERAL " : "lateral ");
+        }
         print('(');
         this.indentCount++;
         println();

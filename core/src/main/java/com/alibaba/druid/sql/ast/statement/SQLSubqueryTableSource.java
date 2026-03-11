@@ -24,6 +24,7 @@ import java.util.List;
 
 public class SQLSubqueryTableSource extends SQLTableSourceImpl {
     protected SQLSelect select;
+    protected boolean lateral;
     protected List<SQLName> columns = new ArrayList<SQLName>();
 
     public SQLSubqueryTableSource() {
@@ -48,6 +49,14 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
     public SQLSubqueryTableSource(SQLSelectQuery query, String alias) {
         this(new SQLSelect(query), alias);
+    }
+
+    public boolean isLateral() {
+        return lateral;
+    }
+
+    public void setLateral(boolean lateral) {
+        this.lateral = lateral;
     }
 
     public SQLSelect getSelect() {
@@ -82,6 +91,7 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
     public void cloneTo(SQLSubqueryTableSource x) {
         x.alias = alias;
+        x.lateral = lateral;
 
         if (select != null) {
             x.select = select.clone();
