@@ -114,6 +114,32 @@ public class SQLServerStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (lexer.identifierEquals("BREAK")) {
+            lexer.nextToken();
+            statementList.add(new SQLBreakStatement());
+            return true;
+        }
+
+        if (lexer.identifierEquals("CONTINUE")) {
+            lexer.nextToken();
+            statementList.add(new SQLContinueStatement());
+            return true;
+        }
+
+        if (lexer.identifierEquals("THROW")) {
+            lexer.nextToken();
+            SQLServerThrowStatement throwStmt = new SQLServerThrowStatement();
+            if (lexer.token() != Token.SEMI && lexer.token() != Token.EOF) {
+                throwStmt.setErrorNumber(this.exprParser.expr());
+                accept(Token.COMMA);
+                throwStmt.setMessage(this.exprParser.expr());
+                accept(Token.COMMA);
+                throwStmt.setState(this.exprParser.expr());
+            }
+            statementList.add(throwStmt);
+            return true;
+        }
+
         return false;
     }
 
@@ -476,6 +502,40 @@ public class SQLServerStatementParser extends SQLStatementParser {
             SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
             this.parseStatementList(elseItem.getStatements(), 1, elseItem);
             stmt.setElseItem(elseItem);
+        }
+
+        return stmt;
+    }
+
+    @Override
+    public SQLWhileStatement parseWhile() {
+        accept(Token.WHILE);
+        SQLWhileStatement stmt = new SQLWhileStatement();
+        stmt.setCondition(this.exprParser.expr());
+        accept(Token.BEGIN);
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
+        accept(Token.END);
+        return stmt;
+    }
+
+    @Override
+    public SQLStatement parseReturn() {
+        if (lexer.token() == Token.RETURN
+                || lexer.identifierEquals("RETURN")) {
+            lexer.nextToken();
+        }
+
+        SQLReturnStatement stmt = new SQLReturnStatement();
+        if (lexer.token() != Token.SEMI
+                && lexer.token() != Token.EOF
+                && lexer.token() != Token.END) {
+            SQLExpr expr = this.exprParser.expr();
+            stmt.setExpr(expr);
+        }
+
+        if (lexer.token() == Token.SEMI) {
+            accept(Token.SEMI);
+            stmt.setAfterSemi(true);
         }
 
         return stmt;

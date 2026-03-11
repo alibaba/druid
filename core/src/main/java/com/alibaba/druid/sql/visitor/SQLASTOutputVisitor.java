@@ -11357,6 +11357,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLBreakStatement x) {
+        print(ucase ? "BREAK" : "break");
+        return false;
+    }
+
     public boolean visit(SQLLeaveStatement x) {
         print(ucase ? "LEAVE" : "leave");
         return false;

@@ -567,6 +567,38 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
+    public boolean visit(SQLServerThrowStatement x) {
+        print0(ucase ? "THROW" : "throw");
+        if (x.getErrorNumber() != null) {
+            print(' ');
+            x.getErrorNumber().accept(this);
+            print0(", ");
+            x.getMessage().accept(this);
+            print0(", ");
+            x.getState().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLWhileStatement x) {
+        print0(ucase ? "WHILE " : "while ");
+        x.getCondition().accept(this);
+        println();
+        print0(ucase ? "BEGIN" : "begin");
+        this.indentCount++;
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            println();
+            SQLStatement stmt = x.getStatements().get(i);
+            stmt.accept(this);
+        }
+        this.indentCount--;
+        println();
+        print0(ucase ? "END" : "end");
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLCreateProcedureStatement x) {
         if (x.isCreate()) {
             if (x.isOrReplace()) {

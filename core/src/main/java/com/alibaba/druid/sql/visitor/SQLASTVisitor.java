@@ -2738,6 +2738,12 @@ public interface SQLASTVisitor {
 
     default void endVisit(SQLContinueStatement x) {}
 
+    default boolean visit(SQLBreakStatement x) {
+        return true;
+    }
+
+    default void endVisit(SQLBreakStatement x) {}
+
     default boolean visit(SQLLeaveStatement x) {
         return true;
     }
