@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.dialect.sqlserver.SqlServer;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -631,6 +632,113 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             println();
             print0(ucase ? "WITH EXECUTE AS " : "with execute as ");
             authid.accept(this);
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+
+        SQLStatement block = x.getBlock();
+        if (block != null) {
+            block.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateTriggerStatement x) {
+        if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR ALTER TRIGGER " : "create or alter trigger ");
+        } else {
+            print0(ucase ? "CREATE TRIGGER " : "create trigger ");
+        }
+
+        x.getName().accept(this);
+
+        println();
+        print0(ucase ? "ON " : "on ");
+        x.getOn().accept(this);
+
+        println();
+        TriggerType triggerType = x.getTriggerType();
+        if (TriggerType.INSTEAD_OF.equals(triggerType)) {
+            print0(ucase ? "INSTEAD OF " : "instead of ");
+        } else if (TriggerType.AFTER.equals(triggerType)) {
+            print0(ucase ? "AFTER " : "after ");
+        } else if (triggerType != null) {
+            String name = triggerType.name();
+            print0(ucase ? name : name.toLowerCase());
+            print(' ');
+        }
+
+        boolean first = true;
+        if (x.isInsert()) {
+            print0(ucase ? "INSERT" : "insert");
+            first = false;
+        }
+        if (x.isUpdate()) {
+            if (!first) {
+                print0(", ");
+            }
+            print0(ucase ? "UPDATE" : "update");
+            first = false;
+        }
+        if (x.isDelete()) {
+            if (!first) {
+                print0(", ");
+            }
+            print0(ucase ? "DELETE" : "delete");
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+
+        if (x.getBody() != null) {
+            x.getBody().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        boolean create = x.isCreate();
+        if (create) {
+            if (x.isOrReplace()) {
+                print0(ucase ? "CREATE OR ALTER FUNCTION " : "create or alter function ");
+            } else {
+                print0(ucase ? "CREATE FUNCTION " : "create function ");
+            }
+        } else {
+            print0(ucase ? "ALTER FUNCTION " : "alter function ");
+        }
+
+        x.getName().accept(this);
+
+        print0(" (");
+        int paramSize = x.getParameters().size();
+        if (paramSize > 0) {
+            this.indentCount++;
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print(',');
+                }
+                println();
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+            this.indentCount--;
+            println();
+        }
+        print(')');
+
+        SQLDataType returnDataType = x.getReturnDataType();
+        if (returnDataType != null) {
+            println();
+            print0(ucase ? "RETURNS " : "returns ");
+            returnDataType.accept(this);
         }
 
         println();
