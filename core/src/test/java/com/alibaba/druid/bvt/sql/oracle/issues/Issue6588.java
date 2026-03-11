@@ -58,4 +58,30 @@ public class Issue6588 {
         assertEquals(1, statementList.size());
         SQLParseAssertUtil.assertParseSql(sql, DbType.oracle);
     }
+
+    @Test
+    public void test_oracle_enable_standalone() {
+        String sql = "CREATE TABLE TEST_TABLE (\n"
+                + "    ID NUMBER(19, 0) NOT NULL ENABLE,\n"
+                + "    NAME VARCHAR2(100)\n"
+                + ")";
+
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.oracle);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        assertEquals(1, statementList.size());
+        SQLParseAssertUtil.assertParseSql(sql, DbType.oracle);
+    }
+
+    @Test
+    public void test_oracle_disable_standalone() {
+        String sql = "CREATE TABLE TEST_TABLE (\n"
+                + "    ID NUMBER(19, 0) NOT NULL DISABLE,\n"
+                + "    NAME VARCHAR2(100)\n"
+                + ")";
+
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.oracle);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        assertEquals(1, statementList.size());
+        SQLParseAssertUtil.assertParseSql(sql, DbType.oracle);
+    }
 }

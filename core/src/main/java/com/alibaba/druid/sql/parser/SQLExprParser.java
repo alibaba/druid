@@ -4876,10 +4876,10 @@ public class SQLExprParser extends SQLParser {
             }
             case DISABLE:
                 lexer.nextToken();
-                if (lexer.stringVal.equalsIgnoreCase("novalidate")) {
+                if (lexer.stringVal != null && lexer.stringVal.equalsIgnoreCase("novalidate")) {
                     column.setDisableNovalidate(true);
+                    lexer.nextToken();
                 }
-                lexer.nextToken();
                 return parseColumnRest(column);
             case KEY:
                 lexer.nextToken();
