@@ -4863,12 +4863,23 @@ public class SQLExprParser extends SQLParser {
                 }
                 column.addConstraint(new SQLColumnUniqueKey());
                 return parseColumnRest(column);
+            case ENABLE: {
+                lexer.nextToken();
+                List<SQLColumnConstraint> constraints = column.getConstraints();
+                if (!constraints.isEmpty()) {
+                    SQLColumnConstraint lastConstraint = constraints.get(constraints.size() - 1);
+                    if (lastConstraint instanceof SQLConstraintImpl) {
+                        ((SQLConstraintImpl) lastConstraint).setEnable(true);
+                    }
+                }
+                return parseColumnRest(column);
+            }
             case DISABLE:
                 lexer.nextToken();
-                if (lexer.stringVal.equalsIgnoreCase("novalidate")) {
+                if (lexer.stringVal != null && lexer.stringVal.equalsIgnoreCase("novalidate")) {
                     column.setDisableNovalidate(true);
+                    lexer.nextToken();
                 }
-                lexer.nextToken();
                 return parseColumnRest(column);
             case KEY:
                 lexer.nextToken();

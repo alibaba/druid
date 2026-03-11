@@ -4109,6 +4109,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         print0(ucase ? "NOT NULL" : "not null");
 
+        Boolean enable = x.getEnable();
+        if (enable != null) {
+            if (enable.booleanValue()) {
+                print0(ucase ? " ENABLE" : " enable");
+            } else {
+                print0(ucase ? " DISABLE" : " disable");
+            }
+        }
+
         List<SQLCommentHint> hints = x.hints;
         if (hints != null) {
             print(' ');
