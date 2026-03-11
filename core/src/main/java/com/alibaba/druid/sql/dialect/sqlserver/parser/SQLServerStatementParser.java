@@ -606,6 +606,107 @@ public class SQLServerStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    @Override
+    public SQLCreateProcedureStatement parseCreateProcedure() {
+        SQLCreateProcedureStatement stmt = new SQLCreateProcedureStatement();
+        stmt.setDbType(dbType);
+
+        if (lexer.token() == Token.CREATE) {
+            lexer.nextToken();
+            if (lexer.token() == Token.OR) {
+                lexer.nextToken();
+                accept(Token.REPLACE);
+                stmt.setOrReplace(true);
+            }
+        } else {
+            stmt.setCreate(false);
+        }
+
+        if (lexer.token() == Token.PROCEDURE || lexer.identifierEquals("PROC")) {
+            lexer.nextToken();
+        }
+
+        stmt.setName(this.exprParser.name());
+
+        // SQL Server parameters: @param type, @param2 type ...  (no parentheses)
+        if (lexer.token() == Token.VARIANT || lexer.token() == Token.LPAREN) {
+            boolean useParen = lexer.token() == Token.LPAREN;
+            if (useParen) {
+                lexer.nextToken();
+            }
+            parseSQLServerProcedureParameters(stmt);
+            if (useParen) {
+                accept(Token.RPAREN);
+            }
+        }
+
+        // WITH EXECUTE AS { CALLER | SELF | OWNER | 'user_name' }
+        // or WITH RECOMPILE, ENCRYPTION, etc.
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            if (lexer.identifierEquals(FnvHash.Constants.EXECUTE)) {
+                lexer.nextToken();
+                accept(Token.AS);
+                SQLName executeAs = this.exprParser.name();
+                stmt.setAuthid(executeAs);
+            } else {
+                // skip other WITH options like RECOMPILE, ENCRYPTION
+                this.exprParser.name();
+                while (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    this.exprParser.name();
+                }
+            }
+        }
+
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+        }
+
+        SQLStatement block = this.parseBlock();
+        stmt.setBlock(block);
+
+        return stmt;
+    }
+
+    @Override
+    protected SQLStatement alterProcedure() {
+        accept(Token.ALTER);
+        return parseCreateProcedure();
+    }
+
+    private void parseSQLServerProcedureParameters(SQLCreateProcedureStatement stmt) {
+        for (; ; ) {
+            if (lexer.token() == Token.RPAREN || lexer.token() == Token.AS
+                    || lexer.token() == Token.WITH || lexer.token() == Token.EOF) {
+                break;
+            }
+
+            SQLParameter parameter = new SQLParameter();
+            parameter.setParamType(SQLParameter.ParameterType.DEFAULT);
+            parameter.setName(this.exprParser.name());
+            parameter.setDataType(this.exprParser.parseDataType());
+
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+                parameter.setDefaultValue(this.exprParser.expr());
+            }
+
+            if (lexer.token() == Token.OUT || lexer.identifierEquals("OUTPUT")) {
+                parameter.setParamType(SQLParameter.ParameterType.OUT);
+                lexer.nextToken();
+            }
+
+            stmt.getParameters().add(parameter);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+            } else {
+                break;
+            }
+        }
+    }
+
     public void parseAlterDrop(SQLAlterTableStatement stmt) {
         lexer.nextToken();
         if (lexer.token() == Token.CONSTRAINT) {
