@@ -8,7 +8,7 @@ SELECT * FROM t1 CROSS JOIN LATERAL (SELECT * FROM t2 WHERE t2.id = t1.id) AS su
 --------------------
 SELECT *
 FROM t1
-	CROSS JOIN LATERAL (
+	CROSS JOIN LATERAL(
 		SELECT *
 		FROM t2
 		WHERE t2.id = t1.id
@@ -17,7 +17,7 @@ FROM t1
 SELECT * FROM foo, LATERAL (SELECT * FROM bar WHERE bar.id = foo.bar_id) ss
 --------------------
 SELECT *
-FROM foo, LATERAL (
+FROM foo, LATERAL(
 		SELECT *
 		FROM bar
 		WHERE bar.id = foo.bar_id
@@ -32,7 +32,7 @@ SELECT * FROM orders o INNER JOIN LATERAL (SELECT * FROM order_items WHERE order
 --------------------
 SELECT *
 FROM orders o
-	INNER JOIN LATERAL (
+	INNER JOIN LATERAL(
 		SELECT *
 		FROM order_items
 		WHERE order_id = o.id
@@ -55,6 +55,6 @@ FROM LATERAL generate_series(1, 5) s
 SELECT * FROM LATERAL (SELECT 1 AS a) sub
 --------------------
 SELECT *
-FROM LATERAL (
+FROM LATERAL(
 	SELECT 1 AS a
 ) sub

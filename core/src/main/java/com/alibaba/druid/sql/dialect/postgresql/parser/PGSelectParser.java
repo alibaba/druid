@@ -250,32 +250,8 @@ public class PGSelectParser extends SQLSelectParser {
     public SQLTableSource parseTableSource(boolean forFrom) {
         if (lexer.token() == Token.LATERAL || lexer.identifierEquals(FnvHash.Constants.LATERAL)) {
             lexer.nextToken();
-            if (lexer.token() == Token.LPAREN) {
-                Lexer.SavePoint mark = lexer.mark();
-                lexer.nextToken();
-                if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
-                    SQLSelect select = select();
-                    accept(Token.RPAREN);
-                    SQLSubqueryTableSource subquery = new SQLSubqueryTableSource(select);
-                    subquery.setLateral(true);
-                    String alias = tableAlias();
-                    if (alias != null) {
-                        subquery.setAlias(alias);
-                    }
-                    return parseTableSourceRest(subquery);
-                } else {
-                    lexer.reset(mark);
-                }
-            }
-            // LATERAL followed by function call like get_product_names(m.id)
-            SQLExpr funcExpr = this.exprParser.expr();
-            SQLExprTableSource funcTableSource = new SQLExprTableSource(funcExpr);
-            funcTableSource.setLateral(true);
-            String alias = tableAlias();
-            if (alias != null) {
-                funcTableSource.setAlias(alias);
-            }
-            return parseTableSourceRest(funcTableSource);
+            SQLTableSource lateralSource = parseLateralTableSource();
+            return parseTableSourceRest(lateralSource);
         }
         return super.parseTableSource(forFrom);
     }
@@ -290,36 +266,11 @@ public class PGSelectParser extends SQLSelectParser {
             return super.parseLateralView(tableSource);
         }
 
-        if (lexer.token() == Token.LPAREN) {
-            lexer.nextToken();
-            SQLSelect select = select();
-            accept(Token.RPAREN);
-            SQLSubqueryTableSource subquery = new SQLSubqueryTableSource(select);
-            subquery.setLateral(true);
-            String alias = tableAlias();
-            if (alias != null) {
-                subquery.setAlias(alias);
-            }
-
-            SQLJoinTableSource join = new SQLJoinTableSource();
-            join.setLeft(tableSource);
-            join.setRight(subquery);
-            join.setJoinType(SQLJoinTableSource.JoinType.COMMA);
-            return parseTableSourceRest(join);
-        }
-
-        // LATERAL function(...)
-        SQLExpr funcExpr = this.exprParser.expr();
-        SQLExprTableSource funcTableSource = new SQLExprTableSource(funcExpr);
-        funcTableSource.setLateral(true);
-        String alias = tableAlias();
-        if (alias != null) {
-            funcTableSource.setAlias(alias);
-        }
+        SQLTableSource lateralSource = parseLateralTableSource();
 
         SQLJoinTableSource join = new SQLJoinTableSource();
         join.setLeft(tableSource);
-        join.setRight(funcTableSource);
+        join.setRight(lateralSource);
         join.setJoinType(SQLJoinTableSource.JoinType.COMMA);
         return parseTableSourceRest(join);
     }

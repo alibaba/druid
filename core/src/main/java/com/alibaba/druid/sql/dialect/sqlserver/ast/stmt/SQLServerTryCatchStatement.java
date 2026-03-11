@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
@@ -10,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLServerTryCatchStatement extends SQLStatementImpl implements SQLServerStatement {
+    public SQLServerTryCatchStatement() {
+        super(DbType.sqlserver);
+    }
+
     private final List<SQLStatement> tryStatements = new ArrayList<SQLStatement>();
     private final List<SQLStatement> catchStatements = new ArrayList<SQLStatement>();
 

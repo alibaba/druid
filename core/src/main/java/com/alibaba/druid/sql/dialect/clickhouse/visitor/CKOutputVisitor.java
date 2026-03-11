@@ -416,6 +416,7 @@ public class CKOutputVisitor extends SQLASTOutputVisitor implements CKASTVisitor
         return false;
     }
 
+    @Override
     public boolean visit(CKCreateMaterializedViewStatement x) {
         print0(ucase ? "CREATE MATERIALIZED VIEW " : "create materialized view ");
 
