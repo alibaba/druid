@@ -737,34 +737,18 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
     @Override
     protected void createOptionSkip() {
+        // Handle SQL Server's CREATE OR ALTER syntax before delegating to parent
         if (lexer.token() == Token.OR) {
+            Lexer.SavePoint mark = lexer.markOut();
             lexer.nextToken();
             if (lexer.token() == Token.ALTER) {
                 lexer.nextToken();
+                // continue to parent for remaining options
             } else {
-                accept(Token.REPLACE);
-                if (lexer.identifierEquals(FnvHash.Constants.FORCE)) {
-                    lexer.nextToken();
-                }
+                lexer.reset(mark);
             }
         }
-
-        if (lexer.identifierEquals(FnvHash.Constants.GLOBAL)) {
-            lexer.nextToken();
-        }
-
-        if (lexer.identifierEquals("TEMPORARY")
-                || lexer.token() == Token.TEMPORARY
-                || lexer.identifierEquals("TEMP")
-        ) {
-            lexer.nextToken();
-        }
-        if (lexer.identifierEquals("TRANSACTIONAL")) {
-            lexer.nextToken();
-        }
-        if (lexer.identifierEquals(FnvHash.Constants.NONCLUSTERED)) {
-            lexer.nextToken();
-        }
+        super.createOptionSkip();
     }
 
     @Override
@@ -773,7 +757,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             lexer.reset(mark);
             return parseAlterTrigger();
         }
-        throw new ParserException("TODO " + lexer.info());
+        return super.alterRest(mark);
     }
 
     protected SQLStatement parseAlterTrigger() {
@@ -851,21 +835,8 @@ public class SQLServerStatementParser extends SQLStatementParser {
             break;
         }
 
-        // optional WITH clause
-        if (lexer.token() == Token.WITH) {
-            lexer.nextToken();
-            if (lexer.identifierEquals(FnvHash.Constants.EXECUTE)) {
-                lexer.nextToken();
-                accept(Token.AS);
-                this.exprParser.name(); // skip EXECUTE AS value
-            } else {
-                this.exprParser.name();
-                while (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    this.exprParser.name();
-                }
-            }
-        }
+        // optional WITH clause - skip (not stored on SQLCreateTriggerStatement)
+        parseWithOptions();
 
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
@@ -941,13 +912,18 @@ public class SQLServerStatementParser extends SQLStatementParser {
             stmt.setReturnDataType(this.exprParser.parseDataType());
         }
 
-        // optional WITH clause
+        // optional WITH clause (e.g., WITH SCHEMABINDING, RETURNS NULL ON NULL INPUT)
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
-            this.exprParser.name();
-            while (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                this.exprParser.name();
+            for (;;) {
+                SQLExpr optionExpr = this.exprParser.name();
+                SQLAssignItem item = new SQLAssignItem(optionExpr, null);
+                stmt.getOptions().add(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                } else {
+                    break;
+                }
             }
         }
 
@@ -975,6 +951,23 @@ public class SQLServerStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+
+    private void parseWithOptions() {
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            if (lexer.identifierEquals(FnvHash.Constants.EXECUTE)) {
+                lexer.nextToken();
+                accept(Token.AS);
+                this.exprParser.name();
+            } else {
+                this.exprParser.name();
+                while (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    this.exprParser.name();
+                }
+            }
+        }
     }
 
     private void parseSQLServerProcedureParameters(SQLCreateProcedureStatement stmt) {

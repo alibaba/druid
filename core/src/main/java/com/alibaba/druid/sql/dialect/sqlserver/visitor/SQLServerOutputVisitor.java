@@ -741,6 +741,18 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             returnDataType.accept(this);
         }
 
+        List<SQLAssignItem> options = x.getOptions();
+        if (options != null && !options.isEmpty()) {
+            println();
+            print0(ucase ? "WITH " : "with ");
+            for (int i = 0; i < options.size(); i++) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                options.get(i).getTarget().accept(this);
+            }
+        }
+
         println();
         print0(ucase ? "AS" : "as");
         println();

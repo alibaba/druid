@@ -106,4 +106,21 @@ public class SQLServerCreateFunctionTest extends TestCase {
         assertEquals(1, stmtList2.size());
         assertTrue(stmtList2.get(0) instanceof SQLCreateFunctionStatement);
     }
+
+    public void testCreateFunctionWithSchemabinding() {
+        String sql = "CREATE FUNCTION dbo.fn_test (@x INT) RETURNS INT WITH SCHEMABINDING AS BEGIN RETURN @x; END";
+        SQLServerStatementParser parser = new SQLServerStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        assertEquals(1, stmtList.size());
+        SQLCreateFunctionStatement stmt = (SQLCreateFunctionStatement) stmtList.get(0);
+        assertEquals(1, stmt.getOptions().size());
+        assertEquals("SCHEMABINDING", stmt.getOptions().get(0).getTarget().toString());
+
+        StringBuilder out = new StringBuilder();
+        SQLServerOutputVisitor visitor = new SQLServerOutputVisitor(out);
+        stmt.accept(visitor);
+        String result = out.toString();
+        assertTrue(result.contains("WITH SCHEMABINDING"));
+    }
 }
