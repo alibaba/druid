@@ -2077,6 +2077,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit(keep);
         }
 
+        final SQLExpr filter = x.getFilter();
+        if (filter != null) {
+            print0(ucase ? " FILTER (WHERE " : " filter (where ");
+            printExpr(filter);
+            print(')');
+        }
+
         SQLOver over = x.getOver();
         if (over != null) {
             print0(ucase ? " OVER " : " over ");
@@ -2087,13 +2094,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (overRef != null) {
             print0(ucase ? " OVER " : " over ");
             overRef.accept(this);
-        }
-
-        final SQLExpr filter = x.getFilter();
-        if (filter != null) {
-            print0(ucase ? " FILTER (WHERE " : " filter (where ");
-            printExpr(filter);
-            print(')');
         }
 
         this.parameterized = parameterized;

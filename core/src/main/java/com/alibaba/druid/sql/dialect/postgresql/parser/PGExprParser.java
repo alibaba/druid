@@ -382,10 +382,45 @@ public class PGExprParser extends SQLExprParser {
             return primaryRest(array);
         }
 
+        if (expr instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+            String name = propertyExpr.getName();
+            if (name.length() > 1 && name.charAt(name.length() - 1) == '#') {
+                SQLBinaryOperator jsonPathOp = null;
+                if (lexer.token() == Token.GT) {
+                    jsonPathOp = SQLBinaryOperator.PoundGt;
+                } else if (lexer.token() == Token.GTGT) {
+                    jsonPathOp = SQLBinaryOperator.PoundGtGt;
+                }
+                if (jsonPathOp != null) {
+                    propertyExpr.setName(name.substring(0, name.length() - 1));
+                    lexer.nextToken();
+                    SQLExpr rightExp = primary();
+                    return new SQLBinaryOpExpr(propertyExpr, jsonPathOp, rightExp, dbType);
+                }
+            }
+        }
+
         if (expr.getClass() == SQLIdentifierExpr.class) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
             String ident = identifierExpr.getName();
             long hash = identifierExpr.nameHashCode64();
+
+            // Handle #> and #>> JSON path operators (lexer consumes # as part of identifier)
+            if (ident.length() > 1 && ident.charAt(ident.length() - 1) == '#') {
+                SQLBinaryOperator jsonPathOp = null;
+                if (lexer.token() == Token.GT) {
+                    jsonPathOp = SQLBinaryOperator.PoundGt;
+                } else if (lexer.token() == Token.GTGT) {
+                    jsonPathOp = SQLBinaryOperator.PoundGtGt;
+                }
+                if (jsonPathOp != null) {
+                    identifierExpr.setName(ident.substring(0, ident.length() - 1));
+                    lexer.nextToken();
+                    SQLExpr rightExp = primary();
+                    return new SQLBinaryOpExpr(identifierExpr, jsonPathOp, rightExp, dbType);
+                }
+            }
 
             if (lexer.token() == Token.COMMA || lexer.token() == Token.RPAREN) {
                 return super.primaryRest(expr);

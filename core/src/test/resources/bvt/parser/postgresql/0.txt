@@ -187,25 +187,25 @@ SELECT a.*, avg(a.nv_roe_lag) OVER () AS nv_roe_avg
 	, CASE
 		WHEN a.nv_flag >= 0 THEN sum(1) OVER (ORDER BY a.stat_date)
 		ELSE sum(0) OVER (ORDER BY a.stat_date)
-	END AS nv_flag_up, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.nv_flag <= 0) AS nv_flag_down
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.idx_flag >= 0) AS idx_flag_up
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.idx_flag <= 0) AS idx_flag_down
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.if300_flag >= 0) AS if300_flag_up
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.if300_flag <= 0) AS if300_flag_down
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_flag >= 0) AS ih50_flag_up
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_flag <= 0) AS ih50_flag_down
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_flag >= 0) AS ic500_flag_up
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_flag <= 0) AS ic500_flag_down
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.idx_roe_lag > 0) AS idx_win_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.idx_roe_lag > a.idx_roe_lag) AS idx_win_idx_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.nv_roe_lag > 0) AS nv_win_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.nv_roe_lag > a.idx_roe_lag) AS nv_win_idx_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.if300_roe_lag > 0) AS if300_win_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.if300_roe_lag > a.idx_roe_lag) AS if300_win_idx_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_roe_lag > 0) AS ih50_win_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ih50_roe_lag > a.idx_roe_lag) AS ih50_win_idx_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_roe_lag > 0) AS ic500_win_cnt
-	, count(1) OVER (ORDER BY a.stat_date) FILTER (WHERE a.ic500_roe_lag > a.idx_roe_lag) AS ic500_win_idx_cnt-- 根据所有输入点(X,Y)利用最小二乘法计算一个线性方程式。然后返回该直线的斜率
+	END AS nv_flag_up, count(1) FILTER (WHERE a.nv_flag <= 0) OVER (ORDER BY a.stat_date) AS nv_flag_down
+	, count(1) FILTER (WHERE a.idx_flag >= 0) OVER (ORDER BY a.stat_date) AS idx_flag_up
+	, count(1) FILTER (WHERE a.idx_flag <= 0) OVER (ORDER BY a.stat_date) AS idx_flag_down
+	, count(1) FILTER (WHERE a.if300_flag >= 0) OVER (ORDER BY a.stat_date) AS if300_flag_up
+	, count(1) FILTER (WHERE a.if300_flag <= 0) OVER (ORDER BY a.stat_date) AS if300_flag_down
+	, count(1) FILTER (WHERE a.ih50_flag >= 0) OVER (ORDER BY a.stat_date) AS ih50_flag_up
+	, count(1) FILTER (WHERE a.ih50_flag <= 0) OVER (ORDER BY a.stat_date) AS ih50_flag_down
+	, count(1) FILTER (WHERE a.ic500_flag >= 0) OVER (ORDER BY a.stat_date) AS ic500_flag_up
+	, count(1) FILTER (WHERE a.ic500_flag <= 0) OVER (ORDER BY a.stat_date) AS ic500_flag_down
+	, count(1) FILTER (WHERE a.idx_roe_lag > 0) OVER (ORDER BY a.stat_date) AS idx_win_cnt
+	, count(1) FILTER (WHERE a.idx_roe_lag > a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_win_idx_cnt
+	, count(1) FILTER (WHERE a.nv_roe_lag > 0) OVER (ORDER BY a.stat_date) AS nv_win_cnt
+	, count(1) FILTER (WHERE a.nv_roe_lag > a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_win_idx_cnt
+	, count(1) FILTER (WHERE a.if300_roe_lag > 0) OVER (ORDER BY a.stat_date) AS if300_win_cnt
+	, count(1) FILTER (WHERE a.if300_roe_lag > a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS if300_win_idx_cnt
+	, count(1) FILTER (WHERE a.ih50_roe_lag > 0) OVER (ORDER BY a.stat_date) AS ih50_win_cnt
+	, count(1) FILTER (WHERE a.ih50_roe_lag > a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ih50_win_idx_cnt
+	, count(1) FILTER (WHERE a.ic500_roe_lag > 0) OVER (ORDER BY a.stat_date) AS ic500_win_cnt
+	, count(1) FILTER (WHERE a.ic500_roe_lag > a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS ic500_win_idx_cnt-- 根据所有输入点(X,Y)利用最小二乘法计算一个线性方程式。然后返回该直线的斜率
 	
 	, regr_slope(a.nv_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS nv_beta
 	, regr_slope(a.idx_roe_lag, a.idx_roe_lag) OVER (ORDER BY a.stat_date) AS idx_beta
