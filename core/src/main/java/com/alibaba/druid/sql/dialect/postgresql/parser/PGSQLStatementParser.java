@@ -1195,6 +1195,13 @@ public class PGSQLStatementParser extends SQLStatementParser {
         Lexer.SavePoint mark = lexer.mark();
         String strVal = lexer.stringVal();
         for (; ; ) {
+            if (Token.SEMI.equals(lexer.token())) {
+                stmt.setAfterSemi(true);
+                return stmt;
+            }
+            if (Token.EOF.equals(lexer.token())) {
+                return stmt;
+            }
             if (strVal.equalsIgnoreCase("VERBOSE")) {
                 stmt.setVerbose(true);
                 lexer.nextToken();
@@ -1233,8 +1240,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 stmt.setAfterSemi(true);
                 return stmt;
             }
-            if (lexer.isEOF()) {
-                lexer.nextToken();
+            if (Token.EOF.equals(lexer.token())) {
                 return stmt;
             }
             if (strVal.equalsIgnoreCase("FULL")) {
