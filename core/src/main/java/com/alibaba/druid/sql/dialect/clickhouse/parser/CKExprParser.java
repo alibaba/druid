@@ -78,6 +78,17 @@ public class CKExprParser extends SQLExprParser {
         return new SQLCharExpr(chars);
     }
 
+    public SQLExpr primary() {
+        if (lexer.token() == Token.LBRACKET) {
+            SQLArrayExpr array = new SQLArrayExpr();
+            lexer.nextToken();
+            this.exprList(array.getValues(), array);
+            accept(Token.RBRACKET);
+            return primaryRest(array);
+        }
+        return super.primary();
+    }
+
     public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.token() == Token.LBRACKET) {
             SQLArrayExpr array = new SQLArrayExpr();

@@ -73,9 +73,9 @@ public class Issue5933 {
                 "SELECT s, arr, a, num, arrayEnumerate(arr)\n"
                     + "FROM arrays_test\n"
                     + "ARRAY JOIN arr AS a, arrayEnumerate(arr) AS num;",
-//                "SELECT s, arr, a, b\n"
-//                    + "FROM arrays_test ARRAY JOIN arr as a, [['a','b'],['c']] as b\n"
-//                    + "SETTINGS enable_unaligned_array_join = 1;",
+                "SELECT s, arr, a, b\n"
+                    + "FROM arrays_test ARRAY JOIN arr as a, [['a','b'],['c']] as b\n"
+                    + "SETTINGS enable_unaligned_array_join = 1;",
                 "SELECT s, `nest.x`, `nest.y`\n"
                     + "FROM nested_test\n"
                     + "ARRAY JOIN nest;",
