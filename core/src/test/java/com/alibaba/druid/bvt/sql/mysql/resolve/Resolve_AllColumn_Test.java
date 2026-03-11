@@ -90,7 +90,6 @@ public class Resolve_AllColumn_Test extends TestCase {
         repository.acceptDDL("create table t_emp(emp_id bigint, name varchar(20));");
         repository.acceptDDL("create table t_emp_copy(emp_copy_id bigint, name_copy varchar(20));");
 
-
         SQLStatement stmt = SQLUtils.parseSingleMysqlStatement("select * from (select * from t_emp) a, (select * from t_emp_copy) b where a.emp_id = b.emp_copy_id");
         repository.resolve(stmt, SchemaResolveVisitor.Option.ResolveAllColumn);
 

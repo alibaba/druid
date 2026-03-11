@@ -19,8 +19,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import junit.framework.TestCase;
 
 import java.util.List;
