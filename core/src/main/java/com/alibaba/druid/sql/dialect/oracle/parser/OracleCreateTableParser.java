@@ -41,6 +41,10 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         super(new OracleExprParser(sql));
     }
 
+    public OracleCreateTableParser(OracleExprParser exprParser) {
+        super(exprParser);
+    }
+
     protected OracleCreateTableStatement newCreateStatement() {
         return new OracleCreateTableStatement();
     }
