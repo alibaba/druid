@@ -86,6 +86,48 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>sql-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>**/bvt/sql/**/*.java</include>
+								<include>**/bvt/filter/wall/**/*.java</include>
+								<include>**/bvt/bug/**/*.java</include>
+							</includes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>non-sql-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>**/bvt/**/*.java</include>
+							</includes>
+							<excludes>
+								<exclude>**/bvt/sql/**/*.java</exclude>
+								<exclude>**/bvt/filter/wall/**/*.java</exclude>
+								<exclude>**/bvt/bug/**/*.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<dependencies>
 		<dependency>
 			<groupId>simple-jndi</groupId>
