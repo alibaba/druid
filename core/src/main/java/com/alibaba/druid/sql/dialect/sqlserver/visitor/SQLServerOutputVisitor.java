@@ -567,6 +567,53 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
+    public boolean visit(SQLCreateProcedureStatement x) {
+        if (x.isCreate()) {
+            if (x.isOrReplace()) {
+                print0(ucase ? "CREATE OR ALTER PROCEDURE " : "create or alter procedure ");
+            } else {
+                print0(ucase ? "CREATE PROCEDURE " : "create procedure ");
+            }
+        } else {
+            print0(ucase ? "ALTER PROCEDURE " : "alter procedure ");
+        }
+
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+        if (paramSize > 0) {
+            this.indentCount++;
+            for (int i = 0; i < paramSize; ++i) {
+                println();
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+                if (i < paramSize - 1) {
+                    print(',');
+                }
+            }
+            this.indentCount--;
+        }
+
+        SQLName authid = x.getAuthid();
+        if (authid != null) {
+            println();
+            print0(ucase ? "WITH EXECUTE AS " : "with execute as ");
+            authid.accept(this);
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+
+        SQLStatement block = x.getBlock();
+        if (block != null) {
+            block.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
     protected void printAfterFetch(SQLSelectQueryBlock queryBlock) {
         if (queryBlock instanceof SQLServerSelectQueryBlock) {
             SQLServerSelectQueryBlock sqlServerSelectQueryBlock = ((SQLServerSelectQueryBlock) queryBlock);
