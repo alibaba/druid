@@ -5718,6 +5718,12 @@ public class SQLStatementParser extends SQLParser {
 
         accept(THEN);
 
+        if (lexer.nextIf(Token.DO)) {
+            acceptIdentifier("NOTHING");
+            stmt.addWhen(new SQLMergeStatement.WhenDoNothing(not, by, where));
+            return true;
+        }
+
         if (lexer.nextIf(DELETE)) {
             stmt.addWhen(new SQLMergeStatement.WhenDelete(not, by, where));
             return true;

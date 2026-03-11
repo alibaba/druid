@@ -262,6 +262,30 @@ public class SQLMergeStatement extends SQLStatementImpl {
         }
     }
 
+    public static class WhenDoNothing extends When {
+        public WhenDoNothing() {
+        }
+
+        public WhenDoNothing(boolean not, SQLName by, SQLExpr where) {
+            super(not, by, where);
+        }
+
+        @Override
+        protected void accept0(SQLASTVisitor v) {
+            if (v.visit(this)) {
+                acceptChild(v, by);
+                acceptChild(v, where);
+            }
+            v.endVisit(this);
+        }
+
+        public WhenDoNothing cloneTo() {
+            WhenDoNothing x = new WhenDoNothing();
+            cloneTo(x);
+            return x;
+        }
+    }
+
     public static class WhenDelete extends When {
         public WhenDelete() {
         }
