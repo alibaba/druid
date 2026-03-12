@@ -162,7 +162,7 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<skip>false</skip>
+							<skip>${checkstyle.skip}</skip>
 							<failOnViolation>true</failOnViolation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<configLocation>src/checkstyle/druid-checks.xml</configLocation>
