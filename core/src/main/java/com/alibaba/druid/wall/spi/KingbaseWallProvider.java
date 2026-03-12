@@ -45,7 +45,7 @@ public class KingbaseWallProvider extends WallProvider {
             PGWallProvider.DEFAULT_CONFIG_DIR;
 
     /** 缓存的数据库兼容模式. */
-    private volatile DbType compatMode;
+    private volatile DbType compatMode = null;
     /** 兼容模式锁. */
     private final Object compatModeLock = new Object();
     /** 数据源代理. */
